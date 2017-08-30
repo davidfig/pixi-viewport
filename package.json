@@ -1,0 +1,38 @@
+{
+  "name": "pixi-viewport",
+  "version": "1.0.0",
+  "description": "A scrollable, zoomable stage for PIXI.js",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "budo --dir docs docs/code.js:index.js --live"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidfig/pixi-viewport.git"
+  },
+  "keywords": [
+    "PIXI",
+    "PIXI.js",
+    "viewport",
+    "zoom",
+    "scroll",
+    "pinch",
+    "stage"
+  ],
+  "author": "David Figatner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidfig/pixi-viewport/issues"
+  },
+  "homepage": "https://github.com/davidfig/pixi-viewport#readme",
+  "dependencies": {
+    "pixi.js": "^4.5.5"
+  },
+  "devDependencies": {
+    "highlight.js": "^9.12.0",
+    "yy-random": "^1.5.0"
+  }
+}
