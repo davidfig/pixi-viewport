@@ -8,9 +8,9 @@
         }
 
         .title {
-            margin-top: 1%;
+            margin-top: 0.5em;
             margin-left: 15%;
-            font-size: 200%;
+            font-size: 2em;
         }
 
         #code {
@@ -36,12 +36,20 @@
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
             font-size: 1.25em;
         }
+
+        #canvas {
+            position: absolute;
+            top: 4em;
+            width: 100%;
+            height: calc(100% - 4em);
+        }
     </style>
     <script src="index.js"></script>
 </head>
 
 <body>
-    <div id="test"></div>
     <div class="title">Example for <a href="https://github.com/davidfig/pixi-viewport.git/">github.com/davidfig/pixi-viewport/</a></div>
+    <div id="test"></div>
     <pre><code class="javascript" id="code"></code></pre>
+    <canvas id="canvas"></canvas>
 </body>
