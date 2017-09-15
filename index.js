@@ -1,5 +1,4 @@
 const PIXI = require('pixi.js')
-const clamp = require('clamp')
 const Penner = require('penner')
 
 module.exports = class Viewport extends PIXI.Container
@@ -12,7 +11,7 @@ module.exports = class Viewport extends PIXI.Container
      * @param {object} [options]
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
-     * @param {boolean|number} [options.bounce=250] bounce back if pulled past boundaries
+     * @param {boolean|number} [options.bounce=150] bounce back if pulled past boundaries
      * @param {string} [options.bounceEase='linear'] easing function to use when bouncing (see https://github.com/bcherny/penner)
      * @param {boolean} [options.noOverDrag]
      * @param {boolean} [options.noUpdate] set to true to manually call update function, otherwise internally calls requestAnimationFrame
@@ -68,7 +67,11 @@ module.exports = class Viewport extends PIXI.Container
 
     set bounce(value)
     {
-        this.options.bounce = (value === true) ? 250 : this.options.bounce
+        this.options.bounce = (value === true) ? 150 : value
+        if (!value)
+        {
+            this.to = null
+        }
         this.bounceEasing = Penner[this.options.bounceEase] || Penner['linear']
     }
     get bounce() { return this.options.bounce }
@@ -157,17 +160,25 @@ module.exports = class Viewport extends PIXI.Container
                 }
                 if (last)
                 {
-                    const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+                    const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
+                    const oldPoint = this.toLocal(point)
 
-                    const change = (dist - last) / this.w
+                    const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+                    const change = ((dist - last) / this.w) * this.scale.x
                     this.scale.x += change
                     this.scale.y += change
 
-                    const pivot = this.toLocal(new PIXI.Point(first.last.x + (second.last.x - first.last.x) / 2 - this.w / 2, first.last.y + (second.last.y - first.last.y) / 2 - this.h / 2))
-                    this.x = pivot.x - (this.w / 2) * this.scale.x
-                    this.y = pivot.y - (this.h / 2) * this.scale.y
+                    const newPoint = this.toGlobal(oldPoint)
 
-                    this.g.beginFill(0xff0000).drawCircle(pivot.x, pivot.y, 50).endFill()
+                    this.x += point.x - newPoint.x
+                    this.y += point.y - newPoint.y
+
+                    if (this.lastCenter)
+                    {
+                        this.x += point.x - this.lastCenter.x
+                        this.y += point.y - this.lastCenter.y
+                    }
+                    this.lastCenter = point
                 }
                 if (this.options.noOverDrag)
                 {
@@ -177,20 +188,99 @@ module.exports = class Viewport extends PIXI.Container
         }
     }
 
+    toWorld()
+    {
+        if (arguments.length === 2)
+        {
+            const x = arguments[0]
+            const y = arguments[1]
+            return this.toLocal(new PIXI.Point(x, y))
+        }
+        else
+        {
+            return this.toLocal(arguments[0])
+        }
+    }
+
+    toScreen()
+    {
+        if (arguments.length === 2)
+        {
+            const x = arguments[0]
+            const y = arguments[1]
+            return this.toGlobal(new PIXI.Point(x, y))
+        }
+        else
+        {
+            const point = arguments[0]
+            return this.toGlobal(point)
+        }
+    }
+
     clamp()
     {
-        const right = -this.worldBoundaries.right + this.w * this.scale.x
-        const bottom = -this.worldBoundaries.bottom + this.h * this.scale.y
-        this.x = this.x > this._worldBoundaries.left ? this._worldBoundaries.left : this.x < right ? right : this.x
-        this.y = this.y > this._worldBoundaries.top ? this._worldBoundaries.top : this.y < bottom ? bottom : this.y
+        let point
+        if (this.w / this.scale.x > this._worldBoundaries.width || this.x >= this._worldBoundaries.left)
+        {
+            this.x = this._worldBoundaries.left
+        }
+        else
+        {
+            point = this.toLocal(new PIXI.Point(this.w, this.h))
+            if (point.x > this._worldBoundaries.right)
+            {
+                this.x += (point.x - this._worldBoundaries.right)
+            }
+        }
+        if (this.h / this.scale.y > this._worldBoundaries.height || this.y >= this._worldBoundaries.top)
+        {
+            this.y = this._worldBoundaries.top
+        }
+        else
+        {
+            if (!point)
+            {
+                point = this.toLocal(new PIXI.Point(this.w, this.h))
+            }
+            if (point.y > this._worldBoundaries.bottom)
+            {
+                this.y += (point.y - this._worldBoundaries.bottom)
+            }
+        }
     }
 
     bounceStart()
     {
-        const right = -this.worldBoundaries.right + this.w * this.scale.x
-        const bottom = -this.worldBoundaries.bottom + this.h * this.scale.y
-        const x = this.x > this._worldBoundaries.left ? this._worldBoundaries.left : this.x < right ? right : this.x
-        const y = this.y > this._worldBoundaries.top ? this._worldBoundaries.top : this.y < bottom ? bottom : this.y
+        let point
+        let x = this.x
+        let y = this.y
+        if (this.w / this.scale.x > this._worldBoundaries.width || this.x >= this._worldBoundaries.left)
+        {
+            x = this._worldBoundaries.left
+        }
+        else
+        {
+            point = this.toLocal(new PIXI.Point(this.w, this.h))
+            if (point.x > this._worldBoundaries.right)
+            {
+                x = this.x + (point.x - this._worldBoundaries.right)
+            }
+        }
+        if (this.h / this.scale.y > this._worldBoundaries.height || this.y >= this._worldBoundaries.top)
+        {
+            y = this._worldBoundaries.top
+        }
+        else
+        {
+            if (!point)
+            {
+                point = this.toLocal(new PIXI.Point(0, this.h))
+            }
+            if (point.y > this._worldBoundaries.bottom)
+            {
+                y = this.y + (point.y - this._worldBoundaries.bottom)
+            }
+        }
         if (x !== this.x || y !== this.y)
         {
             this.to = { x: this.x, y: this.y, deltaX: x - this.x, deltaY: y - this.y, time: 0, last: performance.now() }
@@ -235,6 +325,10 @@ module.exports = class Viewport extends PIXI.Container
             {
                 this.pointers.splice(i, 1)
             }
+        }
+        if (this.pointers.length < 2)
+        {
+            this.lastCenter = null
         }
         if (this.options.bounce && this.pointers.length === 0)
         {

@@ -8,7 +8,7 @@ const BORDER = 10
 const WIDTH = 1000
 const HEIGHT = 1000
 const STARS = 1000
-const STAR_SIZE = 20
+const STAR_SIZE = 10
 
 let viewport
 
@@ -45,7 +45,9 @@ function stars()
 window.onload = function ()
 {
     const app = new PIXI.Application({ view: document.getElementById('canvas'), transparent: true })
-
+    console.log(app.view.width, app.view.height, app.view.offsetWidth, app.view.offsetHeight)
+    app.view.style.width = '100%'
+    app.view.style.height = app.view.height + 'px'
     viewport = app.stage.addChild(new Viewport(app.view.width, app.view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' }))
 
     border()

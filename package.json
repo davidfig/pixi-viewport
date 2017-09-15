@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
   "dependencies": {
-    "clamp": "^1.0.1",
     "penner": "^0.1.3",
     "pixi.js": "^4.5.5",
     "settingspanel": "^1.2.1"
