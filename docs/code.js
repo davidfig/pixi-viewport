@@ -54,7 +54,7 @@ window.onload = function ()
 {
     _title = document.getElementsByClassName('title')[0]
     _view = document.getElementById('canvas')
-    _app = new PIXI.Application({ view: _view, transparent: true })
+    _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
     _viewport = _app.stage.addChild(new Viewport(_view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { friction: 0.1, pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' }))
     resize()
     window.addEventListener('resize', resize)

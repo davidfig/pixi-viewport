@@ -37,6 +37,10 @@
             font-size: 1.25em;
         }
 
+        .github-fork-ribbon.right-top:before {
+            background-color: blue;
+        }
+
         #canvas {
             position: absolute;
             top: 4em;
@@ -44,6 +48,7 @@
             height: calc(100% - 4em);
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css"/>
     <script src="index.js"></script>
 </head>
 
@@ -52,4 +57,5 @@
     <div id="test"></div>
     <pre><code class="javascript" id="code"></code></pre>
     <canvas id="canvas"></canvas>
+    <a class="github-fork-ribbon right-top" href="https://github.com/davidfig/pixi-viewport/" title="Fork me on GitHub">Fork me on GitHub</a>
 </body>

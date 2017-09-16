@@ -1,5 +1,8 @@
 const PIXI = require('pixi.js')
 const Penner = require('penner')
+// const Scroller = require('scroller')
+
+const Counter = require('console-counter')
 
 module.exports = class Viewport extends PIXI.Container
 {
@@ -29,6 +32,12 @@ module.exports = class Viewport extends PIXI.Container
         this.hitArea = worldBoundaries
         this._worldBoundaries = worldBoundaries
         this.resize(screenWidth, screenHeight)
+        if (!this.options.noUpdate)
+        {
+            PIXI.ticker.shared.add(this.update, this)
+        }
+        this.counter = new Counter({ side: 'bottomleft' })
+        // this.scroller = new Scroller()
     }
 
     set worldBoundaries(value)
@@ -117,7 +126,6 @@ module.exports = class Viewport extends PIXI.Container
 
     down(e)
     {
-        this.deaccelerating = false
         this.to = null
         this.pointers.push({ id: e.data.pointerId, last: e.data.global })
         if (this.options.friction)
@@ -140,14 +148,17 @@ module.exports = class Viewport extends PIXI.Container
             {
                 const last = this.pointers[0].last
                 const pos = e.data.global
-                this.x += (pos.x - last.x)
-                this.y += (pos.y - last.y)
+                const distX = pos.x - last.x
+                const distY = pos.y - last.y
+                this.x += distX
+                this.y += distY
                 if (this.options.friction)
                 {
                     const now = performance.now()
                     const time = now - this.velocity.time
-                    const velocity = { x: (pos.x - last.x) / time, y: (pos.y - last.y) / time }
-                    this.velocity = { velocity, x: pos.x - last.x, y: pos.y - last.y, save: this.velocity.time, time }
+                    const velocity = { x: distX / time, y: distY / time }
+this.counter.log(velocity.x, velocity.y)
+                    this.velocity = { velocity, x: distX, y: distY, save: this.velocity.time, time }
                 }
                 this.pointers[0].last = { x: pos.x, y: pos.y }
                 if (this.options.noOverDrag)
@@ -313,36 +324,41 @@ module.exports = class Viewport extends PIXI.Container
 
     update(elapsed)
     {
-        if (this.to)
+        // if (this.to)
+        // {
+        //     const now = performance.now()
+        //     elapsed = now - this.to.last
+        //     this.to.last = now
+        //     this.to.time += elapsed
+        //     this.x = this.bounceEasing(this.to.time, this.to.x, this.to.deltaX, this.options.bounce)
+        //     this.y = this.bounceEasing(this.to.time, this.to.y, this.to.deltaY, this.options.bounce)
+        //     if (this.to.time >= this.options.bounce)
+        //     {
+        //         this.to = null
+        //         this.bouncing = false
+        //     }
+        //     else if (!this.options.noUpdate)
+        //     {
+        //         requestAnimationFrame(this.update.bind(this))
+        //     }
+        // }
+        // if (this.pointers.length)
+        // {
+        //     const time = performance.now() - this.velocity.save
+        //     this.velocity.velocity.x = this.velocity.x / time
+        //     this.velocity.velocity.y = this.velocity.y / time
+        // }
+        // else
+        if (!this.pointers.length && this.velocity && this.velocity.velocity)
         {
-            const now = performance.now()
-            elapsed = now - this.to.last
-            this.to.last = now
-            this.to.time += elapsed
-            this.x = this.bounceEasing(this.to.time, this.to.x, this.to.deltaX, this.options.bounce)
-            this.y = this.bounceEasing(this.to.time, this.to.y, this.to.deltaY, this.options.bounce)
-            if (this.to.time >= this.options.bounce)
-            {
-                this.to = null
-                this.bouncing = false
-            }
-            else if (!this.options.noUpdate)
-            {
-                requestAnimationFrame(this.update.bind(this))
-            }
-        }
-        else if (this.velocity && this.velocity.save)
-        {
-            const time = performance.now() - this.velocity.save
-            this.velocity.velocity.x = this.velocity.x / time
-            this.velocity.velocity.y = this.velocity.y / time
-        }
-        else if (this.deaccelerating)
-        {
-            this.deaccelerating.x -= this.deaccelerating.x * this.options.friction * elapsed
-            this.deaccelerating.y -= this.deaccelerating.y * this.options.friction * elapsed
-            this.x += this.deaccelerating.x * elapsed
-            this.y += this.deaccelerating.y * elapsed
+            const deltaX = this.velocity.velocity.x * elapsed
+            const deltaY = this.velocity.velocity.y * elapsed
+            this.x += deltaX
+            this.y += deltaY
+            this.velocity.velocity.x *= (1 - this.options.friction)
+            this.velocity.velocity.y *= (1 - this.options.friction)
+
+            this.counter.log('update', this.x, this.y, this.velocity.velocity.x, this.velocity.velocity.y, this.options.friction)
         }
     }
 
@@ -362,11 +378,6 @@ module.exports = class Viewport extends PIXI.Container
         if (this.options.bounce && this.pointers.length === 0)
         {
             this.bounceStart()
-        }
-        if (!this.to && this.velocity)
-        {
-            this.deaccelerating = { x: this.velocity.velocity.x, y: this.velocity.velocity.y }
-            this.velocity = null
         }
     }
 }
