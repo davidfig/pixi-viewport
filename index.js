@@ -4,17 +4,17 @@ const Penner = require('penner')
 module.exports = class Viewport extends PIXI.Container
 {
     /**
-     *
      * @param {number} screenWidth
      * @param {number} screenHeight
      * @param {PIXI.Rectangle} worldBoundaries
      * @param {object} [options]
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
-     * @param {boolean|number} [options.bounce=150] bounce back if pulled past boundaries
+     * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
+     * @param {boolean|number} [options.bounce=150] bounce back if pulled beyond boundaries, number is milliseconds to bounce back
      * @param {string} [options.bounceEase='linear'] easing function to use when bouncing (see https://github.com/bcherny/penner)
-     * @param {boolean} [options.noOverDrag]
      * @param {boolean} [options.noUpdate] set to true to manually call update function, otherwise internally calls requestAnimationFrame
+     * @param {number} [options.friction=0] percent to deaccelerate after movement (0 === no movement)
      */
     constructor(screenWidth, screenHeight, worldBoundaries, options)
     {
@@ -29,11 +29,6 @@ module.exports = class Viewport extends PIXI.Container
         this.hitArea = worldBoundaries
         this._worldBoundaries = worldBoundaries
         this.resize(screenWidth, screenHeight)
-
-        this.g = this.addChild(new PIXI.Graphics())
-        this.g.lineStyle(10, 0x00ff00)
-            .moveTo(worldBoundaries.left, worldBoundaries.top)
-            .lineTo(worldBoundaries.right, worldBoundaries.top)
     }
 
     set worldBoundaries(value)
@@ -89,6 +84,9 @@ module.exports = class Viewport extends PIXI.Container
     set noUpdate(value) { this.options.noUpdate = value }
     get noUpdate() { return this.options.noUpdate }
 
+    set friction(value) { this.options.friction = value }
+    get friction() { return this.options.friction }
+
     listeners()
     {
         if (this.options.dragToMove || this.options.pinchToZoom)
@@ -119,8 +117,13 @@ module.exports = class Viewport extends PIXI.Container
 
     down(e)
     {
+        this.deaccelerating = false
         this.to = null
         this.pointers.push({ id: e.data.pointerId, last: e.data.global })
+        if (this.options.friction)
+        {
+            this.velocity = { time: performance.now() }
+        }
     }
 
     resize(screenWidth, screenHeight)
@@ -139,14 +142,23 @@ module.exports = class Viewport extends PIXI.Container
                 const pos = e.data.global
                 this.x += (pos.x - last.x)
                 this.y += (pos.y - last.y)
+                if (this.options.friction)
+                {
+                    const now = performance.now()
+                    const time = now - this.velocity.time
+                    const velocity = { x: (pos.x - last.x) / time, y: (pos.y - last.y) / time }
+                    this.velocity = { velocity, x: pos.x - last.x, y: pos.y - last.y, save: this.velocity.time, time }
+                }
                 this.pointers[0].last = { x: pos.x, y: pos.y }
                 if (this.options.noOverDrag)
                 {
                     this.clamp()
                 }
+                this.inMove = true
             }
             else if (this.pinchToZoom)
             {
+                this.inMove = false
                 const first = this.pointers[0]
                 const second = this.pointers[1]
                 const last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
@@ -185,6 +197,10 @@ module.exports = class Viewport extends PIXI.Container
                     this.clamp()
                 }
             }
+        }
+        else
+        {
+            this.inMove = false
         }
     }
 
@@ -315,6 +331,19 @@ module.exports = class Viewport extends PIXI.Container
                 requestAnimationFrame(this.update.bind(this))
             }
         }
+        else if (this.velocity && this.velocity.save)
+        {
+            const time = performance.now() - this.velocity.save
+            this.velocity.velocity.x = this.velocity.x / time
+            this.velocity.velocity.y = this.velocity.y / time
+        }
+        else if (this.deaccelerating)
+        {
+            this.deaccelerating.x -= this.deaccelerating.x * this.options.friction * elapsed
+            this.deaccelerating.y -= this.deaccelerating.y * this.options.friction * elapsed
+            this.x += this.deaccelerating.x * elapsed
+            this.y += this.deaccelerating.y * elapsed
+        }
     }
 
     up(e)
@@ -333,6 +362,11 @@ module.exports = class Viewport extends PIXI.Container
         if (this.options.bounce && this.pointers.length === 0)
         {
             this.bounceStart()
+        }
+        if (!this.to && this.velocity)
+        {
+            this.deaccelerating = { x: this.velocity.velocity.x, y: this.velocity.velocity.y }
+            this.velocity = null
         }
     }
 }

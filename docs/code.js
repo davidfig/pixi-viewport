@@ -5,16 +5,16 @@ const Panel = require('settingspanel')
 const Viewport = require('..')
 
 const BORDER = 10
-const WIDTH = 1000
-const HEIGHT = 1000
-const STARS = 1000
-const STAR_SIZE = 10
+const WIDTH = 10000
+const HEIGHT = 10000
+const STARS = 10000
+const STAR_SIZE = 30
 
-let viewport
+let _app, _viewport, _view, _title
 
 function line(x, y, width, height)
 {
-    const line = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    const line = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     line.tint = 0xff0000
     line.alpha = 0.25
     line.position.set(x, y)
@@ -34,7 +34,7 @@ function stars()
 {
     for (let i = 0; i < STARS; i++)
     {
-        const star = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+        const star = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
         star.alpha = Random.range(0.25, 1, true)
@@ -42,22 +42,32 @@ function stars()
     }
 }
 
+function resize()
+{
+    _view.width = window.innerWidth
+    _view.height = window.innerHeight - _title.offsetHeight
+    _app.renderer.resize(_view.width, _view.height)
+    _viewport.resize(_view.width, _view.height)
+}
+
 window.onload = function ()
 {
-    const app = new PIXI.Application({ view: document.getElementById('canvas'), transparent: true })
-    console.log(app.view.width, app.view.height, app.view.offsetWidth, app.view.offsetHeight)
-    app.view.style.width = '100%'
-    app.view.style.height = app.view.height + 'px'
-    viewport = app.stage.addChild(new Viewport(app.view.width, app.view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' }))
+    _title = document.getElementsByClassName('title')[0]
+    _view = document.getElementById('canvas')
+    _app = new PIXI.Application({ view: _view, transparent: true })
+    _viewport = _app.stage.addChild(new Viewport(_view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { friction: 0.1, pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' }))
+    resize()
+    window.addEventListener('resize', resize)
 
     border()
     stars()
 
     const panel = new Panel()
-    panel.button('', () => { viewport.pinchToZoom = !viewport.pinchToZoom; return viewport.pinchToZoom ? 'pinchToZoom' : '[pinchToZoom]' }, { original: 'pinchToZoom' })
-    panel.button('', () => { viewport.dragToMove = !viewport.dragToMove; return viewport.dragToMove ? 'dragToMove' : '[dragToMove]' }, { original: '[dragToMove]' })
-    panel.button('', () => { viewport.noOverDrag = !viewport.noOverDrag; return viewport.noOverDrag ? 'noOverDrag' : '[noOverDrag]' }, { original: '[noOverDrag]' })
-    panel.button('', () => { viewport.bounce = !viewport.bounce; return viewport.bounce ? 'bounce' : '[bounce]' }, { original: 'bounce' })
+    panel.button('', () => { _viewport.pinchToZoom = !_viewport.pinchToZoom; return _viewport.pinchToZoom ? 'pinchToZoom' : '[pinchToZoom]' }, { original: 'pinchToZoom' })
+    panel.button('', () => { _viewport.bounce = !_viewport.bounce; return _viewport.bounce ? 'bounce' : '[bounce]' }, { original: 'bounce' })
+    panel.input('friction: ', (value) => { _viewport.friction = value }, { original: 0.1, size: 5 })
+    panel.button('', () => { _viewport.dragToMove = !_viewport.dragToMove; return _viewport.dragToMove ? 'dragToMove' : '[dragToMove]' }, { original: '[dragToMove]' })
+    panel.button('', () => { _viewport.noOverDrag = !_viewport.noOverDrag; return _viewport.noOverDrag ? 'noOverDrag' : '[noOverDrag]' }, { original: '[noOverDrag]' })
 
     require('./highlight')()
 }
