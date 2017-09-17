@@ -30,9 +30,9 @@
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
   "dependencies": {
     "console-counter": "^1.1.1",
+    "fork-me-github": "^1.0.2",
     "penner": "^0.1.3",
     "pixi.js": "^4.5.5",
-    "scroller": "0.0.3",
     "settingspanel": "^1.2.1"
   },
   "devDependencies": {

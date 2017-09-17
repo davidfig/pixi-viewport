@@ -1,6 +1,5 @@
 const PIXI = require('pixi.js')
 const Penner = require('penner')
-// const Scroller = require('scroller')
 
 const Counter = require('console-counter')
 
@@ -16,8 +15,9 @@ module.exports = class Viewport extends PIXI.Container
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
      * @param {boolean|number} [options.bounce=150] bounce back if pulled beyond boundaries, number is milliseconds to bounce back
      * @param {string} [options.bounceEase='linear'] easing function to use when bouncing (see https://github.com/bcherny/penner)
-     * @param {boolean} [options.noUpdate] set to true to manually call update function, otherwise internally calls requestAnimationFrame
-     * @param {number} [options.friction=0] percent to deaccelerate after movement (0 === no movement)
+     * @param {boolean} [options.decelerate] decelerate after scrolling
+     * @param {number} [options.friction=0.95] percent to decelerate after movement
+     * @param {boolean} [options.noTicker] don't use PIXI.ticker.shared to call update; if set to true, .update() must be called manually during each loop
      */
     constructor(screenWidth, screenHeight, worldBoundaries, options)
     {
@@ -27,17 +27,18 @@ module.exports = class Viewport extends PIXI.Container
         {
             this.bounce = this.options.bounce
         }
+        this.options.friction = this.options.friction || 0.95
         this.pointers = []
         this.listeners()
         this.hitArea = worldBoundaries
         this._worldBoundaries = worldBoundaries
         this.resize(screenWidth, screenHeight)
-        if (!this.options.noUpdate)
+        if (!this.options.noTicker)
         {
             PIXI.ticker.shared.add(this.update, this)
         }
         this.counter = new Counter({ side: 'bottomleft' })
-        // this.scroller = new Scroller()
+        this.saved = []
     }
 
     set worldBoundaries(value)
@@ -128,10 +129,8 @@ module.exports = class Viewport extends PIXI.Container
     {
         this.to = null
         this.pointers.push({ id: e.data.pointerId, last: e.data.global })
-        if (this.options.friction)
-        {
-            this.velocity = { time: performance.now() }
-        }
+        this.saved = []
+        this.decelerate = null
     }
 
     resize(screenWidth, screenHeight)
@@ -154,11 +153,11 @@ module.exports = class Viewport extends PIXI.Container
                 this.y += distY
                 if (this.options.friction)
                 {
-                    const now = performance.now()
-                    const time = now - this.velocity.time
-                    const velocity = { x: distX / time, y: distY / time }
-this.counter.log(velocity.x, velocity.y)
-                    this.velocity = { velocity, x: distX, y: distY, save: this.velocity.time, time }
+                    this.saved.push({ x: this.x, y: this.y, time: performance.now() })
+                    if (this.saved.length > 60)
+                    {
+                        this.saved.splice(0, 30)
+                    }
                 }
                 this.pointers[0].last = { x: pos.x, y: pos.y }
                 if (this.options.noOverDrag)
@@ -246,10 +245,11 @@ this.counter.log(velocity.x, velocity.y)
 
     clamp()
     {
-        let point
+        let point, changeX, changeY
         if (this.w / this.scale.x > this._worldBoundaries.width || this.x >= this._worldBoundaries.left)
         {
             this.x = this._worldBoundaries.left
+            changeX = true
         }
         else
         {
@@ -257,11 +257,13 @@ this.counter.log(velocity.x, velocity.y)
             if (point.x > this._worldBoundaries.right)
             {
                 this.x += (point.x - this._worldBoundaries.right)
+                changeX = true
             }
         }
         if (this.h / this.scale.y > this._worldBoundaries.height || this.y >= this._worldBoundaries.top)
         {
             this.y = this._worldBoundaries.top
+            changeY = true
         }
         else
         {
@@ -272,8 +274,10 @@ this.counter.log(velocity.x, velocity.y)
             if (point.y > this._worldBoundaries.bottom)
             {
                 this.y += (point.y - this._worldBoundaries.bottom)
+                changeY = true
             }
         }
+        return { x: changeX, y: changeY }
     }
 
     bounceStart()
@@ -314,51 +318,73 @@ this.counter.log(velocity.x, velocity.y)
             if (!this.bouncing)
             {
                 this.bouncing = true
-                if (!this.options.noUpdate)
-                {
-                    requestAnimationFrame(this.update.bind(this))
-                }
             }
+            return true
         }
     }
 
     update(elapsed)
     {
-        // if (this.to)
-        // {
-        //     const now = performance.now()
-        //     elapsed = now - this.to.last
-        //     this.to.last = now
-        //     this.to.time += elapsed
-        //     this.x = this.bounceEasing(this.to.time, this.to.x, this.to.deltaX, this.options.bounce)
-        //     this.y = this.bounceEasing(this.to.time, this.to.y, this.to.deltaY, this.options.bounce)
-        //     if (this.to.time >= this.options.bounce)
-        //     {
-        //         this.to = null
-        //         this.bouncing = false
-        //     }
-        //     else if (!this.options.noUpdate)
-        //     {
-        //         requestAnimationFrame(this.update.bind(this))
-        //     }
-        // }
-        // if (this.pointers.length)
-        // {
-        //     const time = performance.now() - this.velocity.save
-        //     this.velocity.velocity.x = this.velocity.x / time
-        //     this.velocity.velocity.y = this.velocity.y / time
-        // }
-        // else
-        if (!this.pointers.length && this.velocity && this.velocity.velocity)
+        if (this.to)
         {
-            const deltaX = this.velocity.velocity.x * elapsed
-            const deltaY = this.velocity.velocity.y * elapsed
+            const now = performance.now()
+            elapsed = now - this.to.last
+            this.to.last = now
+            this.to.time += elapsed
+            this.x = this.bounceEasing(this.to.time, this.to.x, this.to.deltaX, this.options.bounce)
+            this.y = this.bounceEasing(this.to.time, this.to.y, this.to.deltaY, this.options.bounce)
+            if (this.to.time >= this.options.bounce)
+            {
+                this.to = null
+                this.bouncing = false
+            }
+        }
+        else if (this.decelerate)
+        {
+            const now = performance.now()
+            elapsed = now - this.decelerate.time
+            this.decelerate.time = now
+            const deltaX = this.decelerate.x * elapsed
+            const deltaY = this.decelerate.y * elapsed
             this.x += deltaX
             this.y += deltaY
-            this.velocity.velocity.x *= (1 - this.options.friction)
-            this.velocity.velocity.y *= (1 - this.options.friction)
-
-            this.counter.log('update', this.x, this.y, this.velocity.velocity.x, this.velocity.velocity.y, this.options.friction)
+            this.decelerate.x = this.options.friction * this.decelerate.x
+            if (Math.abs(this.decelerate.x) <= 0.001)
+            {
+                this.decelerate.x = 0
+            }
+            this.decelerate.y = this.options.friction * this.decelerate.y
+            if (Math.abs(this.decelerate.y) <= 0.001)
+            {
+                this.decelerate.y = 0
+            }
+            if (this.decelerate.x === 0 && this.decelerate.y === 0)
+            {
+                this.decelerate = null
+            }
+            else
+            {
+                this.counter.log(this.decelerate.x, this.decelerate.y)
+            }
+            if (this.options.noOverDrag)
+            {
+                const result = this.clamp()
+                if (result.x)
+                {
+                    this.decelerate.x = 0
+                }
+                if (result.y)
+                {
+                    this.decelerate.y = 0
+                }
+            }
+            else if (this.options.bounce)
+            {
+                if (this.bounceStart())
+                {
+                    this.decelerate = null
+                }
+            }
         }
     }
 
@@ -379,7 +405,22 @@ this.counter.log(velocity.x, velocity.y)
         {
             this.bounceStart()
         }
+        if (!this.to && this.options.decelerate && this.saved.length)
+        {
+            const now = performance.now()
+            for (let save of this.saved)
+            {
+                if (save.time >= now - 100)
+                {
+                    const time = now - save.time
+                    const x = (this.x - save.x) / time
+                    const y = (this.y - save.y) / time
+                    this.decelerate = { x, y, time: now }
+                    return
+                }
+            }
+        }
     }
 }
 
-/* global performance, requestAnimationFrame */
+/* global performance */

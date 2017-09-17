@@ -55,7 +55,7 @@ window.onload = function ()
     _title = document.getElementsByClassName('title')[0]
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
-    _viewport = _app.stage.addChild(new Viewport(_view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { friction: 0.1, pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' }))
+    _viewport = _app.stage.addChild(new Viewport(_view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { decelerate: true, pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' }))
     resize()
     window.addEventListener('resize', resize)
 
@@ -65,9 +65,10 @@ window.onload = function ()
     const panel = new Panel()
     panel.button('', () => { _viewport.pinchToZoom = !_viewport.pinchToZoom; return _viewport.pinchToZoom ? 'pinchToZoom' : '[pinchToZoom]' }, { original: 'pinchToZoom' })
     panel.button('', () => { _viewport.bounce = !_viewport.bounce; return _viewport.bounce ? 'bounce' : '[bounce]' }, { original: 'bounce' })
-    panel.input('friction: ', (value) => { _viewport.friction = value }, { original: 0.1, size: 5 })
+    panel.button('', () => { _viewport.decelerate = !_viewport.decelerate; return _viewport.decelerate ? 'decelerate' : '[decelerate]' }, { original: 'decelerate' })
+    panel.input('friction: ', (value) => { _viewport.friction = value }, { original: _viewport.friction, size: 5 })
     panel.button('', () => { _viewport.dragToMove = !_viewport.dragToMove; return _viewport.dragToMove ? 'dragToMove' : '[dragToMove]' }, { original: '[dragToMove]' })
     panel.button('', () => { _viewport.noOverDrag = !_viewport.noOverDrag; return _viewport.noOverDrag ? 'noOverDrag' : '[noOverDrag]' }, { original: '[noOverDrag]' })
 
-    require('./highlight')()
+    require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
