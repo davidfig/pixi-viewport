@@ -29,14 +29,13 @@
   },
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
   "dependencies": {
-    "console-counter": "^1.1.1",
-    "fork-me-github": "^1.0.2",
-    "penner": "^0.1.3",
-    "pixi.js": "^4.5.5",
-    "settingspanel": "^1.2.1"
+    "pixi-ease": "^0.2.0"
   },
   "devDependencies": {
+    "fork-me-github": "^1.0.2",
     "highlight.js": "^9.12.0",
-    "yy-random": "^1.5.0"
+    "yy-random": "^1.5.0",
+    "settingspanel": "^1.2.1",
+    "pixi.js": "^4.5.5"
   }
 }

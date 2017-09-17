@@ -14,7 +14,7 @@ let _app, _viewport, _view, _title
 
 function line(x, y, width, height)
 {
-    const line = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    const line = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     line.tint = 0xff0000
     line.alpha = 0.25
     line.position.set(x, y)
@@ -34,7 +34,7 @@ function stars()
 {
     for (let i = 0; i < STARS; i++)
     {
-        const star = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+        const star = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
         star.alpha = Random.range(0.25, 1, true)
@@ -55,7 +55,7 @@ window.onload = function ()
     _title = document.getElementsByClassName('title')[0]
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
-    _viewport = _app.stage.addChild(new Viewport(_view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { decelerate: true, pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' }))
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { decelerate: true, pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' })
     resize()
     window.addEventListener('resize', resize)
 
