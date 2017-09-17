@@ -5,8 +5,8 @@ const Panel = require('settingspanel')
 const Viewport = require('..')
 
 const BORDER = 10
-const WIDTH = 10000
-const HEIGHT = 10000
+const WIDTH = 1000
+const HEIGHT = 1000
 const STARS = 10000
 const STAR_SIZE = 30
 
@@ -55,7 +55,7 @@ window.onload = function ()
     _title = document.getElementsByClassName('title')[0]
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { decelerate: true, pinchToZoom: true, bounce: true, bounceEase: 'easeInOutSine' })
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { decelerate: true, pinchToZoom: true, bounce: true })
     resize()
     window.addEventListener('resize', resize)
 
@@ -64,9 +64,25 @@ window.onload = function ()
 
     const panel = new Panel()
     panel.button('', () => { _viewport.pinchToZoom = !_viewport.pinchToZoom; return _viewport.pinchToZoom ? 'pinchToZoom' : '[pinchToZoom]' }, { original: 'pinchToZoom' })
-    panel.button('', () => { _viewport.bounce = !_viewport.bounce; return _viewport.bounce ? 'bounce' : '[bounce]' }, { original: 'bounce' })
-    panel.button('', () => { _viewport.decelerate = !_viewport.decelerate; return _viewport.decelerate ? 'decelerate' : '[decelerate]' }, { original: 'decelerate' })
-    panel.input('friction: ', (value) => { _viewport.friction = value }, { original: _viewport.friction, size: 5 })
+    panel.button('',
+        function ()
+        {
+            _viewport.bounce = !_viewport.bounce
+            bounceFriction.style.display = (!_viewport.decelerate || !_viewport.bounce) ? 'none' : 'block'
+            bounceTime.style.display = !_viewport.bounce ? 'none' : 'block'
+            return _viewport.bounce ? 'bounce' : '[bounce]'
+        }, { original: 'bounce' })
+    const bounceTime = panel.input('bounceTime: ', (value) => { _viewport.bounceTime = value }, { original: _viewport.bounceTime, size: 5 })
+    panel.button('',
+        function()
+        {
+            _viewport.decelerate = !_viewport.decelerate
+            friction.style.display = !_viewport.decelerate ? 'none' : 'block'
+            bounceFriction.style.display = (!_viewport.decelerate || !_viewport.bounce) ? 'none' : 'block'
+            return _viewport.decelerate ? 'decelerate' : '[decelerate]'
+        }, { original: 'decelerate' })
+    const friction = panel.input('friction: ', (value) => { _viewport.friction = value }, { original: _viewport.friction, size: 5 })
+    const bounceFriction = panel.input('bounceFriction: ', (value) => { _viewport.bounceFriction = value }, { original: _viewport.bounceFriction, size: 5 })
     panel.button('', () => { _viewport.dragToMove = !_viewport.dragToMove; return _viewport.dragToMove ? 'dragToMove' : '[dragToMove]' }, { original: '[dragToMove]' })
     panel.button('', () => { _viewport.noOverDrag = !_viewport.noOverDrag; return _viewport.noOverDrag ? 'noOverDrag' : '[noOverDrag]' }, { original: '[noOverDrag]' })
 
