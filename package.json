@@ -7,7 +7,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "budo --dir docs docs/code.js:index.js --live"
+    "test": "budo --dir docs docs/code.js:index.js --live",
+    "build": "browserify docs/code.js -o code/index.js",
+    "docs": "markdown-api README.md index.js",
+    "prepare": "npm run build && npm run docs"
   },
   "repository": {
     "type": "git",
@@ -15,7 +18,7 @@
   },
   "keywords": [
     "PIXI",
-    "PIXI.js",
+    "pixi.js",
     "viewport",
     "zoom",
     "scroll",

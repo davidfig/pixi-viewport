@@ -5,19 +5,19 @@ module.exports = class Viewport
     /**
      * @param {number} screenWidth
      * @param {number} screenHeight
-     * @param {PIXI.Rectangle} worldBoundaries
+     * @param {PIXI.Rectangle} worldBoundaries - only needed for options.noOverDrag or options.bounce
      * @param {object} [options]
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
      * @param {boolean} [options.bounce] bounce back if pulled beyond boundaries
-     * @param {number} [options.bounceTime=150], number is milliseconds to bounce back
-     * @param {string} [options.bounceEase=linear] easing function to use when bouncing (see https://github.com/bcherny/penner)
+     * @param {number} [options.bounceTime=150] number is milliseconds to bounce back
+     * @param {string} [options.bounceEase] easing function to use when bouncing (see https://github.com/bcherny/penner)
      * @param {boolean} [options.decelerate] decelerate after scrolling
      * @param {number} [options.friction=0.95] percent to decelerate after movement
      * @param {number} [options.bounceFriction=0.5] percent to decelerate after movement while inside a bounce
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
-     * @param {boolean} [options.noUpdate] use an external loop intead of internal calls to requestAnimationFrame()
+     * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
      */
     constructor(container, screenWidth, screenHeight, worldBoundaries, options)
     {
