@@ -9,24 +9,31 @@ module.exports = class Viewport
      * @param {object} [options]
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
+     *
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
-     * @param {boolean} [options.bounce] bounce back if pulled beyond boundaries
-     * @param {number} [options.bounceTime=150] number is milliseconds to bounce back
-     * @param {string} [options.bounceEase] easing function to use when bouncing (see https://github.com/bcherny/penner)
+     * @param {boolean} [options.noOverZoom] don't zoom smaller than screen size
+     * @param {object} [options.minZoom] {x, y} don't zoom smaller than world zoom x and/or y
+     * @param {object} [options.maxZoom] {x, y} don't zoom larger than world zoom x and/or y
+     *
+     * @param {boolean||object} [options.bounce] bounce back if pulled beyond boundaries
+     * @param {number} [options.bounce.time=150] number is milliseconds to bounce back
+     * @param {string} [options.bounce.ease=easeInOutSine] easing function to use when bouncing (see https://github.com/bcherny/penner)
+     *
      * @param {boolean} [options.decelerate] decelerate after scrolling
-     * @param {number} [options.friction=0.95] percent to decelerate after movement
-     * @param {number} [options.bounceFriction=0.5] percent to decelerate after movement while inside a bounce
+     * @param {number} [options.decelerate.friction=0.95] percent to decelerate after movement
+     * @param {number} [options.decelerate.frictionBounce=0.5] percent to decelerate after movement while inside a bounce
+     *
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
+     *
      * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
      */
     constructor(container, screenWidth, screenHeight, worldBoundaries, options)
     {
         this.container = container
         this.options = options || {}
-        this.options.bounceTime = this.options.bounceTime || 150
-        this.options.friction = this.options.friction || 0.95
-        this.options.bounceFriction = this.options.bounceFriction || 0.5
         this.options.minVelocity = this.options.minVelocity || 0.01
+        this.bounce = this.options.bounce
+        this.decelerate = this.options.decelerate
         this.pointers = []
         this.listeners()
         this.container.hitArea = worldBoundaries
@@ -46,9 +53,29 @@ module.exports = class Viewport
     {
         this.options.noOverDrag = value
         if (value) this.clamp()
-        this.listeners()
     }
     get noOverDrag() { return this.options.noOverDrag }
+
+    set noOverZoom(value)
+    {
+        this.options.noOverZoom = value
+        if (value) this.clampZoom()
+    }
+    get noOverZoom() { return this.options.noOverZoom }
+
+    set minZoom(value)
+    {
+        this.options.minZoom = value
+        if (value) this.clampZoom()
+    }
+    get minZoom() { return this.options.minZoom }
+
+    set maxZoom(value)
+    {
+        this.options.maxZoom = value
+        if (value) this.clampZoom()
+    }
+    get maxZoom() { return this.options.maxZoom }
 
     set pinchToZoom(value)
     {
@@ -66,31 +93,50 @@ module.exports = class Viewport
 
     set bounce(value)
     {
-        this.options.bounce = value
+        if (value === true)
+        {
+            this.options.bounce = { time: 150, ease: 'easeInOutSine' }
+        }
+        else
+        {
+            this.options.bounce = value
+        }
         if (!value)
         {
             this.toX = this.toY = null
         }
+        else
+        {
+            this.options.bounce.time = this.options.bounce.time || 150
+            this.options.bounce.ease = this.options.bounce.ease || 'easeInOutSine'
+        }
     }
     get bounce() { return this.options.bounce }
-
-    set bounceTime(value) { this.options.bounceTime = value }
-    get bounceTime() { return this.options.bounceTime }
-
-    set bounceEase(value) { this.options.bounceEase = value }
-    get bounceEase() { return this.options.bounceEase }
 
     set noUpdate(value) { this.options.noUpdate = value }
     get noUpdate() { return this.options.noUpdate }
 
-    set decelerate(value) { this.options.decelerate = value }
+    set decelerate(value)
+    {
+        if (value === true)
+        {
+            this.options.decelerate = {}
+        }
+        else
+        {
+            this.options.decelerate = value
+        }
+        if (!value)
+        {
+            this.decelerating = null
+        }
+        else
+        {
+            this.options.decelerate.friction = 0.95
+            this.options.decelerate.frictionBounce = 0.5
+        }
+    }
     get decelerate() { return this.options.decelerate }
-
-    set friction(value) { this.options.friction = value }
-    get friction() { return this.options.friction }
-
-    set bounceFriction(value) { this.options.bounceFriction = value }
-    get bounceFriction() { return this.options.bounceFriction }
 
     listeners()
     {
@@ -138,7 +184,7 @@ module.exports = class Viewport
     {
         if (this.pointers.length)
         {
-            if (this.pointers.length === 1 || !this.pinchToZoom)
+            if (this.pointers.length === 1 || !this.options.pinchToZoom)
             {
                 const last = this.pointers[0].last
                 const pos = e.data.global
@@ -161,7 +207,7 @@ module.exports = class Viewport
                 }
                 this.inMove = true
             }
-            else if (this.pinchToZoom)
+            else if (this.options.pinchToZoom)
             {
                 this.inMove = false
                 const first = this.pointers[0]
@@ -185,6 +231,10 @@ module.exports = class Viewport
                     this.container.scale.x += change
                     this.container.scale.y += change
 
+                    if (this.options.noOverZoom || this.options.minZoom || this.options.maxZoom)
+                    {
+                        this.clampZoom()
+                    }
                     const newPoint = this.container.toGlobal(oldPoint)
 
                     this.container.x += point.x - newPoint.x
@@ -275,6 +325,47 @@ module.exports = class Viewport
         return { x: changeX, y: changeY }
     }
 
+    clampZoom()
+    {
+        let x = this.container.scale.x, y = this.container.scale.y
+        let width = this.container.scale.x * this._worldBoundaries.width
+        let height = this.container.scale.y * this._worldBoundaries.height
+        if (this.minZoom)
+        {
+            if (typeof this.minZoom.x !== 'undefined' && width < this.minZoom.x)
+            {
+                x = this.minZoom.x / this._worldBoundaries.width
+            }
+            if (typeof this.minZoom.y !== 'undefined' && height < this.minZoom.y)
+            {
+                y = this.minZoom.y / this._worldBoundaries.height
+            }
+        }
+        if (this.maxZoom)
+        {
+            if (typeof this.maxZoom.x !== 'undefined' && width > this.maxZoom.x)
+            {
+                x = this.maxZoom.x / this._worldBoundaries.width
+            }
+            if (typeof this.maxZoom.y !== 'undefined' && height > this.maxZoom.y)
+            {
+                y = this.maxZoom.y / this._worldBoundaries.height
+            }
+        }
+        if (this.noOverZoom)
+        {
+            if (width < this.w)
+            {
+                x = this.w / this._worldBoundaries.width
+            }
+            if (height < this.h)
+            {
+                y = this.h / this._worldBoundaries.height
+            }
+        }
+        this.container.scale.set(x, y)
+    }
+
     bounceStart(noStart, xOnly, yOnly)
     {
         let point
@@ -315,12 +406,12 @@ module.exports = class Viewport
         {
             if (!yOnly && x !== this.container.x)
             {
-                this.toX = new Ease.to(this.container, { x }, this.options.bounceTime, { noAdd: true, ease: this.options.bounceEase })
+                this.toX = new Ease.to(this.container, { x }, this.options.bounce.time, { noAdd: true, ease: this.options.bounce.ease })
                 this.toX.lastTime = performance.now()
             }
             if (!xOnly && y !== this.container.y)
             {
-                this.toY = new Ease.to(this.container, { y }, this.options.bounceTime, { noAdd: true, ease: this.options.bounceEase })
+                this.toY = new Ease.to(this.container, { y }, this.options.bounce.time, { noAdd: true, ease: this.options.bounce.ease })
                 this.toY.lastTime = performance.now()
             }
             return true
@@ -366,7 +457,7 @@ module.exports = class Viewport
             {
                 const deltaX = this.decelerating.x * elapsed
                 this.container.x += deltaX
-                this.decelerating.x = (bounce.x ? this.options.bounceFriction : this.options.friction) * this.decelerating.x
+                this.decelerating.x = (bounce.x ? this.options.decelerate.frictionBounce : this.options.decelerate.friction) * this.decelerating.x
                 if (Math.abs(this.decelerating.x) <= this.options.minVelocity)
                 {
                     this.decelerating.x = 0
@@ -383,7 +474,7 @@ module.exports = class Viewport
             {
                 const deltaY = this.decelerating.y * elapsed
                 this.container.y += deltaY
-                this.decelerating.y = (bounce.y ? this.options.bounceFriction : this.options.friction) * this.decelerating.y
+                this.decelerating.y = (bounce.y ? this.options.decelerate.frictionBounce : this.options.decelerate.friction) * this.decelerating.y
                 if (Math.abs(this.decelerating.y) <= this.options.minVelocity)
                 {
                     this.decelerating.y = 0

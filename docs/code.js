@@ -1,13 +1,12 @@
 const PIXI = require('pixi.js')
 const Random = require('yy-random')
-const Panel = require('settingspanel')
 
 const Viewport = require('..')
 
 const BORDER = 10
 const WIDTH = 1000
 const HEIGHT = 1000
-const STARS = 10000
+const STARS = 500
 const STAR_SIZE = 30
 
 let _app, _viewport, _view, _title
@@ -52,39 +51,89 @@ function resize()
 
 window.onload = function ()
 {
-    _title = document.getElementsByClassName('title')[0]
+    _title = document.getElementsByClassName('titleCode')[0]
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { decelerate: true, pinchToZoom: true, bounce: true })
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, pinchToZoom: true, bounce: true })
     resize()
     window.addEventListener('resize', resize)
 
     border()
     stars()
 
-    const panel = new Panel()
-    panel.button('', () => { _viewport.pinchToZoom = !_viewport.pinchToZoom; return _viewport.pinchToZoom ? 'pinchToZoom' : '[pinchToZoom]' }, { original: 'pinchToZoom' })
-    panel.button('',
-        function ()
-        {
-            _viewport.bounce = !_viewport.bounce
-            bounceFriction.style.display = (!_viewport.decelerate || !_viewport.bounce) ? 'none' : 'block'
-            bounceTime.style.display = !_viewport.bounce ? 'none' : 'block'
-            return _viewport.bounce ? 'bounce' : '[bounce]'
-        }, { original: 'bounce' })
-    const bounceTime = panel.input('bounceTime: ', (value) => { _viewport.bounceTime = value }, { original: _viewport.bounceTime, size: 5 })
-    panel.button('',
-        function()
-        {
-            _viewport.decelerate = !_viewport.decelerate
-            friction.style.display = !_viewport.decelerate ? 'none' : 'block'
-            bounceFriction.style.display = (!_viewport.decelerate || !_viewport.bounce) ? 'none' : 'block'
-            return _viewport.decelerate ? 'decelerate' : '[decelerate]'
-        }, { original: 'decelerate' })
-    const friction = panel.input('friction: ', (value) => { _viewport.friction = value }, { original: _viewport.friction, size: 5 })
-    const bounceFriction = panel.input('bounceFriction: ', (value) => { _viewport.bounceFriction = value }, { original: _viewport.bounceFriction, size: 5 })
-    panel.button('', () => { _viewport.dragToMove = !_viewport.dragToMove; return _viewport.dragToMove ? 'dragToMove' : '[dragToMove]' }, { original: '[dragToMove]' })
-    panel.button('', () => { _viewport.noOverDrag = !_viewport.noOverDrag; return _viewport.noOverDrag ? 'noOverDrag' : '[noOverDrag]' }, { original: '[noOverDrag]' })
+    gui()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
+}
+
+function gui()
+{
+    const gui = new dat.GUI({ autoPlace: false })
+    document.body.appendChild(gui.domElement)
+    gui.domElement.style.top = ''
+    gui.domElement.style.bottom = 0
+    gui.domElement.style.position = 'fixed'
+    gui.domElement.style.opacity = 0.75
+    gui.add(_viewport, 'pinchToZoom')
+    gui.add(_viewport, 'dragToMove')
+    gui.add(_viewport, 'noOverDrag')
+    gui.add(_viewport, 'noOverZoom')
+    const fake = {
+        bounce: _viewport.bounce ? true : false,
+        decelerate: _viewport.decelerate ? true : false
+    }
+    const bounce = gui.addFolder('bounce')
+    bounce.add(fake, 'bounce').onChange(
+        function (value)
+        {
+            _viewport.bounce = value
+            if (value)
+            {
+                if (!bounceTime)
+                {
+                    bounceTime = bounce.add(_viewport.bounce, 'time', 0, 2000).step(50)
+                    bounceEase = bounce.add(_viewport.bounce, 'ease')
+                }
+            }
+            else
+            {
+                if (bounceTime)
+                {
+                    bounce.remove(bounceTime)
+                    bounceTime = null
+                    bounce.remove(bounceEase)
+                }
+            }
+        }
+    )
+    let bounceTime = bounce.add(_viewport.bounce, 'time', 0, 2000).step(50)
+    let bounceEase = bounce.add(_viewport.bounce, 'ease')
+    bounce.open()
+    const decelerate = gui.addFolder('decelerate')
+    decelerate.add(fake, 'decelerate').onChange(
+        function (value)
+        {
+            _viewport.decelerate = value
+            if (value)
+            {
+                if (!decelerateFriction)
+                {
+                    decelerateFriction = decelerate.add(_viewport.decelerate, 'friction', 0, 1)
+                    decelerateBounce = decelerate.add(_viewport.decelerate, 'frictionBounce', 0, 1)
+                }
+            }
+            else
+            {
+                if (decelerateFriction)
+                {
+                    decelerate.remove(decelerateFriction)
+                    decelerate.remove(decelerateBounce)
+                    decelerateFriction = null
+                }
+            }
+        }
+    )
+    let decelerateFriction = decelerate.add(_viewport.decelerate, 'friction', 0, 1)
+    let decelerateBounce = decelerate.add(_viewport.decelerate, 'frictionBounce', 0, 1)
+    decelerate.open()
 }
