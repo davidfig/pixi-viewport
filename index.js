@@ -19,11 +19,15 @@ module.exports = class Viewport
      * @param {number} [options.bounce.time=150] number is milliseconds to bounce back
      * @param {string} [options.bounce.ease=easeInOutSine] easing function to use when bouncing (see https://github.com/bcherny/penner)
      *
-     * @param {boolean} [options.decelerate] decelerate after scrolling
+     * @param {boolean|object} [options.decelerate] decelerate after scrolling
      * @param {number} [options.decelerate.friction=0.95] percent to decelerate after movement
      * @param {number} [options.decelerate.frictionBounce=0.5] percent to decelerate after movement while inside a bounce
      *
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
+     *
+     * @param {boolean|object} [options.lockOn] keep camera centered on an object
+     * @param {PIXI.DisplayObject|PIXI.Point} [options.lockOn.object] lock onto this object
+     * @param {PIXI.Rectangle} [options.lockOn.frame] stay within this frame (in screen coordinates)
      *
      * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
      */

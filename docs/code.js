@@ -1,21 +1,24 @@
 const PIXI = require('pixi.js')
+const Ease = require('pixi-ease')
 const Random = require('yy-random')
 
 const Viewport = require('..')
 
 const BORDER = 10
-const WIDTH = 1000
-const HEIGHT = 1000
-const STARS = 500
+const WIDTH = 10000
+const HEIGHT = 10000
+const STARS = 5000
 const STAR_SIZE = 30
+const OBJECT_SIZE = 50
+const OBJECT_ROTATION_TIME = 1000
+const OBJECT_SPEED = 0.25
 
-let _app, _viewport, _view, _title
+let _app, _viewport, _view, _title, _object
 
 function line(x, y, width, height)
 {
     const line = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     line.tint = 0xff0000
-    line.alpha = 0.25
     line.position.set(x, y)
     line.width = width
     line.height = height
@@ -37,8 +40,30 @@ function stars()
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
         star.alpha = Random.range(0.25, 1, true)
-        star.position.set(Random.get(WIDTH), Random.get(HEIGHT))
+        star.position.set(Random.range(STAR_SIZE / 2 + BORDER, WIDTH - STAR_SIZE - BORDER), Random.range(BORDER, HEIGHT - BORDER - STAR_SIZE))
     }
+}
+
+function createTarget()
+{
+    const target = new Ease.target(_object,
+        {
+            x: Random.range(OBJECT_SIZE / 2 + BORDER, WIDTH - OBJECT_SIZE / 2 - BORDER),
+            y: Random.range(OBJECT_SIZE / 2 + BORDER, HEIGHT - OBJECT_SIZE / 2 - BORDER)
+        }, OBJECT_SPEED
+    )
+    target.on('done', () => createTarget())
+}
+
+function object()
+{
+    _object = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    _object.anchor.set(0.5)
+    _object.tint = 0
+    _object.width = _object.height = OBJECT_SIZE
+    _object.position.set(100, 100)
+    new Ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
+    createTarget()
 }
 
 function resize()
@@ -54,12 +79,14 @@ window.onload = function ()
     _title = document.getElementsByClassName('titleCode')[0]
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, pinchToZoom: true, bounce: true })
+    Ease.init({ ticker: PIXI.ticker.shared })
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, pinchToZoom: true, bounce: true, lockOn: true })
     resize()
     window.addEventListener('resize', resize)
 
-    border()
     stars()
+    object()
+    border()
 
     gui()
 
@@ -70,10 +97,10 @@ function gui()
 {
     const gui = new dat.GUI({ autoPlace: false })
     document.body.appendChild(gui.domElement)
-    gui.domElement.style.top = ''
-    gui.domElement.style.bottom = 0
+    gui.domElement.style.bottom = '2em'
+    gui.domElement.style.right = 0
     gui.domElement.style.position = 'fixed'
-    gui.domElement.style.opacity = 0.75
+    gui.domElement.style.opacity = 0.95
     gui.add(_viewport, 'pinchToZoom')
     gui.add(_viewport, 'dragToMove')
     gui.add(_viewport, 'noOverDrag')
