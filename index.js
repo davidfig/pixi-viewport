@@ -3,9 +3,11 @@ const Ease = require('pixi-ease')
 module.exports = class Viewport
 {
     /**
+     * @param {PIXI.Container} container
      * @param {number} screenWidth
      * @param {number} screenHeight
-     * @param {PIXI.Rectangle} worldBoundaries - only needed for options.noOverDrag or options.bounce
+     * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
+     *
      * @param {object} [options]
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
@@ -178,6 +180,10 @@ module.exports = class Viewport
         this.decelerating = null
     }
 
+    /**
+     * @param {number} screenWidth
+     * @param {number} screenHeight
+     */
     resize(screenWidth, screenHeight)
     {
         this.w = screenWidth
@@ -263,6 +269,12 @@ module.exports = class Viewport
         }
     }
 
+    /**
+     * change coordinates from screen to world
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @returns {PIXI.Point}
+     */
     toWorld()
     {
         if (arguments.length === 2)
@@ -277,6 +289,12 @@ module.exports = class Viewport
         }
     }
 
+    /**
+     * change coordinates from world to screen
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @returns {PIXI.Point}
+     */
     toScreen()
     {
         if (arguments.length === 2)
@@ -422,6 +440,9 @@ module.exports = class Viewport
         }
     }
 
+    /**
+     * call this manually if setting options.noUpdate = true
+     */
     update()
     {
         const now = performance.now()

@@ -1,14 +1,14 @@
 {
   "name": "pixi-viewport",
-  "version": "0.1.0",
-  "description": "A scrollable, zoomable stage for PIXI.js",
+  "version": "0.1.1",
+  "description": "A scrollable, zoomable stage for PIXI.js with pinch-to-zoom and accelerated swiping",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
     "test": "budo --dir docs docs/code.js:index.js --live",
-    "build": "browserify docs/code.js -o code/index.js",
+    "build": "browserify docs/code.js -o docs/index.js",
     "docs": "markdown-api README.md index.js",
     "prepare": "npm run build && npm run docs"
   },
