@@ -21,9 +21,11 @@ https://davidfig.github.io/pixi-viewport/
 ## API Reference
 ```
     /**
+     * @param {PIXI.Container} container
      * @param {number} screenWidth
      * @param {number} screenHeight
-     * @param {PIXI.Rectangle} worldBoundaries - only needed for options.noOverDrag or options.bounce
+     * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
+     *
      * @param {object} [options]
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove

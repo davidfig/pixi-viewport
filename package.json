@@ -35,9 +35,9 @@
     "pixi-ease": "^0.2.1"
   },
   "devDependencies": {
-    "fork-me-github": "^1.0.2",
+    "fork-me-github": "^1.0.3",
     "highlight.js": "^9.12.0",
-    "pixi.js": "^4.5.5",
+    "pixi.js": "^4.5.6",
     "yy-random": "^1.5.0"
   }
 }

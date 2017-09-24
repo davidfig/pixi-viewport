@@ -202,7 +202,7 @@ module.exports = class Viewport
                 const distY = pos.y - last.y
                 this.container.x += distX
                 this.container.y += distY
-                if (this.options.friction)
+                if (this.options.decelerate)
                 {
                     this.saved.push({ x: this.container.x, y: this.container.y, time: performance.now() })
                     if (this.saved.length > 60)
