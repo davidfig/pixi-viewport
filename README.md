@@ -25,12 +25,14 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} screenWidth
      * @param {number} screenHeight
      * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
-     *
      * @param {object} [options]
+     *
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
      *
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
+     * @param {boolean} [options.noOverDragX] stops scroll beyond X boundaries
+     * @param {boolean} [options.noOverDragY] stops scroll beyond Y boundaries
      * @param {boolean} [options.noOverZoom] don't zoom smaller than screen size
      * @param {object} [options.minZoom] {x, y} don't zoom smaller than world zoom x and/or y
      * @param {object} [options.maxZoom] {x, y} don't zoom larger than world zoom x and/or y
@@ -50,6 +52,8 @@ https://davidfig.github.io/pixi-viewport/
      * @param {PIXI.Rectangle} [options.lockOn.frame] stay within this frame (in screen coordinates)
      *
      * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
+     *
+     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the minimum thresshold
      */
     constructor(container, screenWidth, screenHeight, worldBoundaries, options)
 

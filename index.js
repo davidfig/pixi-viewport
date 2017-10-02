@@ -11,6 +11,7 @@ module.exports = class Viewport extends Events
      * @param {object} [options]
      *
      * @param {boolean} [options.dragToMove]
+     *
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
      *
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
@@ -29,6 +30,12 @@ module.exports = class Viewport extends Events
      * @param {number} [options.decelerate.frictionBounce=0.5] percent to decelerate after movement while inside a bounce
      *
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
+     * @param {number} [options.threshold=10] minimum number of pixels to register a move
+     *
+     * @param {object} [options.snap] snap to location when not touched and not accelerating
+     * @param {PIXI.Point} [options.snap.point] point to snap to
+     * @param {number} [options.snap.velocity=0.25] velocity to snap to location
+     * @param {number} [options.snap.accelerate=0.2] acceleration percent up to velocity
      *
      * @param {boolean|object} [options.lockOn] keep camera centered on an object
      * @param {PIXI.DisplayObject|PIXI.Point} [options.lockOn.object] lock onto this object
@@ -36,7 +43,7 @@ module.exports = class Viewport extends Events
      *
      * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
      *
-     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the minimum thresshold
+     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the threshold pixels
      */
     constructor(container, screenWidth, screenHeight, worldBoundaries, options)
     {
@@ -44,6 +51,7 @@ module.exports = class Viewport extends Events
         this.container = container
         this.options = options || {}
         this.options.minVelocity = this.options.minVelocity || 0.01
+        this.options.threshold = typeof this.options.threshold === 'undefined' ? 10 : this.options.threshold
         this.bounce = this.options.bounce
         this.decelerate = this.options.decelerate
         this.pointers = []
@@ -142,6 +150,9 @@ module.exports = class Viewport extends Events
     set noUpdate(value) { this.options.noUpdate = value }
     get noUpdate() { return this.options.noUpdate }
 
+    set threshold(value) { this.options.threshold = value }
+    get threshold() { return this.options.threshold }
+
     set decelerate(value)
     {
         if (value === true)
@@ -163,6 +174,21 @@ module.exports = class Viewport extends Events
         }
     }
     get decelerate() { return this.options.decelerate }
+
+    set snap(value)
+    {
+        this.options.snap = value
+        if (value)
+        {
+            this.options.snap.velocity = this.options.snap.velocity || 0.25
+            this.options.snap.accelerate = this.options.snap.accelerate || 0.2
+            this.snapStart()
+        }
+    }
+    get snap()
+    {
+        return this.options.snap
+    }
 
     listeners()
     {
@@ -195,7 +221,11 @@ module.exports = class Viewport extends Events
     down(e)
     {
         this.toX = this.toY = null
-        this.pointers.push({ id: e.data.pointerId, last: e.data.global })
+        this.pointers.push({ id: e.data.pointerId, last: { x: e.data.global.x, y: e.data.global.y } })
+        if (this.pointers.length === 1)
+        {
+            this.moved = false
+        }
         this.saved = []
         this.decelerating = null
     }
@@ -210,6 +240,16 @@ module.exports = class Viewport extends Events
         this.h = screenHeight
     }
 
+    checkThreshold(change)
+    {
+        if (Math.abs(change) >= this.options.threshold)
+        {
+            this.moved = true
+            return true
+        }
+        return false
+    }
+
     move(e)
     {
         if (this.pointers.length)
@@ -220,22 +260,26 @@ module.exports = class Viewport extends Events
                 const pos = e.data.global
                 const distX = pos.x - last.x
                 const distY = pos.y - last.y
-                this.container.x += distX
-                this.container.y += distY
-                if (this.options.decelerate)
+                if (this.checkThreshold(distX) || this.checkThreshold(distY))
                 {
-                    this.saved.push({ x: this.container.x, y: this.container.y, time: performance.now() })
-                    if (this.saved.length > 60)
+                    this.container.x += distX
+                    this.container.y += distY
+                    if (this.options.decelerate)
                     {
-                        this.saved.splice(0, 30)
+                        this.saved.push({ x: this.container.x, y: this.container.y, time: performance.now() })
+                        if (this.saved.length > 60)
+                        {
+                            this.saved.splice(0, 30)
+                        }
                     }
+                    this.pointers[0].last = { x: pos.x, y: pos.y }
+                    this.clamp()
+                    this.inMove = true
                 }
-                this.pointers[0].last = { x: pos.x, y: pos.y }
-                this.clamp()
-                this.inMove = true
             }
             else if (this.options.pinchToZoom)
             {
+                this.moved = true
                 this.inMove = false
                 const first = this.pointers[0]
                 const second = this.pointers[1]
@@ -460,6 +504,52 @@ module.exports = class Viewport extends Events
         }
     }
 
+    snapStart()
+    {
+        const now = performance.now()
+        this.snapping = { time: now }
+        if (this.container.x !== this.options.snap.point.x)
+        {
+            this.snapping.x = this.options.snap.point.x
+        }
+        if (this.container.y !== this.options.snap.point.y)
+        {
+            this.snapping.y = this.options.snap.point.y
+        }
+        if (this.saved.length)
+        {
+            for (let save of this.saved)
+            {
+                if (save.time >= now - 100)
+                {
+                    const time = now - save.time
+                    const x = (this.container.x - save.x) / time
+                    const y = (this.container.y - save.y) / time
+                    if (this.snapping.x)
+                    {
+                        this.snapping.velocity.x = x
+                    }
+                    if (!this.snapping.y)
+                    {
+                        this.snapping.velocity.y = y
+                    }
+                    return
+                }
+            }
+        }
+        else
+        {
+            if (this.snapping.x)
+            {
+                this.snapping.velocity.x = this.options.snap.velocity * (this.options.snap.point.x > this.container.x) ? -1 : 1
+            }
+            if (this.snapping.y)
+            {
+                this.snapping.velocity.y = this.options.snap.velocity * (this.options.snap.point.y > this.container.y) ? -1 : 1
+            }
+        }
+    }
+
     /**
      * call this manually if setting options.noUpdate = true
      */
@@ -492,6 +582,21 @@ module.exports = class Viewport extends Events
             {
                 continueUpdating = true
             }
+        }
+        if (this.snapping)
+        {
+            const elapsed = now - this.snapping.time
+            if (this.snapping.x)
+            {
+                if (Math.abs(this.snapping.velocity.x) !== this.snap.x)
+                {
+                    this.snapping.velocity.x
+                }
+                const deltaX = this.snapping.velocity.x * elapsed
+                this.container.x += deltaX
+            }
+
+            this.snapping.time = now
         }
         if (this.decelerating)
         {
@@ -563,6 +668,10 @@ module.exports = class Viewport extends Events
         {
             if (this.pointers[i].id === e.data.pointerId)
             {
+                if (this.pointers.length === 1 && !this.moved)
+                {
+                    this.emit('click', { screen: e.data.global, world: this.toWorld(e.data.global)})
+                }
                 this.pointers.splice(i, 1)
             }
         }
@@ -571,9 +680,16 @@ module.exports = class Viewport extends Events
             this.lastCenter = null
         }
         let update
-        if (this.options.bounce && this.pointers.length === 0)
+        if (this.pointers.length === 0)
         {
-            update = this.bounceStart()
+            if (this.options.bounce)
+            {
+                if (this.bounceStart()) update = true
+            }
+            if (this.options.snap)
+            {
+                if (this.snapStart()) update = true
+            }
         }
         if (this.options.decelerate && this.saved.length)
         {

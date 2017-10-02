@@ -81,7 +81,7 @@ window.onload = function ()
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
     Ease.init({ ticker: PIXI.ticker.shared })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, pinchToZoom: true, bounce: true, lockOn: true })
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, noOverDragX: false, noOverDragY: false, pinchToZoom: true, bounce: true, lockOn: true })
     resize()
     window.addEventListener('resize', resize)
 
@@ -105,6 +105,8 @@ function gui()
     gui.add(_viewport, 'pinchToZoom')
     gui.add(_viewport, 'dragToMove')
     gui.add(_viewport, 'noOverDrag')
+    gui.add(_viewport, 'noOverDragX')
+    gui.add(_viewport, 'noOverDragY')
     gui.add(_viewport, 'noOverZoom')
     const fake = {
         bounce: _viewport.bounce ? true : false,
@@ -187,20 +189,23 @@ module.exports = function highlight(url)
 /* globals window, XMLHttpRequest, document */
 },{"fork-me-github":7,"highlight.js":9}],3:[function(require,module,exports){
 const Ease = require('pixi-ease')
+const Events = require('eventemitter3')
 
-module.exports = class Viewport
+module.exports = class Viewport extends Events
 {
     /**
      * @param {PIXI.Container} container
      * @param {number} screenWidth
      * @param {number} screenHeight
      * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
-     *
      * @param {object} [options]
+     *
      * @param {boolean} [options.dragToMove]
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
      *
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
+     * @param {boolean} [options.noOverDragX] stops scroll beyond X boundaries
+     * @param {boolean} [options.noOverDragY] stops scroll beyond Y boundaries
      * @param {boolean} [options.noOverZoom] don't zoom smaller than screen size
      * @param {object} [options.minZoom] {x, y} don't zoom smaller than world zoom x and/or y
      * @param {object} [options.maxZoom] {x, y} don't zoom larger than world zoom x and/or y
@@ -220,9 +225,12 @@ module.exports = class Viewport
      * @param {PIXI.Rectangle} [options.lockOn.frame] stay within this frame (in screen coordinates)
      *
      * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
+     *
+     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the minimum thresshold
      */
     constructor(container, screenWidth, screenHeight, worldBoundaries, options)
     {
+        super()
         this.container = container
         this.options = options || {}
         this.options.minVelocity = this.options.minVelocity || 0.01
@@ -249,6 +257,20 @@ module.exports = class Viewport
         if (value) this.clamp()
     }
     get noOverDrag() { return this.options.noOverDrag }
+
+    set noOverDragX(value)
+    {
+        this.options.noOverDragX = value
+        if (value) this.clamp()
+    }
+    get noOverDragX() { return this.options.noOverDragX }
+
+    set noOverDragY(value)
+    {
+        this.options.noOverDragY = value
+        if (value) this.clamp()
+    }
+    get noOverDragY() { return this.options.noOverDragY }
 
     set noOverZoom(value)
     {
@@ -336,7 +358,7 @@ module.exports = class Viewport
     {
         if (this.options.dragToMove || this.options.pinchToZoom)
         {
-            if (!this.interactive)
+            if (!this.container.interactive)
             {
                 this.container.interactive = true
                 this.container.on('pointerdown', this.down.bind(this))
@@ -348,7 +370,7 @@ module.exports = class Viewport
         }
         else
         {
-            if (this.interactive)
+            if (this.container.interactive)
             {
                 this.container.interactive = false
                 this.container.removeListener('pointerdown', this.down.bind(this))
@@ -399,10 +421,7 @@ module.exports = class Viewport
                     }
                 }
                 this.pointers[0].last = { x: pos.x, y: pos.y }
-                if (this.options.noOverDrag)
-                {
-                    this.clamp()
-                }
+                this.clamp()
                 this.inMove = true
             }
             else if (this.options.pinchToZoom)
@@ -445,10 +464,7 @@ module.exports = class Viewport
                     }
                     this.lastCenter = point
                 }
-                if (this.options.noOverDrag)
-                {
-                    this.clamp()
-                }
+                this.clamp()
             }
         }
         else
@@ -501,35 +517,41 @@ module.exports = class Viewport
     clamp()
     {
         let point, changeX, changeY
-        if (this.w / this.container.scale.x > this._worldBoundaries.width || this.container.x >= this._worldBoundaries.left)
+        if (this.options.noOverDrag || this.options.noOverDragX)
         {
-            this.container.x = this._worldBoundaries.left
-            changeX = true
-        }
-        else
-        {
-            point = this.container.toLocal({ x: this.w, y: this.h })
-            if (point.x > this._worldBoundaries.right)
+            if (this.w / this.container.scale.x > this._worldBoundaries.width || this.container.x >= this._worldBoundaries.left)
             {
-                this.container.x += (point.x - this._worldBoundaries.right)
+                this.container.x = this._worldBoundaries.left
                 changeX = true
             }
-        }
-        if (this.h / this.container.scale.y > this._worldBoundaries.height || this.container.y >= this._worldBoundaries.top)
-        {
-            this.container.y = this._worldBoundaries.top
-            changeY = true
-        }
-        else
-        {
-            if (!point)
+            else
             {
                 point = this.container.toLocal({ x: this.w, y: this.h })
+                if (point.x > this._worldBoundaries.right)
+                {
+                    this.container.x += (point.x - this._worldBoundaries.right)
+                    changeX = true
+                }
             }
-            if (point.y > this._worldBoundaries.bottom)
+        }
+        if (this.options.noOverDrag || this.options.noOverDragY)
+        {
+            if (this.h / this.container.scale.y > this._worldBoundaries.height || this.container.y >= this._worldBoundaries.top)
             {
-                this.container.y += (point.y - this._worldBoundaries.bottom)
+                this.container.y = this._worldBoundaries.top
                 changeY = true
+            }
+            else
+            {
+                if (!point)
+                {
+                    point = this.container.toLocal({ x: this.w, y: this.h })
+                }
+                if (point.y > this._worldBoundaries.bottom)
+                {
+                    this.container.y += (point.y - this._worldBoundaries.bottom)
+                    changeY = true
+                }
             }
         }
         return { x: changeX, y: changeY }
@@ -700,17 +722,14 @@ module.exports = class Viewport
                     }
                 }
             }
-            if (this.options.noOverDrag)
+            const result = this.clamp()
+            if (typeof result.x !== 'undefined')
             {
-                const result = this.clamp()
-                if (result.x)
-                {
-                    this.decelerating.x = 0
-                }
-                if (result.y)
-                {
-                    this.decelerating.y = 0
-                }
+                this.decelerating.x = 0
+            }
+            if (typeof result.y !== 'undefined')
+            {
+                this.decelerating.y = 0
             }
             if (this.decelerating.x === 0 && this.decelerating.y === 0)
             {
@@ -781,7 +800,7 @@ module.exports = class Viewport
 }
 
 /* global performance, requestAnimationFrame */
-},{"pixi-ease":192}],4:[function(require,module,exports){
+},{"eventemitter3":6,"pixi-ease":192}],4:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
