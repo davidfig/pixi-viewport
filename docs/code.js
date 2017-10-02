@@ -80,7 +80,7 @@ window.onload = function ()
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
     Ease.init({ ticker: PIXI.ticker.shared })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, pinchToZoom: true, bounce: true, lockOn: true })
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, noOverDragX: false, noOverDragY: false, pinchToZoom: true, bounce: true, lockOn: true })
     resize()
     window.addEventListener('resize', resize)
 
@@ -104,6 +104,8 @@ function gui()
     gui.add(_viewport, 'pinchToZoom')
     gui.add(_viewport, 'dragToMove')
     gui.add(_viewport, 'noOverDrag')
+    gui.add(_viewport, 'noOverDragX')
+    gui.add(_viewport, 'noOverDragY')
     gui.add(_viewport, 'noOverZoom')
     const fake = {
         bounce: _viewport.bounce ? true : false,
