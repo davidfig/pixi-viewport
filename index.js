@@ -4,6 +4,7 @@ module.exports = class Viewport
 {
     /**
      * @param {PIXI.Container} container
+     *
      * @param {number} screenWidth
      * @param {number} screenHeight
      * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
@@ -148,7 +149,7 @@ module.exports = class Viewport
     {
         if (this.options.dragToMove || this.options.pinchToZoom)
         {
-            if (!this.interactive)
+            if (!this.container.interactive)
             {
                 this.container.interactive = true
                 this.container.on('pointerdown', this.down.bind(this))
@@ -160,7 +161,7 @@ module.exports = class Viewport
         }
         else
         {
-            if (this.interactive)
+            if (this.container.interactive)
             {
                 this.container.interactive = false
                 this.container.removeListener('pointerdown', this.down.bind(this))
