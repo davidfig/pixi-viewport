@@ -101,7 +101,20 @@ window.onload = function ()
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
     Ease.init({ ticker: PIXI.ticker.shared })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, noOverDragX: false, noOverDragY: false, pinchToZoom: true, bounce: true, lockOn: true, threshold: 10 })
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT),
+        {
+            noOverZoom: false,
+            decelerate: false,
+            dragToMove: false,
+            noOverDrag: false,
+            noOverDragX: false,
+            noOverDragY: false,
+            pinchToZoom: true,
+            bounce: true,
+            lockOn: true,
+            threshold: 10,
+            snap: { point: { x: 0, y: 0 } }
+        })
     _viewport.on('click', click)
     resize()
     window.addEventListener('resize', resize)
@@ -132,7 +145,8 @@ function gui()
     gui.add(_viewport, 'threshold')
     const fake = {
         bounce: _viewport.bounce ? true : false,
-        decelerate: _viewport.decelerate ? true : false
+        decelerate: _viewport.decelerate ? true : false,
+        snap: _viewport.snap ? true : false
     }
     const bounce = gui.addFolder('bounce')
     bounce.add(fake, 'bounce').onChange(
@@ -185,9 +199,46 @@ function gui()
             }
         }
     )
-    let decelerateFriction = decelerate.add(_viewport.decelerate, 'friction', 0, 1)
-    let decelerateBounce = decelerate.add(_viewport.decelerate, 'frictionBounce', 0, 1)
+    let decelerateFriction, decelerateBounce
+    if (fake.decelerate)
+    {
+        decelerateFriction = decelerate.add(_viewport.decelerate, 'friction', 0, 1)
+        decelerateBounce = decelerate.add(_viewport.decelerate, 'frictionBounce', 0, 1)
+    }
     decelerate.open()
+    const snap = gui.addFolder('snap')
+    snap.add(fake, 'snap').onChange(
+        function (value)
+        {
+            _viewport.snap = value
+            if (value)
+            {
+                if (!snapSpeed)
+                {
+                    snapSpeed = snap.add(_viewport.snap, 'speed')
+                    snapX = snap.add(_viewport.snap.point, 'x')
+                    snapY = snap.add(_viewport.snap.point, 'y')
+                }
+            }
+            else
+            {
+                if (snapSpeed)
+                {
+                    snap.remove(snapSpeed)
+                    snap.remove(snapX)
+                    snap.remove(snapY)
+                }
+            }
+        }
+    )
+    let snapSpeed, snapX, snapY
+    if (fake.snap)
+    {
+        snapSpeed = snap.add(_viewport.snap, 'speed')
+        snapX = snap.add(_viewport.snap.point, 'x')
+        snapY = snap.add(_viewport.snap.point, 'y')
+    }
+    snap.open()
 }
 
 /* global dat */

@@ -34,8 +34,7 @@ module.exports = class Viewport extends Events
      *
      * @param {object} [options.snap] snap to location when not touched and not accelerating
      * @param {PIXI.Point} [options.snap.point] point to snap to
-     * @param {number} [options.snap.velocity=0.25] velocity to snap to location
-     * @param {number} [options.snap.accelerate=0.2] acceleration percent up to velocity
+     * @param {number} [options.snap.speed=1] speed (in world pixels/ms) to snap to location
      *
      * @param {boolean|object} [options.lockOn] keep camera centered on an object
      * @param {PIXI.DisplayObject|PIXI.Point} [options.lockOn.object] lock onto this object
@@ -53,6 +52,7 @@ module.exports = class Viewport extends Events
         this.options.minVelocity = this.options.minVelocity || 0.01
         this.options.threshold = typeof this.options.threshold === 'undefined' ? 10 : this.options.threshold
         this.bounce = this.options.bounce
+        this.snap = this.options.snap
         this.decelerate = this.options.decelerate
         this.pointers = []
         this.listeners()
@@ -177,11 +177,22 @@ module.exports = class Viewport extends Events
 
     set snap(value)
     {
-        this.options.snap = value
-        if (value)
+        if (value === true)
         {
-            this.options.snap.velocity = this.options.snap.velocity || 0.25
-            this.options.snap.accelerate = this.options.snap.accelerate || 0.2
+            this.options.snap = {}
+        }
+        else
+        {
+            this.options.snap = value
+        }
+        if (!value)
+        {
+            this.snapping = null
+        }
+        else
+        {
+            this.options.snap.speed = this.options.snap.speed || 1
+            this.options.snap.point = this.options.snap.point || {x: 0, y: 0}
             this.snapStart()
         }
     }
@@ -228,6 +239,7 @@ module.exports = class Viewport extends Events
         }
         this.saved = []
         this.decelerating = null
+        this.snapping = null
     }
 
     /**
@@ -506,16 +518,27 @@ module.exports = class Viewport extends Events
 
     snapStart()
     {
-        const now = performance.now()
-        this.snapping = { time: now }
-        if (this.container.x !== this.options.snap.point.x)
+        if (this.container.x !== this.options.snap.point.x || this.container.y !== this.options.snap.point.y)
         {
-            this.snapping.x = this.options.snap.point.x
+            const now = performance.now()
+            this.snapping = { time: now }
+            if (this.container.x !== this.options.snap.point.x)
+            {
+                this.snapping.x = true
+                this.snapping.signX = this.container.x > this.options.snap.x ? -1 : 1
+            }
+            if (this.container.y !== this.options.snap.point.y)
+            {
+                this.snapping.y = true
+                this.snapping.signY = this.container.y > this.options.snap.y ? -1 : 1
+            }
+            return true
         }
-        if (this.container.y !== this.options.snap.point.y)
+        else
         {
-            this.snapping.y = this.options.snap.point.y
+            this.snapping = null
         }
+return
         if (this.saved.length)
         {
             for (let save of this.saved)
@@ -525,11 +548,11 @@ module.exports = class Viewport extends Events
                     const time = now - save.time
                     const x = (this.container.x - save.x) / time
                     const y = (this.container.y - save.y) / time
-                    if (this.snapping.x)
+                    if (typeof this.snapping.x !== 'undefined')
                     {
                         this.snapping.velocity.x = x
                     }
-                    if (!this.snapping.y)
+                    if (typeof this.snapping.y !== 'undefined')
                     {
                         this.snapping.velocity.y = y
                     }
@@ -541,11 +564,11 @@ module.exports = class Viewport extends Events
         {
             if (this.snapping.x)
             {
-                this.snapping.velocity.x = this.options.snap.velocity * (this.options.snap.point.x > this.container.x) ? -1 : 1
+                this.snapping.velocity.x = this.options.snap.speed * (this.options.snap.point.x > this.container.x) ? -1 : 1
             }
             if (this.snapping.y)
             {
-                this.snapping.velocity.y = this.options.snap.velocity * (this.options.snap.point.y > this.container.y) ? -1 : 1
+                this.snapping.velocity.y = this.options.snap.speed * (this.options.snap.point.y > this.container.y) ? -1 : 1
             }
         }
     }
@@ -588,14 +611,66 @@ module.exports = class Viewport extends Events
             const elapsed = now - this.snapping.time
             if (this.snapping.x)
             {
-                if (Math.abs(this.snapping.velocity.x) !== this.snap.x)
-                {
-                    this.snapping.velocity.x
-                }
-                const deltaX = this.snapping.velocity.x * elapsed
+                const deltaX = this.snap.speed * elapsed * this.snapping.signX
                 this.container.x += deltaX
-            }
+                if (this.snapping.signX && this.container.x > this.snap.point.x)
+                {
+                    if (this.snap.bounce)
+                    {
 
+                    }
+                    else
+                    {
+                        this.container.x = this.snap.point.x
+                    }
+                }
+                else if (!this.snapping.signX < 0 && this.container.x < this.snap.point.x)
+                {
+                    if (this.snap.bounce)
+                    {
+
+                    }
+                    else
+                    {
+                        this.container.x = this.snap.point.x
+                    }
+                }
+                else
+                {
+                    continueUpdating = true
+                }
+            }
+            if (this.snapping.y)
+            {
+                const deltaY = this.snap.speed * elapsed * this.snapping.signY
+                this.container.y += deltaY
+                if (this.snapping.signY && this.container.y > this.snap.point.y)
+                {
+                    if (this.snap.bounce)
+                    {
+
+                    }
+                    else
+                    {
+                        this.container.y = this.snap.point.y
+                    }
+                }
+                else if (!this.snapping.signY < 0 && this.container.y < this.snap.point.y)
+                {
+                    if (this.snap.bounce)
+                    {
+
+                    }
+                    else
+                    {
+                        this.container.y = this.snap.point.y
+                    }
+                }
+                else
+                {
+                    continueUpdating = true
+                }
+            }
             this.snapping.time = now
         }
         if (this.decelerating)
