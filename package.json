@@ -1,6 +1,6 @@
 {
   "name": "pixi-viewport",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A scrollable, zoomable stage for PIXI.js with pinch-to-zoom and accelerated swiping",
   "main": "index.js",
   "directories": {

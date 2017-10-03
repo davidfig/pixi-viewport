@@ -33,7 +33,8 @@ module.exports = class Viewport extends Events
      * @param {number} [options.threshold=5] minimum number of pixels to register a move
      *
      * @param {object} [options.snap] snap to location when not touched and not accelerating
-     * @param {PIXI.Point} [options.snap.point] point to snap to
+     * @param {PIXI.Point} [options.snap.x] x-coordinate to snap to
+     * @param {PIXI.Point} [options.snap.y] y-coordinate to snap to
      * @param {number} [options.snap.speed=1] speed (in world pixels/ms) to snap to location
      *
      * @param {boolean|object} [options.lockOn] keep camera centered on an object
@@ -192,8 +193,14 @@ module.exports = class Viewport extends Events
         else
         {
             this.options.snap.speed = this.options.snap.speed || 1
-            this.options.snap.point = this.options.snap.point || {x: 0, y: 0}
-            this.snapStart()
+            if (this.snapStart())
+            {
+                if (!this.requested)
+                {
+                    requestAnimationFrame(this.update.bind(this))
+                    this.requested = true
+                }
+            }
         }
     }
     get snap()
@@ -518,58 +525,26 @@ module.exports = class Viewport extends Events
 
     snapStart()
     {
-        if (this.container.x !== this.options.snap.point.x || this.container.y !== this.options.snap.point.y)
+        if ((typeof this.options.snap.x !== 'undefined' && this.container.x !== -this.options.snap.x) ||
+            (typeof this.options.snap.y !== 'undefined' && this.container.y !== -this.options.snap.y))
         {
             const now = performance.now()
             this.snapping = { time: now }
-            if (this.container.x !== this.options.snap.point.x)
+            if (typeof this.options.snap.x !== 'undefined' && this.container.x !== -this.options.snap.x)
             {
                 this.snapping.x = true
-                this.snapping.signX = this.container.x > this.options.snap.x ? -1 : 1
+                this.snapping.signX = this.container.x > -this.options.snap.x ? -1 : 1
             }
-            if (this.container.y !== this.options.snap.point.y)
+            if (typeof this.options.snap.y !== 'undefined' && this.container.y !== -this.options.snap.y)
             {
                 this.snapping.y = true
-                this.snapping.signY = this.container.y > this.options.snap.y ? -1 : 1
+                this.snapping.signY = this.container.y > -this.options.snap.y ? -1 : 1
             }
             return true
         }
         else
         {
             this.snapping = null
-        }
-return
-        if (this.saved.length)
-        {
-            for (let save of this.saved)
-            {
-                if (save.time >= now - 100)
-                {
-                    const time = now - save.time
-                    const x = (this.container.x - save.x) / time
-                    const y = (this.container.y - save.y) / time
-                    if (typeof this.snapping.x !== 'undefined')
-                    {
-                        this.snapping.velocity.x = x
-                    }
-                    if (typeof this.snapping.y !== 'undefined')
-                    {
-                        this.snapping.velocity.y = y
-                    }
-                    return
-                }
-            }
-        }
-        else
-        {
-            if (this.snapping.x)
-            {
-                this.snapping.velocity.x = this.options.snap.speed * (this.options.snap.point.x > this.container.x) ? -1 : 1
-            }
-            if (this.snapping.y)
-            {
-                this.snapping.velocity.y = this.options.snap.speed * (this.options.snap.point.y > this.container.y) ? -1 : 1
-            }
         }
     }
 
@@ -578,6 +553,7 @@ return
      */
     update()
     {
+        this.requested = false
         const now = performance.now()
         let continueUpdating
         if (this.toX)
@@ -613,27 +589,13 @@ return
             {
                 const deltaX = this.snap.speed * elapsed * this.snapping.signX
                 this.container.x += deltaX
-                if (this.snapping.signX && this.container.x > this.snap.point.x)
+                if (this.snapping.signX === 1 && this.container.x > -this.snap.x)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.x = this.snap.point.x
-                    }
+                    this.container.x = -this.snap.x
                 }
-                else if (!this.snapping.signX < 0 && this.container.x < this.snap.point.x)
+                else if (this.snapping.signX === -1 && this.container.x < -this.snap.x)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.x = this.snap.point.x
-                    }
+                    this.container.x = -this.snap.x
                 }
                 else
                 {
@@ -644,27 +606,13 @@ return
             {
                 const deltaY = this.snap.speed * elapsed * this.snapping.signY
                 this.container.y += deltaY
-                if (this.snapping.signY && this.container.y > this.snap.point.y)
+                if (this.snapping.signY === 1 && this.container.y > -this.snap.y)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.y = this.snap.point.y
-                    }
+                    this.container.y = -this.snap.y
                 }
-                else if (!this.snapping.signY < 0 && this.container.y < this.snap.point.y)
+                else if (this.snapping.signY == -1 && this.container.y < -this.snap.y)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.y = this.snap.point.y
-                    }
+                    this.container.y = -this.snap.y
                 }
                 else
                 {
@@ -733,6 +681,7 @@ return
         if (continueUpdating)
         {
             requestAnimationFrame(this.update.bind(this))
+            this.requested = true
         }
         this.last = now
     }

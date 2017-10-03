@@ -111,10 +111,10 @@ window.onload = function ()
             noOverDragX: false,
             noOverDragY: false,
             pinchToZoom: true,
-            bounce: true,
+            bounce: false,
             lockOn: true,
-            threshold: 10,
-            snap: { point: { x: 0, y: 0 } }
+            threshold: 5,
+            snap: { x: 0, y: 0 }
         })
     _viewport.on('click', click)
     resize()
@@ -173,8 +173,12 @@ function gui()
             }
         }
     )
-    let bounceTime = bounce.add(_viewport.bounce, 'time', 0, 2000).step(50)
-    let bounceEase = bounce.add(_viewport.bounce, 'ease')
+    let bounceTime, bounceEase
+    if (_viewport.bounce)
+    {
+        bounceTime = bounce.add(_viewport.bounce, 'time', 0, 2000).step(50)
+        bounceEase = bounce.add(_viewport.bounce, 'ease')
+    }
     bounce.open()
     const decelerate = gui.addFolder('decelerate')
     decelerate.add(fake, 'decelerate').onChange(
@@ -217,8 +221,8 @@ function gui()
                 if (!snapSpeed)
                 {
                     snapSpeed = snap.add(_viewport.snap, 'speed')
-                    snapX = snap.add(_viewport.snap.point, 'x')
-                    snapY = snap.add(_viewport.snap.point, 'y')
+                    snapX = snap.add(_viewport.snap, 'x')
+                    snapY = snap.add(_viewport.snap, 'y')
                 }
             }
             else
@@ -236,8 +240,8 @@ function gui()
     if (fake.snap)
     {
         snapSpeed = snap.add(_viewport.snap, 'speed')
-        snapX = snap.add(_viewport.snap.point, 'x')
-        snapY = snap.add(_viewport.snap.point, 'y')
+        snapX = snap.add(_viewport.snap, 'x')
+        snapY = snap.add(_viewport.snap, 'y')
     }
     snap.open()
 }
@@ -296,10 +300,11 @@ module.exports = class Viewport extends Events
      * @param {number} [options.decelerate.frictionBounce=0.5] percent to decelerate after movement while inside a bounce
      *
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
-     * @param {number} [options.threshold=10] minimum number of pixels to register a move
+     * @param {number} [options.threshold=5] minimum number of pixels to register a move
      *
      * @param {object} [options.snap] snap to location when not touched and not accelerating
-     * @param {PIXI.Point} [options.snap.point] point to snap to
+     * @param {PIXI.Point} [options.snap.x] x-coordinate to snap to
+     * @param {PIXI.Point} [options.snap.y] y-coordinate to snap to
      * @param {number} [options.snap.speed=1] speed (in world pixels/ms) to snap to location
      *
      * @param {boolean|object} [options.lockOn] keep camera centered on an object
@@ -316,7 +321,7 @@ module.exports = class Viewport extends Events
         this.container = container
         this.options = options || {}
         this.options.minVelocity = this.options.minVelocity || 0.01
-        this.options.threshold = typeof this.options.threshold === 'undefined' ? 10 : this.options.threshold
+        this.options.threshold = typeof this.options.threshold === 'undefined' ? 5 : this.options.threshold
         this.bounce = this.options.bounce
         this.snap = this.options.snap
         this.decelerate = this.options.decelerate
@@ -458,8 +463,14 @@ module.exports = class Viewport extends Events
         else
         {
             this.options.snap.speed = this.options.snap.speed || 1
-            this.options.snap.point = this.options.snap.point || {x: 0, y: 0}
-            this.snapStart()
+            if (this.snapStart())
+            {
+                if (!this.requested)
+                {
+                    requestAnimationFrame(this.update.bind(this))
+                    this.requested = true
+                }
+            }
         }
     }
     get snap()
@@ -784,58 +795,26 @@ module.exports = class Viewport extends Events
 
     snapStart()
     {
-        if (this.container.x !== this.options.snap.point.x || this.container.y !== this.options.snap.point.y)
+        if ((typeof this.options.snap.x !== 'undefined' && this.container.x !== -this.options.snap.x) ||
+            (typeof this.options.snap.y !== 'undefined' && this.container.y !== -this.options.snap.y))
         {
             const now = performance.now()
             this.snapping = { time: now }
-            if (this.container.x !== this.options.snap.point.x)
+            if (typeof this.options.snap.x !== 'undefined' && this.container.x !== -this.options.snap.x)
             {
                 this.snapping.x = true
-                this.snapping.signX = this.container.x > this.options.snap.x ? -1 : 1
+                this.snapping.signX = this.container.x > -this.options.snap.x ? -1 : 1
             }
-            if (this.container.y !== this.options.snap.point.y)
+            if (typeof this.options.snap.y !== 'undefined' && this.container.y !== -this.options.snap.y)
             {
                 this.snapping.y = true
-                this.snapping.signY = this.container.y > this.options.snap.y ? -1 : 1
+                this.snapping.signY = this.container.y > -this.options.snap.y ? -1 : 1
             }
             return true
         }
         else
         {
             this.snapping = null
-        }
-return
-        if (this.saved.length)
-        {
-            for (let save of this.saved)
-            {
-                if (save.time >= now - 100)
-                {
-                    const time = now - save.time
-                    const x = (this.container.x - save.x) / time
-                    const y = (this.container.y - save.y) / time
-                    if (typeof this.snapping.x !== 'undefined')
-                    {
-                        this.snapping.velocity.x = x
-                    }
-                    if (typeof this.snapping.y !== 'undefined')
-                    {
-                        this.snapping.velocity.y = y
-                    }
-                    return
-                }
-            }
-        }
-        else
-        {
-            if (this.snapping.x)
-            {
-                this.snapping.velocity.x = this.options.snap.speed * (this.options.snap.point.x > this.container.x) ? -1 : 1
-            }
-            if (this.snapping.y)
-            {
-                this.snapping.velocity.y = this.options.snap.speed * (this.options.snap.point.y > this.container.y) ? -1 : 1
-            }
         }
     }
 
@@ -844,6 +823,7 @@ return
      */
     update()
     {
+        this.requested = false
         const now = performance.now()
         let continueUpdating
         if (this.toX)
@@ -879,27 +859,13 @@ return
             {
                 const deltaX = this.snap.speed * elapsed * this.snapping.signX
                 this.container.x += deltaX
-                if (this.snapping.signX && this.container.x > this.snap.point.x)
+                if (this.snapping.signX === 1 && this.container.x > -this.snap.x)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.x = this.snap.point.x
-                    }
+                    this.container.x = -this.snap.x
                 }
-                else if (!this.snapping.signX < 0 && this.container.x < this.snap.point.x)
+                else if (this.snapping.signX === -1 && this.container.x < -this.snap.x)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.x = this.snap.point.x
-                    }
+                    this.container.x = -this.snap.x
                 }
                 else
                 {
@@ -910,27 +876,13 @@ return
             {
                 const deltaY = this.snap.speed * elapsed * this.snapping.signY
                 this.container.y += deltaY
-                if (this.snapping.signY && this.container.y > this.snap.point.y)
+                if (this.snapping.signY === 1 && this.container.y > -this.snap.y)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.y = this.snap.point.y
-                    }
+                    this.container.y = -this.snap.y
                 }
-                else if (!this.snapping.signY < 0 && this.container.y < this.snap.point.y)
+                else if (this.snapping.signY == -1 && this.container.y < -this.snap.y)
                 {
-                    if (this.snap.bounce)
-                    {
-
-                    }
-                    else
-                    {
-                        this.container.y = this.snap.point.y
-                    }
+                    this.container.y = -this.snap.y
                 }
                 else
                 {
@@ -999,6 +951,7 @@ return
         if (continueUpdating)
         {
             requestAnimationFrame(this.update.bind(this))
+            this.requested = true
         }
         this.last = now
     }

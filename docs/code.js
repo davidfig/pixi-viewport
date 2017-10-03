@@ -110,10 +110,10 @@ window.onload = function ()
             noOverDragX: false,
             noOverDragY: false,
             pinchToZoom: true,
-            bounce: true,
+            bounce: false,
             lockOn: true,
-            threshold: 10,
-            snap: { point: { x: 0, y: 0 } }
+            threshold: 5,
+            snap: { x: 0, y: 0 }
         })
     _viewport.on('click', click)
     resize()
@@ -172,8 +172,12 @@ function gui()
             }
         }
     )
-    let bounceTime = bounce.add(_viewport.bounce, 'time', 0, 2000).step(50)
-    let bounceEase = bounce.add(_viewport.bounce, 'ease')
+    let bounceTime, bounceEase
+    if (_viewport.bounce)
+    {
+        bounceTime = bounce.add(_viewport.bounce, 'time', 0, 2000).step(50)
+        bounceEase = bounce.add(_viewport.bounce, 'ease')
+    }
     bounce.open()
     const decelerate = gui.addFolder('decelerate')
     decelerate.add(fake, 'decelerate').onChange(
@@ -216,8 +220,8 @@ function gui()
                 if (!snapSpeed)
                 {
                     snapSpeed = snap.add(_viewport.snap, 'speed')
-                    snapX = snap.add(_viewport.snap.point, 'x')
-                    snapY = snap.add(_viewport.snap.point, 'y')
+                    snapX = snap.add(_viewport.snap, 'x')
+                    snapY = snap.add(_viewport.snap, 'y')
                 }
             }
             else
@@ -235,8 +239,8 @@ function gui()
     if (fake.snap)
     {
         snapSpeed = snap.add(_viewport.snap, 'speed')
-        snapX = snap.add(_viewport.snap.point, 'x')
-        snapY = snap.add(_viewport.snap.point, 'y')
+        snapX = snap.add(_viewport.snap, 'x')
+        snapY = snap.add(_viewport.snap, 'y')
     }
     snap.open()
 }
