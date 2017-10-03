@@ -1,6 +1,8 @@
 const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
+const Update = require('yy-update')
+const Renderer = require('yy-renderer')
 
 const Viewport = require('..')
 
@@ -14,7 +16,7 @@ const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
 
-let _app, _viewport, _view, _title, _object, _stars = []
+let _app, _viewport, _view, _title, _ease, _object, _stars = []
 
 function line(x, y, width, height)
 {
@@ -56,6 +58,7 @@ function createTarget()
         }, OBJECT_SPEED
     )
     target.on('done', () => createTarget())
+    _ease.add(target)
 }
 
 function object()
@@ -65,7 +68,7 @@ function object()
     _object.tint = 0
     _object.width = _object.height = OBJECT_SIZE
     _object.position.set(100, 100)
-    new Ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
+    _ease.add(new Ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true }))
     createTarget()
 }
 
@@ -83,7 +86,7 @@ function click(data)
     {
         if (star.containsPoint(data.screen))
         {
-            new Ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' })
+            _ease.add(new Ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' }))
             return
         }
     }
@@ -93,35 +96,50 @@ function click(data)
     sprite.position = data.world
     const fade = new Ease.to(sprite, { alpha: 0 }, ANIMATE_TIME)
     fade.on('done', () => _app.stage.removeChild(sprite))
+    _ease.add(fade)
+}
+
+function create()
+{
+
 }
 
 window.onload = function ()
 {
     _title = document.getElementsByClassName('titleCode')[0]
     _view = document.getElementById('canvas')
-    _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
-    Ease.init({ ticker: PIXI.ticker.shared })
+    _app = new Renderer({alwaysRender: true, update: Update})
     _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT),
         {
             noOverZoom: false,
-            decelerate: false,
+            decelerate: true,
             dragToMove: false,
             noOverDrag: false,
             noOverDragX: false,
             noOverDragY: false,
             pinchToZoom: true,
-            bounce: false,
+            bounce: true,
             lockOn: true,
             threshold: 5,
-            snap: { x: 0, y: 0 }
+            snap: false
         })
     _viewport.on('click', click)
     resize()
     window.addEventListener('resize', resize)
 
+    _ease = new Ease.list()
+
     stars()
     object()
     border()
+
+    Update.init()
+    Update.add(
+        function(elapsed)
+        {
+            _ease.update(elapsed)
+        })
+    Update.update()
 
     gui()
 
