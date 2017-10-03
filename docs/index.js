@@ -13,8 +13,9 @@ const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
+const ANIMATE_TIME = 1500
 
-let _app, _viewport, _view, _title, _object
+let _app, _viewport, _view, _title, _object, _stars = []
 
 function line(x, y, width, height)
 {
@@ -38,10 +39,12 @@ function stars()
     for (let i = 0; i < STARS; i++)
     {
         const star = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+        star.anchor.set(0.5)
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
         star.alpha = Random.range(0.25, 1, true)
         star.position.set(Random.range(STAR_SIZE / 2 + BORDER, WIDTH - STAR_SIZE - BORDER), Random.range(BORDER, HEIGHT - BORDER - STAR_SIZE))
+        _stars.push(star)
     }
 }
 
@@ -75,13 +78,45 @@ function resize()
     _viewport.resize(_view.width, _view.height)
 }
 
+function click(data)
+{
+    for (let star of _stars)
+    {
+        if (star.containsPoint(data.screen))
+        {
+            new Ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' })
+            return
+        }
+    }
+    const sprite = _app.stage.addChild(new PIXI.Text('click', {fill: 0xff0000}))
+    sprite.anchor.set(0.5)
+    sprite.rotation = Random.range(-0.1, 0.1)
+    sprite.position = data.world
+    const fade = new Ease.to(sprite, { alpha: 0 }, ANIMATE_TIME)
+    fade.on('done', () => _app.stage.removeChild(sprite))
+}
+
 window.onload = function ()
 {
     _title = document.getElementsByClassName('titleCode')[0]
     _view = document.getElementById('canvas')
     _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
     Ease.init({ ticker: PIXI.ticker.shared })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT), { noOverZoom: false, decelerate: true, dragToMove: false, noOverDrag: false, noOverDragX: false, noOverDragY: false, pinchToZoom: true, bounce: true, lockOn: true })
+    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT),
+        {
+            noOverZoom: false,
+            decelerate: false,
+            dragToMove: false,
+            noOverDrag: false,
+            noOverDragX: false,
+            noOverDragY: false,
+            pinchToZoom: true,
+            bounce: true,
+            lockOn: true,
+            threshold: 10,
+            snap: { point: { x: 0, y: 0 } }
+        })
+    _viewport.on('click', click)
     resize()
     window.addEventListener('resize', resize)
 
@@ -108,9 +143,11 @@ function gui()
     gui.add(_viewport, 'noOverDragX')
     gui.add(_viewport, 'noOverDragY')
     gui.add(_viewport, 'noOverZoom')
+    gui.add(_viewport, 'threshold')
     const fake = {
         bounce: _viewport.bounce ? true : false,
-        decelerate: _viewport.decelerate ? true : false
+        decelerate: _viewport.decelerate ? true : false,
+        snap: _viewport.snap ? true : false
     }
     const bounce = gui.addFolder('bounce')
     bounce.add(fake, 'bounce').onChange(
@@ -163,10 +200,49 @@ function gui()
             }
         }
     )
-    let decelerateFriction = decelerate.add(_viewport.decelerate, 'friction', 0, 1)
-    let decelerateBounce = decelerate.add(_viewport.decelerate, 'frictionBounce', 0, 1)
+    let decelerateFriction, decelerateBounce
+    if (fake.decelerate)
+    {
+        decelerateFriction = decelerate.add(_viewport.decelerate, 'friction', 0, 1)
+        decelerateBounce = decelerate.add(_viewport.decelerate, 'frictionBounce', 0, 1)
+    }
     decelerate.open()
+    const snap = gui.addFolder('snap')
+    snap.add(fake, 'snap').onChange(
+        function (value)
+        {
+            _viewport.snap = value
+            if (value)
+            {
+                if (!snapSpeed)
+                {
+                    snapSpeed = snap.add(_viewport.snap, 'speed')
+                    snapX = snap.add(_viewport.snap.point, 'x')
+                    snapY = snap.add(_viewport.snap.point, 'y')
+                }
+            }
+            else
+            {
+                if (snapSpeed)
+                {
+                    snap.remove(snapSpeed)
+                    snap.remove(snapX)
+                    snap.remove(snapY)
+                }
+            }
+        }
+    )
+    let snapSpeed, snapX, snapY
+    if (fake.snap)
+    {
+        snapSpeed = snap.add(_viewport.snap, 'speed')
+        snapX = snap.add(_viewport.snap.point, 'x')
+        snapY = snap.add(_viewport.snap.point, 'y')
+    }
+    snap.open()
 }
+
+/* global dat */
 },{"..":3,"./highlight":2,"pixi-ease":192,"pixi.js":333,"yy-random":384}],2:[function(require,module,exports){
 const forkMe = require('fork-me-github')
 
@@ -201,6 +277,7 @@ module.exports = class Viewport extends Events
      * @param {object} [options]
      *
      * @param {boolean} [options.dragToMove]
+     *
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
      *
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
@@ -219,6 +296,11 @@ module.exports = class Viewport extends Events
      * @param {number} [options.decelerate.frictionBounce=0.5] percent to decelerate after movement while inside a bounce
      *
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
+     * @param {number} [options.threshold=10] minimum number of pixels to register a move
+     *
+     * @param {object} [options.snap] snap to location when not touched and not accelerating
+     * @param {PIXI.Point} [options.snap.point] point to snap to
+     * @param {number} [options.snap.speed=1] speed (in world pixels/ms) to snap to location
      *
      * @param {boolean|object} [options.lockOn] keep camera centered on an object
      * @param {PIXI.DisplayObject|PIXI.Point} [options.lockOn.object] lock onto this object
@@ -226,7 +308,7 @@ module.exports = class Viewport extends Events
      *
      * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
      *
-     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the minimum thresshold
+     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the threshold pixels
      */
     constructor(container, screenWidth, screenHeight, worldBoundaries, options)
     {
@@ -234,7 +316,9 @@ module.exports = class Viewport extends Events
         this.container = container
         this.options = options || {}
         this.options.minVelocity = this.options.minVelocity || 0.01
+        this.options.threshold = typeof this.options.threshold === 'undefined' ? 10 : this.options.threshold
         this.bounce = this.options.bounce
+        this.snap = this.options.snap
         this.decelerate = this.options.decelerate
         this.pointers = []
         this.listeners()
@@ -332,6 +416,9 @@ module.exports = class Viewport extends Events
     set noUpdate(value) { this.options.noUpdate = value }
     get noUpdate() { return this.options.noUpdate }
 
+    set threshold(value) { this.options.threshold = value }
+    get threshold() { return this.options.threshold }
+
     set decelerate(value)
     {
         if (value === true)
@@ -353,6 +440,32 @@ module.exports = class Viewport extends Events
         }
     }
     get decelerate() { return this.options.decelerate }
+
+    set snap(value)
+    {
+        if (value === true)
+        {
+            this.options.snap = {}
+        }
+        else
+        {
+            this.options.snap = value
+        }
+        if (!value)
+        {
+            this.snapping = null
+        }
+        else
+        {
+            this.options.snap.speed = this.options.snap.speed || 1
+            this.options.snap.point = this.options.snap.point || {x: 0, y: 0}
+            this.snapStart()
+        }
+    }
+    get snap()
+    {
+        return this.options.snap
+    }
 
     listeners()
     {
@@ -385,9 +498,14 @@ module.exports = class Viewport extends Events
     down(e)
     {
         this.toX = this.toY = null
-        this.pointers.push({ id: e.data.pointerId, last: e.data.global })
+        this.pointers.push({ id: e.data.pointerId, last: { x: e.data.global.x, y: e.data.global.y } })
+        if (this.pointers.length === 1)
+        {
+            this.moved = false
+        }
         this.saved = []
         this.decelerating = null
+        this.snapping = null
     }
 
     /**
@@ -400,6 +518,16 @@ module.exports = class Viewport extends Events
         this.h = screenHeight
     }
 
+    checkThreshold(change)
+    {
+        if (Math.abs(change) >= this.options.threshold)
+        {
+            this.moved = true
+            return true
+        }
+        return false
+    }
+
     move(e)
     {
         if (this.pointers.length)
@@ -410,22 +538,26 @@ module.exports = class Viewport extends Events
                 const pos = e.data.global
                 const distX = pos.x - last.x
                 const distY = pos.y - last.y
-                this.container.x += distX
-                this.container.y += distY
-                if (this.options.decelerate)
+                if (this.checkThreshold(distX) || this.checkThreshold(distY))
                 {
-                    this.saved.push({ x: this.container.x, y: this.container.y, time: performance.now() })
-                    if (this.saved.length > 60)
+                    this.container.x += distX
+                    this.container.y += distY
+                    if (this.options.decelerate)
                     {
-                        this.saved.splice(0, 30)
+                        this.saved.push({ x: this.container.x, y: this.container.y, time: performance.now() })
+                        if (this.saved.length > 60)
+                        {
+                            this.saved.splice(0, 30)
+                        }
                     }
+                    this.pointers[0].last = { x: pos.x, y: pos.y }
+                    this.clamp()
+                    this.inMove = true
                 }
-                this.pointers[0].last = { x: pos.x, y: pos.y }
-                this.clamp()
-                this.inMove = true
             }
             else if (this.options.pinchToZoom)
             {
+                this.moved = true
                 this.inMove = false
                 const first = this.pointers[0]
                 const second = this.pointers[1]
@@ -650,6 +782,63 @@ module.exports = class Viewport extends Events
         }
     }
 
+    snapStart()
+    {
+        if (this.container.x !== this.options.snap.point.x || this.container.y !== this.options.snap.point.y)
+        {
+            const now = performance.now()
+            this.snapping = { time: now }
+            if (this.container.x !== this.options.snap.point.x)
+            {
+                this.snapping.x = true
+                this.snapping.signX = this.container.x > this.options.snap.x ? -1 : 1
+            }
+            if (this.container.y !== this.options.snap.point.y)
+            {
+                this.snapping.y = true
+                this.snapping.signY = this.container.y > this.options.snap.y ? -1 : 1
+            }
+            return true
+        }
+        else
+        {
+            this.snapping = null
+        }
+return
+        if (this.saved.length)
+        {
+            for (let save of this.saved)
+            {
+                if (save.time >= now - 100)
+                {
+                    const time = now - save.time
+                    const x = (this.container.x - save.x) / time
+                    const y = (this.container.y - save.y) / time
+                    if (typeof this.snapping.x !== 'undefined')
+                    {
+                        this.snapping.velocity.x = x
+                    }
+                    if (typeof this.snapping.y !== 'undefined')
+                    {
+                        this.snapping.velocity.y = y
+                    }
+                    return
+                }
+            }
+        }
+        else
+        {
+            if (this.snapping.x)
+            {
+                this.snapping.velocity.x = this.options.snap.speed * (this.options.snap.point.x > this.container.x) ? -1 : 1
+            }
+            if (this.snapping.y)
+            {
+                this.snapping.velocity.y = this.options.snap.speed * (this.options.snap.point.y > this.container.y) ? -1 : 1
+            }
+        }
+    }
+
     /**
      * call this manually if setting options.noUpdate = true
      */
@@ -682,6 +871,73 @@ module.exports = class Viewport extends Events
             {
                 continueUpdating = true
             }
+        }
+        if (this.snapping)
+        {
+            const elapsed = now - this.snapping.time
+            if (this.snapping.x)
+            {
+                const deltaX = this.snap.speed * elapsed * this.snapping.signX
+                this.container.x += deltaX
+                if (this.snapping.signX && this.container.x > this.snap.point.x)
+                {
+                    if (this.snap.bounce)
+                    {
+
+                    }
+                    else
+                    {
+                        this.container.x = this.snap.point.x
+                    }
+                }
+                else if (!this.snapping.signX < 0 && this.container.x < this.snap.point.x)
+                {
+                    if (this.snap.bounce)
+                    {
+
+                    }
+                    else
+                    {
+                        this.container.x = this.snap.point.x
+                    }
+                }
+                else
+                {
+                    continueUpdating = true
+                }
+            }
+            if (this.snapping.y)
+            {
+                const deltaY = this.snap.speed * elapsed * this.snapping.signY
+                this.container.y += deltaY
+                if (this.snapping.signY && this.container.y > this.snap.point.y)
+                {
+                    if (this.snap.bounce)
+                    {
+
+                    }
+                    else
+                    {
+                        this.container.y = this.snap.point.y
+                    }
+                }
+                else if (!this.snapping.signY < 0 && this.container.y < this.snap.point.y)
+                {
+                    if (this.snap.bounce)
+                    {
+
+                    }
+                    else
+                    {
+                        this.container.y = this.snap.point.y
+                    }
+                }
+                else
+                {
+                    continueUpdating = true
+                }
+            }
+            this.snapping.time = now
         }
         if (this.decelerating)
         {
@@ -753,6 +1009,10 @@ module.exports = class Viewport extends Events
         {
             if (this.pointers[i].id === e.data.pointerId)
             {
+                if (this.pointers.length === 1 && !this.moved)
+                {
+                    this.emit('click', { screen: e.data.global, world: this.toWorld(e.data.global)})
+                }
                 this.pointers.splice(i, 1)
             }
         }
@@ -761,9 +1021,16 @@ module.exports = class Viewport extends Events
             this.lastCenter = null
         }
         let update
-        if (this.options.bounce && this.pointers.length === 0)
+        if (this.pointers.length === 0)
         {
-            update = this.bounceStart()
+            if (this.options.bounce)
+            {
+                if (this.bounceStart()) update = true
+            }
+            if (this.options.snap)
+            {
+                if (this.snapStart()) update = true
+            }
         }
         if (this.options.decelerate && this.saved.length)
         {

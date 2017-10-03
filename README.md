@@ -28,6 +28,7 @@ https://davidfig.github.io/pixi-viewport/
      * @param {object} [options]
      *
      * @param {boolean} [options.dragToMove]
+     *
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
      *
      * @param {boolean} [options.noOverDrag] stops scroll beyond boundaries
@@ -46,6 +47,11 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.decelerate.frictionBounce=0.5] percent to decelerate after movement while inside a bounce
      *
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
+     * @param {number} [options.threshold=10] minimum number of pixels to register a move
+     *
+     * @param {object} [options.snap] snap to location when not touched and not accelerating
+     * @param {PIXI.Point} [options.snap.point] point to snap to
+     * @param {number} [options.snap.speed=1] speed (in world pixels/ms) to snap to location
      *
      * @param {boolean|object} [options.lockOn] keep camera centered on an object
      * @param {PIXI.DisplayObject|PIXI.Point} [options.lockOn.object] lock onto this object
@@ -53,7 +59,7 @@ https://davidfig.github.io/pixi-viewport/
      *
      * @param {boolean} [options.noUpdate] turn off internal calls to requestAnimationFrame() -- update() must be called manually on each loop
      *
-     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the minimum thresshold
+     * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the threshold pixels
      */
     constructor(container, screenWidth, screenHeight, worldBoundaries, options)
 

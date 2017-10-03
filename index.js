@@ -30,7 +30,7 @@ module.exports = class Viewport extends Events
      * @param {number} [options.decelerate.frictionBounce=0.5] percent to decelerate after movement while inside a bounce
      *
      * @param {number} [options.minVelocity=0.01] minimum velocity before stopping deceleration
-     * @param {number} [options.threshold=10] minimum number of pixels to register a move
+     * @param {number} [options.threshold=5] minimum number of pixels to register a move
      *
      * @param {object} [options.snap] snap to location when not touched and not accelerating
      * @param {PIXI.Point} [options.snap.point] point to snap to
@@ -50,7 +50,7 @@ module.exports = class Viewport extends Events
         this.container = container
         this.options = options || {}
         this.options.minVelocity = this.options.minVelocity || 0.01
-        this.options.threshold = typeof this.options.threshold === 'undefined' ? 10 : this.options.threshold
+        this.options.threshold = typeof this.options.threshold === 'undefined' ? 5 : this.options.threshold
         this.bounce = this.options.bounce
         this.snap = this.options.snap
         this.decelerate = this.options.decelerate
