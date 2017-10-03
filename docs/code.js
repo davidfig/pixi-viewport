@@ -9,18 +9,17 @@ const Viewport = require('..')
 const BORDER = 10
 const WIDTH = 10000
 const HEIGHT = 10000
-const STARS = 5000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
 
-let _app, _viewport, _view, _title, _ease, _object, _stars = []
+let _renderer, _viewport, _view, _title, _ease, _object, _stars = []
 
 function line(x, y, width, height)
 {
-    const line = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    const line = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     line.tint = 0xff0000
     line.position.set(x, y)
     line.width = width
@@ -29,22 +28,23 @@ function line(x, y, width, height)
 
 function border()
 {
-    line(0, 0, WIDTH, BORDER)
-    line(0, HEIGHT - BORDER, WIDTH, BORDER)
-    line(0, 0, BORDER, HEIGHT)
-    line(WIDTH - BORDER, 0, BORDER, HEIGHT)
+    line(0, 0, _viewport.worldBoundaries.width, BORDER)
+    line(0, _viewport.worldBoundaries.height - BORDER, _viewport.worldBoundaries.width, BORDER)
+    line(0, 0, BORDER, _viewport.worldBoundaries.height)
+    line(_viewport.worldBoundaries.width - BORDER, 0, BORDER, _viewport.worldBoundaries.height)
 }
 
 function stars()
 {
-    for (let i = 0; i < STARS; i++)
+    const stars = (_viewport.worldBoundaries.width * _viewport.worldBoundaries.height) / Math.pow(STAR_SIZE, 2) * 0.1
+    for (let i = 0; i < stars; i++)
     {
-        const star = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+        const star = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
         star.anchor.set(0.5)
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
         star.alpha = Random.range(0.25, 1, true)
-        star.position.set(Random.range(STAR_SIZE / 2 + BORDER, WIDTH - STAR_SIZE - BORDER), Random.range(BORDER, HEIGHT - BORDER - STAR_SIZE))
+        star.position.set(Random.range(STAR_SIZE / 2 + BORDER, _viewport.worldBoundaries.width - STAR_SIZE - BORDER), Random.range(BORDER, _viewport.worldBoundaries.height - BORDER - STAR_SIZE))
         _stars.push(star)
     }
 }
@@ -53,8 +53,8 @@ function createTarget()
 {
     const target = new Ease.target(_object,
         {
-            x: Random.range(OBJECT_SIZE / 2 + BORDER, WIDTH - OBJECT_SIZE / 2 - BORDER),
-            y: Random.range(OBJECT_SIZE / 2 + BORDER, HEIGHT - OBJECT_SIZE / 2 - BORDER)
+            x: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldBoundaries.width - OBJECT_SIZE / 2 - BORDER),
+            y: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldBoundaries.height - OBJECT_SIZE / 2 - BORDER)
         }, OBJECT_SPEED
     )
     target.on('done', () => createTarget())
@@ -63,7 +63,7 @@ function createTarget()
 
 function object()
 {
-    _object = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    _object = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     _object.anchor.set(0.5)
     _object.tint = 0
     _object.width = _object.height = OBJECT_SIZE
@@ -76,7 +76,7 @@ function resize()
 {
     _view.width = window.innerWidth
     _view.height = window.innerHeight - _title.offsetHeight
-    _app.renderer.resize(_view.width, _view.height)
+    _renderer.renderer.resize(_view.width, _view.height)
     _viewport.resize(_view.width, _view.height)
 }
 
@@ -90,48 +90,53 @@ function click(data)
             return
         }
     }
-    const sprite = _app.stage.addChild(new PIXI.Text('click', {fill: 0xff0000}))
+    const sprite = _renderer.stage.addChild(new PIXI.Text('click', {fill: 0xff0000}))
     sprite.anchor.set(0.5)
     sprite.rotation = Random.range(-0.1, 0.1)
     sprite.position = data.world
     const fade = new Ease.to(sprite, { alpha: 0 }, ANIMATE_TIME)
-    fade.on('done', () => _app.stage.removeChild(sprite))
+    fade.on('done', () => _renderer.stage.removeChild(sprite))
     _ease.add(fade)
 }
 
-function create()
+function drawWorld()
 {
-
+    _ease.removeAll()
+    _renderer.stage.removeChildren()
+    stars()
+    object()
+    border()
+    _viewport.corner(0, 0)
 }
 
 window.onload = function ()
 {
     _title = document.getElementsByClassName('titleCode')[0]
     _view = document.getElementById('canvas')
-    _app = new Renderer({alwaysRender: true, update: Update})
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT),
-        {
-            noOverZoom: false,
-            decelerate: true,
-            dragToMove: false,
-            noOverDrag: false,
-            noOverDragX: false,
-            noOverDragY: false,
-            pinchToZoom: true,
-            bounce: true,
-            lockOn: true,
-            threshold: 5,
-            snap: false
-        })
+    _renderer = new Renderer({alwaysRender: true, update: Update})
+    _viewport = new Viewport(_renderer.stage, {
+        screenWidth: _view.width,
+        screenHeight: _view.height,
+        worldBoundaries: new PIXI.Rectangle(0, 0, WIDTH, HEIGHT),
+        noOverZoom: false,
+        decelerate: true,
+        dragToMove: false,
+        noOverDrag: false,
+        noOverDragX: false,
+        noOverDragY: false,
+        pinchToZoom: true,
+        bounce: true,
+        lockOn: true,
+        threshold: 5,
+        snap: false
+    })
     _viewport.on('click', click)
     resize()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
 
-    stars()
-    object()
-    border()
+    drawWorld()
 
     Update.init()
     Update.add(
@@ -154,6 +159,9 @@ function gui()
     gui.domElement.style.right = 0
     gui.domElement.style.position = 'fixed'
     gui.domElement.style.opacity = 0.95
+    const world = gui.addFolder('world')
+    world.add(_viewport.worldBoundaries, 'width').onChange(drawWorld)
+    world.add(_viewport.worldBoundaries, 'height').onChange(drawWorld)
     gui.add(_viewport, 'pinchToZoom')
     gui.add(_viewport, 'dragToMove')
     gui.add(_viewport, 'noOverDrag')

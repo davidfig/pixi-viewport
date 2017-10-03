@@ -5,11 +5,12 @@ module.exports = class Viewport extends Events
 {
     /**
      * @param {PIXI.Container} container
-     * @param {number} screenWidth
-     * @param {number} screenHeight
-     * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
      * @param {object} [options]
      *
+     * @param {number} [options.screenWidth]
+     * @param {number} [options.screenHeight]
+     * @param {PIXI.Rectangle} [options.worldBoundaries] - needed for hitArea replacement and options.noOverDrag or options.bounce
+
      * @param {boolean} [options.dragToMove]
      *
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
@@ -45,7 +46,7 @@ module.exports = class Viewport extends Events
      *
      * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the threshold pixels
      */
-    constructor(container, screenWidth, screenHeight, worldBoundaries, options)
+    constructor(container, options)
     {
         super()
         this.container = container
@@ -57,16 +58,18 @@ module.exports = class Viewport extends Events
         this.decelerate = this.options.decelerate
         this.pointers = []
         this.listeners()
-        this.container.hitArea = worldBoundaries
-        this._worldBoundaries = worldBoundaries
-        this.resize(screenWidth, screenHeight)
+        this.worldBoundaries = this.options.worldBoundaries
+        if (this.options.screenWidth)
+        {
+            this.resize(this.options.screenWidth, this.options.screenHeight)
+        }
         this.saved = []
     }
 
     set worldBoundaries(value)
     {
         this._worldBoundaries = value
-        this.container.hitArea = value
+        this.container.hitArea = this._worldBoundaries
     }
     get worldBoundaries() { return this._worldBoundaries }
 
@@ -745,6 +748,25 @@ module.exports = class Viewport extends Events
         if (update)
         {
             this.update()
+        }
+    }
+
+    /**
+     * move top-left corner of viewport to new coordinates
+     * @param {number|PIXI.Point} x | point
+     * @param {number} [y]
+     */
+    corner(/*x, y | point*/)
+    {
+        if (arguments.length === 2)
+        {
+            this.container.x = -arguments[0]
+            this.container.y = -arguments[1]
+        }
+        else
+        {
+            this.container.x = -arguments[0].x
+            this.container.y = -arguments[1].y
         }
     }
 }

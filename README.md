@@ -22,11 +22,12 @@ https://davidfig.github.io/pixi-viewport/
 ```
     /**
      * @param {PIXI.Container} container
-     * @param {number} screenWidth
-     * @param {number} screenHeight
-     * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
      * @param {object} [options]
      *
+     * @param {number} [options.screenWidth]
+     * @param {number} [options.screenHeight]
+     * @param {PIXI.Rectangle} [options.worldBoundaries] - needed for hitArea replacement and options.noOverDrag or options.bounce
+
      * @param {boolean} [options.dragToMove]
      *
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
@@ -62,7 +63,7 @@ https://davidfig.github.io/pixi-viewport/
      *
      * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the threshold pixels
      */
-    constructor(container, screenWidth, screenHeight, worldBoundaries, options)
+    constructor(container, options)
 
     /**
      * @param {number} screenWidth
@@ -90,6 +91,13 @@ https://davidfig.github.io/pixi-viewport/
      * call this manually if setting options.noUpdate = true
      */
     update()
+
+    /**
+     * move top-left corner of viewport to new coordinates
+     * @param {number|PIXI.Point} x | point
+     * @param {number} [y]
+     */
+    corner(/*x, y | point*/)
 ```
 ## license  
 MIT License  

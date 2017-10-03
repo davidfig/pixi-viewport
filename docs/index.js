@@ -2,24 +2,25 @@
 const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
+const Update = require('yy-update')
+const Renderer = require('yy-renderer')
 
 const Viewport = require('..')
 
 const BORDER = 10
 const WIDTH = 10000
 const HEIGHT = 10000
-const STARS = 5000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
 
-let _app, _viewport, _view, _title, _object, _stars = []
+let _renderer, _viewport, _view, _title, _ease, _object, _stars = []
 
 function line(x, y, width, height)
 {
-    const line = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    const line = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     line.tint = 0xff0000
     line.position.set(x, y)
     line.width = width
@@ -28,22 +29,23 @@ function line(x, y, width, height)
 
 function border()
 {
-    line(0, 0, WIDTH, BORDER)
-    line(0, HEIGHT - BORDER, WIDTH, BORDER)
-    line(0, 0, BORDER, HEIGHT)
-    line(WIDTH - BORDER, 0, BORDER, HEIGHT)
+    line(0, 0, _viewport.worldBoundaries.width, BORDER)
+    line(0, _viewport.worldBoundaries.height - BORDER, _viewport.worldBoundaries.width, BORDER)
+    line(0, 0, BORDER, _viewport.worldBoundaries.height)
+    line(_viewport.worldBoundaries.width - BORDER, 0, BORDER, _viewport.worldBoundaries.height)
 }
 
 function stars()
 {
-    for (let i = 0; i < STARS; i++)
+    const stars = (_viewport.worldBoundaries.width * _viewport.worldBoundaries.height) / Math.pow(STAR_SIZE, 2) * 0.1
+    for (let i = 0; i < stars; i++)
     {
-        const star = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+        const star = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
         star.anchor.set(0.5)
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
         star.alpha = Random.range(0.25, 1, true)
-        star.position.set(Random.range(STAR_SIZE / 2 + BORDER, WIDTH - STAR_SIZE - BORDER), Random.range(BORDER, HEIGHT - BORDER - STAR_SIZE))
+        star.position.set(Random.range(STAR_SIZE / 2 + BORDER, _viewport.worldBoundaries.width - STAR_SIZE - BORDER), Random.range(BORDER, _viewport.worldBoundaries.height - BORDER - STAR_SIZE))
         _stars.push(star)
     }
 }
@@ -52,21 +54,22 @@ function createTarget()
 {
     const target = new Ease.target(_object,
         {
-            x: Random.range(OBJECT_SIZE / 2 + BORDER, WIDTH - OBJECT_SIZE / 2 - BORDER),
-            y: Random.range(OBJECT_SIZE / 2 + BORDER, HEIGHT - OBJECT_SIZE / 2 - BORDER)
+            x: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldBoundaries.width - OBJECT_SIZE / 2 - BORDER),
+            y: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldBoundaries.height - OBJECT_SIZE / 2 - BORDER)
         }, OBJECT_SPEED
     )
     target.on('done', () => createTarget())
+    _ease.add(target)
 }
 
 function object()
 {
-    _object = _app.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    _object = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     _object.anchor.set(0.5)
     _object.tint = 0
     _object.width = _object.height = OBJECT_SIZE
     _object.position.set(100, 100)
-    new Ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
+    _ease.add(new Ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true }))
     createTarget()
 }
 
@@ -74,7 +77,7 @@ function resize()
 {
     _view.width = window.innerWidth
     _view.height = window.innerHeight - _title.offsetHeight
-    _app.renderer.resize(_view.width, _view.height)
+    _renderer.renderer.resize(_view.width, _view.height)
     _viewport.resize(_view.width, _view.height)
 }
 
@@ -84,45 +87,65 @@ function click(data)
     {
         if (star.containsPoint(data.screen))
         {
-            new Ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' })
+            _ease.add(new Ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' }))
             return
         }
     }
-    const sprite = _app.stage.addChild(new PIXI.Text('click', {fill: 0xff0000}))
+    const sprite = _renderer.stage.addChild(new PIXI.Text('click', {fill: 0xff0000}))
     sprite.anchor.set(0.5)
     sprite.rotation = Random.range(-0.1, 0.1)
     sprite.position = data.world
     const fade = new Ease.to(sprite, { alpha: 0 }, ANIMATE_TIME)
-    fade.on('done', () => _app.stage.removeChild(sprite))
+    fade.on('done', () => _renderer.stage.removeChild(sprite))
+    _ease.add(fade)
+}
+
+function drawWorld()
+{
+    _ease.removeAll()
+    _renderer.stage.removeChildren()
+    stars()
+    object()
+    border()
+    _viewport.corner(0, 0)
 }
 
 window.onload = function ()
 {
     _title = document.getElementsByClassName('titleCode')[0]
     _view = document.getElementById('canvas')
-    _app = new PIXI.Application({ view: _view, transparent: true, sharedTicker: true })
-    Ease.init({ ticker: PIXI.ticker.shared })
-    _viewport = new Viewport(_app.stage, _view.width, _view.height, new PIXI.Rectangle(0, 0, WIDTH, HEIGHT),
-        {
-            noOverZoom: false,
-            decelerate: false,
-            dragToMove: false,
-            noOverDrag: false,
-            noOverDragX: false,
-            noOverDragY: false,
-            pinchToZoom: true,
-            bounce: false,
-            lockOn: true,
-            threshold: 5,
-            snap: { x: 0, y: 0 }
-        })
+    _renderer = new Renderer({alwaysRender: true, update: Update})
+    _viewport = new Viewport(_renderer.stage, {
+        screenWidth: _view.width,
+        screenHeight: _view.height,
+        worldBoundaries: new PIXI.Rectangle(0, 0, WIDTH, HEIGHT),
+        noOverZoom: false,
+        decelerate: true,
+        dragToMove: false,
+        noOverDrag: false,
+        noOverDragX: false,
+        noOverDragY: false,
+        pinchToZoom: true,
+        bounce: true,
+        lockOn: true,
+        threshold: 5,
+        snap: false
+    })
     _viewport.on('click', click)
     resize()
     window.addEventListener('resize', resize)
 
-    stars()
-    object()
-    border()
+    _ease = new Ease.list()
+
+    drawWorld()
+
+    Update.init()
+    Update.add(
+        function(elapsed)
+        {
+            _ease.update(elapsed)
+        })
+    Update.update()
 
     gui()
 
@@ -137,6 +160,9 @@ function gui()
     gui.domElement.style.right = 0
     gui.domElement.style.position = 'fixed'
     gui.domElement.style.opacity = 0.95
+    const world = gui.addFolder('world')
+    world.add(_viewport.worldBoundaries, 'width').onChange(drawWorld)
+    world.add(_viewport.worldBoundaries, 'height').onChange(drawWorld)
     gui.add(_viewport, 'pinchToZoom')
     gui.add(_viewport, 'dragToMove')
     gui.add(_viewport, 'noOverDrag')
@@ -247,7 +273,7 @@ function gui()
 }
 
 /* global dat */
-},{"..":3,"./highlight":2,"pixi-ease":192,"pixi.js":333,"yy-random":384}],2:[function(require,module,exports){
+},{"..":3,"./highlight":2,"pixi-ease":191,"pixi.js":334,"yy-random":385,"yy-renderer":386,"yy-update":387}],2:[function(require,module,exports){
 const forkMe = require('fork-me-github')
 
 module.exports = function highlight(url)
@@ -275,11 +301,12 @@ module.exports = class Viewport extends Events
 {
     /**
      * @param {PIXI.Container} container
-     * @param {number} screenWidth
-     * @param {number} screenHeight
-     * @param {PIXI.Rectangle} [worldBoundaries] - only needed for options.noOverDrag or options.bounce
      * @param {object} [options]
      *
+     * @param {number} [options.screenWidth]
+     * @param {number} [options.screenHeight]
+     * @param {PIXI.Rectangle} [options.worldBoundaries] - needed for hitArea replacement and options.noOverDrag or options.bounce
+
      * @param {boolean} [options.dragToMove]
      *
      * @param {boolean} [options.pinchToZoom] automatically turns on dragToMove
@@ -315,7 +342,7 @@ module.exports = class Viewport extends Events
      *
      * @emit {click} function click(x, y) in world coordinates - this is called on the up() after a touch/mouse press that doesn't move the threshold pixels
      */
-    constructor(container, screenWidth, screenHeight, worldBoundaries, options)
+    constructor(container, options)
     {
         super()
         this.container = container
@@ -327,16 +354,18 @@ module.exports = class Viewport extends Events
         this.decelerate = this.options.decelerate
         this.pointers = []
         this.listeners()
-        this.container.hitArea = worldBoundaries
-        this._worldBoundaries = worldBoundaries
-        this.resize(screenWidth, screenHeight)
+        this.worldBoundaries = this.options.worldBoundaries
+        if (this.options.screenWidth)
+        {
+            this.resize(this.options.screenWidth, this.options.screenHeight)
+        }
         this.saved = []
     }
 
     set worldBoundaries(value)
     {
         this._worldBoundaries = value
-        this.container.hitArea = value
+        this.container.hitArea = this._worldBoundaries
     }
     get worldBoundaries() { return this._worldBoundaries }
 
@@ -1017,10 +1046,29 @@ module.exports = class Viewport extends Events
             this.update()
         }
     }
+
+    /**
+     * move top-left corner of viewport to new coordinates
+     * @param {number|PIXI.Point} x | point
+     * @param {number} [y]
+     */
+    corner(/*x, y | point*/)
+    {
+        if (arguments.length === 2)
+        {
+            this.container.x = -arguments[0]
+            this.container.y = -arguments[1]
+        }
+        else
+        {
+            this.container.x = -arguments[0].x
+            this.container.y = -arguments[1].y
+        }
+    }
 }
 
 /* global performance, requestAnimationFrame */
-},{"eventemitter3":6,"pixi-ease":192}],4:[function(require,module,exports){
+},{"eventemitter3":6,"pixi-ease":191}],4:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -19870,6 +19918,23 @@ module.exports = function parseURI (str, opts) {
 }).call(this);
 
 },{}],191:[function(require,module,exports){
+const list = require('./src/list')
+
+module.exports = {
+    list,
+    wait: require('./src/wait'),
+    to: require('./src/to'),
+    shake: require('./src/shake'),
+    tint: require('./src/tint'),
+    face: require('./src/face'),
+    angle: require('./src/angle'),
+    target: require('./src/target'),
+    movie: require('./src/movie'),
+    load: require('./src/load'),
+
+    default: new list()
+}
+},{"./src/angle":192,"./src/face":193,"./src/list":194,"./src/load":195,"./src/movie":196,"./src/shake":197,"./src/target":198,"./src/tint":199,"./src/to":200,"./src/wait":201}],192:[function(require,module,exports){
 const wait = require('./wait')
 
 /** animate object's {x, y} using an angle */
@@ -19934,117 +19999,13 @@ module.exports = class angle extends wait
         this.object.x += this.cos * elapsed * this.speed
         this.object.y += this.sin * elapsed * this.speed
     }
-}
-},{"./wait":200}],192:[function(require,module,exports){
-const _list = []
-const _defaults = { ease: 'linear' }
-let _ticker
 
-/**
- * initialize (may be called more than once to change options without changing animation list but don't pass Ticker more than once)
- * @param {object} [options]
- * @param {PIXI.Ticker} [options.ticker] attaches to the PIXI.Ticker; if this is not provided, you need to call update() manually
- * @param {function|string} [options.ease=linear] default easing function
- */
-function init(options)
-{
-    options = options || {}
-    _defaults.ease = options.ease || _defaults.ease
-    if (options.ticker)
+    reverse()
     {
-        _ticker = options.ticker
-        options.ticker.add(ticker)
+        this.angle += Math.PI
     }
 }
-
-/**
- * remove an animation
- * @param {object|array} animate - the animation (or array of animations) to remove - can be null
- */
-function remove(animate)
-{
-    if (animate)
-    {
-        if (Array.isArray(animate))
-        {
-            while (animate.length)
-            {
-                const pop = animate.pop()
-                if (pop && pop.options)
-                {
-                    pop.options.cancel = true
-                }
-            }
-        }
-        else
-        {
-            if (animate && animate.options)
-            {
-                animate.options.cancel = true
-            }
-        }
-    }
-}
-
-// internal function to add an animation
-function add(animate)
-{
-    _list.push(animate)
-    return animate
-}
-
-function ticker()
-{
-    update(_ticker.elapsedMS)
-}
-
-/**
- * update function only needed if options.ticker is not provided
- * @param {number} elapsed time since last tick
- * @returns {number} of active animations
- */
-function update(elapsed)
-{
-    let n = 0
-    for (let i = _list.length - 1; i >= 0; i--)
-    {
-        const animate = _list[i]
-        if (animate.update(elapsed))
-        {
-            _list.splice(i, 1)
-        }
-        else
-        {
-            if (!animate.options.pause)
-            {
-                n++
-            }
-        }
-    }
-    return n
-}
-
-module.exports = {
-    init,
-    update,
-    remove,
-    add,
-    get defaults()
-    {
-        return _defaults;
-    },
-    wait: require('./wait'),
-    to: require('./to'),
-    shake: require('./shake'),
-    tint: require('./tint'),
-    face: require('./face'),
-    angle: require('./angle'),
-    target: require('./target'),
-    movie: require('./movie'),
-    load: require('./load')
-}
-
-},{"./angle":191,"./face":193,"./load":194,"./movie":195,"./shake":196,"./target":197,"./tint":198,"./to":199,"./wait":200}],193:[function(require,module,exports){
+},{"./wait":201}],193:[function(require,module,exports){
 const Angle = require('yy-angle')
 const wait = require('./wait')
 
@@ -20114,7 +20075,134 @@ module.exports = class face extends wait
         }
     }
 }
-},{"./wait":200,"yy-angle":382}],194:[function(require,module,exports){
+},{"./wait":201,"yy-angle":383}],194:[function(require,module,exports){
+const EventEmitter = require('eventemitter3')
+
+/** Helper list for multiple animations */
+module.exports = class List extends EventEmitter
+{
+    /**
+     * @param {object|object[]...} any animation class
+     * @emits {done} final animation completed in the list
+     * @emits {each} each update
+     */
+    constructor()
+    {
+        super()
+        this.list = []
+        this.empty = true
+        if (arguments.length)
+        {
+            this.add(...arguments)
+        }
+    }
+
+    /**
+     * Add animation(s) to animation list
+     * @param {object|object[]...} any animation class
+     */
+    add()
+    {
+        for (let arg of arguments)
+        {
+            if (Array.isArray(arg))
+            {
+                for (let entry of arg)
+                {
+                    this.list.push(entry)
+                }
+            }
+            else
+            {
+                this.list.push(arg)
+            }
+        }
+        this.empty = false
+        return arguments[0]
+    }
+
+    /**
+     * get animation by index
+     * @param {number} index
+     * @return {object} animation class
+     */
+    get(index)
+    {
+        return this.list[index]
+    }
+
+    /**
+     * remove animation(s)
+     * @param {object|array} animate - the animation (or array of animations) to remove; can be null
+     */
+    remove(animate)
+    {
+        if (animate)
+        {
+            if (Array.isArray(animate))
+            {
+                while (animate.length)
+                {
+                    const pop = animate.pop()
+                    if (pop && pop.options)
+                    {
+                        pop.options.cancel = true
+                    }
+                }
+            }
+            else
+            {
+                if (animate && animate.options)
+                {
+                    animate.options.cancel = true
+                }
+            }
+        }
+        return animate
+    }
+
+    /**
+     * remove all animations from list
+     */
+    removeAll()
+    {
+        this.list = []
+        this.empty = true
+    }
+
+    /**
+     * @param {number} elapsed time since last tick
+     * @returns {number} of active animations
+     */
+    update(elapsed)
+    {
+        let n = 0
+        for (let i = this.list.length - 1; i >= 0; i--)
+        {
+            const animate = this.list[i]
+            if (animate.update(elapsed))
+            {
+                this.emit('remove', animate)
+                this.list.splice(i, 1)
+            }
+            else
+            {
+                if (!animate.options.pause)
+                {
+                    n++
+                }
+            }
+        }
+        this.emit('each', this, n)
+        if (this.list.length === 0 && !this.empty)
+        {
+            this.emit('done', this)
+            this.empty = true
+        }
+        return n
+    }
+}
+},{"eventemitter3":6}],195:[function(require,module,exports){
 const wait = require('./wait')
 const to = require('./to')
 const tint = require('./tint')
@@ -20155,7 +20243,7 @@ module.exports = function load(object, load)
             return new movie(object, object[1], null, options)
     }
 }
-},{"./angle":191,"./face":193,"./movie":195,"./shake":196,"./target":197,"./tint":198,"./to":199,"./wait":200}],195:[function(require,module,exports){
+},{"./angle":192,"./face":193,"./movie":196,"./shake":197,"./target":198,"./tint":199,"./to":200,"./wait":201}],196:[function(require,module,exports){
 const wait = require('./wait')
 
 /**
@@ -20165,7 +20253,7 @@ module.exports = class movie extends wait
 {
     /**
      * @param {object} object to animate
-     * @param {array} textures - parameters to animate, e.g.: {alpha: 5, scale: {x, 5} rotation: Math.PI}
+     * @param {PIXI.Texture[]} textures
      * @param {number} [duration=0] time to run (use 0 for infinite duration--should only be used with customized easing functions)
      * @param {object} [options]
      * @param {number} [options.wait=0] n milliseconds before starting animation (can also be used to pause animation for a length of time)
@@ -20264,7 +20352,7 @@ module.exports = class movie extends wait
         }
     }
 }
-},{"./wait":200}],196:[function(require,module,exports){
+},{"./wait":201}],197:[function(require,module,exports){
 const wait = require('./wait')
 
 /**
@@ -20373,7 +20461,7 @@ module.exports = class shake extends wait
         }
     }
 }
-},{"./wait":200}],197:[function(require,module,exports){
+},{"./wait":201}],198:[function(require,module,exports){
 const wait = require('./wait')
 
 /** move an object to a target's location */
@@ -20450,7 +20538,7 @@ module.exports = class target extends wait
         }
     }
 }
-},{"./wait":200}],198:[function(require,module,exports){
+},{"./wait":201}],199:[function(require,module,exports){
 const Color = require('yy-color')
 const wait = require('./wait')
 
@@ -20459,8 +20547,8 @@ module.exports = class tint extends wait
 {
     /**
      * @param {PIXI.DisplayObject|PIXI.DisplayObject[]} object
-     * @param {number} tint
-     * @param {number} [duration=0] in milliseconds, if 0, repeat forever
+     * @param {number|number[]} tint
+     * @param {number} [duration] in milliseconds
      * @param {object} [options] @see {@link Wait}
      */
     constructor(object, tint, duration, options)
@@ -20478,6 +20566,10 @@ module.exports = class tint extends wait
         if (options.load)
         {
             this.load(options.load)
+        }
+        else if (Array.isArray(tint))
+        {
+            this.tints = [this.object.tint, ...tint]
         }
         else
         {
@@ -20505,31 +20597,71 @@ module.exports = class tint extends wait
         this.to = load.to
     }
 
-    calculate(/* elapsed */)
+    calculate()
     {
         const percent = this.ease(this.time, 0, 1, this.duration)
-        const color = Color.blend(percent, this.start, this.to)
-        if (this.list)
+        if (this.tints)
         {
-            for (let object of this.list)
+            const each = 1 / (this.tints.length - 1)
+            let per = each
+            for (let i = 1; i < this.tints.length; i++)
             {
-                object.tint = color
+                if (percent <= per)
+                {
+                    const color = Color.blend(1 - (per - percent) / each, this.tints[i - 1], this.tints[i])
+                    if (this.list)
+                    {
+                        for (let object of this.list)
+                        {
+                            object.tint = color
+                        }
+                    }
+                    else
+                    {
+                        this.object.tint = color
+                    }
+                    break;
+                }
+                per += each
             }
         }
         else
         {
-            this.object.tint = color
+            const color = Color.blend(percent, this.start, this.to)
+            if (this.list)
+            {
+                for (let object of this.list)
+                {
+                    object.tint = color
+                }
+            }
+            else
+            {
+                this.object.tint = color
+            }
         }
     }
 
     reverse()
     {
-        const swap = this.to
-        this.to = this.start
-        this.start = swap
+        if (this.tints)
+        {
+            const tints = []
+            for (let i = this.tints.length - 1; i >= 0; i--)
+            {
+                tints.push(this.tints[i])
+            }
+            this.tints = tints
+        }
+        else
+        {
+            const swap = this.to
+            this.to = this.start
+            this.start = swap
+        }
     }
 }
-},{"./wait":200,"yy-color":383}],199:[function(require,module,exports){
+},{"./wait":201,"yy-color":384}],200:[function(require,module,exports){
 const wait = require('./wait')
 
 /**
@@ -20754,7 +20886,7 @@ module.exports = class to extends wait
         }
     }
 }
-},{"./wait":200}],200:[function(require,module,exports){
+},{"./wait":201}],201:[function(require,module,exports){
 const Easing = require('penner')
 const EventEmitter = require('eventemitter3')
 
@@ -20772,7 +20904,6 @@ module.exports = class wait extends EventEmitter
      * @param {boolean} [options.orphan] delete animation if .parent of object (or first object in list) is null
      * @param {Function} [options.load] loads an animation using an .save() object note the * parameters below cannot be loaded and must be re-set
      * @param {Function|string} [options.ease] function (or penner function name) from easing.js (see http://easings.net for examples)*
-     * @param {boolean} [options.noAdd] don't manage the animation through the main Ease loop (updates must be called manually)
      * @emits {done} animation expires
      * @emits {cancel} animation is cancelled
      * @emits {wait} each update during a wait
@@ -20784,7 +20915,6 @@ module.exports = class wait extends EventEmitter
     constructor(object, options)
     {
         super()
-        const Animate = require('./animate')
         this.object = object
         this.options = options || {}
         this.type = 'Wait'
@@ -20796,17 +20926,13 @@ module.exports = class wait extends EventEmitter
         {
             this.time = 0
         }
-        if (!this.options.ease && Animate.defaults.ease)
-        {
-            this.options.ease = Animate.defaults.ease
-        }
         if (this.options.ease && typeof this.options.ease !== 'function')
         {
-            this.options.ease = Easing[options.ease] || Animate.defaults.easing
+            this.options.ease = Easing[this.options.ease]
         }
-        if (!this.options.noAdd)
+        if (!this.options.ease)
         {
-            Animate.add(this)
+            this.options.ease = Easing['linear']
         }
     }
 
@@ -21025,7 +21151,7 @@ module.exports = class wait extends EventEmitter
 
     calculate() {}
 }
-},{"./animate":192,"eventemitter3":6,"penner":190}],201:[function(require,module,exports){
+},{"eventemitter3":6,"penner":190}],202:[function(require,module,exports){
 var EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 
 /**
@@ -21146,7 +21272,7 @@ Buffer.prototype.destroy = function(){
 
 module.exports = Buffer;
 
-},{}],202:[function(require,module,exports){
+},{}],203:[function(require,module,exports){
 
 var Texture = require('./GLTexture');
 
@@ -21373,7 +21499,7 @@ Framebuffer.createFloat32 = function(gl, width, height, data)
 
 module.exports = Framebuffer;
 
-},{"./GLTexture":204}],203:[function(require,module,exports){
+},{"./GLTexture":205}],204:[function(require,module,exports){
 
 var compileProgram = require('./shader/compileProgram'),
 	extractAttributes = require('./shader/extractAttributes'),
@@ -21466,7 +21592,7 @@ Shader.prototype.destroy = function()
 
 module.exports = Shader;
 
-},{"./shader/compileProgram":209,"./shader/extractAttributes":211,"./shader/extractUniforms":212,"./shader/generateUniformAccessObject":213,"./shader/setPrecision":217}],204:[function(require,module,exports){
+},{"./shader/compileProgram":210,"./shader/extractAttributes":212,"./shader/extractUniforms":213,"./shader/generateUniformAccessObject":214,"./shader/setPrecision":218}],205:[function(require,module,exports){
 
 /**
  * Helper class to create a WebGL Texture
@@ -21801,7 +21927,7 @@ Texture.fromData = function(gl, data, width, height)
 
 module.exports = Texture;
 
-},{}],205:[function(require,module,exports){
+},{}],206:[function(require,module,exports){
 
 // state object//
 var setVertexAttribArrays = require( './setVertexAttribArrays' );
@@ -22065,7 +22191,7 @@ VertexArrayObject.prototype.getSize = function()
     return attrib.buffer.data.length / (( attrib.stride/4 ) || attrib.attribute.size);
 };
 
-},{"./setVertexAttribArrays":208}],206:[function(require,module,exports){
+},{"./setVertexAttribArrays":209}],207:[function(require,module,exports){
 
 /**
  * Helper class to create a webGL Context
@@ -22093,7 +22219,7 @@ var createContext = function(canvas, options)
 
 module.exports = createContext;
 
-},{}],207:[function(require,module,exports){
+},{}],208:[function(require,module,exports){
 var gl = {
     createContext:          require('./createContext'),
     setVertexAttribArrays:  require('./setVertexAttribArrays'),
@@ -22120,7 +22246,7 @@ if (typeof window !== 'undefined')
     window.PIXI.glCore = gl;
 }
 
-},{"./GLBuffer":201,"./GLFramebuffer":202,"./GLShader":203,"./GLTexture":204,"./VertexArrayObject":205,"./createContext":206,"./setVertexAttribArrays":208,"./shader":214}],208:[function(require,module,exports){
+},{"./GLBuffer":202,"./GLFramebuffer":203,"./GLShader":204,"./GLTexture":205,"./VertexArrayObject":206,"./createContext":207,"./setVertexAttribArrays":209,"./shader":215}],209:[function(require,module,exports){
 // var GL_MAP = {};
 
 /**
@@ -22177,7 +22303,7 @@ var setVertexAttribArrays = function (gl, attribs, state)
 
 module.exports = setVertexAttribArrays;
 
-},{}],209:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 
 /**
  * @class
@@ -22259,7 +22385,7 @@ var compileShader = function (gl, type, src)
 
 module.exports = compileProgram;
 
-},{}],210:[function(require,module,exports){
+},{}],211:[function(require,module,exports){
 /**
  * @class
  * @memberof PIXI.glCore.shader
@@ -22339,7 +22465,7 @@ var booleanArray = function(size)
 
 module.exports = defaultValue;
 
-},{}],211:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 
 var mapType = require('./mapType');
 var mapSize = require('./mapSize');
@@ -22382,7 +22508,7 @@ var pointer = function(type, normalized, stride, start){
 
 module.exports = extractAttributes;
 
-},{"./mapSize":215,"./mapType":216}],212:[function(require,module,exports){
+},{"./mapSize":216,"./mapType":217}],213:[function(require,module,exports){
 var mapType = require('./mapType');
 var defaultValue = require('./defaultValue');
 
@@ -22419,7 +22545,7 @@ var extractUniforms = function(gl, program)
 
 module.exports = extractUniforms;
 
-},{"./defaultValue":210,"./mapType":216}],213:[function(require,module,exports){
+},{"./defaultValue":211,"./mapType":217}],214:[function(require,module,exports){
 /**
  * Extracts the attributes
  * @class
@@ -22562,7 +22688,7 @@ var GLSL_TO_ARRAY_SETTERS = {
 
 module.exports = generateUniformAccessObject;
 
-},{}],214:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 module.exports = {
     compileProgram: require('./compileProgram'),
     defaultValue: require('./defaultValue'),
@@ -22573,7 +22699,7 @@ module.exports = {
     mapSize: require('./mapSize'),
     mapType: require('./mapType')
 };
-},{"./compileProgram":209,"./defaultValue":210,"./extractAttributes":211,"./extractUniforms":212,"./generateUniformAccessObject":213,"./mapSize":215,"./mapType":216,"./setPrecision":217}],215:[function(require,module,exports){
+},{"./compileProgram":210,"./defaultValue":211,"./extractAttributes":212,"./extractUniforms":213,"./generateUniformAccessObject":214,"./mapSize":216,"./mapType":217,"./setPrecision":218}],216:[function(require,module,exports){
 /**
  * @class
  * @memberof PIXI.glCore.shader
@@ -22611,7 +22737,7 @@ var GLSL_TO_SIZE = {
 
 module.exports = mapSize;
 
-},{}],216:[function(require,module,exports){
+},{}],217:[function(require,module,exports){
 
 
 var mapSize = function(gl, type) 
@@ -22659,7 +22785,7 @@ var GL_TO_GLSL_TYPES = {
 
 module.exports = mapSize;
 
-},{}],217:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
 /**
  * Sets the float precision on the shader. If the precision is already present this function will do nothing
  * @param {string} src       the shader source
@@ -22679,7 +22805,7 @@ var setPrecision = function(src, precision)
 
 module.exports = setPrecision;
 
-},{}],218:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23173,7 +23299,7 @@ exports.default = AccessibilityManager;
 core.WebGLRenderer.registerPlugin('accessibility', AccessibilityManager);
 core.CanvasRenderer.registerPlugin('accessibility', AccessibilityManager);
 
-},{"../core":243,"./accessibleTarget":219,"ismobilejs":186}],219:[function(require,module,exports){
+},{"../core":244,"./accessibleTarget":220,"ismobilejs":186}],220:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -23231,7 +23357,7 @@ exports.default = {
   _accessibleDiv: false
 };
 
-},{}],220:[function(require,module,exports){
+},{}],221:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23256,7 +23382,7 @@ Object.defineProperty(exports, 'AccessibilityManager', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./AccessibilityManager":218,"./accessibleTarget":219}],221:[function(require,module,exports){
+},{"./AccessibilityManager":219,"./accessibleTarget":220}],222:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23479,7 +23605,7 @@ var Application = function () {
 
 exports.default = Application;
 
-},{"./autoDetectRenderer":223,"./const":224,"./display/Container":226,"./settings":279,"./ticker":298}],222:[function(require,module,exports){
+},{"./autoDetectRenderer":224,"./const":225,"./display/Container":227,"./settings":280,"./ticker":299}],223:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23543,7 +23669,7 @@ var Shader = function (_GLShader) {
 
 exports.default = Shader;
 
-},{"./settings":279,"pixi-gl-core":207}],223:[function(require,module,exports){
+},{"./settings":280,"pixi-gl-core":208}],224:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23612,7 +23738,7 @@ function autoDetectRenderer(options, arg1, arg2, arg3) {
     return new _CanvasRenderer2.default(options, arg1, arg2);
 }
 
-},{"./renderers/canvas/CanvasRenderer":255,"./renderers/webgl/WebGLRenderer":262,"./utils":302}],224:[function(require,module,exports){
+},{"./renderers/canvas/CanvasRenderer":256,"./renderers/webgl/WebGLRenderer":263,"./utils":303}],225:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23955,7 +24081,7 @@ var UPDATE_PRIORITY = exports.UPDATE_PRIORITY = {
   UTILITY: -50
 };
 
-},{}],225:[function(require,module,exports){
+},{}],226:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24298,7 +24424,7 @@ var Bounds = function () {
 
 exports.default = Bounds;
 
-},{"../math":248}],226:[function(require,module,exports){
+},{"../math":249}],227:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24916,7 +25042,7 @@ var Container = function (_DisplayObject) {
 exports.default = Container;
 Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
-},{"../utils":302,"./DisplayObject":227}],227:[function(require,module,exports){
+},{"../utils":303,"./DisplayObject":228}],228:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25608,7 +25734,7 @@ var DisplayObject = function (_EventEmitter) {
 exports.default = DisplayObject;
 DisplayObject.prototype.displayObjectUpdateTransform = DisplayObject.prototype.updateTransform;
 
-},{"../const":224,"../math":248,"../settings":279,"./Bounds":225,"./Transform":228,"./TransformStatic":230,"eventemitter3":6}],228:[function(require,module,exports){
+},{"../const":225,"../math":249,"../settings":280,"./Bounds":226,"./Transform":229,"./TransformStatic":231,"eventemitter3":6}],229:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25789,7 +25915,7 @@ var Transform = function (_TransformBase) {
 
 exports.default = Transform;
 
-},{"../math":248,"./TransformBase":229}],229:[function(require,module,exports){
+},{"../math":249,"./TransformBase":230}],230:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25876,7 +26002,7 @@ TransformBase.prototype.updateWorldTransform = TransformBase.prototype.updateTra
 
 TransformBase.IDENTITY = new TransformBase();
 
-},{"../math":248}],230:[function(require,module,exports){
+},{"../math":249}],231:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26086,7 +26212,7 @@ var TransformStatic = function (_TransformBase) {
 
 exports.default = TransformStatic;
 
-},{"../math":248,"./TransformBase":229}],231:[function(require,module,exports){
+},{"../math":249,"./TransformBase":230}],232:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27258,7 +27384,7 @@ exports.default = Graphics;
 
 Graphics._SPRITE_TEXTURE = null;
 
-},{"../const":224,"../display/Bounds":225,"../display/Container":226,"../math":248,"../renderers/canvas/CanvasRenderer":255,"../sprites/Sprite":280,"../textures/RenderTexture":291,"../textures/Texture":293,"../utils":302,"./GraphicsData":232,"./utils/bezierCurveTo":234}],232:[function(require,module,exports){
+},{"../const":225,"../display/Bounds":226,"../display/Container":227,"../math":249,"../renderers/canvas/CanvasRenderer":256,"../sprites/Sprite":281,"../textures/RenderTexture":292,"../textures/Texture":294,"../utils":303,"./GraphicsData":233,"./utils/bezierCurveTo":235}],233:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -27380,7 +27506,7 @@ var GraphicsData = function () {
 
 exports.default = GraphicsData;
 
-},{}],233:[function(require,module,exports){
+},{}],234:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27649,7 +27775,7 @@ exports.default = CanvasGraphicsRenderer;
 
 _CanvasRenderer2.default.registerPlugin('graphics', CanvasGraphicsRenderer);
 
-},{"../../const":224,"../../renderers/canvas/CanvasRenderer":255}],234:[function(require,module,exports){
+},{"../../const":225,"../../renderers/canvas/CanvasRenderer":256}],235:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -27699,7 +27825,7 @@ function bezierCurveTo(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY) {
     return path;
 }
 
-},{}],235:[function(require,module,exports){
+},{}],236:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27964,7 +28090,7 @@ exports.default = GraphicsRenderer;
 
 _WebGLRenderer2.default.registerPlugin('graphics', GraphicsRenderer);
 
-},{"../../const":224,"../../renderers/webgl/WebGLRenderer":262,"../../renderers/webgl/utils/ObjectRenderer":272,"../../utils":302,"./WebGLGraphicsData":236,"./shaders/PrimitiveShader":237,"./utils/buildCircle":238,"./utils/buildPoly":240,"./utils/buildRectangle":241,"./utils/buildRoundedRectangle":242}],236:[function(require,module,exports){
+},{"../../const":225,"../../renderers/webgl/WebGLRenderer":263,"../../renderers/webgl/utils/ObjectRenderer":273,"../../utils":303,"./WebGLGraphicsData":237,"./shaders/PrimitiveShader":238,"./utils/buildCircle":239,"./utils/buildPoly":241,"./utils/buildRectangle":242,"./utils/buildRoundedRectangle":243}],237:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28107,7 +28233,7 @@ var WebGLGraphicsData = function () {
 
 exports.default = WebGLGraphicsData;
 
-},{"pixi-gl-core":207}],237:[function(require,module,exports){
+},{"pixi-gl-core":208}],238:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28152,7 +28278,7 @@ var PrimitiveShader = function (_Shader) {
 
 exports.default = PrimitiveShader;
 
-},{"../../../Shader":222}],238:[function(require,module,exports){
+},{"../../../Shader":223}],239:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28245,7 +28371,7 @@ function buildCircle(graphicsData, webGLData, webGLDataNativeLines) {
     }
 }
 
-},{"../../../const":224,"../../../utils":302,"./buildLine":239}],239:[function(require,module,exports){
+},{"../../../const":225,"../../../utils":303,"./buildLine":240}],240:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28515,7 +28641,7 @@ function buildNativeLine(graphicsData, webGLData) {
     }
 }
 
-},{"../../../math":248,"../../../utils":302}],240:[function(require,module,exports){
+},{"../../../math":249,"../../../utils":303}],241:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28601,7 +28727,7 @@ function buildPoly(graphicsData, webGLData, webGLDataNativeLines) {
     }
 }
 
-},{"../../../utils":302,"./buildLine":239,"earcut":5}],241:[function(require,module,exports){
+},{"../../../utils":303,"./buildLine":240,"earcut":5}],242:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28677,7 +28803,7 @@ function buildRectangle(graphicsData, webGLData, webGLDataNativeLines) {
     }
 }
 
-},{"../../../utils":302,"./buildLine":239}],242:[function(require,module,exports){
+},{"../../../utils":303,"./buildLine":240}],243:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28833,7 +28959,7 @@ function quadraticBezierCurve(fromX, fromY, cpX, cpY, toX, toY) {
     return points;
 }
 
-},{"../../../utils":302,"./buildLine":239,"earcut":5}],243:[function(require,module,exports){
+},{"../../../utils":303,"./buildLine":240,"earcut":5}],244:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29210,7 +29336,7 @@ exports.WebGLRenderer = _WebGLRenderer2.default; /**
                                                   * @namespace PIXI
                                                   */
 
-},{"./Application":221,"./Shader":222,"./autoDetectRenderer":223,"./const":224,"./display/Bounds":225,"./display/Container":226,"./display/DisplayObject":227,"./display/Transform":228,"./display/TransformBase":229,"./display/TransformStatic":230,"./graphics/Graphics":231,"./graphics/GraphicsData":232,"./graphics/canvas/CanvasGraphicsRenderer":233,"./graphics/webgl/GraphicsRenderer":235,"./math":248,"./renderers/canvas/CanvasRenderer":255,"./renderers/canvas/utils/CanvasRenderTarget":257,"./renderers/webgl/WebGLRenderer":262,"./renderers/webgl/filters/Filter":264,"./renderers/webgl/filters/spriteMask/SpriteMaskFilter":267,"./renderers/webgl/managers/WebGLManager":271,"./renderers/webgl/utils/ObjectRenderer":272,"./renderers/webgl/utils/Quad":273,"./renderers/webgl/utils/RenderTarget":274,"./settings":279,"./sprites/Sprite":280,"./sprites/canvas/CanvasSpriteRenderer":281,"./sprites/canvas/CanvasTinter":282,"./sprites/webgl/SpriteRenderer":284,"./text/Text":286,"./text/TextMetrics":287,"./text/TextStyle":288,"./textures/BaseRenderTexture":289,"./textures/BaseTexture":290,"./textures/RenderTexture":291,"./textures/Spritesheet":292,"./textures/Texture":293,"./textures/TextureUvs":294,"./textures/VideoBaseTexture":295,"./ticker":298,"./utils":302,"pixi-gl-core":207}],244:[function(require,module,exports){
+},{"./Application":222,"./Shader":223,"./autoDetectRenderer":224,"./const":225,"./display/Bounds":226,"./display/Container":227,"./display/DisplayObject":228,"./display/Transform":229,"./display/TransformBase":230,"./display/TransformStatic":231,"./graphics/Graphics":232,"./graphics/GraphicsData":233,"./graphics/canvas/CanvasGraphicsRenderer":234,"./graphics/webgl/GraphicsRenderer":236,"./math":249,"./renderers/canvas/CanvasRenderer":256,"./renderers/canvas/utils/CanvasRenderTarget":258,"./renderers/webgl/WebGLRenderer":263,"./renderers/webgl/filters/Filter":265,"./renderers/webgl/filters/spriteMask/SpriteMaskFilter":268,"./renderers/webgl/managers/WebGLManager":272,"./renderers/webgl/utils/ObjectRenderer":273,"./renderers/webgl/utils/Quad":274,"./renderers/webgl/utils/RenderTarget":275,"./settings":280,"./sprites/Sprite":281,"./sprites/canvas/CanvasSpriteRenderer":282,"./sprites/canvas/CanvasTinter":283,"./sprites/webgl/SpriteRenderer":285,"./text/Text":287,"./text/TextMetrics":288,"./text/TextStyle":289,"./textures/BaseRenderTexture":290,"./textures/BaseTexture":291,"./textures/RenderTexture":292,"./textures/Spritesheet":293,"./textures/Texture":294,"./textures/TextureUvs":295,"./textures/VideoBaseTexture":296,"./ticker":299,"./utils":303,"pixi-gl-core":208}],245:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29402,7 +29528,7 @@ var GroupD8 = {
 
 exports.default = GroupD8;
 
-},{"./Matrix":245}],245:[function(require,module,exports){
+},{"./Matrix":246}],246:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29933,7 +30059,7 @@ var Matrix = function () {
 
 exports.default = Matrix;
 
-},{"./Point":247}],246:[function(require,module,exports){
+},{"./Point":248}],247:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -30050,7 +30176,7 @@ var ObservablePoint = function () {
 
 exports.default = ObservablePoint;
 
-},{}],247:[function(require,module,exports){
+},{}],248:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -30141,7 +30267,7 @@ var Point = function () {
 
 exports.default = Point;
 
-},{}],248:[function(require,module,exports){
+},{}],249:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30229,7 +30355,7 @@ Object.defineProperty(exports, 'RoundedRectangle', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./GroupD8":244,"./Matrix":245,"./ObservablePoint":246,"./Point":247,"./shapes/Circle":249,"./shapes/Ellipse":250,"./shapes/Polygon":251,"./shapes/Rectangle":252,"./shapes/RoundedRectangle":253}],249:[function(require,module,exports){
+},{"./GroupD8":245,"./Matrix":246,"./ObservablePoint":247,"./Point":248,"./shapes/Circle":250,"./shapes/Ellipse":251,"./shapes/Polygon":252,"./shapes/Rectangle":253,"./shapes/RoundedRectangle":254}],250:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30343,7 +30469,7 @@ var Circle = function () {
 
 exports.default = Circle;
 
-},{"../../const":224,"./Rectangle":252}],250:[function(require,module,exports){
+},{"../../const":225,"./Rectangle":253}],251:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30465,7 +30591,7 @@ var Ellipse = function () {
 
 exports.default = Ellipse;
 
-},{"../../const":224,"./Rectangle":252}],251:[function(require,module,exports){
+},{"../../const":225,"./Rectangle":253}],252:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30596,7 +30722,7 @@ var Polygon = function () {
 
 exports.default = Polygon;
 
-},{"../../const":224,"../Point":247}],252:[function(require,module,exports){
+},{"../../const":225,"../Point":248}],253:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30859,7 +30985,7 @@ var Rectangle = function () {
 
 exports.default = Rectangle;
 
-},{"../../const":224}],253:[function(require,module,exports){
+},{"../../const":225}],254:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30992,7 +31118,7 @@ var RoundedRectangle = function () {
 
 exports.default = RoundedRectangle;
 
-},{"../../const":224}],254:[function(require,module,exports){
+},{"../../const":225}],255:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31355,7 +31481,7 @@ var SystemRenderer = function (_EventEmitter) {
 
 exports.default = SystemRenderer;
 
-},{"../const":224,"../display/Container":226,"../math":248,"../settings":279,"../textures/RenderTexture":291,"../utils":302,"eventemitter3":6}],255:[function(require,module,exports){
+},{"../const":225,"../display/Container":227,"../math":249,"../settings":280,"../textures/RenderTexture":292,"../utils":303,"eventemitter3":6}],256:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31717,7 +31843,7 @@ var CanvasRenderer = function (_SystemRenderer) {
 exports.default = CanvasRenderer;
 _utils.pluginTarget.mixin(CanvasRenderer);
 
-},{"../../const":224,"../../settings":279,"../../utils":302,"../SystemRenderer":254,"./utils/CanvasMaskManager":256,"./utils/CanvasRenderTarget":257,"./utils/mapCanvasBlendModesToPixi":259}],256:[function(require,module,exports){
+},{"../../const":225,"../../settings":280,"../../utils":303,"../SystemRenderer":255,"./utils/CanvasMaskManager":257,"./utils/CanvasRenderTarget":258,"./utils/mapCanvasBlendModesToPixi":260}],257:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31886,7 +32012,7 @@ var CanvasMaskManager = function () {
 
 exports.default = CanvasMaskManager;
 
-},{"../../../const":224}],257:[function(require,module,exports){
+},{"../../../const":225}],258:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32010,7 +32136,7 @@ var CanvasRenderTarget = function () {
 
 exports.default = CanvasRenderTarget;
 
-},{"../../../settings":279}],258:[function(require,module,exports){
+},{"../../../settings":280}],259:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32071,7 +32197,7 @@ function canUseNewCanvasBlendModes() {
     return data[0] === 255 && data[1] === 0 && data[2] === 0;
 }
 
-},{}],259:[function(require,module,exports){
+},{}],260:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32143,7 +32269,7 @@ function mapCanvasBlendModesToPixi() {
     return array;
 }
 
-},{"../../../const":224,"./canUseNewCanvasBlendModes":258}],260:[function(require,module,exports){
+},{"../../../const":225,"./canUseNewCanvasBlendModes":259}],261:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32263,7 +32389,7 @@ var TextureGarbageCollector = function () {
 
 exports.default = TextureGarbageCollector;
 
-},{"../../const":224,"../../settings":279}],261:[function(require,module,exports){
+},{"../../const":225,"../../settings":280}],262:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32519,7 +32645,7 @@ var TextureManager = function () {
 
 exports.default = TextureManager;
 
-},{"../../const":224,"../../utils":302,"./utils/RenderTarget":274,"pixi-gl-core":207}],262:[function(require,module,exports){
+},{"../../const":225,"../../utils":303,"./utils/RenderTarget":275,"pixi-gl-core":208}],263:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33331,7 +33457,7 @@ var WebGLRenderer = function (_SystemRenderer) {
 exports.default = WebGLRenderer;
 _utils.pluginTarget.mixin(WebGLRenderer);
 
-},{"../../const":224,"../../textures/BaseTexture":290,"../../utils":302,"../SystemRenderer":254,"./TextureGarbageCollector":260,"./TextureManager":261,"./WebGLState":263,"./managers/FilterManager":268,"./managers/MaskManager":269,"./managers/StencilManager":270,"./utils/ObjectRenderer":272,"./utils/RenderTarget":274,"./utils/mapWebGLDrawModesToPixi":277,"./utils/validateContext":278,"pixi-gl-core":207}],263:[function(require,module,exports){
+},{"../../const":225,"../../textures/BaseTexture":291,"../../utils":303,"../SystemRenderer":255,"./TextureGarbageCollector":261,"./TextureManager":262,"./WebGLState":264,"./managers/FilterManager":269,"./managers/MaskManager":270,"./managers/StencilManager":271,"./utils/ObjectRenderer":273,"./utils/RenderTarget":275,"./utils/mapWebGLDrawModesToPixi":278,"./utils/validateContext":279,"pixi-gl-core":208}],264:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33611,7 +33737,7 @@ var WebGLState = function () {
 
 exports.default = WebGLState;
 
-},{"./utils/mapWebGLBlendModesToPixi":276}],264:[function(require,module,exports){
+},{"./utils/mapWebGLBlendModesToPixi":277}],265:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33807,7 +33933,7 @@ var Filter = function () {
 
 exports.default = Filter;
 
-},{"../../../const":224,"../../../settings":279,"../../../utils":302,"./extractUniformsFromSrc":265}],265:[function(require,module,exports){
+},{"../../../const":225,"../../../settings":280,"../../../utils":303,"./extractUniformsFromSrc":266}],266:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33869,7 +33995,7 @@ function extractUniformsFromString(string) {
     return uniforms;
 }
 
-},{"pixi-gl-core":207}],266:[function(require,module,exports){
+},{"pixi-gl-core":208}],267:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33928,7 +34054,7 @@ function calculateSpriteMatrix(outputMatrix, filterArea, textureSize, sprite) {
     return mappedMatrix;
 }
 
-},{"../../../math":248}],267:[function(require,module,exports){
+},{"../../../math":249}],268:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34000,7 +34126,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":248,"../Filter":264,"path":386}],268:[function(require,module,exports){
+},{"../../../../math":249,"../Filter":265,"path":389}],269:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34594,7 +34720,7 @@ var FilterManager = function (_WebGLManager) {
 
 exports.default = FilterManager;
 
-},{"../../../Shader":222,"../../../math":248,"../filters/filterTransforms":266,"../utils/Quad":273,"../utils/RenderTarget":274,"./WebGLManager":271,"bit-twiddle":4}],269:[function(require,module,exports){
+},{"../../../Shader":223,"../../../math":249,"../filters/filterTransforms":267,"../utils/Quad":274,"../utils/RenderTarget":275,"./WebGLManager":272,"bit-twiddle":4}],270:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34804,7 +34930,7 @@ var MaskManager = function (_WebGLManager) {
 
 exports.default = MaskManager;
 
-},{"../filters/spriteMask/SpriteMaskFilter":267,"./WebGLManager":271}],270:[function(require,module,exports){
+},{"../filters/spriteMask/SpriteMaskFilter":268,"./WebGLManager":272}],271:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34957,7 +35083,7 @@ var StencilManager = function (_WebGLManager) {
 
 exports.default = StencilManager;
 
-},{"./WebGLManager":271}],271:[function(require,module,exports){
+},{"./WebGLManager":272}],272:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35012,7 +35138,7 @@ var WebGLManager = function () {
 
 exports.default = WebGLManager;
 
-},{}],272:[function(require,module,exports){
+},{}],273:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35090,7 +35216,7 @@ var ObjectRenderer = function (_WebGLManager) {
 
 exports.default = ObjectRenderer;
 
-},{"../managers/WebGLManager":271}],273:[function(require,module,exports){
+},{"../managers/WebGLManager":272}],274:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35271,7 +35397,7 @@ var Quad = function () {
 
 exports.default = Quad;
 
-},{"../../../utils/createIndicesForQuads":300,"pixi-gl-core":207}],274:[function(require,module,exports){
+},{"../../../utils/createIndicesForQuads":301,"pixi-gl-core":208}],275:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35598,7 +35724,7 @@ var RenderTarget = function () {
 
 exports.default = RenderTarget;
 
-},{"../../../const":224,"../../../math":248,"../../../settings":279,"pixi-gl-core":207}],275:[function(require,module,exports){
+},{"../../../const":225,"../../../math":249,"../../../settings":280,"pixi-gl-core":208}],276:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35673,7 +35799,7 @@ function generateIfTestSrc(maxIfs) {
     return src;
 }
 
-},{"pixi-gl-core":207}],276:[function(require,module,exports){
+},{"pixi-gl-core":208}],277:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35722,7 +35848,7 @@ function mapWebGLBlendModesToPixi(gl) {
     return array;
 }
 
-},{"../../../const":224}],277:[function(require,module,exports){
+},{"../../../const":225}],278:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35754,7 +35880,7 @@ function mapWebGLDrawModesToPixi(gl) {
   return object;
 }
 
-},{"../../../const":224}],278:[function(require,module,exports){
+},{"../../../const":225}],279:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35770,7 +35896,7 @@ function validateContext(gl) {
     }
 }
 
-},{}],279:[function(require,module,exports){
+},{}],280:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -36005,7 +36131,7 @@ exports.default = {
 
 };
 
-},{"./utils/canUploadSameBuffer":299,"./utils/maxRecommendedTextures":304}],280:[function(require,module,exports){
+},{"./utils/canUploadSameBuffer":300,"./utils/maxRecommendedTextures":305}],281:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -36628,7 +36754,7 @@ var Sprite = function (_Container) {
 
 exports.default = Sprite;
 
-},{"../const":224,"../display/Container":226,"../math":248,"../textures/Texture":293,"../utils":302}],281:[function(require,module,exports){
+},{"../const":225,"../display/Container":227,"../math":249,"../textures/Texture":294,"../utils":303}],282:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -36781,7 +36907,7 @@ exports.default = CanvasSpriteRenderer;
 
 _CanvasRenderer2.default.registerPlugin('sprite', CanvasSpriteRenderer);
 
-},{"../../const":224,"../../math":248,"../../renderers/canvas/CanvasRenderer":255,"./CanvasTinter":282}],282:[function(require,module,exports){
+},{"../../const":225,"../../math":249,"../../renderers/canvas/CanvasRenderer":256,"./CanvasTinter":283}],283:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37032,7 +37158,7 @@ CanvasTinter.tintMethod = CanvasTinter.canUseMultiply ? CanvasTinter.tintWithMul
 
 exports.default = CanvasTinter;
 
-},{"../../renderers/canvas/utils/canUseNewCanvasBlendModes":258,"../../utils":302}],283:[function(require,module,exports){
+},{"../../renderers/canvas/utils/canUseNewCanvasBlendModes":259,"../../utils":303}],284:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -37085,7 +37211,7 @@ var Buffer = function () {
 
 exports.default = Buffer;
 
-},{}],284:[function(require,module,exports){
+},{}],285:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37627,7 +37753,7 @@ exports.default = SpriteRenderer;
 
 _WebGLRenderer2.default.registerPlugin('sprite', SpriteRenderer);
 
-},{"../../renderers/webgl/WebGLRenderer":262,"../../renderers/webgl/utils/ObjectRenderer":272,"../../renderers/webgl/utils/checkMaxIfStatmentsInShader":275,"../../settings":279,"../../utils":302,"../../utils/createIndicesForQuads":300,"./BatchBuffer":283,"./generateMultiTextureShader":285,"bit-twiddle":4,"pixi-gl-core":207}],285:[function(require,module,exports){
+},{"../../renderers/webgl/WebGLRenderer":263,"../../renderers/webgl/utils/ObjectRenderer":273,"../../renderers/webgl/utils/checkMaxIfStatmentsInShader":276,"../../settings":280,"../../utils":303,"../../utils/createIndicesForQuads":301,"./BatchBuffer":284,"./generateMultiTextureShader":286,"bit-twiddle":4,"pixi-gl-core":208}],286:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37690,7 +37816,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":222,"path":386}],286:[function(require,module,exports){
+},{"../../Shader":223,"path":389}],287:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38345,7 +38471,7 @@ var Text = function (_Sprite) {
 
 exports.default = Text;
 
-},{"../const":224,"../math":248,"../settings":279,"../sprites/Sprite":280,"../textures/Texture":293,"../utils":302,"../utils/trimCanvas":307,"./TextMetrics":287,"./TextStyle":288}],287:[function(require,module,exports){
+},{"../const":225,"../math":249,"../settings":280,"../sprites/Sprite":281,"../textures/Texture":294,"../utils":303,"../utils/trimCanvas":308,"./TextMetrics":288,"./TextStyle":289}],288:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38647,7 +38773,7 @@ TextMetrics._context = canvas.getContext('2d');
  */
 TextMetrics._fonts = {};
 
-},{}],288:[function(require,module,exports){
+},{}],289:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39431,7 +39557,7 @@ function areArraysEqual(array1, array2) {
     return true;
 }
 
-},{"../const":224,"../utils":302}],289:[function(require,module,exports){
+},{"../const":225,"../utils":303}],290:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39590,7 +39716,7 @@ var BaseRenderTexture = function (_BaseTexture) {
 
 exports.default = BaseRenderTexture;
 
-},{"../settings":279,"./BaseTexture":290}],290:[function(require,module,exports){
+},{"../settings":280,"./BaseTexture":291}],291:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40434,7 +40560,7 @@ var BaseTexture = function (_EventEmitter) {
 
 exports.default = BaseTexture;
 
-},{"../settings":279,"../utils":302,"../utils/determineCrossOrigin":301,"bit-twiddle":4,"eventemitter3":6}],291:[function(require,module,exports){
+},{"../settings":280,"../utils":303,"../utils/determineCrossOrigin":302,"bit-twiddle":4,"eventemitter3":6}],292:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40585,7 +40711,7 @@ var RenderTexture = function (_Texture) {
 
 exports.default = RenderTexture;
 
-},{"./BaseRenderTexture":289,"./Texture":293}],292:[function(require,module,exports){
+},{"./BaseRenderTexture":290,"./Texture":294}],293:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40847,7 +40973,7 @@ var Spritesheet = function () {
 
 exports.default = Spritesheet;
 
-},{"../":243,"../utils":302}],293:[function(require,module,exports){
+},{"../":244,"../utils":303}],294:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41537,7 +41663,7 @@ Texture.WHITE = createWhiteTexture();
 removeAllHandlers(Texture.WHITE);
 removeAllHandlers(Texture.WHITE.baseTexture);
 
-},{"../math":248,"../settings":279,"../utils":302,"./BaseTexture":290,"./TextureUvs":294,"./VideoBaseTexture":295,"eventemitter3":6}],294:[function(require,module,exports){
+},{"../math":249,"../settings":280,"../utils":303,"./BaseTexture":291,"./TextureUvs":295,"./VideoBaseTexture":296,"eventemitter3":6}],295:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41642,7 +41768,7 @@ var TextureUvs = function () {
 
 exports.default = TextureUvs;
 
-},{"../math/GroupD8":244}],295:[function(require,module,exports){
+},{"../math/GroupD8":245}],296:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41967,7 +42093,7 @@ function createSource(path, type) {
     return source;
 }
 
-},{"../const":224,"../ticker":298,"../utils":302,"./BaseTexture":290}],296:[function(require,module,exports){
+},{"../const":225,"../ticker":299,"../utils":303,"./BaseTexture":291}],297:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42440,7 +42566,7 @@ var Ticker = function () {
 
 exports.default = Ticker;
 
-},{"../const":224,"../settings":279,"./TickerListener":297}],297:[function(require,module,exports){
+},{"../const":225,"../settings":280,"./TickerListener":298}],298:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -42614,7 +42740,7 @@ var TickerListener = function () {
 
 exports.default = TickerListener;
 
-},{}],298:[function(require,module,exports){
+},{}],299:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42694,7 +42820,7 @@ shared.destroy = function () {
 exports.shared = shared;
 exports.Ticker = _Ticker2.default;
 
-},{"./Ticker":296}],299:[function(require,module,exports){
+},{"./Ticker":297}],300:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -42708,7 +42834,7 @@ function canUploadSameBuffer() {
 	return !ios;
 }
 
-},{}],300:[function(require,module,exports){
+},{}],301:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -42742,7 +42868,7 @@ function createIndicesForQuads(size) {
     return indices;
 }
 
-},{}],301:[function(require,module,exports){
+},{}],302:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42798,7 +42924,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":392}],302:[function(require,module,exports){
+},{"url":395}],303:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43272,7 +43398,7 @@ function premultiplyTintToRgba(tint, alpha, out, premultiply) {
     return out;
 }
 
-},{"../const":224,"../settings":279,"./mapPremultipliedBlendModes":303,"./mixin":305,"./pluginTarget":306,"eventemitter3":6,"ismobilejs":186,"remove-array-items":367}],303:[function(require,module,exports){
+},{"../const":225,"../settings":280,"./mapPremultipliedBlendModes":304,"./mixin":306,"./pluginTarget":307,"eventemitter3":6,"ismobilejs":186,"remove-array-items":368}],304:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43315,7 +43441,7 @@ function mapPremultipliedBlendModes() {
     return array;
 }
 
-},{"../const":224}],304:[function(require,module,exports){
+},{"../const":225}],305:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43337,7 +43463,7 @@ function maxRecommendedTextures(max) {
     return max;
 }
 
-},{"ismobilejs":186}],305:[function(require,module,exports){
+},{"ismobilejs":186}],306:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -43399,7 +43525,7 @@ function performMixins() {
     mixins.length = 0;
 }
 
-},{}],306:[function(require,module,exports){
+},{}],307:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -43465,7 +43591,7 @@ exports.default = {
     }
 };
 
-},{}],307:[function(require,module,exports){
+},{}],308:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43541,7 +43667,7 @@ function trimCanvas(canvas) {
     };
 }
 
-},{}],308:[function(require,module,exports){
+},{}],309:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44637,7 +44763,7 @@ function deprecation(core) {
     }
 }
 
-},{}],309:[function(require,module,exports){
+},{}],310:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44817,7 +44943,7 @@ exports.default = CanvasExtract;
 
 core.CanvasRenderer.registerPlugin('extract', CanvasExtract);
 
-},{"../../core":243}],310:[function(require,module,exports){
+},{"../../core":244}],311:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44842,7 +44968,7 @@ Object.defineProperty(exports, 'canvas', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./canvas/CanvasExtract":309,"./webgl/WebGLExtract":311}],311:[function(require,module,exports){
+},{"./canvas/CanvasExtract":310,"./webgl/WebGLExtract":312}],312:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45065,7 +45191,7 @@ exports.default = WebGLExtract;
 
 core.WebGLRenderer.registerPlugin('extract', WebGLExtract);
 
-},{"../../core":243}],312:[function(require,module,exports){
+},{"../../core":244}],313:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45474,7 +45600,7 @@ var AnimatedSprite = function (_core$Sprite) {
 
 exports.default = AnimatedSprite;
 
-},{"../core":243}],313:[function(require,module,exports){
+},{"../core":244}],314:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -46062,7 +46188,7 @@ exports.default = BitmapText;
 
 BitmapText.fonts = {};
 
-},{"../core":243,"../core/math/ObservablePoint":246,"../core/settings":279}],314:[function(require,module,exports){
+},{"../core":244,"../core/math/ObservablePoint":247,"../core/settings":280}],315:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -46221,7 +46347,7 @@ var TextureTransform = function () {
 
 exports.default = TextureTransform;
 
-},{"../core/math/Matrix":245}],315:[function(require,module,exports){
+},{"../core/math/Matrix":246}],316:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -46671,7 +46797,7 @@ var TilingSprite = function (_core$Sprite) {
 
 exports.default = TilingSprite;
 
-},{"../core":243,"../core/sprites/canvas/CanvasTinter":282,"./TextureTransform":314}],316:[function(require,module,exports){
+},{"../core":244,"../core/sprites/canvas/CanvasTinter":283,"./TextureTransform":315}],317:[function(require,module,exports){
 'use strict';
 
 var _core = require('../core');
@@ -47075,7 +47201,7 @@ DisplayObject.prototype._cacheAsBitmapDestroy = function _cacheAsBitmapDestroy(o
     this.destroy(options);
 };
 
-},{"../core":243,"../core/textures/BaseTexture":290,"../core/textures/Texture":293,"../core/utils":302}],317:[function(require,module,exports){
+},{"../core":244,"../core/textures/BaseTexture":291,"../core/textures/Texture":294,"../core/utils":303}],318:[function(require,module,exports){
 'use strict';
 
 var _core = require('../core');
@@ -47109,7 +47235,7 @@ core.Container.prototype.getChildByName = function getChildByName(name) {
     return null;
 };
 
-},{"../core":243}],318:[function(require,module,exports){
+},{"../core":244}],319:[function(require,module,exports){
 'use strict';
 
 var _core = require('../core');
@@ -47142,7 +47268,7 @@ core.DisplayObject.prototype.getGlobalPosition = function getGlobalPosition() {
     return point;
 };
 
-},{"../core":243}],319:[function(require,module,exports){
+},{"../core":244}],320:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47203,7 +47329,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // imported for side effect of extending the prototype only, contains no exports
 
-},{"./AnimatedSprite":312,"./BitmapText":313,"./TextureTransform":314,"./TilingSprite":315,"./cacheAsBitmap":316,"./getChildByName":317,"./getGlobalPosition":318,"./webgl/TilingSpriteRenderer":320}],320:[function(require,module,exports){
+},{"./AnimatedSprite":313,"./BitmapText":314,"./TextureTransform":315,"./TilingSprite":316,"./cacheAsBitmap":317,"./getChildByName":318,"./getGlobalPosition":319,"./webgl/TilingSpriteRenderer":321}],321:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47365,7 +47491,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":243,"../../core/const":224,"path":386}],321:[function(require,module,exports){
+},{"../../core":244,"../../core/const":225,"path":389}],322:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47539,7 +47665,7 @@ var BlurFilter = function (_core$Filter) {
 
 exports.default = BlurFilter;
 
-},{"../../core":243,"./BlurXFilter":322,"./BlurYFilter":323}],322:[function(require,module,exports){
+},{"../../core":244,"./BlurXFilter":323,"./BlurYFilter":324}],323:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47705,7 +47831,7 @@ var BlurXFilter = function (_core$Filter) {
 
 exports.default = BlurXFilter;
 
-},{"../../core":243,"./generateBlurFragSource":324,"./generateBlurVertSource":325,"./getMaxBlurKernelSize":326}],323:[function(require,module,exports){
+},{"../../core":244,"./generateBlurFragSource":325,"./generateBlurVertSource":326,"./getMaxBlurKernelSize":327}],324:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47870,7 +47996,7 @@ var BlurYFilter = function (_core$Filter) {
 
 exports.default = BlurYFilter;
 
-},{"../../core":243,"./generateBlurFragSource":324,"./generateBlurVertSource":325,"./getMaxBlurKernelSize":326}],324:[function(require,module,exports){
+},{"../../core":244,"./generateBlurFragSource":325,"./generateBlurVertSource":326,"./getMaxBlurKernelSize":327}],325:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47917,7 +48043,7 @@ function generateFragBlurSource(kernelSize) {
     return fragSource;
 }
 
-},{}],325:[function(require,module,exports){
+},{}],326:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47961,7 +48087,7 @@ function generateVertBlurSource(kernelSize, x) {
     return vertSource;
 }
 
-},{}],326:[function(require,module,exports){
+},{}],327:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -47977,7 +48103,7 @@ function getMaxKernelSize(gl) {
     return kernelSize;
 }
 
-},{}],327:[function(require,module,exports){
+},{}],328:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48528,7 +48654,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":243,"path":386}],328:[function(require,module,exports){
+},{"../../core":244,"path":389}],329:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48638,7 +48764,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":243,"path":386}],329:[function(require,module,exports){
+},{"../../core":244,"path":389}],330:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48692,7 +48818,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":243,"path":386}],330:[function(require,module,exports){
+},{"../../core":244,"path":389}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48771,7 +48897,7 @@ Object.defineProperty(exports, 'VoidFilter', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./blur/BlurFilter":321,"./blur/BlurXFilter":322,"./blur/BlurYFilter":323,"./colormatrix/ColorMatrixFilter":327,"./displacement/DisplacementFilter":328,"./fxaa/FXAAFilter":329,"./noise/NoiseFilter":331,"./void/VoidFilter":332}],331:[function(require,module,exports){
+},{"./blur/BlurFilter":322,"./blur/BlurXFilter":323,"./blur/BlurYFilter":324,"./colormatrix/ColorMatrixFilter":328,"./displacement/DisplacementFilter":329,"./fxaa/FXAAFilter":330,"./noise/NoiseFilter":332,"./void/VoidFilter":333}],332:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48868,7 +48994,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":243,"path":386}],332:[function(require,module,exports){
+},{"../../core":244,"path":389}],333:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48918,7 +49044,7 @@ var VoidFilter = function (_core$Filter) {
 
 exports.default = VoidFilter;
 
-},{"../../core":243,"path":386}],333:[function(require,module,exports){
+},{"../../core":244,"path":389}],334:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -49032,7 +49158,7 @@ if (typeof _deprecation2.default === 'function') {
 global.PIXI = exports; // eslint-disable-line
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./accessibility":220,"./core":243,"./deprecation":308,"./extract":310,"./extras":319,"./filters":330,"./interaction":338,"./loaders":341,"./mesh":350,"./particles":353,"./polyfill":359,"./prepare":363}],334:[function(require,module,exports){
+},{"./accessibility":221,"./core":244,"./deprecation":309,"./extract":311,"./extras":320,"./filters":331,"./interaction":339,"./loaders":342,"./mesh":351,"./particles":354,"./polyfill":360,"./prepare":364}],335:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49256,7 +49382,7 @@ var InteractionData = function () {
 
 exports.default = InteractionData;
 
-},{"../core":243}],335:[function(require,module,exports){
+},{"../core":244}],336:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -49341,7 +49467,7 @@ var InteractionEvent = function () {
 
 exports.default = InteractionEvent;
 
-},{}],336:[function(require,module,exports){
+},{}],337:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51101,7 +51227,7 @@ exports.default = InteractionManager;
 core.WebGLRenderer.registerPlugin('interaction', InteractionManager);
 core.CanvasRenderer.registerPlugin('interaction', InteractionManager);
 
-},{"../core":243,"./InteractionData":334,"./InteractionEvent":335,"./InteractionTrackingData":337,"./interactiveTarget":339,"eventemitter3":6}],337:[function(require,module,exports){
+},{"../core":244,"./InteractionData":335,"./InteractionEvent":336,"./InteractionTrackingData":338,"./interactiveTarget":340,"eventemitter3":6}],338:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -51277,7 +51403,7 @@ InteractionTrackingData.FLAGS = Object.freeze({
     RIGHT_DOWN: 1 << 2
 });
 
-},{}],338:[function(require,module,exports){
+},{}],339:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51329,7 +51455,7 @@ Object.defineProperty(exports, 'InteractionEvent', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./InteractionData":334,"./InteractionEvent":335,"./InteractionManager":336,"./InteractionTrackingData":337,"./interactiveTarget":339}],339:[function(require,module,exports){
+},{"./InteractionData":335,"./InteractionEvent":336,"./InteractionManager":337,"./InteractionTrackingData":338,"./interactiveTarget":340}],340:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51446,7 +51572,7 @@ exports.default = {
   _trackedPointers: undefined
 };
 
-},{}],340:[function(require,module,exports){
+},{}],341:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51538,7 +51664,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":243,"../extras":319,"path":386,"resource-loader":372}],341:[function(require,module,exports){
+},{"../core":244,"../extras":320,"path":389,"resource-loader":373}],342:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51666,7 +51792,7 @@ AppPrototype.destroy = function destroy(removeView) {
     this._parentDestroy(removeView);
 };
 
-},{"../core/Application":221,"./bitmapFontParser":340,"./loader":342,"./spritesheetParser":343,"./textureParser":344,"resource-loader":372}],342:[function(require,module,exports){
+},{"../core/Application":222,"./bitmapFontParser":341,"./loader":343,"./spritesheetParser":344,"./textureParser":345,"resource-loader":373}],343:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51837,7 +51963,7 @@ var Resource = _resourceLoader2.default.Resource;
 
 Resource.setExtensionXhrType('fnt', Resource.XHR_RESPONSE_TYPE.DOCUMENT);
 
-},{"./bitmapFontParser":340,"./spritesheetParser":343,"./textureParser":344,"eventemitter3":6,"resource-loader":372,"resource-loader/lib/middlewares/parsing/blob":373}],343:[function(require,module,exports){
+},{"./bitmapFontParser":341,"./spritesheetParser":344,"./textureParser":345,"eventemitter3":6,"resource-loader":373,"resource-loader/lib/middlewares/parsing/blob":374}],344:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51896,7 +52022,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":243,"resource-loader":372,"url":392}],344:[function(require,module,exports){
+},{"../core":244,"resource-loader":373,"url":395}],345:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51919,7 +52045,7 @@ var _Texture2 = _interopRequireDefault(_Texture);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../core/textures/Texture":293,"resource-loader":372}],345:[function(require,module,exports){
+},{"../core/textures/Texture":294,"resource-loader":373}],346:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52287,7 +52413,7 @@ Mesh.DRAW_MODES = {
   TRIANGLES: 1
 };
 
-},{"../core":243,"../extras/TextureTransform":314}],346:[function(require,module,exports){
+},{"../core":244,"../extras/TextureTransform":315}],347:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52673,7 +52799,7 @@ var NineSlicePlane = function (_Plane) {
 
 exports.default = NineSlicePlane;
 
-},{"./Plane":347}],347:[function(require,module,exports){
+},{"./Plane":348}],348:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52812,7 +52938,7 @@ var Plane = function (_Mesh) {
 
 exports.default = Plane;
 
-},{"./Mesh":345}],348:[function(require,module,exports){
+},{"./Mesh":346}],349:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53048,7 +53174,7 @@ var Rope = function (_Mesh) {
 
 exports.default = Rope;
 
-},{"./Mesh":345}],349:[function(require,module,exports){
+},{"./Mesh":346}],350:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53331,7 +53457,7 @@ exports.default = MeshSpriteRenderer;
 
 core.CanvasRenderer.registerPlugin('mesh', MeshSpriteRenderer);
 
-},{"../../core":243,"../Mesh":345}],350:[function(require,module,exports){
+},{"../../core":244,"../Mesh":346}],351:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53392,7 +53518,7 @@ Object.defineProperty(exports, 'Rope', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./Mesh":345,"./NineSlicePlane":346,"./Plane":347,"./Rope":348,"./canvas/CanvasMeshRenderer":349,"./webgl/MeshRenderer":351}],351:[function(require,module,exports){
+},{"./Mesh":346,"./NineSlicePlane":347,"./Plane":348,"./Rope":349,"./canvas/CanvasMeshRenderer":350,"./webgl/MeshRenderer":352}],352:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53543,7 +53669,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":243,"../Mesh":345,"path":386,"pixi-gl-core":207}],352:[function(require,module,exports){
+},{"../../core":244,"../Mesh":346,"path":389,"pixi-gl-core":208}],353:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53921,7 +54047,7 @@ var ParticleContainer = function (_core$Container) {
 
 exports.default = ParticleContainer;
 
-},{"../core":243,"../core/utils":302}],353:[function(require,module,exports){
+},{"../core":244,"../core/utils":303}],354:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53946,7 +54072,7 @@ Object.defineProperty(exports, 'ParticleRenderer', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./ParticleContainer":352,"./webgl/ParticleRenderer":355}],354:[function(require,module,exports){
+},{"./ParticleContainer":353,"./webgl/ParticleRenderer":356}],355:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54189,7 +54315,7 @@ var ParticleBuffer = function () {
 
 exports.default = ParticleBuffer;
 
-},{"../../core/utils/createIndicesForQuads":300,"pixi-gl-core":207}],355:[function(require,module,exports){
+},{"../../core/utils/createIndicesForQuads":301,"pixi-gl-core":208}],356:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54665,7 +54791,7 @@ exports.default = ParticleRenderer;
 
 core.WebGLRenderer.registerPlugin('particle', ParticleRenderer);
 
-},{"../../core":243,"../../core/utils":302,"./ParticleBuffer":354,"./ParticleShader":356}],356:[function(require,module,exports){
+},{"../../core":244,"../../core/utils":303,"./ParticleBuffer":355,"./ParticleShader":357}],357:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54708,7 +54834,7 @@ var ParticleShader = function (_Shader) {
 
 exports.default = ParticleShader;
 
-},{"../../core/Shader":222}],357:[function(require,module,exports){
+},{"../../core/Shader":223}],358:[function(require,module,exports){
 "use strict";
 
 // References:
@@ -54726,7 +54852,7 @@ if (!Math.sign) {
     };
 }
 
-},{}],358:[function(require,module,exports){
+},{}],359:[function(require,module,exports){
 'use strict';
 
 var _objectAssign = require('object-assign');
@@ -54741,7 +54867,7 @@ if (!Object.assign) {
 // https://github.com/sindresorhus/object-assign
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 
-},{"object-assign":188}],359:[function(require,module,exports){
+},{"object-assign":188}],360:[function(require,module,exports){
 'use strict';
 
 require('./Object.assign');
@@ -54766,7 +54892,7 @@ if (!window.Uint16Array) {
     window.Uint16Array = Array;
 }
 
-},{"./Math.sign":357,"./Object.assign":358,"./requestAnimationFrame":360}],360:[function(require,module,exports){
+},{"./Math.sign":358,"./Object.assign":359,"./requestAnimationFrame":361}],361:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -54843,7 +54969,7 @@ if (!global.cancelAnimationFrame) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],361:[function(require,module,exports){
+},{}],362:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55331,7 +55457,7 @@ function findTextStyle(item, queue) {
     return false;
 }
 
-},{"../core":243,"./limiters/CountLimiter":364}],362:[function(require,module,exports){
+},{"../core":244,"./limiters/CountLimiter":365}],363:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55451,7 +55577,7 @@ function uploadBaseTextures(prepare, item) {
 
 core.CanvasRenderer.registerPlugin('prepare', CanvasPrepare);
 
-},{"../../core":243,"../BasePrepare":361}],363:[function(require,module,exports){
+},{"../../core":244,"../BasePrepare":362}],364:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55503,7 +55629,7 @@ Object.defineProperty(exports, 'TimeLimiter', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./BasePrepare":361,"./canvas/CanvasPrepare":362,"./limiters/CountLimiter":364,"./limiters/TimeLimiter":365,"./webgl/WebGLPrepare":366}],364:[function(require,module,exports){
+},{"./BasePrepare":362,"./canvas/CanvasPrepare":363,"./limiters/CountLimiter":365,"./limiters/TimeLimiter":366,"./webgl/WebGLPrepare":367}],365:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -55561,7 +55687,7 @@ var CountLimiter = function () {
 
 exports.default = CountLimiter;
 
-},{}],365:[function(require,module,exports){
+},{}],366:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -55619,7 +55745,7 @@ var TimeLimiter = function () {
 
 exports.default = TimeLimiter;
 
-},{}],366:[function(require,module,exports){
+},{}],367:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55741,7 +55867,7 @@ function findGraphics(item, queue) {
 
 core.WebGLRenderer.registerPlugin('prepare', WebGLPrepare);
 
-},{"../../core":243,"../BasePrepare":361}],367:[function(require,module,exports){
+},{"../../core":244,"../BasePrepare":362}],368:[function(require,module,exports){
 'use strict'
 
 /**
@@ -55771,7 +55897,7 @@ module.exports = function removeItems(arr, startIdx, removeCount)
   arr.length = len
 }
 
-},{}],368:[function(require,module,exports){
+},{}],369:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56389,7 +56515,7 @@ var Loader = function () {
 
 exports.default = Loader;
 
-},{"./Resource":369,"./async":370,"mini-signals":187,"parse-uri":189}],369:[function(require,module,exports){
+},{"./Resource":370,"./async":371,"mini-signals":187,"parse-uri":189}],370:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -57545,7 +57671,7 @@ function reqType(xhr) {
     return xhr.toString().replace('object ', '');
 }
 
-},{"mini-signals":187,"parse-uri":189}],370:[function(require,module,exports){
+},{"mini-signals":187,"parse-uri":189}],371:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -57754,7 +57880,7 @@ function queue(worker, concurrency) {
     return q;
 }
 
-},{}],371:[function(require,module,exports){
+},{}],372:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -57822,7 +57948,7 @@ function encodeBinary(input) {
     return output;
 }
 
-},{}],372:[function(require,module,exports){
+},{}],373:[function(require,module,exports){
 'use strict';
 
 // import Loader from './Loader';
@@ -57846,7 +57972,7 @@ module.exports = Loader;
 // export default Loader;
 module.exports.default = Loader;
 
-},{"./Loader":368,"./Resource":369,"./async":370,"./b64":371}],373:[function(require,module,exports){
+},{"./Loader":369,"./Resource":370,"./async":371,"./b64":372}],374:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -57934,7 +58060,7 @@ function blobMiddlewareFactory() {
     };
 }
 
-},{"../../Resource":369,"../../b64":371}],374:[function(require,module,exports){
+},{"../../Resource":370,"../../b64":372}],375:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -57996,7 +58122,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":375,"./lib/tychei":376,"./lib/xor128":377,"./lib/xor4096":378,"./lib/xorshift7":379,"./lib/xorwow":380,"./seedrandom":381}],375:[function(require,module,exports){
+},{"./lib/alea":376,"./lib/tychei":377,"./lib/xor128":378,"./lib/xor4096":379,"./lib/xorshift7":380,"./lib/xorwow":381,"./seedrandom":382}],376:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -58112,7 +58238,7 @@ if (module && module.exports) {
 
 
 
-},{}],376:[function(require,module,exports){
+},{}],377:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -58217,7 +58343,7 @@ if (module && module.exports) {
 
 
 
-},{}],377:[function(require,module,exports){
+},{}],378:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -58300,7 +58426,7 @@ if (module && module.exports) {
 
 
 
-},{}],378:[function(require,module,exports){
+},{}],379:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -58448,7 +58574,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],379:[function(require,module,exports){
+},{}],380:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -58547,7 +58673,7 @@ if (module && module.exports) {
 );
 
 
-},{}],380:[function(require,module,exports){
+},{}],381:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -58635,7 +58761,7 @@ if (module && module.exports) {
 
 
 
-},{}],381:[function(require,module,exports){
+},{}],382:[function(require,module,exports){
 /*
 Copyright 2014 David Bau.
 
@@ -58884,248 +59010,283 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":385}],382:[function(require,module,exports){
-/*
-    angle.js <https://github.com/davidfig/anglejs>
-    Released under MIT license <https://github.com/davidfig/angle/blob/master/LICENSE>
-    Author: David Figatner
-    Copyright (c) 2016 YOPEY YOPEY LLC
-*/
+},{"crypto":388}],383:[function(require,module,exports){
+// angle.js <https://github.com/davidfig/anglejs>
+// Released under MIT license <https://github.com/davidfig/angle/blob/master/LICENSE>
+// Author: David Figatner
+// Copyright (c) 2016-17 YOPEY YOPEY LLC
 
-/** @class */
-class Angle
+const _toDegreeConversion = 180 / Math.PI
+const _toRadianConversion = Math.PI / 180
+
+
+/** @constant {number} */
+const UP = Math.PI / 2
+const DOWN = 3 * Math.PI / 2
+const LEFT = Math.PI
+const RIGHT = 0
+
+const NORTH = UP
+const SOUTH = DOWN
+const WEST = LEFT
+const EAST = RIGHT
+
+const PI_2 = Math.PI * 2
+const PI_QUARTER = Math.PI / 4
+const PI_HALF = Math.PI / 2
+
+/**
+ * converts from radians to degrees (all other functions expect radians)
+ * @param {number} radians
+ * @return {number} degrees
+ */
+function toDegrees(radians)
 {
-    constructor()
+    return radians * _toDegreeConversion
+}
+
+/**
+ * converts from degrees to radians (all other functions expect radians)
+ * @param {number} degrees
+ * @return {number} radians
+ */
+function toRadians(degrees)
+{
+    return degrees * _toRadianConversion
+}
+
+/**
+ * returns whether the target angle is between angle1 and angle2 (in radians)
+ * (based on: http://stackoverflow.com/questions/11406189/determine-if-angle-lies-between-2-other-angles)
+ * @param {number} target angle
+ * @param {number} angle1
+ * @param {number} angle2
+ * @return {boolean}
+ */
+function isAngleBetween(target, angle1, angle2)
+{
+    const rAngle = ((angle2 - angle1) % PI_2 + PI_2) % PI_2
+    if (rAngle >= Math.PI)
     {
-        // constants
-        this.UP = Math.PI / 2;
-        this.DOWN = 3 * Math.PI / 2;
-        this.LEFT = Math.PI;
-        this.RIGHT = 0;
-
-        this.NORTH = this.UP;
-        this.SOUTH = this.DOWN;
-        this.WEST = this.LEFT;
-        this.EAST = this.RIGHT;
-
-        this.PI_2 = Math.PI * 2;
-        this.PI_QUARTER = Math.PI / 4;
-        this.PI_HALF = Math.PI / 2;
-
-        this._toDegreeConversion = 180 / Math.PI;
-        this._toRadianConversion = Math.PI / 180;
+        const swap = angle1
+        angle1 = angle2
+        angle2 = swap
     }
 
-    /**
-     * converts from radians to degrees (all other functions expect radians)
-     * @param {number} radians
-     * @return {number} degrees
-     */
-    toDegrees(radians)
+    if (angle1 <= angle2)
     {
-        return radians * this._toDegreeConversion;
+        return target >= angle1 && target <= angle2
     }
-
-    /**
-     * converts from degrees to radians (all other functions expect radians)
-     * @param {number} degrees
-     * @return {number} radians
-     */
-    toRadians(degrees)
+    else
     {
-        return degrees * this._toRadianConversion;
-    }
-
-    /**
-     * returns whether the target angle is between angle1 and angle2 (in radians)
-     * (based on: http://stackoverflow.com/questions/11406189/determine-if-angle-lies-between-2-other-angles)
-     * @param {number} target angle
-     * @param {number} angle1
-     * @param {number} angle2
-     * @return {boolean}
-     */
-    isAngleBetween(target, angle1, angle2)
-    {
-        const rAngle = ((angle2 - angle1) % this.PI_2 + this.PI_2) % this.PI_2;
-        if (rAngle >= Math.PI)
-        {
-            const swap = angle1;
-            angle1 = angle2;
-            angle2 = swap;
-        }
-
-        if (angle1 <= angle2)
-        {
-            return target >= angle1 && target <= angle2;
-        }
-        else
-        {
-            return target >= angle1 || target <= angle2;
-        }
-    }
-
-    /**
-     * returns +1 or -1 based on whether the difference between two angles is positive or negative (in radians)
-     * @param {number} target angle
-     * @param {number} source angle
-     * @return {number} 1 or -1
-     */
-    differenceAnglesSign(target, source)
-    {
-        function mod(a, n)
-        {
-            return (a % n + n) % n;
-        }
-
-        const a = target - source;
-        return mod((a + Math.PI), this.PI_2) - Math.PI > 0 ? 1 : -1;
-    }
-
-    /**
-     * returns the normalized difference between two angles (in radians)
-     * @param {number} a - first angle
-     * @param {number} b - second angle
-     * @return {number} normalized difference between a and b
-     */
-    differenceAngles(a, b)
-    {
-        const c = Math.abs(a - b) % this.PI_2;
-        return c > Math.PI ? (this.PI_2 - c) : c;
-    }
-
-    /**
-     * returns a target angle that is the shortest way to rotate an object between start and to--may choose a negative angle
-     * @param {number} start
-     * @param {number} to
-     * @return {number} shortest target angle
-     */
-    shortestAngle(start, to)
-    {
-        const difference = this.differenceAngles(to, start);
-        const sign = this.differenceAnglesSign(to, start);
-        const delta = difference * sign;
-        return delta + start;
-    }
-
-    /**
-     * returns the normalized angle (0 - PI x 2)
-     * @param {number} radians
-     * @return {number} normalized angle in radians
-     */
-    normalize(radians)
-    {
-        return radians - this.PI_2 * Math.floor(radians / this.PI_2);
-    }
-
-    /**
-     * returns angle between two points (in radians)
-     * @param {Point} [point1] {x: x, y: y}
-     * @param {Point} [point2] {x: x, y: y}
-     * @param {number} [x1]
-     * @param {number} [y1]
-     * @param {number} [x2]
-     * @param {number} [y2]
-     * @return {number} angle
-     */
-    angleTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
-    {
-        if (arguments.length === 4)
-        {
-            return Math.atan2(arguments[3] - arguments[1], arguments[2] - arguments[0]);
-        }
-        else
-        {
-            return Math.atan2(arguments[1].y - arguments[0].y, arguments[1].x - arguments[0].x);
-        }
-    }
-
-    /**
-     * returns distance between two points
-     * @param {Point} [point1] {x: x, y: y}
-     * @param {Point} [point2] {x: x, y: y}
-     * @param {number} [x1]
-     * @param {number} [y1]
-     * @param {number} [x2]
-     * @param {number} [y2]
-     * @return {number} distance
-     */
-    distanceTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
-    {
-        if (arguments.length === 2)
-        {
-            return Math.sqrt(Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2));
-        }
-        else
-        {
-            return Math.sqrt(Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2));
-        }
-    }
-
-    /**
-     * returns the squared distance between two points
-     * @param {Point} [point1] {x: x, y: y}
-     * @param {Point} [point2] {x: x, y: y}
-     * @param {number} [x1]
-     * @param {number} [y1]
-     * @param {number} [x2]
-     * @param {number} [y2]
-     * @return {number} squared distance
-     */
-    distanceTwoPointsSquared(/* (point1, point2) OR (x1, y1, x2, y2) */)
-    {
-        if (arguments.length === 2)
-        {
-            return Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2);
-        }
-        else
-        {
-            return Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2);
-        }
-    }
-
-    /**
-     * returns the closest cardinal (N, S, E, W) to the given angle (in radians)
-     * @param {number} angle
-     * @return {number} closest cardinal in radians
-     */
-    closestAngle(angle)
-    {
-        const left = this.differenceAngles(angle, this.LEFT);
-        const right = this.differenceAngles(angle, this.RIGHT);
-        const up = this.differenceAngles(angle, this.UP);
-        const down = this.differenceAngles(angle, this.DOWN);
-        if (left <= right && left <= up && left <= down)
-        {
-            return this.LEFT;
-        }
-        else if (right <= up && right <= down)
-        {
-            return this.RIGHT;
-        }
-        else if (up <= down)
-        {
-            return this.UP;
-        }
-        else
-        {
-            return this.DOWN;
-        }
-    }
-
-    /**
-     * checks whether angles a1 and a2 are equal (after normalizing)
-     * @param {number} a1
-     * @param {number} a2
-     * @param {boolean} a1 === a2
-     *  */
-    equals(a1, a2)
-    {
-        return this.normalize(a1) === this.normalize(a2);
+        return target >= angle1 || target <= angle2
     }
 }
 
-module.exports = new Angle();
-},{}],383:[function(require,module,exports){
+/**
+ * returns +1 or -1 based on whether the difference between two angles is positive or negative (in radians)
+ * @param {number} target angle
+ * @param {number} source angle
+ * @return {number} 1 or -1
+ */
+function differenceAnglesSign(target, source)
+{
+    function mod(a, n)
+    {
+        return (a % n + n) % n
+    }
+
+    const a = target - source
+    return mod((a + Math.PI), PI_2) - Math.PI > 0 ? 1 : -1
+}
+
+/**
+ * returns the normalized difference between two angles (in radians)
+ * @param {number} a - first angle
+ * @param {number} b - second angle
+ * @return {number} normalized difference between a and b
+ */
+function differenceAngles(a, b)
+{
+    const c = Math.abs(a - b) % PI_2
+    return c > Math.PI ? (PI_2 - c) : c
+}
+
+/**
+ * returns a target angle that is the shortest way to rotate an object between start and to--may choose a negative angle
+ * @param {number} start
+ * @param {number} to
+ * @return {number} shortest target angle
+ */
+function shortestAngle(start, to)
+{
+    const difference = differenceAngles(to, start)
+    const sign = differenceAnglesSign(to, start)
+    const delta = difference * sign
+    return delta + start
+}
+
+/**
+ * returns the normalized angle (0 - PI x 2)
+ * @param {number} radians
+ * @return {number} normalized angle in radians
+ */
+function normalize(radians)
+{
+    return radians - PI_2 * Math.floor(radians / PI_2)
+}
+
+/**
+ * returns angle between two points (in radians)
+ * @param {Point} [point1] {x: x, y: y}
+ * @param {Point} [point2] {x: x, y: y}
+ * @param {number} [x1]
+ * @param {number} [y1]
+ * @param {number} [x2]
+ * @param {number} [y2]
+ * @return {number} angle
+ */
+function angleTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
+{
+    if (arguments.length === 4)
+    {
+        return Math.atan2(arguments[3] - arguments[1], arguments[2] - arguments[0])
+    }
+    else
+    {
+        return Math.atan2(arguments[1].y - arguments[0].y, arguments[1].x - arguments[0].x)
+    }
+}
+
+/**
+ * returns distance between two points
+ * @param {Point} [point1] {x: x, y: y}
+ * @param {Point} [point2] {x: x, y: y}
+ * @param {number} [x1]
+ * @param {number} [y1]
+ * @param {number} [x2]
+ * @param {number} [y2]
+ * @return {number} distance
+ */
+function distanceTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
+{
+    if (arguments.length === 2)
+    {
+        return Math.sqrt(Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2))
+    }
+    else
+    {
+        return Math.sqrt(Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2))
+    }
+}
+
+/**
+ * returns the squared distance between two points
+ * @param {Point} [point1] {x: x, y: y}
+ * @param {Point} [point2] {x: x, y: y}
+ * @param {number} [x1]
+ * @param {number} [y1]
+ * @param {number} [x2]
+ * @param {number} [y2]
+ * @return {number} squared distance
+ */
+function distanceTwoPointsSquared(/* (point1, point2) OR (x1, y1, x2, y2) */)
+{
+    if (arguments.length === 2)
+    {
+        return Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2)
+    }
+    else
+    {
+        return Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2)
+    }
+}
+
+/**
+ * returns the closest cardinal (N, S, E, W) to the given angle (in radians)
+ * @param {number} angle
+ * @return {number} closest cardinal in radians
+ */
+function closestAngle(angle)
+{
+    const left = differenceAngles(angle, LEFT)
+    const right = differenceAngles(angle, RIGHT)
+    const up = differenceAngles(angle, UP)
+    const down = differenceAngles(angle, DOWN)
+    if (left <= right && left <= up && left <= down)
+    {
+        return LEFT
+    }
+    else if (right <= up && right <= down)
+    {
+        return RIGHT
+    }
+    else if (up <= down)
+    {
+        return UP
+    }
+    else
+    {
+        return DOWN
+    }
+}
+
+/**
+ * checks whether angles a1 and a2 are equal (after normalizing)
+ * @param {number} a1
+ * @param {number} a2
+ * @param {number} [wiggle] return true if the difference between the angles is <= wiggle
+ * @return {boolean} a1 === a2
+ */
+function equals(a1, a2, wiggle)
+{
+    if (wiggle)
+    {
+        return differenceAngles(a1, a2) < wiggle
+    }
+    else
+    {
+        return normalize(a1) === normalize(a2)
+    }
+}
+
+/**
+ * return a text representation of the cardinal direction
+ * @param {number} angle
+ * @returns {string} UP, DOWN, LEFT, RIGHT, or NOT CARDINAL
+ */
+function explain(angle)
+{
+    switch (angle)
+    {
+        case UP: return 'UP'
+        case DOWN: return 'DOWN'
+        case LEFT: return 'LEFT'
+        case RIGHT: return 'RIGHT'
+        default: return 'NOT CARDINAL'
+    }
+}
+
+module.exports = {
+    UP, DOWN, LEFT, RIGHT,
+    NORTH, SOUTH, WEST, EAST,
+    PI_2, PI_QUARTER, PI_HALF,
+
+    toDegrees,
+    toRadians,
+    isAngleBetween,
+    differenceAnglesSign,
+    differenceAngles,
+    shortestAngle,
+    normalize,
+    angleTwoPoints,
+    distanceTwoPoints,
+    distanceTwoPointsSquared,
+    closestAngle,
+    equals,
+    explain
+}
+},{}],384:[function(require,module,exports){
 /**
  * @file color.js
  * @author David Figatner
@@ -59434,23 +59595,20 @@ class Color
 };
 
 module.exports = new Color();
-},{"yy-random":384}],384:[function(require,module,exports){
-/**
- * @file random.js
- * @author David Figatner
- * @license MIT
- * @copyright YOPEY YOPEY LLC 2016
- * {@link https://github.com/davidfig/random}
- */
+},{"yy-random":385}],385:[function(require,module,exports){
+// yy-random
+// by David Figatner
+// MIT license
+// copyright YOPEY YOPEY LLC 2016-17
+// https://github.com/davidfig/random
 
-const seedrandom = require('seedrandom');
+const seedrandom = require('seedrandom')
 
-/** a javascript random number API with seeded support. not cryptographically sound. useful for games */
 class Random
 {
     constructor()
     {
-        this.generator = Math.random;
+        this.generator = Math.random
     }
 
     /**
@@ -59458,33 +59616,35 @@ class Random
      * @param {number} seed
      * @param {object} [options]
      * @param {string} [PRNG="alea"] - name of algorithm, see https://github.com/davidbau/seedrandom
-     * @param {boolean} [save=true] 
+     * @param {boolean} [save=true]
      */
     seed(seed, options)
     {
-        options = options || {};
-        this.generator = seedrandom[options.PRNG || 'alea'](seed, { state: options.state });
-        this.options = options;
+        options = options || {}
+        this.generator = seedrandom[options.PRNG || 'alea'](seed, { state: options.state })
+        this.options = options
     }
 
     /**
-     * saves the state of the random generator ()
+     * saves the state of the random generator
+     * can only be used after Random.seed() is called
      * @returns {number} state
      */
     save()
     {
         if (this.generator !== Math.random)
         {
-            return this.generator.state();
+            return this.generator.state()
         }
     }
 
+    /**
+     * restores the state of the random generator
+     * @param {number} state
+     */
     restore(state)
     {
-        if (this.generator !== Math.random)
-        {
-            this.generator = seedrandom[this.options.PRNG || 'alea']('', { state });
-        }
+        this.generator = seedrandom[this.options.PRNG || 'alea']('', { state })
     }
 
     /**
@@ -59497,9 +59657,9 @@ class Random
     {
         this.generator = function()
         {
-            const x = Math.sin(seed++) * 10000;
-            return x - Math.floor(x);
-        };
+            const x = Math.sin(seed++) * 10000
+            return x - Math.floor(x)
+        }
     }
 
     /**
@@ -59509,83 +59669,17 @@ class Random
      */
     separateSeed(seed)
     {
-        const random = new Random();
-        random.seed(seed);
-        return random;
+        const random = new Random()
+        random.seed(seed)
+        return random
     }
-
-    /*
-    // future work to replace Math.sin seed generator with an XOR generator
-    // changes the this.generator to use a seeded random based on XOR
-    // see http://baagoe.com/en/RandomMusings/javascript/ (https://web.archive.org/web/20101106000458/http://baagoe.com/en/RandomMusings/javascript/)
-    // as seen here: http://jsdo.it/akm2/amk0
-    seedXORshift(seed)
-    {
-        mash(data)
-        {
-            data = data.toString();
-            var n = 0xefc8249d;
-            for (var i = 0; i < data.length; i++)
-            {
-                n += data.charCodeAt(i);
-                var h = 0.02519603282416938 * n;
-                n = h >>> 0;
-                h -= n;
-                h *= n;
-                n = h >>> 0;
-                h -= n;
-                n += h * 0x100000000;
-            }
-            return (n >>> 0) * 2.3283064365386963e-10;
-        }
-
-        this.generator = function()
-        {
-            var self = this;
-            var seeds = (arguments.length) ? Array.prototype.slice.call(arguments) : [new Date().getTime()];
-
-            var x = 123456789;
-            var y = 362436069;
-            var z = 521288629;
-            var w = 88675123;
-            var v = 886756453;
-
-            self.uint32 = function()
-            {
-                var t = (x ^ (x >>> 7)) >>> 0;
-                x = y;
-                y = z;
-                z = w;
-                w = v;
-                v = (v ^ (v << 6)) ^ (t ^ (t << 13)) >>> 0;
-                return ((y + y + 1) * v) >>> 0;
-            };
-
-            self.random = function() {
-                return self.uint32() * 2.3283064365386963e-10;
-            };
-
-            self.fract53 = function() {
-                return self.random() + (self.uint32() & 0x1fffff) * 1.1102230246251565e-16;
-            };
-
-            for (var i = 0, len = seeds.length, seed; i < len; i++) {
-                seed = seeds[i];
-                x ^= mash(seed) * 0x100000000;
-                y ^= mash(seed) * 0x100000000;
-                z ^= mash(seed) * 0x100000000;
-                v ^= mash(seed) * 0x100000000;
-                w ^= mash(seed) * 0x100000000;
-            }
-    }
-    */
 
     /**
      * resets the random number this.generator to Math.random()
      */
     reset()
     {
-        this.generator = Math.random;
+        this.generator = Math.random
     }
 
     /**
@@ -59596,18 +59690,18 @@ class Random
      */
     get(ceiling, useFloat)
     {
-        const negative = ceiling < 0 ? -1 : 1;
-        ceiling *= negative;
-        let result;
+        const negative = ceiling < 0 ? -1 : 1
+        ceiling *= negative
+        let result
         if (useFloat)
         {
-            result = this.generator() * ceiling;
+            result = this.generator() * ceiling
         }
         else
         {
-            result = Math.floor(this.generator() * ceiling);
+            result = Math.floor(this.generator() * ceiling)
         }
-        return result * negative;
+        return result * negative
     }
 
     /**
@@ -59616,7 +59710,7 @@ class Random
      */
     getHuge()
     {
-        return this.get(Number.MAX_SAFE_INTEGER);
+        return this.get(Number.MAX_SAFE_INTEGER)
     }
 
     /**
@@ -59628,8 +59722,8 @@ class Random
      */
     middle(middle, delta, useFloat)
     {
-        const half = delta / 2;
-        return this.range(middle - half, middle + half, useFloat);
+        const half = delta / 2
+        return this.range(middle - half, middle + half, useFloat)
     }
 
     /**
@@ -59641,41 +59735,41 @@ class Random
      */
     range(start, end, useFloat)
     {
-        // case where theres is no range
+        // case where there is no range
         if (end === start)
         {
-            return end;
+            return end
         }
 
         if (useFloat)
         {
-            return this.get(end - start, true) + start;
+            return this.get(end - start, true) + start
         }
         else
         {
-            let range;
+            let range
             if (start < 0 && end > 0)
             {
-                range = -start + end + 1;
+                range = -start + end + 1
             }
             else if (start === 0 && end > 0)
             {
-                range = end + 1;
+                range = end + 1
             }
             else if (start < 0 && end === 0)
             {
-                range = start - 1;
-                start = 1;
+                range = start - 1
+                start = 1
             }
             else if (start < 0 && end < 0)
             {
-                range = end - start - 1;
+                range = end - start - 1
             }
             else
             {
-                range = end - start + 1;
+                range = end - start + 1
             }
-            return Math.floor(this.generator() * range) + start;
+            return Math.floor(this.generator() * range) + start
         }
     }
 
@@ -59689,12 +59783,12 @@ class Random
      */
     rangeMultiple(start, end, count, useFloat)
     {
-        var array = [];
-        for (var i = 0; i < count; i++)
+        var array = []
+        for (let i = 0; i < count; i++)
         {
-            array.push(this.range(start, end, useFloat));
+            array.push(this.range(start, end, useFloat))
         }
-        return array;
+        return array
     }
 
     /**
@@ -59707,23 +59801,14 @@ class Random
      */
     middleMultiple(middle, range, count, useFloat)
     {
-        const array = [];
+        const array = []
         for (let i = 0; i < count; i++)
         {
-            array.push(middle(middle, range, useFloat));
+            array.push(middle(middle, range, useFloat))
         }
-        return array;
+        return array
     }
 
-
-    // THIS DOES NOT WORK PROPERLY . . . (shoule be replaced with an algorithm from https://github.com/ckknight/random-js)
-    // returns a uniform distribution random integer using the this.generator between [0, ceiling - 1]
-    // uniform(ceiling)
-    // {
-    //     return Math.floor(this.generator() * ceiling);
-    // }
-
-    //
     /**
      * @param {number} [chance=0.5]
      * returns random sign (either +1 or -1)
@@ -59731,11 +59816,10 @@ class Random
      */
     sign(chance)
     {
-        chance = chance || 0.5;
-        return this.generator() < chance ? 1 : -1;
+        chance = chance || 0.5
+        return this.generator() < chance ? 1 : -1
     }
 
-    //
     /**
      * tells you whether a random chance was achieved
      * @param {number} [percent=0.5]
@@ -59743,7 +59827,7 @@ class Random
      */
     chance(percent)
     {
-        return this.generator() < (percent || 0.5);
+        return this.generator() < (percent || 0.5)
     }
 
     /**
@@ -59751,7 +59835,7 @@ class Random
      */
     angle()
     {
-        return this.get(Math.PI * 2, true);
+        return this.get(Math.PI * 2, true)
     }
 
     /**
@@ -59765,28 +59849,28 @@ class Random
     {
         if (copy)
         {
-            array = array.slice();
+            array = array.slice()
         }
         if (array.length === 0)
         {
-            return array;
+            return array
         }
 
-        let currentIndex = array.length, temporaryValue, randomIndex;
+        let currentIndex = array.length, temporaryValue, randomIndex
 
         // While there remain elements to shuffle...
         while (0 !== currentIndex)
         {
             // Pick a remaining element...
-            randomIndex = this.get(currentIndex);
-            currentIndex -= 1;
+            randomIndex = this.get(currentIndex)
+            currentIndex -= 1
 
             // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
+            temporaryValue = array[currentIndex]
+            array[currentIndex] = array[randomIndex]
+            array[randomIndex] = temporaryValue
         }
-        return array;
+        return array
     }
 
     /**
@@ -59798,14 +59882,14 @@ class Random
     {
         if (!remove)
         {
-            return array[this.get(array.length)];
+            return array[this.get(array.length)]
         }
         else
         {
-            const pick = this.get(array.length);
-            const temp = array[pick];
-            array.splice(pick, 1);
-            return temp;
+            const pick = this.get(array.length)
+            const temp = array[pick]
+            array.splice(pick, 1)
+            return temp
         }
     }
 
@@ -59817,16 +59901,16 @@ class Random
      */
     property(obj)
     {
-        var result;
-        var count = 0;
+        var result
+        var count = 0
         for (var prop in obj)
         {
             if (this.chance(1 / ++count))
             {
-                result = prop;
+                result = prop
             }
         }
-        return result;
+        return result
     }
 
     /**
@@ -59838,19 +59922,19 @@ class Random
      */
     set(min, max, amount)
     {
-        var set = [], all = [], i;
+        var set = [], all = [], i
         for (i = min; i < max; i++)
         {
-            all.push(i);
+            all.push(i)
         }
 
         for (i = 0; i < amount; i++)
         {
-            var found = this.get(all.length);
-            set.push(all[found]);
-            all.splice(found, 1);
+            var found = this.get(all.length)
+            set.push(all[found])
+            all.splice(found, 1)
         }
-        return set;
+        return set
     }
 
 
@@ -59866,23 +59950,23 @@ class Random
      */
     distribution(start, end, count, includeStart, includeEnd, useFloat)
     {
-        var interval = Math.floor((end - start) / count);
-        var halfInterval = interval / 2;
-        var quarterInterval = interval / 4;
-        var set = [];
+        var interval = Math.floor((end - start) / count)
+        var halfInterval = interval / 2
+        var quarterInterval = interval / 4
+        var set = []
         if (includeStart)
         {
-            set.push(start);
+            set.push(start)
         }
         for (var i = 0; i < count; i++)
         {
-            set.push(start + i * interval + halfInterval + this.range(-quarterInterval, quarterInterval, useFloat));
+            set.push(start + i * interval + halfInterval + this.range(-quarterInterval, quarterInterval, useFloat))
         }
         if (includeEnd)
         {
-            set.push(end);
+            set.push(end)
         }
-        return set;
+        return set
     }
 
     /**
@@ -59897,50 +59981,781 @@ class Random
     {
         function normRand()
         {
-            let x1, x2, rad;
+            let x1, x2, rad
             do
             {
-                x1 = 2 * this.get(1, true) - 1;
-                x2 = 2 * this.get(1, true) - 1;
-                rad = x1 * x1 + x2 * x2;
-            } while (rad >= 1 || rad === 0);
-            const c = Math.sqrt(-2 * Math.log(rad) / rad);
-            return x1 * c;
+                x1 = 2 * this.get(1, true) - 1
+                x2 = 2 * this.get(1, true) - 1
+                rad = x1 * x1 + x2 * x2
+            } while (rad >= 1 || rad === 0)
+            const c = Math.sqrt(-2 * Math.log(rad) / rad)
+            return x1 * c
         }
 
-        stddev = stddev || 1;
+        stddev = stddev || 1
         if (Math.random() < 0.81546)
         {
             while (true)
             {
-                const sample = ((normRand() * stddev) + target);
+                const sample = ((normRand() * stddev) + target)
                 if (sample >= min && sample <= max)
                 {
-                    return sample;
+                    return sample
                 }
             }
         }
         else
         {
-            return this.range(min, max);
+            return this.range(min, max)
         }
     }
 
     /*
      * returns a random hex color (0 - 0xffffff)
-     * this provides very bad random colors; use davidfig/color (npm yy-color) for better random colors
      * @return {number}
      */
     color()
     {
-        return this.get(0xffffff);
+        return this.get(0xffffff)
     }
 }
 
-module.exports = new Random();
-},{"seedrandom":374}],385:[function(require,module,exports){
+module.exports = new Random()
+},{"seedrandom":375}],386:[function(require,module,exports){
+/**
+ * @file renderer.js
+ * @author David Figatner
+ * @license MIT
+ * @copyright YOPEY YOPEY LLC 2016
+ * {@link https://github.com/davidfig/update}
+ */
 
-},{}],386:[function(require,module,exports){
+// placeholder for Debug and Update modules (@see {@link http://github.com/davidfig/debug} and {@link http://github.com/davidfig/update})
+let Debug, Update;
+
+/** Wrapper for a PIXI.js Renderer */
+class Renderer
+{
+    /**
+     * Wrapper for a PIXI.js Renderer
+     * @param {object} [options]
+     * @param {boolean} [options.alwaysRender=false] update renderer every update tick
+     * @param {boolean} [options.noWebGL=false] use the PIXI.CanvasRenderer instead of PIXI.WebGLRenderer
+     * @param {HTMLCanvasElement} [options.canvas] place renderer in this canvas
+     * @param {HTMLElement} [options.parent=document.body] if no canvas is provided, use parent to provide parent for generated canvas; otherwise uses document.body
+     * @param {number} [options.aspectRatio] resizing will maintain aspect ratio by ensuring that the smaller dimension fits
+     * @param {boolean} [options.autoresize=false] automatically calls resize during resize events
+     * @param {number} [options.color=0xffffff] background color in hex
+     * @param {boolean} [options.antialias=true] turn on antialias; if native antialias is not used, uses FXAA
+     * @param {boolean} [options.forceFXAA=false] forces FXAA antialiasing to be used over native. FXAA is faster, but may not always look as great
+     * @param {number} [options.resolution=window.devicePixelRatio] / device pixel ratio of the renderer (e.g., original retina is 2)
+     * @param {boolean} [options.clearBeforeRender=true] sets if the CanvasRenderer will clear the canvas or before the render pass. If you wish to set this to false, you *must* set preserveDrawingBuffer to `true`.
+     * @param {boolean} [options.preserveDrawingBuffer=false] enables drawing buffer preservation, enable this if you need to call toDataUrl on the webgl context.
+     * @param {boolean} [options.roundPixels=false] if true PIXI will Math.floor() x/y values when rendering, stopping pixel interpolation
+     * @param {object} [options.styles] apply these CSS styles to the div
+     * @param {object} [options.update] pass Update from github.com/davidfig/update
+     * @param {object} [options.debug] pass Debug from github.com/davidfig/debug
+     * @param {string} [options.debugPanel] name for debug panel
+     * @param {string} [options.debugSide='bottomRight'] for debug panel ('bottomRight', 'bottomLeft', 'topLeft', or 'topRight')
+     * @param {number} [options.FPS=60] desired FPS for rendering (otherwise as fast as possible)
+    */
+    constructor(options)
+    {
+        options = options || {};
+        this.canvas = options.canvas;
+        options.resolution = this.resolution = options.resolution || window.devicePixelRatio || 1;
+        if (!this.canvas)
+        {
+            this.canvas = document.createElement('canvas');
+            this.canvas.style.width = '100%';
+            this.canvas.style.height = '100%';
+            if (options.parent)
+            {
+                options.parent.appendChild(this.canvas);
+                options.parent = null;
+            }
+            else
+            {
+                document.body.appendChild(this.canvas);
+            }
+            var width = this.canvas.offsetWidth;
+            var height = this.canvas.offsetHeight;
+            this.canvas.style.position = 'absolute';
+            this.canvas.width = width * this.resolution;
+            this.canvas.height = height * this.resolution;
+            this.canvas.style.left = this.canvas.style.top = '0px';
+            this.canvas.style.overflow = 'auto';
+        }
+        this.dirty = this.alwaysRender = options.alwaysRender || false;
+        options.view = this.canvas;
+        this.stage = new PIXI.Container();
+        var noWebGL = options.noWebGL || false;
+        options.noWebGL = null;
+        this.autoResize = options.autoresize;
+        options.autoresize = null;
+        var Renderer = noWebGL ? PIXI.CanvasRenderer : PIXI.WebGLRenderer;
+        this.aspectRatio = options.aspectRatio;
+        if (typeof options.color === 'undefined')
+        {
+            options.transparent = true;
+        }
+        options.antialias = (typeof options.antialias === 'undefined') ? true : options.antialias;
+        this.renderer = new Renderer(options);
+        if (options.color)
+        {
+            this.renderer.backgroundColor = options.color;
+        }
+        if (options.styles)
+        {
+            for (var style in options.styles)
+            {
+                this.canvas.style[style] = options.styles[style];
+            }
+        }
+        this.width = 0;
+        this.height = 0;
+        this.offset = new PIXI.Point();
+        if (options.debug)
+        {
+            Debug = options.debug;
+            var name = options.debugPanel || 'PIXI';
+            this.debug = Debug.add(name, {side: options.debugSide, text: name + ': <span style="background:white">X</span> 0 objects'});
+            this.debug.name = name;
+        }
+        if (options.update)
+        {
+            Update = options.update;
+            Update.add(this.update.bind(this), {percent: options.debug ? options.debugPanel || 'PIXI' : null});
+        }
+        if (this.autoResize)
+        {
+            window.addEventListener('resize', this.resize.bind(this));
+        }
+        if (options.FPS)
+        {
+            this.FPS = 1000 / options.FPS;
+        }
+        else
+        {
+            this.FPS = 0;
+        }
+        this.time = 0;
+        this.resize(true);
+    }
+
+    /** force an immediate render without checking dirty flag */
+    render()
+    {
+        this.renderer.render(this.stage);
+        this.time = 0;
+    }
+
+    /** render the scene */
+    update(elapsed)
+    {
+        this.time += elapsed;
+        const FPS = this.time >= this.FPS;
+        if (this.debug)
+        {
+            var count = this.countObjects();
+            if (this.dirty && FPS)
+            {
+                if (this.last !== this.dirty || count !== this.lastCount)
+                {
+                    var color = this.dirty ? 'white' : 'gray';
+                    Debug.one(this.debug.name + ': <span style="background: ' + color + '; color: ' + color + '">X</span> ' + count + ' objects', {panel: this.debug});
+                    this.last = this.dirty;
+                    this.lastCount = count;
+                }
+            }
+            else if (this.last)
+            {
+                var color = 'gray';
+                Debug.one(this.debug.name + ': <span style="background: ' + color + '; color: ' + color + '">X</span> ' + count + ' objects', {panel: this.debug});
+                this.last = false;
+            }
+        }
+        if (this.dirty && FPS)
+        {
+            this.time = 0;
+            this.render();
+            this.dirty = this.alwaysRender;
+        }
+    }
+
+    /** counts visible objects */
+    countObjects()
+    {
+        function count(object)
+        {
+            if (!object.visible)
+            {
+                return;
+            }
+            total++;
+            for (var i = 0; i < object.children.length; i++)
+            {
+                count(object.children[i]);
+            }
+        }
+
+        var total = 0;
+        count(this.stage);
+        return total;
+    }
+
+    /**
+     * sets the background color
+     * @param {string} color in CSS format
+     */
+    background(color)
+    {
+        this.canvas.style.backgroundColor = color;
+    }
+
+    /**
+     * adds object to stage
+     * @param {PIXI.DisplayObject} object
+     * @param {number} [to] index to add
+     */
+    add(object, to)
+    {
+        if (typeof to === 'undefined')
+        {
+            to = this.stage.children.length;
+        }
+        this.stage.addChildAt(object, to);
+        return object;
+    }
+
+    /**
+     * alias for add
+     * @param {PIXI.DisplayObject} object
+     */
+    addChild(object)
+    {
+        return this.add(object);
+    }
+
+    /**
+     * alias for add
+     * @param {PIXI.DisplayObject} object
+     * @param {number} to - index to add
+     */
+    addChildTo(object, to)
+    {
+        return this.add(object, to);
+    }
+
+    /**
+     * remove child from stage
+     * @param {PIXI.DisplayObject} object
+     */
+    remove(object)
+    {
+        this.stage.removeChild(object);
+    }
+
+    /**
+     * clears the stage
+     */
+    clear()
+    {
+        this.stage.removeChildren();
+    }
+
+    /**
+     * resize
+     * @param {boolean} [force] resize, even if cached width/height remain unchanged
+     */
+    resize(force)
+    {
+        var width = this.canvas.offsetWidth;
+        var height = this.canvas.offsetHeight;
+        if (this.aspectRatio)
+        {
+            if (width > height)
+            {
+                width = height * this.aspectRatio;
+            }
+            else
+            {
+                height = width / this.aspectRatio;
+            }
+        }
+        if (force || width !== this.width || height !== this.height)
+        {
+            this.width = width;
+            this.height = height;
+            this.canvas.width = width * this.resolution;
+            this.canvas.height = height * this.resolution;
+            this.renderer.resize(this.width, this.height);
+            this.landscape = this.width > this.height;
+            this.dirty = true;
+        }
+    }
+
+    /**
+     * returns the smaller of the width/height based
+     * @return {number}
+     */
+    dimensionSmall()
+    {
+        return (this.landscape ? this.height : this.width);
+    }
+
+    /**
+     * returns the larger of the width/height based
+     * @return {number}
+     */
+    dimensionBig()
+    {
+        return (this.landscape ? this.width : this.height);
+    }
+}
+
+module.exports = Renderer;
+
+// for eslint
+/* globals document, window */
+},{}],387:[function(require,module,exports){
+/**
+ * @file update.js
+ * @author David Figatner
+ * @license MIT
+ * @copyright YOPEY YOPEY LLC 2016
+ * {@link https://github.com/davidfig/update}
+ */
+
+// placeholder for yy-debug ({@link http://github.com/davidfig/debug})
+let Debug;
+
+let FPS = 60;
+let _list = [];
+let _pause = false;
+let _pauseRegistrations = [];
+let _pauseElapsed = 0;
+
+let _startTime = 0;
+let _frameNumber = 0;
+let _lastUpdate = 0;
+let _lastFPS = '--';
+
+let _tolerance = 1;
+
+let _maxChange = 100;
+
+let _panels = {fps: null, meter: null, percent: null};
+let _percentageList = [];
+
+let _updateOff;
+let _debug;
+
+// this is the number of entries to use in a rolling average to smooth the debug percentages
+let _rollingAverage = 500;
+
+let _updateRemove;
+let _lastCount;
+let _onLoop;
+
+/**
+ * must call init() before using Update
+ * @param {object} [options]
+ * @param {object} [options.Debug] pass Debug from github.com/davidfig/debug
+ * @param {boolean|string} [options.count] - show debug counts (can supply side for panel, e.g., 'topleft')
+ * @param {boolean|string} [options.percent] - show debug percentage
+ * @param {boolean|string} [options.FPS] - show debug FPS
+ * @param {function} [options.onLoop] call at end of update loop
+ * @param {boolean} [options.noPause] do not pause update loop when window loses focus
+ */
+function init(options)
+{
+    options = options || {};
+    if (!options.noPause)
+    {
+        window.addEventListener('blur', pauseGame);
+        window.addEventListener('focus', resumeGame);
+    }
+    if (options.debug)
+    {
+        Debug = options.debug;
+        _debug = {count: options.count, percent: options.percent, FPS: options.FPS};
+        _debugInit();
+    }
+    _onLoop = options.onLoop;
+}
+
+/**
+ * register functions to call after Update pauses or resumes
+ * @param {Function} pause
+ * @param {Function} resume
+ */
+function registerPause(pause, resume)
+{
+    _pauseRegistrations.push({ pause: pause, resume: resume});
+}
+
+/**
+ * pauses all updates
+ */
+function pauseGame()
+{
+    if (_pause !== true)
+    {
+        _pause = true;
+        _pauseElapsed = performance.now() - _lastUpdate;
+        _updateOff = false;
+        if (_debug)
+        {
+            _debugPause();
+        }
+        for (var i = 0; i < _pauseRegistrations.length; i++)
+        {
+            _pauseRegistrations[i].pause();
+        }
+    }
+}
+
+/**
+ * resumes all updates
+ */
+function resumeGame()
+{
+    if (_pause === true)
+    {
+        _pause = false;
+        _lastUpdate = performance.now() - _pauseElapsed;
+        if (_debug && _debug.FPS)
+        {
+            _startTime = 0;
+            _frameNumber = 0;
+            _lastUpdate = 0;
+            _lastFPS = '--';
+        }
+        for (let i = 0; i < _pauseRegistrations.length; i++)
+        {
+            _pauseRegistrations[i].resume();
+        }
+        if (_updateOff === true)
+        {
+            update();
+        }
+    }
+}
+
+/**
+ * loops through all updates
+ * @param {number} elapsed in milliseconds
+ * @private
+ */
+function _updateAll(elapsed)
+{
+    _updateRemove = [];
+    let i = 0, _i = _list.length;
+    let other = 0, count = 0;
+    while (i < _i)
+    {
+        const entry = _list[i++];
+        if (entry.pause)
+        {
+            continue;
+        }
+        if (entry.duration !== 0)
+        {
+            entry.elapsed += elapsed;
+            if (entry.elapsed < entry.duration)
+            {
+                if (_debug && _debug.percent && entry.options.percent)
+                {
+                    const change = _percentageList[entry.options.percent];
+                    change.amounts[change.current++] = 0;
+                    if (change.current === _rollingAverage)
+                    {
+                        change.current = 0;
+                    }
+                }
+                continue;
+            }
+            else
+            {
+                entry.elapsed = 0;
+            }
+        }
+        let start, result;
+        if (_debug && _debug.percent)
+        {
+            start = performance.now();
+            result = entry.callback(elapsed, entry.options);
+            var current = performance.now() - start;
+            if (entry.options.percent)
+            {
+                const change = _percentageList[entry.options.percent];
+                change.amounts[change.current++] = current;
+                if (change.current === _rollingAverage)
+                {
+                    change.current = 0;
+                }
+            }
+            else
+            {
+                other += current;
+            }
+        }
+        else
+        {
+            result = entry.callback(elapsed, entry.options);
+        }
+        if (entry.once || result)
+        {
+            i--;
+            _i--;
+            _list.splice(i, 1);
+        }
+        count++;
+    }
+    if (_debug)
+    {
+        if (_debug.count && _lastCount !== count)
+        {
+            Debug.one(count + ' updates', {panel: _panels.count});
+            _lastCount = count;
+        }
+        if (_debug.percent)
+        {
+            _debugPercent(other);
+        }
+    }
+    while (_updateRemove.length)
+    {
+        _remove(_updateRemove.pop());
+    }
+    _updateRemove = null;
+}
+
+/**
+ * adds a function to the update loop
+ * @param {Function} funct
+ * @param {object} [options]
+ * @param {number} [options.time=0] in milliseconds to call this function
+ * @param {number} [options.FPS] - this replaces options.time and calls the function at the desired FPS
+ * @param {boolean} [options.once=false] - call only once and then remove from update queue
+ * @param {string} [options.percent] - name to track the percentage in the debug panel
+ */
+function add(funct, options)
+{
+    options = options || {};
+    const time = options.time || (options.FPS ? 1000 / options.FPS : 0);
+    const update = {callback: funct, options: options, duration: time, elapsed: 0, once: options.once, pause: false};
+    _list.push(update);
+    if (_debug && options.percent)
+    {
+        _percentageList[options.percent] = {current: 0, amounts: []};
+        let test = '';
+        for (let key in _percentageList)
+        {
+            test += key + ': --%<br>';
+        }
+        Debug.one(test, {panel: _panels.percent});
+        Debug.resize();
+    }
+    return update;
+}
+
+/**
+ * removes all updates and clears the percentage list
+ */
+function clear()
+{
+    _list = [];
+    if (_debug && _debug.percent)
+    {
+        _percentageList = {};
+        _percentageList['Other'] = {current: 0, amounts: []};
+        Debug.resize();
+    }
+}
+
+/**
+ * removes an update from the loop
+ * @param {object} update - object returned by add()
+ */
+function remove(update)
+{
+    if (update)
+    {
+        if (_updateRemove)
+        {
+            _updateRemove.push(update);
+        }
+        else
+        {
+            _remove(update);
+        }
+    }
+}
+
+/**
+ * removes the update from the loop
+ * this does not check whether the update loop is active; use remove() instead
+ * @param {object} update - object returned by add()
+ * @private
+ */
+function _remove(update)
+{
+    const index = _list.indexOf(update);
+    if (index !== -1)
+    {
+        _list.splice(index, 1);
+    }
+}
+
+/**
+ * starts the update loop
+ */
+function update()
+{
+    if (_pause === true)
+    {
+        _updateOff = true;
+        return;
+    }
+    const current = performance.now();
+    let elapsed;
+    if (_lastUpdate === 0)
+    {
+        elapsed = 0;
+    }
+    else
+    {
+        elapsed = current - _lastUpdate;
+        elapsed = elapsed > _maxChange ? _maxChange : elapsed;
+    }
+    _updateAll(elapsed);
+    _lastUpdate = current;
+    if (_debug && _debug.FPS)
+    {
+        _debugUpdate(current);
+    }
+    if (_onLoop)
+    {
+        _onLoop();
+    }
+    requestAnimationFrame(update);
+}
+
+/**
+ * adds debug panels (uses github.com/davidfig/debug)
+ * @private
+ */
+function _debugInit()
+{
+    if (_debug.FPS)
+    {
+        _panels.fps = Debug.add('FPS', {text: '-- FPS'});
+        _panels.meter = Debug.addMeter('panel');
+    }
+    if (_debug.count)
+    {
+        _panels.count = Debug.add('Updates', {text: '0 updates'});
+    }
+    if (_debug.percent)
+    {
+        _panels.percent = Debug.add('percentages', {style: {textAlign: 'right'}});
+        _percentageList['Other'] = {current: 0, amounts: []};
+    }
+}
+
+/**
+ * pause debug
+ * @private
+ */
+function _debugPause()
+{
+    if (_debug.FPS)
+    {
+        Debug.one('-- FPS', {panel: _panels.fps});
+    }
+}
+
+/**
+ * update debug panels
+ * @param {number} current time
+ * @private
+ */
+function _debugUpdate(current)
+{
+    _frameNumber++;
+    const currentTime = performance.now() - _startTime;
+
+    // skip the first half second to get rid of garbage
+    if (currentTime > 500)
+    {
+        if (_startTime !== 0)
+        {
+            _lastFPS = Math.floor(_frameNumber / (currentTime / 1000));
+            if (_lastFPS >= FPS - _tolerance && _lastFPS <= FPS + _tolerance)
+            {
+                _lastFPS = FPS;
+            }
+        }
+        _startTime = performance.now();
+        _frameNumber = 0;
+    }
+    Debug.one(_lastFPS + ' FPS', {panel: _panels.fps});
+    const time = performance.now() - current;
+    const expected = (16.7 - time) / 16.7;
+    Debug.meter(expected, {panel: _panels.meter});
+}
+
+/**
+ * update percentage panel
+ * @param {number} other time
+ * @private
+ */
+function _debugPercent(other)
+{
+    const change = _percentageList['Other'];
+    change.amounts[change.current++] = other;
+    change.current %= _rollingAverage;
+    let updates = [], all = 0;
+    for (let name in _percentageList)
+    {
+        const change = _percentageList[name];
+        let total = 0;
+        for (let i = 0; i < change.amounts.length; i++)
+        {
+            total += change.amounts[i];
+        }
+        total /= change.amounts.length;
+        all += total;
+        updates.push({name: name, total: total});
+    }
+    let result = '';
+    for (let i = 1; i < updates.length; i++)
+    {
+        const update = updates[i];
+        result += update.name + ': ' + Math.round(update.total / all * 100) + '%<br>';
+    }
+    const update = updates[0];
+    result += update.name + ': ' + (all === 0 ? '100' : Math.round(update.total / all * 100)) + '%<br>';
+    Debug.one(result, {panel: _panels.percent});
+}
+
+module.exports = {
+    init,
+    registerPause,
+    pauseGame,
+    resumeGame,
+    add,
+    clear,
+    remove,
+    update
+};
+
+/* globals performance, requestAnimationFrame */
+},{}],388:[function(require,module,exports){
+
+},{}],389:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -60168,7 +60983,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":387}],387:[function(require,module,exports){
+},{"_process":390}],390:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -60354,7 +61169,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],388:[function(require,module,exports){
+},{}],391:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -60891,7 +61706,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],389:[function(require,module,exports){
+},{}],392:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -60977,7 +61792,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],390:[function(require,module,exports){
+},{}],393:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -61064,13 +61879,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],391:[function(require,module,exports){
+},{}],394:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":389,"./encode":390}],392:[function(require,module,exports){
+},{"./decode":392,"./encode":393}],395:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -61804,7 +62619,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":393,"punycode":388,"querystring":391}],393:[function(require,module,exports){
+},{"./util":396,"punycode":391,"querystring":394}],396:[function(require,module,exports){
 'use strict';
 
 module.exports = {
