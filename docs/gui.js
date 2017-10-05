@@ -28,15 +28,23 @@ module.exports = function gui(viewport, drawWorld)
         },
         bounce: {
             bounce: true,
+            friction: 0.5,
             time: 150,
             ease: 'easeInOutSine'
         },
         decelerate: {
             decelerate: true,
             friction: 0.95,
-            others: 0.8,
             minSpeed: 0.01
         },
+        snap: {
+            snap: false,
+            x: 0,
+            y: 0,
+            friction: 0.8,
+            speed: 1,
+            acceleration: 0.01
+        }
     }
     guiWorld()
     _gui.add(_viewport, 'threshold')
@@ -45,40 +53,7 @@ module.exports = function gui(viewport, drawWorld)
     guiClamp()
     guiBounce()
     guiDecelerate()
-
-    // const snap = gui.addFolder('snap')
-    // snap.add(fake, 'snap').onChange(
-    //     function (value)
-    //     {
-    //         _viewport.snap = value
-    //         if (value)
-    //         {
-    //             if (!snapSpeed)
-    //             {
-    //                 snapSpeed = snap.add(_viewport.snap, 'speed')
-    //                 snapX = snap.add(_viewport.snap, 'x')
-    //                 snapY = snap.add(_viewport.snap, 'y')
-    //             }
-    //         }
-    //         else
-    //         {
-    //             if (snapSpeed)
-    //             {
-    //                 snap.remove(snapSpeed)
-    //                 snap.remove(snapX)
-    //                 snap.remove(snapY)
-    //             }
-    //         }
-    //     }
-    // )
-    // let snapSpeed, snapX, snapY
-    // if (fake.snap)
-    // {
-    //     snapSpeed = snap.add(_viewport.snap, 'speed')
-    //     snapX = snap.add(_viewport.snap, 'x')
-    //     snapY = snap.add(_viewport.snap, 'y')
-    // }
-    // snap.open()
+    guiSnap()
 }
 
 function guiWorld()
@@ -182,20 +157,15 @@ function guiPinch()
 
 function guiBounce()
 {
+    function change()
+    {
+        _viewport.bounce({ time: _options.bounce.time, ease: _options.bounce.ease, friction: _options.bounce.friction })
+    }
+
     function add()
     {
-        bounceTime = bounce.add(_options.bounce, 'time', 0, 2000).step(50).onChange(
-            function ()
-            {
-                _viewport.bounce({ time: _options.bounce.time, ease: _options.bounce.ease })
-            }
-        )
-        bounceEase = bounce.add(_options.bounce, 'ease').onChange(
-            function ()
-            {
-                _viewport.bounce({ time: _options.bounce.time, ease: _options.bounce.ease })
-            }
-        )
+        bounceTime = bounce.add(_options.bounce, 'time', 0, 2000).step(50).onChange(change)
+        bounceEase = bounce.add(_options.bounce, 'ease').onChange(change)
     }
 
     let bounceTime, bounceEase
@@ -205,7 +175,7 @@ function guiBounce()
         {
             if (value)
             {
-                _viewport.bounce()
+                change()
                 if (!bounceTime)
                 {
                     add()
@@ -234,17 +204,16 @@ function guiDecelerate()
 {
     function change()
     {
-        _viewport.decelerate({ friction: _options.decelerate.friction, others: _options.decelerate.others, minSpeed: _options.decelerate.minSpeed })
+        _viewport.decelerate({ friction: _options.decelerate.friction, minSpeed: _options.decelerate.minSpeed })
     }
 
     function add()
     {
         friction = decelerate.add(_options.decelerate, 'friction', 0, 1)
-        others = decelerate.add(_options.decelerate, 'others', 0, 1)
         minSpeed = decelerate.add(_options.decelerate, 'minSpeed')
     }
 
-    let friction, others, minSpeed
+    let friction, minSpeed
 
     const decelerate = _gui.addFolder('decelerate')
     decelerate.add(_options.decelerate, 'decelerate').onChange(
@@ -263,7 +232,6 @@ function guiDecelerate()
                 if (friction)
                 {
                     decelerate.remove(friction)
-                    decelerate.remove(others)
                     decelerate.remove(minSpeed)
                     friction = null
                 }
@@ -275,6 +243,54 @@ function guiDecelerate()
         add()
     }
     decelerate.open()
+}
+
+function guiSnap()
+{
+    function change()
+    {
+        _viewport.snap(_options.snap.x, _options.snap.y, { speed: _options.snap.speed, acceleration: _options.snap.acceleration })
+    }
+
+    function add()
+    {
+        x = snap.add(_options.snap, 'x').onChange(change)
+        y = snap.add(_options.snap, 'y').onChange(change)
+        friction = snap.add(_options.snap, 'friction').onChange(change)
+        speed = snap.add(_options.snap, 'speed').onChange(change)
+        acceleration = snap.add(_options.snap, 'acceleration').onChange(change)
+    }
+
+    let x, y, speed, acceleration, friction
+
+    const snap = _gui.addFolder('snap')
+    snap.add(_options.snap, 'snap').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                if (value)
+                {
+                    add()
+                }
+            }
+            else
+            {
+                snap.remove(x)
+                snap.remove(y)
+                snap.remove(speed)
+                snap.remove(acceleration)
+                snap.remove(friction)
+                _viewport.removePlugin('snap')
+            }
+        }
+    )
+    if (_options.snap.snap)
+    {
+        add()
+    }
+    snap.open()
 }
 
 /* global dat */

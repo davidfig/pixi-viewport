@@ -9,7 +9,8 @@ module.exports = class Bounce extends Plugin
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      * @param {Viewport} parent
      * @param {object} [options]
-     * @param {number} [time=150] time in ms to finish bounce
+     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
+     * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
      */
     constructor(parent, options)
@@ -51,10 +52,27 @@ module.exports = class Bounce extends Plugin
 
     bounce()
     {
-        const decelerate = this.parent.plugin('decelerate')
+        let oob
+        let decelerate = this.parent.plugin('decelerate')
+        if (decelerate && (decelerate.x || decelerate.y))
+        {
+            if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))
+            {
+                oob = this.parent.OOB()
+                if (oob.left || oob.right)
+                {
+                    decelerate.percentChangeX = this.friction
+                }
+                if (oob.top || oob.bottom)
+                {
+                    decelerate.percentChangeY = this.friction
+                }
+            }
+        }
+        decelerate = decelerate || {}
         if (this.parent.pointers.length === 0 && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
         {
-            const oob = this.parent.OOB()
+            oob = oob || this.parent.OOB()
             const point = oob.cornerPoint
             if (!this.toX && !decelerate.x)
             {

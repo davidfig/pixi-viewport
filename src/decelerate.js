@@ -6,7 +6,6 @@ module.exports = class Decelerate extends Plugin
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.friction=0.95] percent to decelerate after movement
-     * @param {number} [options.others=0.8] percent to decelerate when snap() or others() and past boundaries
      * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
      */
     constructor(parent, options)
@@ -14,7 +13,8 @@ module.exports = class Decelerate extends Plugin
         super(parent)
         options = options || {}
         this.friction = options.friction || 0.95
-        this.others = options.others || 0.8
+        this.snap = options.snap || 0.8
+        this.bounce = options.bounce || 0.5
         this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
         this.saved = []
     }
@@ -49,8 +49,7 @@ module.exports = class Decelerate extends Plugin
                     const time = now - save.time
                     this.x = (this.parent.container.x - save.x) / time
                     this.y = (this.parent.container.y - save.y) / time
-                    const snap = this.parent.plugins['snap']
-                    this.percentChangeX = this.percentChangeY = snap ? this.others : this.friction
+                    this.percentChangeX = this.percentChangeY = this.friction
                     break
                 }
             }
@@ -75,18 +74,6 @@ module.exports = class Decelerate extends Plugin
             if (Math.abs(this.y) < this.minSpeed)
             {
                 this.y = 0
-            }
-        }
-        if ((this.x && this.percentChangeX === this.friction) || (this.y && this.percentChangeY === this.friction))
-        {
-            const oob = this.parent.OOB()
-            if (oob.left || oob.right)
-            {
-                this.percentChangeX = this.others
-            }
-            if (oob.top || oob.bottom)
-            {
-                this.percentChangeY = this.others
             }
         }
     }

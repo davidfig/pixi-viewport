@@ -34,7 +34,6 @@ function viewport()
         .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))
         .decelerate()
         .bounce()
-        .snap(0, 0)
         .start()
     resize()
 }
