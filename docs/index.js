@@ -61127,26 +61127,6 @@ module.exports = class Viewport extends Events
     }
 
     /**
-     * move viewport's center; also clamps and resets decelerate and bounce (as needed)
-     * @param {number|PIXI.Point} x|point
-     * @param {number} y
-     */
-    // center(/*x, y | point */)
-    // {
-    //     const halfWidth = (this.screenWidth / 2) / this.container.scale.x
-    //     const halfHeight = (this.screenHeight / 2) / this.container.scale.y
-    //     if (arguments.length === 1)
-    //     {
-    //         this.container.position.set(arguments[0].x - halfWidth, arguments[0].y - halfHeight)
-    //     }
-    //     else
-    //     {
-    //         this.container.position.set(arguments[0] - halfWidth, arguments[1] - halfHeight)
-    //     }
-    //     this._reset()
-    // }
-
-    /**
      * clamps and resets bounce and decelerate (as needed) after manually moving viewport
      * @private
      */
@@ -61282,8 +61262,10 @@ module.exports = class Viewport extends Events
 
     /**
      * follow a target
-     * @param {PIXI.Point|PIXI.DisplayObject|object} target to follow (object must include {x: x-coordinate, y: y-coordinate})
-     * @param {object} options
+     * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
+     * @param {object} [options]
+     * @param {number} [options.speed=0] to follow in pixels/frame
+     * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      */
     follow(target, options)
     {
