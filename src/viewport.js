@@ -148,6 +148,11 @@ module.exports = class Viewport extends Events
      */
     down(e)
     {
+        // fixes a bug when highlighting
+        if (e.data.identifier === 'MOUSE')
+        {
+            this.pointers = []
+        }
         this.pointers.push({ id: e.data.pointerId, last: { x: e.data.global.x, y: e.data.global.y }, saved: [] })
         if (this.pointers.length === 1)
         {
@@ -160,6 +165,7 @@ module.exports = class Viewport extends Events
                 this.plugins[type].down(e)
             }
         }
+
     }
 
     checkThreshold(change)

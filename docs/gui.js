@@ -42,8 +42,8 @@ module.exports = function gui(viewport, drawWorld)
             x: 0,
             y: 0,
             friction: 0.8,
-            speed: 1,
-            acceleration: 0.01
+            time: 1000,
+            ease: 'easeInOutsine'
         }
     }
     guiWorld()
@@ -249,7 +249,7 @@ function guiSnap()
 {
     function change()
     {
-        _viewport.snap(_options.snap.x, _options.snap.y, { speed: _options.snap.speed, acceleration: _options.snap.acceleration })
+        _viewport.snap(_options.snap.x, _options.snap.y, { time: _options.snap.time, ease: _options.snap.ease, friction: _options.snap.friction })
     }
 
     function add()
@@ -257,11 +257,11 @@ function guiSnap()
         x = snap.add(_options.snap, 'x').onChange(change)
         y = snap.add(_options.snap, 'y').onChange(change)
         friction = snap.add(_options.snap, 'friction').onChange(change)
-        speed = snap.add(_options.snap, 'speed').onChange(change)
-        acceleration = snap.add(_options.snap, 'acceleration').onChange(change)
+        time = snap.add(_options.snap, 'time').onChange(change)
+        ease = snap.add(_options.snap, 'ease').onChange(change)
     }
 
-    let x, y, speed, acceleration, friction
+    let x, y, time, ease, friction
 
     const snap = _gui.addFolder('snap')
     snap.add(_options.snap, 'snap').onChange(
@@ -279,8 +279,8 @@ function guiSnap()
             {
                 snap.remove(x)
                 snap.remove(y)
-                snap.remove(speed)
-                snap.remove(acceleration)
+                snap.remove(time)
+                snap.remove(ease)
                 snap.remove(friction)
                 _viewport.removePlugin('snap')
             }
