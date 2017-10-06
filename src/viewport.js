@@ -351,7 +351,7 @@ module.exports = class Viewport extends Events
     /**
      * change zoom so the height fits in the viewport
      * @param {number} [width=container.height] in world coordinates; uses container.width if not provided
-    * @param {boolean} [center] maintain the same center
+    * @param {boolean} [center] maintain the same center of the screen after zoom
      */
     fitHeight(height, center)
     {
@@ -368,6 +368,34 @@ module.exports = class Viewport extends Events
             this.moveCenter(save)
         }
     }
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     */
+    fit(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.container.scale.x = this.screenWidth / this.container.width
+        this.container.scale.y = this.screenHeight / this.container.height
+        if (this.container.scale.x < this.container.scale.y)
+        {
+            this.container.scale.y = this.container.scale.x
+        }
+        else
+        {
+            this.container.scale.x = this.container.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+    }
+
 
     /**
      * is container out of world bounds
