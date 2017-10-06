@@ -42,7 +42,7 @@ module.exports = class clamp extends Plugin
             }
             else if (oob.right)
             {
-                this.parent.container.x += (point.x - this.parent.worldWidth)
+                this.parent.container.x = -point.x
                 decelerate.x = 0
             }
         }
@@ -55,7 +55,7 @@ module.exports = class clamp extends Plugin
             }
             else if (oob.bottom)
             {
-                this.parent.container.y += (point.y - this.parent.worldHeight)
+                this.parent.container.y = -point.y
                 decelerate.y = 0
             }
         }

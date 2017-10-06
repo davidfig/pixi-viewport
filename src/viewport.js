@@ -399,17 +399,53 @@ module.exports = class Viewport extends Events
 
     /**
      * is container out of world bounds
-     * @return { left:boolean, right: boolean, top: boolean, bottom: boolean, cornerPoint: PIXI.Point }
+     * @return { left:boolean, right: boolean, top: boolean, bottom: boolean }
      */
     OOB()
     {
         const result = {}
-        const point = result.cornerPoint = this.container.toLocal({ x: this.screenWidth, y: this.screenHeight })
-        result.left = this.screenWidth / this.container.scale.x > this.worldWidth || this.container.x > 0
-        result.right = point.x > this.worldWidth
-        result.top = this.screenHeight / this.container.scale.y > this.worldHeight || this.container.y > 0
-        result.bottom = point.y > this.worldHeight
+        result.left = this.left < 0
+        result.right = this.right > this.worldWidth
+        result.top = this.top < 0
+        result.bottom = this.bottom > this.worldHeight
+        result.cornerPoint = { x: this.worldWidth - this.worldScreenWidth, y: this.worldHeight - this.worldScreenHeight }
         return result
+    }
+
+    /**
+     * world coordinates of the right edge of the screen
+     * @type {number}
+     */
+    get right()
+    {
+        return -this.container.x / this.container.scale.x + this.worldScreenWidth
+    }
+
+    /**
+     * world coordinates of the right edge of the screen
+     * @type {number}
+     */
+    get left()
+    {
+        return -this.container.x / this.container.scale.x
+    }
+
+    /**
+     * world coordinates of the top edge of the screen
+     * @type {number}
+     */
+    get top()
+    {
+        return -this.container.y / this.container.scale.y
+    }
+
+    /**
+     * world coordinates of the bottom edge of the screen
+     * @type {number}
+     */
+    get bottom()
+    {
+        return -this.container.y / this.container.scale.y + this.worldScreenHeight
     }
 
     /**

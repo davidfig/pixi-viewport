@@ -82,7 +82,7 @@ module.exports = class Bounce extends Plugin
                 }
                 else if (oob.right)
                 {
-                    this.toX = new Ease.to(this.parent.container, { x: this.parent.container.x + point.x - this.parent.worldWidth }, this.time, { ease: this.ease })
+                    this.toX = new Ease.to(this.parent.container, { x: -point.x }, this.time, { ease: this.ease })
                 }
             }
             if (!this.toY && !decelerate.y)
@@ -93,7 +93,7 @@ module.exports = class Bounce extends Plugin
                 }
                 else if (oob.bottom)
                 {
-                    this.toY = new Ease.to(this.parent.container, { y: this.parent.container.y + point.y - this.parent.worldHeight }, this.time, { ease: this.ease })
+                    this.toY = new Ease.to(this.parent.container, { y: -point.y }, this.time, { ease: this.ease })
                 }
             }
         }

@@ -120,9 +120,33 @@ https://davidfig.github.io/pixi-viewport/
 
     /**
      * is container out of world bounds
-     * @return { left:boolean, right: boolean, top: boolean, bottom: boolean, cornerPoint: PIXI.Point }
+     * @return { left:boolean, right: boolean, top: boolean, bottom: boolean }
      */
     OOB()
+
+    /**
+     * world coordinates of the right edge of the screen
+     * @type {number}
+     */
+    get right()
+
+    /**
+     * world coordinates of the right edge of the screen
+     * @type {number}
+     */
+    get left()
+
+    /**
+     * world coordinates of the top edge of the screen
+     * @type {number}
+     */
+    get top()
+
+    /**
+     * world coordinates of the bottom edge of the screen
+     * @type {number}
+     */
+    get bottom()
 
     /**
      * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
