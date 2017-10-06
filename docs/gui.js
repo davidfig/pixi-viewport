@@ -1,6 +1,6 @@
 let _viewport, _drawWorld, _gui, _options, _world
 
-module.exports = function gui(viewport, drawWorld)
+module.exports = function gui(viewport, drawWorld, target)
 {
     _viewport = viewport
     _drawWorld = drawWorld
@@ -44,7 +44,13 @@ module.exports = function gui(viewport, drawWorld)
             friction: 0.8,
             time: 1000,
             ease: 'easeInOutsine'
+        },
+        follow: {
+            follow: false,
+            speed: 0,
+            radius: 0
         }
+
     }
     guiWorld()
     _gui.add(_viewport, 'threshold')
@@ -54,6 +60,7 @@ module.exports = function gui(viewport, drawWorld)
     guiBounce()
     guiDecelerate()
     guiSnap()
+    guiFollow(target)
 }
 
 function guiWorld()
@@ -270,10 +277,7 @@ function guiSnap()
             if (value)
             {
                 change()
-                if (value)
-                {
-                    add()
-                }
+                add()
             }
             else
             {
@@ -291,6 +295,44 @@ function guiSnap()
         add()
     }
     snap.open()
+}
+
+function guiFollow(target)
+{
+    function change()
+    {
+        _viewport.follow(target, { speed: _options.follow.speed, radius: _options.follow.radius })
+    }
+
+    function add()
+    {
+        speed = follow.add(_options.follow, 'speed').onChange(change)
+        radius = follow.add(_options.follow, 'radius').onChange(change)
+    }
+
+    let speed, radius
+    const follow = _gui.addFolder('follow')
+    follow.add(_options.follow, 'follow').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                follow.remove(speed)
+                follow.remove(radius)
+                _viewport.removePlugin('follow')
+            }
+        }
+    )
+    if (_options.follow.follow)
+    {
+        add()
+    }
+    follow.open()
 }
 
 /* global dat */

@@ -7,8 +7,9 @@ const Decelerate = require('./decelerate')
 const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
+const Follow = require('./follow')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'decelerate', 'bounce', 'snap', 'clamp']
+const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
 
 module.exports = class Viewport extends Events
 {
@@ -281,6 +282,94 @@ module.exports = class Viewport extends Events
     }
 
     /**
+     * @type {number} screen width in world coordinates
+     */
+    get worldScreenWidth()
+    {
+        return this.screenWidth / this.container.scale.x
+    }
+
+    /**
+     * @type {number} screen width in world coordinates
+     */
+    get worldScreenHeight()
+    {
+        return this.screenHeight / this.container.scale.y
+    }
+
+    /**
+     * get center of screen in world coordinates
+     * @type {{x: number, y: number}}
+     */
+    get center()
+    {
+        return { x: this.worldScreenWidth / 2 - this.container.x / this.container.scale.x, y: this.worldScreenHeight / 2 - this.container.y / this.container.scale.y }
+    }
+
+    /**
+     * move center of viewport to point
+     * @param {number|PIXI.Point} x|point
+     * @param {number} [y]
+     */
+    moveCenter(/*x, y | PIXI.Point*/)
+    {
+        let x, y
+        if (!isNaN(arguments[0]))
+        {
+            x = arguments[0]
+            y = arguments[1]
+        }
+        else
+        {
+            x = arguments[0].x
+            y = arguments[0].y
+        }
+        this.container.position.set((this.worldScreenWidth / 2 - x) * this.container.scale.x, (this.worldScreenHeight / 2 - y) * this.container.scale.y)
+    }
+
+    /**
+     * change zoom so the width fits in the viewport
+     * @param {number} [width=container.width] in world coordinates; uses container.width if not provided
+    * @param {boolean} [center] maintain the same center
+     */
+    fitWidth(width, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        width = width || this.container.width
+        this.container.scale.x = this.screenWidth / width
+        this.container.scale.y = this.container.scale.x
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+    }
+
+    /**
+     * change zoom so the height fits in the viewport
+     * @param {number} [width=container.height] in world coordinates; uses container.width if not provided
+    * @param {boolean} [center] maintain the same center
+     */
+    fitHeight(height, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        height = height || this.container.height
+        this.container.scale.y = this.screenHeight / height
+        this.container.scale.x = this.container.scale.y
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+    }
+
+    /**
      * is container out of world bounds
      * @return { left:boolean, right: boolean, top: boolean, bottom: boolean, cornerPoint: PIXI.Point }
      */
@@ -318,20 +407,20 @@ module.exports = class Viewport extends Events
      * @param {number|PIXI.Point} x|point
      * @param {number} y
      */
-    center(/*x, y | point */)
-    {
-        const halfWidth = (this.screenWidth / 2) * this.container.scale.x
-        const halfHeight = (this.screenHeight / 2) * this.container.scale.y
-        if (arguments.length === 1)
-        {
-            this.container.position.set(arguments[0].x - halfWidth, arguments[0].y - halfHeight)
-        }
-        else
-        {
-            this.container.position.set(arguments[0] - halfWidth, arguments[1] - halfHeight)
-        }
-        this._reset()
-    }
+    // center(/*x, y | point */)
+    // {
+    //     const halfWidth = (this.screenWidth / 2) / this.container.scale.x
+    //     const halfHeight = (this.screenHeight / 2) / this.container.scale.y
+    //     if (arguments.length === 1)
+    //     {
+    //         this.container.position.set(arguments[0].x - halfWidth, arguments[0].y - halfHeight)
+    //     }
+    //     else
+    //     {
+    //         this.container.position.set(arguments[0] - halfWidth, arguments[1] - halfHeight)
+    //     }
+    //     this._reset()
+    // }
 
     /**
      * clamps and resets bounce and decelerate (as needed) after manually moving viewport
@@ -464,6 +553,17 @@ module.exports = class Viewport extends Events
     snap(x, y, options)
     {
         this.plugins['snap'] = new Snap(this, x, y, options)
+        return this
+    }
+
+    /**
+     * follow a target
+     * @param {PIXI.Point|PIXI.DisplayObject|object} target to follow (object must include {x: x-coordinate, y: y-coordinate})
+     * @param {object} options
+     */
+    follow(target, options)
+    {
+        this.plugins['follow'] = new Follow(this, target, options)
         return this
     }
 }

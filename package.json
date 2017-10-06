@@ -33,6 +33,7 @@
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
   "dependencies": {
     "pixi-ease": "^0.10.1",
+    "yy-input": "^1.2.1",
     "yy-renderer": "^1.3.3"
   },
   "devDependencies": {
