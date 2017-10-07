@@ -22,12 +22,12 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
-     * @param {boolean} [options.noPause] do not pause updates when app loses focus
+     * @param {boolean} [options.pauseOnBlur] pause when app loses focus
      */
     constructor(container, options)
     {
         options = options || {}
-        super({ noPause: options.noPause })
+        super({ pauseOnBlur: options.pauseOnBlur })
         this.container = container
         this.pointers = []
         this.plugins = []
