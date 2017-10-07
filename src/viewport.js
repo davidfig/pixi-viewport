@@ -27,7 +27,7 @@ module.exports = class Viewport extends Loop
     constructor(container, options)
     {
         options = options || {}
-        super({ pauseOnBlur: options.pauseOnBlur })
+        super({ pauseOnBlur: options.pauseOnBlur, maxFrameTime: options.maxFrameTime })
         this.container = container
         this.pointers = []
         this.plugins = []
