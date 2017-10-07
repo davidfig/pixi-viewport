@@ -15,11 +15,13 @@ module.exports = function gui(viewport, drawWorld, target)
         drag: true,
         pinch: {
             pinch: true,
-            clampScreen: false,
+            noDrag: false,
             minWidth: 0,
             minHeight: 0,
             maxWidth: 0,
-            maxHeight: 0
+            maxHeight: 0,
+            centerX: 0,
+            centerY: 0
         },
         clamp: {
             clamp: false,
@@ -123,16 +125,19 @@ function guiPinch()
 {
     function change()
     {
-        _viewport.pinch({ clampScreen: _options.pinch.clampScreen, minWidth: _options.pinch.minWidth, maxWidth: _options.pinch.maxWidth, minHeight: _options.pinch.minHeight, maxHeight: _options.pinch.maxHeight })
+        const center = (_options.pinch.centerX || _options.pinch.centerY) ? { x: _options.pinch.centerX, y: _options.pinch.centerY } : null
+        _viewport.pinch({ noDrag: _options.pinch.noDrag, minWidth: _options.pinch.minWidth, maxWidth: _options.pinch.maxWidth, minHeight: _options.pinch.minHeight, maxHeight: _options.pinch.maxHeight, center })
     }
 
     function add()
     {
-        clampZoom = pinch.add(_options.pinch, 'clampScreen')
-        minWidth = pinch.add(_options.pinch, 'minWidth')
-        maxWidth = pinch.add(_options.pinch, 'maxWidth')
-        minHeight = pinch.add(_options.pinch, 'minHeight')
-        maxHeight = pinch.add(_options.pinch, 'maxHeight')
+        noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
+        minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
+        maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
+        minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
+        maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
+        centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
+        centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
     }
 
     const pinch = _gui.addFolder('pinch')
@@ -147,14 +152,16 @@ function guiPinch()
             else
             {
                 _viewport.removePlugin('pinch')
-                pinch.remove(clampZoom)
+                pinch.remove(noDrag)
                 pinch.remove(minWidth)
                 pinch.remove(maxWidth)
                 pinch.remove(minHeight)
                 pinch.remove(maxHeight)
+                pinch.remove(centerX)
+                pinch.remove(centerY)
             }
         })
-    let clampZoom, minWidth, maxWidth, minHeight, maxHeight
+    let noDrag, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
     if (_options.pinch)
     {
         add()
@@ -311,7 +318,7 @@ function guiFollow(target)
     }
 
     let speed, radius
-    const follow = _gui.addFolder('follow')
+    const follow = _gui.addFolder('follow (use arrows to manually control)')
     follow.add(_options.follow, 'follow').onChange(
         function (value)
         {

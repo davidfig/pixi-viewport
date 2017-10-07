@@ -1,4 +1,4 @@
-const Events = require('eventemitter3')
+const Loop = require('yy-loop')
 
 const Drag = require('./drag')
 const Pinch = require('./pinch')
@@ -11,7 +11,7 @@ const Follow = require('./follow')
 
 const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
 
-module.exports = class Viewport extends Events
+module.exports = class Viewport extends Loop
 {
     /**
      * @param {PIXI.Container} [container] to apply viewport
@@ -22,53 +22,35 @@ module.exports = class Viewport extends Events
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
+     * @param {boolean} [options.noPause] do not pause updates when app loses focus
      */
     constructor(container, options)
     {
-        super()
+        options = options || {}
+        super({ noPause: options.noPause })
         this.container = container
         this.pointers = []
         this.plugins = []
-        options = options || {}
         this.screenWidth = options.screenWidth
         this.screenHeight = options.screenHeight
         this.worldWidth = options.worldWidth
         this.worldHeight = options.worldHeight
         this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
+        this.add(this.loop.bind(this))
     }
 
     /**
      * start requestAnimationFrame() loop to handle animations; alternatively, call update() manually on each frame
+     * @inherited yy-loop
      */
-    start()
-    {
-        this.running = performance.now()
-        this.loop()
-        return this
-    }
-
-    /**
-     * loop through updates
-     * @private
-     */
-    loop()
-    {
-        if (this.running)
-        {
-            const now = performance.now()
-            let elapsed = now - this.running
-            elapsed = elapsed > this.maxFrameTime ? this.maxFrameTime : elapsed
-            this.update(elapsed)
-            requestAnimationFrame(this.loop.bind(this))
-        }
-    }
+    // start()
 
     /**
      * update loop -- may be called manually or use start/stop() for Viewport to handle updates
      * @param {number} elapsed time in ms
      */
-    update(elapsed)
+    loop(elapsed)
     {
         for (let plugin of PLUGIN_ORDER)
         {
@@ -81,12 +63,9 @@ module.exports = class Viewport extends Events
 
     /**
      * stop loop
+     * @inherited yy-loop
      */
-    stop()
-    {
-        this.running = false
-        return this
-    }
+    // stop()
 
     /**
      * use this to set screen and world sizes--needed for most plugins
@@ -562,12 +541,12 @@ module.exports = class Viewport extends Events
     /**
      * enable pinch to zoom and two-finger touch to drag
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} [options]
-     * @param {boolean} [options.clampScreen] clamp minimum zoom to size of screen
+     * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
      * @param {number} [options.minWidth] clamp minimum width
      * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp minimum width
-     * @param {number} [options.maxHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
      * @return {Viewport} this
      */
     pinch(options)
