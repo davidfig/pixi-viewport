@@ -69,8 +69,9 @@ module.exports = class Bounce extends Plugin
                 }
             }
         }
+        const pointers = this.parent.input.pointers
         decelerate = decelerate || {}
-        if (this.parent.pointers.length === 0 && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
+        if (pointers.length === 0 && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
         {
             oob = oob || this.parent.OOB()
             const point = oob.cornerPoint

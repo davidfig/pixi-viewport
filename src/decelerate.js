@@ -25,9 +25,10 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = false
     }
 
-    move()
+    move(x, y, data)
     {
-        if (this.parent.pointers.length === 1 || (this.parent.pointers.length > 1 && !this.parent.plugin('pinch')))
+        const pointers = data.input.pointers
+        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
         {
             this.saved.push({ x: this.parent.container.x, y: this.parent.container.y, time: performance.now() })
             if (this.saved.length > 60)
@@ -37,9 +38,10 @@ module.exports = class Decelerate extends Plugin
         }
     }
 
-    up()
+    up(x, y, data)
     {
-        if (this.parent.pointers.length === 0 && this.saved.length)
+        const pointers = data.input.pointers
+        if (pointers.length === 0 && this.saved.length)
         {
             const now = performance.now()
             for (let save of this.saved)

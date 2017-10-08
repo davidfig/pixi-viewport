@@ -32,9 +32,9 @@
   },
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
   "dependencies": {
-    "pixi-ease": "^0.10.1",
-    "yy-input": "^1.2.1",
-    "yy-loop": "^0.1.0",
+    "pixi-ease": "^0.10.2",
+    "yy-input": "^0.4.0",
+    "yy-loop": "^0.1.3",
     "yy-renderer": "^1.3.3"
   },
   "devDependencies": {

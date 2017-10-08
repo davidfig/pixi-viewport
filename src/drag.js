@@ -7,21 +7,41 @@ module.exports = class Drag extends Plugin
         super(parent)
     }
 
-    move(e)
+    down(x, y, data)
     {
-        if (this.parent.pointers.length === 1 || (this.parent.pointers.length > 1 && !this.parent.plugin('pinch')))
+        const pointers = data.input.pointers
+        if (pointers.length === 1)
         {
-            const last = this.parent.pointers[0].last
-            const pos = e.data.global
-            const distX = pos.x - last.x
-            const distY = pos.y - last.y
-            if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY))
+            this.last = { x, y }
+        }
+    }
+
+    move(x, y, data)
+    {
+        if (!this.last)
+        {
+            this.last = { x, y }
+        }
+        else
+        {
+            const pointers = data.input.pointers
+            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
             {
-                this.parent.container.x += distX
-                this.parent.container.y += distY
-                this.parent.pointers[0].last = { x: pos.x, y: pos.y }
-                this.inMove = true
+                const distX = x - this.last.x
+                const distY = y - this.last.y
+                if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY))
+                {
+                    this.parent.container.x += distX
+                    this.parent.container.y += distY
+                    this.last = { x, y }
+                    this.inMove = true
+                }
             }
         }
+    }
+
+    up()
+    {
+        this.last = null
     }
 }

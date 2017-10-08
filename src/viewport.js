@@ -1,4 +1,5 @@
 const Loop = require('yy-loop')
+const Input = require('yy-input')
 
 const Drag = require('./drag')
 const Pinch = require('./pinch')
@@ -16,6 +17,7 @@ module.exports = class Viewport extends Loop
     /**
      * @param {PIXI.Container} [container] to apply viewport
      * @param {number} [options]
+     * @param {HTMLElement} [options.div=document.body] use this div to create the mouse/touch listeners
      * @param {number} [options.screenWidth] these values are needed for clamp, bounce, and pinch plugins
      * @param {number} [options.screenHeight]
      * @param {number} [options.worldWidth]
@@ -23,6 +25,7 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
      * @param {boolean} [options.pauseOnBlur] pause when app loses focus
+     * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      */
     constructor(container, options)
     {
@@ -37,12 +40,16 @@ module.exports = class Viewport extends Loop
         this.worldHeight = options.worldHeight
         this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
+        if (!options.noListeners)
+        {
+            this.listeners(options.div || document.body, options.threshold)
+        }
         this.add(this.loop.bind(this))
     }
 
     /**
      * start requestAnimationFrame() loop to handle animations; alternatively, call update() manually on each frame
-     * @inherited yy-loop
+     * @inherited from yy-loop
      */
     // start()
 
@@ -63,7 +70,7 @@ module.exports = class Viewport extends Loop
 
     /**
      * stop loop
-     * @inherited yy-loop
+     * @inherited from yy-loop
      */
     // stop()
 
@@ -93,56 +100,26 @@ module.exports = class Viewport extends Loop
      * add or remove mouse/touch listeners
      * @private
      */
-    listeners()
+    listeners(div, threshold)
     {
-        if (this.plugin('drag') || this.plugin('pinch'))
-        {
-            if (!this.container.interactive)
-            {
-                this.container.interactive = true
-                this.container.on('pointerdown', this.down.bind(this))
-                this.container.on('pointermove', this.move.bind(this))
-                this.container.on('pointerup', this.up.bind(this))
-                this.container.on('pointercancel', this.up.bind(this))
-                this.container.on('pointerupoutside', this.up.bind(this))
-            }
-        }
-        else
-        {
-            if (this.container.interactive)
-            {
-                this.container.interactive = false
-                this.container.removeListener('pointerdown', this.down.bind(this))
-                this.container.removeListener('pointermove', this.move.bind(this))
-                this.container.removeListener('pointerup', this.up.bind(this))
-                this.container.removeListener('pointercancel', this.up.bind(this))
-                this.container.removeListener('pointerupoutside', this.up.bind(this))
-            }
-        }
+        this.input = new Input(div, { threshold, preventDefault: true })
+        this.input.on('down', this.down, this)
+        this.input.on('move', this.move, this)
+        this.input.on('up', this.up, this)
+        this.input.on('click', this.click, this)
     }
 
     /**
      * handle down events
      * @private
-     * @param {event} e
      */
-    down(e)
+    down()
     {
-        // fixes a bug when highlighting
-        if (e.data.identifier === 'MOUSE')
-        {
-            this.pointers = []
-        }
-        this.pointers.push({ id: e.data.pointerId, last: { x: e.data.global.x, y: e.data.global.y }, saved: [] })
-        if (this.pointers.length === 1)
-        {
-            this.moved = false
-        }
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].down(e)
+                this.plugins[type].down(...arguments)
             }
         }
 
@@ -152,7 +129,6 @@ module.exports = class Viewport extends Loop
     {
         if (Math.abs(change) >= this.threshold)
         {
-            this.moved = true
             return true
         }
         return false
@@ -161,33 +137,14 @@ module.exports = class Viewport extends Loop
     /**
      * handle move events
      * @private
-     * @param {event} e
      */
-    move(e)
+    move()
     {
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].move(e)
-            }
-        }
-        if (this.pointers.length)
-        {
-            if (this.pointers.length > 1)
-            {
-                this.moved = true
-            }
-            else
-            {
-                const last = this.pointers[0].last
-                const pos = e.data.global
-                const distX = pos.x - last.x
-                const distY = pos.y - last.y
-                if (this.checkThreshold(distX) || this.checkThreshold(distY))
-                {
-                    this.moved = true
-                }
+                this.plugins[type].move(...arguments)
             }
         }
     }
@@ -195,28 +152,22 @@ module.exports = class Viewport extends Loop
     /**
      * handle up events
      * @private
-     * @param {event} e
      */
-    up(e)
+    up()
     {
-        for (let i = 0; i < this.pointers.length; i++)
-        {
-            if (this.pointers[i].id === e.data.pointerId)
-            {
-                if (this.pointers.length === 1 && !this.moved)
-                {
-                    this.emit('click', { screen: e.data.global, world: this.toWorld(e.data.global) })
-                }
-                this.pointers.splice(i, 1)
-            }
-        }
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].up(e)
+                this.plugins[type].up(...arguments)
             }
         }
+    }
+
+    click(x, y)
+    {
+        const point = { x, y }
+        this.emit('click', { screen: point, world: this.toWorld(point) })
     }
 
     /**
@@ -475,7 +426,6 @@ module.exports = class Viewport extends Loop
     removePlugin(type)
     {
         this.plugins[type] = null
-        this.listeners()
     }
 
     /**
@@ -494,7 +444,6 @@ module.exports = class Viewport extends Loop
     drag()
     {
         this.plugins['drag'] = new Drag(this)
-        this.listeners()
         return this
     }
 
@@ -552,7 +501,6 @@ module.exports = class Viewport extends Loop
     pinch(options)
     {
         this.plugins['pinch'] = new Pinch(this, options)
-        this.listeners()
         return this
     }
 

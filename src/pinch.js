@@ -46,20 +46,25 @@ module.exports = class Pinch extends Plugin
         this.parent.container.scale.set(x, y)
     }
 
-    move(e)
+    move(x, y, data)
     {
-        if (this.parent.pointers.length >= 2)
+        const pointers = data.input.pointers
+        if (pointers.length >= 2)
         {
-            const first = this.parent.pointers[0]
-            const second = this.parent.pointers[1]
-            const last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-            if (first.id === e.data.pointerId)
+            const first = pointers[0]
+            const second = pointers[1]
+            let last
+            if (first.last && second.last)
             {
-                first.last = { x: e.data.global.x, y: e.data.global.y }
+                last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
             }
-            else if (second.id === e.data.pointerId)
+            if (first.identifier === data.id)
             {
-                second.last = { x: e.data.global.x, y: e.data.global.y }
+                first.last = { x, y }
+            }
+            else if (second.identifier === data.id)
+            {
+                second.last = { x, y }
             }
             if (last)
             {
@@ -97,9 +102,10 @@ module.exports = class Pinch extends Plugin
         }
     }
 
-    up()
+    up(x, y, data)
     {
-        if (this.parent.pointers.length < 2)
+        const pointers = data.input.pointers
+        if (pointers.length < 2)
         {
             this.lastCenter = null
         }

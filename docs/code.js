@@ -21,7 +21,7 @@ let _renderer, _viewport, _title, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage)
+    _viewport = new Viewport(_renderer.stage, { div: _renderer.div })
     _viewport
         .drag()
         .pinch()
