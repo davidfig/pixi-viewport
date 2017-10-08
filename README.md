@@ -32,6 +32,7 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
+     * @param {number} [options.preventDefault] call preventDefault after listeners
      * @param {boolean} [options.pauseOnBlur] pause when app loses focus
      * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      */
@@ -104,6 +105,19 @@ https://davidfig.github.io/pixi-viewport/
     moveCenter(/*x, y | PIXI.Point*/)
 
     /**
+     * top-left corner
+     * @type {{x: number, y: number}
+     */
+    get corner()
+
+    /**
+     * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
+     * @param {number|PIXI.Point} x|point
+     * @param {number} y
+     */
+    moveCorner(/*x, y | point*/)
+
+    /**
      * change zoom so the width fits in the viewport
      * @param {number} [width=container.width] in world coordinates; uses container.width if not provided
     * @param {boolean} [center] maintain the same center
@@ -152,13 +166,6 @@ https://davidfig.github.io/pixi-viewport/
      * @type {number}
      */
     get bottom()
-
-    /**
-     * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
-     * @param {number|PIXI.Point} x|point
-     * @param {number} y
-     */
-    corner(/*x, y | point*/)
 
     /**
      * removes installed plugin
