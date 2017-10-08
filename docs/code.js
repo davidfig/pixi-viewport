@@ -130,7 +130,7 @@ function drawWorld()
     stars()
     object()
     border()
-    _viewport.corner(0, 0)
+    _viewport.moveCorner(0, 0)
 }
 
 function arrows(code, special, e)
@@ -168,7 +168,7 @@ window.onload = function ()
     viewport()
     window.addEventListener('resize', resize)
 
-    const input = new Input(_renderer.canvas, {keys: true})
+    const input = new Input(_renderer.canvas, { keys: true })
     input.on('keydown', arrows)
 
     _ease = new Ease.list()

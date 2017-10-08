@@ -24,6 +24,7 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
+     * @param {number} [options.preventDefault] call preventDefault after listeners
      * @param {boolean} [options.pauseOnBlur] pause when app loses focus
      * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      */
@@ -42,7 +43,7 @@ module.exports = class Viewport extends Loop
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
         if (!options.noListeners)
         {
-            this.listeners(options.div || document.body, options.threshold)
+            this.listeners(options.div || document.body, options.threshold, options.preventDefault)
         }
         this.add(this.loop.bind(this))
     }
@@ -100,9 +101,9 @@ module.exports = class Viewport extends Loop
      * add or remove mouse/touch listeners
      * @private
      */
-    listeners(div, threshold)
+    listeners(div, threshold, preventDefault)
     {
-        this.input = new Input(div, { threshold, preventDefault: true })
+        this.input = new Input(div, { threshold, preventDefault })
         this.input.on('down', this.down, this)
         this.input.on('move', this.move, this)
         this.input.on('up', this.up, this)
@@ -258,6 +259,33 @@ module.exports = class Viewport extends Loop
     }
 
     /**
+     * top-left corner
+     * @type {{x: number, y: number}
+     */
+    get corner()
+    {
+        return { x: -this.container.x / this.container.scale.x, y: -this.container.y / this.container.scale.y }
+    }
+
+    /**
+     * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
+     * @param {number|PIXI.Point} x|point
+     * @param {number} y
+     */
+    moveCorner(/*x, y | point*/)
+    {
+        if (arguments.length === 1)
+        {
+            this.container.position.set(arguments[0].x, arguments[0].y)
+        }
+        else
+        {
+            this.container.position.set(arguments[0], arguments[1])
+        }
+        this._reset()
+    }
+
+    /**
      * change zoom so the width fits in the viewport
      * @param {number} [width=container.width] in world coordinates; uses container.width if not provided
     * @param {boolean} [center] maintain the same center
@@ -376,24 +404,6 @@ module.exports = class Viewport extends Loop
     get bottom()
     {
         return -this.container.y / this.container.scale.y + this.worldScreenHeight
-    }
-
-    /**
-     * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
-     * @param {number|PIXI.Point} x|point
-     * @param {number} y
-     */
-    corner(/*x, y | point*/)
-    {
-        if (arguments.length === 1)
-        {
-            this.container.position.set(arguments[0].x, arguments[0].y)
-        }
-        else
-        {
-            this.container.position.set(arguments[0], arguments[1])
-        }
-        this._reset()
     }
 
     /**
