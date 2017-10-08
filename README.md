@@ -25,30 +25,35 @@ https://davidfig.github.io/pixi-viewport/
     /**
      * @param {PIXI.Container} [container] to apply viewport
      * @param {number} [options]
+     * @param {HTMLElement} [options.div=document.body] use this div to create the mouse/touch listeners
      * @param {number} [options.screenWidth] these values are needed for clamp, bounce, and pinch plugins
      * @param {number} [options.screenHeight]
      * @param {number} [options.worldWidth]
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
+     * @param {boolean} [options.pauseOnBlur] pause when app loses focus
+     * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      */
     constructor(container, options)
 
     /**
      * start requestAnimationFrame() loop to handle animations; alternatively, call update() manually on each frame
+     * @inherited from yy-loop
      */
-    start()
+    // start()
 
     /**
      * update loop -- may be called manually or use start/stop() for Viewport to handle updates
      * @param {number} elapsed time in ms
      */
-    update(elapsed)
+    loop(elapsed)
 
     /**
      * stop loop
+     * @inherited from yy-loop
      */
-    stop()
+    // stop()
 
     /**
      * use this to set screen and world sizes--needed for most plugins
@@ -204,12 +209,12 @@ https://davidfig.github.io/pixi-viewport/
     /**
      * enable pinch to zoom and two-finger touch to drag
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} [options]
-     * @param {boolean} [options.clampScreen] clamp minimum zoom to size of screen
+     * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
      * @param {number} [options.minWidth] clamp minimum width
      * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp minimum width
-     * @param {number} [options.maxHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
      * @return {Viewport} this
      */
     pinch(options)

@@ -22,7 +22,7 @@ let _renderer, _viewport, _title, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage)
+    _viewport = new Viewport(_renderer.stage, { div: _renderer.div })
     _viewport
         .drag()
         .pinch()
@@ -181,7 +181,7 @@ window.onload = function ()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
-},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":192,"pixi.js":335,"yy-input":386,"yy-random":387,"yy-renderer":388}],2:[function(require,module,exports){
+},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":192,"pixi.js":335,"yy-input":386,"yy-random":390,"yy-renderer":391}],2:[function(require,module,exports){
 let _viewport, _drawWorld, _gui, _options, _world
 
 module.exports = function gui(viewport, drawWorld, target)
@@ -199,11 +199,13 @@ module.exports = function gui(viewport, drawWorld, target)
         drag: true,
         pinch: {
             pinch: true,
-            clampScreen: false,
+            noDrag: false,
             minWidth: 0,
             minHeight: 0,
             maxWidth: 0,
-            maxHeight: 0
+            maxHeight: 0,
+            centerX: 0,
+            centerY: 0
         },
         clamp: {
             clamp: false,
@@ -307,16 +309,19 @@ function guiPinch()
 {
     function change()
     {
-        _viewport.pinch({ clampScreen: _options.pinch.clampScreen, minWidth: _options.pinch.minWidth, maxWidth: _options.pinch.maxWidth, minHeight: _options.pinch.minHeight, maxHeight: _options.pinch.maxHeight })
+        const center = (_options.pinch.centerX || _options.pinch.centerY) ? { x: _options.pinch.centerX, y: _options.pinch.centerY } : null
+        _viewport.pinch({ noDrag: _options.pinch.noDrag, minWidth: _options.pinch.minWidth, maxWidth: _options.pinch.maxWidth, minHeight: _options.pinch.minHeight, maxHeight: _options.pinch.maxHeight, center })
     }
 
     function add()
     {
-        clampZoom = pinch.add(_options.pinch, 'clampScreen')
-        minWidth = pinch.add(_options.pinch, 'minWidth')
-        maxWidth = pinch.add(_options.pinch, 'maxWidth')
-        minHeight = pinch.add(_options.pinch, 'minHeight')
-        maxHeight = pinch.add(_options.pinch, 'maxHeight')
+        noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
+        minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
+        maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
+        minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
+        maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
+        centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
+        centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
     }
 
     const pinch = _gui.addFolder('pinch')
@@ -331,14 +336,16 @@ function guiPinch()
             else
             {
                 _viewport.removePlugin('pinch')
-                pinch.remove(clampZoom)
+                pinch.remove(noDrag)
                 pinch.remove(minWidth)
                 pinch.remove(maxWidth)
                 pinch.remove(minHeight)
                 pinch.remove(maxHeight)
+                pinch.remove(centerX)
+                pinch.remove(centerY)
             }
         })
-    let clampZoom, minWidth, maxWidth, minHeight, maxHeight
+    let noDrag, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
     if (_options.pinch)
     {
         add()
@@ -495,7 +502,7 @@ function guiFollow(target)
     }
 
     let speed, radius
-    const follow = _gui.addFolder('follow')
+    const follow = _gui.addFolder('follow (use arrows to manually control)')
     follow.add(_options.follow, 'follow').onChange(
         function (value)
         {
@@ -542,7 +549,7 @@ module.exports = function highlight(url)
 /* globals window, XMLHttpRequest, document */
 },{"fork-me-github":8,"highlight.js":10}],4:[function(require,module,exports){
 module.exports = require('./src/viewport')
-},{"./src/viewport":398}],5:[function(require,module,exports){
+},{"./src/viewport":401}],5:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -19550,7 +19557,7 @@ module.exports = class face extends wait
     }
 }
 },{"./wait":202,"yy-angle":384}],195:[function(require,module,exports){
-const EventEmitter = require('eventemitter3')
+const Events = require('eventemitter3')
 const Angle = require('./angle')
 const Face = require('./face')
 const Load = require('./load')
@@ -19562,12 +19569,12 @@ const To = require('./to')
 const Wait = require('./wait')
 
 /** Helper list for multiple animations */
-module.exports = class List extends EventEmitter
+module.exports = class List extends Events
 {
     /**
      * @param {object|object[]...} any animation class
      * @event List#done(List) final animation completed in the list
-     * @event List#each(List) each update
+     * @event List#each(elapsed, List) each update
      */
     constructor()
     {
@@ -19668,7 +19675,7 @@ module.exports = class List extends EventEmitter
                 this.list.splice(i, 1)
             }
         }
-        this.emit('each', this)
+        this.emit('each', elapsed, this)
         if (this.list.length === 0 && !this.empty)
         {
             this.emit('done', this)
@@ -33685,7 +33692,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":250,"../Filter":266,"path":400}],270:[function(require,module,exports){
+},{"../../../../math":250,"../Filter":266,"path":403}],270:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37375,7 +37382,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":224,"path":400}],288:[function(require,module,exports){
+},{"../../Shader":224,"path":403}],288:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42483,7 +42490,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":406}],304:[function(require,module,exports){
+},{"url":409}],304:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47050,7 +47057,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":245,"../../core/const":226,"path":400}],323:[function(require,module,exports){
+},{"../../core":245,"../../core/const":226,"path":403}],323:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48213,7 +48220,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":245,"path":400}],330:[function(require,module,exports){
+},{"../../core":245,"path":403}],330:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48323,7 +48330,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":245,"path":400}],331:[function(require,module,exports){
+},{"../../core":245,"path":403}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48377,7 +48384,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":245,"path":400}],332:[function(require,module,exports){
+},{"../../core":245,"path":403}],332:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48553,7 +48560,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":245,"path":400}],334:[function(require,module,exports){
+},{"../../core":245,"path":403}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48603,7 +48610,7 @@ var VoidFilter = function (_core$Filter) {
 
 exports.default = VoidFilter;
 
-},{"../../core":245,"path":400}],335:[function(require,module,exports){
+},{"../../core":245,"path":403}],335:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -51223,7 +51230,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":245,"../extras":321,"path":400,"resource-loader":374}],343:[function(require,module,exports){
+},{"../core":245,"../extras":321,"path":403,"resource-loader":374}],343:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51581,7 +51588,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":245,"resource-loader":374,"url":406}],346:[function(require,module,exports){
+},{"../core":245,"resource-loader":374,"url":409}],346:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53228,7 +53235,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":245,"../Mesh":347,"path":400,"pixi-gl-core":209}],354:[function(require,module,exports){
+},{"../../core":245,"../Mesh":347,"path":403,"pixi-gl-core":209}],354:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58569,7 +58576,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":399}],384:[function(require,module,exports){
+},{"crypto":402}],384:[function(require,module,exports){
 // angle.js <https://github.com/davidfig/anglejs>
 // Released under MIT license <https://github.com/davidfig/angle/blob/master/LICENSE>
 // Author: David Figatner
@@ -59154,7 +59161,7 @@ class Color
 };
 
 module.exports = new Color();
-},{"yy-random":387}],386:[function(require,module,exports){
+},{"yy-random":390}],386:[function(require,module,exports){
 /* Copyright (c) 2017 YOPEY YOPEY LLC */
 
 const EventEmitter = require('eventemitter3')
@@ -59163,31 +59170,37 @@ module.exports = class Input extends EventEmitter
 {
     /**
      * basic input support for touch, mouse, and keyboard
+     *
      * @param {HTMLElement} object to attach listener to
      * @param {object} [options]
      * @param {boolean} [options.noPointer] turns off mouse/touch handlers
      * @param {boolean} [options.keys] turn on key listener
      * @param {boolean} [options.chromeDebug] ignore chrome debug keys, and force page reload with ctrl/cmd+r
      * @param {number} [options.threshold=5] maximum number of pixels to move while mouse/touch downbefore cancelling 'click'
-     * @event down(x, y, event) emits when touch or mouse is first down
-     * @event up(x, y, event) emits when touch or mouse is up or cancelled
-     * @event move(x, y, event) emits when touch or mouse moves (even if mouse is still up)
-     * @event keydown(keyCode:number, {shift:boolean, meta:boolean, ctrl: boolean}, event) emits when key is pressed
-     * @event keyup(keyCode:number, {shift:boolean, meta:boolean, ctrl: boolean}, event) emits when key is released
-     * @event click(x, y, event) emits awith touch or mouse click
+     * @param {boolean} [options.preventDefault] call on handle, otherwise let client handle
+     *
+     * @event down(x, y, { input, event, id }) emits when touch or mouse is first down
+     * @event up(x, y, { input, event, id }) emits when touch or mouse is up or cancelled
+     * @event move(x, y, { input, event, id }) emits when touch or mouse moves (even if mouse is still up)
+     * @event click(x, y, { input, event, id }) emits when "click" for touch or mouse
+     *
+     * @event keydown(keyCode:number, {shift:boolean, meta:boolean, ctrl: boolean}, { event, input }) emits when key is pressed
+     * @event keyup(keyCode:number, {shift:boolean, meta:boolean, ctrl: boolean}, { event, input }) emits when key is released
      */
     constructor(div, options)
     {
         super()
 
-        this.options = options || {}
-        this.options.threshold = typeof this.options.threshold === 'undefined' ? 5 : this.options.threshold
+        options = options || {}
+        this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
+        this.chromeDebug = options.chromeDebug
+        this.preventDefault = options.preventDefault
 
-        this.touches = []
+        this.pointers = []
         this.keys = {}
         this.input = []
 
-        if (!this.options.noPointer)
+        if (!options.noPointer)
         {
             div.addEventListener('mousedown', this.mouseDown.bind(this))
             div.addEventListener('mousemove', this.mouseMove.bind(this))
@@ -59200,7 +59213,7 @@ module.exports = class Input extends EventEmitter
             div.addEventListener('touchcancel', this.touchEnd.bind(this))
         }
 
-        if (this.options.keys)
+        if (options.keys)
         {
             this.keysListener()
         }
@@ -59214,11 +59227,11 @@ module.exports = class Input extends EventEmitter
      */
     findTouch(id)
     {
-        for (let i = 0; i < this.touches.length; i++)
+        for (let i = 0; i < this.pointers.length; i++)
         {
-            if (this.touches[i].identifier === id)
+            if (this.pointers[i].identifier === id)
             {
-                return this.touches[i]
+                return this.pointers[i]
             }
         }
         return null
@@ -59231,11 +59244,11 @@ module.exports = class Input extends EventEmitter
      */
     removeTouch(id)
     {
-        for (let i = 0; i < this.touches.length; i++)
+        for (let i = 0; i < this.pointers.length; i++)
         {
-            if (this.touches[i].identifier === id)
+            if (this.pointers[i].identifier === id)
             {
-                this.touches.splice(i, 1)
+                this.pointers.splice(i, 1)
                 return
             }
         }
@@ -59248,7 +59261,10 @@ module.exports = class Input extends EventEmitter
      */
     touchStart(e)
     {
-        e.preventDefault()
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         const touches = e.changedTouches
         for (let i = 0; i < touches.length; i++)
         {
@@ -59256,11 +59272,10 @@ module.exports = class Input extends EventEmitter
             const entry = {
                 identifier: touch.identifier,
                 x: touch.clientX,
-                y: touch.clientY,
-                start: Date.now()
+                y: touch.clientY
             }
-            this.touches.push(entry)
-            this.handleDown(touch.clientX, touch.clientY, e)
+            this.pointers.push(entry)
+            this.handleDown(touch.clientX, touch.clientY, e, touch.identifier)
         }
     }
 
@@ -59271,11 +59286,14 @@ module.exports = class Input extends EventEmitter
      */
     touchMove(e)
     {
-        e.preventDefault()
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         for (let i = 0; i < e.changedTouches.length; i++)
         {
             const touch = e.changedTouches[i]
-            this.handleMove(touch.clientX, touch.clientY, e)
+            this.handleMove(touch.clientX, touch.clientY, e, touch.identifier)
         }
     }
 
@@ -59286,7 +59304,10 @@ module.exports = class Input extends EventEmitter
      */
     touchEnd(e)
     {
-        e.preventDefault()
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         for (let i = 0; i < e.changedTouches.length; i++)
         {
             const touch = e.changedTouches[i]
@@ -59294,7 +59315,7 @@ module.exports = class Input extends EventEmitter
             if (previous !== null)
             {
                 this.removeTouch(touch.identifier)
-                this.handleUp(touch.clientX, touch.clientY, e)
+                this.handleUp(touch.clientX, touch.clientY, e, touch.identifier)
             }
         }
     }
@@ -59306,10 +59327,18 @@ module.exports = class Input extends EventEmitter
      */
     mouseDown(e)
     {
-        e.preventDefault()
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
+        while (this.pointers.length)
+        {
+            this.pointers.pop()
+        }
+        this.pointers.push({id: 'mouse'})
         const x = window.navigator.msPointerEnabled ? e.offsetX : e.clientX
         const y = window.navigator.msPointerEnabled ? e.offsetY : e.clientY
-        this.handleDown(x, y, e)
+        this.handleDown(x, y, e, 'mouse')
     }
 
     /**
@@ -59319,10 +59348,13 @@ module.exports = class Input extends EventEmitter
      */
     mouseMove(e)
     {
-        e.preventDefault()
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         const x = window.navigator.msPointerEnabled ? e.offsetX : e.clientX
         const y = window.navigator.msPointerEnabled ? e.offsetY : e.clientY
-        this.handleMove(x, y, e)
+        this.handleMove(x, y, e, 'mouse')
     }
 
     /**
@@ -59332,15 +59364,20 @@ module.exports = class Input extends EventEmitter
      */
     mouseUp(e)
     {
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         const x = window.navigator.msPointerEnabled ? e.offsetX : e.clientX
         const y = window.navigator.msPointerEnabled ? e.offsetY : e.clientY
-        this.handleUp(x, y, e)
+        this.pointers.pop()
+        this.handleUp(x, y, e, 'mouse')
     }
 
-    handleDown(x, y, e)
+    handleDown(x, y, e, id)
     {
-        this.emit('down', x, y, e)
-        if (this.touches > 1)
+        this.emit('down', x, y, { event: e, input: this, id })
+        if (!this.threshold || this.pointers > 1)
         {
             this.start = null
         }
@@ -59350,25 +59387,25 @@ module.exports = class Input extends EventEmitter
         }
     }
 
-    handleUp(x, y, e)
+    handleUp(x, y, e, id)
     {
-        this.emit('up', x, y, e)
         if (this.start)
         {
-            this.emit('click', x, y, e)
+            this.emit('click', x, y, { event: e, input: this, id })
         }
+        this.emit('up', x, y, { event: e, input: this, id })
     }
 
-    handleMove(x, y, e)
+    handleMove(x, y, e, id)
     {
-        this.emit('move', x, y, e)
         if (this.start)
         {
-            if (Math.abs(this.start.x - x) > this.options.threshold || Math.abs(this.start.y - y) > this.options.threshold)
+            if (Math.abs(this.start.x - x) > this.threshold || Math.abs(this.start.y - y) > this.threshold)
             {
                 this.start = null
             }
         }
+        this.emit('move', x, y, { event: e, input: this, id })
     }
 
     /**
@@ -59387,11 +59424,15 @@ module.exports = class Input extends EventEmitter
      */
     keydown(e)
     {
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         this.keys.shift = e.shiftKey
         this.keys.meta = e.metaKey
         this.keys.ctrl = e.ctrlKey
         const code = (typeof e.which === 'number') ? e.which : e.keyCode
-        if (this.options.chromeDebug)
+        if (this.chromeDebug)
         {
             // allow chrome to open developer console
             if (this.keys.meta && code === 73)
@@ -59406,7 +59447,7 @@ module.exports = class Input extends EventEmitter
                 return
             }
         }
-        this.emit('keydown', code, this.keys, e)
+        this.emit('keydown', code, this.keys, { event: e, input: this })
     }
 
     /**
@@ -59416,14 +59457,270 @@ module.exports = class Input extends EventEmitter
      */
     keyup(e)
     {
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         this.keys.shift = e.shiftKey
         this.keys.meta = e.metaKey
         this.keys.ctrl = e.ctrlKey
         const code = (typeof e.which === 'number') ? e.which : e.keyCode
-        this.emit('keyup', code, this.keys, e)
+        this.emit('keyup', code, this.keys, { event: e, input: this })
     }
 }
 },{"eventemitter3":7}],387:[function(require,module,exports){
+module.exports = require('./src/loop')
+},{"./src/loop":389}],388:[function(require,module,exports){
+const Events = require('eventemitter3')
+
+/** Entry class for Loop */
+class Entry extends Events
+{
+    /**
+     * create an entry in the update loop
+     * used by Loop
+     * @param {function} callback
+     * @param {number} [time=0] in milliseconds to call this update
+     * @param {number} [count] number of times to run this update (undefined=infinite)
+     */
+    constructor(callback, time, count)
+    {
+        super()
+        this.callback = callback
+        this.time = time
+        this.current = 0
+        this.count = count
+    }
+
+    /**
+     * run the callback if available
+     * @private
+     * @param {number} elapsed
+     */
+    _update(elapsed)
+    {
+        let result
+        if (this.callback)
+        {
+            result = this.callback(elapsed, this)
+        }
+        this.emit('each', elapsed, this)
+        if (result || (!isNaN(this.count) && !--this.count))
+        {
+            this.emit('done', this)
+            return true
+        }
+    }
+
+    /**
+     * update checks time and runs the callback
+     * @param {number} elapsed
+     * @return {boolean} whether entry is complete and may be removed from list
+     */
+    update(elapsed)
+    {
+        if (!this._pause)
+        {
+            if (this.time)
+            {
+                this.current += elapsed
+                if (this.current >= this.time)
+                {
+                    this.current -= this.time
+                    return this._update(elapsed)
+                }
+            }
+            else
+            {
+                return this._update(elapsed)
+            }
+        }
+    }
+
+    /**
+     * @type {boolean} pause this entry
+     */
+    set pause(value)
+    {
+        this._pause = value
+    }
+    get pause()
+    {
+        return this._pause
+    }
+}
+
+module.exports = Entry
+},{"eventemitter3":7}],389:[function(require,module,exports){
+/* Copyright (c) 2017 YOPEY YOPEY LLC */
+
+const Events = require('eventemitter3')
+
+class Loop extends Events
+{
+    /**
+     * basic loop support
+     * note: the default is to stop the loop when app loses focus
+     * @param {object} [options]
+     * @param {number} [options.maxFrameTime=1000 / 60] maximum time in milliseconds for a frame
+     * @param {object} [options.pauseOnBlur] pause loop when app loses focus, start it when app regains focus
+     *
+     * @event each(elapsed, Loop)
+     * @event start(Loop)
+     * @event stop(Loop)
+     */
+    constructor(options)
+    {
+        super()
+        options = options || {}
+        this.maxFrameTime = options.maxFrameTime || 1000 / 60
+        if (options.pauseOnBlur)
+        {
+            window.addEventListener('blur', this.stopBlur.bind(this))
+            window.addEventListener('focus', this.startBlur.bind(this))
+        }
+        this.list = []
+    }
+
+    /**
+     * start requestAnimationFrame() loop
+     * @return {Loop} this
+     */
+    start()
+    {
+        if (!this.running)
+        {
+            this.running = performance.now()
+            this.update()
+            this.emit('start', this)
+        }
+        return this
+    }
+
+    /**
+     * handler for focus event
+     * @private
+     */
+    startBlur()
+    {
+        if (this.blurred)
+        {
+            this.start()
+        }
+    }
+
+    /**
+     * handler for blur event
+     * @private
+     */
+    stopBlur()
+    {
+        if (this.running)
+        {
+            this.stop()
+            this.blurred = true
+        }
+    }
+
+    /**
+     * stop loop
+     * @return {Loop} this
+     */
+    stop()
+    {
+        this.running = false
+        this.blurred = false
+        this.emit('stop', this)
+        return this
+    }
+
+    /**
+     * loop through updates
+     */
+    update()
+    {
+        if (this.running)
+        {
+            const now = performance.now()
+            let elapsed = now - this.running
+            elapsed = elapsed > this.maxFrameTime ? this.maxFrameTime : elapsed
+            for (let entry of this.list)
+            {
+                if (entry.update(elapsed))
+                {
+                    this.remove(entry)
+                }
+            }
+            this.emit('each', elapsed, this)
+            requestAnimationFrame(this.update.bind(this))
+        }
+    }
+
+    /**
+     * add a callback to the update loop
+     * @param {function} callback
+     * @param {number} [time=0] in milliseconds to call this update
+     * @param {number} [count=0] number of times to run this update (0=infinite)
+     * @return {object} entry - used to remove or change the parameters of the update
+     */
+    add(callback, time, count)
+    {
+        const entry = new Entry(callback, time, count)
+        this.list.push(entry)
+        return entry
+    }
+
+    /**
+     * remove a callback from the loop
+     * @param {object} entry - returned by add()
+     */
+    remove(entry)
+    {
+        const index = this.list.indexOf(entry)
+        if (index !== -1)
+        {
+            this.list.splice(index, 1)
+        }
+    }
+
+    /**
+     * removes all callbacks from the loop
+     */
+    removeAll()
+    {
+        this.list = []
+    }
+
+    /**
+     * @type {number} count of all animations
+     */
+    get count()
+    {
+        return this.list.length
+    }
+
+    /**
+     * @type {number} count of running animations
+     */
+    get countRunning()
+    {
+        let count = 0
+        for (let entry of this.list)
+        {
+            if (!entry.pause)
+            {
+                count++
+            }
+        }
+        return count
+    }
+}
+
+const Entry = require('./entry')
+
+Loop.entry = Entry
+module.exports = Loop
+},{"./entry":388,"eventemitter3":7}],390:[function(require,module,exports){
 // yy-random
 // by David Figatner
 // MIT license
@@ -59849,7 +60146,7 @@ class Random
 }
 
 module.exports = new Random()
-},{"seedrandom":376}],388:[function(require,module,exports){
+},{"seedrandom":376}],391:[function(require,module,exports){
 /**
  * @file renderer.js
  * @author David Figatner
@@ -60146,7 +60443,7 @@ module.exports = Renderer;
 
 // for eslint
 /* globals document, window */
-},{}],389:[function(require,module,exports){
+},{}],392:[function(require,module,exports){
 const Ease = require('pixi-ease')
 
 const Plugin = require('./plugin')
@@ -60218,8 +60515,9 @@ module.exports = class Bounce extends Plugin
                 }
             }
         }
+        const pointers = this.parent.input.pointers
         decelerate = decelerate || {}
-        if (this.parent.pointers.length === 0 && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
+        if (pointers.length === 0 && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
         {
             oob = oob || this.parent.OOB()
             const point = oob.cornerPoint
@@ -60253,7 +60551,7 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":396,"pixi-ease":192}],390:[function(require,module,exports){
+},{"./plugin":399,"pixi-ease":192}],393:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class clamp extends Plugin
@@ -60317,7 +60615,7 @@ module.exports = class clamp extends Plugin
         }
     }
 }
-},{"./plugin":396}],391:[function(require,module,exports){
+},{"./plugin":399}],394:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -60345,9 +60643,10 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = false
     }
 
-    move()
+    move(x, y, data)
     {
-        if (this.parent.pointers.length === 1 || (this.parent.pointers.length > 1 && !this.parent.plugin('pinch')))
+        const pointers = data.input.pointers
+        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
         {
             this.saved.push({ x: this.parent.container.x, y: this.parent.container.y, time: performance.now() })
             if (this.saved.length > 60)
@@ -60357,9 +60656,10 @@ module.exports = class Decelerate extends Plugin
         }
     }
 
-    up()
+    up(x, y, data)
     {
-        if (this.parent.pointers.length === 0 && this.saved.length)
+        const pointers = data.input.pointers
+        if (pointers.length === 0 && this.saved.length)
         {
             const now = performance.now()
             for (let save of this.saved)
@@ -60403,7 +60703,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":396}],392:[function(require,module,exports){
+},{"./plugin":399}],395:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Drag extends Plugin
@@ -60413,25 +60713,45 @@ module.exports = class Drag extends Plugin
         super(parent)
     }
 
-    move(e)
+    down(x, y, data)
     {
-        if (this.parent.pointers.length === 1 || (this.parent.pointers.length > 1 && !this.parent.plugin('pinch')))
+        const pointers = data.input.pointers
+        if (pointers.length === 1)
         {
-            const last = this.parent.pointers[0].last
-            const pos = e.data.global
-            const distX = pos.x - last.x
-            const distY = pos.y - last.y
-            if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY))
+            this.last = { x, y }
+        }
+    }
+
+    move(x, y, data)
+    {
+        if (!this.last)
+        {
+            this.last = { x, y }
+        }
+        else
+        {
+            const pointers = data.input.pointers
+            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
             {
-                this.parent.container.x += distX
-                this.parent.container.y += distY
-                this.parent.pointers[0].last = { x: pos.x, y: pos.y }
-                this.inMove = true
+                const distX = x - this.last.x
+                const distY = y - this.last.y
+                if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY))
+                {
+                    this.parent.container.x += distX
+                    this.parent.container.y += distY
+                    this.last = { x, y }
+                    this.inMove = true
+                }
             }
         }
     }
+
+    up()
+    {
+        this.last = null
+    }
 }
-},{"./plugin":396}],393:[function(require,module,exports){
+},{"./plugin":399}],396:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -60485,7 +60805,7 @@ module.exports = class Follow extends Plugin
         }
     }
 }
-},{"./plugin":396}],394:[function(require,module,exports){
+},{"./plugin":399}],397:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class HitArea extends Plugin
@@ -60502,7 +60822,7 @@ module.exports = class HitArea extends Plugin
         this.parent.container.hitArea = this.rect || this.parent.container.getBounds()
     }
 }
-},{"./plugin":396}],395:[function(require,module,exports){
+},{"./plugin":399}],398:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -60510,17 +60830,19 @@ module.exports = class Pinch extends Plugin
     /**
      * @param {Viewport} parent
      * @param {object} [options]
-     * @param {boolean} [options.clampScreen] clamp minimum zoom to size of screen
+     * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
      * @param {number} [options.minWidth] clamp minimum width
      * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp minimum width
-     * @param {number} [options.maxHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
      */
     constructor(parent, options)
     {
         super(parent)
         options = options || {}
-        this.clampScreen = options.clampScreen
+        this.noDrag = options.noDrag
+        this.center = options.center
         this.minWidth = options.minWidth
         this.maxWidth = options.maxWidth
         this.minHeight = options.minHeight
@@ -60530,79 +60852,72 @@ module.exports = class Pinch extends Plugin
     clamp()
     {
         let x = this.parent.container.scale.x, y = this.parent.container.scale.y
-        const width = this.parent.container.scale.x * this.parent.worldWidth
-        const height = this.parent.container.scale.y * this.parent.worldHeight
-        if (this.minZoom)
+        if (this.minWidth && this.parent.worldScreenWidth < this.minWidth)
         {
-            if (this.minWidth && width < this.minWidth)
-            {
-                x = this.minWidth / this.parent.worldWidth
-            }
-            if (typeof this.minHeight !== 'undefined' && height < this.minHeight)
-            {
-                y = this.minHeight / this.parent.worldHeight
-            }
+            x = this.minWidth / this.parent.worldWidth
         }
-        if (this.maxZoom)
+        if (this.minHeight && this.parent.worldScreenHeight < this.minHeight)
         {
-            if (typeof this.maxWidth !== 'undefined' && width > this.maxWidth)
-            {
-                x = this.maxWidth / this.parent.worldWidth
-            }
-            if (typeof this.maxHeight !== 'undefined' && height > this.maxHeight)
-            {
-                y = this.maxHeight / this.worldHeight
-            }
+            y = this.minHeight / this.parent.worldHeight
         }
-        if (this.clampScreen)
+        if (this.maxWidth && this.parent.worldScreenWidth > this.maxWidth)
         {
-            if (width < this.parent.screenWidth)
-            {
-                x = this.parent.screenWidth / this.parent.worldWidth
-            }
-            if (height < this.parent.screenHeight)
-            {
-                y = this.parent.screenHeight / this.parent.worldHeight
-            }
+            x = this.parent.screenWidth / this.parent.worldWidth
+        }
+        if (this.maxHeight && this.parent.worldScreenHeight > this.maxHeight)
+        {
+            y = this.parent.screenHeight / this.parent.worldHeight
         }
         this.parent.container.scale.set(x, y)
     }
 
-    move(e)
+    move(x, y, data)
     {
-        if (this.parent.pointers.length >= 2)
+        const pointers = data.input.pointers
+        if (pointers.length >= 2)
         {
-            const first = this.parent.pointers[0]
-            const second = this.parent.pointers[1]
-            const last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-            if (first.id === e.data.pointerId)
+            const first = pointers[0]
+            const second = pointers[1]
+            let last
+            if (first.last && second.last)
             {
-                first.last = { x: e.data.global.x, y: e.data.global.y }
+                last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
             }
-            else if (second.id === e.data.pointerId)
+            if (first.identifier === data.id)
             {
-                second.last = { x: e.data.global.x, y: e.data.global.y }
+                first.last = { x, y }
+            }
+            else if (second.identifier === data.id)
+            {
+                second.last = { x, y }
             }
             if (last)
             {
+                let oldPoint
                 const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
-                const oldPoint = this.parent.container.toLocal(point)
+                if (!this.center)
+                {
+                    oldPoint = this.parent.container.toLocal(point)
+                }
 
                 const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
                 const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x
                 this.parent.container.scale.x += change
                 this.parent.container.scale.y += change
+                this.clamp()
 
-                if (this.clampScreen || this.minWidth || this.maxWidth || this.minHeight || this.maxHeight)
+                if (this.center)
                 {
-                    this.clampZoom()
+                    this.parent.moveCenter(this.center)
                 }
-                const newPoint = this.parent.container.toGlobal(oldPoint)
+                else
+                {
+                    const newPoint = this.parent.container.toGlobal(oldPoint)
+                    this.parent.container.x += point.x - newPoint.x
+                    this.parent.container.y += point.y - newPoint.y
+                }
 
-                this.parent.container.x += point.x - newPoint.x
-                this.parent.container.y += point.y - newPoint.y
-
-                if (this.lastCenter)
+                if (!this.noDrag && this.lastCenter)
                 {
                     this.parent.container.x += point.x - this.lastCenter.x
                     this.parent.container.y += point.y - this.lastCenter.y
@@ -60612,15 +60927,16 @@ module.exports = class Pinch extends Plugin
         }
     }
 
-    up()
+    up(x, y, data)
     {
-        if (this.parent.pointers.length < 2)
+        const pointers = data.input.pointers
+        if (pointers.length < 2)
         {
             this.lastCenter = null
         }
     }
 }
-},{"./plugin":396}],396:[function(require,module,exports){
+},{"./plugin":399}],399:[function(require,module,exports){
 module.exports = class Plugin
 {
     constructor(parent)
@@ -60634,7 +60950,7 @@ module.exports = class Plugin
     update() { }
     resize() { }
 }
-},{}],397:[function(require,module,exports){
+},{}],400:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 
@@ -60693,8 +61009,9 @@ module.exports = class Snap extends Plugin
         }
     }
 }
-},{"./plugin":396,"pixi-ease":192}],398:[function(require,module,exports){
-const Events = require('eventemitter3')
+},{"./plugin":399,"pixi-ease":192}],401:[function(require,module,exports){
+const Loop = require('yy-loop')
+const Input = require('yy-input')
 
 const Drag = require('./drag')
 const Pinch = require('./pinch')
@@ -60707,64 +61024,52 @@ const Follow = require('./follow')
 
 const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
 
-module.exports = class Viewport extends Events
+module.exports = class Viewport extends Loop
 {
     /**
      * @param {PIXI.Container} [container] to apply viewport
      * @param {number} [options]
+     * @param {HTMLElement} [options.div=document.body] use this div to create the mouse/touch listeners
      * @param {number} [options.screenWidth] these values are needed for clamp, bounce, and pinch plugins
      * @param {number} [options.screenHeight]
      * @param {number} [options.worldWidth]
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
+     * @param {boolean} [options.pauseOnBlur] pause when app loses focus
+     * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      */
     constructor(container, options)
     {
-        super()
+        options = options || {}
+        super({ pauseOnBlur: options.pauseOnBlur, maxFrameTime: options.maxFrameTime })
         this.container = container
         this.pointers = []
         this.plugins = []
-        options = options || {}
         this.screenWidth = options.screenWidth
         this.screenHeight = options.screenHeight
         this.worldWidth = options.worldWidth
         this.worldHeight = options.worldHeight
         this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
+        if (!options.noListeners)
+        {
+            this.listeners(options.div || document.body, options.threshold)
+        }
+        this.add(this.loop.bind(this))
     }
 
     /**
      * start requestAnimationFrame() loop to handle animations; alternatively, call update() manually on each frame
+     * @inherited from yy-loop
      */
-    start()
-    {
-        this.running = performance.now()
-        this.loop()
-        return this
-    }
-
-    /**
-     * loop through updates
-     * @private
-     */
-    loop()
-    {
-        if (this.running)
-        {
-            const now = performance.now()
-            let elapsed = now - this.running
-            elapsed = elapsed > this.maxFrameTime ? this.maxFrameTime : elapsed
-            this.update(elapsed)
-            requestAnimationFrame(this.loop.bind(this))
-        }
-    }
+    // start()
 
     /**
      * update loop -- may be called manually or use start/stop() for Viewport to handle updates
      * @param {number} elapsed time in ms
      */
-    update(elapsed)
+    loop(elapsed)
     {
         for (let plugin of PLUGIN_ORDER)
         {
@@ -60777,12 +61082,9 @@ module.exports = class Viewport extends Events
 
     /**
      * stop loop
+     * @inherited from yy-loop
      */
-    stop()
-    {
-        this.running = false
-        return this
-    }
+    // stop()
 
     /**
      * use this to set screen and world sizes--needed for most plugins
@@ -60810,56 +61112,26 @@ module.exports = class Viewport extends Events
      * add or remove mouse/touch listeners
      * @private
      */
-    listeners()
+    listeners(div, threshold)
     {
-        if (this.plugin('drag') || this.plugin('pinch'))
-        {
-            if (!this.container.interactive)
-            {
-                this.container.interactive = true
-                this.container.on('pointerdown', this.down.bind(this))
-                this.container.on('pointermove', this.move.bind(this))
-                this.container.on('pointerup', this.up.bind(this))
-                this.container.on('pointercancel', this.up.bind(this))
-                this.container.on('pointerupoutside', this.up.bind(this))
-            }
-        }
-        else
-        {
-            if (this.container.interactive)
-            {
-                this.container.interactive = false
-                this.container.removeListener('pointerdown', this.down.bind(this))
-                this.container.removeListener('pointermove', this.move.bind(this))
-                this.container.removeListener('pointerup', this.up.bind(this))
-                this.container.removeListener('pointercancel', this.up.bind(this))
-                this.container.removeListener('pointerupoutside', this.up.bind(this))
-            }
-        }
+        this.input = new Input(div, { threshold, preventDefault: true })
+        this.input.on('down', this.down, this)
+        this.input.on('move', this.move, this)
+        this.input.on('up', this.up, this)
+        this.input.on('click', this.click, this)
     }
 
     /**
      * handle down events
      * @private
-     * @param {event} e
      */
-    down(e)
+    down()
     {
-        // fixes a bug when highlighting
-        if (e.data.identifier === 'MOUSE')
-        {
-            this.pointers = []
-        }
-        this.pointers.push({ id: e.data.pointerId, last: { x: e.data.global.x, y: e.data.global.y }, saved: [] })
-        if (this.pointers.length === 1)
-        {
-            this.moved = false
-        }
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].down(e)
+                this.plugins[type].down(...arguments)
             }
         }
 
@@ -60869,7 +61141,6 @@ module.exports = class Viewport extends Events
     {
         if (Math.abs(change) >= this.threshold)
         {
-            this.moved = true
             return true
         }
         return false
@@ -60878,33 +61149,14 @@ module.exports = class Viewport extends Events
     /**
      * handle move events
      * @private
-     * @param {event} e
      */
-    move(e)
+    move()
     {
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].move(e)
-            }
-        }
-        if (this.pointers.length)
-        {
-            if (this.pointers.length > 1)
-            {
-                this.moved = true
-            }
-            else
-            {
-                const last = this.pointers[0].last
-                const pos = e.data.global
-                const distX = pos.x - last.x
-                const distY = pos.y - last.y
-                if (this.checkThreshold(distX) || this.checkThreshold(distY))
-                {
-                    this.moved = true
-                }
+                this.plugins[type].move(...arguments)
             }
         }
     }
@@ -60912,28 +61164,22 @@ module.exports = class Viewport extends Events
     /**
      * handle up events
      * @private
-     * @param {event} e
      */
-    up(e)
+    up()
     {
-        for (let i = 0; i < this.pointers.length; i++)
-        {
-            if (this.pointers[i].id === e.data.pointerId)
-            {
-                if (this.pointers.length === 1 && !this.moved)
-                {
-                    this.emit('click', { screen: e.data.global, world: this.toWorld(e.data.global) })
-                }
-                this.pointers.splice(i, 1)
-            }
-        }
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].up(e)
+                this.plugins[type].up(...arguments)
             }
         }
+    }
+
+    click(x, y)
+    {
+        const point = { x, y }
+        this.emit('click', { screen: point, world: this.toWorld(point) })
     }
 
     /**
@@ -61192,7 +61438,6 @@ module.exports = class Viewport extends Events
     removePlugin(type)
     {
         this.plugins[type] = null
-        this.listeners()
     }
 
     /**
@@ -61211,7 +61456,6 @@ module.exports = class Viewport extends Events
     drag()
     {
         this.plugins['drag'] = new Drag(this)
-        this.listeners()
         return this
     }
 
@@ -61258,18 +61502,17 @@ module.exports = class Viewport extends Events
     /**
      * enable pinch to zoom and two-finger touch to drag
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} [options]
-     * @param {boolean} [options.clampScreen] clamp minimum zoom to size of screen
+     * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
      * @param {number} [options.minWidth] clamp minimum width
      * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp minimum width
-     * @param {number} [options.maxHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
      * @return {Viewport} this
      */
     pinch(options)
     {
         this.plugins['pinch'] = new Pinch(this, options)
-        this.listeners()
         return this
     }
 
@@ -61309,9 +61552,9 @@ module.exports = class Viewport extends Events
         return this
     }
 }
-},{"./bounce":389,"./clamp":390,"./decelerate":391,"./drag":392,"./follow":393,"./hit-area":394,"./pinch":395,"./snap":397,"eventemitter3":7}],399:[function(require,module,exports){
+},{"./bounce":392,"./clamp":393,"./decelerate":394,"./drag":395,"./follow":396,"./hit-area":397,"./pinch":398,"./snap":400,"yy-input":386,"yy-loop":387}],402:[function(require,module,exports){
 
-},{}],400:[function(require,module,exports){
+},{}],403:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -61539,7 +61782,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":401}],401:[function(require,module,exports){
+},{"_process":404}],404:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -61725,7 +61968,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],402:[function(require,module,exports){
+},{}],405:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -62262,7 +62505,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],403:[function(require,module,exports){
+},{}],406:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -62348,7 +62591,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],404:[function(require,module,exports){
+},{}],407:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -62435,13 +62678,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],405:[function(require,module,exports){
+},{}],408:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":403,"./encode":404}],406:[function(require,module,exports){
+},{"./decode":406,"./encode":407}],409:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -63175,7 +63418,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":407,"punycode":402,"querystring":405}],407:[function(require,module,exports){
+},{"./util":410,"punycode":405,"querystring":408}],410:[function(require,module,exports){
 'use strict';
 
 module.exports = {
