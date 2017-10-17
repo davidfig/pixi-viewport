@@ -150,7 +150,7 @@ https://davidfig.github.io/pixi-viewport/
     get right()
 
     /**
-     * world coordinates of the right edge of the screen
+     * world coordinates of the left edge of the screen
      * @type {number}
      */
     get left()
