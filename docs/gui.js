@@ -54,13 +54,23 @@ module.exports = function gui(viewport, drawWorld, target)
             follow: false,
             speed: 0,
             radius: 0
+        },
+        wheel: {
+            wheel: true,
+            percent: 0.1,
+            minWidth: 0,
+            minHeight: 0,
+            maxWidth: 0,
+            maxHeight: 0,
+            centerX: 0,
+            centerY: 0
         }
-
     }
     guiWorld()
     _gui.add(_viewport, 'threshold')
     guiDrag()
     guiPinch()
+    guiWheel()
     guiClamp()
     guiBounce()
     guiDecelerate()
@@ -72,7 +82,6 @@ function guiWorld()
 {
     _world.add(_viewport, 'worldWidth').onChange(_drawWorld)
     _world.add(_viewport, 'worldHeight').onChange(_drawWorld)
-    _world.open()
 }
 
 function guiDrag()
@@ -121,7 +130,10 @@ function guiClamp()
                 clamp.remove(clampY)
             }
         })
-    clamp.open()
+    if (_options.clamp.clamp)
+    {
+        clamp.open()
+    }
 }
 
 function guiPinch()
@@ -135,12 +147,12 @@ function guiPinch()
     function add()
     {
         noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
-        minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
-        maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
-        minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
-        maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
-        centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
-        centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
+        // minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
+        // maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
+        // minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
+        // maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
+        // centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
+        // centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
     }
 
     const pinch = _gui.addFolder('pinch')
@@ -156,12 +168,12 @@ function guiPinch()
             {
                 _viewport.removePlugin('pinch')
                 pinch.remove(noDrag)
-                pinch.remove(minWidth)
-                pinch.remove(maxWidth)
-                pinch.remove(minHeight)
-                pinch.remove(maxHeight)
-                pinch.remove(centerX)
-                pinch.remove(centerY)
+                // pinch.remove(minWidth)
+                // pinch.remove(maxWidth)
+                // pinch.remove(minHeight)
+                // pinch.remove(maxHeight)
+                // pinch.remove(centerX)
+                // pinch.remove(centerY)
             }
         })
     let noDrag, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
@@ -169,7 +181,10 @@ function guiPinch()
     {
         add()
     }
-    pinch.open()
+    if (_options.pinch.pinch)
+    {
+        pinch.open()
+    }
 }
 
 function guiBounce()
@@ -214,7 +229,10 @@ function guiBounce()
     {
         add()
     }
-    bounce.open()
+    if (_options.bounce.bounce)
+    {
+        bounce.open()
+    }
 }
 
 function guiDecelerate()
@@ -259,7 +277,10 @@ function guiDecelerate()
     {
         add()
     }
-    decelerate.open()
+    if (_options.decelerate.decelerate)
+    {
+        decelerate.open()
+    }
 }
 
 function guiSnap()
@@ -304,7 +325,10 @@ function guiSnap()
     {
         add()
     }
-    snap.open()
+    if (_options.snap.snap)
+    {
+        snap.open()
+    }
 }
 
 function guiFollow(target)
@@ -342,7 +366,61 @@ function guiFollow(target)
     {
         add()
     }
-    follow.open()
+    if (_options.follow.follow)
+    {
+        follow.open()
+    }
+}
+
+function guiWheel()
+{
+    function change()
+    {
+        const center = (_options.wheel.centerX || _options.wheel.centerY) ? { x: _options.wheel.centerX, y: _options.wheel.centerY } : null
+        _viewport.wheel({ percent: _options.wheel.percent, minWidth: _options.wheel.minWidth, maxWidth: _options.wheel.maxWidth, minHeight: _options.wheel.minHeight, maxHeight: _options.wheel.maxHeight, center })
+    }
+
+    function add()
+    {
+        percent = wheel.add(_options.wheel, 'percent').onChange(change)
+        // minWidth = wheel.add(_options.wheel, 'minWidth').onChange(change)
+        // maxWidth = wheel.add(_options.wheel, 'maxWidth').onChange(change)
+        // minHeight = wheel.add(_options.wheel, 'minHeight').onChange(change)
+        // maxHeight = wheel.add(_options.wheel, 'maxHeight').onChange(change)
+        // centerX = wheel.add(_options.wheel, 'centerX').onChange(change)
+        // centerY = wheel.add(_options.wheel, 'centerY').onChange(change)
+    }
+
+    const wheel = _gui.addFolder('wheel')
+    wheel.add(_options.wheel, 'wheel').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                _viewport.removePlugin('wheel')
+                wheel.remove(percent)
+                // wheel.remove(minWidth)
+                // wheel.remove(maxWidth)
+                // wheel.remove(minHeight)
+                // wheel.remove(maxHeight)
+                // wheel.remove(centerX)
+                // wheel.remove(centerY)
+            }
+        })
+    let percent, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
+    if (_options.wheel)
+    {
+        add()
+    }
+    if (_options.wheel.wheel)
+    {
+        wheel.open()
+    }
 }
 
 /* global dat */

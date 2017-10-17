@@ -8,6 +8,7 @@ module.exports = class Plugin
     down() { }
     move() { }
     up() { }
+    wheel() { }
     update() { }
     resize() { }
 }

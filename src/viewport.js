@@ -9,8 +9,9 @@ const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
 const Follow = require('./follow')
+const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
+const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -45,7 +46,7 @@ module.exports = class Viewport extends Loop
         {
             this.listeners(options.div || document.body, options.threshold, options.preventDefault)
         }
-        this.add(this.loop.bind(this))
+        this.interval(this.updateFrame.bind(this))
     }
 
     /**
@@ -56,9 +57,15 @@ module.exports = class Viewport extends Loop
 
     /**
      * update loop -- may be called manually or use start/stop() for Viewport to handle updates
-     * @param {number} elapsed time in ms
+     * @inherited from yy-loop
      */
-    loop(elapsed)
+    // update()
+
+    /**
+     * update frame for animations
+     * @private
+     */
+    updateFrame(elapsed)
     {
         for (let plugin of PLUGIN_ORDER)
         {
@@ -108,6 +115,7 @@ module.exports = class Viewport extends Loop
         this.input.on('move', this.move, this)
         this.input.on('up', this.up, this)
         this.input.on('click', this.click, this)
+        this.input.on('wheel', this.handleWheel, this)
     }
 
     /**
@@ -161,6 +169,21 @@ module.exports = class Viewport extends Loop
             if (this.plugins[type])
             {
                 this.plugins[type].up(...arguments)
+            }
+        }
+    }
+
+    /**
+     * handle wheel events
+     * @private
+     */
+    handleWheel()
+    {
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].wheel(...arguments)
             }
         }
     }
@@ -550,6 +573,22 @@ module.exports = class Viewport extends Loop
     follow(target, options)
     {
         this.plugins['follow'] = new Follow(this, target, options)
+        return this
+    }
+
+    /**
+     * zoom using mouse wheel
+     * @param {object} [options]
+     * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
+     * @param {number} [options.minWidth] clamp minimum width
+     * @param {number} [options.minHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
+     */
+    wheel(options)
+    {
+        this.plugins['wheel'] = new Wheel(this, options)
         return this
     }
 }

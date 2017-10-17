@@ -25,6 +25,7 @@ function viewport()
     _viewport = new Viewport(_renderer.stage, { div: _renderer.div })
     _viewport
         .drag()
+        .wheel()
         .pinch()
         .on('click', click)
         .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))

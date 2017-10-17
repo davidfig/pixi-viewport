@@ -46,9 +46,9 @@ https://davidfig.github.io/pixi-viewport/
 
     /**
      * update loop -- may be called manually or use start/stop() for Viewport to handle updates
-     * @param {number} elapsed time in ms
+     * @inherited from yy-loop
      */
-    loop(elapsed)
+    // update()
 
     /**
      * stop loop
@@ -249,6 +249,18 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      */
     follow(target, options)
+
+    /**
+     * zoom using mouse wheel
+     * @param {object} [options]
+     * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
+     * @param {number} [options.minWidth] clamp minimum width
+     * @param {number} [options.minHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
+     */
+    wheel(options)
 ```
 ## license  
 MIT License  

@@ -26,6 +26,7 @@ function viewport()
     _viewport = new Viewport(_renderer.stage, { div: _renderer.div })
     _viewport
         .drag()
+        .wheel()
         .pinch()
         .on('click', click)
         .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))
@@ -238,13 +239,23 @@ module.exports = function gui(viewport, drawWorld, target)
             follow: false,
             speed: 0,
             radius: 0
+        },
+        wheel: {
+            wheel: true,
+            percent: 0.1,
+            minWidth: 0,
+            minHeight: 0,
+            maxWidth: 0,
+            maxHeight: 0,
+            centerX: 0,
+            centerY: 0
         }
-
     }
     guiWorld()
     _gui.add(_viewport, 'threshold')
     guiDrag()
     guiPinch()
+    guiWheel()
     guiClamp()
     guiBounce()
     guiDecelerate()
@@ -256,7 +267,6 @@ function guiWorld()
 {
     _world.add(_viewport, 'worldWidth').onChange(_drawWorld)
     _world.add(_viewport, 'worldHeight').onChange(_drawWorld)
-    _world.open()
 }
 
 function guiDrag()
@@ -305,7 +315,10 @@ function guiClamp()
                 clamp.remove(clampY)
             }
         })
-    clamp.open()
+    if (_options.clamp.clamp)
+    {
+        clamp.open()
+    }
 }
 
 function guiPinch()
@@ -319,12 +332,12 @@ function guiPinch()
     function add()
     {
         noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
-        minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
-        maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
-        minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
-        maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
-        centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
-        centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
+        // minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
+        // maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
+        // minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
+        // maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
+        // centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
+        // centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
     }
 
     const pinch = _gui.addFolder('pinch')
@@ -340,12 +353,12 @@ function guiPinch()
             {
                 _viewport.removePlugin('pinch')
                 pinch.remove(noDrag)
-                pinch.remove(minWidth)
-                pinch.remove(maxWidth)
-                pinch.remove(minHeight)
-                pinch.remove(maxHeight)
-                pinch.remove(centerX)
-                pinch.remove(centerY)
+                // pinch.remove(minWidth)
+                // pinch.remove(maxWidth)
+                // pinch.remove(minHeight)
+                // pinch.remove(maxHeight)
+                // pinch.remove(centerX)
+                // pinch.remove(centerY)
             }
         })
     let noDrag, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
@@ -353,7 +366,10 @@ function guiPinch()
     {
         add()
     }
-    pinch.open()
+    if (_options.pinch.pinch)
+    {
+        pinch.open()
+    }
 }
 
 function guiBounce()
@@ -398,7 +414,10 @@ function guiBounce()
     {
         add()
     }
-    bounce.open()
+    if (_options.bounce.bounce)
+    {
+        bounce.open()
+    }
 }
 
 function guiDecelerate()
@@ -443,7 +462,10 @@ function guiDecelerate()
     {
         add()
     }
-    decelerate.open()
+    if (_options.decelerate.decelerate)
+    {
+        decelerate.open()
+    }
 }
 
 function guiSnap()
@@ -488,7 +510,10 @@ function guiSnap()
     {
         add()
     }
-    snap.open()
+    if (_options.snap.snap)
+    {
+        snap.open()
+    }
 }
 
 function guiFollow(target)
@@ -526,7 +551,61 @@ function guiFollow(target)
     {
         add()
     }
-    follow.open()
+    if (_options.follow.follow)
+    {
+        follow.open()
+    }
+}
+
+function guiWheel()
+{
+    function change()
+    {
+        const center = (_options.wheel.centerX || _options.wheel.centerY) ? { x: _options.wheel.centerX, y: _options.wheel.centerY } : null
+        _viewport.wheel({ percent: _options.wheel.percent, minWidth: _options.wheel.minWidth, maxWidth: _options.wheel.maxWidth, minHeight: _options.wheel.minHeight, maxHeight: _options.wheel.maxHeight, center })
+    }
+
+    function add()
+    {
+        percent = wheel.add(_options.wheel, 'percent').onChange(change)
+        // minWidth = wheel.add(_options.wheel, 'minWidth').onChange(change)
+        // maxWidth = wheel.add(_options.wheel, 'maxWidth').onChange(change)
+        // minHeight = wheel.add(_options.wheel, 'minHeight').onChange(change)
+        // maxHeight = wheel.add(_options.wheel, 'maxHeight').onChange(change)
+        // centerX = wheel.add(_options.wheel, 'centerX').onChange(change)
+        // centerY = wheel.add(_options.wheel, 'centerY').onChange(change)
+    }
+
+    const wheel = _gui.addFolder('wheel')
+    wheel.add(_options.wheel, 'wheel').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                _viewport.removePlugin('wheel')
+                wheel.remove(percent)
+                // wheel.remove(minWidth)
+                // wheel.remove(maxWidth)
+                // wheel.remove(minHeight)
+                // wheel.remove(maxHeight)
+                // wheel.remove(centerX)
+                // wheel.remove(centerY)
+            }
+        })
+    let percent, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
+    if (_options.wheel)
+    {
+        add()
+    }
+    if (_options.wheel.wheel)
+    {
+        wheel.open()
+    }
 }
 
 /* global dat */
@@ -19560,7 +19639,8 @@ module.exports = class face extends wait
     }
 }
 },{"./wait":202,"yy-angle":385}],195:[function(require,module,exports){
-const Events = require('eventemitter3')
+const Loop = require('yy-loop')
+
 const Angle = require('./angle')
 const Face = require('./face')
 const Load = require('./load')
@@ -19572,22 +19652,20 @@ const To = require('./to')
 const Wait = require('./wait')
 
 /** Helper list for multiple animations */
-module.exports = class List extends Events
+module.exports = class List extends Loop
 {
     /**
-     * @param {object|object[]...} any animation class
+     * @param [options]
+     * @param {number} [options.maxFrameTime=1000 / 60] maximum time in milliseconds for a frame
+     * @param {object} [options.pauseOnBlur] pause loop when app loses focus, start it when app regains focus
      * @event List#done(List) final animation completed in the list
      * @event List#each(elapsed, List) each update
      */
-    constructor()
+    constructor(options)
     {
-        super()
-        this.list = []
+        options = options || {}
+        super(options)
         this.empty = true
-        if (arguments.length)
-        {
-            this.add(...arguments)
-        }
     }
 
     /**
@@ -19615,70 +19693,24 @@ module.exports = class List extends Events
     }
 
     /**
-     * get animation by index
-     * @param {number} index
-     * @return {object} animation class
-     */
-    get(index)
-    {
-        return this.list[index]
-    }
-
-    /**
      * remove animation(s)
      * @param {object|array} animate - the animation (or array of animations) to remove; can be null
+     * @inherited from yy-loop
      */
-    remove(animate)
-    {
-        if (animate)
-        {
-            if (Array.isArray(animate))
-            {
-                while (animate.length)
-                {
-                    const pop = animate.pop()
-                    if (pop && pop.options)
-                    {
-                        pop.options.cancel = true
-                    }
-                }
-            }
-            else
-            {
-                if (animate && animate.options)
-                {
-                    animate.options.cancel = true
-                }
-            }
-        }
-        return animate
-    }
+    // remove(animate)
 
     /**
      * remove all animations from list
+     * @inherited from yy-loop
      */
-    removeAll()
-    {
-        this.list = []
-        this.empty = true
-    }
+    // removeAll()
 
     /**
-     * @param {number} elapsed time since last tick
-     * @returns {number} of active animations
+     * update frame; can be called manually or automatically with start()
      */
-    update(elapsed)
+    update()
     {
-        for (let i = this.list.length - 1; i >= 0; i--)
-        {
-            const animate = this.list[i]
-            if (animate.update(elapsed))
-            {
-                this.emit('remove', animate)
-                this.list.splice(i, 1)
-            }
-        }
-        this.emit('each', elapsed, this)
+        super.update()
         if (this.list.length === 0 && !this.empty)
         {
             this.emit('done', this)
@@ -19687,57 +19719,29 @@ module.exports = class List extends Events
     }
 
     /**
-     * @return {number} number of active animations
+     * @type {number} number of animations
+     * @inherited yy-looop
      */
-    count()
-    {
-        let count = 0
-        for (let animate of this.list)
-        {
-            if (!animate.options.pause)
-            {
-                count++
-            }
-        }
-        return count
-    }
+    // get count()
 
     /**
-     * handler for requestAnimationFrame
-     * @private
+     * @type {number} number of active animations
+     * @inherited yy-looop
      */
-    loop()
-    {
-        if (this.running)
-        {
-            const now = performance.now()
-            const elapsed = now - this.now > this.max ? this.max : now - this.now
-            this.update(elapsed)
-            this.now = now
-            requestAnimationFrame(this.loop.bind(this))
-        }
-    }
+    // get countRunning()
 
     /**
-     * starts an automatic requestAnimationFrame() loop
+     * starts an automatic requestAnimationFrame() loop based on yy-loop
      * alternatively, you can call update() manually
-     * @param {number} [max=1000 / 60] maximum FPS--i.e., in update(elapsed) if elapsed > max, then use max instead of elapsed
+     * @inherited yy-loop
      */
-    start(max)
-    {
-        this.max = max || 1000 / 60
-        this.running = true
-        this.now = performance.now()
-        requestAnimationFrame(this.loop.bind(this))
-    }
+    // start()
 
     /**
      * stops the automatic requestAnimationFrame() loop
+     * @inherited yy-loop
      */
-    stop()
-    {
-        this.running = false
-    }
+    // stop()
 
     /** helper to add to the list a new Ease.to class; see Ease.to class below for parameters */
     to() { return this.add(new To(...arguments)) }
@@ -19765,10 +19769,27 @@ module.exports = class List extends Events
 
     /** helper to add to the list a new Ease.wait class; see Ease.to class below for parameters */
     wait() { return this.add(new Wait(...arguments)) }
-}
 
-/* global requestAnimationFrame, performance */
-},{"./angle":193,"./face":194,"./load":196,"./movie":197,"./shake":198,"./target":199,"./tint":200,"./to":201,"./wait":202,"eventemitter3":7}],196:[function(require,module,exports){
+    /** Inherited functions from yy-loop */
+
+    /**
+     * adds an interval
+     * @param {function} callback
+     * @param {number} time
+     * @param {number} count
+     * @inherited from yy-loop
+     */
+    // interval(callback, time, count)
+
+    /**
+     * adds a timeout
+     * @param {function} callback
+     * @param {number} time
+     * @inherited from yy-loop
+     */
+    // timeout(callback, time)
+}
+},{"./angle":193,"./face":194,"./load":196,"./movie":197,"./shake":198,"./target":199,"./tint":200,"./to":201,"./wait":202,"yy-loop":389}],196:[function(require,module,exports){
 const wait = require('./wait')
 const to = require('./to')
 const tint = require('./tint')
@@ -20557,14 +20578,16 @@ module.exports = class wait extends EventEmitter
         this.duration = load.duration
     }
 
-    pause()
+    /**
+     * @type {boolean} pause this entry
+     */
+    set pause(value)
     {
-        this.options.pause = true
+        this.options.pause = value
     }
-
-    resume()
+    get pause()
     {
-        this.options.pause = false
+        return this.options.pause
     }
 
     cancel()
@@ -33695,7 +33718,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":250,"../Filter":266,"path":405}],270:[function(require,module,exports){
+},{"../../../../math":250,"../Filter":266,"path":406}],270:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37385,7 +37408,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":224,"path":405}],288:[function(require,module,exports){
+},{"../../Shader":224,"path":406}],288:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42493,7 +42516,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":411}],304:[function(require,module,exports){
+},{"url":412}],304:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47060,7 +47083,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":245,"../../core/const":226,"path":405}],323:[function(require,module,exports){
+},{"../../core":245,"../../core/const":226,"path":406}],323:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48223,7 +48246,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":245,"path":405}],330:[function(require,module,exports){
+},{"../../core":245,"path":406}],330:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48333,7 +48356,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":245,"path":405}],331:[function(require,module,exports){
+},{"../../core":245,"path":406}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48387,7 +48410,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":245,"path":405}],332:[function(require,module,exports){
+},{"../../core":245,"path":406}],332:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48563,7 +48586,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":245,"path":405}],334:[function(require,module,exports){
+},{"../../core":245,"path":406}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48613,7 +48636,7 @@ var VoidFilter = function (_core$Filter) {
 
 exports.default = VoidFilter;
 
-},{"../../core":245,"path":405}],335:[function(require,module,exports){
+},{"../../core":245,"path":406}],335:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -51233,7 +51256,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":245,"../extras":321,"path":405,"resource-loader":374}],343:[function(require,module,exports){
+},{"../core":245,"../extras":321,"path":406,"resource-loader":374}],343:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51591,7 +51614,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":245,"resource-loader":374,"url":411}],346:[function(require,module,exports){
+},{"../core":245,"resource-loader":374,"url":412}],346:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53238,7 +53261,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":245,"../Mesh":347,"path":405,"pixi-gl-core":209}],354:[function(require,module,exports){
+},{"../../core":245,"../Mesh":347,"path":406,"pixi-gl-core":209}],354:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58579,7 +58602,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":404}],384:[function(require,module,exports){
+},{"crypto":405}],384:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -60594,9 +60617,9 @@ module.exports = class Input extends EventEmitter
     /**
      * basic input support for touch, mouse, and keyboard
      *
-     * @param {HTMLElement} object to attach listener to
      * @param {object} [options]
-     * @param {boolean} [options.noPointer] turns off mouse/touch handlers
+     * @param {HTMLElement} [options.div=document] object to attach listener to
+     * @param {boolean} [options.noPointers] turns off mouse/touch/pen handlers
      * @param {boolean} [options.keys] turn on key listener
      * @param {boolean} [options.chromeDebug] ignore chrome debug keys, and force page reload with ctrl/cmd+r
      * @param {number} [options.threshold=5] maximum number of pixels to move while mouse/touch downbefore cancelling 'click'
@@ -60606,14 +60629,14 @@ module.exports = class Input extends EventEmitter
      * @event up(x, y, { input, event, id }) emits when touch or mouse is up or cancelled
      * @event move(x, y, { input, event, id }) emits when touch or mouse moves (even if mouse is still up)
      * @event click(x, y, { input, event, id }) emits when "click" for touch or mouse
+     * @event wheel(dx, dy, dz, { event, id, x, y }) emits when "wheel" scroll for mouse
      *
      * @event keydown(keyCode:number, {shift:boolean, meta:boolean, ctrl: boolean}, { event, input }) emits when key is pressed
      * @event keyup(keyCode:number, {shift:boolean, meta:boolean, ctrl: boolean}, { event, input }) emits when key is released
      */
-    constructor(div, options)
+    constructor(options)
     {
         super()
-
         options = options || {}
         this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
         this.chromeDebug = options.chromeDebug
@@ -60623,22 +60646,105 @@ module.exports = class Input extends EventEmitter
         this.keys = {}
         this.input = []
 
-        if (!options.noPointer)
+        this.div = options.div || document
+        this.options = options
+        this.callbacks = [
+            this.mouseDown.bind(this),
+            this.mouseMove.bind(this),
+            this.mouseUp.bind(this), // 2
+            this.touchStart.bind(this),
+            this.touchMove.bind(this),
+            this.touchEnd.bind(this),
+            this.keydown.bind(this), // 6
+            this.keyup.bind(this),
+            this.wheel.bind(this) // 8
+        ]
+        if (!options.noPointers)
         {
-            div.addEventListener('mousedown', this.mouseDown.bind(this))
-            div.addEventListener('mousemove', this.mouseMove.bind(this))
-            div.addEventListener('mouseup', this.mouseUp.bind(this))
-            div.addEventListener('mouseout', this.mouseUp.bind(this))
-
-            div.addEventListener('touchstart', this.touchStart.bind(this))
-            div.addEventListener('touchmove', this.touchMove.bind(this))
-            div.addEventListener('touchend', this.touchEnd.bind(this))
-            div.addEventListener('touchcancel', this.touchEnd.bind(this))
+            this.addPointers()
         }
-
         if (options.keys)
         {
-            this.keysListener()
+            this.addKeyboard()
+        }
+    }
+
+    /**
+     * remove all listeners
+     */
+    destroy()
+    {
+        this.removePointers()
+        this.removeKeyboard()
+    }
+
+    /**
+     * turns on pointer listeners (on by default); can be used after removePointers()
+     */
+    addPointers()
+    {
+        if (!this.listeningPointer)
+        {
+            const div = this.div
+            div.addEventListener('mousedown', this.callbacks[0])
+            div.addEventListener('mousemove', this.callbacks[1])
+            div.addEventListener('mouseup', this.callbacks[2])
+            div.addEventListener('mouseout', this.callbacks[2])
+            div.addEventListener('wheel', this.callbacks[8])
+
+            div.addEventListener('touchstart', this.callbacks[3])
+            div.addEventListener('touchmove', this.callbacks[4])
+            div.addEventListener('touchend', this.callbacks[5])
+            div.addEventListener('touchcancel', this.callbacks[5])
+            this.listeningPointer = true
+        }
+    }
+
+    /**
+     * remove pointers listener
+     */
+    removePointers()
+    {
+        if (this.listeningPointer)
+        {
+            const div = this.div
+            div.removeEventListener('mousedown', this.callbacks[0])
+            div.removeEventListener('mousemove', this.callbacks[1])
+            div.removeEventListener('mouseup', this.callbacks[2])
+            div.removeEventListener('mouseout', this.callbacks[2])
+            div.removeEventListener('wheel', this.callbacks[8])
+
+            div.removeEventListener('touchstart', this.callbacks[3])
+            div.removeEventListener('touchmove', this.callbacks[4])
+            div.removeEventListener('touchend', this.callbacks[5])
+            div.removeEventListener('touchcancel', this.callbacks[5])
+            this.listeningPointer = false
+        }
+    }
+
+    /**
+     * turns on keyboard listener (off by default); can be used after removeKeyboard()
+     */
+    addKeyboard()
+    {
+        if (!this.listeningKeyboard)
+        {
+            document.addEventListener('keydown', this.callbacks[6])
+            document.addEventListener('keyup', this.callbacks[7])
+            this.listeningKeyboard = true
+        }
+    }
+
+    /**
+     * removes keyboard listener
+     */
+    removeKeyboard()
+    {
+        if (this.listeningKeyboard)
+        {
+            document.removeEventListener('keydown', this.callbacks[6])
+            document.removeEventListener('keyup', this.callbacks[7])
+            this.listeningKeyboard = false
         }
     }
 
@@ -60831,14 +60937,17 @@ module.exports = class Input extends EventEmitter
         this.emit('move', x, y, { event: e, input: this, id })
     }
 
+    wheel(e)
+    {
+        this.emit('wheel', e.deltaX, e.deltaY, e.deltaZ, { event: e, id: 'mouse', x: e.clientX, y: e.clientY })
+    }
+
     /**
      * Sets event listener for keyboard
      * @private
      */
     keysListener()
     {
-        document.addEventListener('keydown', this.keydown.bind(this))
-        document.addEventListener('keyup', this.keyup.bind(this))
     }
 
     /**
@@ -60847,10 +60956,6 @@ module.exports = class Input extends EventEmitter
      */
     keydown(e)
     {
-        if (this.preventDefault)
-        {
-            e.preventDefault()
-        }
         this.keys.shift = e.shiftKey
         this.keys.meta = e.metaKey
         this.keys.ctrl = e.ctrlKey
@@ -60869,6 +60974,10 @@ module.exports = class Input extends EventEmitter
                 window.location.reload()
                 return
             }
+        }
+        if (this.preventDefault)
+        {
+            e.preventDefault()
         }
         this.emit('keydown', code, this.keys, { event: e, input: this })
     }
@@ -60988,7 +61097,7 @@ class Loop extends Events
      * @param {number} [options.maxFrameTime=1000 / 60] maximum time in milliseconds for a frame
      * @param {object} [options.pauseOnBlur] pause loop when app loses focus, start it when app regains focus
      *
-     * @event each(elapsed, Loop)
+     * @event each(elapsed, Loop, elapsedInLoop)
      * @event start(Loop)
      * @event stop(Loop)
      */
@@ -61014,7 +61123,10 @@ class Loop extends Events
         if (!this.running)
         {
             this.running = performance.now()
-            this.update()
+            if (!this.waiting)
+            {
+                this.loop()
+            }
             this.emit('start', this)
         }
         return this
@@ -61029,6 +61141,7 @@ class Loop extends Events
         if (this.blurred)
         {
             this.start()
+            this.blurred = false
         }
     }
 
@@ -61058,39 +61171,65 @@ class Loop extends Events
     }
 
     /**
-     * loop through updates
+     * loop through updates; can be called manually each frame, or called automatically as part of start()
      */
     update()
     {
+        const now = performance.now()
+        let elapsed = now - this.running
+        elapsed = elapsed > this.maxFrameTime ? this.maxFrameTime : elapsed
+        for (let entry of this.list)
+        {
+            if (entry.update(elapsed))
+            {
+                this.remove(entry)
+            }
+        }
+        this.emit('each', elapsed, this, now - performance.now())
+    }
+
+    /**
+     * internal loop through animations
+     * @private
+     */
+    loop()
+    {
         if (this.running)
         {
-            const now = performance.now()
-            let elapsed = now - this.running
-            elapsed = elapsed > this.maxFrameTime ? this.maxFrameTime : elapsed
-            for (let entry of this.list)
-            {
-                if (entry.update(elapsed))
-                {
-                    this.remove(entry)
-                }
-            }
-            this.emit('each', elapsed, this)
-            requestAnimationFrame(this.update.bind(this))
+            this.waiting = false
+            this.update()
+            requestAnimationFrame(this.loop.bind(this))
+            this.waiting = true
+        }
+        else
+        {
+            this.waiting = false
         }
     }
 
     /**
-     * add a callback to the update loop
+     * adds a callback to the loop
      * @param {function} callback
-     * @param {number} [time=0] in milliseconds to call this update
+     * @param {number} [time=0] in milliseconds to call this update (0=every frame)
      * @param {number} [count=0] number of times to run this update (0=infinite)
      * @return {object} entry - used to remove or change the parameters of the update
      */
-    add(callback, time, count)
+    interval(callback, time, count)
     {
         const entry = new Entry(callback, time, count)
         this.list.push(entry)
         return entry
+    }
+
+    /**
+     * adds a one-time callback to the loop
+     * @param {function} callback
+     * @param {number} time in milliseconds to call this update
+     * @return {object} entry - used to remove or change the parameters of the update
+     */
+    timeout(callback, time)
+    {
+        return this.interval(callback, time, 1)
     }
 
     /**
@@ -62370,6 +62509,7 @@ module.exports = class Plugin
     down() { }
     move() { }
     up() { }
+    wheel() { }
     update() { }
     resize() { }
 }
@@ -62444,8 +62584,9 @@ const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
 const Follow = require('./follow')
+const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
+const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -62480,7 +62621,7 @@ module.exports = class Viewport extends Loop
         {
             this.listeners(options.div || document.body, options.threshold, options.preventDefault)
         }
-        this.add(this.loop.bind(this))
+        this.interval(this.updateFrame.bind(this))
     }
 
     /**
@@ -62491,9 +62632,15 @@ module.exports = class Viewport extends Loop
 
     /**
      * update loop -- may be called manually or use start/stop() for Viewport to handle updates
-     * @param {number} elapsed time in ms
+     * @inherited from yy-loop
      */
-    loop(elapsed)
+    // update()
+
+    /**
+     * update frame for animations
+     * @private
+     */
+    updateFrame(elapsed)
     {
         for (let plugin of PLUGIN_ORDER)
         {
@@ -62543,6 +62690,7 @@ module.exports = class Viewport extends Loop
         this.input.on('move', this.move, this)
         this.input.on('up', this.up, this)
         this.input.on('click', this.click, this)
+        this.input.on('wheel', this.handleWheel, this)
     }
 
     /**
@@ -62596,6 +62744,21 @@ module.exports = class Viewport extends Loop
             if (this.plugins[type])
             {
                 this.plugins[type].up(...arguments)
+            }
+        }
+    }
+
+    /**
+     * handle wheel events
+     * @private
+     */
+    handleWheel()
+    {
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].wheel(...arguments)
             }
         }
     }
@@ -62987,10 +63150,101 @@ module.exports = class Viewport extends Loop
         this.plugins['follow'] = new Follow(this, target, options)
         return this
     }
-}
-},{"./bounce":394,"./clamp":395,"./decelerate":396,"./drag":397,"./follow":398,"./hit-area":399,"./pinch":400,"./snap":402,"yy-input":388,"yy-loop":389}],404:[function(require,module,exports){
 
-},{}],405:[function(require,module,exports){
+    /**
+     * zoom using mouse wheel
+     * @param {object} [options]
+     * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
+     * @param {number} [options.minWidth] clamp minimum width
+     * @param {number} [options.minHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
+     */
+    wheel(options)
+    {
+        this.plugins['wheel'] = new Wheel(this, options)
+        return this
+    }
+}
+},{"./bounce":394,"./clamp":395,"./decelerate":396,"./drag":397,"./follow":398,"./hit-area":399,"./pinch":400,"./snap":402,"./wheel":404,"yy-input":388,"yy-loop":389}],404:[function(require,module,exports){
+const Plugin = require('./plugin')
+
+module.exports = class Wheel extends Plugin
+{
+    /**
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
+     * @param {number} [options.minWidth] clamp minimum width
+     * @param {number} [options.minHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.percent = options.percent || 0.1
+        this.center = options.center
+        this.minWidth = options.minWidth
+        this.maxWidth = options.maxWidth
+        this.minHeight = options.minHeight
+        this.maxHeight = options.maxHeight
+    }
+
+    clamp()
+    {
+        let x = this.parent.container.scale.x, y = this.parent.container.scale.y
+        if (this.minWidth && this.parent.worldScreenWidth < this.minWidth)
+        {
+            x = this.minWidth / this.parent.worldWidth
+        }
+        if (this.minHeight && this.parent.worldScreenHeight < this.minHeight)
+        {
+            y = this.minHeight / this.parent.worldHeight
+        }
+        if (this.maxWidth && this.parent.worldScreenWidth > this.maxWidth)
+        {
+            x = this.parent.screenWidth / this.parent.worldWidth
+        }
+        if (this.maxHeight && this.parent.worldScreenHeight > this.maxHeight)
+        {
+            y = this.parent.screenHeight / this.parent.worldHeight
+        }
+        this.parent.container.scale.set(x, y)
+    }
+
+    wheel(dx, dy, dz, data)
+    {
+        const change = dy > 0 ? 1 + this.percent : (1 - this.percent)
+        let point = { x: data.x, y: data.y }
+        let oldPoint
+        if (!this.center)
+        {
+            oldPoint = this.parent.container.toLocal(point)
+        }
+        this.parent.container.scale.x *= change
+        this.parent.container.scale.y *= change
+        this.clamp()
+
+        if (this.center)
+        {
+            this.parent.moveCenter(this.center)
+        }
+        else
+        {
+            const newPoint = this.parent.container.toGlobal(oldPoint)
+            this.parent.container.x += point.x - newPoint.x
+            this.parent.container.y += point.y - newPoint.y
+        }
+        data.event.preventDefault()
+    }
+}
+},{"./plugin":401}],405:[function(require,module,exports){
+
+},{}],406:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -63218,7 +63472,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":406}],406:[function(require,module,exports){
+},{"_process":407}],407:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -63404,7 +63658,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],407:[function(require,module,exports){
+},{}],408:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -63941,7 +64195,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],408:[function(require,module,exports){
+},{}],409:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -64027,7 +64281,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],409:[function(require,module,exports){
+},{}],410:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -64114,13 +64368,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],410:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":408,"./encode":409}],411:[function(require,module,exports){
+},{"./decode":409,"./encode":410}],412:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -64854,7 +65108,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":412,"punycode":407,"querystring":410}],412:[function(require,module,exports){
+},{"./util":413,"punycode":408,"querystring":411}],413:[function(require,module,exports){
 'use strict';
 
 module.exports = {
