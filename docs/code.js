@@ -3,21 +3,22 @@ const Ease = require('pixi-ease')
 const Random = require('yy-random')
 const Renderer = require('yy-renderer')
 const Input = require('yy-input')
+const FPS = require('yy-fps')
 
 const Viewport = require('..')
 
 const gui = require('./gui')
 
 const BORDER = 10
-const WIDTH = 5000
-const HEIGHT = 5000
+const WIDTH = 2000
+const HEIGHT = 2000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
 
-let _renderer, _viewport, _title, _ease, _object, _targetAnimation, _stars = []
+let _renderer, _viewport, _fps, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
@@ -162,8 +163,6 @@ function arrows(code, special, e)
 
 window.onload = function ()
 {
-    _title = document.getElementsByClassName('titleCode')[0]
-
     _renderer = new Renderer()
     viewport()
     window.addEventListener('resize', resize)
@@ -171,8 +170,9 @@ window.onload = function ()
     const input = new Input(_renderer.canvas, { keys: true })
     input.on('keydown', arrows)
 
+    _fps = new FPS({side: 'bottom-left'})
     _ease = new Ease.list()
-    _ease.on('each', () => _renderer.render())
+    _ease.on('each', () => { _fps.frame(); _renderer.render() })
     drawWorld()
     _ease.start()
 

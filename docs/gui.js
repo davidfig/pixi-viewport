@@ -1,10 +1,13 @@
 let _viewport, _drawWorld, _gui, _options, _world
 
+const TEST = false
+
 module.exports = function gui(viewport, drawWorld, target)
 {
     _viewport = viewport
     _drawWorld = drawWorld
     _gui = new dat.GUI({ autoPlace: false })
+    if (TEST) _gui.close()
     document.body.appendChild(_gui.domElement)
     _gui.domElement.style.bottom = '2em'
     _gui.domElement.style.right = 0

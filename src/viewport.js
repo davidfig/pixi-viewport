@@ -366,7 +366,10 @@ module.exports = class Viewport extends Loop
         result.right = this.right > this.worldWidth
         result.top = this.top < 0
         result.bottom = this.bottom > this.worldHeight
-        result.cornerPoint = { x: this.worldWidth - this.worldScreenWidth, y: this.worldHeight - this.worldScreenHeight }
+        result.cornerPoint = {
+            x: this.worldWidth * this.container.scale.x - this.screenWidth,
+            y: this.worldHeight * this.container.scale.y - this.screenHeight
+        }
         return result
     }
 
@@ -380,7 +383,7 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * world coordinates of the right edge of the screen
+     * world coordinates of the left edge of the screen
      * @type {number}
      */
     get left()
