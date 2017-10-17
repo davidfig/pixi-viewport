@@ -13,6 +13,18 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
     const container = new PIXI.Container()
     const viewport = new Viewport(container)
 
+    // activate plugins with the following plugins
+    viewport
+        .drag()
+        .wheel()
+        .pinch()
+        .decelerate()
+        .bounce()
+
+    // starts an automatic update loop for animations related to the viewport
+    viewport
+        .start()
+
 ## Live Example
 https://davidfig.github.io/pixi-viewport/
 

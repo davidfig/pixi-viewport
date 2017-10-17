@@ -37,10 +37,7 @@ function viewport()
 
 function resize()
 {
-    // _view.width = window.innerWidth
-    // _view.height = window.innerHeight // - _title.offsetHeight
     _renderer.resize()
-    // _view.width, _view.height)
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
 }
 
@@ -78,32 +75,23 @@ function stars()
 
 function createTarget()
 {
-    _targetAnimation = new Ease.target(_object,
+    _targetAnimation = _ease.target(_object,
         {
             x: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER),
             y: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
         }, OBJECT_SPEED
     )
-    _targetAnimation.on('done', () => createTarget())
-    _ease.add(_targetAnimation)
+    _targetAnimation.on('done', createTarget)
 }
 
 function object()
 {
-    if (!_object)
-    {
-        _object = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-        createTarget()
-        _ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
-    }
-    else
-    {
-        _renderer.stage.addChild(_object)
-    }
+    _object = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     _object.anchor.set(0.5)
     _object.tint = 0
     _object.width = _object.height = OBJECT_SIZE
     _object.position.set(100, 100)
+    _ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
     createTarget()
 }
 
@@ -135,41 +123,11 @@ function drawWorld()
     _viewport.moveCorner(0, 0)
 }
 
-function arrows(code, special, e)
-{
-    switch (code)
-    {
-        case 38:
-            _ease.remove(_targetAnimation)
-            _object.y -= 10
-            e.preventDefault()
-            break
-        case 40:
-            _ease.remove(_targetAnimation)
-            _object.y += 10
-            e.preventDefault()
-            break
-        case 37:
-            _ease.remove(_targetAnimation)
-            _object.x -= 10
-            e.preventDefault()
-            break
-        case 39:
-            _ease.remove(_targetAnimation)
-            e.preventDefault()
-            _object.x += 10
-            break
-    }
-}
-
 window.onload = function ()
 {
     _renderer = new Renderer()
     viewport()
     window.addEventListener('resize', resize)
-
-    const input = new Input(_renderer.canvas, { keys: true })
-    input.on('keydown', arrows)
 
     _fps = new FPS({side: 'bottom-left'})
     _ease = new Ease.list()

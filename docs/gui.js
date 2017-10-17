@@ -345,7 +345,7 @@ function guiFollow(target)
     }
 
     let speed, radius
-    const follow = _gui.addFolder('follow (use arrows to manually control)')
+    const follow = _gui.addFolder('follow')
     follow.add(_options.follow, 'follow').onChange(
         function (value)
         {
