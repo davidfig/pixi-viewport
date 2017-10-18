@@ -99,11 +99,12 @@ module.exports = class Viewport extends Loop
             this.worldWidth = worldWidth
             this.worldHeight = worldHeight
         }
-        for (let plugin of this.plugins)
+
+        for (let type of PLUGIN_ORDER)
         {
-            if (plugin)
+            if (this.plugins[type])
             {
-                plugin.resize()
+                this.plugins[type].resize()
             }
         }
     }
