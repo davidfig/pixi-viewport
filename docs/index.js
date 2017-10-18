@@ -290,12 +290,12 @@ function guiPinch()
     function add()
     {
         noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
-        // minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
-        // maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
-        // minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
-        // maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
-        // centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
-        // centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
+        minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
+        maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
+        minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
+        maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
+        centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
+        centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
     }
 
     const pinch = _gui.addFolder('pinch')
@@ -311,12 +311,12 @@ function guiPinch()
             {
                 _viewport.removePlugin('pinch')
                 pinch.remove(noDrag)
-                // pinch.remove(minWidth)
-                // pinch.remove(maxWidth)
-                // pinch.remove(minHeight)
-                // pinch.remove(maxHeight)
-                // pinch.remove(centerX)
-                // pinch.remove(centerY)
+                pinch.remove(minWidth)
+                pinch.remove(maxWidth)
+                pinch.remove(minHeight)
+                pinch.remove(maxHeight)
+                pinch.remove(centerX)
+                pinch.remove(centerY)
             }
         })
     let noDrag, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
@@ -62371,24 +62371,30 @@ module.exports = class Pinch extends Plugin
 
     clamp()
     {
-        let x = this.parent.container.scale.x, y = this.parent.container.scale.y
-        if (this.minWidth && this.parent.worldScreenWidth < this.minWidth)
+        let width = this.parent.worldScreenWidth
+        let height = this.parent.worldScreenHeight
+        if (this.minWidth && width < this.minWidth)
         {
-            x = this.minWidth / this.parent.worldWidth
+            this.parent.fitWidth(this.minWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.minHeight && this.parent.worldScreenHeight < this.minHeight)
+        if (this.maxWidth && width > this.maxWidth)
         {
-            y = this.minHeight / this.parent.worldHeight
+            this.parent.fitWidth(this.maxWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.maxWidth && this.parent.worldScreenWidth > this.maxWidth)
+        if (this.minHeight && height < this.minHeight)
         {
-            x = this.parent.screenWidth / this.parent.worldWidth
+            this.parent.fitHeight(this.minHeight)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.maxHeight && this.parent.worldScreenHeight > this.maxHeight)
+        if (this.maxHeight && height > this.maxHeight)
         {
-            y = this.parent.screenHeight / this.parent.worldHeight
+            this.parent.fitHeight(this.maxHeight)
         }
-        this.parent.container.scale.set(x, y)
     }
 
     move(x, y, data)
@@ -63157,24 +63163,30 @@ module.exports = class Wheel extends Plugin
 
     clamp()
     {
-        let x = this.parent.container.scale.x, y = this.parent.container.scale.y
-        if (this.minWidth && this.parent.worldScreenWidth < this.minWidth)
+        let width = this.parent.worldScreenWidth
+        let height = this.parent.worldScreenHeight
+        if (this.minWidth && width < this.minWidth)
         {
-            x = this.minWidth / this.parent.worldWidth
+            this.parent.fitWidth(this.minWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.minHeight && this.parent.worldScreenHeight < this.minHeight)
+        if (this.maxWidth && width > this.maxWidth)
         {
-            y = this.minHeight / this.parent.worldHeight
+            this.parent.fitWidth(this.maxWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.maxWidth && this.parent.worldScreenWidth > this.maxWidth)
+        if (this.minHeight && height < this.minHeight)
         {
-            x = this.parent.screenWidth / this.parent.worldWidth
+            this.parent.fitHeight(this.minHeight)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.maxHeight && this.parent.worldScreenHeight > this.maxHeight)
+        if (this.maxHeight && height > this.maxHeight)
         {
-            y = this.parent.screenHeight / this.parent.worldHeight
+            this.parent.fitHeight(this.maxHeight)
         }
-        this.parent.container.scale.set(x, y)
     }
 
     wheel(dx, dy, dz, data)

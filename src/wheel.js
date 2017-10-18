@@ -28,24 +28,30 @@ module.exports = class Wheel extends Plugin
 
     clamp()
     {
-        let x = this.parent.container.scale.x, y = this.parent.container.scale.y
-        if (this.minWidth && this.parent.worldScreenWidth < this.minWidth)
+        let width = this.parent.worldScreenWidth
+        let height = this.parent.worldScreenHeight
+        if (this.minWidth && width < this.minWidth)
         {
-            x = this.minWidth / this.parent.worldWidth
+            this.parent.fitWidth(this.minWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.minHeight && this.parent.worldScreenHeight < this.minHeight)
+        if (this.maxWidth && width > this.maxWidth)
         {
-            y = this.minHeight / this.parent.worldHeight
+            this.parent.fitWidth(this.maxWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.maxWidth && this.parent.worldScreenWidth > this.maxWidth)
+        if (this.minHeight && height < this.minHeight)
         {
-            x = this.parent.screenWidth / this.parent.worldWidth
+            this.parent.fitHeight(this.minHeight)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
         }
-        if (this.maxHeight && this.parent.worldScreenHeight > this.maxHeight)
+        if (this.maxHeight && height > this.maxHeight)
         {
-            y = this.parent.screenHeight / this.parent.worldHeight
+            this.parent.fitHeight(this.maxHeight)
         }
-        this.parent.container.scale.set(x, y)
     }
 
     wheel(dx, dy, dz, data)
