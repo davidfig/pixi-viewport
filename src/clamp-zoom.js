@@ -18,6 +18,11 @@ module.exports = class ClampZoon extends Plugin
         this.maxHeight = options.maxHeight
     }
 
+    resize()
+    {
+        clamp()
+    }
+    
     clamp()
     {
         let width = this.parent.worldScreenWidth
