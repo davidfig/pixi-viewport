@@ -1,6 +1,6 @@
 const Plugin = require('./plugin')
 
-module.exports = class ClampZoon extends Plugin
+module.exports = class ClampZoom extends Plugin
 {
     /**
      * @param {object} [options]
@@ -20,9 +20,9 @@ module.exports = class ClampZoon extends Plugin
 
     resize()
     {
-        clamp()
+        this.clamp()
     }
-    
+
     clamp()
     {
         let width = this.parent.worldScreenWidth
