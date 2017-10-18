@@ -266,6 +266,7 @@ https://davidfig.github.io/pixi-viewport/
      * zoom using mouse wheel
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      * @param {number} [options.minWidth] clamp minimum width
      * @param {number} [options.minHeight] clamp minimum height

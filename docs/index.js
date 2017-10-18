@@ -63113,6 +63113,7 @@ module.exports = class Viewport extends Loop
      * zoom using mouse wheel
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      * @param {number} [options.minWidth] clamp minimum width
      * @param {number} [options.minHeight] clamp minimum height
@@ -63134,6 +63135,7 @@ module.exports = class Wheel extends Plugin
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      * @param {number} [options.minWidth] clamp minimum width
      * @param {number} [options.minHeight] clamp minimum height
@@ -63150,6 +63152,7 @@ module.exports = class Wheel extends Plugin
         this.maxWidth = options.maxWidth
         this.minHeight = options.minHeight
         this.maxHeight = options.maxHeight
+        this.reverse = options.reverse
     }
 
     clamp()
@@ -63176,7 +63179,15 @@ module.exports = class Wheel extends Plugin
 
     wheel(dx, dy, dz, data)
     {
-        const change = dy > 0 ? 1 + this.percent : (1 - this.percent)
+        let change
+        if (this.reverse)
+        {
+            change = dy > 0 ? 1 + this.percent : 1 - this.percent
+        }
+        else
+        {
+            change = dy > 0 ? 1 - this.percent : 1 + this.percent
+        }
         let point = { x: data.x, y: data.y }
         let oldPoint
         if (!this.center)
