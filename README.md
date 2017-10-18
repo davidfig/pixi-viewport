@@ -99,7 +99,7 @@ https://davidfig.github.io/pixi-viewport/
     get worldScreenWidth()
 
     /**
-     * @type {number} screen width in world coordinates
+     * @type {number} screen height in world coordinates
      */
     get worldScreenHeight()
 
