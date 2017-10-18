@@ -69,11 +69,11 @@ https://davidfig.github.io/pixi-viewport/
     // stop()
 
     /**
-     * use this to set screen and world sizes--needed for most plugins
+     * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
      * @param {number} screenWidth
      * @param {number} screenHeight
-     * @param {number} worldWidth
-     * @param {number} worldHeight
+     * @param {number} [worldWidth]
+     * @param {number} [worldHeight]
      */
     resize(screenWidth, screenHeight, worldWidth, worldHeight)
 
@@ -99,7 +99,7 @@ https://davidfig.github.io/pixi-viewport/
     get worldScreenWidth()
 
     /**
-     * @type {number} screen width in world coordinates
+     * @type {number} screen height in world coordinates
      */
     get worldScreenHeight()
 
@@ -113,6 +113,7 @@ https://davidfig.github.io/pixi-viewport/
      * move center of viewport to point
      * @param {number|PIXI.Point} x|point
      * @param {number} [y]
+     * @return {Viewport} this
      */
     moveCenter(/*x, y | PIXI.Point*/)
 
@@ -126,34 +127,32 @@ https://davidfig.github.io/pixi-viewport/
      * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
      * @param {number|PIXI.Point} x|point
      * @param {number} y
+     * @return {Viewport} this
      */
     moveCorner(/*x, y | point*/)
 
     /**
      * change zoom so the width fits in the viewport
      * @param {number} [width=container.width] in world coordinates; uses container.width if not provided
-    * @param {boolean} [center] maintain the same center
+     * @param {boolean} [center] maintain the same center
+     * @return {Viewport} this
      */
     fitWidth(width, center)
 
     /**
      * change zoom so the height fits in the viewport
      * @param {number} [width=container.height] in world coordinates; uses container.width if not provided
-    * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
      */
     fitHeight(height, center)
 
     /**
      * change zoom so it fits the entire world in the viewport
      * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
      */
     fit(center)
-
-    /**
-     * is container out of world bounds
-     * @return { left:boolean, right: boolean, top: boolean, bottom: boolean }
-     */
-    OOB()
 
     /**
      * world coordinates of the right edge of the screen

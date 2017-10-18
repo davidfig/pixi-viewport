@@ -83,18 +83,21 @@ module.exports = class Viewport extends Loop
     // stop()
 
     /**
-     * use this to set screen and world sizes--needed for most plugins
+     * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
      * @param {number} screenWidth
      * @param {number} screenHeight
-     * @param {number} worldWidth
-     * @param {number} worldHeight
+     * @param {number} [worldWidth]
+     * @param {number} [worldHeight]
      */
     resize(screenWidth, screenHeight, worldWidth, worldHeight)
     {
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
-        this.worldWidth = worldWidth
-        this.worldHeight = worldHeight
+        if (worldWidth)
+        {
+            this.worldWidth = worldWidth
+            this.worldHeight = worldHeight
+        }
         for (let plugin of this.plugins)
         {
             if (plugin)
@@ -134,6 +137,11 @@ module.exports = class Viewport extends Loop
 
     }
 
+    /**
+     * whether change exceeds threshold
+     * @private
+     * @param {number} change
+     */
     checkThreshold(change)
     {
         if (Math.abs(change) >= this.threshold)
@@ -188,6 +196,12 @@ module.exports = class Viewport extends Loop
         }
     }
 
+    /**
+     * handle click events
+     * @private
+     * @param {number} x
+     * @param {number} y
+     */
     click(x, y)
     {
         const point = { x, y }
@@ -244,7 +258,7 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * @type {number} screen width in world coordinates
+     * @type {number} screen height in world coordinates
      */
     get worldScreenHeight()
     {
@@ -264,6 +278,7 @@ module.exports = class Viewport extends Loop
      * move center of viewport to point
      * @param {number|PIXI.Point} x|point
      * @param {number} [y]
+     * @return {Viewport} this
      */
     moveCenter(/*x, y | PIXI.Point*/)
     {
@@ -279,6 +294,7 @@ module.exports = class Viewport extends Loop
             y = arguments[0].y
         }
         this.container.position.set((this.worldScreenWidth / 2 - x) * this.container.scale.x, (this.worldScreenHeight / 2 - y) * this.container.scale.y)
+        return this
     }
 
     /**
@@ -294,6 +310,7 @@ module.exports = class Viewport extends Loop
      * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
      * @param {number|PIXI.Point} x|point
      * @param {number} y
+     * @return {Viewport} this
      */
     moveCorner(/*x, y | point*/)
     {
@@ -306,12 +323,14 @@ module.exports = class Viewport extends Loop
             this.container.position.set(arguments[0], arguments[1])
         }
         this._reset()
+        return this
     }
 
     /**
      * change zoom so the width fits in the viewport
      * @param {number} [width=container.width] in world coordinates; uses container.width if not provided
-    * @param {boolean} [center] maintain the same center
+     * @param {boolean} [center] maintain the same center
+     * @return {Viewport} this
      */
     fitWidth(width, center)
     {
@@ -327,12 +346,14 @@ module.exports = class Viewport extends Loop
         {
             this.moveCenter(save)
         }
+        return this
     }
 
     /**
      * change zoom so the height fits in the viewport
      * @param {number} [width=container.height] in world coordinates; uses container.width if not provided
-    * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
      */
     fitHeight(height, center)
     {
@@ -348,11 +369,13 @@ module.exports = class Viewport extends Loop
         {
             this.moveCenter(save)
         }
+        return this
     }
 
     /**
      * change zoom so it fits the entire world in the viewport
      * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
      */
     fit(center)
     {
@@ -375,12 +398,13 @@ module.exports = class Viewport extends Loop
         {
             this.moveCenter(save)
         }
+        return this
     }
-
 
     /**
      * is container out of world bounds
      * @return { left:boolean, right: boolean, top: boolean, bottom: boolean }
+     * @private
      */
     OOB()
     {
