@@ -16,13 +16,16 @@ module.exports = function gui(viewport, drawWorld, target)
     _world = _gui.addFolder('world')
     _options = {
         drag: true,
+        clampZoom: {
+            clampZoom: false,
+            minWidth: 1000,
+            minHeight: 1000,
+            maxWidth: 2000,
+            maxHeight: 2000
+        },
         pinch: {
             pinch: true,
             noDrag: false,
-            minWidth: 0,
-            minHeight: 0,
-            maxWidth: 0,
-            maxHeight: 0,
             centerX: 0,
             centerY: 0
         },
@@ -58,10 +61,6 @@ module.exports = function gui(viewport, drawWorld, target)
         wheel: {
             wheel: true,
             percent: 0.1,
-            minWidth: 0,
-            minHeight: 0,
-            maxWidth: 0,
-            maxHeight: 0,
             centerX: 0,
             centerY: 0
         }
@@ -72,6 +71,7 @@ module.exports = function gui(viewport, drawWorld, target)
     guiPinch()
     guiWheel()
     guiClamp()
+    guiClampZoom()
     guiBounce()
     guiDecelerate()
     guiSnap()
@@ -141,16 +141,12 @@ function guiPinch()
     function change()
     {
         const center = (_options.pinch.centerX || _options.pinch.centerY) ? { x: _options.pinch.centerX, y: _options.pinch.centerY } : null
-        _viewport.pinch({ noDrag: _options.pinch.noDrag, minWidth: _options.pinch.minWidth, maxWidth: _options.pinch.maxWidth, minHeight: _options.pinch.minHeight, maxHeight: _options.pinch.maxHeight, center })
+        _viewport.pinch({ noDrag: _options.pinch.noDrag, center })
     }
 
     function add()
     {
         noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
-        minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
-        maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
-        minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
-        maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
         centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
         centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
     }
@@ -168,15 +164,11 @@ function guiPinch()
             {
                 _viewport.removePlugin('pinch')
                 pinch.remove(noDrag)
-                pinch.remove(minWidth)
-                pinch.remove(maxWidth)
-                pinch.remove(minHeight)
-                pinch.remove(maxHeight)
                 pinch.remove(centerX)
                 pinch.remove(centerY)
             }
         })
-    let noDrag, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
+    let noDrag, centerX, centerY
     if (_options.pinch)
     {
         add()
@@ -383,12 +375,8 @@ function guiWheel()
     function add()
     {
         percent = wheel.add(_options.wheel, 'percent').onChange(change)
-        // minWidth = wheel.add(_options.wheel, 'minWidth').onChange(change)
-        // maxWidth = wheel.add(_options.wheel, 'maxWidth').onChange(change)
-        // minHeight = wheel.add(_options.wheel, 'minHeight').onChange(change)
-        // maxHeight = wheel.add(_options.wheel, 'maxHeight').onChange(change)
-        // centerX = wheel.add(_options.wheel, 'centerX').onChange(change)
-        // centerY = wheel.add(_options.wheel, 'centerY').onChange(change)
+        centerX = wheel.add(_options.wheel, 'centerX').onChange(change)
+        centerY = wheel.add(_options.wheel, 'centerY').onChange(change)
     }
 
     const wheel = _gui.addFolder('wheel')
@@ -404,15 +392,11 @@ function guiWheel()
             {
                 _viewport.removePlugin('wheel')
                 wheel.remove(percent)
-                // wheel.remove(minWidth)
-                // wheel.remove(maxWidth)
-                // wheel.remove(minHeight)
-                // wheel.remove(maxHeight)
-                // wheel.remove(centerX)
-                // wheel.remove(centerY)
+                wheel.remove(centerX)
+                wheel.remove(centerY)
             }
         })
-    let percent, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
+    let percent, centerX, centerY
     if (_options.wheel)
     {
         add()
@@ -420,6 +404,50 @@ function guiWheel()
     if (_options.wheel.wheel)
     {
         wheel.open()
+    }
+}
+
+function guiClampZoom()
+{
+    function change()
+    {
+        _viewport.clampZoom({ minWidth: _options.clampZoom.minWidth, maxWidth: _options.clampZoom.maxWidth, minHeight: _options.clampZoom.minHeight, maxHeight: _options.clampZoom.maxHeight })
+    }
+
+    function add()
+    {
+        minWidth = clampZoom.add(_options.clampZoom, 'minWidth').onChange(change)
+        maxWidth = clampZoom.add(_options.clampZoom, 'maxWidth').onChange(change)
+        minHeight = clampZoom.add(_options.clampZoom, 'minHeight').onChange(change)
+        maxHeight = clampZoom.add(_options.clampZoom, 'maxHeight').onChange(change)
+    }
+
+    const clampZoom = _gui.addFolder('clamp-zoom')
+    clampZoom.add(_options.clampZoom, 'clampZoom').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                _viewport.removePlugin('clamp-zoom')
+                clampZoom.remove(minWidth)
+                clampZoom.remove(maxWidth)
+                clampZoom.remove(minHeight)
+                clampZoom.remove(maxHeight)
+            }
+        })
+    let minWidth, maxWidth, minHeight, maxHeight
+    if (_options.clampZoom.clampZoom)
+    {
+        add()
+    }
+    if (_options.clampZoom.clampZoom)
+    {
+        clampZoom.open()
     }
 }
 

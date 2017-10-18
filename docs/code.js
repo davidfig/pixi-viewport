@@ -2,7 +2,6 @@ const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
 const Renderer = require('yy-renderer')
-const Input = require('yy-input')
 const FPS = require('yy-fps')
 
 const Viewport = require('..')

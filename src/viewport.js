@@ -4,6 +4,7 @@ const Input = require('yy-input')
 const Drag = require('./drag')
 const Pinch = require('./pinch')
 const Clamp = require('./clamp')
+const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
 const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
@@ -11,7 +12,7 @@ const Snap = require('./snap')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
+const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -475,6 +476,10 @@ module.exports = class Viewport extends Loop
         {
             this.plugins['clamp'].update()
         }
+        if (this.plugins['clamp-zoom'])
+        {
+            this.plugins['clamp-zoom'].clamp()
+        }
     }
 
     // PLUGINS
@@ -614,6 +619,12 @@ module.exports = class Viewport extends Loop
     wheel(options)
     {
         this.plugins['wheel'] = new Wheel(this, options)
+        return this
+    }
+
+    clampZoom(options)
+    {
+        this.plugins['clamp-zoom'] = new ClampZoom(this, options)
         return this
     }
 }

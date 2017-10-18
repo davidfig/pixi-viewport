@@ -3,7 +3,6 @@ const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
 const Renderer = require('yy-renderer')
-const Input = require('yy-input')
 const FPS = require('yy-fps')
 
 const Viewport = require('..')
@@ -140,7 +139,7 @@ window.onload = function ()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
-},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":192,"pixi.js":335,"yy-fps":387,"yy-input":388,"yy-random":392,"yy-renderer":393}],2:[function(require,module,exports){
+},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":192,"pixi.js":335,"yy-fps":387,"yy-random":392,"yy-renderer":393}],2:[function(require,module,exports){
 let _viewport, _drawWorld, _gui, _options, _world
 
 const TEST = false
@@ -159,13 +158,16 @@ module.exports = function gui(viewport, drawWorld, target)
     _world = _gui.addFolder('world')
     _options = {
         drag: true,
+        clampZoom: {
+            clampZoom: false,
+            minWidth: 1000,
+            minHeight: 1000,
+            maxWidth: 2000,
+            maxHeight: 2000
+        },
         pinch: {
             pinch: true,
             noDrag: false,
-            minWidth: 0,
-            minHeight: 0,
-            maxWidth: 0,
-            maxHeight: 0,
             centerX: 0,
             centerY: 0
         },
@@ -201,10 +203,6 @@ module.exports = function gui(viewport, drawWorld, target)
         wheel: {
             wheel: true,
             percent: 0.1,
-            minWidth: 0,
-            minHeight: 0,
-            maxWidth: 0,
-            maxHeight: 0,
             centerX: 0,
             centerY: 0
         }
@@ -215,6 +213,7 @@ module.exports = function gui(viewport, drawWorld, target)
     guiPinch()
     guiWheel()
     guiClamp()
+    guiClampZoom()
     guiBounce()
     guiDecelerate()
     guiSnap()
@@ -284,16 +283,12 @@ function guiPinch()
     function change()
     {
         const center = (_options.pinch.centerX || _options.pinch.centerY) ? { x: _options.pinch.centerX, y: _options.pinch.centerY } : null
-        _viewport.pinch({ noDrag: _options.pinch.noDrag, minWidth: _options.pinch.minWidth, maxWidth: _options.pinch.maxWidth, minHeight: _options.pinch.minHeight, maxHeight: _options.pinch.maxHeight, center })
+        _viewport.pinch({ noDrag: _options.pinch.noDrag, center })
     }
 
     function add()
     {
         noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
-        minWidth = pinch.add(_options.pinch, 'minWidth').onChange(change)
-        maxWidth = pinch.add(_options.pinch, 'maxWidth').onChange(change)
-        minHeight = pinch.add(_options.pinch, 'minHeight').onChange(change)
-        maxHeight = pinch.add(_options.pinch, 'maxHeight').onChange(change)
         centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
         centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
     }
@@ -311,15 +306,11 @@ function guiPinch()
             {
                 _viewport.removePlugin('pinch')
                 pinch.remove(noDrag)
-                pinch.remove(minWidth)
-                pinch.remove(maxWidth)
-                pinch.remove(minHeight)
-                pinch.remove(maxHeight)
                 pinch.remove(centerX)
                 pinch.remove(centerY)
             }
         })
-    let noDrag, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
+    let noDrag, centerX, centerY
     if (_options.pinch)
     {
         add()
@@ -526,12 +517,8 @@ function guiWheel()
     function add()
     {
         percent = wheel.add(_options.wheel, 'percent').onChange(change)
-        // minWidth = wheel.add(_options.wheel, 'minWidth').onChange(change)
-        // maxWidth = wheel.add(_options.wheel, 'maxWidth').onChange(change)
-        // minHeight = wheel.add(_options.wheel, 'minHeight').onChange(change)
-        // maxHeight = wheel.add(_options.wheel, 'maxHeight').onChange(change)
-        // centerX = wheel.add(_options.wheel, 'centerX').onChange(change)
-        // centerY = wheel.add(_options.wheel, 'centerY').onChange(change)
+        centerX = wheel.add(_options.wheel, 'centerX').onChange(change)
+        centerY = wheel.add(_options.wheel, 'centerY').onChange(change)
     }
 
     const wheel = _gui.addFolder('wheel')
@@ -547,15 +534,11 @@ function guiWheel()
             {
                 _viewport.removePlugin('wheel')
                 wheel.remove(percent)
-                // wheel.remove(minWidth)
-                // wheel.remove(maxWidth)
-                // wheel.remove(minHeight)
-                // wheel.remove(maxHeight)
-                // wheel.remove(centerX)
-                // wheel.remove(centerY)
+                wheel.remove(centerX)
+                wheel.remove(centerY)
             }
         })
-    let percent, minWidth, maxWidth, minHeight, maxHeight, centerX, centerY
+    let percent, centerX, centerY
     if (_options.wheel)
     {
         add()
@@ -563,6 +546,50 @@ function guiWheel()
     if (_options.wheel.wheel)
     {
         wheel.open()
+    }
+}
+
+function guiClampZoom()
+{
+    function change()
+    {
+        _viewport.clampZoom({ minWidth: _options.clampZoom.minWidth, maxWidth: _options.clampZoom.maxWidth, minHeight: _options.clampZoom.minHeight, maxHeight: _options.clampZoom.maxHeight })
+    }
+
+    function add()
+    {
+        minWidth = clampZoom.add(_options.clampZoom, 'minWidth').onChange(change)
+        maxWidth = clampZoom.add(_options.clampZoom, 'maxWidth').onChange(change)
+        minHeight = clampZoom.add(_options.clampZoom, 'minHeight').onChange(change)
+        maxHeight = clampZoom.add(_options.clampZoom, 'maxHeight').onChange(change)
+    }
+
+    const clampZoom = _gui.addFolder('clamp-zoom')
+    clampZoom.add(_options.clampZoom, 'clampZoom').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                _viewport.removePlugin('clamp-zoom')
+                clampZoom.remove(minWidth)
+                clampZoom.remove(maxWidth)
+                clampZoom.remove(minHeight)
+                clampZoom.remove(maxHeight)
+            }
+        })
+    let minWidth, maxWidth, minHeight, maxHeight
+    if (_options.clampZoom.clampZoom)
+    {
+        add()
+    }
+    if (_options.clampZoom.clampZoom)
+    {
+        clampZoom.open()
     }
 }
 
@@ -589,7 +616,7 @@ module.exports = function highlight(url)
 /* globals window, XMLHttpRequest, document */
 },{"fork-me-github":8,"highlight.js":10}],4:[function(require,module,exports){
 module.exports = require('./src/viewport')
-},{"./src/viewport":403}],5:[function(require,module,exports){
+},{"./src/viewport":404}],5:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -33676,7 +33703,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":250,"../Filter":266,"path":406}],270:[function(require,module,exports){
+},{"../../../../math":250,"../Filter":266,"path":407}],270:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37366,7 +37393,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":224,"path":406}],288:[function(require,module,exports){
+},{"../../Shader":224,"path":407}],288:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42474,7 +42501,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":412}],304:[function(require,module,exports){
+},{"url":413}],304:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47041,7 +47068,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":245,"../../core/const":226,"path":406}],323:[function(require,module,exports){
+},{"../../core":245,"../../core/const":226,"path":407}],323:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48204,7 +48231,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":245,"path":406}],330:[function(require,module,exports){
+},{"../../core":245,"path":407}],330:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48314,7 +48341,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":245,"path":406}],331:[function(require,module,exports){
+},{"../../core":245,"path":407}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48368,7 +48395,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":245,"path":406}],332:[function(require,module,exports){
+},{"../../core":245,"path":407}],332:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48544,7 +48571,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":245,"path":406}],334:[function(require,module,exports){
+},{"../../core":245,"path":407}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48594,7 +48621,7 @@ var VoidFilter = function (_core$Filter) {
 
 exports.default = VoidFilter;
 
-},{"../../core":245,"path":406}],335:[function(require,module,exports){
+},{"../../core":245,"path":407}],335:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -51214,7 +51241,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":245,"../extras":321,"path":406,"resource-loader":374}],343:[function(require,module,exports){
+},{"../core":245,"../extras":321,"path":407,"resource-loader":374}],343:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51572,7 +51599,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":245,"resource-loader":374,"url":412}],346:[function(require,module,exports){
+},{"../core":245,"resource-loader":374,"url":413}],346:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53219,7 +53246,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":245,"../Mesh":347,"path":406,"pixi-gl-core":209}],354:[function(require,module,exports){
+},{"../../core":245,"../Mesh":347,"path":407,"pixi-gl-core":209}],354:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58560,7 +58587,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":405}],384:[function(require,module,exports){
+},{"crypto":406}],384:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -62071,7 +62098,56 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":401,"pixi-ease":192}],395:[function(require,module,exports){
+},{"./plugin":402,"pixi-ease":192}],395:[function(require,module,exports){
+const Plugin = require('./plugin')
+
+module.exports = class ClampZoon extends Plugin
+{
+    /**
+     * @param {object} [options]
+     * @param {number} [options.minWidth] minimum width
+     * @param {number} [options.minHeight] minimum height
+     * @param {number} [options.maxWidth] maximum width
+     * @param {number} [options.maxHeight] maximum height
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        this.minWidth = options.minWidth
+        this.minHeight = options.minHeight
+        this.maxWidth = options.maxWidth
+        this.maxHeight = options.maxHeight
+    }
+
+    clamp()
+    {
+        let width = this.parent.worldScreenWidth
+        let height = this.parent.worldScreenHeight
+        if (this.minWidth && width < this.minWidth)
+        {
+            this.parent.fitWidth(this.minWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
+        }
+        if (this.maxWidth && width > this.maxWidth)
+        {
+            this.parent.fitWidth(this.maxWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
+        }
+        if (this.minHeight && height < this.minHeight)
+        {
+            this.parent.fitHeight(this.minHeight)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
+        }
+        if (this.maxHeight && height > this.maxHeight)
+        {
+            this.parent.fitHeight(this.maxHeight)
+        }
+    }
+}
+},{"./plugin":402}],396:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class clamp extends Plugin
@@ -62135,7 +62211,7 @@ module.exports = class clamp extends Plugin
         }
     }
 }
-},{"./plugin":401}],396:[function(require,module,exports){
+},{"./plugin":402}],397:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -62223,7 +62299,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":401}],397:[function(require,module,exports){
+},{"./plugin":402}],398:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Drag extends Plugin
@@ -62271,7 +62347,7 @@ module.exports = class Drag extends Plugin
         this.last = null
     }
 }
-},{"./plugin":401}],398:[function(require,module,exports){
+},{"./plugin":402}],399:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -62325,7 +62401,7 @@ module.exports = class Follow extends Plugin
         }
     }
 }
-},{"./plugin":401}],399:[function(require,module,exports){
+},{"./plugin":402}],400:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class HitArea extends Plugin
@@ -62342,7 +62418,7 @@ module.exports = class HitArea extends Plugin
         this.parent.container.hitArea = this.rect || this.parent.container.getBounds()
     }
 }
-},{"./plugin":401}],400:[function(require,module,exports){
+},{"./plugin":402}],401:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -62352,10 +62428,6 @@ module.exports = class Pinch extends Plugin
      * @param {object} [options]
      * @param {boolean} [options.noDrag] disable two-finger dragging
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
-     * @param {number} [options.minWidth] clamp minimum width
-     * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp maximum width
-     * @param {number} [options.maxHeight] clamp maximum height
      */
     constructor(parent, options)
     {
@@ -62367,34 +62439,6 @@ module.exports = class Pinch extends Plugin
         this.maxWidth = options.maxWidth
         this.minHeight = options.minHeight
         this.maxHeight = options.maxHeight
-    }
-
-    clamp()
-    {
-        let width = this.parent.worldScreenWidth
-        let height = this.parent.worldScreenHeight
-        if (this.minWidth && width < this.minWidth)
-        {
-            this.parent.fitWidth(this.minWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxWidth && width > this.maxWidth)
-        {
-            this.parent.fitWidth(this.maxWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.minHeight && height < this.minHeight)
-        {
-            this.parent.fitHeight(this.minHeight)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxHeight && height > this.maxHeight)
-        {
-            this.parent.fitHeight(this.maxHeight)
-        }
     }
 
     move(x, y, data)
@@ -62430,8 +62474,11 @@ module.exports = class Pinch extends Plugin
                 const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x
                 this.parent.container.scale.x += change
                 this.parent.container.scale.y += change
-                this.clamp()
-
+                const clamp = this.parent.plugins['clamp-zoom']
+                if (clamp)
+                {
+                    clamp.clamp()
+                }
                 if (this.center)
                 {
                     this.parent.moveCenter(this.center)
@@ -62462,7 +62509,7 @@ module.exports = class Pinch extends Plugin
         }
     }
 }
-},{"./plugin":401}],401:[function(require,module,exports){
+},{"./plugin":402}],402:[function(require,module,exports){
 module.exports = class Plugin
 {
     constructor(parent)
@@ -62477,7 +62524,7 @@ module.exports = class Plugin
     update() { }
     resize() { }
 }
-},{}],402:[function(require,module,exports){
+},{}],403:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 
@@ -62536,13 +62583,14 @@ module.exports = class Snap extends Plugin
         }
     }
 }
-},{"./plugin":401,"pixi-ease":192}],403:[function(require,module,exports){
+},{"./plugin":402,"pixi-ease":192}],404:[function(require,module,exports){
 const Loop = require('yy-loop')
 const Input = require('yy-input')
 
 const Drag = require('./drag')
 const Pinch = require('./pinch')
 const Clamp = require('./clamp')
+const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
 const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
@@ -62550,7 +62598,7 @@ const Snap = require('./snap')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp']
+const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -63014,6 +63062,10 @@ module.exports = class Viewport extends Loop
         {
             this.plugins['clamp'].update()
         }
+        if (this.plugins['clamp-zoom'])
+        {
+            this.plugins['clamp-zoom'].clamp()
+        }
     }
 
     // PLUGINS
@@ -63155,8 +63207,14 @@ module.exports = class Viewport extends Loop
         this.plugins['wheel'] = new Wheel(this, options)
         return this
     }
+
+    clampZoom(options)
+    {
+        this.plugins['clamp-zoom'] = new ClampZoom(this, options)
+        return this
+    }
 }
-},{"./bounce":394,"./clamp":395,"./decelerate":396,"./drag":397,"./follow":398,"./hit-area":399,"./pinch":400,"./snap":402,"./wheel":404,"yy-input":388,"yy-loop":389}],404:[function(require,module,exports){
+},{"./bounce":394,"./clamp":396,"./clamp-zoom":395,"./decelerate":397,"./drag":398,"./follow":399,"./hit-area":400,"./pinch":401,"./snap":403,"./wheel":405,"yy-input":388,"yy-loop":389}],405:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
@@ -63185,34 +63243,6 @@ module.exports = class Wheel extends Plugin
         this.reverse = options.reverse
     }
 
-    clamp()
-    {
-        let width = this.parent.worldScreenWidth
-        let height = this.parent.worldScreenHeight
-        if (this.minWidth && width < this.minWidth)
-        {
-            this.parent.fitWidth(this.minWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxWidth && width > this.maxWidth)
-        {
-            this.parent.fitWidth(this.maxWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.minHeight && height < this.minHeight)
-        {
-            this.parent.fitHeight(this.minHeight)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxHeight && height > this.maxHeight)
-        {
-            this.parent.fitHeight(this.maxHeight)
-        }
-    }
-
     wheel(dx, dy, dz, data)
     {
         let change
@@ -63232,7 +63262,11 @@ module.exports = class Wheel extends Plugin
         }
         this.parent.container.scale.x *= change
         this.parent.container.scale.y *= change
-        this.clamp()
+        const clamp = this.parent.plugins['clamp-zoom']
+        if (clamp)
+        {
+            clamp.clamp()
+        }
 
         if (this.center)
         {
@@ -63247,9 +63281,9 @@ module.exports = class Wheel extends Plugin
         data.event.preventDefault()
     }
 }
-},{"./plugin":401}],405:[function(require,module,exports){
+},{"./plugin":402}],406:[function(require,module,exports){
 
-},{}],406:[function(require,module,exports){
+},{}],407:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -63477,7 +63511,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":407}],407:[function(require,module,exports){
+},{"_process":408}],408:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -63663,7 +63697,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],408:[function(require,module,exports){
+},{}],409:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -64200,7 +64234,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],409:[function(require,module,exports){
+},{}],410:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -64286,7 +64320,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],410:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -64373,13 +64407,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],411:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":409,"./encode":410}],412:[function(require,module,exports){
+},{"./decode":410,"./encode":411}],413:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65113,7 +65147,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":413,"punycode":408,"querystring":411}],413:[function(require,module,exports){
+},{"./util":414,"punycode":409,"querystring":412}],414:[function(require,module,exports){
 'use strict';
 
 module.exports = {

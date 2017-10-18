@@ -7,10 +7,6 @@ module.exports = class Pinch extends Plugin
      * @param {object} [options]
      * @param {boolean} [options.noDrag] disable two-finger dragging
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
-     * @param {number} [options.minWidth] clamp minimum width
-     * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp maximum width
-     * @param {number} [options.maxHeight] clamp maximum height
      */
     constructor(parent, options)
     {
@@ -22,34 +18,6 @@ module.exports = class Pinch extends Plugin
         this.maxWidth = options.maxWidth
         this.minHeight = options.minHeight
         this.maxHeight = options.maxHeight
-    }
-
-    clamp()
-    {
-        let width = this.parent.worldScreenWidth
-        let height = this.parent.worldScreenHeight
-        if (this.minWidth && width < this.minWidth)
-        {
-            this.parent.fitWidth(this.minWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxWidth && width > this.maxWidth)
-        {
-            this.parent.fitWidth(this.maxWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.minHeight && height < this.minHeight)
-        {
-            this.parent.fitHeight(this.minHeight)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxHeight && height > this.maxHeight)
-        {
-            this.parent.fitHeight(this.maxHeight)
-        }
     }
 
     move(x, y, data)
@@ -85,8 +53,11 @@ module.exports = class Pinch extends Plugin
                 const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x
                 this.parent.container.scale.x += change
                 this.parent.container.scale.y += change
-                this.clamp()
-
+                const clamp = this.parent.plugins['clamp-zoom']
+                if (clamp)
+                {
+                    clamp.clamp()
+                }
                 if (this.center)
                 {
                     this.parent.moveCenter(this.center)
