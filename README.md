@@ -133,7 +133,7 @@ https://davidfig.github.io/pixi-viewport/
 
     /**
      * change zoom so the width fits in the viewport
-     * @param {number} [width=container.width] in world coordinates; uses container.width if not provided
+     * @param {number} [width=this.worldWidth] in world coordinates
      * @param {boolean} [center] maintain the same center
      * @return {Viewport} this
      */
@@ -141,7 +141,7 @@ https://davidfig.github.io/pixi-viewport/
 
     /**
      * change zoom so the height fits in the viewport
-     * @param {number} [width=container.height] in world coordinates; uses container.width if not provided
+     * @param {number} [height=this.worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */

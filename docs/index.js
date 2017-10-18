@@ -62867,7 +62867,7 @@ module.exports = class Viewport extends Loop
 
     /**
      * change zoom so the width fits in the viewport
-     * @param {number} [width=container.width] in world coordinates; uses container.width if not provided
+     * @param {number} [width=this.worldWidth] in world coordinates
      * @param {boolean} [center] maintain the same center
      * @return {Viewport} this
      */
@@ -62878,7 +62878,7 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        width = width || this.container.width
+        width = width || this.worldWidth
         this.container.scale.x = this.screenWidth / width
         this.container.scale.y = this.container.scale.x
         if (center)
@@ -62890,7 +62890,7 @@ module.exports = class Viewport extends Loop
 
     /**
      * change zoom so the height fits in the viewport
-     * @param {number} [width=container.height] in world coordinates; uses container.width if not provided
+     * @param {number} [height=this.worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
@@ -62901,7 +62901,7 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        height = height || this.container.height
+        height = height || this.worldHeight
         this.container.scale.y = this.screenHeight / height
         this.container.scale.x = this.container.scale.y
         if (center)
@@ -62923,8 +62923,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        this.container.scale.x = this.screenWidth / this.container.width
-        this.container.scale.y = this.screenHeight / this.container.height
+        this.container.scale.x = this.screenWidth / this.worldWidth
+        this.container.scale.y = this.screenHeight / this.worldHeight
         if (this.container.scale.x < this.container.scale.y)
         {
             this.container.scale.y = this.container.scale.x
