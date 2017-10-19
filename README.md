@@ -240,6 +240,7 @@ https://davidfig.github.io/pixi-viewport/
     /**
      * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
      * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
+     * @return {Viewport} this
      */
     hitArea(rect)
 
@@ -249,6 +250,7 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} y
      * @param {object} [options]
      * @param {number} [options.speed=1] speed (in world pixels/ms) to snap to location
+     * @return {Viewport} this
      */
     snap(x, y, options)
 
@@ -258,6 +260,7 @@ https://davidfig.github.io/pixi-viewport/
      * @param {object} [options]
      * @param {number} [options.speed=0] to follow in pixels/frame
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
+     * @return {Viewport} this
      */
     follow(target, options)
 
@@ -271,8 +274,21 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.minHeight] clamp minimum height
      * @param {number} [options.maxWidth] clamp maximum width
      * @param {number} [options.maxHeight] clamp maximum height
+     * @return {Viewport} this
      */
     wheel(options)
+
+    /**
+     * enable clamping of zoom to constraints
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {number} [options.minWidth] minimum width
+     * @param {number} [options.minHeight] minimum height
+     * @param {number} [options.maxWidth] maximum width
+     * @param {number} [options.maxHeight] maximum height
+     * @return {Viewport} this
+     */
+    clampZoom(options)
 ```
 ## license  
 MIT License  
