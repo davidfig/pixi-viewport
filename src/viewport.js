@@ -99,11 +99,12 @@ module.exports = class Viewport extends Loop
             this.worldWidth = worldWidth
             this.worldHeight = worldHeight
         }
-        for (let plugin of this.plugins)
+
+        for (let type of PLUGIN_ORDER)
         {
-            if (plugin)
+            if (this.plugins[type])
             {
-                plugin.resize()
+                this.plugins[type].resize()
             }
         }
     }
@@ -572,6 +573,7 @@ module.exports = class Viewport extends Loop
     /**
      * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
      * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
+     * @return {Viewport} this
      */
     hitArea(rect)
     {
@@ -585,6 +587,7 @@ module.exports = class Viewport extends Loop
      * @param {number} y
      * @param {object} [options]
      * @param {number} [options.speed=1] speed (in world pixels/ms) to snap to location
+     * @return {Viewport} this
      */
     snap(x, y, options)
     {
@@ -598,6 +601,7 @@ module.exports = class Viewport extends Loop
      * @param {object} [options]
      * @param {number} [options.speed=0] to follow in pixels/frame
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
+     * @return {Viewport} this
      */
     follow(target, options)
     {
@@ -615,6 +619,7 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.minHeight] clamp minimum height
      * @param {number} [options.maxWidth] clamp maximum width
      * @param {number} [options.maxHeight] clamp maximum height
+     * @return {Viewport} this
      */
     wheel(options)
     {
@@ -622,6 +627,16 @@ module.exports = class Viewport extends Loop
         return this
     }
 
+    /**
+     * enable clamping of zoom to constraints
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {number} [options.minWidth] minimum width
+     * @param {number} [options.minHeight] minimum height
+     * @param {number} [options.maxWidth] maximum width
+     * @param {number} [options.maxHeight] maximum height
+     * @return {Viewport} this
+     */
     clampZoom(options)
     {
         this.plugins['clamp-zoom'] = new ClampZoom(this, options)

@@ -1,6 +1,6 @@
 const Plugin = require('./plugin')
 
-module.exports = class ClampZoon extends Plugin
+module.exports = class ClampZoom extends Plugin
 {
     /**
      * @param {object} [options]
@@ -16,6 +16,11 @@ module.exports = class ClampZoon extends Plugin
         this.minHeight = options.minHeight
         this.maxWidth = options.maxWidth
         this.maxHeight = options.maxHeight
+    }
+
+    resize()
+    {
+        this.clamp()
     }
 
     clamp()
