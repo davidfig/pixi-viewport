@@ -124,15 +124,19 @@ function drawWorld()
 
 window.onload = function ()
 {
-    _renderer = new Renderer()
+    _renderer = new Renderer({ debug: 'fps', alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
     viewport()
     window.addEventListener('resize', resize)
 
-    _fps = new FPS({side: 'bottom-left'})
     _ease = new Ease.list()
-    _ease.on('each', () => { _fps.frame(); _renderer.render() })
+    _renderer.interval(
+        function ()
+        {
+            _ease.update()
+        }
+    )
     drawWorld()
-    _ease.start()
+    _renderer.start()
 
     gui(_viewport, drawWorld, _object)
 
