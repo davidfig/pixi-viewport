@@ -10,7 +10,7 @@ module.exports = class Snap extends Plugin
      * @param {object} [options]
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
-     * @param {number} [options.ease=EaseInOutSine]
+     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
      */
     constructor(parent, x, y, options)
     {

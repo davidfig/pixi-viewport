@@ -5,8 +5,6 @@ const Plugin = require('./plugin')
 module.exports = class Bounce extends Plugin
 {
     /**
-     * bounce on borders
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
@@ -19,6 +17,7 @@ module.exports = class Bounce extends Plugin
         options = options || {}
         this.time = options.time || 150
         this.ease = options.ease || 'easeInOutSine'
+        this.friction = option.friction || 0.5
     }
 
     down()

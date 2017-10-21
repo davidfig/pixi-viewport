@@ -6,6 +6,7 @@ module.exports = class Decelerate extends Plugin
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.friction=0.95] percent to decelerate after movement
+     * @param {number} [options.bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
      * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
      */
     constructor(parent, options)
@@ -13,7 +14,6 @@ module.exports = class Decelerate extends Plugin
         super(parent)
         options = options || {}
         this.friction = options.friction || 0.95
-        this.snap = options.snap || 0.8
         this.bounce = options.bounce || 0.5
         this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
         this.saved = []

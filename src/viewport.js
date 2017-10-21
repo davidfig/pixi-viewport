@@ -543,8 +543,9 @@ module.exports = class Viewport extends Loop
      * bounce on borders
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      * @param {object} [options]
-     * @param {number} [time] time to finish bounce
-     * @param {string|function} [ease] ease function or name (see http://easings.net/ for supported names)
+     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
+     * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
      * @return {Viewport} this
      */
     bounce(options)
@@ -587,7 +588,9 @@ module.exports = class Viewport extends Loop
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
-     * @param {number} [options.speed=1] speed (in world pixels/ms) to snap to location
+     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
+     * @param {number} [options.time=1000]
+     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
      * @return {Viewport} this
      */
     snap(x, y, options)
