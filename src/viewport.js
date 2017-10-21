@@ -556,6 +556,7 @@ module.exports = class Viewport extends Loop
     /**
      * enable pinch to zoom and two-finger touch to drag
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {number} [options.percent=1.0] percent to modify pinch speed
      * @param {boolean} [options.noDrag] disable two-finger dragging
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
      * @param {number} [options.minWidth] clamp minimum width

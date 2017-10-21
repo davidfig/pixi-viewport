@@ -12,6 +12,7 @@ module.exports = class Pinch extends Plugin
     {
         super(parent)
         options = options || {}
+        this.percent = options.percent || 1.0
         this.noDrag = options.noDrag
         this.center = options.center
         this.minWidth = options.minWidth
@@ -50,7 +51,7 @@ module.exports = class Pinch extends Plugin
                 }
 
                 const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x
+                const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x * this.percent
                 this.parent.container.scale.x += change
                 this.parent.container.scale.y += change
                 const clamp = this.parent.plugins['clamp-zoom']
