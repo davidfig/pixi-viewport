@@ -5,6 +5,7 @@ module.exports = class Drag extends Plugin
     constructor(parent)
     {
         super(parent)
+        this.inMove = false
     }
 
     down(x, y, data)
@@ -29,13 +30,17 @@ module.exports = class Drag extends Plugin
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
-                if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY))
+                if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY) || this.inMove)
                 {
                     this.parent.container.x += distX
                     this.parent.container.y += distY
                     this.last = { x, y }
                     this.inMove = true
                 }
+            }
+            else
+            {
+                this.inMove = false
             }
         }
     }
