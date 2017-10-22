@@ -12,10 +12,10 @@ module.exports = class Snap extends Plugin
      * @param {boolean} [options.center] move the center of the camera to {x, y} (if false, move the top left corner to {x, y})
      * @param {number} [options.time=1000]
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.stopOnResize] Stops performing the snap upon resizing
-     * @param {boolean} [options.dragInterrupt] Allows users to stop the snapping by dragging (via the 'drag' plugin)
-     * @param {boolean} [options.zoomInterrupt] Allows users to stop the snapping by zooming (via the 'wheel' or 'pinch'  plugins)
-     * @param {boolean} [options.remove] Removes this plugin after having completed the operation
+     * @param {boolean} [options.stopOnResize] stops performing the snap upon resizing
+     * @param {boolean} [options.dragInterrupt] allows users to stop the snapping by dragging (via the 'drag' plugin)
+     * @param {boolean} [options.zoomInterrupt] allows users to stop the snapping by zooming (via the 'wheel' or 'pinch'  plugins)
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      */
     constructor(parent, x, y, options)
     {
@@ -30,7 +30,7 @@ module.exports = class Snap extends Plugin
         this.stopOnResize = options.stopOnResize
         this.dragInterrupt = options.dragInterrupt
         this.zoomInterrupt = options.zoomInterrupt
-        this.remove = options.remove
+        this.removeOnComplete = options.removeOnComplete
 
         if (this.parent.plugins['decelerate'])
         {
@@ -54,24 +54,31 @@ module.exports = class Snap extends Plugin
 
         if (this.center)
         {
-            this.x = ((this.parent.worldScreenWidth / 2 - this.x) * this.parent.container.scale.x)
+            this.x = (this.parent.worldScreenWidth / 2 - this.x) * this.parent.container.scale.x
             this.y = (this.parent.worldScreenHeight / 2 - this.y) * this.parent.container.scale.y
         }
+        this.move()
+    }
+
+    restart()
+    {
         this.moving = new Ease.to(this.parent.container, { x: this.x, y: this.y }, this.time, { ease: this.ease })
     }
 
     resize()
     {
+        if (this.center)
+        {
+            this.x = (this.parent.worldScreenWidth / 2 - this.x) * this.parent.container.scale.x
+            this.y = (this.parent.worldScreenHeight / 2 - this.y) * this.parent.container.scale.y
+        }
         if (this.stopOnResize)
         {
-            this.reset()        }
-    }
-
-    down()
-    {
-        if (this.dragInterrupt)
-        {
             this.reset()
+        }
+        else
+        {
+            this.restart()
         }
     }
 
@@ -90,17 +97,19 @@ module.exports = class Snap extends Plugin
         {
             return
         }
-
         if (this.moving && this.moving.update(elapsed))
         {
-            this.reset()
+            if (this.removeOnComplete)
+            {
+                this.reset()
+            }
         }
     }
 
     reset()
     {
         this.moving = null
-        if (this.remove) 
+        if (this.removeOnComplete)
         {
             this.parent.removePlugin('snap')
         }

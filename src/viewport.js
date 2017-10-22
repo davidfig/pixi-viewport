@@ -37,10 +37,10 @@ module.exports = class Viewport extends Loop
         this.container = container
         this.pointers = []
         this.plugins = []
-        this.screenWidth = options.screenWidth
-        this.screenHeight = options.screenHeight
-        this.worldWidth = options.worldWidth
-        this.worldHeight = options.worldHeight
+        this._screenWidth = options.screenWidth
+        this._screenHeight = options.screenHeight
+        this._worldWidth = options.worldWidth
+        this._worldHeight = options.worldHeight
         this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
         if (!options.noListeners)
@@ -92,14 +92,22 @@ module.exports = class Viewport extends Loop
      */
     resize(screenWidth, screenHeight, worldWidth, worldHeight)
     {
-        this.screenWidth = screenWidth
-        this.screenHeight = screenHeight
+        this._screenWidth = screenWidth
+        this._screenHeight = screenHeight
         if (worldWidth)
         {
-            this.worldWidth = worldWidth
-            this.worldHeight = worldHeight
+            this._worldWidth = worldWidth
+            this._worldHeight = worldHeight
         }
+        this.resizePlugins()
+    }
 
+    /**
+     * called after a worldWidth/Height change
+     * @private
+     */
+    resizePlugins()
+    {
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -107,6 +115,56 @@ module.exports = class Viewport extends Loop
                 this.plugins[type].resize()
             }
         }
+    }
+
+    /**
+     * @type {number}
+     */
+    get screenWidth()
+    {
+        return this._screenWidth
+    }
+    set screenWidth(value)
+    {
+        this._screenWidth = value
+    }
+
+    /**
+     * @type {number}
+     */
+    get screenHeight()
+    {
+        return this._screenHeight
+    }
+    set screenHeight(value)
+    {
+        this._screenHeight = value
+    }
+
+    /**
+     * @type {number}
+     */
+    get worldWidth()
+    {
+        return this._worldWidth
+    }
+    set worldWidth(value)
+    {
+        this._worldWidth = value
+        this.resizePlugins()
+    }
+
+    /**
+     * @type {number}
+     */
+    get worldHeight()
+    {
+        return this._worldHeight
+    }
+    set worldHeight(value)
+    {
+        this._worldHeight = value
+        this.resizePlugins()
     }
 
     /**
@@ -256,7 +314,7 @@ module.exports = class Viewport extends Loop
      */
     get worldScreenWidth()
     {
-        return this.screenWidth / this.container.scale.x
+        return this._screenWidth / this.container.scale.x
     }
 
     /**
@@ -264,7 +322,7 @@ module.exports = class Viewport extends Loop
      */
     get worldScreenHeight()
     {
-        return this.screenHeight / this.container.scale.y
+        return this._screenHeight / this.container.scale.y
     }
 
     /**
@@ -330,7 +388,7 @@ module.exports = class Viewport extends Loop
 
     /**
      * change zoom so the width fits in the viewport
-     * @param {number} [width=this.worldWidth] in world coordinates
+     * @param {number} [width=this._worldWidth] in world coordinates
      * @param {boolean} [center] maintain the same center
      * @return {Viewport} this
      */
@@ -341,8 +399,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        width = width || this.worldWidth
-        this.container.scale.x = this.screenWidth / width
+        width = width || this._worldWidth
+        this.container.scale.x = this._screenWidth / width
         this.container.scale.y = this.container.scale.x
         if (center)
         {
@@ -353,7 +411,7 @@ module.exports = class Viewport extends Loop
 
     /**
      * change zoom so the height fits in the viewport
-     * @param {number} [height=this.worldHeight] in world coordinates
+     * @param {number} [height=this._worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
@@ -364,8 +422,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        height = height || this.worldHeight
-        this.container.scale.y = this.screenHeight / height
+        height = height || this._worldHeight
+        this.container.scale.y = this._screenHeight / height
         this.container.scale.x = this.container.scale.y
         if (center)
         {
@@ -386,8 +444,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        this.container.scale.x = this.screenWidth / this.worldWidth
-        this.container.scale.y = this.screenHeight / this.worldHeight
+        this.container.scale.x = this._screenWidth / this._worldWidth
+        this.container.scale.y = this._screenHeight / this._worldHeight
         if (this.container.scale.x < this.container.scale.y)
         {
             this.container.scale.y = this.container.scale.x
@@ -412,12 +470,12 @@ module.exports = class Viewport extends Loop
     {
         const result = {}
         result.left = this.left < 0
-        result.right = this.right > this.worldWidth
+        result.right = this.right > this._worldWidth
         result.top = this.top < 0
-        result.bottom = this.bottom > this.worldHeight
+        result.bottom = this.bottom > this._worldHeight
         result.cornerPoint = {
-            x: this.worldWidth * this.container.scale.x - this.screenWidth,
-            y: this.worldHeight * this.container.scale.y - this.screenHeight
+            x: this._worldWidth * this.container.scale.x - this._screenWidth,
+            y: this._worldHeight * this.container.scale.y - this._screenHeight
         }
         return result
     }
