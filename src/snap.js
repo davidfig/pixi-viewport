@@ -11,8 +11,8 @@ module.exports = class Snap extends Plugin
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {boolean} [options.center] move the center of the camera to {x, y} (if false, move the top left corner to {x, y})
      * @param {number} [options.time=1000]
-     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.stopOnResize] stops performing the snap upon resizing
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.stopOnResize] stops performing the snap when resizing
      * @param {boolean} [options.dragInterrupt] allows users to stop the snapping by dragging (via the 'drag' plugin)
      * @param {boolean} [options.zoomInterrupt] allows users to stop the snapping by zooming (via the 'wheel' or 'pinch'  plugins)
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
@@ -62,7 +62,7 @@ module.exports = class Snap extends Plugin
 
     restart()
     {
-        this.moving = new Ease.to(this.parent.container, { x: this.x, y: this.y }, this.time, { ease: this.ease })
+        this.snapping = new Ease.to(this.parent.container, { x: this.x, y: this.y }, this.time, { ease: this.ease })
     }
 
     resize()
@@ -97,7 +97,7 @@ module.exports = class Snap extends Plugin
         {
             return
         }
-        if (this.moving && this.moving.update(elapsed))
+        if (this.snapping && this.snapping.update(elapsed))
         {
             if (this.removeOnComplete)
             {
@@ -108,33 +108,10 @@ module.exports = class Snap extends Plugin
 
     reset()
     {
-        this.moving = null
+        this.snapping = null
         if (this.removeOnComplete)
         {
             this.parent.removePlugin('snap')
-        }
-        else
-        {
-            this.onRemove()
-        }
-    }
-
-    onRemove()
-    {
-        if (!this.dragInterrupt && this.parent.plugins['drag'])
-        {
-            this.parent.plugins['drag'].resume()
-        }
-        if (!this.zoomInterrupt)
-        {
-            if (this.parent.plugins['wheel'])
-            {
-                this.parent.plugins['wheel'].resume()
-            }
-            if (this.parent.plugins['pinch'])
-            {
-                this.parent.plugins['pinch'].resume()
-            }
         }
     }
 }

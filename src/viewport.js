@@ -1,5 +1,6 @@
 const Loop = require('yy-loop')
 const Input = require('yy-input')
+const exists = require('exists')
 
 const Drag = require('./drag')
 const Pinch = require('./pinch')
@@ -99,7 +100,10 @@ module.exports = class Viewport extends Loop
             this._worldWidth = worldWidth
             this._worldHeight = worldHeight
         }
-        this.resizePlugins()
+        if (exists(worldWidth) || exists(worldHeight))
+        {
+            this.resizePlugins()
+        }
     }
 
     /**
@@ -555,7 +559,6 @@ module.exports = class Viewport extends Loop
     {
         if (this.plugins[type])
         {
-            this.plugins[type].onRemove()
             this.plugins[type] = null
         }
     }

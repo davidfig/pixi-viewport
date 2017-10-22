@@ -12,12 +12,11 @@ module.exports = class Plugin
     wheel() { }
     update() { }
     resize() { }
-    onRemove() { }
-    pause() 
+    pause()
     {
         this.paused = true
     }
-    resume() 
+    resume()
     {
         this.paused = false
     }
