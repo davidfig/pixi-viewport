@@ -32,6 +32,11 @@ module.exports = class Bounce extends Plugin
 
     update(elapsed)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         this.bounce()
         if (this.toX)
         {
@@ -51,6 +56,11 @@ module.exports = class Bounce extends Plugin
 
     bounce()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         let oob
         let decelerate = this.parent.plugin('decelerate')
         if (decelerate && (decelerate.x || decelerate.y))

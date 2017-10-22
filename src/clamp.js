@@ -30,6 +30,11 @@ module.exports = class clamp extends Plugin
 
     update()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const oob = this.parent.OOB()
         const point = oob.cornerPoint
         const decelerate = this.parent.plugin('decelerate') || {}

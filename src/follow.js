@@ -20,6 +20,11 @@ module.exports = class Follow extends Plugin
 
     update()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         if (this.radius)
         {
             const center = this.parent.center

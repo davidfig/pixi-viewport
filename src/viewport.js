@@ -473,6 +473,10 @@ module.exports = class Viewport extends Loop
         {
             this.plugins['decelerate'].reset()
         }
+        if (this.plugins['snap'])
+        {
+            this.plugins['snap'].reset()
+        }
         if (this.plugins['clamp'])
         {
             this.plugins['clamp'].update()
@@ -491,7 +495,11 @@ module.exports = class Viewport extends Loop
      */
     removePlugin(type)
     {
-        this.plugins[type] = null
+        if (this.plugins[type])
+        {
+            this.plugins[type].onRemove()
+            this.plugins[type] = null
+        }
     }
 
     /**

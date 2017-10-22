@@ -10,6 +10,11 @@ module.exports = class Drag extends Plugin
 
     down(x, y, data)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const pointers = data.input.pointers
         if (pointers.length === 1)
         {
@@ -19,6 +24,11 @@ module.exports = class Drag extends Plugin
 
     move(x, y, data)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         if (!this.last)
         {
             this.last = { x, y }

@@ -3,6 +3,7 @@ module.exports = class Plugin
     constructor(parent)
     {
         this.parent = parent
+        this.paused = false
     }
 
     down() { }
@@ -11,4 +12,13 @@ module.exports = class Plugin
     wheel() { }
     update() { }
     resize() { }
+    onRemove() { }
+    pause() 
+    {
+        this.paused = true
+    }
+    resume() 
+    {
+        this.paused = false
+    }
 }

@@ -28,6 +28,10 @@ module.exports = class Wheel extends Plugin
 
     wheel(dx, dy, dz, data)
     {
+        if (this.paused)
+        {
+            return
+        }
         let change
         if (this.reverse)
         {

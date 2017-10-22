@@ -25,6 +25,11 @@ module.exports = class ClampZoom extends Plugin
 
     clamp()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         let width = this.parent.worldScreenWidth
         let height = this.parent.worldScreenHeight
         if (this.minWidth && width < this.minWidth)

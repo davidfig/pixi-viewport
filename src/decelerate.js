@@ -27,6 +27,11 @@ module.exports = class Decelerate extends Plugin
 
     move(x, y, data)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const pointers = data.input.pointers
         if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
         {
@@ -60,6 +65,11 @@ module.exports = class Decelerate extends Plugin
 
     update(elapsed)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         if (this.x)
         {
             this.parent.container.x += this.x * elapsed

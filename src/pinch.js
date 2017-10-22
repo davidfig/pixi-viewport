@@ -27,6 +27,11 @@ module.exports = class Pinch extends Plugin
 
     move(x, y, data)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const pointers = data.input.pointers
         if (pointers.length >= 2)
         {
