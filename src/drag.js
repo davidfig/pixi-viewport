@@ -59,4 +59,10 @@ module.exports = class Drag extends Plugin
     {
         this.last = null
     }
+
+    resume()
+    {
+        this.last = null
+        this.paused = false
+    }
 }

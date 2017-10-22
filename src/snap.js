@@ -115,7 +115,6 @@ module.exports = class Snap extends Plugin
         if (!this.dragInterrupt && this.parent.plugins['drag'])
         {
             this.parent.plugins['drag'].resume()
-            console.log('resuming drag')
         }
         if (!this.zoomInterrupt)
         {
