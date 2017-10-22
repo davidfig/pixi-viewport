@@ -29,11 +29,7 @@ module.exports = class Drag extends Plugin
             return
         }
 
-        if (!this.last)
-        {
-            this.last = { x, y }
-        }
-        else
+        if (this.last)
         {
             const pointers = data.input.pointers
             if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
