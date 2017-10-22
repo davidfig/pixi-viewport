@@ -41,6 +41,11 @@ module.exports = class Snap extends Plugin
         }
     }
 
+    reset()
+    {
+        this.snapping = null
+    }
+
     resize()
     {
         if (this.center)
