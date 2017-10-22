@@ -35,7 +35,7 @@ https://davidfig.github.io/pixi-viewport/
 ## API Reference
 ```
     /**
-     * @param {PIXI.Container} [container] to apply viewport
+     * @param {PIXI.Container} container to apply viewport
      * @param {number} [options]
      * @param {HTMLElement} [options.div=document.body] use this div to create the mouse/touch listeners
      * @param {number} [options.screenWidth] these values are needed for clamp, bounce, and pinch plugins
@@ -44,9 +44,22 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
-     * @param {number} [options.preventDefault] call preventDefault after listeners
      * @param {boolean} [options.pauseOnBlur] pause when app loses focus
      * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
+     * @param {number} [options.preventDefault] call preventDefault after listeners
+     *
+     * @event click({screen: {x, y}, world: {x, y}}, this) emitted when viewport is clicked
+     * @event drag-start(Viewport) emitted when a drag starts
+     * @event drag-end(Viewport) emitted when a drag ends
+     * @event pinch-start(Viewport) emitted when a pinch starts
+     * @event pinch-end(Viewport) emitted when a pinch ends
+     * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
+     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
+     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
+     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
+     * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event snap-end(Viewport) emitted each time snap reaches its target
      */
     constructor(container, options)
 
@@ -76,6 +89,26 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [worldHeight]
      */
     resize(screenWidth, screenHeight, worldWidth, worldHeight)
+
+    /**
+     * @type {number}
+     */
+    get screenWidth()
+
+    /**
+     * @type {number}
+     */
+    get screenHeight()
+
+    /**
+     * @type {number}
+     */
+    get worldWidth()
+
+    /**
+     * @type {number}
+     */
+    get worldHeight()
 
     /**
      * change coordinates from screen to world
@@ -133,7 +166,7 @@ https://davidfig.github.io/pixi-viewport/
 
     /**
      * change zoom so the width fits in the viewport
-     * @param {number} [width=this.worldWidth] in world coordinates
+     * @param {number} [width=this._worldWidth] in world coordinates
      * @param {boolean} [center] maintain the same center
      * @return {Viewport} this
      */
@@ -141,7 +174,7 @@ https://davidfig.github.io/pixi-viewport/
 
     /**
      * change zoom so the height fits in the viewport
-     * @param {number} [height=this.worldHeight] in world coordinates
+     * @param {number} [height=this._worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
@@ -251,14 +284,11 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
+     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
-     * @param {boolean} [options.center] move the center of the camera to {x, y} (if false, move the top left corner to {x, y})
      * @param {number} [options.time=1000]
-     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.stopOnResize] Stops performing the snap upon resizing
-     * @param {boolean} [options.dragInterrupt] Allows users to stop the snapping by dragging (via the 'drag' plugin)
-     * @param {boolean} [options.zoomInterrupt] Allows users to stop the snapping by zooming (via the 'wheel' or 'pinch'  plugins)
-     * @param {boolean} [options.remove] Removes this plugin after having completed the operation
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @return {Viewport} this
      */
     snap(x, y, options)

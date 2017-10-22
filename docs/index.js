@@ -3,7 +3,7 @@ const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
 const Renderer = require('yy-renderer')
-const FPS = require('yy-fps')
+const Counter = require('yy-counter')
 
 const Viewport = require('..')
 
@@ -17,8 +17,9 @@ const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
+const FADE_TIME = 2000
 
-let _renderer, _viewport, _fps, _ease, _object, _targetAnimation, _stars = []
+let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
@@ -39,6 +40,30 @@ function resize()
 {
     _renderer.resize()
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
+}
+
+function addCounter(name)
+{
+    const counter = new Counter({ side: 'top-left' })
+    counter.log(name)
+    const ease = _ease.to(counter.div.style, { opacity: 0 }, FADE_TIME, { ease: 'easeInOutSine' })
+    ease.on('done', () => counter.div.remove())
+}
+
+function events()
+{
+    _viewport.on('click', (data) => addCounter('click: ' + data.screen.x + ', ' + data.screen.y))
+    _viewport.on('drag-start', () => addCounter('drag-start'))
+    _viewport.on('drag-end', () => addCounter('drag-end'))
+    _viewport.on('pinch-start', () => addCounter('pinch-start'))
+    _viewport.on('pinch-end', () => addCounter('pinch-end'))
+    _viewport.on('snap-start', () => addCounter('snap-start'))
+    _viewport.on('bounce-start-x', () => addCounter('bounce-start-x'))
+    _viewport.on('bounce-end-x', () => addCounter('bounce-end-x'))
+    _viewport.on('bounce-start-y', () => addCounter('bounce-start-y'))
+    _viewport.on('bounce-end-y', () => addCounter('bounce-end-y'))
+    _viewport.on('snap-start', () => addCounter('snap-start'))
+    _viewport.on('snap-end', () => addCounter('snap-end'))
 }
 
 function line(x, y, width, height)
@@ -139,11 +164,13 @@ window.onload = function ()
     drawWorld()
     _renderer.start()
 
+    events()
+
     gui(_viewport, drawWorld, _object)
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
-},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":193,"pixi.js":336,"yy-fps":389,"yy-random":394,"yy-renderer":395}],2:[function(require,module,exports){
+},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":193,"pixi.js":336,"yy-counter":388,"yy-random":394,"yy-renderer":395}],2:[function(require,module,exports){
 let _viewport, _drawWorld, _gui, _options, _world
 
 const TEST = false
@@ -171,6 +198,7 @@ module.exports = function gui(viewport, drawWorld, target)
         },
         pinch: {
             pinch: true,
+            percent: 1,
             noDrag: false,
             centerX: 0,
             centerY: 0
@@ -196,6 +224,7 @@ module.exports = function gui(viewport, drawWorld, target)
             x: 0,
             y: 0,
             friction: 0.8,
+            interrupt: true,
             time: 1000,
             ease: 'easeInOutsine'
         },
@@ -287,7 +316,7 @@ function guiPinch()
     function change()
     {
         const center = (_options.pinch.centerX || _options.pinch.centerY) ? { x: _options.pinch.centerX, y: _options.pinch.centerY } : null
-        _viewport.pinch({ noDrag: _options.pinch.noDrag, center })
+        _viewport.pinch({ noDrag: _options.pinch.noDrag, center, percent: _options.pinch.percent })
     }
 
     function add()
@@ -295,6 +324,7 @@ function guiPinch()
         noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
         centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
         centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
+        percent = pinch.add(_options.pinch, 'percent').onChange(change)
     }
 
     const pinch = _gui.addFolder('pinch')
@@ -312,9 +342,10 @@ function guiPinch()
                 pinch.remove(noDrag)
                 pinch.remove(centerX)
                 pinch.remove(centerY)
+                pinch.remove(percent)
             }
         })
-    let noDrag, centerX, centerY
+    let noDrag, centerX, centerY, percent
     if (_options.pinch)
     {
         add()
@@ -425,7 +456,7 @@ function guiSnap()
 {
     function change()
     {
-        _viewport.snap(_options.snap.x, _options.snap.y, { time: _options.snap.time, ease: _options.snap.ease, friction: _options.snap.friction })
+        _viewport.snap(_options.snap.x, _options.snap.y, { interrupt: _options.snap.interrupt, time: _options.snap.time, ease: _options.snap.ease, friction: _options.snap.friction })
     }
 
     function add()
@@ -433,11 +464,12 @@ function guiSnap()
         x = snap.add(_options.snap, 'x').onChange(change)
         y = snap.add(_options.snap, 'y').onChange(change)
         friction = snap.add(_options.snap, 'friction').onChange(change)
+        interrupt = snap.add(_options.snap, 'interrupt').onChange(change)
         time = snap.add(_options.snap, 'time').onChange(change)
         ease = snap.add(_options.snap, 'ease').onChange(change)
     }
 
-    let x, y, time, ease, friction
+    let x, y, time, ease, friction, interrupt
 
     const snap = _gui.addFolder('snap')
     snap.add(_options.snap, 'snap').onChange(
@@ -455,6 +487,7 @@ function guiSnap()
                 snap.remove(time)
                 snap.remove(ease)
                 snap.remove(friction)
+                snap.remove(interrupt)
                 _viewport.removePlugin('snap')
             }
         }
@@ -62218,13 +62251,16 @@ const Plugin = require('./plugin')
 module.exports = class Bounce extends Plugin
 {
     /**
-     * bounce on borders
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     *
+     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
+     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
+     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
+     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
      */
     constructor(parent, options)
     {
@@ -62232,6 +62268,7 @@ module.exports = class Bounce extends Plugin
         options = options || {}
         this.time = options.time || 150
         this.ease = options.ease || 'easeInOutSine'
+        this.friction = options.friction || 0.5
     }
 
     down()
@@ -62246,12 +62283,18 @@ module.exports = class Bounce extends Plugin
 
     update(elapsed)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         this.bounce()
         if (this.toX)
         {
             if (this.toX.update(elapsed))
             {
                 this.toX = null
+                this.parent.emit('bounce-end-x', this.parent)
             }
         }
         if (this.toY)
@@ -62259,12 +62302,18 @@ module.exports = class Bounce extends Plugin
             if (this.toY.update(elapsed))
             {
                 this.toY = null
+                this.parent.emit('bounce-end-y', this.parent)
             }
         }
     }
 
     bounce()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         let oob
         let decelerate = this.parent.plugin('decelerate')
         if (decelerate && (decelerate.x || decelerate.y))
@@ -62293,10 +62342,12 @@ module.exports = class Bounce extends Plugin
                 if (oob.left)
                 {
                     this.toX = new Ease.to(this.parent.container, { x: 0 }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-x', this.parent)
                 }
                 else if (oob.right)
                 {
                     this.toX = new Ease.to(this.parent.container, { x: -point.x }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-x', this.parent)
                 }
             }
             if (!this.toY && !decelerate.y)
@@ -62304,10 +62355,12 @@ module.exports = class Bounce extends Plugin
                 if (oob.top)
                 {
                     this.toY = new Ease.to(this.parent.container, { y: 0 }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-y', this.parent)
                 }
                 else if (oob.bottom)
                 {
                     this.toY = new Ease.to(this.parent.container, { y: -point.y }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-x', this.parent)
                 }
             }
         }
@@ -62346,6 +62399,11 @@ module.exports = class ClampZoom extends Plugin
 
     clamp()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         let width = this.parent.worldScreenWidth
         let height = this.parent.worldScreenHeight
         if (this.minWidth && width < this.minWidth)
@@ -62406,6 +62464,11 @@ module.exports = class clamp extends Plugin
 
     update()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const oob = this.parent.OOB()
         const point = oob.cornerPoint
         const decelerate = this.parent.plugin('decelerate') || {}
@@ -62446,6 +62509,7 @@ module.exports = class Decelerate extends Plugin
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.friction=0.95] percent to decelerate after movement
+     * @param {number} [options.bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
      * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
      */
     constructor(parent, options)
@@ -62453,7 +62517,6 @@ module.exports = class Decelerate extends Plugin
         super(parent)
         options = options || {}
         this.friction = options.friction || 0.95
-        this.snap = options.snap || 0.8
         this.bounce = options.bounce || 0.5
         this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
         this.saved = []
@@ -62467,6 +62530,11 @@ module.exports = class Decelerate extends Plugin
 
     move(x, y, data)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const pointers = data.input.pointers
         if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
         {
@@ -62500,6 +62568,11 @@ module.exports = class Decelerate extends Plugin
 
     update(elapsed)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         if (this.x)
         {
             this.parent.container.x += this.x * elapsed
@@ -62533,10 +62606,16 @@ module.exports = class Drag extends Plugin
     constructor(parent)
     {
         super(parent)
+        this.moved = false
     }
 
     down(x, y, data)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const pointers = data.input.pointers
         if (pointers.length === 1)
         {
@@ -62546,31 +62625,51 @@ module.exports = class Drag extends Plugin
 
     move(x, y, data)
     {
-        if (!this.last)
+        if (this.paused)
         {
-            this.last = { x, y }
+            return
         }
-        else
+
+        if (this.last)
         {
             const pointers = data.input.pointers
             if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
-                if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY))
+                if (this.moved || (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY)))
                 {
                     this.parent.container.x += distX
                     this.parent.container.y += distY
                     this.last = { x, y }
-                    this.inMove = true
+                    if (!this.moved)
+                    {
+                        this.parent.emit('drag-start', this.parent)
+                    }
+                    this.moved = true
                 }
+            }
+            else
+            {
+                this.moved = false
             }
         }
     }
 
     up()
     {
+        if (this.last)
+        {
+            this.parent.emit('drag-end', this.parent)
+            this.last = null
+            this.moved = false
+        }
+    }
+
+    resume()
+    {
         this.last = null
+        this.paused = false
     }
 }
 },{"./plugin":404}],401:[function(require,module,exports){
@@ -62596,6 +62695,11 @@ module.exports = class Follow extends Plugin
 
     update()
     {
+        if (this.paused)
+        {
+            return
+        }
+
         if (this.radius)
         {
             const center = this.parent.center
@@ -62632,6 +62736,10 @@ const Plugin = require('./plugin')
 
 module.exports = class HitArea extends Plugin
 {
+    /**
+     * @param {Viewport} parent
+     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
+     */
     constructor(parent, rect)
     {
         super(parent)
@@ -62653,12 +62761,18 @@ module.exports = class Pinch extends Plugin
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {number} [options.percent=1.0] percent to modify pinch speed
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
+     * @param {number} [options.minWidth] clamp minimum width
+     * @param {number} [options.minHeight] clamp minimum height
+     * @param {number} [options.maxWidth] clamp maximum width
+     * @param {number} [options.maxHeight] clamp maximum height
      */
     constructor(parent, options)
     {
         super(parent)
         options = options || {}
+        this.percent = options.percent || 1.0
         this.noDrag = options.noDrag
         this.center = options.center
         this.minWidth = options.minWidth
@@ -62669,6 +62783,11 @@ module.exports = class Pinch extends Plugin
 
     move(x, y, data)
     {
+        if (this.paused)
+        {
+            return
+        }
+
         const pointers = data.input.pointers
         if (pointers.length >= 2)
         {
@@ -62695,9 +62814,8 @@ module.exports = class Pinch extends Plugin
                 {
                     oldPoint = this.parent.container.toLocal(point)
                 }
-
                 const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x
+                const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x * this.percent
                 this.parent.container.scale.x += change
                 this.parent.container.scale.y += change
                 const clamp = this.parent.plugins['clamp-zoom']
@@ -62723,15 +62841,28 @@ module.exports = class Pinch extends Plugin
                 }
                 this.lastCenter = point
             }
+            else
+            {
+                if (!this.pinching)
+                {
+                    this.parent.emit('pinch-start', this.parent)
+                    this.pinching = true
+                }
+            }
         }
     }
 
     up(x, y, data)
     {
-        const pointers = data.input.pointers
-        if (pointers.length < 2)
+        if (this.pinching)
         {
-            this.lastCenter = null
+            const pointers = data.input.pointers
+            if (pointers.length < 2)
+            {
+                this.lastCenter = null
+                this.pinching = false
+                this.parent.emit('pinch-end', this.parent)
+            }
         }
     }
 }
@@ -62741,6 +62872,7 @@ module.exports = class Plugin
     constructor(parent)
     {
         this.parent = parent
+        this.paused = false
     }
 
     down() { }
@@ -62749,10 +62881,21 @@ module.exports = class Plugin
     wheel() { }
     update() { }
     resize() { }
+
+    pause()
+    {
+        this.paused = true
+    }
+
+    resume()
+    {
+        this.paused = false
+    }
 }
 },{}],405:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
+const exists = require('exists')
 
 module.exports = class Snap extends Plugin
 {
@@ -62761,9 +62904,15 @@ module.exports = class Snap extends Plugin
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
+     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
-     * @param {number} [options.ease=EaseInOutSine]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     *
+     * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event snap-end(Viewport) emitted each time snap reaches its target
      */
     constructor(parent, x, y, options)
     {
@@ -62774,44 +62923,87 @@ module.exports = class Snap extends Plugin
         this.ease = options.ease || 'easeInOutSine'
         this.x = x
         this.y = y
+        this.center = options.center
+        this.stopOnResize = options.stopOnResize
+        this.interrupt = exists(options.interrupt) ? options.interrupt : true
+        this.removeOnComplete = options.removeOnComplete
+        if (this.center)
+        {
+            this.originalX = x
+            this.originalY = y
+            this.x = (this.parent.worldScreenWidth / 2 - x) * this.parent.container.scale.x
+            this.y = (this.parent.worldScreenHeight / 2 - y) * this.parent.container.scale.y
+        }
+    }
+
+    reset()
+    {
+        this.snapping = null
+    }
+
+    resize()
+    {
+        if (this.center)
+        {
+            this.x = (this.parent.worldScreenWidth / 2 - this.originalX) * this.parent.container.scale.x
+            this.y = (this.parent.worldScreenHeight / 2 - this.originalY) * this.parent.container.scale.y
+            this.snapping = null
+        }
     }
 
     down()
     {
-        this.moving = null
+        this.snapping = null
     }
 
     up()
     {
-        const decelerate = this.parent.plugins['decelerate']
-        if (decelerate && (decelerate.x || decelerate.y))
+        if (this.parent.input.pointers.length === 0)
         {
-            decelerate.percentChangeX = decelerate.percentChangeY = this.friction
+            const decelerate = this.parent.plugins['decelerate']
+            if (decelerate && (decelerate.x || decelerate.y))
+            {
+                decelerate.percentChangeX = decelerate.percentChangeY = this.friction
+            }
         }
     }
 
     update(elapsed)
     {
-        if (!this.moving)
+        if (this.paused)
         {
-            const decelerate = this.parent.plugins['decelerate']
-            if (this.parent.pointers.length === 0 && (!decelerate || (!decelerate.x && !decelerate.y)))
-            {
-                this.moving = new Ease.to(this.parent.container, { x: this.x, y: this.y }, this.time, { ease: this.ease })
-            }
+            return
         }
-        else
+        if (this.interrupt && this.parent.input.pointers.length !== 0)
         {
-            if (this.moving.update(elapsed))
+            return
+        }
+        if (!this.snapping && (this.parent.container.x !== this.x || this.parent.container.y !== this.y))
+        {
+            this.snapping = new Ease.to(this.parent.container, { x: this.x, y: this.y }, this.time, { ease: this.ease })
+            this.parent.emit('snap-start', this.parent)
+        }
+        else if (this.snapping && this.snapping.update(elapsed))
+        {
+            if (this.removeOnComplete)
             {
-                this.moving = null
+                this.parent.removePlugin('snap')
             }
+            this.parent.emit('snap-end', this.parent)
+            this.snapping = null
         }
     }
+
+    resume()
+    {
+        this.snapping = null
+        super.resume()
+    }
 }
-},{"./plugin":404,"pixi-ease":193}],406:[function(require,module,exports){
+},{"./plugin":404,"exists":8,"pixi-ease":193}],406:[function(require,module,exports){
 const Loop = require('yy-loop')
 const Input = require('yy-input')
+const exists = require('exists')
 
 const Drag = require('./drag')
 const Pinch = require('./pinch')
@@ -62829,7 +63021,7 @@ const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerat
 module.exports = class Viewport extends Loop
 {
     /**
-     * @param {PIXI.Container} [container] to apply viewport
+     * @param {PIXI.Container} container to apply viewport
      * @param {number} [options]
      * @param {HTMLElement} [options.div=document.body] use this div to create the mouse/touch listeners
      * @param {number} [options.screenWidth] these values are needed for clamp, bounce, and pinch plugins
@@ -62838,21 +63030,33 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.worldHeight]
      * @param {number} [options.threshold=5] threshold for click
      * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
-     * @param {number} [options.preventDefault] call preventDefault after listeners
      * @param {boolean} [options.pauseOnBlur] pause when app loses focus
      * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
+     * @param {number} [options.preventDefault] call preventDefault after listeners
+     *
+     * @event click({screen: {x, y}, world: {x, y}}, this) emitted when viewport is clicked
+     * @event drag-start(Viewport) emitted when a drag starts
+     * @event drag-end(Viewport) emitted when a drag ends
+     * @event pinch-start(Viewport) emitted when a pinch starts
+     * @event pinch-end(Viewport) emitted when a pinch ends
+     * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
+     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
+     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
+     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
+     * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event snap-end(Viewport) emitted each time snap reaches its target
      */
     constructor(container, options)
     {
         options = options || {}
         super({ pauseOnBlur: options.pauseOnBlur, maxFrameTime: options.maxFrameTime })
         this.container = container
-        this.pointers = []
         this.plugins = []
-        this.screenWidth = options.screenWidth
-        this.screenHeight = options.screenHeight
-        this.worldWidth = options.worldWidth
-        this.worldHeight = options.worldHeight
+        this._screenWidth = options.screenWidth
+        this._screenHeight = options.screenHeight
+        this._worldWidth = options.worldWidth
+        this._worldHeight = options.worldHeight
         this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
         if (!options.noListeners)
@@ -62904,14 +63108,25 @@ module.exports = class Viewport extends Loop
      */
     resize(screenWidth, screenHeight, worldWidth, worldHeight)
     {
-        this.screenWidth = screenWidth
-        this.screenHeight = screenHeight
+        this._screenWidth = screenWidth
+        this._screenHeight = screenHeight
         if (worldWidth)
         {
-            this.worldWidth = worldWidth
-            this.worldHeight = worldHeight
+            this._worldWidth = worldWidth
+            this._worldHeight = worldHeight
         }
+        if (exists(worldWidth) || exists(worldHeight))
+        {
+            this.resizePlugins()
+        }
+    }
 
+    /**
+     * called after a worldWidth/Height change
+     * @private
+     */
+    resizePlugins()
+    {
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -62919,6 +63134,56 @@ module.exports = class Viewport extends Loop
                 this.plugins[type].resize()
             }
         }
+    }
+
+    /**
+     * @type {number}
+     */
+    get screenWidth()
+    {
+        return this._screenWidth
+    }
+    set screenWidth(value)
+    {
+        this._screenWidth = value
+    }
+
+    /**
+     * @type {number}
+     */
+    get screenHeight()
+    {
+        return this._screenHeight
+    }
+    set screenHeight(value)
+    {
+        this._screenHeight = value
+    }
+
+    /**
+     * @type {number}
+     */
+    get worldWidth()
+    {
+        return this._worldWidth
+    }
+    set worldWidth(value)
+    {
+        this._worldWidth = value
+        this.resizePlugins()
+    }
+
+    /**
+     * @type {number}
+     */
+    get worldHeight()
+    {
+        return this._worldHeight
+    }
+    set worldHeight(value)
+    {
+        this._worldHeight = value
+        this.resizePlugins()
     }
 
     /**
@@ -63068,7 +63333,7 @@ module.exports = class Viewport extends Loop
      */
     get worldScreenWidth()
     {
-        return this.screenWidth / this.container.scale.x
+        return this._screenWidth / this.container.scale.x
     }
 
     /**
@@ -63076,7 +63341,7 @@ module.exports = class Viewport extends Loop
      */
     get worldScreenHeight()
     {
-        return this.screenHeight / this.container.scale.y
+        return this._screenHeight / this.container.scale.y
     }
 
     /**
@@ -63142,7 +63407,7 @@ module.exports = class Viewport extends Loop
 
     /**
      * change zoom so the width fits in the viewport
-     * @param {number} [width=this.worldWidth] in world coordinates
+     * @param {number} [width=this._worldWidth] in world coordinates
      * @param {boolean} [center] maintain the same center
      * @return {Viewport} this
      */
@@ -63153,8 +63418,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        width = width || this.worldWidth
-        this.container.scale.x = this.screenWidth / width
+        width = width || this._worldWidth
+        this.container.scale.x = this._screenWidth / width
         this.container.scale.y = this.container.scale.x
         if (center)
         {
@@ -63165,7 +63430,7 @@ module.exports = class Viewport extends Loop
 
     /**
      * change zoom so the height fits in the viewport
-     * @param {number} [height=this.worldHeight] in world coordinates
+     * @param {number} [height=this._worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
@@ -63176,8 +63441,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        height = height || this.worldHeight
-        this.container.scale.y = this.screenHeight / height
+        height = height || this._worldHeight
+        this.container.scale.y = this._screenHeight / height
         this.container.scale.x = this.container.scale.y
         if (center)
         {
@@ -63198,8 +63463,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        this.container.scale.x = this.screenWidth / this.worldWidth
-        this.container.scale.y = this.screenHeight / this.worldHeight
+        this.container.scale.x = this._screenWidth / this._worldWidth
+        this.container.scale.y = this._screenHeight / this._worldHeight
         if (this.container.scale.x < this.container.scale.y)
         {
             this.container.scale.y = this.container.scale.x
@@ -63224,12 +63489,12 @@ module.exports = class Viewport extends Loop
     {
         const result = {}
         result.left = this.left < 0
-        result.right = this.right > this.worldWidth
+        result.right = this.right > this._worldWidth
         result.top = this.top < 0
-        result.bottom = this.bottom > this.worldHeight
+        result.bottom = this.bottom > this._worldHeight
         result.cornerPoint = {
-            x: this.worldWidth * this.container.scale.x - this.screenWidth,
-            y: this.worldHeight * this.container.scale.y - this.screenHeight
+            x: this._worldWidth * this.container.scale.x - this._screenWidth,
+            y: this._worldHeight * this.container.scale.y - this._screenHeight
         }
         return result
     }
@@ -63285,6 +63550,10 @@ module.exports = class Viewport extends Loop
         {
             this.plugins['decelerate'].reset()
         }
+        if (this.plugins['snap'])
+        {
+            this.plugins['snap'].reset()
+        }
         if (this.plugins['clamp'])
         {
             this.plugins['clamp'].update()
@@ -63303,7 +63572,10 @@ module.exports = class Viewport extends Loop
      */
     removePlugin(type)
     {
-        this.plugins[type] = null
+        if (this.plugins[type])
+        {
+            this.plugins[type] = null
+        }
     }
 
     /**
@@ -63355,8 +63627,9 @@ module.exports = class Viewport extends Loop
      * bounce on borders
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      * @param {object} [options]
-     * @param {number} [time] time to finish bounce
-     * @param {string|function} [ease] ease function or name (see http://easings.net/ for supported names)
+     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
+     * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
      * @return {Viewport} this
      */
     bounce(options)
@@ -63368,6 +63641,7 @@ module.exports = class Viewport extends Loop
     /**
      * enable pinch to zoom and two-finger touch to drag
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {number} [options.percent=1.0] percent to modify pinch speed
      * @param {boolean} [options.noDrag] disable two-finger dragging
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
      * @param {number} [options.minWidth] clamp minimum width
@@ -63398,7 +63672,11 @@ module.exports = class Viewport extends Loop
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
-     * @param {number} [options.speed=1] speed (in world pixels/ms) to snap to location
+     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
+     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
+     * @param {number} [options.time=1000]
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @return {Viewport} this
      */
     snap(x, y, options)
@@ -63456,7 +63734,7 @@ module.exports = class Viewport extends Loop
     }
 }
 
-},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./hit-area":402,"./pinch":403,"./snap":405,"./wheel":407,"yy-input":390,"yy-loop":391}],407:[function(require,module,exports){
+},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./hit-area":402,"./pinch":403,"./snap":405,"./wheel":407,"exists":8,"yy-input":390,"yy-loop":391}],407:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
@@ -63487,6 +63765,10 @@ module.exports = class Wheel extends Plugin
 
     wheel(dx, dy, dz, data)
     {
+        if (this.paused)
+        {
+            return
+        }
         let change
         if (this.reverse)
         {
