@@ -59,7 +59,6 @@ module.exports = class Pinch extends Plugin
                 {
                     oldPoint = this.parent.container.toLocal(point)
                 }
-
                 const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
                 const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x * this.percent
                 this.parent.container.scale.x += change
@@ -89,8 +88,11 @@ module.exports = class Pinch extends Plugin
             }
             else
             {
-                this.parent.emit('pinch-start', this.parent)
-                this.pinching = true
+                if (!this.pinching)
+                {
+                    this.parent.emit('pinch-start', this.parent)
+                    this.pinching = true
+                }
             }
         }
     }

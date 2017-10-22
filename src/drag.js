@@ -40,13 +40,16 @@ module.exports = class Drag extends Plugin
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
-                if (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY) || this.moved)
+                if (this.moved || (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY)))
                 {
                     this.parent.container.x += distX
                     this.parent.container.y += distY
                     this.last = { x, y }
+                    if (!this.moved)
+                    {
+                        this.parent.emit('drag-start', this.parent)
+                    }
                     this.moved = true
-                    this.parent.emit('drag-start', this.parent)
                 }
             }
             else
