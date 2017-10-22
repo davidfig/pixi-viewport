@@ -597,8 +597,13 @@ module.exports = class Viewport extends Loop
      * @param {number} y
      * @param {object} [options]
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
+     * @param {boolean} [options.center] move the center of the camera to {x, y} (if false, move the top left corner to {x, y})
      * @param {number} [options.time=1000]
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.stopOnResize] Stops performing the snap upon resizing
+     * @param {boolean} [options.dragInterrupt] Allows users to stop the snapping by dragging (via the 'drag' plugin)
+     * @param {boolean} [options.zoomInterrupt] Allows users to stop the snapping by zooming (via the 'wheel' or 'pinch'  plugins)
+     * @param {boolean} [options.remove] Removes this plugin after having completed the operation
      * @return {Viewport} this
      */
     snap(x, y, options)
