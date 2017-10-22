@@ -10,6 +10,11 @@ module.exports = class Bounce extends Plugin
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     *
+     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
+     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
+     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
+     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
      */
     constructor(parent, options)
     {
@@ -43,6 +48,7 @@ module.exports = class Bounce extends Plugin
             if (this.toX.update(elapsed))
             {
                 this.toX = null
+                this.parent.emit('bounce-end-x', this.parent)
             }
         }
         if (this.toY)
@@ -50,6 +56,7 @@ module.exports = class Bounce extends Plugin
             if (this.toY.update(elapsed))
             {
                 this.toY = null
+                this.parent.emit('bounce-end-y', this.parent)
             }
         }
     }
@@ -89,10 +96,12 @@ module.exports = class Bounce extends Plugin
                 if (oob.left)
                 {
                     this.toX = new Ease.to(this.parent.container, { x: 0 }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-x', this.parent)
                 }
                 else if (oob.right)
                 {
                     this.toX = new Ease.to(this.parent.container, { x: -point.x }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-x', this.parent)
                 }
             }
             if (!this.toY && !decelerate.y)
@@ -100,10 +109,12 @@ module.exports = class Bounce extends Plugin
                 if (oob.top)
                 {
                     this.toY = new Ease.to(this.parent.container, { y: 0 }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-y', this.parent)
                 }
                 else if (oob.bottom)
                 {
                     this.toY = new Ease.to(this.parent.container, { y: -point.y }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-x', this.parent)
                 }
             }
         }

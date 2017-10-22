@@ -87,15 +87,25 @@ module.exports = class Pinch extends Plugin
                 }
                 this.lastCenter = point
             }
+            else
+            {
+                this.parent.emit('pinch-start', this.parent)
+                this.pinching = true
+            }
         }
     }
 
     up(x, y, data)
     {
-        const pointers = data.input.pointers
-        if (pointers.length < 2)
+        if (this.pinching)
         {
-            this.lastCenter = null
+            const pointers = data.input.pointers
+            if (pointers.length < 2)
+            {
+                this.lastCenter = null
+                this.pinching = false
+                this.parent.emit('pinch-end', this.parent)
+            }
         }
     }
 }

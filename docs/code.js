@@ -2,7 +2,7 @@ const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
 const Renderer = require('yy-renderer')
-const FPS = require('yy-fps')
+const Counter = require('yy-counter')
 
 const Viewport = require('..')
 
@@ -16,8 +16,9 @@ const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
+const FADE_TIME = 2000
 
-let _renderer, _viewport, _fps, _ease, _object, _targetAnimation, _stars = []
+let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
@@ -38,6 +39,30 @@ function resize()
 {
     _renderer.resize()
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
+}
+
+function addCounter(name)
+{
+    const counter = new Counter({ side: 'top-left' })
+    counter.log(name)
+    const ease = _ease.to(counter.div.style, { opacity: 0 }, FADE_TIME, { ease: 'easeInOutSine' })
+    ease.on('done', () => counter.div.remove())
+}
+
+function events()
+{
+    _viewport.on('click', (data) => addCounter('click: ' + data.screen.x + ', ' + data.screen.y))
+    _viewport.on('drag-start', () => addCounter('drag-start'))
+    _viewport.on('drag-end', () => addCounter('drag-end'))
+    _viewport.on('pinch-start', () => addCounter('pinch-start'))
+    _viewport.on('pinch-end', () => addCounter('pinch-end'))
+    _viewport.on('snap-start', () => addCounter('snap-start'))
+    _viewport.on('bounce-start-x', () => addCounter('bounce-start-x'))
+    _viewport.on('bounce-end-x', () => addCounter('bounce-end-x'))
+    _viewport.on('bounce-start-y', () => addCounter('bounce-start-y'))
+    _viewport.on('bounce-end-y', () => addCounter('bounce-end-y'))
+    _viewport.on('snap-start', () => addCounter('snap-start'))
+    _viewport.on('snap-end', () => addCounter('snap-end'))
 }
 
 function line(x, y, width, height)
@@ -137,6 +162,8 @@ window.onload = function ()
     )
     drawWorld()
     _renderer.start()
+
+    events()
 
     gui(_viewport, drawWorld, _object)
 

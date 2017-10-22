@@ -43,7 +43,6 @@
     "fork-me-github": "^1.0.3",
     "highlight.js": "^9.12.0",
     "pixi.js": "^4.5.6",
-    "yy-fps": "^0.4.1",
     "yy-random": "^1.6.0"
   }
 }
