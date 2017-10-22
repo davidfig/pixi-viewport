@@ -593,7 +593,7 @@ module.exports = class Viewport extends Loop
      */
     resumePlugin(type)
     {
-        if (this.plugins(type))
+        if (this.plugins[type])
         {
             this.plugins[type].resume()
         }
