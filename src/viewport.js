@@ -576,6 +576,30 @@ module.exports = class Viewport extends Loop
     }
 
     /**
+     * pause plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    pausePlugin(type)
+    {
+        if (this.plugins[type])
+        {
+            this.plugins[type].pause()
+        }
+    }
+
+    /**
+     * resume plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    resumePlugin(type)
+    {
+        if (this.plugins(type))
+        {
+            this.plugins[type].resume()
+        }
+    }
+
+    /**
      * checks whether plugin is installed
      * @param {string} type of plugin (e.g., 'drag', 'pinch')
      */

@@ -218,6 +218,18 @@ https://davidfig.github.io/pixi-viewport/
     removePlugin(type)
 
     /**
+     * pause plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    pausePlugin(type)
+
+    /**
+     * resume plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    resumePlugin(type)
+
+    /**
      * checks whether plugin is installed
      * @param {string} type of plugin (e.g., 'drag', 'pinch')
      */
