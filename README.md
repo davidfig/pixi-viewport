@@ -218,8 +218,9 @@ https://davidfig.github.io/pixi-viewport/
      * bounce on borders
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      * @param {object} [options]
-     * @param {number} [time] time to finish bounce
-     * @param {string|function} [ease] ease function or name (see http://easings.net/ for supported names)
+     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
+     * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
      * @return {Viewport} this
      */
     bounce(options)
@@ -227,6 +228,7 @@ https://davidfig.github.io/pixi-viewport/
     /**
      * enable pinch to zoom and two-finger touch to drag
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {number} [options.percent=1.0] percent to modify pinch speed
      * @param {boolean} [options.noDrag] disable two-finger dragging
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
      * @param {number} [options.minWidth] clamp minimum width
@@ -249,7 +251,14 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
-     * @param {number} [options.speed=1] speed (in world pixels/ms) to snap to location
+     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
+     * @param {boolean} [options.center] move the center of the camera to {x, y} (if false, move the top left corner to {x, y})
+     * @param {number} [options.time=1000]
+     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.stopOnResize] Stops performing the snap upon resizing
+     * @param {boolean} [options.dragInterrupt] Allows users to stop the snapping by dragging (via the 'drag' plugin)
+     * @param {boolean} [options.zoomInterrupt] Allows users to stop the snapping by zooming (via the 'wheel' or 'pinch'  plugins)
+     * @param {boolean} [options.remove] Removes this plugin after having completed the operation
      * @return {Viewport} this
      */
     snap(x, y, options)

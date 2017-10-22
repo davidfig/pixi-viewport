@@ -17,7 +17,7 @@ module.exports = class Bounce extends Plugin
         options = options || {}
         this.time = options.time || 150
         this.ease = options.ease || 'easeInOutSine'
-        this.friction = option.friction || 0.5
+        this.friction = options.friction || 0.5
     }
 
     down()

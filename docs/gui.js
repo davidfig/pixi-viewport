@@ -25,6 +25,7 @@ module.exports = function gui(viewport, drawWorld, target)
         },
         pinch: {
             pinch: true,
+            percent: 1,
             noDrag: false,
             centerX: 0,
             centerY: 0
@@ -141,7 +142,7 @@ function guiPinch()
     function change()
     {
         const center = (_options.pinch.centerX || _options.pinch.centerY) ? { x: _options.pinch.centerX, y: _options.pinch.centerY } : null
-        _viewport.pinch({ noDrag: _options.pinch.noDrag, center })
+        _viewport.pinch({ noDrag: _options.pinch.noDrag, center, percent: _options.pinch.percent })
     }
 
     function add()
@@ -149,6 +150,7 @@ function guiPinch()
         noDrag = pinch.add(_options.pinch, 'noDrag').onChange(change)
         centerX = pinch.add(_options.pinch, 'centerX').onChange(change)
         centerY = pinch.add(_options.pinch, 'centerY').onChange(change)
+        percent = pinch.add(_options.pinch, 'percent').onChange(change)
     }
 
     const pinch = _gui.addFolder('pinch')
@@ -166,9 +168,10 @@ function guiPinch()
                 pinch.remove(noDrag)
                 pinch.remove(centerX)
                 pinch.remove(centerY)
+                pinch.remove(percent)
             }
         })
-    let noDrag, centerX, centerY
+    let noDrag, centerX, centerY, percent
     if (_options.pinch)
     {
         add()
