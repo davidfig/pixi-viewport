@@ -11,13 +11,19 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
     const Viewport = require('pixi-viewport')
 
     const container = new PIXI.Container()
-    const viewport = new Viewport(container)
+    const viewport = new Viewport(container, 
+    {
+        screenWidth: window.innerWidth,
+        screenHeight: window.innerHeight,
+        worldWidth: 1000,
+        worldHeight: 1000
+    })
 
     // activate plugins with the following plugins
     viewport
         .drag()
-        .wheel()
         .pinch()
+        .wheel()
         .decelerate()
         .bounce()
 
