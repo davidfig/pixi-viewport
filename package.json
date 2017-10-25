@@ -10,7 +10,7 @@
     "test": "budo docs/code.js:index.js --dir docs --live",
     "build": "browserify docs/code.js -o docs/index.js",
     "docs": "markdown-api README.md src/viewport.js",
-    "prepare": "yarn build && yarn docs"
+    "prepublishOnly": "yarn build && yarn docs"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
   "dependencies": {
+    "exists": "^1.0.1",
     "pixi-ease": "^0.13.3",
     "yy-input": "^0.8.0",
     "yy-loop": "^0.3.5",

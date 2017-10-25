@@ -342,6 +342,22 @@ module.exports = class Viewport extends Loop
     }
 
     /**
+     * @type {number} world width in screen coordinates
+     */
+    get screenWorldWidth()
+    {
+        return this._worldWidth * this.container.scale.x
+    }
+
+    /**
+     * @type {number} world height in screen coordinates
+     */
+    get screenWorldHeight()
+    {
+        return this._worldHeight * this.container.scale.y
+    }
+
+    /**
      * get center of screen in world coordinates
      * @type {{x: number, y: number}}
      */
@@ -621,7 +637,9 @@ module.exports = class Viewport extends Loop
     /**
      * enable clamp to boundaries of world
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {string} [direction=all] (all, x, or y)
+     * @param {object} options
+     * @param {string} [options.direction=all] (all, x, or y)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
     clamp(direction)
@@ -651,6 +669,7 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen     *
      * @return {Viewport} this
      */
     bounce(options)

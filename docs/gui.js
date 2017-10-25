@@ -33,13 +33,15 @@ module.exports = function gui(viewport, drawWorld, target)
         clamp: {
             clamp: false,
             x: true,
-            y: true
+            y: true,
+            underflow: 'center'
         },
         bounce: {
             bounce: true,
             friction: 0.5,
             time: 150,
-            ease: 'easeInOutSine'
+            ease: 'easeInOutSine',
+            underflow: 'center'
         },
         decelerate: {
             decelerate: true,
@@ -104,32 +106,34 @@ function guiDrag()
 
 function guiClamp()
 {
-    let clampX, clampY
+    function change()
+    {
+        _viewport.clamp({ direction: _options.clamp.x && _options.clamp.y ? 'all' : _options.clamp.x ? 'x' : 'y', underflow: _options.clamp.underflow })
+    }
+
+    function add()
+    {
+        clampX = clamp.add(_options.clamp, 'x').onChange(change)
+        clampY = clamp.add(_options.clamp, 'y').onChange(change)
+        underflow = clamp.add(_options.clamp, 'underflow').onChange(change)
+    }
+
+    let clampX, clampY, underflow
     const clamp = _gui.addFolder('clamp')
     clamp.add(_options.clamp, 'clamp').onChange(
         function (value)
         {
             if (value)
             {
-                _viewport.clamp(_options.clamp.x && _options.clamp.y ? 'all' : _options.clamp.x ? 'x' : 'y')
-                clampX = clamp.add(_options.clamp, 'x').onChange(
-                    function (value)
-                    {
-                        _options.clamp.x = value
-                        _viewport.clamp(_options.clamp.x && _options.clamp.y ? 'all' : _options.clamp.x ? 'x' : 'y')
-                    })
-                clampY = clamp.add(_options.clamp, 'y').onChange(
-                    function (value)
-                    {
-                        _options.clamp.y = value
-                        _viewport.clamp(_options.clamp.x && _options.clamp.y ? 'all' : _options.clamp.x ? 'x' : 'y')
-                    })
+                change()
+                add()
             }
             else
             {
                 _viewport.removePlugin('clamp')
                 clamp.remove(clampX)
                 clamp.remove(clampY)
+                clamp.remove(underflow)
             }
         })
     if (_options.clamp.clamp)
@@ -187,16 +191,17 @@ function guiBounce()
 {
     function change()
     {
-        _viewport.bounce({ time: _options.bounce.time, ease: _options.bounce.ease, friction: _options.bounce.friction })
+        _viewport.bounce({ time: _options.bounce.time, ease: _options.bounce.ease, friction: _options.bounce.friction, underflow: _options.bounce.underflow })
     }
 
     function add()
     {
-        bounceTime = bounce.add(_options.bounce, 'time', 0, 2000).step(50).onChange(change)
-        bounceEase = bounce.add(_options.bounce, 'ease').onChange(change)
+        time = bounce.add(_options.bounce, 'time', 0, 2000).step(50).onChange(change)
+        ease = bounce.add(_options.bounce, 'ease').onChange(change)
+        underflow = bounce.add(_options.bounce, 'underflow').onChange(change)
     }
 
-    let bounceTime, bounceEase
+    let time, ease, underflow
     const bounce = _gui.addFolder('bounce')
     bounce.add(_options.bounce, 'bounce').onChange(
         function (value)
@@ -204,7 +209,7 @@ function guiBounce()
             if (value)
             {
                 change()
-                if (!bounceTime)
+                if (!time)
                 {
                     add()
                 }
@@ -212,11 +217,12 @@ function guiBounce()
             else
             {
                 _viewport.removePlugin('bounce')
-                if (bounceTime)
+                if (time)
                 {
-                    bounce.remove(bounceTime)
-                    bounceTime = null
-                    bounce.remove(bounceEase)
+                    bounce.remove(time)
+                    time = null
+                    bounce.remove(ease)
+                    bounce.remove(underflow)
                 }
             }
         }

@@ -144,6 +144,16 @@ https://davidfig.github.io/pixi-viewport/
     get worldScreenHeight()
 
     /**
+     * @type {number} world width in screen coordinates
+     */
+    get screenWorldWidth()
+
+    /**
+     * @type {number} world height in screen coordinates
+     */
+    get screenWorldHeight()
+
+    /**
      * get center of screen in world coordinates
      * @type {{x: number, y: number}}
      */

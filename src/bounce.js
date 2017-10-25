@@ -1,4 +1,5 @@
 const Ease = require('pixi-ease')
+const exists = require('exists')
 
 const Plugin = require('./plugin')
 
@@ -10,6 +11,7 @@ module.exports = class Bounce extends Plugin
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      *
      * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
      * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
@@ -23,6 +25,22 @@ module.exports = class Bounce extends Plugin
         this.time = options.time || 150
         this.ease = options.ease || 'easeInOutSine'
         this.friction = options.friction || 0.5
+        this.parseUnderflow(options.underflow || 'center')
+    }
+
+    parseUnderflow(clamp)
+    {
+        clamp = clamp.toLowerCase()
+        if (clamp === 'center')
+        {
+            this.underflowX = 0
+            this.underflowY = 0
+        }
+        else
+        {
+            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
+        }
     }
 
     down()
@@ -93,28 +111,70 @@ module.exports = class Bounce extends Plugin
             const point = oob.cornerPoint
             if (!this.toX && !decelerate.x)
             {
-                if (oob.left)
+                let x
+                if (this.parent.screenWorldWidth < this.parent.screenWidth)
                 {
-                    this.toX = new Ease.to(this.parent.container, { x: 0 }, this.time, { ease: this.ease })
-                    this.parent.emit('bounce-start-x', this.parent)
+                    switch (this.underflowX)
+                    {
+                        case -1:
+                            x = 0
+                            break
+                        case 1:
+                            x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                            break
+                        default:
+                            x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                    }
                 }
-                else if (oob.right)
+                else
                 {
-                    this.toX = new Ease.to(this.parent.container, { x: -point.x }, this.time, { ease: this.ease })
+                    if (oob.left)
+                    {
+                        x = 0
+                    }
+                    else if (oob.right)
+                    {
+                        x = -point.x
+                    }
+                }
+                if (exists(x) && this.parent.container.x !== x)
+                {
+                    this.toX = new Ease.to(this.parent.container, { x }, this.time, { ease: this.ease })
                     this.parent.emit('bounce-start-x', this.parent)
                 }
             }
             if (!this.toY && !decelerate.y)
             {
-                if (oob.top)
+                let y
+                if (this.parent.screenWorldHeight < this.parent.screenHeight)
                 {
-                    this.toY = new Ease.to(this.parent.container, { y: 0 }, this.time, { ease: this.ease })
-                    this.parent.emit('bounce-start-y', this.parent)
+                    switch (this.underflowY)
+                    {
+                        case -1:
+                            y = 0
+                            break
+                        case 1:
+                            y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                            break
+                        default:
+                            y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                    }
                 }
-                else if (oob.bottom)
+                else
                 {
-                    this.toY = new Ease.to(this.parent.container, { y: -point.y }, this.time, { ease: this.ease })
-                    this.parent.emit('bounce-start-x', this.parent)
+                    if (oob.top)
+                    {
+                        y = 0
+                    }
+                    else if (oob.bottom)
+                    {
+                        y = -point.y
+                    }
+                }
+                if (exists(y) && this.parent.container.y !== y)
+                {
+                    this.toY = new Ease.to(this.parent.container, { y }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-start-y', this.parent)
                 }
             }
         }
