@@ -39,7 +39,7 @@ https://davidfig.github.io/pixi-viewport/
     npm i pixi-viewport
 
 ## API Reference
-```
+```js
     /**
      * @param {PIXI.Container} container to apply viewport
      * @param {number} [options]

@@ -62658,12 +62658,12 @@ module.exports = class Drag extends Plugin
 
     up()
     {
-        if (this.last)
+        if (this.last && this.moved)
         {
             this.parent.emit('drag-end', this.parent)
-            this.last = null
             this.moved = false
         }
+        this.last = null
     }
 
     resume()
