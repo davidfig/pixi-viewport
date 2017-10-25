@@ -7,7 +7,7 @@ Features include dragging, pinch-to-zoom, decelerated dragging, following target
 I wanted to improve my work on yy-viewport with a complete rewrite of a viewport/2D camera for use with pixi.js. I added options that I need in my games, including edges that bounce, deceleration, and highly configurable options to tweak the feel of the viewport. 
 
 ## Simple Example
-
+```js
     const Viewport = require('pixi-viewport')
 
     const container = new PIXI.Container()
@@ -30,6 +30,7 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
     // starts an automatic update loop for animations related to the viewport
     viewport
         .start()
+```
 
 ## Live Example
 https://davidfig.github.io/pixi-viewport/
