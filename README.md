@@ -261,7 +261,9 @@ https://davidfig.github.io/pixi-viewport/
     /**
      * enable clamp to boundaries of world
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {string} [direction=all] (all, x, or y)
+     * @param {object} options
+     * @param {string} [options.direction=all] (all, x, or y)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
     clamp(direction)
@@ -283,6 +285,7 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen     *
      * @return {Viewport} this
      */
     bounce(options)
