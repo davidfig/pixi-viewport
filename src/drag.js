@@ -57,7 +57,7 @@ module.exports = class Drag extends Plugin
 
     up()
     {
-        if (this.last && && this.moved)
+        if (this.last && this.moved)
         {
             this.parent.emit('drag-end', this.parent)
             this.moved = false
