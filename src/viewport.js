@@ -43,8 +43,8 @@ module.exports = class Viewport extends Loop
      * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
      * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
      * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event wheel-pre({wheel: {dx, dy, dz}, viewport})
-     * @event wheel-post({wheel: {dx, dy, dz}, viewport})
+     * @event wheel-pre({wheel: {dx, dy, dz}, viewport}) emitted when the mouse wheel is spun, emits before the viewport zooms
+     * @event wheel-post({wheel: {dx, dy, dz}, viewport}) emitted when the mouse wheel is spun, emits after the viewport zooms
      */
     constructor(container, options)
     {
