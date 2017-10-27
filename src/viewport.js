@@ -32,8 +32,8 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.preventDefault] call preventDefault after listeners
      *
      * @event click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
-     * @event drag-start(Viewport) emitted when a drag starts
-     * @event drag-end(Viewport) emitted when a drag ends
+     * @event drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
+     * @event drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
      * @event pinch-start(Viewport) emitted when a pinch starts
      * @event pinch-end(Viewport) emitted when a pinch ends
      * @event snap-start(Viewport) emitted each time a snap animation starts
