@@ -9,8 +9,8 @@ const Tiles = require('./tiles')
 const gui = require('./gui')
 
 const BORDER = 10
-const WIDTH = 5000
-const HEIGHT = 5000
+const WIDTH = 2000
+const HEIGHT = 2000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
@@ -18,7 +18,7 @@ const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
 const FADE_TIME = 2000
 
-let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
+let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = [], _tilesContainer, _starsContainer
 
 function viewport()
 {
@@ -31,8 +31,7 @@ function viewport()
         .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))
         .decelerate()
         .bounce()
-        .tiles(Tiles.size, Tiles.size, Tiles.get, {debug: true})
-        .start()
+        .tiles(Tiles.size, Tiles.size, Tiles.get, { debug: true, container: true, parent: _tilesContainer })
 }
 
 function resize()
@@ -87,7 +86,7 @@ function stars()
     const stars = (_viewport.worldWidth * _viewport.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1
     for (let i = 0; i < stars; i++)
     {
-        const star = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+        const star = _starsContainer.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
         star.anchor.set(0.5)
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
@@ -149,15 +148,20 @@ function drawWorld()
 window.onload = function ()
 {
     _renderer = new Renderer({ debug: 'fps', alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
+    _renderer.renderer.plugins.interaction.destroy()
+    _renderer.renderer.plugins.interaction = null
+    _tilesContainer = _renderer.stage.addChild(new PIXI.Container())
+    _starsContainer = _renderer.stage.addChild(new PIXI.Container())
     Tiles.init(WIDTH, HEIGHT)
     viewport()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
     _renderer.interval(
-        function ()
+        function (elapsed)
         {
-            _ease.update()
+            _ease.update(elapsed)
+            _viewport.update(elapsed)
         }
     )
     drawWorld()

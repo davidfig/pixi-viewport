@@ -1,5 +1,6 @@
 const PIXI = require('pixi.js')
 const Counter = require('yy-counter')
+const exists = require('exists')
 
 const Plugin = require('./plugin')
 
@@ -11,6 +12,7 @@ module.exports = class Tiles extends Plugin
      * @param {number} height of tile
      * @param {function} tiles(x, y) should return { texture, tint? } where (x, y) is the coordinates in the tile map (i.e., the world coordinates divided by the tiles' width/height)
      * @param {object} [options]
+     * @param {PIXI.Container} [options.parent=viewport.container]
      * @param {boolean} [options.useContainer] default is to use PIXI.particles.ParticleContainer for better performance
      * @param {number} [options.maxNumberTiles=1500] maximum number of tiles to display on the screen
      * @param {boolean} [options.shrink] shrink the number of sprites when zooming in (otherwise keeps them for later use)
@@ -21,27 +23,35 @@ module.exports = class Tiles extends Plugin
     {
         options = options || {}
         super(parent)
+        const attach = options.parent ? options.parent : this.parent.container
         if (options.container)
         {
-            this.container = this.parent.container.addChild(new PIXI.Container())
+            this.container = attach.addChild(new PIXI.Container())
         }
         else
         {
-            this.container = this.parent.container.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles || 1500, { tint: options.tint }))
+            this.container = attach.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles || 1500, { tint: options.tint, uvs: true, scale: true }))
         }
         this.w = width
         this.h = height
         this.shrink = options.shrink
         this.debug = options.debug
+        this.tint = options.tint
         this.last = {}
         this.tiles = tiles
         if (this.debug) this.counter = new Counter({ side: 'bottom-left', background: 'rgba(0,0,0,0.5)' })
     }
 
-    layout()
+    remove()
     {
-        this.columns = Math.floor(this.parent.worldScreenWidth / this.w) + 1
-        this.rows = Math.floor(this.parent.worldScreenHeight / this.h) + 1
+        this.container.parent.removeChild(this.container)
+        this.container.destroy()
+    }
+
+    resize()
+    {
+        this.columns = Math.floor(this.parent.worldScreenWidth / this.w) + 2
+        this.rows = Math.floor(this.parent.worldScreenHeight / this.h) + 2
         this.count = this.columns * this.rows
         const max = Math.ceil(this.parent.worldWidth / this.w) * Math.ceil(this.parent.worldHeight / this.h)
         this.count = this.count > max ? max : this.count
@@ -59,14 +69,14 @@ module.exports = class Tiles extends Plugin
                 if (i >= this.container.children.length)
                 {
                     const sprite = this.container.addChild(new PIXI.Sprite())
-                    sprite.width = this.w
-                    sprite.height = this.h
+                    if (this.tint)
+                    {
+                        sprite.tint = 0xffffff
+                    }
                 }
                 else
                 {
-                    const sprite = this.container.children[i]
-                    sprite.width = this.w
-                    sprite.height = this.h
+                    this.container.children[i]
                 }
             }
         }
@@ -80,7 +90,7 @@ module.exports = class Tiles extends Plugin
         {
             if (this.last.scaleX !== container.scale.x || this.last.scaleY !== container.scale.y)
             {
-                this.layout()
+                this.resize()
             }
             const left = this.parent.left
             const top = this.parent.top
@@ -97,9 +107,20 @@ module.exports = class Tiles extends Plugin
                     if (tile)
                     {
                         const sprite = this.container.children[i++]
-                        sprite.texture = tile
+                        sprite.texture = tile.texture
                         sprite.visible = true
                         sprite.position.set(xStart + x * this.w, yStart + y * this.h)
+                        if (this.tint)
+                        {
+                            if (exists(tile.tint))
+                            {
+                                sprite.tint = tile.tint
+                            }
+                            else
+                            {
+                                sprite.tint = 0xffffff
+                            }
+                        }
                         display++
                     }
                     else
@@ -118,19 +139,6 @@ module.exports = class Tiles extends Plugin
             this.last.scaleX = container.scale.x
             this.last.scaleY = container.scale.y
             if (this.debug) this.counter.log(display + ' tiles with ' + empty + ' empty' + ' using ' + this.container.children.length + ' sprites')
-        }
-    }
-
-    debug()
-    {
-        let i = 0
-        for (let y = 0; y < this.rows; y++)
-        {
-            for (let x = 0; x < this.columns; x++)
-            {
-                console.log(x + ',' + y, this.container.children[i].position, this.container.children[i].visible)
-                i++
-            }
         }
     }
 }
