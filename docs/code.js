@@ -5,12 +5,12 @@ const Renderer = require('yy-renderer')
 const Counter = require('yy-counter')
 
 const Viewport = require('..')
-
+const Tiles = require('./tiles')
 const gui = require('./gui')
 
 const BORDER = 10
-const WIDTH = 2000
-const HEIGHT = 2000
+const WIDTH = 5000
+const HEIGHT = 5000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
@@ -22,7 +22,7 @@ let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage, { div: _renderer.div })
+    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, worldWidth: WIDTH, worldHeight: HEIGHT, screenWidth: window.innerWidth, screenHeight: window.innerHeight })
     _viewport
         .drag()
         .wheel()
@@ -31,8 +31,8 @@ function viewport()
         .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))
         .decelerate()
         .bounce()
+        .tiles(Tiles.size, Tiles.size, Tiles.get)
         .start()
-    resize()
 }
 
 function resize()
@@ -140,7 +140,6 @@ function click(data)
 function drawWorld()
 {
     _ease.removeAll()
-    _renderer.stage.removeChildren()
     stars()
     object()
     border()
@@ -150,6 +149,7 @@ function drawWorld()
 window.onload = function ()
 {
     _renderer = new Renderer({ debug: 'fps', alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
+    Tiles.init(WIDTH, HEIGHT)
     viewport()
     window.addEventListener('resize', resize)
 

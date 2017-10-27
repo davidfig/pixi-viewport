@@ -20,8 +20,8 @@ module.exports = function gui(viewport, drawWorld, target)
             clampZoom: false,
             minWidth: 1000,
             minHeight: 1000,
-            maxWidth: 2000,
-            maxHeight: 2000
+            maxWidth: 5000,
+            maxHeight: 5000
         },
         pinch: {
             pinch: true,
