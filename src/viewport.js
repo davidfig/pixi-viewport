@@ -185,7 +185,7 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * add or remove mouse/touch listeners
+     * add mouse/touch listeners
      * @private
      */
     listeners(div, threshold, preventDefault)
@@ -588,6 +588,7 @@ module.exports = class Viewport extends Loop
     {
         if (this.plugins[type])
         {
+            this.plugins[type].remove()
             this.plugins[type] = null
         }
     }

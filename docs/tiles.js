@@ -35,7 +35,7 @@ function draw(c, i)
 {
     function r() { return Random.get(256) }
     c.beginPath()
-    c.fillStyle = 'rgba(' + r() + ',' + r() + ',' + r() + ',0.15)'
+    c.fillStyle = 'rgba(' + r() + ',' + r() + ',' + r() + ',1)'//0.15)'
     c.fillRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE)
     c.save()
     c.beginPath()
@@ -60,7 +60,7 @@ function get(x, y)
     {
         return null
     }
-    return _sheet.getTexture('texture-' + _map[x + y * _width])
+    return { texture: _sheet.getTexture('texture-' + _map[x + y * _width]) }
 }
 
 module.exports = {
