@@ -37,7 +37,7 @@ module.exports = class Viewport extends Loop
      * @event pinch-start(Viewport) emitted when a pinch starts
      * @event pinch-end(Viewport) emitted when a pinch ends
      * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event snap-end(Viewport) emitted each time snap reaches its target
+     * @event snap-end({screen: {x, y}, world: {x, y}, viewport}) emitted each time snap reaches its target
      * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
      * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
      * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
