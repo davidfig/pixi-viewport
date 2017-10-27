@@ -32,6 +32,9 @@ module.exports = class Wheel extends Plugin
         {
             return
         }
+
+        this.parent.emit('wheel-pre', { wheel: {dx: dx, dy: dy, dz: dz}, viewport: this.parent})
+
         let change
         if (this.reverse)
         {
@@ -66,5 +69,6 @@ module.exports = class Wheel extends Plugin
             this.parent.container.y += point.y - newPoint.y
         }
         data.event.preventDefault()
+        this.parent.emit('wheel-post', { wheel: {dx: dx, dy: dy, dz: dz}, viewport: this.parent})
     }
 }

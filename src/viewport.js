@@ -31,18 +31,20 @@ module.exports = class Viewport extends Loop
      * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      * @param {number} [options.preventDefault] call preventDefault after listeners
      *
-     * @event click({screen: {x, y}, world: {x, y}}, this) emitted when viewport is clicked
+     * @event click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
      * @event drag-start(Viewport) emitted when a drag starts
      * @event drag-end(Viewport) emitted when a drag ends
      * @event pinch-start(Viewport) emitted when a pinch starts
      * @event pinch-end(Viewport) emitted when a pinch ends
      * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event snap-end(Viewport) emitted each time snap reaches its target
      * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
      * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
      * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
      * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
      * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event snap-end(Viewport) emitted each time snap reaches its target
+     * @event wheel-pre({wheel: {dx, dy, dz}, viewport})
+     * @event wheel-post({wheel: {dx, dy, dz}, viewport})
      */
     constructor(container, options)
     {
@@ -281,7 +283,7 @@ module.exports = class Viewport extends Loop
     click(x, y)
     {
         const point = { x, y }
-        this.emit('click', { screen: point, world: this.toWorld(point) })
+        this.emit('click', { screen: point, world: this.toWorld(point), viewport: this})
     }
 
     /**
