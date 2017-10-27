@@ -12,8 +12,9 @@ const Bounce = require('./bounce')
 const Snap = require('./snap')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
+const Tiles = require('./tiles')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp', 'tiles']
 
 module.exports = class Viewport extends Loop
 {
@@ -770,6 +771,12 @@ module.exports = class Viewport extends Loop
     clampZoom(options)
     {
         this.plugins['clamp-zoom'] = new ClampZoom(this, options)
+        return this
+    }
+
+    tiles(width, height, tiles, options)
+    {
+        this.plugins['tiles'] = new Tiles(this, width, height, tiles, options)
         return this
     }
 }
