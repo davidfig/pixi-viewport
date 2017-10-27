@@ -1,5 +1,4 @@
 const TEXTURES_COUNT = 50
-const TEXTURE_CIRCLE = 50
 const TEXTURE_SIZE = 64
 
 let _sheet, _map, _width, _height
@@ -12,7 +11,7 @@ function init(width, height)
     _sheet = new RenderSheet()
     for (let i = 0; i < TEXTURES_COUNT; i++)
     {
-        _sheet.add('texture-' + i, draw, measure)
+        _sheet.add('texture-' + i, draw, measure, i)
     }
     _sheet.render()
     resize(width, height)
@@ -32,22 +31,22 @@ function resize(width, height)
     }
 }
 
-function draw(c)
+function draw(c, i)
 {
     function r() { return Random.get(256) }
     c.beginPath()
-    c.fillStyle = 'rgba(' + r() + ',' + r() + ',' + r() + ',0.2)'
+    c.fillStyle = 'rgba(' + r() + ',' + r() + ',' + r() + ',0.15)'
     c.fillRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE)
-    c.fillStyle = 'rgba(255,255,255,0.2)'
-    for (let i = 0; i < TEXTURE_CIRCLE; i++)
-    {
-        const r = Random.get(TEXTURE_SIZE * 0.1)
-        const x = Random.range(r, TEXTURE_SIZE - r)
-        const y = Random.range(r, TEXTURE_SIZE - r)
-        c.beginPath()
-        c.arc(x, y, r, 0, Math.PI * 2)
-        c.fill()
-    }
+    c.save()
+    c.beginPath()
+    c.fillStyle = 'white'
+    c.globalCompositeOperation = 'destination-out'
+    c.font = '25px sans-serif'
+    c.textBaseline = 'middle'
+    c.textAlign = 'center'
+    c.fillText(i, TEXTURE_SIZE / 2, TEXTURE_SIZE / 2)
+    c.fill()
+    c.restore()
 }
 
 function measure()

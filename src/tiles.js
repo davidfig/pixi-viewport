@@ -40,8 +40,8 @@ module.exports = class Tiles extends Plugin
 
     layout()
     {
-        this.columns = Math.floor(this.parent.worldScreenWidth / this.w) + 2
-        this.rows = Math.floor(this.parent.worldScreenHeight / this.h) + 2
+        this.columns = Math.floor(this.parent.worldScreenWidth / this.w) + 1
+        this.rows = Math.floor(this.parent.worldScreenHeight / this.h) + 1
         this.count = this.columns * this.rows
         const max = Math.ceil(this.parent.worldWidth / this.w) * Math.ceil(this.parent.worldHeight / this.h)
         this.count = this.count > max ? max : this.count
@@ -82,8 +82,10 @@ module.exports = class Tiles extends Plugin
             {
                 this.layout()
             }
-            const xStart = this.parent.left - this.parent.left % this.w
-            const yStart = this.parent.top - this.parent.top % this.h
+            const left = this.parent.left
+            const top = this.parent.top
+            const xStart = left - left % this.w
+            const yStart = top - top % this.h
             const xIndex = xStart / this.w
             const yIndex = yStart / this.h
             let i = 0
