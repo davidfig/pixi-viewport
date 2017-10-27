@@ -31,7 +31,7 @@ function viewport()
         .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))
         .decelerate()
         .bounce()
-        .tiles(Tiles.size, Tiles.size, Tiles.get)
+        .tiles(Tiles.size, Tiles.size, Tiles.get, {debug: true})
         .start()
 }
 
