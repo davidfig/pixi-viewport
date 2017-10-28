@@ -36,7 +36,7 @@
   "dependencies": {
     "exists": "^1.0.1",
     "pixi-ease": "^0.13.3",
-    "pixi.js": "^4.5.6",
+    "pixi.js": "^4.6.0",
     "yy-counter": "^2.1.0",
     "yy-input": "^0.9.0",
     "yy-loop": "^0.3.5"
