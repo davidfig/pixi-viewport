@@ -18,6 +18,8 @@ module.exports = class Drag extends Plugin
         const pointers = data.input.pointers
         if (pointers.length === 1)
         {
+            const world = this.parent.toLocal(x, y)
+            const bounds = this.parent.plugin['']
             this.last = { x, y }
         }
     }
@@ -32,7 +34,7 @@ module.exports = class Drag extends Plugin
         if (this.last)
         {
             const pointers = data.input.pointers
-            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
+            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin['pinch']))
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y

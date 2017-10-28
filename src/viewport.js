@@ -616,15 +616,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * checks whether plugin is installed
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    plugin(type)
-    {
-        return this.plugins[type]
-    }
-
-    /**
      * enable one-finger touch to drag
      * @return {Viewport} this
      */
