@@ -43,7 +43,7 @@ module.exports = class Drag extends Plugin
                     this.last = { x, y }
                     if (!this.moved)
                     {
-                        this.parent.emit('drag-start', {screen: this.last, viewport: this.parent})
+                        this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
                 }
@@ -59,7 +59,7 @@ module.exports = class Drag extends Plugin
     {
         if (this.last && this.moved)
         {
-            this.parent.emit('drag-end', {screen: this.last, viewport: this.parent})
+            this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
             this.moved = false
         }
         this.last = null
