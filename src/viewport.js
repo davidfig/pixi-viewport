@@ -9,10 +9,11 @@ const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
+const Fit = require('./fit')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'fit', 'clamp-zoom', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -425,19 +426,7 @@ module.exports = class Viewport extends Loop
      */
     fitWidth(width, center)
     {
-        let save
-        if (center)
-        {
-            save = this.center
-        }
-        width = width || this._worldWidth
-        this.container.scale.x = this._screenWidth / width
-        this.container.scale.y = this.container.scale.x
-        if (center)
-        {
-            this.moveCenter(save)
-        }
-        return this
+        return this.fit({direction: 'x', center: center, time: 0}, width)
     }
 
     /**
@@ -448,47 +437,29 @@ module.exports = class Viewport extends Loop
      */
     fitHeight(height, center)
     {
-        let save
-        if (center)
-        {
-            save = this.center
-        }
-        height = height || this._worldHeight
-        this.container.scale.y = this._screenHeight / height
-        this.container.scale.x = this.container.scale.y
-        if (center)
-        {
-            this.moveCenter(save)
-        }
-        return this
+        return this.fit({direction: 'y', center: center, time: 0}, height)
     }
 
     /**
-     * change zoom so it fits the entire world in the viewport
-     * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @return {Viewport} this
+     * @param {object} options
+     * @param {string} [options.direction=all] (all, x, or y)
+     * @param {boolean} [options.center] maintain the same center
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
+     * @param {number} value (a height or width -- only required if direction!=all)
+     *
+     * @event fit-start(Viewport) emitted each time a fit animation starts
+     * @event fit-end(Viewport) emitted each time fit reaches its target
      */
-    fit(center)
+    fit(options, value)
     {
-        let save
-        if (center)
+        if (!value)
         {
-            save = this.center
+            value = 0
+            options.direction = 'all'
         }
-        this.container.scale.x = this._screenWidth / this._worldWidth
-        this.container.scale.y = this._screenHeight / this._worldHeight
-        if (this.container.scale.x < this.container.scale.y)
-        {
-            this.container.scale.y = this.container.scale.x
-        }
-        else
-        {
-            this.container.scale.x = this.container.scale.y
-        }
-        if (center)
-        {
-            this.moveCenter(save)
-        }
+        this.plugins['fit'] = new Fit(this, value, options)
         return this
     }
 
@@ -694,8 +665,9 @@ module.exports = class Viewport extends Loop
      * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
-     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
      * @return {Viewport} this
      */
     snap(x, y, options)

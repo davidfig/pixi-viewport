@@ -14,7 +14,7 @@ module.exports = class Snap extends Plugin
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
      *
      * @event snap-start(Viewport) emitted each time a snap animation starts
      * @event snap-end(Viewport) emitted each time snap reaches its target
@@ -31,7 +31,7 @@ module.exports = class Snap extends Plugin
         this.center = options.center
         this.stopOnResize = options.stopOnResize
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
-        this.removeOnComplete = options.removeOnComplete
+        this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete: true
         if (this.center)
         {
             this.originalX = x
