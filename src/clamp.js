@@ -56,7 +56,7 @@ module.exports = class clamp extends Plugin
 
         const oob = this.parent.OOB()
         const point = oob.cornerPoint
-        const decelerate = this.parent.plugin('decelerate') || {}
+        const decelerate = this.parent.plugins['decelerate'] || {}
         if (this.x)
         {
             if (this.parent.screenWorldWidth < this.parent.screenWidth)

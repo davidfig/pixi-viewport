@@ -7,13 +7,12 @@ const Pinch = require('./pinch')
 const Clamp = require('./clamp')
 const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
-const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -34,17 +33,15 @@ module.exports = class Viewport extends Loop
      * @event click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
      * @event drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
      * @event drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
-     * @event pinch-start(Viewport) emitted when a pinch starts
-     * @event pinch-end(Viewport) emitted when a pinch ends
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event snap-end({screen: {x, y}, world: {x, y}, viewport}) emitted each time snap reaches its target
-     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
-     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
-     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
-     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event wheel-pre({wheel: {dx, dy, dz}, viewport}) emitted when the mouse wheel is spun, emits before the viewport zooms
-     * @event wheel-post({wheel: {dx, dy, dz}, viewport}) emitted when the mouse wheel is spun, emits after the viewport zooms
+     * @event pinch-start(viewport) emitted when a pinch starts
+     * @event pinch-end(viewport) emitted when a pinch ends
+     * @event snap-start(viewport) emitted each time a snap animation starts
+     * @event snap-end(viewport) emitted each time snap reaches its target
+     * @event bounce-start-x(viewport) emitted when a bounce on the x-axis starts
+     * @event bounce.end-x(viewport) emitted when a bounce on the x-axis ends
+     * @event bounce-start-y(viewport) emitted when a bounce on the y-axis starts
+     * @event bounce-end-y(viewport) emitted when a bounce on the y-axis ends
+     * @event wheel({wheel: {dx, dy, dz}, viewport})
      */
     constructor(container, options)
     {
@@ -618,15 +615,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * checks whether plugin is installed
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    plugin(type)
-    {
-        return this.plugins[type]
-    }
-
-    /**
      * enable one-finger touch to drag
      * @return {Viewport} this
      */
@@ -695,17 +683,6 @@ module.exports = class Viewport extends Loop
     pinch(options)
     {
         this.plugins['pinch'] = new Pinch(this, options)
-        return this
-    }
-
-    /**
-     * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     * @return {Viewport} this
-     */
-    hitArea(rect)
-    {
-        this.plugins['hit-area'] = new HitArea(this, rect)
         return this
     }
 

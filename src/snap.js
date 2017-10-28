@@ -94,7 +94,7 @@ module.exports = class Snap extends Plugin
             {
                 this.parent.removePlugin('snap')
             }
-            this.parent.emit('snap-end', { screen: this.parent.toScreen({{ x: this.x, y: this.y }}), world: {{ x: this.x, y: this.y }}, viewport: this.parent })
+            this.parent.emit('snap-end', this.parent )
             this.snapping = null
         }
     }

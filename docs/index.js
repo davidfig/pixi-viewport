@@ -29,7 +29,6 @@ function viewport()
         .wheel()
         .pinch()
         .on('click', click)
-        .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))
         .decelerate()
         .bounce()
         .start()
@@ -659,7 +658,7 @@ module.exports = function highlight(url)
 /* globals window, XMLHttpRequest, document */
 },{"fork-me-github":9,"highlight.js":11}],4:[function(require,module,exports){
 module.exports = require('./src/viewport')
-},{"./src/viewport":406}],5:[function(require,module,exports){
+},{"./src/viewport":405}],5:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -869,6 +868,7 @@ exports.nextCombination = function(v) {
 'use strict';
 
 module.exports = earcut;
+module.exports.default = earcut;
 
 function earcut(data, holeIndices, dim) {
 
@@ -881,7 +881,7 @@ function earcut(data, holeIndices, dim) {
 
     if (!outerNode) return triangles;
 
-    var minX, minY, maxX, maxY, x, y, size;
+    var minX, minY, maxX, maxY, x, y, invSize;
 
     if (hasHoles) outerNode = eliminateHoles(data, holeIndices, outerNode, dim);
 
@@ -899,11 +899,12 @@ function earcut(data, holeIndices, dim) {
             if (y > maxY) maxY = y;
         }
 
-        // minX, minY and size are later used to transform coords into integers for z-order calculation
-        size = Math.max(maxX - minX, maxY - minY);
+        // minX, minY and invSize are later used to transform coords into integers for z-order calculation
+        invSize = Math.max(maxX - minX, maxY - minY);
+        invSize = invSize !== 0 ? 1 / invSize : 0;
     }
 
-    earcutLinked(outerNode, triangles, dim, minX, minY, size);
+    earcutLinked(outerNode, triangles, dim, minX, minY, invSize);
 
     return triangles;
 }
@@ -939,7 +940,7 @@ function filterPoints(start, end) {
         if (!p.steiner && (equals(p, p.next) || area(p.prev, p, p.next) === 0)) {
             removeNode(p);
             p = end = p.prev;
-            if (p === p.next) return null;
+            if (p === p.next) break;
             again = true;
 
         } else {
@@ -951,11 +952,11 @@ function filterPoints(start, end) {
 }
 
 // main ear slicing loop which triangulates a polygon (given as a linked list)
-function earcutLinked(ear, triangles, dim, minX, minY, size, pass) {
+function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
     if (!ear) return;
 
     // interlink polygon nodes in z-order
-    if (!pass && size) indexCurve(ear, minX, minY, size);
+    if (!pass && invSize) indexCurve(ear, minX, minY, invSize);
 
     var stop = ear,
         prev, next;
@@ -965,7 +966,7 @@ function earcutLinked(ear, triangles, dim, minX, minY, size, pass) {
         prev = ear.prev;
         next = ear.next;
 
-        if (size ? isEarHashed(ear, minX, minY, size) : isEar(ear)) {
+        if (invSize ? isEarHashed(ear, minX, minY, invSize) : isEar(ear)) {
             // cut off the triangle
             triangles.push(prev.i / dim);
             triangles.push(ear.i / dim);
@@ -986,16 +987,16 @@ function earcutLinked(ear, triangles, dim, minX, minY, size, pass) {
         if (ear === stop) {
             // try filtering points and slicing again
             if (!pass) {
-                earcutLinked(filterPoints(ear), triangles, dim, minX, minY, size, 1);
+                earcutLinked(filterPoints(ear), triangles, dim, minX, minY, invSize, 1);
 
             // if this didn't work, try curing all small self-intersections locally
             } else if (pass === 1) {
                 ear = cureLocalIntersections(ear, triangles, dim);
-                earcutLinked(ear, triangles, dim, minX, minY, size, 2);
+                earcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
 
             // as a last resort, try splitting the remaining polygon into two
             } else if (pass === 2) {
-                splitEarcut(ear, triangles, dim, minX, minY, size);
+                splitEarcut(ear, triangles, dim, minX, minY, invSize);
             }
 
             break;
@@ -1023,7 +1024,7 @@ function isEar(ear) {
     return true;
 }
 
-function isEarHashed(ear, minX, minY, size) {
+function isEarHashed(ear, minX, minY, invSize) {
     var a = ear.prev,
         b = ear,
         c = ear.next;
@@ -1037,8 +1038,8 @@ function isEarHashed(ear, minX, minY, size) {
         maxTY = a.y > b.y ? (a.y > c.y ? a.y : c.y) : (b.y > c.y ? b.y : c.y);
 
     // z-order range for the current triangle bbox;
-    var minZ = zOrder(minTX, minTY, minX, minY, size),
-        maxZ = zOrder(maxTX, maxTY, minX, minY, size);
+    var minZ = zOrder(minTX, minTY, minX, minY, invSize),
+        maxZ = zOrder(maxTX, maxTY, minX, minY, invSize);
 
     // first look for points inside the triangle in increasing z-order
     var p = ear.nextZ;
@@ -1089,7 +1090,7 @@ function cureLocalIntersections(start, triangles, dim) {
 }
 
 // try splitting polygon into two and triangulate them independently
-function splitEarcut(start, triangles, dim, minX, minY, size) {
+function splitEarcut(start, triangles, dim, minX, minY, invSize) {
     // look for a valid diagonal that divides the polygon into two
     var a = start;
     do {
@@ -1104,8 +1105,8 @@ function splitEarcut(start, triangles, dim, minX, minY, size) {
                 c = filterPoints(c, c.next);
 
                 // run earcut on each half
-                earcutLinked(a, triangles, dim, minX, minY, size);
-                earcutLinked(c, triangles, dim, minX, minY, size);
+                earcutLinked(a, triangles, dim, minX, minY, invSize);
+                earcutLinked(c, triangles, dim, minX, minY, invSize);
                 return;
             }
             b = b.next;
@@ -1162,7 +1163,7 @@ function findHoleBridge(hole, outerNode) {
     // find a segment intersected by a ray from the hole's leftmost point to the left;
     // segment's endpoint with lesser x will be potential connection point
     do {
-        if (hy <= p.y && hy >= p.next.y) {
+        if (hy <= p.y && hy >= p.next.y && p.next.y !== p.y) {
             var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
             if (x <= hx && x > qx) {
                 qx = x;
@@ -1193,7 +1194,7 @@ function findHoleBridge(hole, outerNode) {
     p = m.next;
 
     while (p !== stop) {
-        if (hx >= p.x && p.x >= mx &&
+        if (hx >= p.x && p.x >= mx && hx !== p.x &&
                 pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
 
             tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
@@ -1211,10 +1212,10 @@ function findHoleBridge(hole, outerNode) {
 }
 
 // interlink polygon nodes in z-order
-function indexCurve(start, minX, minY, size) {
+function indexCurve(start, minX, minY, invSize) {
     var p = start;
     do {
-        if (p.z === null) p.z = zOrder(p.x, p.y, minX, minY, size);
+        if (p.z === null) p.z = zOrder(p.x, p.y, minX, minY, invSize);
         p.prevZ = p.prev;
         p.nextZ = p.next;
         p = p.next;
@@ -1247,20 +1248,11 @@ function sortLinked(list) {
                 q = q.nextZ;
                 if (!q) break;
             }
-
             qSize = inSize;
 
             while (pSize > 0 || (qSize > 0 && q)) {
 
-                if (pSize === 0) {
-                    e = q;
-                    q = q.nextZ;
-                    qSize--;
-                } else if (qSize === 0 || !q) {
-                    e = p;
-                    p = p.nextZ;
-                    pSize--;
-                } else if (p.z <= q.z) {
+                if (pSize !== 0 && (qSize === 0 || !q || p.z <= q.z)) {
                     e = p;
                     p = p.nextZ;
                     pSize--;
@@ -1288,11 +1280,11 @@ function sortLinked(list) {
     return list;
 }
 
-// z-order of a point given coords and size of the data bounding box
-function zOrder(x, y, minX, minY, size) {
+// z-order of a point given coords and inverse of the longer side of data bbox
+function zOrder(x, y, minX, minY, invSize) {
     // coords are transformed into non-negative 15-bit integer range
-    x = 32767 * (x - minX) / size;
-    y = 32767 * (y - minY) / size;
+    x = 32767 * (x - minX) * invSize;
+    y = 32767 * (y - minY) * invSize;
 
     x = (x | (x << 8)) & 0x00FF00FF;
     x = (x | (x << 4)) & 0x0F0F0F0F;
@@ -1376,7 +1368,8 @@ function middleInside(a, b) {
         px = (a.x + b.x) / 2,
         py = (a.y + b.y) / 2;
     do {
-        if (((p.y > py) !== (p.next.y > py)) && (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
+        if (((p.y > py) !== (p.next.y > py)) && p.next.y !== p.y &&
+                (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
             inside = !inside;
         p = p.next;
     } while (p !== a);
@@ -33759,7 +33752,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":251,"../Filter":267,"path":409}],271:[function(require,module,exports){
+},{"../../../../math":251,"../Filter":267,"path":408}],271:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37449,7 +37442,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":225,"path":409}],289:[function(require,module,exports){
+},{"../../Shader":225,"path":408}],289:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42557,7 +42550,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":415}],305:[function(require,module,exports){
+},{"url":414}],305:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47124,7 +47117,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":246,"../../core/const":227,"path":409}],324:[function(require,module,exports){
+},{"../../core":246,"../../core/const":227,"path":408}],324:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48287,7 +48280,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":246,"path":409}],331:[function(require,module,exports){
+},{"../../core":246,"path":408}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48397,7 +48390,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":246,"path":409}],332:[function(require,module,exports){
+},{"../../core":246,"path":408}],332:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48451,7 +48444,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":246,"path":409}],333:[function(require,module,exports){
+},{"../../core":246,"path":408}],333:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48627,7 +48620,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":246,"path":409}],335:[function(require,module,exports){
+},{"../../core":246,"path":408}],335:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48677,7 +48670,7 @@ var VoidFilter = function (_core$Filter) {
 
 exports.default = VoidFilter;
 
-},{"../../core":246,"path":409}],336:[function(require,module,exports){
+},{"../../core":246,"path":408}],336:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -51297,7 +51290,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":246,"../extras":322,"path":409,"resource-loader":375}],344:[function(require,module,exports){
+},{"../core":246,"../extras":322,"path":408,"resource-loader":375}],344:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51655,7 +51648,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":246,"resource-loader":375,"url":415}],347:[function(require,module,exports){
+},{"../core":246,"resource-loader":375,"url":414}],347:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53302,7 +53295,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":246,"../Mesh":348,"path":409,"pixi-gl-core":210}],355:[function(require,module,exports){
+},{"../../core":246,"../Mesh":348,"path":408,"pixi-gl-core":210}],355:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58643,7 +58636,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":408}],385:[function(require,module,exports){
+},{"crypto":407}],385:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -60501,6 +60494,8 @@ module.exports = class Counter
         container.style.overflow = 'hidden'
         container.style.position = 'fixed'
         container.style.zIndex = 10000
+        container.style.pointerEvents = 'none'
+        container.style.userSelect = 'none'
         for (let style in styles)
         {
             container.style[style] = styles[style]
@@ -60593,6 +60588,19 @@ module.exports = class FPS
     }
 
     /**
+     * change desired FPS
+     * @type {number}
+     */
+    get fps()
+    {
+        return this.FPS
+    }
+    set fps(value)
+    {
+        this.FPS = value
+    }
+
+    /**
      * remove meter from DOM
      */
     remove()
@@ -60646,8 +60654,8 @@ module.exports = class FPS
         const options = this.options
         const divFPS = document.createElement('div')
         div.appendChild(divFPS)
-        this.fps = document.createElement('span')
-        divFPS.appendChild(this.fps)
+        this.fpsSpan = document.createElement('span')
+        divFPS.appendChild(this.fpsSpan)
         const span = document.createElement('span')
         divFPS.appendChild(span)
         span.innerText = typeof options.text !== 'undefined' ? options.text : ' FPS'
@@ -60702,7 +60710,7 @@ module.exports = class FPS
             this.lastTime = performance.now()
             this.frameNumber = 0
         }
-        this.fps.innerText = this.lastFPS
+        this.fpsSpan.innerText = this.lastFPS
         if (this.meterCanvas && this.lastFPS !== '--')
         {
             this.meterUpdate(this.lastFPS / this.FPS)
@@ -60772,8 +60780,8 @@ module.exports = class Input extends EventEmitter
      *
      * @param {object} [options]
      * @param {HTMLElement} [options.div=document] object to attach listener to
-     * @param {boolean} [options.noPointers] turns off mouse/touch/pen handlers
-     * @param {boolean} [options.keys] turn on key listener
+     * @param {boolean} [options.noPointers] turns off mouse/touch/pen listeners
+     * @param {boolean} [options.noKeyboard] turns off key listener
      * @param {boolean} [options.chromeDebug] ignore chrome debug keys, and force page reload with ctrl/cmd+r
      * @param {number} [options.threshold=5] maximum number of pixels to move while mouse/touch downbefore cancelling 'click'
      * @param {boolean} [options.preventDefault] call on handle, otherwise let client handle
@@ -60816,7 +60824,7 @@ module.exports = class Input extends EventEmitter
         {
             this.addPointers()
         }
-        if (options.keys)
+        if (!options.noKeyboard)
         {
             this.addKeyboard()
         }
@@ -61930,7 +61938,7 @@ class Renderer extends Loop
         this.renderer = new Renderer(options)
         if (options.color)
         {
-            this.renderer.backgroundColor = options.color
+            this.canvas.style.backgroundColor = options.color
         }
         if (options.styles)
         {
@@ -61946,7 +61954,7 @@ class Renderer extends Loop
         this.stage = new PIXI.Container()
         this.dirty = this.alwaysRender = options.alwaysRender || false
         this.resize(true)
-        this.interval(this.updateRenderer.bind(this), this.FPS)
+        this.updateRendererID = this.interval(this.updateRenderer.bind(this), this.FPS)
     }
 
     /**
@@ -61985,11 +61993,11 @@ class Renderer extends Loop
         this.debug = options.debug
         const fpsOptions = options.fpsOptions || {}
         fpsOptions.FPS = options.FPS
-        this.fps = new FPS(fpsOptions)
+        this.fpsMeter = new FPS(fpsOptions)
         const indicator = document.createElement('div')
         indicator.style.display = 'flex'
         indicator.style.justifyContent = 'space-between'
-        this.fps.div.prepend(indicator)
+        this.fpsMeter.div.prepend(indicator)
         if (options.debug === true || options.debug === 1 || options.debug.toLowerCase().indexOf('dirty') !== -1)
         {
             this.dirtyIndicator = document.createElement('div')
@@ -62023,9 +62031,9 @@ class Renderer extends Loop
      */
     updateRenderer()
     {
-        if (this.fps)
+        if (this.fpsMeter)
         {
-            this.fps.frame()
+            this.fpsMeter.frame()
             if (this.dirtyIndicator && this.lastDirty !== this.dirty)
             {
                 this.dirtyIndicator.style.color = this.dirty ? 'white' : 'black'
@@ -62118,7 +62126,7 @@ class Renderer extends Loop
      * remove child from stage
      * @param {PIXI.DisplayObject} object
      */
-    remove(object)
+    removeChild(object)
     {
         this.stage.removeChild(object)
     }
@@ -62181,6 +62189,25 @@ class Renderer extends Loop
     }
 
     /**
+     * getter/setter to change desired FPS of renderer
+     */
+    get fps()
+    {
+        return this.FPS
+    }
+    set fps(value)
+    {
+        this.FPS = 1000 / value
+        this.removeInterval(this.updateRendererID)
+        this.updateRendererID = this.interval(this.updateRenderer.bind(this), this.FPS)
+        if (this.fpsMeter)
+        {
+            this.fpsMeter.fps = value
+        }
+    }
+
+
+    /**
      * start the internal loop
      * @inherited from yy-loop
      * @returns {Renderer} this
@@ -62224,10 +62251,7 @@ class Renderer extends Loop
      * @inherited from yy-loop
      * @param {object} entry - returned by add()
      */
-    removeInterval()
-    {
-        super.remove(...arguments)
-    }
+    // remove(entry)
 
     /**
      * @inherited from yy-loop
@@ -62262,7 +62286,7 @@ module.exports = class Bounce extends Plugin
      * @param {object} [options]
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      *
      * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
@@ -62339,7 +62363,7 @@ module.exports = class Bounce extends Plugin
         }
 
         let oob
-        let decelerate = this.parent.plugin('decelerate')
+        let decelerate = this.parent.plugins['decelerate']
         if (decelerate && (decelerate.x || decelerate.y))
         {
             if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))
@@ -62437,7 +62461,7 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":404,"exists":8,"pixi-ease":193}],397:[function(require,module,exports){
+},{"./plugin":403,"exists":8,"pixi-ease":193}],397:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class ClampZoom extends Plugin
@@ -62497,7 +62521,7 @@ module.exports = class ClampZoom extends Plugin
     }
 }
 
-},{"./plugin":404}],398:[function(require,module,exports){
+},{"./plugin":403}],398:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class clamp extends Plugin
@@ -62556,7 +62580,7 @@ module.exports = class clamp extends Plugin
 
         const oob = this.parent.OOB()
         const point = oob.cornerPoint
-        const decelerate = this.parent.plugin('decelerate') || {}
+        const decelerate = this.parent.plugins['decelerate'] || {}
         if (this.x)
         {
             if (this.parent.screenWorldWidth < this.parent.screenWidth)
@@ -62619,7 +62643,7 @@ module.exports = class clamp extends Plugin
         }
     }
 }
-},{"./plugin":404}],399:[function(require,module,exports){
+},{"./plugin":403}],399:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -62655,7 +62679,7 @@ module.exports = class Decelerate extends Plugin
         }
 
         const pointers = data.input.pointers
-        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
+        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
         {
             this.saved.push({ x: this.parent.container.x, y: this.parent.container.y, time: performance.now() })
             if (this.saved.length > 60)
@@ -62717,7 +62741,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":404}],400:[function(require,module,exports){
+},{"./plugin":403}],400:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Drag extends Plugin
@@ -62734,7 +62758,6 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-
         const pointers = data.input.pointers
         if (pointers.length === 1)
         {
@@ -62752,7 +62775,7 @@ module.exports = class Drag extends Plugin
         if (this.last)
         {
             const pointers = data.input.pointers
-            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
+            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
@@ -62763,7 +62786,7 @@ module.exports = class Drag extends Plugin
                     this.last = { x, y }
                     if (!this.moved)
                     {
-                        this.parent.emit('drag-start', this.parent)
+                        this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
                 }
@@ -62779,7 +62802,7 @@ module.exports = class Drag extends Plugin
     {
         if (this.last && this.moved)
         {
-            this.parent.emit('drag-end', this.parent)
+            this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
             this.moved = false
         }
         this.last = null
@@ -62791,7 +62814,8 @@ module.exports = class Drag extends Plugin
         this.paused = false
     }
 }
-},{"./plugin":404}],401:[function(require,module,exports){
+
+},{"./plugin":403}],401:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -62850,28 +62874,7 @@ module.exports = class Follow extends Plugin
         }
     }
 }
-},{"./plugin":404}],402:[function(require,module,exports){
-const Plugin = require('./plugin')
-
-module.exports = class HitArea extends Plugin
-{
-    /**
-     * @param {Viewport} parent
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     */
-    constructor(parent, rect)
-    {
-        super(parent)
-        this.rect = rect
-        this.resize()
-    }
-
-    resize()
-    {
-        this.parent.container.hitArea = this.rect || this.parent.container.getBounds()
-    }
-}
-},{"./plugin":404}],403:[function(require,module,exports){
+},{"./plugin":403}],402:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -62985,7 +62988,7 @@ module.exports = class Pinch extends Plugin
         }
     }
 }
-},{"./plugin":404}],404:[function(require,module,exports){
+},{"./plugin":403}],403:[function(require,module,exports){
 module.exports = class Plugin
 {
     constructor(parent)
@@ -63011,7 +63014,7 @@ module.exports = class Plugin
         this.paused = false
     }
 }
-},{}],405:[function(require,module,exports){
+},{}],404:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -63108,7 +63111,7 @@ module.exports = class Snap extends Plugin
             {
                 this.parent.removePlugin('snap')
             }
-            this.parent.emit('snap-end', this.parent)
+            this.parent.emit('snap-end', this.parent )
             this.snapping = null
         }
     }
@@ -63119,7 +63122,7 @@ module.exports = class Snap extends Plugin
         super.resume()
     }
 }
-},{"./plugin":404,"exists":8,"pixi-ease":193}],406:[function(require,module,exports){
+},{"./plugin":403,"exists":8,"pixi-ease":193}],405:[function(require,module,exports){
 const Loop = require('yy-loop')
 const Input = require('yy-input')
 const exists = require('exists')
@@ -63129,13 +63132,12 @@ const Pinch = require('./pinch')
 const Clamp = require('./clamp')
 const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
-const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -63153,18 +63155,18 @@ module.exports = class Viewport extends Loop
      * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      * @param {number} [options.preventDefault] call preventDefault after listeners
      *
-     * @event click({screen: {x, y}, world: {x, y}}, this) emitted when viewport is clicked
-     * @event drag-start(Viewport) emitted when a drag starts
-     * @event drag-end(Viewport) emitted when a drag ends
-     * @event pinch-start(Viewport) emitted when a pinch starts
-     * @event pinch-end(Viewport) emitted when a pinch ends
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
-     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
-     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
-     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event snap-end(Viewport) emitted each time snap reaches its target
+     * @event click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
+     * @event drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
+     * @event drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
+     * @event pinch-start(viewport) emitted when a pinch starts
+     * @event pinch-end(viewport) emitted when a pinch ends
+     * @event snap-start(viewport) emitted each time a snap animation starts
+     * @event snap-end(viewport) emitted each time snap reaches its target
+     * @event bounce-start-x(viewport) emitted when a bounce on the x-axis starts
+     * @event bounce.end-x(viewport) emitted when a bounce on the x-axis ends
+     * @event bounce-start-y(viewport) emitted when a bounce on the y-axis starts
+     * @event bounce-end-y(viewport) emitted when a bounce on the y-axis ends
+     * @event wheel({wheel: {dx, dy, dz}, viewport})
      */
     constructor(container, options)
     {
@@ -63403,7 +63405,7 @@ module.exports = class Viewport extends Loop
     click(x, y)
     {
         const point = { x, y }
-        this.emit('click', { screen: point, world: this.toWorld(point) })
+        this.emit('click', { screen: point, world: this.toWorld(point), viewport: this})
     }
 
     /**
@@ -63738,15 +63740,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * checks whether plugin is installed
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    plugin(type)
-    {
-        return this.plugins[type]
-    }
-
-    /**
      * enable one-finger touch to drag
      * @return {Viewport} this
      */
@@ -63819,17 +63812,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     * @return {Viewport} this
-     */
-    hitArea(rect)
-    {
-        this.plugins['hit-area'] = new HitArea(this, rect)
-        return this
-    }
-
-    /**
      * snap to a point
      * @param {number} x
      * @param {number} y
@@ -63896,7 +63878,7 @@ module.exports = class Viewport extends Loop
     }
 }
 
-},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./hit-area":402,"./pinch":403,"./snap":405,"./wheel":407,"exists":8,"yy-input":390,"yy-loop":391}],407:[function(require,module,exports){
+},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./pinch":402,"./snap":404,"./wheel":406,"exists":8,"yy-input":390,"yy-loop":391}],406:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
@@ -63911,6 +63893,8 @@ module.exports = class Wheel extends Plugin
      * @param {number} [options.minHeight] clamp minimum height
      * @param {number} [options.maxWidth] clamp maximum width
      * @param {number} [options.maxHeight] clamp maximum height
+     *
+     * @event wheel({wheel: {dx, dy, dz}, viewport})
      */
     constructor(parent, options)
     {
@@ -63931,6 +63915,7 @@ module.exports = class Wheel extends Plugin
         {
             return
         }
+
         let change
         if (this.reverse)
         {
@@ -63965,11 +63950,12 @@ module.exports = class Wheel extends Plugin
             this.parent.container.y += point.y - newPoint.y
         }
         data.event.preventDefault()
+        this.parent.emit('wheel', { wheel: {dx, dy, dz}, viewport: this.parent})
     }
 }
-},{"./plugin":404}],408:[function(require,module,exports){
+},{"./plugin":403}],407:[function(require,module,exports){
 
-},{}],409:[function(require,module,exports){
+},{}],408:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -64197,7 +64183,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":410}],410:[function(require,module,exports){
+},{"_process":409}],409:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -64383,7 +64369,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],411:[function(require,module,exports){
+},{}],410:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -64920,7 +64906,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],412:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65006,7 +64992,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],413:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65093,13 +65079,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],414:[function(require,module,exports){
+},{}],413:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":412,"./encode":413}],415:[function(require,module,exports){
+},{"./decode":411,"./encode":412}],414:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65833,7 +65819,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":416,"punycode":411,"querystring":414}],416:[function(require,module,exports){
+},{"./util":415,"punycode":410,"querystring":413}],415:[function(require,module,exports){
 'use strict';
 
 module.exports = {

@@ -12,6 +12,8 @@ module.exports = class Wheel extends Plugin
      * @param {number} [options.minHeight] clamp minimum height
      * @param {number} [options.maxWidth] clamp maximum width
      * @param {number} [options.maxHeight] clamp maximum height
+     *
+     * @event wheel({wheel: {dx, dy, dz}, viewport})
      */
     constructor(parent, options)
     {
@@ -32,8 +34,6 @@ module.exports = class Wheel extends Plugin
         {
             return
         }
-
-        this.parent.emit('wheel-pre', { wheel: {dx: dx, dy: dy, dz: dz}, viewport: this.parent})
 
         let change
         if (this.reverse)
@@ -69,6 +69,6 @@ module.exports = class Wheel extends Plugin
             this.parent.container.y += point.y - newPoint.y
         }
         data.event.preventDefault()
-        this.parent.emit('wheel-post', { wheel: {dx: dx, dy: dy, dz: dz}, viewport: this.parent})
+        this.parent.emit('wheel', { wheel: {dx, dy, dz}, viewport: this.parent})
     }
 }
