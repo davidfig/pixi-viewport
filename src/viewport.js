@@ -7,7 +7,6 @@ const Pinch = require('./pinch')
 const Clamp = require('./clamp')
 const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
-const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
 const Follow = require('./follow')
@@ -684,17 +683,6 @@ module.exports = class Viewport extends Loop
     pinch(options)
     {
         this.plugins['pinch'] = new Pinch(this, options)
-        return this
-    }
-
-    /**
-     * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     * @return {Viewport} this
-     */
-    hitArea(rect)
-    {
-        this.plugins['hit-area'] = new HitArea(this, rect)
         return this
     }
 

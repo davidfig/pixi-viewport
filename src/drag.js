@@ -14,12 +14,9 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-
         const pointers = data.input.pointers
         if (pointers.length === 1)
         {
-            const world = this.parent.toLocal(x, y)
-            const bounds = this.parent.plugin['']
             this.last = { x, y }
         }
     }

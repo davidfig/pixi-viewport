@@ -305,13 +305,6 @@ https://davidfig.github.io/pixi-viewport/
     pinch(options)
 
     /**
-     * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     * @return {Viewport} this
-     */
-    hitArea(rect)
-
-    /**
      * snap to a point
      * @param {number} x
      * @param {number} y
