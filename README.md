@@ -247,12 +247,6 @@ https://davidfig.github.io/pixi-viewport/
     resumePlugin(type)
 
     /**
-     * checks whether plugin is installed
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    plugin(type)
-
-    /**
      * enable one-finger touch to drag
      * @return {Viewport} this
      */

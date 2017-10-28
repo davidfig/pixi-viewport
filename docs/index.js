@@ -29,7 +29,6 @@ function viewport()
         .wheel()
         .pinch()
         .on('click', click)
-        .hitArea(new PIXI.Rectangle(0, 0, WIDTH, HEIGHT))
         .decelerate()
         .bounce()
         .start()
@@ -659,7 +658,7 @@ module.exports = function highlight(url)
 /* globals window, XMLHttpRequest, document */
 },{"fork-me-github":9,"highlight.js":11}],4:[function(require,module,exports){
 module.exports = require('./src/viewport')
-},{"./src/viewport":406}],5:[function(require,module,exports){
+},{"./src/viewport":405}],5:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -33753,7 +33752,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":251,"../Filter":267,"path":409}],271:[function(require,module,exports){
+},{"../../../../math":251,"../Filter":267,"path":408}],271:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37443,7 +37442,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":225,"path":409}],289:[function(require,module,exports){
+},{"../../Shader":225,"path":408}],289:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42551,7 +42550,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":415}],305:[function(require,module,exports){
+},{"url":414}],305:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47118,7 +47117,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":246,"../../core/const":227,"path":409}],324:[function(require,module,exports){
+},{"../../core":246,"../../core/const":227,"path":408}],324:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48281,7 +48280,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":246,"path":409}],331:[function(require,module,exports){
+},{"../../core":246,"path":408}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48391,7 +48390,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":246,"path":409}],332:[function(require,module,exports){
+},{"../../core":246,"path":408}],332:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48445,7 +48444,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":246,"path":409}],333:[function(require,module,exports){
+},{"../../core":246,"path":408}],333:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48621,7 +48620,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":246,"path":409}],335:[function(require,module,exports){
+},{"../../core":246,"path":408}],335:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48671,7 +48670,7 @@ var VoidFilter = function (_core$Filter) {
 
 exports.default = VoidFilter;
 
-},{"../../core":246,"path":409}],336:[function(require,module,exports){
+},{"../../core":246,"path":408}],336:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -51291,7 +51290,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":246,"../extras":322,"path":409,"resource-loader":375}],344:[function(require,module,exports){
+},{"../core":246,"../extras":322,"path":408,"resource-loader":375}],344:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51649,7 +51648,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":246,"resource-loader":375,"url":415}],347:[function(require,module,exports){
+},{"../core":246,"resource-loader":375,"url":414}],347:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53296,7 +53295,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":246,"../Mesh":348,"path":409,"pixi-gl-core":210}],355:[function(require,module,exports){
+},{"../../core":246,"../Mesh":348,"path":408,"pixi-gl-core":210}],355:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58637,7 +58636,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":408}],385:[function(require,module,exports){
+},{"crypto":407}],385:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -62287,7 +62286,7 @@ module.exports = class Bounce extends Plugin
      * @param {object} [options]
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      *
      * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
@@ -62364,7 +62363,7 @@ module.exports = class Bounce extends Plugin
         }
 
         let oob
-        let decelerate = this.parent.plugin('decelerate')
+        let decelerate = this.parent.plugins['decelerate']
         if (decelerate && (decelerate.x || decelerate.y))
         {
             if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))
@@ -62462,7 +62461,7 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":404,"exists":8,"pixi-ease":193}],397:[function(require,module,exports){
+},{"./plugin":403,"exists":8,"pixi-ease":193}],397:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class ClampZoom extends Plugin
@@ -62522,7 +62521,7 @@ module.exports = class ClampZoom extends Plugin
     }
 }
 
-},{"./plugin":404}],398:[function(require,module,exports){
+},{"./plugin":403}],398:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class clamp extends Plugin
@@ -62581,7 +62580,7 @@ module.exports = class clamp extends Plugin
 
         const oob = this.parent.OOB()
         const point = oob.cornerPoint
-        const decelerate = this.parent.plugin('decelerate') || {}
+        const decelerate = this.parent.plugins['decelerate'] || {}
         if (this.x)
         {
             if (this.parent.screenWorldWidth < this.parent.screenWidth)
@@ -62644,7 +62643,7 @@ module.exports = class clamp extends Plugin
         }
     }
 }
-},{"./plugin":404}],399:[function(require,module,exports){
+},{"./plugin":403}],399:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -62680,7 +62679,7 @@ module.exports = class Decelerate extends Plugin
         }
 
         const pointers = data.input.pointers
-        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
+        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
         {
             this.saved.push({ x: this.parent.container.x, y: this.parent.container.y, time: performance.now() })
             if (this.saved.length > 60)
@@ -62742,7 +62741,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":404}],400:[function(require,module,exports){
+},{"./plugin":403}],400:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Drag extends Plugin
@@ -62759,7 +62758,6 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-
         const pointers = data.input.pointers
         if (pointers.length === 1)
         {
@@ -62777,7 +62775,7 @@ module.exports = class Drag extends Plugin
         if (this.last)
         {
             const pointers = data.input.pointers
-            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
+            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
@@ -62817,7 +62815,7 @@ module.exports = class Drag extends Plugin
     }
 }
 
-},{"./plugin":404}],401:[function(require,module,exports){
+},{"./plugin":403}],401:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -62876,28 +62874,7 @@ module.exports = class Follow extends Plugin
         }
     }
 }
-},{"./plugin":404}],402:[function(require,module,exports){
-const Plugin = require('./plugin')
-
-module.exports = class HitArea extends Plugin
-{
-    /**
-     * @param {Viewport} parent
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     */
-    constructor(parent, rect)
-    {
-        super(parent)
-        this.rect = rect
-        this.resize()
-    }
-
-    resize()
-    {
-        this.parent.container.hitArea = this.rect || this.parent.container.getBounds()
-    }
-}
-},{"./plugin":404}],403:[function(require,module,exports){
+},{"./plugin":403}],402:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -63011,7 +62988,7 @@ module.exports = class Pinch extends Plugin
         }
     }
 }
-},{"./plugin":404}],404:[function(require,module,exports){
+},{"./plugin":403}],403:[function(require,module,exports){
 module.exports = class Plugin
 {
     constructor(parent)
@@ -63037,7 +63014,7 @@ module.exports = class Plugin
         this.paused = false
     }
 }
-},{}],405:[function(require,module,exports){
+},{}],404:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -63145,7 +63122,7 @@ module.exports = class Snap extends Plugin
         super.resume()
     }
 }
-},{"./plugin":404,"exists":8,"pixi-ease":193}],406:[function(require,module,exports){
+},{"./plugin":403,"exists":8,"pixi-ease":193}],405:[function(require,module,exports){
 const Loop = require('yy-loop')
 const Input = require('yy-input')
 const exists = require('exists')
@@ -63155,13 +63132,12 @@ const Pinch = require('./pinch')
 const Clamp = require('./clamp')
 const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
-const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -63764,15 +63740,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * checks whether plugin is installed
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    plugin(type)
-    {
-        return this.plugins[type]
-    }
-
-    /**
      * enable one-finger touch to drag
      * @return {Viewport} this
      */
@@ -63845,17 +63812,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     * @return {Viewport} this
-     */
-    hitArea(rect)
-    {
-        this.plugins['hit-area'] = new HitArea(this, rect)
-        return this
-    }
-
-    /**
      * snap to a point
      * @param {number} x
      * @param {number} y
@@ -63922,7 +63878,7 @@ module.exports = class Viewport extends Loop
     }
 }
 
-},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./hit-area":402,"./pinch":403,"./snap":405,"./wheel":407,"exists":8,"yy-input":390,"yy-loop":391}],407:[function(require,module,exports){
+},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./pinch":402,"./snap":404,"./wheel":406,"exists":8,"yy-input":390,"yy-loop":391}],406:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
@@ -63997,9 +63953,9 @@ module.exports = class Wheel extends Plugin
         this.parent.emit('wheel', { wheel: {dx, dy, dz}, viewport: this.parent})
     }
 }
-},{"./plugin":404}],408:[function(require,module,exports){
+},{"./plugin":403}],407:[function(require,module,exports){
 
-},{}],409:[function(require,module,exports){
+},{}],408:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -64227,7 +64183,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":410}],410:[function(require,module,exports){
+},{"_process":409}],409:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -64413,7 +64369,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],411:[function(require,module,exports){
+},{}],410:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -64950,7 +64906,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],412:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65036,7 +64992,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],413:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65123,13 +65079,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],414:[function(require,module,exports){
+},{}],413:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":412,"./encode":413}],415:[function(require,module,exports){
+},{"./decode":411,"./encode":412}],414:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65863,7 +65819,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":416,"punycode":411,"querystring":414}],416:[function(require,module,exports){
+},{"./util":415,"punycode":410,"querystring":413}],415:[function(require,module,exports){
 'use strict';
 
 module.exports = {
