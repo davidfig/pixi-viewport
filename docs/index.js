@@ -62788,7 +62788,7 @@ module.exports = class Drag extends Plugin
                     this.last = { x, y }
                     if (!this.moved)
                     {
-                        this.parent.emit('drag-start', {screen: this.last, viewport: this.parent})
+                        this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
                 }
@@ -62804,7 +62804,7 @@ module.exports = class Drag extends Plugin
     {
         if (this.last && this.moved)
         {
-            this.parent.emit('drag-end', {screen: this.last, viewport: this.parent})
+            this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
             this.moved = false
         }
         this.last = null
@@ -63180,8 +63180,8 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.preventDefault] call preventDefault after listeners
      *
      * @event click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
-     * @event drag-start({screen: {x, y}, viewport}) emitted when a drag starts
-     * @event drag-end({screen: {x, y}, viewport}) emitted when a drag ends
+     * @event drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
+     * @event drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
      * @event pinch-start(viewport) emitted when a pinch starts
      * @event pinch-end(viewport) emitted when a pinch ends
      * @event snap-start(viewport) emitted each time a snap animation starts
