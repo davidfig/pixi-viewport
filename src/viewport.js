@@ -32,19 +32,17 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.preventDefault] call preventDefault after listeners
      *
      * @event click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
-     * @event drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
-     * @event drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
-     * @event pinch-start(Viewport) emitted when a pinch starts
-     * @event pinch-end(Viewport) emitted when a pinch ends
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event snap-end({screen: {x, y}, world: {x, y}, viewport}) emitted each time snap reaches its target
-     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
-     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
-     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
-     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event wheel-pre({wheel: {dx, dy, dz}, viewport}) emitted when the mouse wheel is spun, emits before the viewport zooms
-     * @event wheel-post({wheel: {dx, dy, dz}, viewport}) emitted when the mouse wheel is spun, emits after the viewport zooms
+     * @event drag-start({screen: {x, y}, viewport}) emitted when a drag starts
+     * @event drag-end({screen: {x, y}, viewport}) emitted when a drag ends
+     * @event pinch-start(viewport) emitted when a pinch starts
+     * @event pinch-end(viewport) emitted when a pinch ends
+     * @event snap-start(viewport) emitted each time a snap animation starts
+     * @event snap-end(viewport) emitted each time snap reaches its target
+     * @event bounce-start-x(viewport) emitted when a bounce on the x-axis starts
+     * @event bounce.end-x(viewport) emitted when a bounce on the x-axis ends
+     * @event bounce-start-y(viewport) emitted when a bounce on the y-axis starts
+     * @event bounce-end-y(viewport) emitted when a bounce on the y-axis ends
+     * @event wheel({wheel: {dx, dy, dz}, viewport})
      */
     constructor(container, options)
     {
