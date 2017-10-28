@@ -87,7 +87,7 @@ module.exports = class Bounce extends Plugin
         }
 
         let oob
-        let decelerate = this.parent.plugin['decelerate']
+        let decelerate = this.parent.plugins['decelerate']
         if (decelerate && (decelerate.x || decelerate.y))
         {
             if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))
