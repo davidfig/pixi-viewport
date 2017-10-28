@@ -80,6 +80,7 @@ module.exports = class Tiles extends Plugin
                 }
             }
         }
+        this.last = {}
     }
 
     update()

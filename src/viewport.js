@@ -211,7 +211,6 @@ module.exports = class Viewport extends Loop
                 this.plugins[type].down(...arguments)
             }
         }
-
     }
 
     /**

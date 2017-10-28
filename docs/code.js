@@ -148,8 +148,6 @@ function drawWorld()
 window.onload = function ()
 {
     _renderer = new Renderer({ debug: 'fps', alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
-    _renderer.renderer.plugins.interaction.destroy()
-    _renderer.renderer.plugins.interaction = null
     _tilesContainer = _renderer.stage.addChild(new PIXI.Container())
     _starsContainer = _renderer.stage.addChild(new PIXI.Container())
     Tiles.init(WIDTH, HEIGHT)
