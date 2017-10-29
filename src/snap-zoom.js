@@ -23,16 +23,20 @@ module.exports = class SnapZoom extends Plugin
         super(parent)
         options = options || {}
         
-        if (width > 0)
+        this.width = width
+        this.height = height
+        if (this.width > 0)
         {
-            this.x_scale = parent._screenWidth / width
+            this.x_scale = parent._screenWidth / this.width
         }
-        if (height > 0)
+        if (this.height > 0)
         {
-            this.y_scale = parent._screenHeight / height
+            this.y_scale = parent._screenHeight / this.height
         }
-        this.x_scale = exists(this.x_scale) ? this.x_scale : this.y_scale
-        this.y_scale = exists(this.y_scale) ? this.y_scale : this.x_scale
+        this.xIndependent = exists(this.x_scale)
+        this.yIndependent = exists(this.y_scale)
+        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale
+        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale
         
         this.time = exists(options.time) ? options.time : 1000
         this.ease = options.ease || 'easeInOutSine'
@@ -52,7 +56,23 @@ module.exports = class SnapZoom extends Plugin
             }
         }
     }
-
+    
+    resize()
+    {
+        this.snapping = null
+        
+        if (this.width > 0)
+        {
+            this.x_scale = parent._screenWidth / this.width
+        }
+        if (this.height > 0)
+        {
+            this.y_scale = parent._screenHeight / this.height
+        }
+        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale
+        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale
+    }
+    
     reset()
     {
         this.snapping = null
