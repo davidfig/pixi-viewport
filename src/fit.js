@@ -45,16 +45,8 @@ module.exports = class Fit extends Plugin
         
         if (this.time == 0)
         {
-            if (this.x)
-            {
-                parent.container.scale.x = this.x
-                parent.container.scale.y = this.y
-            }
-            else
-            {
-                parent.container.scale.x = this.value
-                parent.container.scale.y = this.value
-            }
+            parent.container.scale.x = this.x || this.value
+            parent.container.scale.y = this.y || this.value
             
             if (this.removeOnComplete)
             {

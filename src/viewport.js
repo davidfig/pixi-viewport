@@ -426,7 +426,19 @@ module.exports = class Viewport extends Loop
      */
     fitWidth(width, center)
     {
-        return this.fit({direction: 'x', center: center, time: 0}, width)
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        width = width || this._worldWidth
+        this.container.scale.x = this._screenWidth / width
+        this.container.scale.y = this.container.scale.x
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
     }
 
     /**
@@ -437,7 +449,48 @@ module.exports = class Viewport extends Loop
      */
     fitHeight(height, center)
     {
-        return this.fit({direction: 'y', center: center, time: 0}, height)
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        height = height || this._worldHeight
+        this.container.scale.y = this._screenHeight / height
+        this.container.scale.x = this.container.scale.y
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fitWorld(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.container.scale.x = this._screenWidth / this._worldWidth
+        this.container.scale.y = this._screenHeight / this._worldHeight
+        if (this.container.scale.x < this.container.scale.y)
+        {
+            this.container.scale.y = this.container.scale.x
+        }
+        else
+        {
+            this.container.scale.x = this.container.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
     }
 
     /**
