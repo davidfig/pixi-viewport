@@ -114,6 +114,10 @@ module.exports = class SnapZoom extends Plugin
         {
             this.parent.moveCenter(oldCenter)
         }
+        else 
+        {
+            this.parent.moveCenter(this.center)
+        }
     }
 
     resume()
