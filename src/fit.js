@@ -34,7 +34,7 @@ module.exports = class Fit extends Plugin
                 this.y = this.parent._screenHeight / this.parent._worldHeight
                 break
         }
-        this.time = options.time == 0 ? 0 : 1000
+        this.time = exists(options.time) ? options.time : 1000
         this.ease = options.ease || 'easeInOutSine'
         if (options.center)
         {
