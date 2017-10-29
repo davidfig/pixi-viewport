@@ -30,7 +30,8 @@ module.exports = class Tiles extends Plugin
         }
         else
         {
-            this.container = attach.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles || 1500, { tint: options.tint, uvs: true, scale: true }))
+            this.container = attach.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles || 1500, { tint: options.tint }))
+            //, uvs: true, scale: true }))
         }
         this.w = width
         this.h = height
@@ -49,6 +50,11 @@ module.exports = class Tiles extends Plugin
     }
 
     resize()
+    {
+        this.last = {}
+    }
+
+    layout()
     {
         this.columns = Math.floor(this.parent.worldScreenWidth / this.w) + 2
         this.rows = Math.floor(this.parent.worldScreenHeight / this.h) + 2
@@ -69,6 +75,8 @@ module.exports = class Tiles extends Plugin
                 if (i >= this.container.children.length)
                 {
                     const sprite = this.container.addChild(new PIXI.Sprite())
+                    sprite.width = this.w
+                    sprite.height = this.h
                     if (this.tint)
                     {
                         sprite.tint = 0xffffff
@@ -80,7 +88,6 @@ module.exports = class Tiles extends Plugin
                 }
             }
         }
-        this.last = {}
     }
 
     update()
@@ -91,7 +98,7 @@ module.exports = class Tiles extends Plugin
         {
             if (this.last.scaleX !== container.scale.x || this.last.scaleY !== container.scale.y)
             {
-                this.resize()
+                this.layout()
             }
             const left = this.parent.left
             const top = this.parent.top
@@ -109,6 +116,7 @@ module.exports = class Tiles extends Plugin
                     {
                         const sprite = this.container.children[i++]
                         sprite.texture = tile.texture
+                        sprite.tint = tile.tint
                         sprite.visible = true
                         sprite.position.set(xStart + x * this.w, yStart + y * this.h)
                         if (this.tint)
