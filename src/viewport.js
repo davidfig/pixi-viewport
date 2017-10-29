@@ -526,15 +526,14 @@ module.exports = class Viewport extends Loop
     
     /**
      * @param {object} options
+     * @param {number} value (a height or width -- only required if direction!=all)
+     * @param {object} options
      * @param {string} [options.direction=all] (all, x, or y)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
-     * @param {number} value (a height or width -- only required if direction!=all)
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
-     *
-     * @event snap-zoom-start(Viewport) emitted each time a snap-zoom animation starts
-     * @event snap-zoom-end(Viewport) emitted each time snap-zoom reaches its target
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
      */
     snapZoom(options, value)
     {

@@ -13,6 +13,7 @@ module.exports = class SnapZoom extends Plugin
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
      *
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
@@ -39,6 +40,7 @@ module.exports = class SnapZoom extends Plugin
         this.center = options.center
         this.stopOnResize = options.stopOnResize
         this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
+        this.interrupt = exists(options.interrupt) ? options.interrupt : true
         
         if (this.time == 0)
         {
@@ -49,16 +51,6 @@ module.exports = class SnapZoom extends Plugin
             {
                 this.parent.removePlugin('fit')
             }
-        }
-    }
-
-    resize()
-    {
-        if (this.center)
-        {
-            this.x = (this.parent.worldScreenWidth / 2 - this.originalX) * this.parent.container.scale.x
-            this.y = (this.parent.worldScreenHeight / 2 - this.originalY) * this.parent.container.scale.y
-            this.snapping = null
         }
     }
 
@@ -78,6 +70,11 @@ module.exports = class SnapZoom extends Plugin
         {
             return
         }
+        if (this.interrupt && this.parent.input.pointers.length !== 0)
+        {
+            return
+        }
+        
         let oldCenter
         if (!this.center)
         {
