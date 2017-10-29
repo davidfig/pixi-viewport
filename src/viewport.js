@@ -9,7 +9,7 @@ const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
-const Fit = require('./fit')
+const SnapZoom = require('./snap-zoom')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
@@ -527,11 +527,11 @@ module.exports = class Viewport extends Loop
     /**
      * @param {object} options
      * @param {string} [options.direction=all] (all, x, or y)
-     * @param {boolean} [options.center] maintain the same center
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      * @param {number} value (a height or width -- only required if direction!=all)
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      *
      * @event snap-zoom-start(Viewport) emitted each time a snap-zoom animation starts
      * @event snap-zoom-end(Viewport) emitted each time snap-zoom reaches its target
@@ -543,7 +543,7 @@ module.exports = class Viewport extends Loop
             value = 0
             options.direction = 'all'
         }
-        this.plugins['snap-zoom'] = new Fit(this, value, options)
+        this.plugins['snap-zoom'] = new SnapZoom(this, value, options)
         return this
     }
 

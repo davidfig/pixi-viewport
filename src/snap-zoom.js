@@ -9,10 +9,10 @@ module.exports = class SnapZoom extends Plugin
      * @param {number} value (a height or width -- only required if direction!=all)
      * @param {object} options
      * @param {string} [options.direction=all] (all, x, or y)
-     * @param {boolean} [options.center] maintain the same center
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      *
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
@@ -36,10 +36,7 @@ module.exports = class SnapZoom extends Plugin
         }
         this.time = exists(options.time) ? options.time : 1000
         this.ease = options.ease || 'easeInOutSine'
-        if (options.center)
-        {
-            this.center = parent.center
-        }
+        this.center = options.center
         this.stopOnResize = options.stopOnResize
         this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
         
@@ -81,9 +78,10 @@ module.exports = class SnapZoom extends Plugin
         {
             return
         }
-        if (this.center)
+        let oldCenter
+        if (!this.center)
         {
-            this.center = this.parent.center
+            oldCenter = this.parent.center
         }
         if (!this.snapping)
         {
@@ -107,9 +105,14 @@ module.exports = class SnapZoom extends Plugin
             this.parent.emit('snap-zoom-end', this.parent)
             this.snapping = null
         }
-        if (this.center)
+        const clamp = this.parent.plugins['clamp-zoom']
+        if (clamp)
         {
-            this.parent.moveCenter(this.center)
+            clamp.clamp()
+        }
+        if (!this.center)
+        {
+            this.parent.moveCenter(oldCenter)
         }
     }
 
