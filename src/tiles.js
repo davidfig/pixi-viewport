@@ -13,8 +13,11 @@ module.exports = class Tiles extends Plugin
      * @param {function} tiles(x, y) should return { texture, tint? } where (x, y) is the coordinates in the tile map (i.e., the world coordinates divided by the tiles' width/height)
      * @param {object} [options]
      * @param {PIXI.Container} [options.container=viewport.container]
-     * @param {number} [options.maxNumberTiles=1500] maximum number of tiles to display on the screen
+     * @param {boolean} [options.useContainer] use PIXI.Container instead of the default (and faster) PIXI.particles.ParticleContainer
+     * @param {number} [options.maxNumberTiles=1500] for ParticlesContainer: maximum number of tiles to display on the screen
+     * @param {number} [options.autoResize] for ParticlesContainer: autoresize if maxNumberTiles exceeded
      * @param {boolean} [options.shrink] shrink the number of sprites when zooming in (otherwise keeps them for later use)
+     * @param {boolean} [options.tint] allows tiles to be tinted
      * @param {boolean} [options.debug] add a debug panel to see sprite usage
      */
     constructor(parent, width, height, tiles, options)
@@ -22,10 +25,18 @@ module.exports = class Tiles extends Plugin
         options = options || {}
         super(parent)
         const attach = options.container ? options.container : this.parent.container
-        this.container = attach.addChild(new PIXI.Container())
+        if (options.useContainer)
+        {
+            this.container = attach.addChild(new PIXI.Container())
+        }
+        else
+        {
+            this.container = attach.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles, {tint: options.tint, scale: true, uvs: true, autoResize: options.autoResize}))
+        }
         this.w = width
         this.h = height
         this.shrink = options.shrink
+        this.tint = options.tint
         this.debug = options.debug
         this.last = {}
         this.tiles = tiles
