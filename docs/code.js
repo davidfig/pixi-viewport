@@ -62,6 +62,8 @@ function events()
     _viewport.on('bounce-end-y', () => addCounter('bounce-end-y'))
     _viewport.on('snap-start', () => addCounter('snap-start'))
     _viewport.on('snap-end', () => addCounter('snap-end'))
+    _viewport.on('snap-zoom-start', () => addCounter('snap-zoom-start'))
+    _viewport.on('snap-zoom-end', () => addCounter('snap-zoom-end'))
 }
 
 function line(x, y, width, height)
