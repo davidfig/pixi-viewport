@@ -6,9 +6,9 @@ module.exports = class SnapZoom extends Plugin
 {
     /**
      * @param {Viewport} parent
-     * @param {number} value (a height or width -- only required if direction!=all)
+     * @param {number} width  the desired width to snap the zoom to (put 0 to ignore width)
+     * @param {number} height  the desired height to snap the zoom to (put 0 to ignore height)
      * @param {object} options
-     * @param {string} [options.direction=all] (all, x, or y)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
@@ -18,23 +18,22 @@ module.exports = class SnapZoom extends Plugin
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      */
-    constructor(parent, value, options)
+    constructor(parent, width, height, options)
     {
         super(parent)
         options = options || {}
-        switch (options.direction)
+        
+        if (width > 0)
         {
-            case 'x':
-                this.value = parent._screenWidth / value
-                break
-            case 'y':
-                this.value = parent._screenHeight / value
-                break
-            default:
-                this.x = this.parent._screenWidth / this.parent._worldWidth
-                this.y = this.parent._screenHeight / this.parent._worldHeight
-                break
+            this.x_scale = parent._screenWidth / width
         }
+        if (height > 0)
+        {
+            this.y_scale = parent._screenHeight / height
+        }
+        this.x_scale = exists(this.x_scale) ? this.x_scale : this.y_scale
+        this.y_scale = exists(this.y_scale) ? this.y_scale : this.x_scale
+        
         this.time = exists(options.time) ? options.time : 1000
         this.ease = options.ease || 'easeInOutSine'
         this.center = options.center
@@ -44,8 +43,8 @@ module.exports = class SnapZoom extends Plugin
         
         if (this.time == 0)
         {
-            parent.container.scale.x = this.x || this.value
-            parent.container.scale.y = this.y || this.value
+            parent.container.scale.x = this.x_scale
+            parent.container.scale.y = this.y_scale
             
             if (this.removeOnComplete)
             {
@@ -82,13 +81,9 @@ module.exports = class SnapZoom extends Plugin
         }
         if (!this.snapping)
         {
-            if (this.x && this.parent.container.scale.x !== this.x)
+            if (this.parent.container.scale.x !== this.x_scale || this.parent.container.scale.y !== this.y_scale)
             {
-                this.snapping = new Ease.to(this.parent.container.scale, { x: this.x, y: this.y }, this.time, { ease: this.ease })
-            }
-            else if (this.parent.container.scale.x !== this.value)
-            {
-                this.snapping = new Ease.to(this.parent.container.scale, { x: this.value, y: this.value }, this.time, { ease: this.ease })
+                this.snapping = new Ease.to(this.parent.container.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
             }
             
             this.parent.emit('snap-zoom-start', this.parent)
