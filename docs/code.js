@@ -148,7 +148,7 @@ function drawWorld()
 
 window.onload = function ()
 {
-    _renderer = new Renderer({ debug: 'fps', alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
+    _renderer = new Renderer({ pauseOnBlur: true, debug: true, alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
     _tilesContainer = _renderer.stage.addChild(new PIXI.Container())
     _starsContainer = _renderer.stage.addChild(new PIXI.Container())
     Tiles.init(WIDTH, HEIGHT)
@@ -168,7 +168,7 @@ window.onload = function ()
 
     events()
 
-    gui(_viewport, drawWorld, _object)
+    // gui(_viewport, drawWorld, _object)
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }

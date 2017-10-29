@@ -26,7 +26,7 @@ function resize(width, height)
     {
         for (let x = 0; x < _width; x++)
         {
-            _map.push(Random.get(TEXTURES_COUNT))
+            _map.push({ texture: Random.get(TEXTURES_COUNT), tint: Random.color() })
         }
     }
 }
@@ -35,7 +35,7 @@ function draw(c, i)
 {
     function r() { return Random.get(256) }
     c.beginPath()
-    c.fillStyle = 'rgba(' + r() + ',' + r() + ',' + r() + ',1)'//0.15)'
+    c.fillStyle = 'white'//rgba(' + r() + ',' + r() + ',' + r() + ',1)'//0.15)'
     c.fillRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE)
     c.save()
     c.beginPath()
@@ -60,7 +60,8 @@ function get(x, y)
     {
         return null
     }
-    return { texture: _sheet.getTexture('texture-' + _map[x + y * _width]) }
+    const tile = _map[x + y * _width]
+    return { texture: _sheet.getTexture('texture-' + tile.texture), tint: tile.tint }
 }
 
 module.exports = {
