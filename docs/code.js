@@ -9,8 +9,8 @@ const Tiles = require('./tiles')
 const gui = require('./gui')
 
 const BORDER = 10
-const WIDTH = 2000
-const HEIGHT = 2000
+const WIDTH = 5000
+const HEIGHT = 5000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
@@ -30,7 +30,7 @@ function viewport()
         .on('click', click)
         .decelerate()
         .bounce()
-        .tiles(Tiles.size, Tiles.size, Tiles.get, { debug: true, container: true, parent: _tilesContainer })
+        .tiles(Tiles.size, Tiles.size, Tiles.get, { debug: true, container: _tilesContainer })
 }
 
 function resize()
@@ -150,6 +150,7 @@ window.onload = function ()
 {
     _renderer = new Renderer({ pauseOnBlur: true, debug: true, alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
     _tilesContainer = _renderer.stage.addChild(new PIXI.Container())
+    _tilesContainer.alpha = 0.25
     _starsContainer = _renderer.stage.addChild(new PIXI.Container())
     Tiles.init(WIDTH, HEIGHT)
     viewport()
@@ -168,7 +169,7 @@ window.onload = function ()
 
     events()
 
-    // gui(_viewport, drawWorld, _object)
+    gui(_viewport, drawWorld, _object)
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }

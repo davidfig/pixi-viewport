@@ -12,31 +12,21 @@ module.exports = class Tiles extends Plugin
      * @param {number} height of tile
      * @param {function} tiles(x, y) should return { texture, tint? } where (x, y) is the coordinates in the tile map (i.e., the world coordinates divided by the tiles' width/height)
      * @param {object} [options]
-     * @param {PIXI.Container} [options.parent=viewport.container]
-     * @param {boolean} [options.useContainer] default is to use PIXI.particles.ParticleContainer for better performance
+     * @param {PIXI.Container} [options.container=viewport.container]
      * @param {number} [options.maxNumberTiles=1500] maximum number of tiles to display on the screen
      * @param {boolean} [options.shrink] shrink the number of sprites when zooming in (otherwise keeps them for later use)
      * @param {boolean} [options.debug] add a debug panel to see sprite usage
-     * @param {boolean} [options.tint] allow changing of tint for the tiles
      */
     constructor(parent, width, height, tiles, options)
     {
         options = options || {}
         super(parent)
-        const attach = options.parent ? options.parent : this.parent.container
-        if (options.container)
-        {
-            this.container = attach.addChild(new PIXI.Container())
-        }
-        else
-        {
-            this.container = attach.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles || 1500, { tint: options.tint, uvs: true, scale: true }))
-        }
+        const attach = options.container ? options.container : this.parent.container
+        this.container = attach.addChild(new PIXI.Container())
         this.w = width
         this.h = height
         this.shrink = options.shrink
         this.debug = options.debug
-        this.tint = options.tint
         this.last = {}
         this.tiles = tiles
         if (this.debug) this.counter = new Counter({ side: 'bottom-left', background: 'rgba(0,0,0,0.5)' })
@@ -73,17 +63,9 @@ module.exports = class Tiles extends Plugin
             {
                 if (i >= this.container.children.length)
                 {
-                    const sprite = this.container.addChild(new PIXI.Sprite())
+                    const sprite = this.container.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
                     sprite.width = this.w
                     sprite.height = this.h
-                    if (this.tint)
-                    {
-                        sprite.tint = 0xffffff
-                    }
-                }
-                else
-                {
-                    this.container.children[i]
                 }
             }
         }
@@ -115,23 +97,9 @@ module.exports = class Tiles extends Plugin
                     {
                         const sprite = this.container.children[i++]
                         sprite.texture = tile.texture
-                        if (this.tint && exists(tile.tint))
-                        {
-                            sprite.tint = tile.tint
-                        }
+                        sprite.tint = exists(tile.tint) ? tile.tint : 0xffffff
                         sprite.visible = true
                         sprite.position.set(xStart + x * this.w, yStart + y * this.h)
-                        if (this.tint)
-                        {
-                            if (exists(tile.tint))
-                            {
-                                sprite.tint = tile.tint
-                            }
-                            else
-                            {
-                                sprite.tint = 0xffffff
-                            }
-                        }
                         display++
                     }
                     else
@@ -140,7 +108,7 @@ module.exports = class Tiles extends Plugin
                     }
                 }
             }
-            for (let j = i; j < this.count; j++)
+            for (let j = i; j < this.container.children.length; j++)
             {
                 this.container.children[j].visible = false
                 empty++
@@ -149,7 +117,15 @@ module.exports = class Tiles extends Plugin
             this.last.y = container.y
             this.last.scaleX = container.scale.x
             this.last.scaleY = container.scale.y
-            if (this.debug) this.counter.log(display + ' tiles with ' + empty + ' empty' + ' using ' + this.container.children.length + ' sprites')
+            if (this.debug)
+            {
+                let count = 0
+                for (let i = 0; i < this.container.children.length; i++)
+                {
+                    count += this.container.children[i].visible ? 0 : 1
+                }
+                this.counter.log(display + ' tiles with ' + count + ' empty' + ' using ' + this.container.children.length + ' sprites')
+            }
         }
     }
 }

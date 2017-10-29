@@ -1,19 +1,13 @@
 const TEXTURES_COUNT = 50
 const TEXTURE_SIZE = 64
 
-let _sheet, _map, _width, _height
+let _map, _width, _height
 
+const PIXI = require('pixi.js')
 const Random = require('yy-random')
-const RenderSheet = require('yy-rendersheet')
 
 function init(width, height)
 {
-    _sheet = new RenderSheet()
-    for (let i = 0; i < TEXTURES_COUNT; i++)
-    {
-        _sheet.add('texture-' + i, draw, measure, i)
-    }
-    _sheet.render()
     resize(width, height)
 }
 
@@ -26,32 +20,9 @@ function resize(width, height)
     {
         for (let x = 0; x < _width; x++)
         {
-            _map.push({ texture: Random.get(TEXTURES_COUNT), tint: Random.color() })
+            _map.push(Random.color())
         }
     }
-}
-
-function draw(c, i)
-{
-    function r() { return Random.get(256) }
-    c.beginPath()
-    c.fillStyle = 'white'//rgba(' + r() + ',' + r() + ',' + r() + ',1)'//0.15)'
-    c.fillRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE)
-    c.save()
-    c.beginPath()
-    c.fillStyle = 'white'
-    c.globalCompositeOperation = 'destination-out'
-    c.font = '25px sans-serif'
-    c.textBaseline = 'middle'
-    c.textAlign = 'center'
-    c.fillText(i, TEXTURE_SIZE / 2, TEXTURE_SIZE / 2)
-    c.fill()
-    c.restore()
-}
-
-function measure()
-{
-    return { width: TEXTURE_SIZE, height: TEXTURE_SIZE }
 }
 
 function get(x, y)
@@ -60,8 +31,7 @@ function get(x, y)
     {
         return null
     }
-    const tile = _map[x + y * _width]
-    return { texture: _sheet.getTexture('texture-' + tile.texture), tint: tile.tint }
+    return { texture: PIXI.Texture.WHITE, tint: _map[x + y * _width] }
 }
 
 module.exports = {

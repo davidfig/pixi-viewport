@@ -139,9 +139,3 @@ yy-renderer@^2.4.1:
     pixi.js "^4.5.6"
     yy-fps "^0.5.2"
     yy-loop "^0.3.5"
-
-yy-rendersheet@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/yy-rendersheet/-/yy-rendersheet-3.2.3.tgz#8f91b39ae69b4dfc2c32b9afaedda5eb5e3f0981"
-  dependencies:
-    pixi.js "^4.5.6"

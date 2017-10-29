@@ -45,7 +45,6 @@
     "fork-me-github": "^1.0.3",
     "highlight.js": "^9.12.0",
     "yy-random": "^1.6.0",
-    "yy-renderer": "^2.4.1",
-    "yy-rendersheet": "^3.2.3"
+    "yy-renderer": "^2.4.1"
   }
 }
