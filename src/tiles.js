@@ -30,8 +30,7 @@ module.exports = class Tiles extends Plugin
         }
         else
         {
-            this.container = attach.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles || 1500, { tint: options.tint }))
-            //, uvs: true, scale: true }))
+            this.container = attach.addChild(new PIXI.particles.ParticleContainer(options.maxNumberTiles || 1500, { tint: options.tint, uvs: true, scale: true }))
         }
         this.w = width
         this.h = height
@@ -116,7 +115,10 @@ module.exports = class Tiles extends Plugin
                     {
                         const sprite = this.container.children[i++]
                         sprite.texture = tile.texture
-                        sprite.tint = tile.tint
+                        if (this.tint && exists(tile.tint))
+                        {
+                            sprite.tint = tile.tint
+                        }
                         sprite.visible = true
                         sprite.position.set(xStart + x * this.w, yStart + y * this.h)
                         if (this.tint)
