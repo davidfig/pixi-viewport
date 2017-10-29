@@ -13,7 +13,7 @@ const Fit = require('./fit')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'fit', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'snap-zoom', 'clamp-zoom', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -38,6 +38,8 @@ module.exports = class Viewport extends Loop
      * @event pinch-end(viewport) emitted when a pinch ends
      * @event snap-start(viewport) emitted each time a snap animation starts
      * @event snap-end(viewport) emitted each time snap reaches its target
+     * @event snap-zoom-start(viewport) emitted each time a snap-zoom animation starts
+     * @event snap-zoom-end(viewport) emitted each time snap-zoom reaches its target
      * @event bounce-start-x(viewport) emitted when a bounce on the x-axis starts
      * @event bounce.end-x(viewport) emitted when a bounce on the x-axis ends
      * @event bounce-start-y(viewport) emitted when a bounce on the y-axis starts
@@ -494,6 +496,35 @@ module.exports = class Viewport extends Loop
     }
 
     /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fit(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.container.scale.x = this._screenWidth / this._worldWidth
+        this.container.scale.y = this._screenHeight / this._worldHeight
+        if (this.container.scale.x < this.container.scale.y)
+        {
+            this.container.scale.y = this.container.scale.x
+        }
+        else
+        {
+            this.container.scale.x = this.container.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+    
+    /**
      * @param {object} options
      * @param {string} [options.direction=all] (all, x, or y)
      * @param {boolean} [options.center] maintain the same center
@@ -502,17 +533,17 @@ module.exports = class Viewport extends Loop
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      * @param {number} value (a height or width -- only required if direction!=all)
      *
-     * @event fit-start(Viewport) emitted each time a fit animation starts
-     * @event fit-end(Viewport) emitted each time fit reaches its target
+     * @event snap-zoom-start(Viewport) emitted each time a snap-zoom animation starts
+     * @event snap-zoom-end(Viewport) emitted each time snap-zoom reaches its target
      */
-    fit(options, value)
+    snapZoom(options, value)
     {
         if (!value)
         {
             value = 0
             options.direction = 'all'
         }
-        this.plugins['fit'] = new Fit(this, value, options)
+        this.plugins['snap-zoom'] = new Fit(this, value, options)
         return this
     }
 

@@ -2,7 +2,7 @@ const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
 
-module.exports = class Fit extends Plugin
+module.exports = class SnapZoom extends Plugin
 {
     /**
      * @param {Viewport} parent
@@ -14,8 +14,8 @@ module.exports = class Fit extends Plugin
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      *
-     * @event fit-start(Viewport) emitted each time a fit animation starts
-     * @event fit-end(Viewport) emitted each time fit reaches its target
+     * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
+     * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      */
     constructor(parent, value, options)
     {
@@ -55,14 +55,24 @@ module.exports = class Fit extends Plugin
         }
     }
 
+    resize()
+    {
+        if (this.center)
+        {
+            this.x = (this.parent.worldScreenWidth / 2 - this.originalX) * this.parent.container.scale.x
+            this.y = (this.parent.worldScreenHeight / 2 - this.originalY) * this.parent.container.scale.y
+            this.snapping = null
+        }
+    }
+
     reset()
     {
-        this.fitting = null
+        this.snapping = null
     }
 
     down()
     {
-        this.fitting = null
+        this.snapping = null
     }
 
     update(elapsed)
@@ -75,27 +85,27 @@ module.exports = class Fit extends Plugin
         {
             this.center = this.parent.center
         }
-        if (!this.fitting)
+        if (!this.snapping)
         {
             if (this.x && this.parent.container.scale.x !== this.x)
             {
-                this.fitting = new Ease.to(this.parent.container.scale, { x: this.x, y: this.y }, this.time, { ease: this.ease })
+                this.snapping = new Ease.to(this.parent.container.scale, { x: this.x, y: this.y }, this.time, { ease: this.ease })
             }
             else if (this.parent.container.scale.x !== this.value)
             {
-                this.fitting = new Ease.to(this.parent.container.scale, { x: this.value, y: this.value }, this.time, { ease: this.ease })
+                this.snapping = new Ease.to(this.parent.container.scale, { x: this.value, y: this.value }, this.time, { ease: this.ease })
             }
             
-            this.parent.emit('fit-start', this.parent)
+            this.parent.emit('snap-zoom-start', this.parent)
         }
-        else if (this.fitting && this.fitting.update(elapsed))
+        else if (this.snapping && this.snapping.update(elapsed))
         {
             if (this.removeOnComplete)
             {
-                this.parent.removePlugin('fit')
+                this.parent.removePlugin('snap-zoom')
             }
-            this.parent.emit('fit-end', this.parent)
-            this.fitting = null
+            this.parent.emit('snap-zoom-end', this.parent)
+            this.snapping = null
         }
         if (this.center)
         {
@@ -105,7 +115,7 @@ module.exports = class Fit extends Plugin
 
     resume()
     {
-        this.fitting = null
+        this.snapping = null
         super.resume()
     }
 }
