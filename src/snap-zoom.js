@@ -7,8 +7,8 @@ module.exports = class SnapZoom extends Plugin
     /**
      * @param {Viewport} parent
      * @param {object} [options]
-     * @param {number} [options.width] the desired width to snap zoom
-     * @param {number} [options.height] the desired height to snap zoom
+     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete

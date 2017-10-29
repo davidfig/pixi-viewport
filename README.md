@@ -62,6 +62,8 @@ https://davidfig.github.io/pixi-viewport/
      * @event pinch-end(viewport) emitted when a pinch ends
      * @event snap-start(viewport) emitted each time a snap animation starts
      * @event snap-end(viewport) emitted each time snap reaches its target
+     * @event snap-zoom-start(viewport) emitted each time a snap-zoom animation starts
+     * @event snap-zoom-end(viewport) emitted each time snap-zoom reaches its target
      * @event bounce-start-x(viewport) emitted when a bounce on the x-axis starts
      * @event bounce.end-x(viewport) emitted when a bounce on the x-axis ends
      * @event bounce-start-y(viewport) emitted when a bounce on the y-axis starts
@@ -202,7 +204,26 @@ https://davidfig.github.io/pixi-viewport/
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
+    fitWorld(center)
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
     fit(center)
+
+    /**
+     * @param {object} [options]
+     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     */
+    snapZoom(width, height, options)
 
     /**
      * world coordinates of the right edge of the screen
@@ -306,8 +327,9 @@ https://davidfig.github.io/pixi-viewport/
      * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
-     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
      * @return {Viewport} this
      */
     snap(x, y, options)

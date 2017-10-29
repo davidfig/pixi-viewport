@@ -523,11 +523,11 @@ module.exports = class Viewport extends Loop
         }
         return this
     }
-    
+
     /**
-     * @param {number} width  the desired width to snap the zoom to (put 0 to ignore width)
-     * @param {number} height  the desired height to snap the zoom to (put 0 to ignore height)
-     * @param {object} options
+     * @param {object} [options]
+     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
