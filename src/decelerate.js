@@ -33,7 +33,7 @@ module.exports = class Decelerate extends Plugin
         }
 
         const pointers = data.input.pointers
-        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugin('pinch')))
+        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
         {
             this.saved.push({ x: this.parent.container.x, y: this.parent.container.y, time: performance.now() })
             if (this.saved.length > 60)

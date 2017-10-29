@@ -10,7 +10,7 @@ module.exports = class Bounce extends Plugin
      * @param {object} [options]
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      *
      * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
@@ -87,7 +87,7 @@ module.exports = class Bounce extends Plugin
         }
 
         let oob
-        let decelerate = this.parent.plugin('decelerate')
+        let decelerate = this.parent.plugins['decelerate']
         if (decelerate && (decelerate.x || decelerate.y))
         {
             if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))

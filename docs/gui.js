@@ -55,7 +55,7 @@ module.exports = function gui(viewport, drawWorld, target)
             friction: 0.8,
             interrupt: true,
             time: 1000,
-            ease: 'easeInOutsine'
+            ease: 'easeInOutSine'
         },
         follow: {
             follow: false,
@@ -67,6 +67,17 @@ module.exports = function gui(viewport, drawWorld, target)
             percent: 0.1,
             centerX: 0,
             centerY: 0
+        },
+        snapZoom: {
+            snapZoom: false,
+            width: 2000,
+            height: 0,
+            time: 1000,
+            ease: 'easeInOutSine',
+            removeOnComplete: false,
+            centerX: 0,
+            centerY: 0,
+            interrupt: true
         }
     }
     guiWorld()
@@ -80,6 +91,7 @@ module.exports = function gui(viewport, drawWorld, target)
     guiDecelerate()
     guiSnap()
     guiFollow(target)
+    guiSnapZoom()
 }
 
 function guiWorld()
@@ -460,6 +472,59 @@ function guiClampZoom()
     if (_options.clampZoom.clampZoom)
     {
         clampZoom.open()
+    }
+}
+
+function guiSnapZoom()
+{
+    function change()
+    {
+        _options.snapZoom.center = (_options.snapZoom.centerX || _options.snapZoom.centerY) ? { x: _options.snapZoom.centerX, y: _options.snapZoom.centerY } : null
+        _viewport.snapZoom(_options.snapZoom)
+    }
+
+    function add()
+    {
+        width = snapZoom.add(_options.snapZoom, 'width').onChange(change)
+        height = snapZoom.add(_options.snapZoom, 'height').onChange(change)
+        time = snapZoom.add(_options.snapZoom, 'time').onChange(change)
+        ease = snapZoom.add(_options.snapZoom, 'ease').onChange(change)
+        removeOnComplete = snapZoom.add(_options.snapZoom, 'removeOnComplete').onChange(change)
+        centerX = snapZoom.add(_options.snapZoom, 'centerX').onChange(change)
+        centerY = snapZoom.add(_options.snapZoom, 'centerY').onChange(change)
+        interrupt = snapZoom.add(_options.snapZoom, 'interrupt').onChange(change)
+    }
+
+    const snapZoom = _gui.addFolder('snap-zoom')
+    snapZoom.add(_options.snapZoom, 'snapZoom').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                _viewport.removePlugin('snap-zoom')
+                snapZoom.remove(width)
+                snapZoom.remove(height)
+                snapZoom.remove(time)
+                snapZoom.remove(ease)
+                snapZoom.remove(removeOnComplete)
+                snapZoom.remove(centerX)
+                snapZoom.remove(centerY)
+                snapZoom.remove(interrupt)
+            }
+        })
+    let width, height, time, ease, removeOnComplete, centerX, centerY, interrupt
+    if (_options.snapZoom.snapZoom)
+    {
+        add()
+    }
+    if (_options.snapZoom.snapZoom)
+    {
+        snapZoom.open()
     }
 }
 

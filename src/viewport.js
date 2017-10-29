@@ -7,14 +7,14 @@ const Pinch = require('./pinch')
 const Clamp = require('./clamp')
 const ClampZoom = require('./clamp-zoom')
 const Decelerate = require('./decelerate')
-const HitArea = require('./hit-area')
 const Bounce = require('./bounce')
 const Snap = require('./snap')
+const SnapZoom = require('./snap-zoom')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 const Tiles = require('./tiles')
 
-const PLUGIN_ORDER = ['hit-area', 'drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'clamp-zoom', 'clamp', 'tiles']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'snap-zoom', 'clamp-zoom', 'clamp', 'tiles']
 
 module.exports = class Viewport extends Loop
 {
@@ -39,6 +39,8 @@ module.exports = class Viewport extends Loop
      * @event pinch-end(viewport) emitted when a pinch ends
      * @event snap-start(viewport) emitted each time a snap animation starts
      * @event snap-end(viewport) emitted each time snap reaches its target
+     * @event snap-zoom-start(viewport) emitted each time a snap-zoom animation starts
+     * @event snap-zoom-end(viewport) emitted each time snap-zoom reaches its target
      * @event bounce-start-x(viewport) emitted when a bounce on the x-axis starts
      * @event bounce.end-x(viewport) emitted when a bounce on the x-axis ends
      * @event bounce-start-y(viewport) emitted when a bounce on the y-axis starts
@@ -469,6 +471,35 @@ module.exports = class Viewport extends Loop
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
+    fitWorld(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.container.scale.x = this._screenWidth / this._worldWidth
+        this.container.scale.y = this._screenHeight / this._worldHeight
+        if (this.container.scale.x < this.container.scale.y)
+        {
+            this.container.scale.y = this.container.scale.x
+        }
+        else
+        {
+            this.container.scale.x = this.container.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
     fit(center)
     {
         let save
@@ -490,6 +521,22 @@ module.exports = class Viewport extends Loop
         {
             this.moveCenter(save)
         }
+        return this
+    }
+
+    /**
+     * @param {object} [options]
+     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     */
+    snapZoom(width, height, options)
+    {
+        this.plugins['snap-zoom'] = new SnapZoom(this, width, height, options)
         return this
     }
 
@@ -617,15 +664,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * checks whether plugin is installed
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    plugin(type)
-    {
-        return this.plugins[type]
-    }
-
-    /**
      * enable one-finger touch to drag
      * @return {Viewport} this
      */
@@ -698,17 +736,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * add a hitArea to the container -- useful when your container contains empty spaces that you'd like to drag or pinch
-     * @param {PIXI.Rectangle} [rect] if no rect is provided, it will use the value of container.getBounds()
-     * @return {Viewport} this
-     */
-    hitArea(rect)
-    {
-        this.plugins['hit-area'] = new HitArea(this, rect)
-        return this
-    }
-
-    /**
      * snap to a point
      * @param {number} x
      * @param {number} y
@@ -716,8 +743,9 @@ module.exports = class Viewport extends Loop
      * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
-     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
      * @return {Viewport} this
      */
     snap(x, y, options)
