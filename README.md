@@ -223,7 +223,7 @@ https://davidfig.github.io/pixi-viewport/
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
      */
-    snapZoom(width, height, options)
+    snapZoom(options)
 
     /**
      * world coordinates of the right edge of the screen
