@@ -534,9 +534,9 @@ module.exports = class Viewport extends Loop
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
      */
-    snapZoom(width, height, options)
+    snapZoom(options)
     {
-        this.plugins['snap-zoom'] = new SnapZoom(this, width, height, options)
+        this.plugins['snap-zoom'] = new SnapZoom(this, options)
         return this
     }
 
