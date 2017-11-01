@@ -26,19 +26,20 @@ module.exports = class Snap extends Plugin
         this.friction = options.friction || 0.8
         this.time = options.time || 1000
         this.ease = options.ease || 'easeInOutSine'
-        this.x = x
-        this.y = y
+        this.targetX = x
+        this.targetY = y
         this.center = options.center
-        this.stopOnResize = options.stopOnResize
+        if (!this.center)
+        {
+            // Always target the center, and calculate the new top-left corner to target upon resizing
+            this.originalTargetX = this.targetX
+            this.originalTargetY = this.targetY
+            
+            this.resize()
+        }
+        this.originalCenter = this.parent.center
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
         this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete: true
-        if (this.center)
-        {
-            this.originalX = x
-            this.originalY = y
-            this.x = (this.parent.worldScreenWidth / 2 - x) * this.parent.container.scale.x
-            this.y = (this.parent.worldScreenHeight / 2 - y) * this.parent.container.scale.y
-        }
     }
 
     reset()
@@ -48,11 +49,12 @@ module.exports = class Snap extends Plugin
 
     resize()
     {
-        if (this.center)
+        if (!this.center)
         {
-            this.x = (this.parent.worldScreenWidth / 2 - this.originalX) * this.parent.container.scale.x
-            this.y = (this.parent.worldScreenHeight / 2 - this.originalY) * this.parent.container.scale.y
+            this.targetX = this.parent.container.scale.x * (this.parent.worldScreenWidth / 2 - this.originalTargetX)
+            this.targetY = this.parent.container.scale.y * (this.parent.worldScreenHeight / 2 - this.originalTargetY)
             this.snapping = null
+            this.originalCenter = this.parent.center
         }
     }
 
@@ -83,19 +85,28 @@ module.exports = class Snap extends Plugin
         {
             return
         }
-        if (!this.snapping && (this.parent.container.x !== this.x || this.parent.container.y !== this.y))
+        let center = this.parent.center
+        if (!this.snapping && (center.x !== this.targetX || center.y !== this.targetY))
         {
-            this.snapping = new Ease.to(this.parent.container, { x: this.x, y: this.y }, this.time, { ease: this.ease })
+            this.snapping = new Ease.to(this.originalCenter, { x: this.targetX, y: this.targetY }, this.time, { ease: this.ease })
             this.parent.emit('snap-start', this.parent)
         }
-        else if (this.snapping && this.snapping.update(elapsed))
+        else if (this.snapping)
         {
-            if (this.removeOnComplete)
+            var finished = this.snapping.update(elapsed)
+            
+            this.parent.moveCenter(this.originalCenter)
+            
+            if (finished)
             {
-                this.parent.removePlugin('snap')
+                if (this.removeOnComplete)
+                {
+                    this.parent.removePlugin('snap')
+                    console.log('snap-end')
+                }
+                this.parent.emit('snap-end', this.parent )
+                this.snapping = null
             }
-            this.parent.emit('snap-end', this.parent )
-            this.snapping = null
         }
     }
 
