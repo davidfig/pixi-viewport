@@ -13,7 +13,7 @@ const SnapZoom = require('./snap-zoom')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'snap-zoom', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
