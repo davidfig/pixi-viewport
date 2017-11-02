@@ -155,14 +155,14 @@ window.onload = function ()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
-    _renderer.interval(
+    _viewport.interval(
         function ()
         {
             _ease.update()
+            _renderer.update()
         }
     )
     drawWorld()
-    _renderer.start()
 
     events()
 
