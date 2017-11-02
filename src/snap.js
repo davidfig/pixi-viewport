@@ -51,13 +51,17 @@ module.exports = class Snap extends Plugin
     {
         if (!this.center)
         {
-            this.targetX = this.parent.container.scale.x * (this.parent.worldScreenWidth / 2 - this.originalTargetX)
-            this.targetY = this.parent.container.scale.y * (this.parent.worldScreenHeight / 2 - this.originalTargetY)
-            this.snapping = null
+            /* Finds target center based on the given originalTarget point (the top left corner)
+             * DOES NOT WORK WHEN the snap-zoom plugin is working simultaneously because this.parent.container.scale.x and y are
+             * constantly changing, therefore worldScreenWidth and worldScreenHeight are constantly changing, and the pixi-ease
+             * library does not support constantly changing values
+             */
             this.originalCenter = this.parent.center
+            this.targetX = this.parent.worldScreenWidth / 2 + this.originalTargetX
+            this.targetY = this.parent.worldScreenHeight / 2 + this.originalTargetY
         }
     }
-
+    
     down()
     {
         this.snapping = null
@@ -102,7 +106,6 @@ module.exports = class Snap extends Plugin
                 if (this.removeOnComplete)
                 {
                     this.parent.removePlugin('snap')
-                    console.log('snap-end')
                 }
                 this.parent.emit('snap-end', this.parent )
                 this.snapping = null
