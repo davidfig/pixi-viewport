@@ -53,6 +53,7 @@ module.exports = function gui(viewport, drawWorld, target)
             x: 0,
             y: 0,
             friction: 0.8,
+            topLeft: false,
             interrupt: true,
             time: 1000,
             ease: 'easeInOutSine'
@@ -301,7 +302,7 @@ function guiSnap()
 {
     function change()
     {
-        _viewport.snap(_options.snap.x, _options.snap.y, { interrupt: _options.snap.interrupt, time: _options.snap.time, ease: _options.snap.ease, friction: _options.snap.friction })
+        _viewport.snap(_options.snap.x, _options.snap.y, { interrupt: _options.snap.interrupt, time: _options.snap.time, ease: _options.snap.ease, friction: _options.snap.friction, topLeft: _options.snap.topLeft })
     }
 
     function add()
@@ -309,12 +310,13 @@ function guiSnap()
         x = snap.add(_options.snap, 'x').onChange(change)
         y = snap.add(_options.snap, 'y').onChange(change)
         friction = snap.add(_options.snap, 'friction').onChange(change)
+        topLeft = snap.add(_options.snap, 'topLeft').onChange(change)
         interrupt = snap.add(_options.snap, 'interrupt').onChange(change)
         time = snap.add(_options.snap, 'time').onChange(change)
         ease = snap.add(_options.snap, 'ease').onChange(change)
     }
 
-    let x, y, time, ease, friction, interrupt
+    let x, y, time, ease, friction, interrupt, topLeft
 
     const snap = _gui.addFolder('snap')
     snap.add(_options.snap, 'snap').onChange(
@@ -333,6 +335,7 @@ function guiSnap()
                 snap.remove(ease)
                 snap.remove(friction)
                 snap.remove(interrupt)
+                snap.remove(topLeft)
                 _viewport.removePlugin('snap')
             }
         }

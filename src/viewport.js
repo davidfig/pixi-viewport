@@ -410,11 +410,11 @@ module.exports = class Viewport extends Loop
     {
         if (arguments.length === 1)
         {
-            this.container.position.set(arguments[0].x, arguments[0].y)
+            this.container.position.set(-arguments[0].x * this.container.scale.x, -arguments[0].y * this.container.scale.y)
         }
         else
         {
-            this.container.position.set(arguments[0], arguments[1])
+            this.container.position.set(-arguments[0] * this.container.scale.x, -arguments[1] * this.container.scale.y)
         }
         this._reset()
         return this

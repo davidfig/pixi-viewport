@@ -30,23 +30,25 @@ module.exports = class Snap extends Plugin
         this.x = x
         this.y = y
         this.topLeft = options.topLeft
-        this.originalCenter = this.parent.center
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
         this.removeOnComplete = options.removeOnComplete
     }
 
-    reset()
+    startEase()
     {
-        this.snapping = null
-    }
-
-    resize()
-    {
+        const current = this.topLeft ? this.parent.corner : this.parent.center
+        this.deltaX = this.x - current.x
+        this.deltaY = this.y - current.y
+        this.startX = current.x
+        this.startY = current.y
     }
 
     down()
     {
-        this.snapping = null
+        if (this.interrupt)
+        {
+            this.snapping = null
+        }
     }
 
     up()
@@ -71,17 +73,30 @@ module.exports = class Snap extends Plugin
         {
             return
         }
-        let center = this.parent.center
-        if (!this.snapping && (center.x !== this.targetX || center.y !== this.targetY))
+        if (!this.snapping)
         {
-            this.snapping = new Ease.to(this.originalCenter, { x: this.targetX, y: this.targetY }, this.time, { ease: this.ease })
-            this.parent.emit('snap-start', this.parent)
+            const current = this.topLeft ? this.parent.corner : this.parent.center
+            if (current.x !== this.x || current.y !== this.y)
+            {
+                this.percent = 0
+                this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
+                this.startEase()
+                this.parent.emit('snap-start', this.parent)
+            }
         }
-        else if (this.snapping)
+        else
         {
             const finished = this.snapping.update(elapsed)
-
-            this.parent.moveCenter(this.originalCenter)
+            const x = this.startX + this.deltaX * this.percent
+            const y = this.startY + this.deltaY * this.percent
+            if (this.topLeft)
+            {
+                this.parent.moveCorner(x, y)
+            }
+            else
+            {
+                this.parent.moveCenter(x, y)
+            }
 
             if (finished)
             {
@@ -93,11 +108,5 @@ module.exports = class Snap extends Plugin
                 this.snapping = null
             }
         }
-    }
-
-    resume()
-    {
-        this.snapping = null
-        super.resume()
     }
 }
