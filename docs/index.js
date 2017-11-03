@@ -56,7 +56,6 @@ function events()
     _viewport.on('drag-end', () => addCounter('drag-end'))
     _viewport.on('pinch-start', () => addCounter('pinch-start'))
     _viewport.on('pinch-end', () => addCounter('pinch-end'))
-    _viewport.on('snap-start', () => addCounter('snap-start'))
     _viewport.on('bounce-start-x', () => addCounter('bounce-start-x'))
     _viewport.on('bounce-end-x', () => addCounter('bounce-end-x'))
     _viewport.on('bounce-start-y', () => addCounter('bounce-start-y'))
@@ -227,6 +226,7 @@ module.exports = function gui(viewport, drawWorld, target)
             x: 0,
             y: 0,
             friction: 0.8,
+            topLeft: false,
             interrupt: true,
             time: 1000,
             ease: 'easeInOutSine'
@@ -475,7 +475,7 @@ function guiSnap()
 {
     function change()
     {
-        _viewport.snap(_options.snap.x, _options.snap.y, { interrupt: _options.snap.interrupt, time: _options.snap.time, ease: _options.snap.ease, friction: _options.snap.friction })
+        _viewport.snap(_options.snap.x, _options.snap.y, { interrupt: _options.snap.interrupt, time: _options.snap.time, ease: _options.snap.ease, friction: _options.snap.friction, topLeft: _options.snap.topLeft })
     }
 
     function add()
@@ -483,12 +483,13 @@ function guiSnap()
         x = snap.add(_options.snap, 'x').onChange(change)
         y = snap.add(_options.snap, 'y').onChange(change)
         friction = snap.add(_options.snap, 'friction').onChange(change)
+        topLeft = snap.add(_options.snap, 'topLeft').onChange(change)
         interrupt = snap.add(_options.snap, 'interrupt').onChange(change)
         time = snap.add(_options.snap, 'time').onChange(change)
         ease = snap.add(_options.snap, 'ease').onChange(change)
     }
 
-    let x, y, time, ease, friction, interrupt
+    let x, y, time, ease, friction, interrupt, topLeft
 
     const snap = _gui.addFolder('snap')
     snap.add(_options.snap, 'snap').onChange(
@@ -507,6 +508,7 @@ function guiSnap()
                 snap.remove(ease)
                 snap.remove(friction)
                 snap.remove(interrupt)
+                snap.remove(topLeft)
                 _viewport.removePlugin('snap')
             }
         }
@@ -63208,6 +63210,7 @@ module.exports = class Plugin
     wheel() { }
     update() { }
     resize() { }
+    reset() { }
 
     pause()
     {
@@ -63272,7 +63275,7 @@ module.exports = class SnapZoom extends Plugin
             parent.container.scale.y = this.y_scale
             if (this.removeOnComplete)
             {
-                this.parent.removePlugin('fit')
+                this.parent.removePlugin('snap-zoom')
             }
         }
     }
@@ -63372,14 +63375,15 @@ module.exports = class Snap extends Plugin
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
-     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
+     * @param {boolean} [options.topLeft] snap to the top-left of viewport instead of center
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      *
      * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
      * @event snap-end(Viewport) emitted each time snap reaches its target
      */
     constructor(parent, x, y, options)
@@ -63391,37 +63395,26 @@ module.exports = class Snap extends Plugin
         this.ease = options.ease || 'easeInOutSine'
         this.x = x
         this.y = y
-        this.center = options.center
-        this.stopOnResize = options.stopOnResize
+        this.topLeft = options.topLeft
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
-        this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete: true
-        if (this.center)
-        {
-            this.originalX = x
-            this.originalY = y
-            this.x = (this.parent.worldScreenWidth / 2 - x) * this.parent.container.scale.x
-            this.y = (this.parent.worldScreenHeight / 2 - y) * this.parent.container.scale.y
-        }
+        this.removeOnComplete = options.removeOnComplete
     }
 
-    reset()
+    startEase()
     {
-        this.snapping = null
-    }
-
-    resize()
-    {
-        if (this.center)
-        {
-            this.x = (this.parent.worldScreenWidth / 2 - this.originalX) * this.parent.container.scale.x
-            this.y = (this.parent.worldScreenHeight / 2 - this.originalY) * this.parent.container.scale.y
-            this.snapping = null
-        }
+        const current = this.topLeft ? this.parent.corner : this.parent.center
+        this.deltaX = this.x - current.x
+        this.deltaY = this.y - current.y
+        this.startX = current.x
+        this.startY = current.y
     }
 
     down()
     {
-        this.snapping = null
+        if (this.interrupt)
+        {
+            this.snapping = null
+        }
     }
 
     up()
@@ -63446,26 +63439,41 @@ module.exports = class Snap extends Plugin
         {
             return
         }
-        if (!this.snapping && (this.parent.container.x !== this.x || this.parent.container.y !== this.y))
+        if (!this.snapping)
         {
-            this.snapping = new Ease.to(this.parent.container, { x: this.x, y: this.y }, this.time, { ease: this.ease })
-            this.parent.emit('snap-start', this.parent)
-        }
-        else if (this.snapping && this.snapping.update(elapsed))
-        {
-            if (this.removeOnComplete)
+            const current = this.topLeft ? this.parent.corner : this.parent.center
+            if (current.x !== this.x || current.y !== this.y)
             {
-                this.parent.removePlugin('snap')
+                this.percent = 0
+                this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
+                this.startEase()
+                this.parent.emit('snap-start', this.parent)
             }
-            this.parent.emit('snap-end', this.parent )
-            this.snapping = null
         }
-    }
+        else
+        {
+            const finished = this.snapping.update(elapsed)
+            const x = this.startX + this.deltaX * this.percent
+            const y = this.startY + this.deltaY * this.percent
+            if (this.topLeft)
+            {
+                this.parent.moveCorner(x, y)
+            }
+            else
+            {
+                this.parent.moveCenter(x, y)
+            }
 
-    resume()
-    {
-        this.snapping = null
-        super.resume()
+            if (finished)
+            {
+                if (this.removeOnComplete)
+                {
+                    this.parent.removePlugin('snap')
+                }
+                this.parent.emit('snap-end', this.parent )
+                this.snapping = null
+            }
+        }
     }
 }
 },{"./plugin":403,"exists":8,"pixi-ease":193}],406:[function(require,module,exports){
@@ -63484,7 +63492,7 @@ const SnapZoom = require('./snap-zoom')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap', 'snap-zoom', 'clamp-zoom', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -63881,11 +63889,11 @@ module.exports = class Viewport extends Loop
     {
         if (arguments.length === 1)
         {
-            this.container.position.set(arguments[0].x, arguments[0].y)
+            this.container.position.set(-arguments[0].x * this.container.scale.x, -arguments[0].y * this.container.scale.y)
         }
         else
         {
-            this.container.position.set(arguments[0], arguments[1])
+            this.container.position.set(-arguments[0] * this.container.scale.x, -arguments[1] * this.container.scale.y)
         }
         this._reset()
         return this
