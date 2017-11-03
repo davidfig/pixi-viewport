@@ -25,34 +25,39 @@ module.exports = class Follow extends Plugin
             return
         }
 
+        const center = this.parent.center
+        let toX = this.target.x, toY = this.target.y
         if (this.radius)
         {
-            const center = this.parent.center
             const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2))
             if (distance > this.radius)
             {
                 const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x)
-                this.parent.moveCenter(this.target.x - Math.cos(angle) * this.radius, this.target.y - Math.sin(angle) * this.radius)
+                toX = this.target.x - Math.cos(angle) * this.radius
+                toY = this.target.y - Math.sin(angle) * this.radius
+            }
+            else
+            {
+                return
             }
         }
-        else if (this.speed)
+        if (this.speed)
         {
-            const center = this.parent.center
-            const deltaX = this.target.x - center.x
-            const deltaY = this.target.y - center.y
+            const deltaX = toX - center.x
+            const deltaY = toY - center.y
             if (deltaX || deltaY)
             {
-                const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x)
+                const angle = Math.atan2(toY - center.y, toX - center.x)
                 const changeX = Math.cos(angle) * this.speed
                 const changeY = Math.sin(angle) * this.speed
-                const x = Math.abs(changeX) > Math.abs(deltaX) ? this.target.x : center.x + changeX
-                const y = Math.abs(changeY) > Math.abs(deltaY) ? this.target.y : center.y + changeY
+                const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
+                const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
                 this.parent.moveCenter(x, y)
             }
         }
         else
         {
-            this.parent.moveCenter(this.target.x, this.target.y)
+            this.parent.moveCenter(toX, toY)
         }
     }
 }
