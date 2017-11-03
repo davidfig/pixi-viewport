@@ -50,7 +50,7 @@ module.exports = class SnapZoom extends Plugin
             parent.container.scale.y = this.y_scale
             if (this.removeOnComplete)
             {
-                this.parent.removePlugin('fit')
+                this.parent.removePlugin('snap-zoom')
             }
         }
     }
