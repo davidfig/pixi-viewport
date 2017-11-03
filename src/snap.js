@@ -33,7 +33,6 @@ module.exports = class Snap extends Plugin
         this.originalCenter = this.parent.center
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
         this.removeOnComplete = options.removeOnComplete
-        this.calculateTarget()
     }
 
     reset()
@@ -43,23 +42,6 @@ module.exports = class Snap extends Plugin
 
     resize()
     {
-        this.calculateTarget()
-    }
-
-
-    calculateTarget()
-    {
-        if (!this.topLeft)
-        {
-            /* Finds target center based on the given originalTarget point (the top left corner)
-             * DOES NOT WORK WHEN the snap-zoom plugin is working simultaneously because this.parent.container.scale.x and y are
-             * constantly changing, therefore worldScreenWidth and worldScreenHeight are constantly changing, and the pixi-ease
-             * library does not support constantly changing values
-             */
-            this.originalCenter = this.parent.center
-            this.targetX = this.parent.worldScreenWidth / 2 + this.originalTargetX
-            this.targetY = this.parent.worldScreenHeight / 2 + this.originalTargetY
-        }
     }
 
     down()
@@ -97,11 +79,6 @@ module.exports = class Snap extends Plugin
         }
         else if (this.snapping)
         {
-            if (this.parent.scale.x !== this.lastScaleX || this.parent.scale.y !== this.lastScaleY)
-            {
-                this.snapping = new Ease.to(this.originalCenter, { x: this.targetX, y: this.targetY }, this.time, { ease: this.eaes })
-                this.parent.emit('snap-restart', this.parent)
-            }
             const finished = this.snapping.update(elapsed)
 
             this.parent.moveCenter(this.originalCenter)
