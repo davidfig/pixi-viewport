@@ -30,7 +30,8 @@ function viewport()
         .on('click', click)
         .decelerate()
         .bounce()
-        .tiles(Tiles.size, Tiles.size, Tiles.get, { debug: true, container: _tilesContainer, tint: true })
+        .tiles(Tiles.size, Tiles.size, Tiles.get, { debug: false, container: _tilesContainer, tint: true })
+        .start()
 }
 
 function resize()

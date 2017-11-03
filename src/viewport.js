@@ -14,7 +14,7 @@ const Follow = require('./follow')
 const Wheel = require('./wheel')
 const Tiles = require('./tiles')
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp', 'tiles']
 
 module.exports = class Viewport extends Loop
 {

@@ -13,6 +13,7 @@ module.exports = class Plugin
     update() { }
     resize() { }
     reset() { }
+    remove() { }
 
     pause()
     {

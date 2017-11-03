@@ -84,7 +84,7 @@ module.exports = class Tiles extends Plugin
 
     update()
     {
-        let display = 0, empty = 0
+        let display = 0
         const container = this.parent.container
         if (this.last.x !== container.x || this.last.y !== container.y || this.last.scaleX !== container.scale.x || this.last.scaleY !== container.scale.y)
         {
@@ -113,16 +113,11 @@ module.exports = class Tiles extends Plugin
                         sprite.position.set(xStart + x * this.w, yStart + y * this.h)
                         display++
                     }
-                    else
-                    {
-                        empty++
-                    }
                 }
             }
             for (let j = i; j < this.container.children.length; j++)
             {
                 this.container.children[j].visible = false
-                empty++
             }
             this.last.x = container.x
             this.last.y = container.y
