@@ -12,7 +12,7 @@ module.exports = class Plugin
     wheel() { }
     update() { }
     resize() { }
-    remove() { }
+    reset() { }
 
     pause()
     {

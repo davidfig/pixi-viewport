@@ -54,7 +54,6 @@ function events()
     _viewport.on('drag-end', () => addCounter('drag-end'))
     _viewport.on('pinch-start', () => addCounter('pinch-start'))
     _viewport.on('pinch-end', () => addCounter('pinch-end'))
-    _viewport.on('snap-start', () => addCounter('snap-start'))
     _viewport.on('bounce-start-x', () => addCounter('bounce-start-x'))
     _viewport.on('bounce-end-x', () => addCounter('bounce-end-x'))
     _viewport.on('bounce-start-y', () => addCounter('bounce-start-y'))
@@ -157,15 +156,14 @@ window.onload = function ()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
-    _renderer.interval(
-        function (elapsed)
+    _viewport.interval(
+        function ()
         {
-            _ease.update(elapsed)
-            _viewport.update(elapsed)
+            _ease.update()
+            _renderer.update()
         }
     )
     drawWorld()
-    _renderer.start()
 
     events()
 
