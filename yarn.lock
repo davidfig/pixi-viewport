@@ -7,8 +7,8 @@ bit-twiddle@^1.0.2:
   resolved "https://registry.yarnpkg.com/bit-twiddle/-/bit-twiddle-1.0.2.tgz#0c6c1fabe2b23d17173d9a61b7b7093eb9e1769e"
 
 earcut@^2.0.7:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.1.1.tgz#157634e5f3ebb42224e475016e86a5b6ce556b45"
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/earcut/-/earcut-2.1.2.tgz#542add0ca3a7b713452720e1d053937d3daf3784"
 
 eventemitter3@^2.0.0, eventemitter3@^2.0.3:
   version "2.0.3"
@@ -60,9 +60,9 @@ pixi-gl-core@^1.0.3:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pixi-gl-core/-/pixi-gl-core-1.1.0.tgz#a52cb4dd3254f9c7857a0e9c2356b00e6ec0c761"
 
-pixi.js@^4.5.6:
-  version "4.5.6"
-  resolved "https://registry.yarnpkg.com/pixi.js/-/pixi.js-4.5.6.tgz#54914e7935f9a9e346923b9f424e52fa417593cd"
+pixi.js@^4.5.6, pixi.js@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/pixi.js/-/pixi.js-4.6.0.tgz#dca9a1c15ad6447a5913b969a0164b89a3d1b888"
   dependencies:
     bit-twiddle "^1.0.2"
     earcut "^2.0.7"
@@ -102,20 +102,20 @@ yy-color@^1.0.0:
   dependencies:
     yy-random "^1.0.1"
 
-yy-counter@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/yy-counter/-/yy-counter-2.0.1.tgz#35385c5e65b35abb0f99e797b616299a395a8800"
+yy-counter@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/yy-counter/-/yy-counter-2.1.0.tgz#6c023c5a5f48a962cf34f234cbb26f64d8bd2c2e"
 
-yy-fps@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/yy-fps/-/yy-fps-0.4.1.tgz#de618a793a2001c723682b1300dd6effe975e507"
+yy-fps@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/yy-fps/-/yy-fps-0.5.2.tgz#e0614c7850b10e5a90b3bbe4f597e96f8cdd44f3"
   dependencies:
     tinycolor2 "^1.4.1"
-    yy-counter "^2.0.1"
+    yy-counter "^2.1.0"
 
-yy-input@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/yy-input/-/yy-input-0.8.0.tgz#e71d9c56ed7b609894f29b64d3a0f141e04f5be6"
+yy-input@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/yy-input/-/yy-input-0.9.0.tgz#9c286c1822852f546078fab587a6ec80092f9b71"
   dependencies:
     eventemitter3 "^2.0.3"
 
@@ -131,11 +131,11 @@ yy-random@^1.0.1, yy-random@^1.6.0:
   dependencies:
     seedrandom "^2.4.3"
 
-yy-renderer@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/yy-renderer/-/yy-renderer-2.2.1.tgz#d3be4f893b09c00338fcbad5cb3e6b25af44d96e"
+yy-renderer@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/yy-renderer/-/yy-renderer-2.4.1.tgz#ba83dc6b413f71607a56b71dff20c53e76217aad"
   dependencies:
     exists "^1.0.1"
     pixi.js "^4.5.6"
-    yy-fps "^0.4.1"
+    yy-fps "^0.5.2"
     yy-loop "^0.3.5"
