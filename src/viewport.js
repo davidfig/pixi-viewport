@@ -12,8 +12,9 @@ const Snap = require('./snap')
 const SnapZoom = require('./snap-zoom')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
+const MouseEdges = require('./mouse-edges')
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -798,6 +799,12 @@ module.exports = class Viewport extends Loop
     clampZoom(options)
     {
         this.plugins['clamp-zoom'] = new ClampZoom(this, options)
+        return this
+    }
+
+    mouseEdges(options)
+    {
+        this.plugins['mouse-edges'] = new MouseEdges(this, options)
         return this
     }
 }

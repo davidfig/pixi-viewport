@@ -29,7 +29,7 @@ function viewport()
         .pinch()
         .on('click', click)
         .decelerate()
-        .bounce()
+        // .bounce()
         .start()
     resize()
 }
@@ -63,6 +63,8 @@ function events()
     _viewport.on('snap-end', () => addCounter('snap-end'))
     _viewport.on('snap-zoom-start', () => addCounter('snap-zoom-start'))
     _viewport.on('snap-zoom-end', () => addCounter('snap-zoom-end'))
+    _viewport.on('mouse-edges-start', () => addCounter('mouse-edges-start'))
+    _viewport.on('mouse-edges-end', () => addCounter('mouse-edges-end'))
 }
 
 function line(x, y, width, height)
