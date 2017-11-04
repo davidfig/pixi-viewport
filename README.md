@@ -1,7 +1,7 @@
 # pixi-viewport
 A highly configurable viewport/2D camera designed to work with pixi.js.
 
-Features include dragging, pinch-to-zoom, decelerated dragging, following target, snapping to point, clamping, bouncing on edges. See live example to try out these features.
+Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.
 
 ## Rationale
 I wanted to improve my work on yy-viewport with a complete rewrite of a viewport/2D camera for use with pixi.js. I added options that I need in my games, including edges that bounce, deceleration, and highly configurable options to tweak the feel of the viewport. 
