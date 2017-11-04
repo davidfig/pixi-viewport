@@ -30,7 +30,7 @@ function viewport()
         .pinch()
         .on('click', click)
         .decelerate()
-        .bounce()
+        // .bounce()
         .start()
     resize()
 }
@@ -64,6 +64,8 @@ function events()
     _viewport.on('snap-end', () => addCounter('snap-end'))
     _viewport.on('snap-zoom-start', () => addCounter('snap-zoom-start'))
     _viewport.on('snap-zoom-end', () => addCounter('snap-zoom-end'))
+    _viewport.on('mouse-edges-start', () => addCounter('mouse-edges-start'))
+    _viewport.on('mouse-edges-end', () => addCounter('mouse-edges-end'))
 }
 
 function line(x, y, width, height)
@@ -252,6 +254,19 @@ module.exports = function gui(viewport, drawWorld, target)
             centerX: 0,
             centerY: 0,
             interrupt: true
+        },
+        mouseEdges: {
+            mouseEdges: false,
+            radius: 300,
+            distance: 0,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            speed: 8,
+            reverse: false,
+            noDecelerate: false,
+            linear: false
         }
     }
     guiWorld()
@@ -266,6 +281,7 @@ module.exports = function gui(viewport, drawWorld, target)
     guiSnap()
     guiFollow(target)
     guiSnapZoom()
+    guiMouseEdges()
 }
 
 function guiWorld()
@@ -704,6 +720,64 @@ function guiSnapZoom()
     }
 }
 
+function guiMouseEdges()
+{
+    function change()
+    {
+        const me = _options.mouseEdges
+        const options = { radius: me.radius !== 0 ? me.radius : null, distance: me.distance !== 0 ? me.distance : null, top: me.top !== 0 ? me.top : null, bottom: me.bottom !== 0 ? me.bottom : null, left: me.left !== 0 ? me.left : null, right: me.right !== 0 ? me.right : null, speed: me.speed, reverse: me.reverse, noDecelerate: me.noDecelerate, linear: me.linear }
+        _viewport.mouseEdges(options)
+    }
+
+    function add()
+    {
+        radius = mouseEdges.add(_options.mouseEdges, 'radius').onChange(change)
+        distance = mouseEdges.add(_options.mouseEdges, 'distance').onChange(change)
+        top = mouseEdges.add(_options.mouseEdges, 'top').onChange(change)
+        left = mouseEdges.add(_options.mouseEdges, 'left').onChange(change)
+        right = mouseEdges.add(_options.mouseEdges, 'right').onChange(change)
+        bottom = mouseEdges.add(_options.mouseEdges, 'bottom').onChange(change)
+        speed = mouseEdges.add(_options.mouseEdges, 'speed').onChange(change)
+        reverse = mouseEdges.add(_options.mouseEdges, 'reverse').onChange(change)
+        noDecelerate = mouseEdges.add(_options.mouseEdges, 'noDecelerate').onChange(change)
+        linear = mouseEdges.add(_options.mouseEdges, 'linear').onChange(change)
+    }
+
+    const mouseEdges = _gui.addFolder('mouseEdges')
+    mouseEdges.add(_options.mouseEdges, 'mouseEdges').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                _viewport.removePlugin('mouse-edges')
+                mouseEdges.remove(radius)
+                mouseEdges.remove(distance)
+                mouseEdges.remove(top)
+                mouseEdges.remove(left)
+                mouseEdges.remove(right)
+                mouseEdges.remove(bottom)
+                mouseEdges.remove(speed)
+                mouseEdges.remove(reverse)
+                mouseEdges.remove(noDecelerate)
+                mouseEdges.remove(linear)
+            }
+        })
+    let radius, distance, top, left, right, bottom, speed, reverse, noDecelerate, linear
+    if (_options.mouseEdges.mouseEdges)
+    {
+        add()
+    }
+    if (_options.mouseEdges.mouseEdges)
+    {
+        mouseEdges.open()
+    }
+}
+
 /* global dat */
 },{}],3:[function(require,module,exports){
 const forkMe = require('fork-me-github')
@@ -727,7 +801,7 @@ module.exports = function highlight(url)
 /* globals window, XMLHttpRequest, document */
 },{"fork-me-github":9,"highlight.js":11}],4:[function(require,module,exports){
 module.exports = require('./src/viewport')
-},{"./src/viewport":406}],5:[function(require,module,exports){
+},{"./src/viewport":407}],5:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -33855,7 +33929,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":251,"../../../../textures/TextureMatrix":297,"../Filter":267,"path":409}],271:[function(require,module,exports){
+},{"../../../../math":251,"../../../../textures/TextureMatrix":297,"../Filter":267,"path":410}],271:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37545,7 +37619,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":225,"path":409}],289:[function(require,module,exports){
+},{"../../Shader":225,"path":410}],289:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42838,7 +42912,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":415}],306:[function(require,module,exports){
+},{"url":416}],306:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47284,7 +47358,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":246,"../../core/const":227,"path":409}],324:[function(require,module,exports){
+},{"../../core":246,"../../core/const":227,"path":410}],324:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47366,7 +47440,7 @@ var AlphaFilter = function (_core$Filter) {
 
 exports.default = AlphaFilter;
 
-},{"../../core":246,"path":409}],325:[function(require,module,exports){
+},{"../../core":246,"path":410}],325:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48529,7 +48603,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":246,"path":409}],332:[function(require,module,exports){
+},{"../../core":246,"path":410}],332:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48639,7 +48713,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":246,"path":409}],333:[function(require,module,exports){
+},{"../../core":246,"path":410}],333:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48693,7 +48767,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":246,"path":409}],334:[function(require,module,exports){
+},{"../../core":246,"path":410}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48869,7 +48943,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":246,"path":409}],336:[function(require,module,exports){
+},{"../../core":246,"path":410}],336:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -51489,7 +51563,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":246,"../extras":322,"path":409,"resource-loader":375}],344:[function(require,module,exports){
+},{"../core":246,"../extras":322,"path":410,"resource-loader":375}],344:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51847,7 +51921,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":246,"resource-loader":375,"url":415}],347:[function(require,module,exports){
+},{"../core":246,"resource-loader":375,"url":416}],347:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53497,7 +53571,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":246,"../Mesh":348,"path":409,"pixi-gl-core":210}],355:[function(require,module,exports){
+},{"../../core":246,"../Mesh":348,"path":410,"pixi-gl-core":210}],355:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58838,7 +58912,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":408}],385:[function(require,module,exports){
+},{"crypto":409}],385:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -62663,7 +62737,7 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":403,"exists":8,"pixi-ease":193}],397:[function(require,module,exports){
+},{"./plugin":404,"exists":8,"pixi-ease":193}],397:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class ClampZoom extends Plugin
@@ -62723,7 +62797,7 @@ module.exports = class ClampZoom extends Plugin
     }
 }
 
-},{"./plugin":403}],398:[function(require,module,exports){
+},{"./plugin":404}],398:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class clamp extends Plugin
@@ -62845,7 +62919,9 @@ module.exports = class clamp extends Plugin
         }
     }
 }
-},{"./plugin":403}],399:[function(require,module,exports){
+},{"./plugin":404}],399:[function(require,module,exports){
+const exists = require('exists')
+
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -62911,6 +62987,26 @@ module.exports = class Decelerate extends Plugin
         }
     }
 
+    /**
+     * manually activate plugin
+     * @param {object} options
+     * @param {number} [options.x]
+     * @param {number} [options.y]
+     */
+    activate(options)
+    {
+        if (exists(options.x))
+        {
+            this.x = options.x
+            this.percentChangeX = this.friction
+        }
+        if (exists(options.y))
+        {
+            this.y = options.y
+            this.percentChangeY = this.friction
+        }
+    }
+
     update(elapsed)
     {
         if (this.paused)
@@ -62943,7 +63039,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":403}],400:[function(require,module,exports){
+},{"./plugin":404,"exists":8}],400:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Drag extends Plugin
@@ -63017,7 +63113,7 @@ module.exports = class Drag extends Plugin
     }
 }
 
-},{"./plugin":403}],401:[function(require,module,exports){
+},{"./plugin":404}],401:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -63081,7 +63177,191 @@ module.exports = class Follow extends Plugin
         }
     }
 }
-},{"./plugin":403}],402:[function(require,module,exports){
+},{"./plugin":404}],402:[function(require,module,exports){
+const exists = require('exists')
+const Angle = require('yy-angle')
+
+const Plugin = require('./plugin')
+
+module.exports = class MouseEdges extends Plugin
+{
+    /**
+     * Scroll viewport when mouse hovers near one of the edges.
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {number} [options.radius] distance from center of screen in screen pixels
+     * @param {number} [options.distance] distance from all sides in screen pixels
+     * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
+     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
+     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
+     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
+     * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
+     * @param {boolean} [options.reverse] reverse direction of scroll
+     * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
+     * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     *
+     * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
+     * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.options = options
+        this.reverse = options.reverse ? 1 : -1
+        this.noDecelerate = options.noDecelerate
+        this.linear = options.linear
+        this.radiusSquared = Math.pow(options.radius, 2)
+        this.resize()
+        this.speed = options.speed || 8
+    }
+
+    resize()
+    {
+        const options = this.options
+        const distance = options.distance
+        if (exists(distance))
+        {
+            this.left = distance
+            this.top = distance
+            this.right = window.innerWidth - distance
+            this.bottom = window.innerHeight - distance
+        }
+        else if (!this.radius)
+        {
+            this.left = exists(options.left) ? options.left : null
+            this.top = exists(options.top) ? options.top : null
+            this.right = exists(options.right) ? window.innerWidth - options.right : null
+            this.bottom = exists(options.bottom) ? window.innerHeight - options.bottom : null
+        }
+    }
+
+    down()
+    {
+        this.horizontal = this.vertical = null
+    }
+
+    move(x, y, data)
+    {
+        if (data.input.pointers.length === 0)
+        {
+            if (this.radiusSquared)
+            {
+                const center = this.parent.toScreen(this.parent.center)
+                const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
+                if (distance >= this.radiusSquared)
+                {
+                    const angle = Math.atan2(center.y - y, center.x - x)
+                    if (this.linear)
+                    {
+                        this.horizontal = Math.round(Math.cos(angle)) * this.speed * this.reverse * (60 / 1000)
+                        this.vertical = Math.round(Math.sin(angle)) * this.speed * this.reverse * (60 / 1000)
+                    }
+                    else
+                    {
+                        this.horizontal = Math.cos(angle) * this.speed * this.reverse * (60 / 1000)
+                        this.vertical = Math.sin(angle) * this.speed * this.reverse * (60 / 1000)
+                    }
+                }
+                else
+                {
+                    if (this.horizontal)
+                    {
+                        this.decelerateHorizontal()
+                    }
+                    if (this.vertical)
+                    {
+                        this.decelerateVertical()
+                    }
+                    this.horizontal = this.vertical = 0
+                }
+            }
+            else
+            {
+                if (exists(this.left) && x < this.left)
+                {
+                    this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
+                }
+                else if (exists(this.right) && x > this.right)
+                {
+                    this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
+                }
+                else
+                {
+                    this.decelerateHorizontal()
+                    this.horizontal = 0
+                }
+                if (exists(this.top) && y < this.top)
+                {
+                    this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
+                }
+                else if (exists(this.bottom) && y > this.bottom)
+                {
+                    this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
+                }
+                else
+                {
+                    this.decelerateVertical()
+                    this.vertical = 0
+                }
+            }
+        }
+    }
+
+    decelerateHorizontal()
+    {
+        const decelerate = this.parent.plugins['decelerate']
+        if (this.horizontal && decelerate && !this.noDecelerate)
+        {
+            decelerate.activate({ x: (this.horizontal * this.speed * this.reverse) / (1000 / 60) })
+        }
+    }
+
+    decelerateVertical()
+    {
+        const decelerate = this.parent.plugins['decelerate']
+        if (this.vertical && decelerate && !this.noDecelerate)
+        {
+            decelerate.activate({ y: (this.vertical * this.speed * this.reverse) / (1000 / 60)})
+        }
+    }
+
+    up()
+    {
+        if (this.horizontal)
+        {
+            this.decelerateHorizontal()
+        }
+        if (this.vertical)
+        {
+            this.decelerateVertical()
+        }
+        this.horizontal = this.vertical = null
+    }
+
+    update()
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        if (this.horizontal || this.vertical)
+        {
+            const center = this.parent.center
+            if (this.horizontal)
+            {
+                center.x += this.horizontal * this.speed
+            }
+            if (this.vertical)
+            {
+                center.y += this.vertical * this.speed
+            }
+            this.parent.moveCenter(center)
+        }
+    }
+}
+},{"./plugin":404,"exists":8,"yy-angle":386}],403:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -63195,7 +63475,7 @@ module.exports = class Pinch extends Plugin
         }
     }
 }
-},{"./plugin":403}],403:[function(require,module,exports){
+},{"./plugin":404}],404:[function(require,module,exports){
 module.exports = class Plugin
 {
     constructor(parent)
@@ -63222,7 +63502,7 @@ module.exports = class Plugin
         this.paused = false
     }
 }
-},{}],404:[function(require,module,exports){
+},{}],405:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -63363,7 +63643,7 @@ module.exports = class SnapZoom extends Plugin
         super.resume()
     }
 }
-},{"./plugin":403,"exists":8,"pixi-ease":193}],405:[function(require,module,exports){
+},{"./plugin":404,"exists":8,"pixi-ease":193}],406:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -63476,7 +63756,7 @@ module.exports = class Snap extends Plugin
         }
     }
 }
-},{"./plugin":403,"exists":8,"pixi-ease":193}],406:[function(require,module,exports){
+},{"./plugin":404,"exists":8,"pixi-ease":193}],407:[function(require,module,exports){
 const Loop = require('yy-loop')
 const Input = require('yy-input')
 const exists = require('exists')
@@ -63491,8 +63771,9 @@ const Snap = require('./snap')
 const SnapZoom = require('./snap-zoom')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
+const MouseEdges = require('./mouse-edges')
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
 module.exports = class Viewport extends Loop
 {
@@ -64279,9 +64560,32 @@ module.exports = class Viewport extends Loop
         this.plugins['clamp-zoom'] = new ClampZoom(this, options)
         return this
     }
+
+    /**
+     * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
+     * @param {object} [options]
+     * @param {number} [options.radius] distance from center of screen in screen pixels
+     * @param {number} [options.distance] distance from all sides in screen pixels
+     * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
+     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
+     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
+     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
+     * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
+     * @param {boolean} [options.reverse] reverse direction of scroll
+     * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
+     * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     *
+     * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
+     * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
+     */
+    mouseEdges(options)
+    {
+        this.plugins['mouse-edges'] = new MouseEdges(this, options)
+        return this
+    }
 }
 
-},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./pinch":402,"./snap":405,"./snap-zoom":404,"./wheel":407,"exists":8,"yy-input":390,"yy-loop":391}],407:[function(require,module,exports){
+},{"./bounce":396,"./clamp":398,"./clamp-zoom":397,"./decelerate":399,"./drag":400,"./follow":401,"./mouse-edges":402,"./pinch":403,"./snap":406,"./snap-zoom":405,"./wheel":408,"exists":8,"yy-input":390,"yy-loop":391}],408:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
@@ -64356,9 +64660,9 @@ module.exports = class Wheel extends Plugin
         this.parent.emit('wheel', { wheel: {dx, dy, dz}, viewport: this.parent})
     }
 }
-},{"./plugin":403}],408:[function(require,module,exports){
+},{"./plugin":404}],409:[function(require,module,exports){
 
-},{}],409:[function(require,module,exports){
+},{}],410:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -64586,7 +64890,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":410}],410:[function(require,module,exports){
+},{"_process":411}],411:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -64772,7 +65076,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],411:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -65309,7 +65613,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],412:[function(require,module,exports){
+},{}],413:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65395,7 +65699,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],413:[function(require,module,exports){
+},{}],414:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -65482,13 +65786,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],414:[function(require,module,exports){
+},{}],415:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":412,"./encode":413}],415:[function(require,module,exports){
+},{"./decode":413,"./encode":414}],416:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -66222,7 +66526,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":416,"punycode":411,"querystring":414}],416:[function(require,module,exports){
+},{"./util":417,"punycode":412,"querystring":415}],417:[function(require,module,exports){
 'use strict';
 
 module.exports = {

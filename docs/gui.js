@@ -79,6 +79,19 @@ module.exports = function gui(viewport, drawWorld, target)
             centerX: 0,
             centerY: 0,
             interrupt: true
+        },
+        mouseEdges: {
+            mouseEdges: false,
+            radius: 300,
+            distance: 0,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            speed: 8,
+            reverse: false,
+            noDecelerate: false,
+            linear: false
         }
     }
     guiWorld()
@@ -93,6 +106,7 @@ module.exports = function gui(viewport, drawWorld, target)
     guiSnap()
     guiFollow(target)
     guiSnapZoom()
+    guiMouseEdges()
 }
 
 function guiWorld()
@@ -528,6 +542,64 @@ function guiSnapZoom()
     if (_options.snapZoom.snapZoom)
     {
         snapZoom.open()
+    }
+}
+
+function guiMouseEdges()
+{
+    function change()
+    {
+        const me = _options.mouseEdges
+        const options = { radius: me.radius !== 0 ? me.radius : null, distance: me.distance !== 0 ? me.distance : null, top: me.top !== 0 ? me.top : null, bottom: me.bottom !== 0 ? me.bottom : null, left: me.left !== 0 ? me.left : null, right: me.right !== 0 ? me.right : null, speed: me.speed, reverse: me.reverse, noDecelerate: me.noDecelerate, linear: me.linear }
+        _viewport.mouseEdges(options)
+    }
+
+    function add()
+    {
+        radius = mouseEdges.add(_options.mouseEdges, 'radius').onChange(change)
+        distance = mouseEdges.add(_options.mouseEdges, 'distance').onChange(change)
+        top = mouseEdges.add(_options.mouseEdges, 'top').onChange(change)
+        left = mouseEdges.add(_options.mouseEdges, 'left').onChange(change)
+        right = mouseEdges.add(_options.mouseEdges, 'right').onChange(change)
+        bottom = mouseEdges.add(_options.mouseEdges, 'bottom').onChange(change)
+        speed = mouseEdges.add(_options.mouseEdges, 'speed').onChange(change)
+        reverse = mouseEdges.add(_options.mouseEdges, 'reverse').onChange(change)
+        noDecelerate = mouseEdges.add(_options.mouseEdges, 'noDecelerate').onChange(change)
+        linear = mouseEdges.add(_options.mouseEdges, 'linear').onChange(change)
+    }
+
+    const mouseEdges = _gui.addFolder('mouseEdges')
+    mouseEdges.add(_options.mouseEdges, 'mouseEdges').onChange(
+        function (value)
+        {
+            if (value)
+            {
+                change()
+                add()
+            }
+            else
+            {
+                _viewport.removePlugin('mouse-edges')
+                mouseEdges.remove(radius)
+                mouseEdges.remove(distance)
+                mouseEdges.remove(top)
+                mouseEdges.remove(left)
+                mouseEdges.remove(right)
+                mouseEdges.remove(bottom)
+                mouseEdges.remove(speed)
+                mouseEdges.remove(reverse)
+                mouseEdges.remove(noDecelerate)
+                mouseEdges.remove(linear)
+            }
+        })
+    let radius, distance, top, left, right, bottom, speed, reverse, noDecelerate, linear
+    if (_options.mouseEdges.mouseEdges)
+    {
+        add()
+    }
+    if (_options.mouseEdges.mouseEdges)
+    {
+        mouseEdges.open()
     }
 }
 

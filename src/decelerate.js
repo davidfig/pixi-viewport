@@ -1,3 +1,5 @@
+const exists = require('exists')
+
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -60,6 +62,26 @@ module.exports = class Decelerate extends Plugin
                     break
                 }
             }
+        }
+    }
+
+    /**
+     * manually activate plugin
+     * @param {object} options
+     * @param {number} [options.x]
+     * @param {number} [options.y]
+     */
+    activate(options)
+    {
+        if (exists(options.x))
+        {
+            this.x = options.x
+            this.percentChangeX = this.friction
+        }
+        if (exists(options.y))
+        {
+            this.y = options.y
+            this.percentChangeY = this.friction
         }
     }
 
