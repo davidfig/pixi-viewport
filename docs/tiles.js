@@ -1,5 +1,5 @@
 const TEXTURES_COUNT = 50
-const TEXTURE_SIZE = 64
+const TEXTURE_SIZE = 512
 
 let _map, _width, _height
 

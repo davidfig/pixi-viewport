@@ -68,16 +68,13 @@ module.exports = class Tiles extends Plugin
                 this.container.removeChildren(this.count)
             }
         }
-        else
+        else if (this.container.children.length < this.count)
         {
-            for (let i = 0; i < this.count; i++)
+            while (this.container.children.length < this.count)
             {
-                if (i >= this.container.children.length)
-                {
-                    const sprite = this.container.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-                    sprite.width = this.w
-                    sprite.height = this.h
-                }
+                const sprite = this.container.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+                sprite.width = this.w
+                sprite.height = this.h
             }
         }
     }
@@ -107,10 +104,10 @@ module.exports = class Tiles extends Plugin
                     if (tile)
                     {
                         const sprite = this.container.children[i++]
-                        sprite.texture = tile.texture
-                        sprite.tint = exists(tile.tint) ? tile.tint : 0xffffff
+                        // sprite.texture = tile.texture
+                        // sprite.tint = exists(tile.tint) ? tile.tint : 0xffffff
                         sprite.visible = true
-                        sprite.position.set(xStart + x * this.w, yStart + y * this.h)
+                        // sprite.position.set(xStart + x * this.w, yStart + y * this.h)
                         display++
                     }
                 }
@@ -130,7 +127,7 @@ module.exports = class Tiles extends Plugin
                 {
                     count += this.container.children[i].visible ? 0 : 1
                 }
-                this.counter.log(display + ' tiles with ' + count + ' empty' + ' using ' + this.container.children.length + ' sprites')
+                this.counter.log(display + ' tiles with ' + count + ' empty' + ' using ' + this.container.children.length + ' sprites (' + Math.random() + ')')
             }
         }
     }

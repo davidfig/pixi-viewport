@@ -22,7 +22,7 @@ let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = [], _tilesC
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, worldWidth: WIDTH, worldHeight: HEIGHT, screenWidth: window.innerWidth, screenHeight: window.innerHeight })
+    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, worldWidth: WIDTH, worldHeight: HEIGHT, screenWidth: window.innerWidth, screenHeight: window.innerHeight, pauseOnBlur: true })
     _viewport
         .drag()
         .wheel()
@@ -30,7 +30,7 @@ function viewport()
         .on('click', click)
         .decelerate()
         .bounce()
-        .tiles(Tiles.size, Tiles.size, Tiles.get, { debug: false, container: _tilesContainer, tint: true })
+        .tiles(Tiles.size, Tiles.size, Tiles.get, { debug: true, container: _tilesContainer, tint: true })
         .start()
 }
 
