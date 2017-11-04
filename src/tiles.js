@@ -68,7 +68,7 @@ module.exports = class Tiles extends Plugin
                 this.container.removeChildren(this.count)
             }
         }
-        else if (this.container.children.length < this.count)
+        else
         {
             while (this.container.children.length < this.count)
             {
@@ -104,10 +104,10 @@ module.exports = class Tiles extends Plugin
                     if (tile)
                     {
                         const sprite = this.container.children[i++]
-                        // sprite.texture = tile.texture
-                        // sprite.tint = exists(tile.tint) ? tile.tint : 0xffffff
+                        sprite.texture = tile.texture
+                        sprite.tint = exists(tile.tint) ? tile.tint : 0xffffff
                         sprite.visible = true
-                        // sprite.position.set(xStart + x * this.w, yStart + y * this.h)
+                        sprite.position.set(xStart + x * this.w, yStart + y * this.h)
                         display++
                     }
                 }
@@ -127,7 +127,7 @@ module.exports = class Tiles extends Plugin
                 {
                     count += this.container.children[i].visible ? 0 : 1
                 }
-                this.counter.log(display + ' tiles with ' + count + ' empty' + ' using ' + this.container.children.length + ' sprites (' + Math.random() + ')')
+                this.counter.log(display + ' tiles with ' + count + ' empty' + ' using ' + this.container.children.length + ' sprites')
             }
         }
     }

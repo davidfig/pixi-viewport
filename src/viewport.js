@@ -12,6 +12,7 @@ const Snap = require('./snap')
 const SnapZoom = require('./snap-zoom')
 const Follow = require('./follow')
 const Wheel = require('./wheel')
+const Tiles = require('./tiles')
 const MouseEdges = require('./mouse-edges')
 
 const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp', 'tiles']
