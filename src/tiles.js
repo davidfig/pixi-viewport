@@ -59,31 +59,6 @@ module.exports = class Tiles extends Plugin
         return sprite
     }
 
-    layout()
-    {
-        this.columns = Math.floor(this.parent.worldScreenWidth / this.w) + 4
-        this.rows = Math.floor(this.parent.worldScreenHeight / this.h) + 4
-        // this.count = this.columns * this.rows
-        // const max = Math.ceil(this.parent.worldWidth / this.w) * Math.ceil(this.parent.worldHeight / this.h)
-        // this.count = this.count > max ? max : this.count
-        // if (this.container.children.length > this.count)
-        // {
-        //     if (this.shrink)
-        //     {
-        //         this.container.removeChildren(this.count)
-        //     }
-        // }
-        // else
-        // {
-        //     while (this.container.children.length < this.count)
-        //     {
-        //         const sprite = this.container.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-        //         sprite.width = this.w
-        //         sprite.height = this.h
-        //     }
-        // }
-    }
-
     update()
     {
         let display = 0
@@ -92,7 +67,8 @@ module.exports = class Tiles extends Plugin
         {
             if (this.last.scaleX !== container.scale.x || this.last.scaleY !== container.scale.y)
             {
-                this.layout()
+                this.columns = Math.floor(this.parent.worldScreenWidth / this.w) + 4
+                this.rows = Math.floor(this.parent.worldScreenHeight / this.h) + 4
             }
             const left = this.parent.left
             const top = this.parent.top
