@@ -1,7 +1,7 @@
 {
   "name": "pixi-viewport",
-  "version": "0.16.1",
-  "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Featurse inclue dragging, pinch-to-zoom, decelerated dragging, following target, snapping to point, clamping, bouncing on edges.",
+  "version": "0.16.2",
+  "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
   "main": "index.js",
   "directories": {
     "doc": "docs"
