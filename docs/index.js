@@ -63123,7 +63123,7 @@ module.exports = class Follow extends Plugin
      * @param {Viewport} parent
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]
-     * @param {number} [options.speed=0] to follow in pixels/frame
+     * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      */
     constructor(parent, target, options)
@@ -64518,7 +64518,7 @@ module.exports = class Viewport extends Loop
      * follow a target
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]
-     * @param {number} [options.speed=0] to follow in pixels/frame
+     * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      * @return {Viewport} this
      */
