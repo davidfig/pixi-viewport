@@ -55,20 +55,20 @@ https://davidfig.github.io/pixi-viewport/
      * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
      * @param {number} [options.preventDefault] call preventDefault after listeners
      *
-     * @event click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
-     * @event drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
-     * @event drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
-     * @event pinch-start(viewport) emitted when a pinch starts
-     * @event pinch-end(viewport) emitted when a pinch ends
-     * @event snap-start(viewport) emitted each time a snap animation starts
-     * @event snap-end(viewport) emitted each time snap reaches its target
-     * @event snap-zoom-start(viewport) emitted each time a snap-zoom animation starts
-     * @event snap-zoom-end(viewport) emitted each time snap-zoom reaches its target
-     * @event bounce-start-x(viewport) emitted when a bounce on the x-axis starts
-     * @event bounce.end-x(viewport) emitted when a bounce on the x-axis ends
-     * @event bounce-start-y(viewport) emitted when a bounce on the y-axis starts
-     * @event bounce-end-y(viewport) emitted when a bounce on the y-axis ends
-     * @event wheel({wheel: {dx, dy, dz}, viewport})
+     * @emits click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
+     * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
+     * @emits drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
+     * @emits pinch-start(viewport) emitted when a pinch starts
+     * @emits pinch-end(viewport) emitted when a pinch ends
+     * @emits snap-start(viewport) emitted each time a snap animation starts
+     * @emits snap-end(viewport) emitted each time snap reaches its target
+     * @emits snap-zoom-start(viewport) emitted each time a snap-zoom animation starts
+     * @emits snap-zoom-end(viewport) emitted each time snap-zoom reaches its target
+     * @emits bounce-start-x(viewport) emitted when a bounce on the x-axis starts
+     * @emits bounce.end-x(viewport) emitted when a bounce on the x-axis ends
+     * @emits bounce-start-y(viewport) emitted when a bounce on the y-axis starts
+     * @emits bounce-end-y(viewport) emitted when a bounce on the y-axis ends
+     * @emits wheel({wheel: {dx, dy, dz}, viewport})
      */
     constructor(container, options)
 
@@ -248,6 +248,12 @@ https://davidfig.github.io/pixi-viewport/
      * @type {number}
      */
     get bottom()
+
+    /**
+     * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
+     * @type {boolean}
+     */
+    get dirty()
 
     /**
      * removes installed plugin

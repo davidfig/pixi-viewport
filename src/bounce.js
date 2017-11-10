@@ -68,6 +68,7 @@ module.exports = class Bounce extends Plugin
                 this.toX = null
                 this.parent.emit('bounce-end-x', this.parent)
             }
+            this.parent.dirty = true
         }
         if (this.toY)
         {
@@ -76,6 +77,7 @@ module.exports = class Bounce extends Plugin
                 this.toY = null
                 this.parent.emit('bounce-end-y', this.parent)
             }
+            this.parent.dirty = true
         }
     }
 

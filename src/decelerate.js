@@ -100,6 +100,7 @@ module.exports = class Decelerate extends Plugin
             {
                 this.x = 0
             }
+            this.parent.dirty = true
         }
         if (this.y)
         {
@@ -109,6 +110,7 @@ module.exports = class Decelerate extends Plugin
             {
                 this.y = 0
             }
+            this.parent.dirty = true
         }
     }
 

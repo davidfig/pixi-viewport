@@ -45,6 +45,7 @@ module.exports = class Drag extends Plugin
                         this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
+                    this.parent.dirty = true
                 }
             }
             else

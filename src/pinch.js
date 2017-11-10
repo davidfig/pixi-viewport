@@ -94,6 +94,7 @@ module.exports = class Pinch extends Plugin
                     this.pinching = true
                 }
             }
+            this.parent.dirty = true
         }
     }
 

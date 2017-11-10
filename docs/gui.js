@@ -2,7 +2,7 @@ let _viewport, _drawWorld, _gui, _options, _world
 
 const TEST = false
 
-module.exports = function gui(viewport, drawWorld, target)
+function gui(viewport, drawWorld, target)
 {
     _viewport = viewport
     _drawWorld = drawWorld
@@ -15,6 +15,7 @@ module.exports = function gui(viewport, drawWorld, target)
     _gui.domElement.style.opacity = 0.95
     _world = _gui.addFolder('world')
     _options = {
+        testDirty: false,
         drag: true,
         clampZoom: {
             clampZoom: false,
@@ -95,6 +96,7 @@ module.exports = function gui(viewport, drawWorld, target)
         }
     }
     guiWorld()
+    guiTestDirty()
     _gui.add(_viewport, 'threshold')
     guiDrag()
     guiPinch()
@@ -113,6 +115,11 @@ function guiWorld()
 {
     _world.add(_viewport, 'worldWidth').onChange(_drawWorld)
     _world.add(_viewport, 'worldHeight').onChange(_drawWorld)
+}
+
+function guiTestDirty()
+{
+    _gui.add(_options, 'testDirty')
 }
 
 function guiDrag()
@@ -600,6 +607,14 @@ function guiMouseEdges()
     if (_options.mouseEdges.mouseEdges)
     {
         mouseEdges.open()
+    }
+}
+
+module.exports = {
+    gui,
+    get options()
+    {
+        return _options
     }
 }
 

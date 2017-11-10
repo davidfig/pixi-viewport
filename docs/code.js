@@ -151,7 +151,7 @@ function drawWorld()
 
 window.onload = function ()
 {
-    _renderer = new Renderer({ debug: 'fps', alwaysRender: true, fpsOptions: { side: 'bottom-left' } })
+    _renderer = new Renderer({ debug: true, fpsOptions: { side: 'bottom-left' } })
     viewport()
     window.addEventListener('resize', resize)
 
@@ -160,14 +160,22 @@ window.onload = function ()
         function ()
         {
             _ease.update()
+            if (!gui.options.testDirty)
+            {
+                _renderer.dirty = true
+            }
+            if (_viewport.dirty)
+            {
+                _renderer.dirty = true
+                _viewport.dirty = false
+            }
             _renderer.update()
         }
     )
     drawWorld()
-
     events()
 
-    gui(_viewport, drawWorld, _object)
+    gui.gui(_viewport, drawWorld, _object)
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
