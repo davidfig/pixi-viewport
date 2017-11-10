@@ -50,6 +50,7 @@ module.exports = class Bounce extends Plugin
             }
         }
         this.parseUnderflow(options.underflow || 'center')
+        this.last = {}
     }
 
     parseUnderflow(clamp)
@@ -111,6 +112,16 @@ module.exports = class Bounce extends Plugin
         {
             return
         }
+
+        // cache the values so you don't need to keep checking for bounce when there's no movement
+        if (this.last.x === this.parent.container.x && this.last.y === this.parent.container.y && this.last.scaleX === this.parent.container.scale.x && this.last.scaleY === this.parent.container.scale.y)
+        {
+            return
+        }
+        this.last.x = this.parent.container.x
+        this.last.y = this.parent.container.y
+        this.last.scaleX = this.parent.container.scale.x
+        this.last.scaleY = this.parent.container.scale.y
 
         let oob
         let decelerate = this.parent.plugins['decelerate']
