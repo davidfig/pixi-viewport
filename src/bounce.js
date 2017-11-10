@@ -13,10 +13,10 @@ module.exports = class Bounce extends Plugin
      * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      *
-     * @event bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
-     * @event bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
-     * @event bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
-     * @event bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
+     * @emits bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
+     * @emits bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
+     * @emits bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
+     * @emits bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
      */
     constructor(parent, options)
     {
