@@ -62608,6 +62608,7 @@ module.exports = class Bounce extends Plugin
         this.time = options.time || 150
         this.ease = options.ease || 'easeInOutSine'
         this.friction = options.friction || 0.5
+        options.sides = options.sides || 'all'
         if (options.sides)
         {
             if (options.sides === 'all')
