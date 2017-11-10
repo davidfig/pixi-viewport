@@ -39,6 +39,7 @@ function gui(viewport, drawWorld, target)
         },
         bounce: {
             bounce: true,
+            sides: 'all',
             friction: 0.5,
             time: 150,
             ease: 'easeInOutSine',
@@ -225,17 +226,18 @@ function guiBounce()
 {
     function change()
     {
-        _viewport.bounce({ time: _options.bounce.time, ease: _options.bounce.ease, friction: _options.bounce.friction, underflow: _options.bounce.underflow })
+        _viewport.bounce({ sides: _options.bounce.sides, time: _options.bounce.time, ease: _options.bounce.ease, friction: _options.bounce.friction, underflow: _options.bounce.underflow })
     }
 
     function add()
     {
+        sides = bounce.add(_options.bounce, 'sides').onChange(change)
         time = bounce.add(_options.bounce, 'time', 0, 2000).step(50).onChange(change)
         ease = bounce.add(_options.bounce, 'ease').onChange(change)
         underflow = bounce.add(_options.bounce, 'underflow').onChange(change)
     }
 
-    let time, ease, underflow
+    let time, ease, underflow, sides
     const bounce = _gui.addFolder('bounce')
     bounce.add(_options.bounce, 'bounce').onChange(
         function (value)
@@ -253,6 +255,7 @@ function guiBounce()
                 _viewport.removePlugin('bounce')
                 if (time)
                 {
+                    bounce.remove(sides)
                     bounce.remove(time)
                     time = null
                     bounce.remove(ease)

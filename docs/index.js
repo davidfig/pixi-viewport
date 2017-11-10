@@ -222,6 +222,7 @@ function gui(viewport, drawWorld, target)
         },
         bounce: {
             bounce: true,
+            sides: 'all',
             friction: 0.5,
             time: 150,
             ease: 'easeInOutSine',
@@ -408,17 +409,18 @@ function guiBounce()
 {
     function change()
     {
-        _viewport.bounce({ time: _options.bounce.time, ease: _options.bounce.ease, friction: _options.bounce.friction, underflow: _options.bounce.underflow })
+        _viewport.bounce({ sides: _options.bounce.sides, time: _options.bounce.time, ease: _options.bounce.ease, friction: _options.bounce.friction, underflow: _options.bounce.underflow })
     }
 
     function add()
     {
+        sides = bounce.add(_options.bounce, 'sides').onChange(change)
         time = bounce.add(_options.bounce, 'time', 0, 2000).step(50).onChange(change)
         ease = bounce.add(_options.bounce, 'ease').onChange(change)
         underflow = bounce.add(_options.bounce, 'underflow').onChange(change)
     }
 
-    let time, ease, underflow
+    let time, ease, underflow, sides
     const bounce = _gui.addFolder('bounce')
     bounce.add(_options.bounce, 'bounce').onChange(
         function (value)
@@ -436,6 +438,7 @@ function guiBounce()
                 _viewport.removePlugin('bounce')
                 if (time)
                 {
+                    bounce.remove(sides)
                     bounce.remove(time)
                     time = null
                     bounce.remove(ease)
@@ -62587,6 +62590,7 @@ module.exports = class Bounce extends Plugin
     /**
      * @param {Viewport} parent
      * @param {object} [options]
+     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
@@ -62604,6 +62608,28 @@ module.exports = class Bounce extends Plugin
         this.time = options.time || 150
         this.ease = options.ease || 'easeInOutSine'
         this.friction = options.friction || 0.5
+        if (options.sides)
+        {
+            if (options.sides === 'all')
+            {
+                this.top = this.bottom = this.left = this.right = true
+            }
+            else if (options.sides === 'horizontal')
+            {
+                this.right = this.left = true
+            }
+            else if (options.sides === 'vertical')
+            {
+                this.top = this.bottom = true
+            }
+            else
+            {
+                this.top = options.sides.indexOf('top') !== -1
+                this.bottom = options.sides.indexOf('bottom') !== -1
+                this.left = options.sides.indexOf('left') !== -1
+                this.right = options.sides.indexOf('right') !== -1
+            }
+        }
         this.parseUnderflow(options.underflow || 'center')
     }
 
@@ -62674,11 +62700,11 @@ module.exports = class Bounce extends Plugin
             if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))
             {
                 oob = this.parent.OOB()
-                if (oob.left || oob.right)
+                if ((oob.left && this.left) || (oob.right && this.right))
                 {
                     decelerate.percentChangeX = this.friction
                 }
-                if (oob.top || oob.bottom)
+                if ((oob.top && this.top) || (oob.bottom && this.bottom))
                 {
                     decelerate.percentChangeY = this.friction
                 }
@@ -62709,11 +62735,11 @@ module.exports = class Bounce extends Plugin
                 }
                 else
                 {
-                    if (oob.left)
+                    if (oob.left && this.left)
                     {
                         x = 0
                     }
-                    else if (oob.right)
+                    else if (oob.right && this.right)
                     {
                         x = -point.x
                     }
@@ -62743,11 +62769,11 @@ module.exports = class Bounce extends Plugin
                 }
                 else
                 {
-                    if (oob.top)
+                    if (oob.top && this.top)
                     {
                         y = 0
                     }
-                    else if (oob.bottom)
+                    else if (oob.bottom && this.bottom)
                     {
                         y = -point.y
                     }
@@ -64512,10 +64538,11 @@ module.exports = class Viewport extends Loop
      * bounce on borders
      * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      * @param {object} [options]
+     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {string|function} [ease='easeInOutSine'] ease function or name (see http://easings.net/ for supported names)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen     *
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
     bounce(options)
