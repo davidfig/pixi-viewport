@@ -696,9 +696,9 @@ module.exports = class Viewport extends Loop
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
-    clamp(direction)
+    clamp(options)
     {
-        this.plugins['clamp'] = new Clamp(this, direction)
+        this.plugins['clamp'] = new Clamp(this, options)
         return this
     }
 
