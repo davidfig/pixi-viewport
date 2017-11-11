@@ -18,6 +18,15 @@ module.exports = class Pinch extends Plugin
         this.center = options.center
     }
 
+    down(x, y, data)
+    {
+        const pointers = data.input.pointers
+        if (pointers.length >= 2)
+        {
+            this.active = true
+        }
+    }
+
     move(x, y, data)
     {
         if (this.paused)
@@ -97,6 +106,7 @@ module.exports = class Pinch extends Plugin
             const pointers = data.input.pointers
             if (pointers.length < 2)
             {
+                this.active = false
                 this.lastCenter = null
                 this.pinching = false
                 this.parent.emit('pinch-end', this.parent)

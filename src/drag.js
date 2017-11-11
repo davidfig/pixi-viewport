@@ -21,9 +21,9 @@ module.exports = class Drag extends Plugin
         }
     }
 
-    isActive()
+    get active()
     {
-        return this.last
+        return this.last ? true : false
     }
 
     move(x, y, data)

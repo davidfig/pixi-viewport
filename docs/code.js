@@ -160,10 +160,10 @@ window.onload = function ()
         function ()
         {
             _ease.update()
-            if (!gui.options.testDirty)
-            {
-                _renderer.dirty = true
-            }
+            // if (!gui.options.testDirty)
+            // {
+            //     _renderer.dirty = true
+            // }
             if (_viewport.dirty)
             {
                 _renderer.dirty = true
@@ -175,7 +175,7 @@ window.onload = function ()
     drawWorld()
     events()
 
-    gui.gui(_viewport, drawWorld, _object)
+    // gui.gui(_viewport, drawWorld, _object)
 
-    require('./highlight')('https://github.com/davidfig/pixi-viewport')
+    // require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }

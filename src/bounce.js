@@ -113,16 +113,6 @@ module.exports = class Bounce extends Plugin
             return
         }
 
-        // cache the values so you don't need to keep checking for bounce when there's no movement
-        if (this.last.x === this.parent.container.x && this.last.y === this.parent.container.y && this.last.scaleX === this.parent.container.scale.x && this.last.scaleY === this.parent.container.scale.y)
-        {
-            return
-        }
-        this.last.x = this.parent.container.x
-        this.last.y = this.parent.container.y
-        this.last.scaleX = this.parent.container.scale.x
-        this.last.scaleY = this.parent.container.scale.y
-
         let oob
         let decelerate = this.parent.plugins['decelerate']
         if (decelerate && (decelerate.x || decelerate.y))
@@ -140,9 +130,10 @@ module.exports = class Bounce extends Plugin
                 }
             }
         }
-        const pointers = this.parent.input.pointers
+        const drag = this.parent.plugins['drag'] || {}
+        const pinch = this.parent.plugins['pinch'] || {}
         decelerate = decelerate || {}
-        if (pointers.length === 0 && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
+        if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
         {
             oob = oob || this.parent.OOB()
             const point = oob.cornerPoint
