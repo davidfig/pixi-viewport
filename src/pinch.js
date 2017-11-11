@@ -8,10 +8,6 @@ module.exports = class Pinch extends Plugin
      * @param {boolean} [options.noDrag] disable two-finger dragging
      * @param {number} [options.percent=1.0] percent to modify pinch speed
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
-     * @param {number} [options.minWidth] clamp minimum width
-     * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp maximum width
-     * @param {number} [options.maxHeight] clamp maximum height
      */
     constructor(parent, options)
     {
@@ -20,10 +16,6 @@ module.exports = class Pinch extends Plugin
         this.percent = options.percent || 1.0
         this.noDrag = options.noDrag
         this.center = options.center
-        this.minWidth = options.minWidth
-        this.maxWidth = options.maxWidth
-        this.minHeight = options.minHeight
-        this.maxHeight = options.maxHeight
     }
 
     move(x, y, data)

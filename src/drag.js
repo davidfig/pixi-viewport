@@ -21,6 +21,11 @@ module.exports = class Drag extends Plugin
         }
     }
 
+    isActive()
+    {
+        return this.last
+    }
+
     move(x, y, data)
     {
         if (this.paused)

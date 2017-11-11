@@ -8,10 +8,6 @@ module.exports = class Wheel extends Plugin
      * @param {number} [options.percent=0.1] percent to scroll with each spin
      * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
-     * @param {number} [options.minWidth] clamp minimum width
-     * @param {number} [options.minHeight] clamp minimum height
-     * @param {number} [options.maxWidth] clamp maximum width
-     * @param {number} [options.maxHeight] clamp maximum height
      *
      * @event wheel({wheel: {dx, dy, dz}, viewport})
      */
@@ -21,10 +17,6 @@ module.exports = class Wheel extends Plugin
         options = options || {}
         this.percent = options.percent || 0.1
         this.center = options.center
-        this.minWidth = options.minWidth
-        this.maxWidth = options.maxWidth
-        this.minHeight = options.minHeight
-        this.maxHeight = options.maxHeight
         this.reverse = options.reverse
     }
 
