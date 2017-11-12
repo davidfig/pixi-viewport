@@ -206,14 +206,18 @@ module.exports = class Viewport extends Loop
      */
     down()
     {
+        let result
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].down(...arguments)
+                if (this.plugins[type].down(...arguments))
+                {
+                    result = true
+                }
             }
         }
-
+        return result
     }
 
     /**
@@ -236,13 +240,18 @@ module.exports = class Viewport extends Loop
      */
     move()
     {
+        let result
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].move(...arguments)
+                if (this.plugins[type].move(...arguments))
+                {
+                    result = true
+                }
             }
         }
+        return result
     }
 
     /**
@@ -251,13 +260,18 @@ module.exports = class Viewport extends Loop
      */
     up()
     {
+        let result
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].up(...arguments)
+                if (this.plugins[type].up(...arguments))
+                {
+                    result = true
+                }
             }
         }
+        return result
     }
 
     /**
@@ -266,13 +280,18 @@ module.exports = class Viewport extends Loop
      */
     handleWheel()
     {
+        let result
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                this.plugins[type].wheel(...arguments)
+                if (this.plugins[type].wheel(...arguments))
+                {
+                    result = true
+                }
             }
         }
+        return result
     }
 
     /**
