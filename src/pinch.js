@@ -18,9 +18,9 @@ module.exports = class Pinch extends Plugin
         this.center = options.center
     }
 
-    down(x, y, data)
+    down()
     {
-        const pointers = data.input.pointers
+        const pointers = this.parent.pointers
         if (pointers.length >= 2)
         {
             this.active = true
@@ -34,8 +34,8 @@ module.exports = class Pinch extends Plugin
             return
         }
 
-        const pointers = data.input.pointers
-        if (pointers.length >= 2)
+        const pointers = this.parent.pointers
+        if (this.active)
         {
             const first = pointers[0]
             const second = pointers[1]
@@ -44,11 +44,11 @@ module.exports = class Pinch extends Plugin
             {
                 last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
             }
-            if (first.identifier === data.id)
+            if (first.id === data.id)
             {
                 first.last = { x, y }
             }
-            else if (second.identifier === data.id)
+            else if (second.id === data.id)
             {
                 second.last = { x, y }
             }
@@ -99,11 +99,11 @@ module.exports = class Pinch extends Plugin
         }
     }
 
-    up(x, y, data)
+    up()
     {
         if (this.pinching)
         {
-            const pointers = data.input.pointers
+            const pointers = this.parent.pointers
             if (pointers.length < 2)
             {
                 this.active = false

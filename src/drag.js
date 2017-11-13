@@ -8,14 +8,13 @@ module.exports = class Drag extends Plugin
         this.moved = false
     }
 
-    down(x, y, data)
+    down(x, y)
     {
         if (this.paused)
         {
             return
         }
-        this.pointers.push(data.id)
-        const pointers = data.input.pointers
+        const pointers = this.parent.pointers
         if (pointers.length === 1)
         {
             this.last = { x, y }
@@ -28,7 +27,7 @@ module.exports = class Drag extends Plugin
         return this.last ? true : false
     }
 
-    move(x, y, data)
+    move(x, y)
     {
         if (this.paused)
         {
@@ -37,7 +36,7 @@ module.exports = class Drag extends Plugin
 
         if (this.last)
         {
-            const pointers = data.input.pointers
+            const pointers = this.parent.pointers
             if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
             {
                 const distX = x - this.last.x

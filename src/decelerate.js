@@ -27,14 +27,14 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = false
     }
 
-    move(x, y, data)
+    move()
     {
         if (this.paused)
         {
             return
         }
 
-        const pointers = data.input.pointers
+        const pointers = this.parent.pointers
         if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
         {
             this.saved.push({ x: this.parent.container.x, y: this.parent.container.y, time: performance.now() })
@@ -45,9 +45,9 @@ module.exports = class Decelerate extends Plugin
         }
     }
 
-    up(x, y, data)
+    up()
     {
-        const pointers = data.input.pointers
+        const pointers = this.parent.pointers
         if (pointers.length === 0 && this.saved.length)
         {
             const now = performance.now()

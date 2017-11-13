@@ -208,7 +208,7 @@ module.exports = class Viewport extends Loop
     down(x, y, data)
     {
         let result
-        this.pointers.push(data.id)
+        this.pointers.push({ id: data.id })
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -242,7 +242,7 @@ module.exports = class Viewport extends Loop
      */
     move(x, y, data)
     {
-        if (this.pointers.indexOf(data.id) !== -1)
+        if (this.findPointerIndex(data.id) !== -1)
         {
             let result
             for (let type of PLUGIN_ORDER)
@@ -260,14 +260,34 @@ module.exports = class Viewport extends Loop
     }
 
     /**
+     * find pointer id
+     * @private
+     * @param {*} id
+     */
+    findPointerIndex(id)
+    {
+        for (let i = 0; i < this.pointers.length; i++)
+        {
+            const pointer = this.pointers[i]
+            if (pointer.id === id)
+            {
+                return i
+            }
+        }
+        return -1
+    }
+
+    /**
      * handle up events
      * @private
      */
     up(x, y, data)
     {
-        const index = this.pointers.indexOf(data.id)
-        if (this.pointers.indexOf(data.id) !== -1)
+
+        const index = this.findPointerIndex(data.id)
+        if (index !== -1)
         {
+            this.pointers.splice(index, 1)
             let result
             for (let type of PLUGIN_ORDER)
             {
@@ -279,7 +299,6 @@ module.exports = class Viewport extends Loop
                     }
                 }
             }
-            this.pointers.splice(index, 1)
             return result
         }
     }

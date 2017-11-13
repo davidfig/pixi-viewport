@@ -9,8 +9,8 @@ const Viewport = require('..')
 const gui = require('./gui')
 
 const BORDER = 10
-const WIDTH = 2000
-const HEIGHT = 2000
+const WIDTH = 5000
+const HEIGHT = 5000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
@@ -22,7 +22,7 @@ let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage, { div: _renderer.div })
+    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true })
     _viewport
         .drag()
         .wheel()
@@ -160,10 +160,10 @@ window.onload = function ()
         function ()
         {
             _ease.update()
-            // if (!gui.options.testDirty)
-            // {
-            //     _renderer.dirty = true
-            // }
+            if (!gui.options.testDirty)
+            {
+                _renderer.dirty = true
+            }
             if (_viewport.dirty)
             {
                 _renderer.dirty = true
@@ -175,7 +175,7 @@ window.onload = function ()
     drawWorld()
     events()
 
-    // gui.gui(_viewport, drawWorld, _object)
+    gui.gui(_viewport, drawWorld, _object)
 
-    // require('./highlight')('https://github.com/davidfig/pixi-viewport')
+    require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }

@@ -1006,13 +1006,13 @@ exports.interleave3 = function(x, y, z) {
   y  = (y | (y<<4))  & 3272356035;
   y  = (y | (y<<2))  & 1227133513;
   x |= (y << 1);
-  
+
   z &= 0x3FF;
   z  = (z | (z<<16)) & 4278190335;
   z  = (z | (z<<8))  & 251719695;
   z  = (z | (z<<4))  & 3272356035;
   z  = (z | (z<<2))  & 1227133513;
-  
+
   return x | (z << 2);
 }
 
@@ -3157,7 +3157,7 @@ module.exports = function(hljs){
 
   // общий паттерн для определения идентификаторов
   var UNDERSCORE_IDENT_RE = '[A-Za-zА-Яа-яёЁ_][A-Za-zА-Яа-яёЁ_0-9]+';
-  
+
   // v7 уникальные ключевые слова, отсутствующие в v8 ==> keyword
   var v7_keywords =
   'далее ';
@@ -3169,7 +3169,7 @@ module.exports = function(hljs){
 
   // keyword : ключевые слова
   var KEYWORD = v7_keywords + v8_keywords;
-  
+
   // v7 уникальные директивы, отсутствующие в v8 ==> meta-keyword
   var v7_meta_keywords =
   'загрузитьизфайла ';
@@ -3186,7 +3186,7 @@ module.exports = function(hljs){
   // v7 системные константы ==> built_in
   var v7_system_constants =
   'разделительстраниц разделительстрок символтабуляции ';
-  
+
   // v7 уникальные методы глобального контекста, отсутствующие в v8 ==> built_in
   var v7_global_context_methods =
   'ansitooem oemtoansi ввестивидсубконто ввестиперечисление ввестипериод ввестиплансчетов выбранныйплансчетов ' +
@@ -3200,7 +3200,7 @@ module.exports = function(hljs){
   'префиксавтонумерации пропись пустоезначение разм разобратьпозициюдокумента рассчитатьрегистрына ' +
   'рассчитатьрегистрыпо симв создатьобъект статусвозврата стрколичествострок сформироватьпозициюдокумента ' +
   'счетпокоду текущеевремя типзначения типзначениястр установитьтана установитьтапо фиксшаблон шаблон ';
-  
+
   // v8 методы глобального контекста ==> built_in
   var v8_global_context_methods =
   'acos asin atan base64значение base64строка cos exp log log10 pow sin sqrt tan xmlзначение xmlстрока ' +
@@ -3295,7 +3295,7 @@ module.exports = function(hljs){
   v7_system_constants +
   v7_global_context_methods + v8_global_context_methods +
   v8_global_context_property;
-  
+
   // v8 системные наборы значений ==> class
   var v8_system_sets_of_values =
   'webцвета windowsцвета windowsшрифты библиотекакартинок рамкистиля символы цветастиля шрифтыстиля ';
@@ -3447,7 +3447,7 @@ module.exports = function(hljs){
   'кодировкаименфайловвzipфайле методсжатияzip методшифрованияzip режимвосстановленияпутейфайловzip режимобработкиподкаталоговzip ' +
   'режимсохраненияпутейzip уровеньсжатияzip ';
 
-  // v8 системные перечисления - 
+  // v8 системные перечисления -
   // Блокировка данных, Фоновые задания, Автоматизированное тестирование,
   // Доставляемые уведомления, Встроенные покупки, Интернет, Работа с двоичными данными ==> class
   var v8_system_enums_other =
@@ -3566,7 +3566,7 @@ module.exports = function(hljs){
 
   // literal : примитивные типы
   var LITERAL = 'null истина ложь неопределено';
-  
+
   // number : числа
   var NUMBERS = hljs.inherit(hljs.NUMBER_MODE);
 
@@ -3587,10 +3587,10 @@ module.exports = function(hljs){
       }
     ]
   };
-  
+
   // comment : комментарии
   var COMMENTS = hljs.inherit(hljs.C_LINE_COMMENT_MODE);
-  
+
   // meta : инструкции препроцессора, директивы компиляции
   var META = {
     className: 'meta',
@@ -3601,13 +3601,13 @@ module.exports = function(hljs){
       COMMENTS
     ]
   };
-  
+
   // symbol : метка goto
   var SYMBOL = {
     className: 'symbol',
     begin: '~', end: ';|:', excludeEnd: true
-  };  
-  
+  };
+
   // function : объявление процедур и функций
   var FUNCTION = {
     className: 'function',
@@ -3659,7 +3659,7 @@ module.exports = function(hljs){
       NUMBERS,
       STRINGS,
       DATE
-    ]  
+    ]
   }
 };
 },{}],13:[function(require,module,exports){
@@ -4714,7 +4714,7 @@ module.exports = function(hljs) {
         //I don't really know if this is totally relevant
       },
       {
-        className: 'meta', 
+        className: 'meta',
         begin: '^\\s*#\w+', end:'$',
         relevance: 0
       },
@@ -6563,7 +6563,7 @@ module.exports = function(hljs) {
     keywords: {
       keyword: 'base-uri child-src connect-src default-src font-src form-action' +
         ' frame-ancestors frame-src img-src media-src object-src plugin-types' +
-        ' report-uri sandbox script-src style-src', 
+        ' report-uri sandbox script-src style-src',
     },
     contains: [
     {
@@ -7953,7 +7953,7 @@ module.exports = function(hljs) {
     },
     contains: [
       {
-        /* matches a beginning equal sign found in Excel formula examples */ 
+        /* matches a beginning equal sign found in Excel formula examples */
         begin: /^=/,
         end: /[^=]/, returnEnd: true, illegal: /=/, /* only allow single equal sign at front of line */
         relevance: 10
@@ -14111,7 +14111,7 @@ module.exports = function(hljs) {
   var PS_HELPTAGS = {
     className: 'doctag',
     variants: [
-      /* no paramater help tags */ 
+      /* no paramater help tags */
       { begin: /\.(synopsis|description|example|inputs|outputs|notes|link|component|role|functionality)/ },
       /* one parameter help tags */
       { begin: /\.(parameter|forwardhelptargetname|forwardhelpcategory|remotehelprunspace|externalhelp)\s+\S+/ }
@@ -15023,7 +15023,7 @@ function(hljs) {
   // ToDo: var PARAMETERS_PRINT = 'append as-value brief detail count-only file follow follow-only from interval terse value-list without-paging where info';
   // ToDo: var OPERATORS = '&& and ! not || or in ~ ^ & << >> + - * /';
   // ToDo: var TYPES = 'num number bool boolean str string ip ip6-prefix id time array';
-  // ToDo: The following tokens serve as delimiters in the grammar: ()  []  {}  :   ;   $   / 
+  // ToDo: The following tokens serve as delimiters in the grammar: ()  []  {}  :   ;   $   /
 
   var VAR_PREFIX = 'global local set for foreach';
 
@@ -15034,7 +15034,7 @@ function(hljs) {
       {begin: /\$\{(.*?)}/}
     ]
   };
-  
+
   var QUOTE_STRING = {
     className: 'string',
     begin: /"/, end: /"/,
@@ -15048,12 +15048,12 @@ function(hljs) {
       }
     ]
   };
-  
+
   var APOS_STRING = {
     className: 'string',
     begin: /'/, end: /'/
   };
-  
+
   var IPADDR = '((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\b';
   var IPADDR_wBITMASK =  IPADDR+'/(3[0-2]|[1-2][0-9]|\\d)';
   //////////////////////////////////////////////////////////////////////
@@ -15077,7 +15077,7 @@ function(hljs) {
           { begin: /^\[\</, end: /\>\]$/, },        // F# class declaration?
           { begin: /<\//, end: />/, },              // HTML tags
           { begin: /^facet /, end: /\}/, },         // roboconf - лютый костыль )))
-          { begin: '^1\\.\\.(\\d+)$', end: /$/, },  // tap  
+          { begin: '^1\\.\\.(\\d+)$', end: /$/, },  // tap
         ],
         illegal: /./,
       },
@@ -15086,7 +15086,7 @@ function(hljs) {
       APOS_STRING,
       VAR,
       { // attribute=value
-        begin: /[\w-]+\=([^\s\{\}\[\]\(\)]+)/, 
+        begin: /[\w-]+\=([^\s\{\}\[\]\(\)]+)/,
         relevance: 0,
         returnBegin: true,
         contains: [
@@ -15095,7 +15095,7 @@ function(hljs) {
             begin: /[^=]+/
           },
           {
-            begin: /=/, 
+            begin: /=/,
             endsWithParent:  true,
             relevance: 0,
             contains: [
@@ -15122,7 +15122,7 @@ function(hljs) {
               }, //*/
               {
                 // Не форматировать не классифицированные значения. Необходимо для исключения подсветки значений как built_in.
-                // className: 'number',  
+                // className: 'number',
                 begin: /("[^"]*"|[^\s\{\}\[\]]+)/,
               }, //*/
             ]
@@ -15135,7 +15135,7 @@ function(hljs) {
         begin: /\*[0-9a-fA-F]+/,
       }, //*/
 
-      { 
+      {
         begin: '\\b(' + COMMON_COMMANDS.split(' ').join('|') + ')([\\s\[\(]|\])',
         returnBegin: true,
         contains: [
@@ -15143,10 +15143,10 @@ function(hljs) {
             className: 'builtin-name', //'function',
             begin: /\w+/,
           },
-        ],  
+        ],
       },
-      
-      { 
+
+      {
         className: 'built_in',
         variants: [
           {begin: '(\\.\\./|/|\\s)((' + OBJECTS.split(' ').join('|') + ');?\\s)+',relevance: 10,},
@@ -19421,26 +19421,26 @@ module.exports = function parseURI (str, opts) {
 	Copyright © 2001 Robert Penner
 	All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without modification, 
+	Redistribution and use in source and binary forms, with or without modification,
 	are permitted provided that the following conditions are met:
 
-	Redistributions of source code must retain the above copyright notice, this list of 
+	Redistributions of source code must retain the above copyright notice, this list of
 	conditions and the following disclaimer.
-	Redistributions in binary form must reproduce the above copyright notice, this list 
-	of conditions and the following disclaimer in the documentation and/or other materials 
+	Redistributions in binary form must reproduce the above copyright notice, this list
+	of conditions and the following disclaimer in the documentation and/or other materials
 	provided with the distribution.
 
-	Neither the name of the author nor the names of contributors may be used to endorse 
+	Neither the name of the author nor the names of contributors may be used to endorse
 	or promote products derived from this software without specific prior written permission.
 
-	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
 	EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 	MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
 	COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 	EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-	GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED 
+	GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
 	AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED 
+	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 	OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -21364,7 +21364,7 @@ var Shader = function(gl, vertexSrc, fragmentSrc, precision, attributeLocations)
 };
 /**
  * Uses this shader
- * 
+ *
  * @return {PIXI.glCore.GLShader} Returns itself.
  */
 Shader.prototype.bind = function()
@@ -22003,7 +22003,7 @@ VertexArrayObject.prototype.getSize = function()
  */
 var createContext = function(canvas, options)
 {
-    var gl = canvas.getContext('webgl', options) || 
+    var gl = canvas.getContext('webgl', options) ||
          canvas.getContext('experimental-webgl', options);
 
     if (!gl)
@@ -22190,36 +22190,36 @@ module.exports = compileProgram;
  * @param type {String} Type of value
  * @param size {Number}
  */
-var defaultValue = function(type, size) 
+var defaultValue = function(type, size)
 {
     switch (type)
     {
         case 'float':
             return 0;
 
-        case 'vec2': 
+        case 'vec2':
             return new Float32Array(2 * size);
 
         case 'vec3':
             return new Float32Array(3 * size);
 
-        case 'vec4':     
+        case 'vec4':
             return new Float32Array(4 * size);
-            
+
         case 'int':
         case 'sampler2D':
             return 0;
 
-        case 'ivec2':   
+        case 'ivec2':
             return new Int32Array(2 * size);
 
         case 'ivec3':
             return new Int32Array(3 * size);
 
-        case 'ivec4': 
+        case 'ivec4':
             return new Int32Array(4 * size);
 
-        case 'bool':     
+        case 'bool':
             return false;
 
         case 'bvec2':
@@ -22236,7 +22236,7 @@ var defaultValue = function(type, size)
             return new Float32Array([1, 0,
                                      0, 1]);
 
-        case 'mat3': 
+        case 'mat3':
             return new Float32Array([1, 0, 0,
                                      0, 1, 0,
                                      0, 0, 1]);
@@ -22253,7 +22253,7 @@ var booleanArray = function(size)
 {
     var array = new Array(size);
 
-    for (var i = 0; i < array.length; i++) 
+    for (var i = 0; i < array.length; i++)
     {
         array[i] = false;
     }
@@ -22504,8 +22504,8 @@ module.exports = {
  * @param type {String}
  * @return {Number}
  */
-var mapSize = function(type) 
-{ 
+var mapSize = function(type)
+{
     return GLSL_TO_SIZE[type];
 };
 
@@ -22538,15 +22538,15 @@ module.exports = mapSize;
 },{}],219:[function(require,module,exports){
 
 
-var mapType = function(gl, type) 
+var mapType = function(gl, type)
 {
-    if(!GL_TABLE) 
+    if(!GL_TABLE)
     {
         var typeNames = Object.keys(GL_TO_GLSL_TYPES);
 
         GL_TABLE = {};
 
-        for(var i = 0; i < typeNames.length; ++i) 
+        for(var i = 0; i < typeNames.length; ++i)
         {
             var tn = typeNames[i];
             GL_TABLE[ gl[tn] ] = GL_TO_GLSL_TYPES[tn];
@@ -22568,17 +22568,17 @@ var GL_TO_GLSL_TYPES = {
   'INT_VEC2':    'ivec2',
   'INT_VEC3':    'ivec3',
   'INT_VEC4':    'ivec4',
-  
+
   'BOOL':        'bool',
   'BOOL_VEC2':   'bvec2',
   'BOOL_VEC3':   'bvec3',
   'BOOL_VEC4':   'bvec4',
-  
+
   'FLOAT_MAT2':  'mat2',
   'FLOAT_MAT3':  'mat3',
   'FLOAT_MAT4':  'mat4',
-  
-  'SAMPLER_2D':  'sampler2D'  
+
+  'SAMPLER_2D':  'sampler2D'
 };
 
 module.exports = mapType;
@@ -58067,10 +58067,10 @@ module.exports = sr;
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
