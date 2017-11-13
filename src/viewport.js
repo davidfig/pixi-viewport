@@ -59,6 +59,7 @@ module.exports = class Viewport extends Loop
         this._worldHeight = options.worldHeight
         this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
+        this.pointers = []
         if (!options.noListeners)
         {
             this.listeners(options.div || document.body, options.threshold, options.preventDefault)
@@ -204,9 +205,10 @@ module.exports = class Viewport extends Loop
      * handle down events
      * @private
      */
-    down()
+    down(x, y, data)
     {
         let result
+        this.pointers.push(data.id)
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -238,40 +240,48 @@ module.exports = class Viewport extends Loop
      * handle move events
      * @private
      */
-    move()
+    move(x, y, data)
     {
-        let result
-        for (let type of PLUGIN_ORDER)
+        if (this.pointers.indexOf(data.id) !== -1)
         {
-            if (this.plugins[type])
+            let result
+            for (let type of PLUGIN_ORDER)
             {
-                if (this.plugins[type].move(...arguments))
+                if (this.plugins[type])
                 {
-                    result = true
+                    if (this.plugins[type].move(...arguments))
+                    {
+                        result = true
+                    }
                 }
             }
+            return result
         }
-        return result
     }
 
     /**
      * handle up events
      * @private
      */
-    up()
+    up(x, y, data)
     {
-        let result
-        for (let type of PLUGIN_ORDER)
+        const index = this.pointers.indexOf(data.id)
+        if (this.pointers.indexOf(data.id) !== -1)
         {
-            if (this.plugins[type])
+            let result
+            for (let type of PLUGIN_ORDER)
             {
-                if (this.plugins[type].up(...arguments))
+                if (this.plugins[type])
                 {
-                    result = true
+                    if (this.plugins[type].up(...arguments))
+                    {
+                        result = true
+                    }
                 }
             }
+            this.pointers.splice(index, 1)
+            return result
         }
-        return result
     }
 
     /**

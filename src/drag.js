@@ -14,10 +14,12 @@ module.exports = class Drag extends Plugin
         {
             return
         }
+        this.pointers.push(data.id)
         const pointers = data.input.pointers
         if (pointers.length === 1)
         {
             this.last = { x, y }
+            return true
         }
     }
 
