@@ -130,7 +130,7 @@ function guiDrag()
         {
             if (value)
             {
-                _viewport.drag()
+                _viewport.drag({ clampWheel: true })
             }
             else
             {

@@ -734,9 +734,9 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
      */
-    drag()
+    drag(options)
     {
-        this.plugins['drag'] = new Drag(this)
+        this.plugins['drag'] = new Drag(this, options)
         return this
     }
 

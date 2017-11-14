@@ -24,7 +24,7 @@ function viewport()
 {
     _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true, preventDefault: true })
     _viewport
-        .drag()
+        .drag( {clampWheel: true })
         .wheel()
         .pinch()
         .on('click', click)
