@@ -99,6 +99,7 @@ module.exports = class Drag extends Plugin
                 this.parent.container.x += dx * this.wheelScroll * this.reverse
                 this.parent.container.y += dy * this.wheelScroll * this.reverse
                 this.parent.emit('wheel-scroll', this.parent)
+                this.parent.dirty = true
                 return true
             }
         }
