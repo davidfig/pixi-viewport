@@ -36,7 +36,7 @@
   "dependencies": {
     "exists": "^1.0.1",
     "pixi-ease": "^0.13.3",
-    "yy-input": "^0.10.2",
+    "yy-input": "^0.10.3",
     "yy-loop": "^0.3.5"
   },
   "devDependencies": {
