@@ -23,7 +23,7 @@ let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true })
+    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true, preventDefault: true })
     _viewport
         .drag()
         .wheel()
@@ -61264,10 +61264,19 @@ module.exports = class Input extends EventEmitter
         for (let i = 0; i < touches.length; i++)
         {
             const touch = touches[i]
+            const x = touch.clientX
+            const y = touch.clientY
+            if (this.clamp)
+            {
+                if (this.outsideClamp(x, y))
+                {
+                    continue
+                }
+            }
             const entry = {
                 identifier: touch.identifier,
-                x: touch.clientX,
-                y: touch.clientY
+                x,
+                y
             }
             this.pointers.push(entry)
             this.handleDown(touch.clientX, touch.clientY, e, touch.identifier)
@@ -61288,6 +61297,10 @@ module.exports = class Input extends EventEmitter
         for (let i = 0; i < e.changedTouches.length; i++)
         {
             const touch = e.changedTouches[i]
+            if (this.clamp && !this.findTouch(touch.identifier))
+            {
+                continue
+            }
             this.handleMove(touch.clientX, touch.clientY, e, touch.identifier)
         }
     }
@@ -61333,7 +61346,10 @@ module.exports = class Input extends EventEmitter
         this.pointers.push({id: 'mouse'})
         const x = window.navigator.msPointerEnabled ? e.offsetX : e.clientX
         const y = window.navigator.msPointerEnabled ? e.offsetY : e.clientY
-        this.handleDown(x, y, e, 'mouse')
+        if (!this.clamp || !this.outsideClamp(x, y))
+        {
+            this.handleDown(x, y, e, 'mouse')
+        }
     }
 
     /**
@@ -61406,6 +61422,10 @@ module.exports = class Input extends EventEmitter
 
     wheel(e)
     {
+        if (this.preventDefault)
+        {
+            e.preventDefault()
+        }
         this.emit('wheel', e.deltaX, e.deltaY, e.deltaZ, { event: e, id: 'mouse', x: e.clientX, y: e.clientY })
     }
 
@@ -61465,6 +61485,21 @@ module.exports = class Input extends EventEmitter
         this.keys.ctrl = e.ctrlKey
         const code = (typeof e.which === 'number') ? e.which : e.keyCode
         this.emit('keyup', code, this.keys, { event: e, input: this })
+    }
+
+    /**
+     * clamp screen to only accept pointers in rectangle in the down event
+     * @param {number} x
+     * @param {number} y
+     */
+    clampDown(x, y, width, height)
+    {
+        this.clamp = { x, y, width, height }
+    }
+
+    outsideClamp(x, y)
+    {
+        return x < this.clamp.x || x > this.clamp.x + this.clamp.width || y < this.clamp.y || y > this.clamp.y + this.clamp.height
     }
 }
 },{"eventemitter3":7}],391:[function(require,module,exports){
@@ -63100,14 +63135,27 @@ module.exports = class Decelerate extends Plugin
     }
 }
 },{"./plugin":404,"exists":8}],400:[function(require,module,exports){
-const Plugin = require('./plugin')
+const exists = require('exists')
 
+const Plugin = require('./plugin')
 module.exports = class Drag extends Plugin
 {
-    constructor(parent)
+    /**
+     * enable one-finger touch to drag
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
+     * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
+     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+     */
+    constructor(parent, options)
     {
+        options = options || {}
         super(parent)
         this.moved = false
+        this.wheelActive = exists(options.wheel) ? options.wheel : true
+        this.wheelScroll = options.wheelScroll || 1
+        this.reverse = options.reverse ? 1 : -1
     }
 
     down(x, y)
@@ -63173,6 +63221,26 @@ module.exports = class Drag extends Plugin
         this.last = null
     }
 
+    wheel(dx, dy)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        if (this.wheelActive)
+        {
+            const wheel = this.parent.plugins['wheel']
+            if (!wheel)
+            {
+                this.parent.container.x += dx * this.wheelScroll * this.reverse
+                this.parent.container.y += dy * this.wheelScroll * this.reverse
+                this.parent.emit('wheel-scroll', this.parent)
+                return true
+            }
+        }
+    }
+
     resume()
     {
         this.last = null
@@ -63180,7 +63248,7 @@ module.exports = class Drag extends Plugin
     }
 }
 
-},{"./plugin":404}],401:[function(require,module,exports){
+},{"./plugin":404,"exists":8}],401:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -63875,6 +63943,7 @@ module.exports = class Viewport extends Loop
      * @emits bounce-start-y(viewport) emitted when a bounce on the y-axis starts
      * @emits bounce-end-y(viewport) emitted when a bounce on the y-axis ends
      * @emits wheel({wheel: {dx, dy, dz}, viewport})
+     * @emits wheel-scroll(viewport)
      */
     constructor(container, options)
     {
@@ -64022,7 +64091,7 @@ module.exports = class Viewport extends Loop
      */
     listeners(div, threshold, preventDefault)
     {
-        this.input = new Input(div, { threshold, preventDefault })
+        this.input = new Input({ div, threshold, preventDefault })
         this.input.on('down', this.down, this)
         this.input.on('move', this.move, this)
         this.input.on('up', this.up, this)
@@ -64557,7 +64626,10 @@ module.exports = class Viewport extends Loop
 
     /**
      * enable one-finger touch to drag
-     * @return {Viewport} this
+     * @param {object} [options]
+     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
+     * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
+     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
      */
     drag()
     {
