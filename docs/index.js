@@ -63256,7 +63256,6 @@ module.exports = class Drag extends Plugin
 
     clamp()
     {
-console.log('clamping...')
         const oob = this.parent.OOB()
         const point = oob.cornerPoint
         if (this.clampWheel !== 'y')
