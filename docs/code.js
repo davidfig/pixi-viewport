@@ -22,7 +22,7 @@ let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true })
+    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true, preventDefault: true })
     _viewport
         .drag()
         .wheel()

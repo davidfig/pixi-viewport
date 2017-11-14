@@ -46,6 +46,7 @@ module.exports = class Viewport extends Loop
      * @emits bounce-start-y(viewport) emitted when a bounce on the y-axis starts
      * @emits bounce-end-y(viewport) emitted when a bounce on the y-axis ends
      * @emits wheel({wheel: {dx, dy, dz}, viewport})
+     * @emits wheel-scroll(viewport)
      */
     constructor(container, options)
     {
@@ -193,7 +194,7 @@ module.exports = class Viewport extends Loop
      */
     listeners(div, threshold, preventDefault)
     {
-        this.input = new Input(div, { threshold, preventDefault })
+        this.input = new Input({ div, threshold, preventDefault })
         this.input.on('down', this.down, this)
         this.input.on('move', this.move, this)
         this.input.on('up', this.up, this)
@@ -728,7 +729,10 @@ module.exports = class Viewport extends Loop
 
     /**
      * enable one-finger touch to drag
-     * @return {Viewport} this
+     * @param {object} [options]
+     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
+     * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
+     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
      */
     drag()
     {
