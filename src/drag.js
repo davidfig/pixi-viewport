@@ -22,7 +22,22 @@ module.exports = class Drag extends Plugin
         this.wheelScroll = options.wheelScroll || 1
         this.reverse = options.reverse ? 1 : -1
         this.clampWheel = options.clampWheel
-        this.underflow = options.underflow
+        this.parseUnderflow(options.underflow || 'center')
+    }
+
+    parseUnderflow(clamp)
+    {
+        clamp = clamp.toLowerCase()
+        if (clamp === 'center')
+        {
+            this.underflowX = 0
+            this.underflowY = 0
+        }
+        else
+        {
+            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
+        }
     }
 
     down(x, y)
