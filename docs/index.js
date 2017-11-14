@@ -63159,6 +63159,7 @@ module.exports = class Drag extends Plugin
         this.wheelScroll = options.wheelScroll || 1
         this.reverse = options.reverse ? 1 : -1
         this.clampWheel = options.clampWheel
+        this.underflow = options.underflow
     }
 
     down(x, y)
