@@ -11,6 +11,7 @@ module.exports = class Drag extends Plugin
      * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
      * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      */
     constructor(parent, options)
     {
@@ -121,26 +122,65 @@ module.exports = class Drag extends Plugin
     {
         const oob = this.parent.OOB()
         const point = oob.cornerPoint
+        const decelerate = this.parent.plugins['decelerate'] || {}
         if (this.clampWheel !== 'y')
         {
-            if (oob.left)
+            if (this.parent.screenWorldWidth < this.parent.screenWidth)
             {
-                this.parent.container.x = 0
+                switch (this.underflowX)
+                {
+                    case -1:
+                        this.parent.container.x = 0
+                        break
+                    case 1:
+                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                        break
+                    default:
+                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                }
             }
-            else if (oob.right)
+            else
             {
-                this.parent.container.x = -point.x
+                if (oob.left)
+                {
+                    this.parent.container.x = 0
+                    decelerate.x = 0
+                }
+                else if (oob.right)
+                {
+                    this.parent.container.x = -point.x
+                    decelerate.x = 0
+                }
             }
         }
         if (this.clampWheel !== 'x')
         {
-            if (oob.top)
+            if (this.parent.screenWorldHeight < this.parent.screenHeight)
             {
-                this.parent.container.y = 0
+                switch (this.underflowY)
+                {
+                    case -1:
+                        this.parent.container.y = 0
+                        break
+                    case 1:
+                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                        break
+                    default:
+                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                }
             }
-            else if (oob.bottom)
+            else
             {
-                this.parent.container.y = -point.y
+                if (oob.top)
+                {
+                    this.parent.container.y = 0
+                    decelerate.y = 0
+                }
+                else if (oob.bottom)
+                {
+                    this.parent.container.y = -point.y
+                    decelerate.y = 0
+                }
             }
         }
     }
