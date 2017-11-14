@@ -307,14 +307,14 @@ module.exports = class Viewport extends Loop
      * handle wheel events
      * @private
      */
-    handleWheel()
+    handleWheel(dx, dy, dz, data)
     {
         let result
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                if (this.plugins[type].wheel(...arguments))
+                if (this.plugins[type].wheel(dx, dy, dz, data))
                 {
                     result = true
                 }
