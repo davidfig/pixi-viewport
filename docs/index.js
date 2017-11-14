@@ -25,7 +25,7 @@ function viewport()
 {
     _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true, preventDefault: true })
     _viewport
-        .drag()
+        .drag( {clampWheel: true })
         .wheel()
         .pinch()
         .on('click', click)
@@ -313,7 +313,7 @@ function guiDrag()
         {
             if (value)
             {
-                _viewport.drag()
+                _viewport.drag({ clampWheel: true })
             }
             else
             {
@@ -63147,6 +63147,7 @@ module.exports = class Drag extends Plugin
      * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
      * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+     * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
      */
     constructor(parent, options)
     {
@@ -63156,6 +63157,7 @@ module.exports = class Drag extends Plugin
         this.wheelActive = exists(options.wheel) ? options.wheel : true
         this.wheelScroll = options.wheelScroll || 1
         this.reverse = options.reverse ? 1 : -1
+        this.clampWheel = options.clampWheel
     }
 
     down(x, y)
@@ -63235,6 +63237,10 @@ module.exports = class Drag extends Plugin
             {
                 this.parent.container.x += dx * this.wheelScroll * this.reverse
                 this.parent.container.y += dy * this.wheelScroll * this.reverse
+                if (this.clampWheel)
+                {
+                    this.clamp()
+                }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.dirty = true
                 return true
@@ -63247,8 +63253,36 @@ module.exports = class Drag extends Plugin
         this.last = null
         this.paused = false
     }
-}
 
+    clamp()
+    {
+console.log('clamping...')
+        const oob = this.parent.OOB()
+        const point = oob.cornerPoint
+        if (this.clampWheel !== 'y')
+        {
+            if (oob.left)
+            {
+                this.parent.container.x = 0
+            }
+            else if (oob.right)
+            {
+                this.parent.container.x = -point.x
+            }
+        }
+        if (this.clampWheel !== 'x')
+        {
+            if (oob.top)
+            {
+                this.parent.container.y = 0
+            }
+            else if (oob.bottom)
+            {
+                this.parent.container.y = -point.y
+            }
+        }
+    }
+}
 },{"./plugin":404,"exists":8}],401:[function(require,module,exports){
 const Plugin = require('./plugin')
 
@@ -64632,9 +64666,9 @@ module.exports = class Viewport extends Loop
      * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
      */
-    drag()
+    drag(options)
     {
-        this.plugins['drag'] = new Drag(this)
+        this.plugins['drag'] = new Drag(this, options)
         return this
     }
 

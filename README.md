@@ -281,7 +281,7 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
      */
-    drag()
+    drag(options)
 
     /**
      * enable clamp to boundaries of world
