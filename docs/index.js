@@ -61450,13 +61450,13 @@ module.exports = class Input extends EventEmitter
         if (this.chromeDebug)
         {
             // allow chrome to open developer console
-            if (this.keys.meta && code === 73)
+            if (this.keys.shift && this.keys.ctrl && code === 73)
             {
                 return
             }
 
             // reload page with meta + r
-            if (code === 82 && this.keys.meta)
+            if (code === 82 && this.keys.ctrl)
             {
                 window.location.reload()
                 return
