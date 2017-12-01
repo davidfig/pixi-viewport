@@ -577,6 +577,39 @@ module.exports = class Viewport extends Loop
     }
 
     /**
+     * zoom viewport by a certain percent (in both x and y direction)
+     * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoomPercent(percent, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        const scale = this.container.scale.x + this.container.scale.x * percent
+        this.container.scale.set(scale)
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * zoom viewport by increasing/decreasing width by a certain number of pixels
+     * @param {number} change in pixels
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoom(change, center)
+    {
+        this.fitWidth(change + this.worldScreenWidth, center)
+    }
+
+    /**
      * @param {object} [options]
      * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)

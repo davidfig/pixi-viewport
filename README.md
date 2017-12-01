@@ -215,6 +215,22 @@ https://davidfig.github.io/pixi-viewport/
     fit(center)
 
     /**
+     * zoom viewport by a certain percent (in both x and y direction)
+     * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoomPercent(percent, center)
+
+    /**
+     * zoom viewport by increasing/decreasing width by a certain number of pixels
+     * @param {number} change in pixels
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoom(change, center)
+
+    /**
      * @param {object} [options]
      * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
@@ -392,6 +408,7 @@ https://davidfig.github.io/pixi-viewport/
      * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
     mouseEdges(options)
+
 ```
 ## license  
 MIT License  
