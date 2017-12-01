@@ -64425,6 +64425,7 @@ module.exports = class Viewport extends Loop
             y = arguments[0].y
         }
         this.container.position.set((this.worldScreenWidth / 2 - x) * this.container.scale.x, (this.worldScreenHeight / 2 - y) * this.container.scale.y)
+        this._reset()
         this.dirty = true
         return this
     }
@@ -64455,6 +64456,10 @@ module.exports = class Viewport extends Loop
             this.container.position.set(-arguments[0] * this.container.scale.x, -arguments[1] * this.container.scale.y)
         }
         this._reset()
+        if (this.plugins['clamp'])
+        {
+            this.plugins['clamp'].update()
+        }
         this.dirty = true
         return this
     }
