@@ -176,11 +176,11 @@ module.exports = class Bounce extends Plugin
                 let x
                 if (oob.left && this.left)
                 {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflow() : 0
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : 0
                 }
                 else if (oob.right && this.right)
                 {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflow() : -point.x
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
                 }
                 if (exists(x) && this.parent.container.x !== x)
                 {
