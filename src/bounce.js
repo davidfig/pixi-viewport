@@ -106,6 +106,40 @@ module.exports = class Bounce extends Plugin
         }
     }
 
+    calcUnderflowX()
+    {
+        let x
+        switch (this.underflowX)
+        {
+            case -1:
+                x = 0
+                break
+            case 1:
+                x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                break
+            default:
+                x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+        }
+        return x
+    }
+
+    calcUnderflowY()
+    {
+        let y
+        switch (this.underflowY)
+        {
+            case -1:
+                y = 0
+                break
+            case 1:
+                y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                break
+            default:
+                y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+        }
+        return y
+    }
+
     bounce()
     {
         if (this.paused)
@@ -140,30 +174,13 @@ module.exports = class Bounce extends Plugin
             if (!this.toX && !decelerate.x)
             {
                 let x
-                if (this.parent.screenWorldWidth < this.parent.screenWidth)
+                if (oob.left && this.left)
                 {
-                    switch (this.underflowX)
-                    {
-                        case -1:
-                            x = 0
-                            break
-                        case 1:
-                            x = (this.parent.screenWidth - this.parent.screenWorldWidth)
-                            break
-                        default:
-                            x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
-                    }
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflow() : 0
                 }
-                else
+                else if (oob.right && this.right)
                 {
-                    if (oob.left && this.left)
-                    {
-                        x = 0
-                    }
-                    else if (oob.right && this.right)
-                    {
-                        x = -point.x
-                    }
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflow() : -point.x
                 }
                 if (exists(x) && this.parent.container.x !== x)
                 {
@@ -174,30 +191,13 @@ module.exports = class Bounce extends Plugin
             if (!this.toY && !decelerate.y)
             {
                 let y
-                if (this.parent.screenWorldHeight < this.parent.screenHeight)
+                if (oob.top && this.top)
                 {
-                    switch (this.underflowY)
-                    {
-                        case -1:
-                            y = 0
-                            break
-                        case 1:
-                            y = (this.parent.screenHeight - this.parent.screenWorldHeight)
-                            break
-                        default:
-                            y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
-                    }
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : 0
                 }
-                else
+                else if (oob.bottom && this.bottom)
                 {
-                    if (oob.top && this.top)
-                    {
-                        y = 0
-                    }
-                    else if (oob.bottom && this.bottom)
-                    {
-                        y = -point.y
-                    }
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
                 }
                 if (exists(y) && this.parent.container.y !== y)
                 {
