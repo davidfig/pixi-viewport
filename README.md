@@ -70,6 +70,8 @@ https://davidfig.github.io/pixi-viewport/
      * @emits bounce-end-y(viewport) emitted when a bounce on the y-axis ends
      * @emits wheel({wheel: {dx, dy, dz}, viewport})
      * @emits wheel-scroll(viewport)
+     * @emits mouse-edge-start(Viewport) emitted when mouse-edge starts
+     * @emits mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
     constructor(container, options)
 
@@ -403,9 +405,6 @@ https://davidfig.github.io/pixi-viewport/
      * @param {boolean} [options.reverse] reverse direction of scroll
      * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
      * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
-     *
-     * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
-     * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
     mouseEdges(options)
 

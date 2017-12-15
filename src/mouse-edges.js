@@ -63,7 +63,8 @@ module.exports = class MouseEdges extends Plugin
 
     move(x, y, data)
     {
-        if (data.input.pointers.length === 0)
+        const pointers = this.parent.pointers
+        if (pointers.length === 0)
         {
             if (this.radiusSquared)
             {

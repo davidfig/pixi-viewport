@@ -47,6 +47,8 @@ module.exports = class Viewport extends Loop
      * @emits bounce-end-y(viewport) emitted when a bounce on the y-axis ends
      * @emits wheel({wheel: {dx, dy, dz}, viewport})
      * @emits wheel-scroll(viewport)
+     * @emits mouse-edge-start(Viewport) emitted when mouse-edge starts
+     * @emits mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
     constructor(container, options)
     {
@@ -241,23 +243,20 @@ module.exports = class Viewport extends Loop
      * handle move events
      * @private
      */
-    move(x, y, data)
+    move()
     {
-        if (this.findPointerIndex(data.id) !== -1)
+        let result
+        for (let type of PLUGIN_ORDER)
         {
-            let result
-            for (let type of PLUGIN_ORDER)
+            if (this.plugins[type])
             {
-                if (this.plugins[type])
+                if (this.plugins[type].move(...arguments))
                 {
-                    if (this.plugins[type].move(...arguments))
-                    {
-                        result = true
-                    }
+                    result = true
                 }
             }
-            return result
         }
+        return result
     }
 
     /**
@@ -914,9 +913,6 @@ module.exports = class Viewport extends Loop
      * @param {boolean} [options.reverse] reverse direction of scroll
      * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
      * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
-     *
-     * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
-     * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
     mouseEdges(options)
     {
