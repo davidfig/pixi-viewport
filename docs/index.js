@@ -157,10 +157,10 @@ window.onload = function ()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
-    _viewport.interval(
-        function ()
+    _viewport.add(
+        function (elapsed)
         {
-            _ease.update()
+            _ease.update(elapsed)
             if (!gui.options.testDirty)
             {
                 _renderer.dirty = true
@@ -180,7 +180,7 @@ window.onload = function ()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
-},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":193,"pixi.js":337,"yy-counter":389,"yy-random":395,"yy-renderer":396}],2:[function(require,module,exports){
+},{"..":4,"./gui":2,"./highlight":3,"pixi-ease":193,"pixi.js":337,"yy-counter":389,"yy-random":396,"yy-renderer":397}],2:[function(require,module,exports){
 let _viewport, _drawWorld, _gui, _options, _world
 
 const TEST = false
@@ -827,7 +827,7 @@ module.exports = function highlight(url)
 /* globals window, XMLHttpRequest, document */
 },{"fork-me-github":9,"highlight.js":11}],4:[function(require,module,exports){
 module.exports = require('./src/viewport')
-},{"./src/viewport":408}],5:[function(require,module,exports){
+},{"./src/viewport":409}],5:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -19696,9 +19696,7 @@ module.exports = {
     angle: require('./src/angle'),
     target: require('./src/target'),
     movie: require('./src/movie'),
-    load: require('./src/load'),
-
-    default: new list()
+    load: require('./src/load')
 }
 },{"./src/angle":195,"./src/face":196,"./src/list":197,"./src/load":198,"./src/movie":199,"./src/shake":200,"./src/target":201,"./src/tint":202,"./src/to":203,"./src/wait":204}],194:[function(require,module,exports){
 'use strict';
@@ -20070,10 +20068,6 @@ module.exports = class angle extends wait
 
     save()
     {
-        if (this.options.cancel)
-        {
-            return null
-        }
         const save = super.save()
         save.angle = this.angle
         save.speed = this.speed
@@ -20180,6 +20174,7 @@ module.exports = class face extends wait
     }
 }
 },{"./wait":204,"yy-angle":387}],197:[function(require,module,exports){
+const Events = require('eventemitter3')
 const Loop = require('yy-loop')
 
 const Angle = require('./angle')
@@ -20193,25 +20188,29 @@ const To = require('./to')
 const Wait = require('./wait')
 
 /** Helper list for multiple animations */
-module.exports = class List extends Loop
+module.exports = class List extends Events
 {
     /**
      * @param [options]
      * @param {number} [options.maxFrameTime=1000 / 60] maximum time in milliseconds for a frame
      * @param {object} [options.pauseOnBlur] pause loop when app loses focus, start it when app regains focus
+     *
      * @event List#done(List) final animation completed in the list
-     * @event List#each(elapsed, List) each update
+     * @event List#each(elapsed, List) each update after eases are updated
      */
     constructor(options)
     {
-        options = options || {}
-        super(options)
+        super()
+        this.loop = new Loop(options)
+        this.loop.add((elapsed) => this.update(elapsed))
+        this.list = []
         this.empty = true
     }
 
     /**
      * Add animation(s) to animation list
      * @param {object|object[]...} any animation class
+     * @return {object} first animation
      */
     add()
     {
@@ -20238,20 +20237,35 @@ module.exports = class List extends Loop
      * @param {object|array} animate - the animation (or array of animations) to remove; can be null
      * @inherited from yy-loop
      */
-    // remove(animate)
+    remove(animate)
+    {
+        this.list.splice(this.list.indexOf(animate), 1)
+    }
 
     /**
      * remove all animations from list
      * @inherited from yy-loop
      */
-    // removeAll()
+    removeAll()
+    {
+        this.list = []
+    }
 
     /**
      * update frame; can be called manually or automatically with start()
      */
-    update()
+    update(elapsed)
     {
-        super.update()
+        for (let i = 0, _i = this.list.length; i < _i; i++)
+        {
+            if (this.list[i].update(elapsed))
+            {
+                this.list.splice(i, 1)
+                i--
+                _i--
+            }
+        }
+        this.emit('each', this)
         if (this.list.length === 0 && !this.empty)
         {
             this.emit('done', this)
@@ -20260,29 +20274,47 @@ module.exports = class List extends Loop
     }
 
     /**
-     * @type {number} number of animations
-     * @inherited yy-looop
+     * number of animations
+     * @type {number}
      */
-    // get count()
+    get count()
+    {
+        return this.list.length
+    }
 
     /**
-     * @type {number} number of active animations
-     * @inherited yy-looop
+     * number of active animations
+     * @type {number}
      */
-    // get countRunning()
+    get countRunning()
+    {
+        let count = 0
+        for (let entry of this.list)
+        {
+            if (!entry.pause)
+            {
+                count++
+            }
+        }
+        return count
+    }
 
     /**
-     * starts an automatic requestAnimationFrame() loop based on yy-loop
+     * starts an automatic requestAnimationFrame() loop
      * alternatively, you can call update() manually
-     * @inherited yy-loop
      */
-    // start()
+    start()
+    {
+        this.loop.start()
+    }
 
     /**
      * stops the automatic requestAnimationFrame() loop
-     * @inherited yy-loop
      */
-    // stop()
+    stop()
+    {
+        this.loop.stop()
+    }
 
     /** helper to add to the list a new Ease.to class; see Ease.to class below for parameters */
     to() { return this.add(new To(...arguments)) }
@@ -20310,27 +20342,8 @@ module.exports = class List extends Loop
 
     /** helper to add to the list a new Ease.wait class; see Ease.to class below for parameters */
     wait() { return this.add(new Wait(...arguments)) }
-
-    /** Inherited functions from yy-loop */
-
-    /**
-     * adds an interval
-     * @param {function} callback
-     * @param {number} time
-     * @param {number} count
-     * @inherited from yy-loop
-     */
-    // interval(callback, time, count)
-
-    /**
-     * adds a timeout
-     * @param {function} callback
-     * @param {number} time
-     * @inherited from yy-loop
-     */
-    // timeout(callback, time)
 }
-},{"./angle":195,"./face":196,"./load":198,"./movie":199,"./shake":200,"./target":201,"./tint":202,"./to":203,"./wait":204,"yy-loop":392}],198:[function(require,module,exports){
+},{"./angle":195,"./face":196,"./load":198,"./movie":199,"./shake":200,"./target":201,"./tint":202,"./to":203,"./wait":204,"eventemitter3":194,"yy-loop":392}],198:[function(require,module,exports){
 const wait = require('./wait')
 const to = require('./to')
 const tint = require('./tint')
@@ -20392,7 +20405,6 @@ module.exports = class movie extends wait
      * @param {Function} [options.load] loads an animation using a .save() object note the * parameters below cannot be loaded and must be re-set
      * @param {Function} [options.ease] function from easing.js (see http://easings.net for examples)
      * @emits {done} animation expires
-     * @emits {cancel} animation is cancelled
      * @emits {wait} each update during a wait
      * @emits {first} first update when animation starts
      * @emits {each} each update while animation is running
@@ -20409,7 +20421,6 @@ module.exports = class movie extends wait
             this.list = object
             this.object = this.list[0]
         }
-        this.ease = options.ease || this.noEase
         if (options.load)
         {
             this.load(options.load)
@@ -20428,10 +20439,6 @@ module.exports = class movie extends wait
 
     save()
     {
-        if (this.options.cancel)
-        {
-            return null
-        }
         const save = super.save()
         save.goto = this.goto
         save.current = this.current
@@ -20462,7 +20469,7 @@ module.exports = class movie extends wait
 
     calculate()
     {
-        let index = Math.round(this.ease(this.time, 0, this.length - 1, this.duration))
+        let index = Math.round(this.options.ease(this.time, 0, this.length - 1, this.duration))
         if (this.isReverse)
         {
             index = this.length - 1 - index
@@ -20530,10 +20537,6 @@ module.exports = class shake extends wait
 
     save()
     {
-        if (this.options.cancel)
-        {
-            return null
-        }
         const save = super.save()
         save.start = this.start
         save.amount = this.amount
@@ -20621,10 +20624,6 @@ module.exports = class target extends wait
 
     save()
     {
-        if (this.options.cancel)
-        {
-            return null
-        }
         const save = super.save()
         save.speed = this.speed
         save.keepAlive = this.options.keepAlive
@@ -20690,7 +20689,6 @@ module.exports = class tint extends wait
             this.object = this.list[0]
         }
         this.duration = duration
-        this.ease = this.options.ease || this.noEase
         if (options.load)
         {
             this.load(options.load)
@@ -20708,10 +20706,6 @@ module.exports = class tint extends wait
 
     save()
     {
-        if (this.options.cancel)
-        {
-            return null
-        }
         const save = super.save()
         save.start = this.start
         save.to = this.to
@@ -20727,7 +20721,7 @@ module.exports = class tint extends wait
 
     calculate()
     {
-        const percent = this.ease(this.time, 0, 1, this.duration)
+        const percent = this.options.ease(this.time, 0, 1, this.duration)
         if (this.tints)
         {
             const each = 1 / (this.tints.length - 1)
@@ -20804,11 +20798,9 @@ module.exports = class to extends wait
      * @param {boolean} [options.pause] start the animation paused
      * @param {boolean|number} [options.repeat] true: repeat animation forever n: repeat animation n times
      * @param {boolean|number} [options.reverse] true: reverse animation (if combined with repeat, then pulse) n: reverse animation n times
-     * @param {boolean|number} [options.continue] true: continue animation with new starting values n: continue animation n times
      * @param {Function} [options.load] loads an animation using an .save() object note the * parameters below cannot be loaded and must be re-set
      * @param {string|Function} [options.ease] name or function from easing.js (see http://easings.net for examples)
      * @emits to:done animation expires
-     * @emits to:cancel animation is cancelled
      * @emits to:wait each update during a wait
      * @emits to:first first update when animation starts
      * @emits to:each each update while animation is running
@@ -20825,7 +20817,6 @@ module.exports = class to extends wait
             this.list = object
             this.object = this.list[0]
         }
-        this.ease = options.ease || this.noEase
         if (options.load)
         {
             this.load(options.load)
@@ -20853,10 +20844,6 @@ module.exports = class to extends wait
 
     save()
     {
-        if (this.options.cancel)
-        {
-            return null
-        }
         const save = super.save()
         save.goto = this.goto
         save.start = this.start
@@ -20890,7 +20877,7 @@ module.exports = class to extends wait
             // handles keys with one additional level e.g.: goto = {scale: {x: 5, y: 3}}
             if (isNaN(goto[key]))
             {
-                keys[i] = {key: key, children: []}
+                keys[i] = { key: key, children: [] }
                 start[i] = []
                 delta[i] = []
                 let j = 0
@@ -20925,12 +20912,12 @@ module.exports = class to extends wait
         const delta = this.delta
         const start = this.start
 
-        for (let i = 0; i < keys.length; i++)
+        for (let i = 0, _i = keys.length; i < _i; i++)
         {
             const key = keys[i]
             if (isNaN(goto[key]))
             {
-                for (let j = 0; j < key.children.length; j++)
+                for (let j = 0, _j = key.children.length; j < _j; j++)
                 {
                     delta[i][j] = -delta[i][j]
                     start[i][j] = parseFloat(object[key.key][key.children[j]])
@@ -20940,32 +20927,6 @@ module.exports = class to extends wait
             else
             {
                 delta[i] = -delta[i]
-                start[i] = parseFloat(object[key])
-                start[i] = isNaN(start[i]) ? 0 : start[i]
-            }
-        }
-    }
-
-    continue()
-    {
-        const object = this.object
-        const keys = this.keys
-        const goto = this.goto
-        const start = this.start
-
-        for (let i = 0; i < keys.length; i++)
-        {
-            const key = keys[i]
-            if (isNaN(goto[key]))
-            {
-                for (let j = 0; j < key.children.length; j++)
-                {
-                    this.start[i][j] = parseFloat(object[key.key][key.children[j]])
-                    this.start[i][j] = isNaN(start[i][j]) ? 0 : start[i][j]
-                }
-            }
-            else
-            {
                 start[i] = parseFloat(object[key])
                 start[i] = isNaN(start[i]) ? 0 : start[i]
             }
@@ -20982,20 +20943,20 @@ module.exports = class to extends wait
         const start = this.start
         const delta = this.delta
         const duration = this.duration
-        const ease = this.ease
-        for (let i = 0; i < this.keys.length; i++)
+        const ease = this.options.ease
+        for (let i = 0, _i = this.keys.length; i < _i; i++)
         {
             const key = keys[i]
             if (isNaN(goto[key]))
             {
                 const key1 = key.key
-                for (let j = 0; j < key.children.length; j++)
+                for (let j = 0, _j = key.children.length; j < _j; j++)
                 {
                     const key2 = key.children[j]
                     const others = object[key1][key2] = (time >= duration) ? start[i][j] + delta[i][j] : ease(time, start[i][j], delta[i][j], duration)
                     if (list)
                     {
-                        for (let k = 1; k < list.length; k++)
+                        for (let k = 1, _k = list.length; k < _k; k++)
                         {
                             list[k][key1][key2] = others
                         }
@@ -21008,7 +20969,7 @@ module.exports = class to extends wait
                 const others = object[key] = (time >= duration) ? start[i] + delta[i] : ease(time, start[i], delta[i], duration)
                 if (list)
                 {
-                    for (let j = 1; j < this.list.length; j++)
+                    for (let j = 1, _j = this.list.length; j < _j; j++)
                     {
                         list[j][key] = others
                     }
@@ -21030,13 +20991,12 @@ module.exports = class wait extends EventEmitter
      * @param {boolean} [options.pause] start the animation paused
      * @param {(boolean|number)} [options.repeat] true: repeat animation forever n: repeat animation n times
      * @param {(boolean|number)} [options.reverse] true: reverse animation (if combined with repeat, then pulse) n: reverse animation n times
-     * @param {(boolean|number)} [options.continue] true: continue animation with new starting values n: continue animation n times
+     *
      * @param {number} [options.id] user-generated id (e.g., I use it to properly load animations when an object has multiple animations running)
-     * @param {boolean} [options.orphan] delete animation if .parent of object (or first object in list) is null
      * @param {Function} [options.load] loads an animation using an .save() object note the * parameters below cannot be loaded and must be re-set
      * @param {Function|string} [options.ease] function (or penner function name) from easing.js (see http://easings.net for examples)*
+     *
      * @emits {done} animation expires
-     * @emits {cancel} animation is cancelled
      * @emits {wait} each update during a wait
      * @emits {first} first update when animation starts
      * @emits {each} each update while animation is running
@@ -21059,6 +21019,7 @@ module.exports = class wait extends EventEmitter
         }
         if (this.options.ease && typeof this.options.ease !== 'function')
         {
+            this.options.easeName = this.options.ease
             this.options.ease = Easing[this.options.ease]
         }
         if (!this.options.ease)
@@ -21069,11 +21030,7 @@ module.exports = class wait extends EventEmitter
 
     save()
     {
-        if (this.options.cancel)
-        {
-            return null
-        }
-        const save = {type: this.type, time: this.time, duration: this.duration}
+        const save = { type: this.type, time: this.time, duration: this.duration, ease: this.options.easeName }
         const options = this.options
         if (options.wait)
         {
@@ -21095,14 +21052,6 @@ module.exports = class wait extends EventEmitter
         {
             save.reverse = options.reverse
         }
-        if (options.continue)
-        {
-            save.continue = options.continue
-        }
-        if (options.cancel)
-        {
-            save.cancel = options.cancel
-        }
         return save
     }
 
@@ -21112,9 +21061,17 @@ module.exports = class wait extends EventEmitter
         this.options.pause = load.pause
         this.options.repeat = load.repeat
         this.options.reverse = load.reverse
-        this.options.continue = load.continue
-        this.options.cancel = load.cancel
         this.options.id = load.id
+        this.options.ease = load.ease
+        if (this.options.ease && typeof this.options.ease !== 'function')
+        {
+            this.options.easeName = this.options.ease
+            this.options.ease = Easing[this.options.ease]
+        }
+        if (!this.options.ease)
+        {
+            this.options.ease = Easing['linear']
+        }
         this.time = load.time
         this.duration = load.duration
     }
@@ -21129,15 +21086,6 @@ module.exports = class wait extends EventEmitter
     get pause()
     {
         return this.options.pause
-    }
-
-    cancel()
-    {
-        this.options.cancel = true
-    }
-
-    done()
-    {
     }
 
     end(leftOver)
@@ -21175,16 +21123,6 @@ module.exports = class wait extends EventEmitter
             }
             this.emit('loop', this.list || this.object)
         }
-        else if (this.options.continue)
-        {
-            this.continue()
-            this.time = leftOver
-            if (this.options.continue !== true)
-            {
-                this.options.continue--
-            }
-            this.emit('loop', this.list || this.object)
-        }
         else
         {
             this.done()
@@ -21196,50 +21134,18 @@ module.exports = class wait extends EventEmitter
 
     update(elapsed)
     {
-        if (!this.options)
+        const options = this.options
+        if (options.pause)
         {
             return
         }
-        if (this.options.cancel)
+        if (options.wait)
         {
-            this.emit('cancel', this.list || this.object)
-            return true
-        }
-        if (this.options.orphan)
-        {
-            if (this.list)
+            options.wait -= elapsed
+            if (options.wait <= 0)
             {
-                if (!this.list[0].parent)
-                {
-                    return true
-                }
-            }
-            else if (!this.object.parent)
-            {
-                return true
-            }
-        }
-        if (this.options.restart)
-        {
-            this.restart()
-            this.options.pause = false
-        }
-        if (this.options.original)
-        {
-            this.time = 0
-            this.options.pause = false
-        }
-        if (this.options.pause)
-        {
-            return
-        }
-        if (this.options.wait)
-        {
-            this.options.wait -= elapsed
-            if (this.options.wait <= 0)
-            {
-                elapsed = -this.options.wait
-                this.options.wait = false
+                elapsed = -options.wait
+                options.wait = false
             }
             else
             {
@@ -21254,14 +21160,16 @@ module.exports = class wait extends EventEmitter
         }
         this.time += elapsed
         let leftOver = 0
-        if (this.duration !== 0 && this.time > this.duration)
+        const duration = this.duration
+        let time = this.time
+        if (duration !== 0 && time > duration)
         {
-            leftOver = this.time - this.duration
-            this.time = this.duration
+            leftOver = time - duration
+            this.time = time = duration
         }
         const allDone = this.calculate(elapsed)
         this.emit('each', elapsed, this.list || this.object, this)
-        if (this.type === 'Wait' || (this.duration !== 0 && this.time === this.duration))
+        if (this.type === 'Wait' || (duration !== 0 && time === duration))
         {
             return this.end(leftOver)
         }
@@ -21282,7 +21190,9 @@ module.exports = class wait extends EventEmitter
         return value
     }
 
-    calculate() {}
+    reverse() {}
+    calculate() { }
+    done() { }
 }
 },{"eventemitter3":194,"penner":192}],205:[function(require,module,exports){
 var EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
@@ -34283,7 +34193,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":252,"../../../../textures/TextureMatrix":298,"../Filter":268,"path":411}],272:[function(require,module,exports){
+},{"../../../../math":252,"../../../../textures/TextureMatrix":298,"../Filter":268,"path":412}],272:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37982,7 +37892,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":226,"path":411}],290:[function(require,module,exports){
+},{"../../Shader":226,"path":412}],290:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43300,7 +43210,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":417}],307:[function(require,module,exports){
+},{"url":418}],307:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47746,7 +47656,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":247,"../../core/const":228,"path":411}],325:[function(require,module,exports){
+},{"../../core":247,"../../core/const":228,"path":412}],325:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47830,7 +47740,7 @@ var AlphaFilter = function (_core$Filter) {
 
 exports.default = AlphaFilter;
 
-},{"../../core":247,"path":411}],326:[function(require,module,exports){
+},{"../../core":247,"path":412}],326:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48993,7 +48903,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":247,"path":411}],333:[function(require,module,exports){
+},{"../../core":247,"path":412}],333:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49103,7 +49013,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":247,"path":411}],334:[function(require,module,exports){
+},{"../../core":247,"path":412}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49157,7 +49067,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":247,"path":411}],335:[function(require,module,exports){
+},{"../../core":247,"path":412}],335:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49333,7 +49243,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":247,"path":411}],337:[function(require,module,exports){
+},{"../../core":247,"path":412}],337:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -51952,7 +51862,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":247,"../extras":323,"path":411,"resource-loader":376}],345:[function(require,module,exports){
+},{"../core":247,"../extras":323,"path":412,"resource-loader":376}],345:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52310,7 +52220,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":247,"resource-loader":376,"url":417}],348:[function(require,module,exports){
+},{"../core":247,"resource-loader":376,"url":418}],348:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53960,7 +53870,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":247,"../Mesh":349,"path":411,"pixi-gl-core":211}],356:[function(require,module,exports){
+},{"../../core":247,"../Mesh":349,"path":412,"pixi-gl-core":211}],356:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -59306,7 +59216,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":410}],386:[function(require,module,exports){
+},{"crypto":411}],386:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -61088,7 +60998,7 @@ class Color
 };
 
 module.exports = new Color();
-},{"yy-random":395}],389:[function(require,module,exports){
+},{"yy-random":396}],389:[function(require,module,exports){
 // yy-counter
 // In-browser counter to watch changeable values like counters or FPS
 // David Figatner
@@ -61836,8 +61746,13 @@ module.exports = class Input extends EventEmitter
     }
 }
 },{"eventemitter3":7}],392:[function(require,module,exports){
-module.exports = require('./src/loop')
-},{"./src/loop":394}],393:[function(require,module,exports){
+const Loop = require('./src/loop')
+Loop.entry = require('./src/entry')
+
+module.exports = Loop
+},{"./src/entry":394,"./src/loop":395}],393:[function(require,module,exports){
+arguments[4][194][0].apply(exports,arguments)
+},{"dup":194}],394:[function(require,module,exports){
 const Events = require('eventemitter3')
 
 /** Entry class for Loop */
@@ -61918,7 +61833,7 @@ class Entry extends Events
 }
 
 module.exports = Entry
-},{"eventemitter3":7}],394:[function(require,module,exports){
+},{"eventemitter3":393}],395:[function(require,module,exports){
 /* Copyright (c) 2017 YOPEY YOPEY LLC */
 
 const Events = require('eventemitter3')
@@ -61931,7 +61846,7 @@ class Loop extends Events
      * @param {number} [options.maxFrameTime=1000/60] maximum time in milliseconds for a frame
      * @param {object} [options.pauseOnBlur] pause loop when app loses focus, start it when app regains focus
      *
-     * @event each(elapsed, Loop, elapsedInLoop)
+     * @event each(elapsed, Loop)
      * @event start(Loop)
      * @event stop(Loop)
      */
@@ -61942,8 +61857,8 @@ class Loop extends Events
         this.maxFrameTime = options.maxFrameTime || 1000 / 60
         if (options.pauseOnBlur)
         {
-            window.addEventListener('blur', this.stopBlur.bind(this))
-            window.addEventListener('focus', this.startBlur.bind(this))
+            window.addEventListener('blur', () => this.stopBlur())
+            window.addEventListener('focus', () => this.startBlur())
         }
         this.list = []
     }
@@ -61957,10 +61872,7 @@ class Loop extends Events
         if (!this.running)
         {
             this.running = true
-            if (!this.waiting)
-            {
-                this.loop()
-            }
+            this.loop(0)
             this.emit('start', this)
         }
         return this
@@ -61998,6 +61910,11 @@ class Loop extends Events
      */
     stop()
     {
+        if (this.handle)
+        {
+            window.cancelAnimationFrame(this.handle)
+            this.handle = null
+        }
         this.running = false
         this.blurred = false
         this.emit('stop', this)
@@ -62006,40 +61923,49 @@ class Loop extends Events
 
     /**
      * loop through updates; can be called manually each frame, or called automatically as part of start()
+     * @param {number} elapsed time since last call (will be clamped to this.maxFrameTime)
      */
-    update()
+    update(elapsed)
     {
-        const now = performance.now()
-        let elapsed = now - this.last ? this.last : 0
-        elapsed = elapsed > this.maxFrameTime ? this.maxFrameTime : elapsed
-        for (let entry of this.list)
+        const maxFrameTime = this.maxFrameTime
+        elapsed = elapsed > maxFrameTime ? maxFrameTime : elapsed
+        for (let i = 0, _i = this.list.length; i < _i; i++)
         {
-            if (entry.update(elapsed))
+            if (this.list[i].update(elapsed))
             {
-                this.remove(entry)
+                this.list.splice(i, 1)
+                i--
+                _i--
             }
         }
-        this.emit('each', elapsed, this, now - performance.now())
-        this.last = now
+        this.emit('each', elapsed, this)
     }
 
     /**
      * internal loop through animations
      * @private
      */
-    loop()
+    loop(elapsed)
     {
         if (this.running)
         {
-            this.waiting = false
-            this.update()
-            requestAnimationFrame(this.loop.bind(this))
-            this.waiting = true
+            this.update(elapsed)
+            this.handle = requestAnimationFrame((elapsed) => this.loop(elapsed))
         }
-        else
-        {
-            this.waiting = false
-        }
+    }
+
+    /**
+     * adds a callback to the loop
+     * @deprecated use add() instead
+     * @param {function} callback
+     * @param {number} [time=0] in milliseconds to call this update (0=every frame)
+     * @param {number} [count=0] number of times to run this update (0=infinite)
+     * @return {object} entry - used to remove or change the parameters of the update
+     */
+    interval(callback, time, count)
+    {
+        console.warn('yy-loop: interval() deprecated. Use add() instead.')
+        this.add(callback, time, count)
     }
 
     /**
@@ -62049,7 +61975,7 @@ class Loop extends Events
      * @param {number} [count=0] number of times to run this update (0=infinite)
      * @return {object} entry - used to remove or change the parameters of the update
      */
-    interval(callback, time, count)
+    add(callback, time, count)
     {
         const entry = new Entry(callback, time, count)
         this.list.push(entry)
@@ -62064,7 +61990,7 @@ class Loop extends Events
      */
     timeout(callback, time)
     {
-        return this.interval(callback, time, 1)
+        return this.add(callback, time, 1)
     }
 
     /**
@@ -62117,7 +62043,7 @@ const Entry = require('./entry')
 
 Loop.entry = Entry
 module.exports = Loop
-},{"./entry":393,"eventemitter3":7}],395:[function(require,module,exports){
+},{"./entry":394,"eventemitter3":393}],396:[function(require,module,exports){
 // yy-random
 // by David Figatner
 // MIT license
@@ -62543,7 +62469,7 @@ class Random
 }
 
 module.exports = new Random()
-},{"seedrandom":378}],396:[function(require,module,exports){
+},{"seedrandom":378}],397:[function(require,module,exports){
 // yy-renderer
 // by David Figatner
 // (c) YOPEY YOPEY LLC 2017
@@ -62555,7 +62481,7 @@ const FPS = require('yy-fps')
 const Loop = require('yy-loop')
 const exists = require('exists')
 
-class Renderer extends Loop
+class Renderer
 {
     /**
      * Wrapper for a pixi.js Renderer
@@ -62571,6 +62497,9 @@ class Renderer extends Loop
      * @param {boolean} [options.autoresize=false] automatically calls resize during resize events
      * @param {number} [options.color=0xffffff] background color in hex
      *
+     * @param {boolean} [options.turnOffTicker] turn off PIXI.shared.ticker
+     * @param {boolean} [options.turnOffInteraction] turn off PIXI.Interaction manager (saves cycles)
+     *
      * @param {boolean} [options.noWebGL=false] use the PIXI.CanvasRenderer instead of PIXI.WebGLRenderer
      * @param {boolean} [options.antialias=true] turn on antialias if native antialias is not used, uses FXAA
      * @param {boolean} [options.forceFXAA=false] forces FXAA antialiasing to be used over native. FXAA is faster, but may not always look as great
@@ -62582,7 +62511,6 @@ class Renderer extends Loop
      * @param {boolean|string} [options.debug] false, true, or some combination of 'fps', 'dirty', and 'count' (e.g., 'count-dirty' or 'dirty')
      * @param {object} [options.fpsOptions] options from yy-fps (https://github.com/davidfig/fps)
      *
-     ** from yy-loop:
      * @param {number} [options.maxFrameTime=1000/60] maximum time in milliseconds for a frame
      * @param {object} [options.pauseOnBlur] pause loop when app loses focus, start it when app regains focus
      *
@@ -62593,7 +62521,8 @@ class Renderer extends Loop
     constructor(options)
     {
         options = options || {}
-        super({ pauseOnBlur: options.pauseOnBlur, maxFrameTime: options.maxFrameTime })
+        this.options = options
+        this.loop = new Loop({ pauseOnBlur: options.pauseOnBlur, maxFrameTime: options.maxFrameTime })
         this.canvas = options.canvas
         this.autoResize = options.autoresize
         this.aspectRatio = options.aspectRatio
@@ -62604,12 +62533,23 @@ class Renderer extends Loop
         if (!this.canvas) this.createCanvas(options)
         options.view = this.canvas
 
+        if (options.turnoffTicker)
+        {
+            const ticker = PIXI.ticker.shared
+            ticker.autoStart = false
+            ticker.stop()
+        }
+
         const noWebGL = options.noWebGL || false
         options.noWebGL = null
         options.autoresize = null
         const Renderer = noWebGL ? PIXI.CanvasRenderer : PIXI.WebGLRenderer
 
         this.renderer = new Renderer(options)
+        if (options.turnOffInteraction)
+        {
+            this.renderer.plugins.interaction.destroy()
+        }
         if (options.color)
         {
             this.canvas.style.backgroundColor = options.color
@@ -62623,12 +62563,11 @@ class Renderer extends Loop
         }
 
         if (options.debug) this.createDebug(options)
-        if (this.autoResize) window.addEventListener('resize', this.resize.bind(this))
+        if (this.autoResize) window.addEventListener('resize', () => this.resize())
         this.time = 0
         this.stage = new PIXI.Container()
         this.dirty = this.alwaysRender = options.alwaysRender || false
         this.resize(true)
-        this.updateRendererID = this.interval(this.updateRenderer.bind(this), this.FPS)
     }
 
     /**
@@ -62700,10 +62639,9 @@ class Renderer extends Loop
     }
 
     /**
-     * render the scene
      * @private
      */
-    updateRenderer()
+    update()
     {
         if (this.fpsMeter)
         {
@@ -62742,7 +62680,7 @@ class Renderer extends Loop
                 return
             }
             total++
-            for (var i = 0; i < object.children.length; i++)
+            for (let i = 0, _i = object.children.length; i < _i; i++)
             {
                 count(object.children[i])
             }
@@ -62872,82 +62810,66 @@ class Renderer extends Loop
     set fps(value)
     {
         this.FPS = 1000 / value
-        this.removeInterval(this.updateRendererID)
-        this.updateRendererID = this.interval(this.updateRenderer.bind(this), this.FPS)
+        if (this.loop)
+        {
+            this.loop.remove(this.loopSave)
+            this.loopSave = this.loop.add(() => this.update(), this.FPS)
+        }
         if (this.fpsMeter)
         {
             this.fpsMeter.fps = value
         }
     }
 
+    /**
+     * Add a listener for a given event to yy-loop
+     * @param {(String|Symbol)} event The event name.
+     * @param {Function} fn The listener function.
+     * @param {*} [context=this] The context to invoke the listener with.
+     * @returns {EventEmitter} `this`.
+     */
+    on()
+    {
+        this.loop.on(...arguments)
+    }
+
+    /**
+     * Add a one-time listener for a given event to yy-loop
+     * @param {(String|Symbol)} event The event name.
+     * @param {Function} fn The listener function.
+     * @param {*} [context=this] The context to invoke the listener with.
+     * @returns {EventEmitter} `this`.
+     * @public
+     */
+    once()
+    {
+        this.loop.once(...arguments)
+    }
 
     /**
      * start the internal loop
-     * @inherited from yy-loop
      * @returns {Renderer} this
      */
-    // start()
+    start()
+    {
+        this.loopSave = this.loop.add(() => this.update(), this.FPS)
+        this.loop.start()
+        return this
+    }
 
     /**
      * stop the internal loop
      * @inherited from yy-loop
      * @returns {Renderer} this
      */
-    // stop()
-
-    /**
-     * loop through updates; can be called manually each frame, or called automatically as part of start()
-     * @inherited from yy-loop
-     */
-    // update()
-
-    /**
-     * adds a callback to the loop
-     * @inherited from yy-loop
-     * @param {function} callback
-     * @param {number} [time=0] in milliseconds to call this update (0=every frame)
-     * @param {number} [count=0] number of times to run this update (0=infinite)
-     * @return {object} entry - used to remove or change the parameters of the update
-     */
-    // interval(callback, time, count)
-
-    /**
-     * adds a one-time callback to the loop
-     * @inherited from yy-loop
-     * @param {function} callback
-     * @param {number} time in milliseconds to call this update
-     * @return {object} entry - used to remove or change the parameters of the update
-     */
-    // timeout(callback, time)
-
-    /**
-     * remove a callback from the loop
-     * @inherited from yy-loop
-     * @param {object} entry - returned by add()
-     */
-    // remove(entry)
-
-    /**
-     * @inherited from yy-loop
-     * removes all callbacks from the loop
-     */
-    // removeAll()
-
-    /**
-     * @inherited from yy-loop
-     * @type {number} count of all animations
-     */
-    // get count()
-
-    /**
-     * @inherited from yy-loop
-     * @type {number} count of running animations
-     */
-    // get countRunning()
+    stop()
+    {
+        this.loop.stop()
+    }
 }
 
 module.exports = Renderer
-},{"exists":8,"pixi.js":337,"yy-fps":390,"yy-loop":392}],397:[function(require,module,exports){
+},{"exists":8,"pixi.js":337,"yy-fps":390,"yy-loop":392}],398:[function(require,module,exports){
 const Ease = require('pixi-ease')
 const exists = require('exists')
 
@@ -63163,7 +63085,7 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":405,"exists":8,"pixi-ease":193}],398:[function(require,module,exports){
+},{"./plugin":406,"exists":8,"pixi-ease":193}],399:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class ClampZoom extends Plugin
@@ -63223,7 +63145,7 @@ module.exports = class ClampZoom extends Plugin
     }
 }
 
-},{"./plugin":405}],399:[function(require,module,exports){
+},{"./plugin":406}],400:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class clamp extends Plugin
@@ -63345,7 +63267,7 @@ module.exports = class clamp extends Plugin
         }
     }
 }
-},{"./plugin":405}],400:[function(require,module,exports){
+},{"./plugin":406}],401:[function(require,module,exports){
 const exists = require('exists')
 
 const Plugin = require('./plugin')
@@ -63467,7 +63389,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":405,"exists":8}],401:[function(require,module,exports){
+},{"./plugin":406,"exists":8}],402:[function(require,module,exports){
 const exists = require('exists')
 
 const Plugin = require('./plugin')
@@ -63671,7 +63593,7 @@ module.exports = class Drag extends Plugin
         }
     }
 }
-},{"./plugin":405,"exists":8}],402:[function(require,module,exports){
+},{"./plugin":406,"exists":8}],403:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -63735,7 +63657,7 @@ module.exports = class Follow extends Plugin
         }
     }
 }
-},{"./plugin":405}],403:[function(require,module,exports){
+},{"./plugin":406}],404:[function(require,module,exports){
 const exists = require('exists')
 const Angle = require('yy-angle')
 
@@ -63920,7 +63842,7 @@ module.exports = class MouseEdges extends Plugin
         }
     }
 }
-},{"./plugin":405,"exists":8,"yy-angle":387}],404:[function(require,module,exports){
+},{"./plugin":406,"exists":8,"yy-angle":387}],405:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -64037,7 +63959,7 @@ module.exports = class Pinch extends Plugin
         }
     }
 }
-},{"./plugin":405}],405:[function(require,module,exports){
+},{"./plugin":406}],406:[function(require,module,exports){
 module.exports = class Plugin
 {
     constructor(parent)
@@ -64064,7 +63986,7 @@ module.exports = class Plugin
         this.paused = false
     }
 }
-},{}],406:[function(require,module,exports){
+},{}],407:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -64205,7 +64127,7 @@ module.exports = class SnapZoom extends Plugin
         super.resume()
     }
 }
-},{"./plugin":405,"exists":8,"pixi-ease":193}],407:[function(require,module,exports){
+},{"./plugin":406,"exists":8,"pixi-ease":193}],408:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -64318,7 +64240,7 @@ module.exports = class Snap extends Plugin
         }
     }
 }
-},{"./plugin":405,"exists":8,"pixi-ease":193}],408:[function(require,module,exports){
+},{"./plugin":406,"exists":8,"pixi-ease":193}],409:[function(require,module,exports){
 const Loop = require('yy-loop')
 const Input = require('yy-input')
 const exists = require('exists')
@@ -64388,7 +64310,7 @@ module.exports = class Viewport extends Loop
         {
             this.listeners(options.div || document.body, options.threshold, options.preventDefault)
         }
-        this.interval(this.updateFrame.bind(this))
+        this.add(this.updateFrame.bind(this))
     }
 
     /**
@@ -65242,7 +65164,7 @@ module.exports = class Viewport extends Loop
     }
 }
 
-},{"./bounce":397,"./clamp":399,"./clamp-zoom":398,"./decelerate":400,"./drag":401,"./follow":402,"./mouse-edges":403,"./pinch":404,"./snap":407,"./snap-zoom":406,"./wheel":409,"exists":8,"yy-input":391,"yy-loop":392}],409:[function(require,module,exports){
+},{"./bounce":398,"./clamp":400,"./clamp-zoom":399,"./decelerate":401,"./drag":402,"./follow":403,"./mouse-edges":404,"./pinch":405,"./snap":408,"./snap-zoom":407,"./wheel":410,"exists":8,"yy-input":391,"yy-loop":392}],410:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
@@ -65309,9 +65231,9 @@ module.exports = class Wheel extends Plugin
         this.parent.emit('wheel', { wheel: {dx, dy, dz}, viewport: this.parent})
     }
 }
-},{"./plugin":405}],410:[function(require,module,exports){
+},{"./plugin":406}],411:[function(require,module,exports){
 
-},{}],411:[function(require,module,exports){
+},{}],412:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -65539,7 +65461,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":412}],412:[function(require,module,exports){
+},{"_process":413}],413:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -65725,7 +65647,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],413:[function(require,module,exports){
+},{}],414:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -66262,7 +66184,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],414:[function(require,module,exports){
+},{}],415:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -66348,7 +66270,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],415:[function(require,module,exports){
+},{}],416:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -66435,13 +66357,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],416:[function(require,module,exports){
+},{}],417:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":414,"./encode":415}],417:[function(require,module,exports){
+},{"./decode":415,"./encode":416}],418:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -67175,7 +67097,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":418,"punycode":413,"querystring":416}],418:[function(require,module,exports){
+},{"./util":419,"punycode":414,"querystring":417}],419:[function(require,module,exports){
 'use strict';
 
 module.exports = {
