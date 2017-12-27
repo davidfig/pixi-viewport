@@ -33,17 +33,19 @@
     "url": "https://github.com/davidfig/pixi-viewport/issues"
   },
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
+  "peerDependencies": {
+    "pixi.js": ">=4.6.0"
+  },
   "dependencies": {
     "exists": "^1.0.1",
-    "pixi-ease": "^0.13.6",
-    "yy-input": "^0.11.2",
-    "yy-loop": "^0.3.5"
+    "pixi-ease": "^0.14.3"
   },
   "devDependencies": {
     "fork-me-github": "^1.0.3",
     "highlight.js": "^9.12.0",
     "pixi.js": "^4.6.2",
-    "yy-random": "^1.6.0",
-    "yy-renderer": "^2.5.2"
+    "yy-counter": "^2.1.0",
+    "yy-fps": "^0.5.3",
+    "yy-random": "^1.6.0"
   }
 }

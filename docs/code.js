@@ -1,8 +1,8 @@
 const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
-const Renderer = require('yy-renderer')
 const Counter = require('yy-counter')
+const FPS = require('yy-fps')
 
 const Viewport = require('..')
 
@@ -18,25 +18,23 @@ const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
 const FADE_TIME = 2000
 
-let _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
+let _fps, _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
 
 function viewport()
 {
-    _viewport = new Viewport(_renderer.stage, { div: _renderer.div, pauseOnBlur: true, preventDefault: false })
+    _viewport = _renderer.stage.addChild(new Viewport())
     _viewport
-        .drag( {clampWheel: true })
-        .wheel()
+        .drag({ clampWheel: true })
+    //     .wheel()
         .pinch()
         .on('click', click)
         .decelerate()
         .bounce()
-        .start()
     resize()
 }
 
 function resize()
 {
-    _renderer.resize()
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
 }
 
@@ -50,7 +48,7 @@ function addCounter(name)
 
 function events()
 {
-    _viewport.on('click', (data) => addCounter('click: ' + data.screen.x + ', ' + data.screen.y))
+    _viewport.on('click', () => addCounter('click'))
     _viewport.on('drag-start', () => addCounter('drag-start'))
     _viewport.on('drag-end', () => addCounter('drag-end'))
     _viewport.on('pinch-start', () => addCounter('pinch-start'))
@@ -69,7 +67,7 @@ function events()
 
 function line(x, y, width, height)
 {
-    const line = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    const line = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     line.tint = 0xff0000
     line.position.set(x, y)
     line.width = width
@@ -89,7 +87,7 @@ function stars()
     const stars = (_viewport.worldWidth * _viewport.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1
     for (let i = 0; i < stars; i++)
     {
-        const star = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+        const star = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
         star.anchor.set(0.5)
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
@@ -112,7 +110,7 @@ function createTarget()
 
 function object()
 {
-    _object = _renderer.stage.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    _object = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     _object.anchor.set(0.5)
     _object.tint = 0
     _object.width = _object.height = OBJECT_SIZE
@@ -121,20 +119,21 @@ function object()
     createTarget()
 }
 
-function click(data)
+function click(e)
 {
     for (let star of _stars)
     {
-        if (star.containsPoint(data.screen))
+        if (star.containsPoint(e.data.global))
         {
-            _ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' })
+            const scale = star.scale.x
+            _ease.to(star, { scale: scale * 2 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' })
             return
         }
     }
-    const sprite = _renderer.stage.addChild(new PIXI.Text('click', {fill: 0xff0000}))
+    const sprite = _viewport.addChild(new PIXI.Text('click', {fill: 0xff0000}))
     sprite.anchor.set(0.5)
     sprite.rotation = Random.range(-0.1, 0.1)
-    sprite.position = data.world
+    sprite.position = _viewport.toLocal(e.data.global)
     const fade = _ease.to(sprite, { alpha: 0 }, ANIMATE_TIME)
     fade.on('done', () => _renderer.stage.removeChild(sprite))
 }
@@ -142,7 +141,7 @@ function click(data)
 function drawWorld()
 {
     _ease.removeAll()
-    _renderer.stage.removeChildren()
+    _viewport.removeChildren()
     stars()
     object()
     border()
@@ -151,31 +150,29 @@ function drawWorld()
 
 window.onload = function ()
 {
-    _renderer = new Renderer({ debug: true, fpsOptions: { side: 'bottom-left' } })
+    _fps = new FPS({ side: 'bottom-left' })
+    _renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, autoresize: true })
+    document.body.appendChild(_renderer.view)
+    _renderer.view.style.position = 'fixed'
+    _renderer.view.style.width = '100vw'
+    _renderer.view.style.height = '100vh'
+
     viewport()
+
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
-    _viewport.interval(
-        function ()
-        {
-            _ease.update()
-            if (!gui.options.testDirty)
-            {
-                _renderer.dirty = true
-            }
-            if (_viewport.dirty)
-            {
-                _renderer.dirty = true
-                _viewport.dirty = false
-            }
-            _renderer.update()
-        }
-    )
     drawWorld()
     events()
 
-    gui.gui(_viewport, drawWorld, _object)
+    PIXI.ticker.shared.add(() =>
+    {
+        // _ease.update(PIXI.ticker.shared.elapsedMS)
+        _fps.frame()
+    })
+    _renderer.start()
+
+    // gui.gui(_viewport, drawWorld, _object)
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }

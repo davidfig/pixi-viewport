@@ -27,13 +27,14 @@ module.exports = class Pinch extends Plugin
         }
     }
 
-    move(x, y, data)
+    move(e)
     {
         if (this.paused)
         {
             return
         }
-
+        const x = e.data.global.x
+        const y = e.data.global.y
         const pointers = this.parent.pointers
         if (this.active)
         {
@@ -44,11 +45,11 @@ module.exports = class Pinch extends Plugin
             {
                 last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
             }
-            if (first.id === data.id)
+            if (first.id === e.data.identifier)
             {
                 first.last = { x, y }
             }
-            else if (second.id === data.id)
+            else if (second.id === e.data.identifier)
             {
                 second.last = { x, y }
             }
@@ -58,12 +59,12 @@ module.exports = class Pinch extends Plugin
                 const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
                 if (!this.center)
                 {
-                    oldPoint = this.parent.container.toLocal(point)
+                    oldPoint = this.parent.toLocal(point)
                 }
                 const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x * this.percent
-                this.parent.container.scale.x += change
-                this.parent.container.scale.y += change
+                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
+                this.parent.scale.x += change
+                this.parent.scale.y += change
                 const clamp = this.parent.plugins['clamp-zoom']
                 if (clamp)
                 {
@@ -75,15 +76,15 @@ module.exports = class Pinch extends Plugin
                 }
                 else
                 {
-                    const newPoint = this.parent.container.toGlobal(oldPoint)
-                    this.parent.container.x += point.x - newPoint.x
-                    this.parent.container.y += point.y - newPoint.y
+                    const newPoint = this.parent.toGlobal(oldPoint)
+                    this.parent.x += point.x - newPoint.x
+                    this.parent.y += point.y - newPoint.y
                 }
 
                 if (!this.noDrag && this.lastCenter)
                 {
-                    this.parent.container.x += point.x - this.lastCenter.x
-                    this.parent.container.y += point.y - this.lastCenter.y
+                    this.parent.x += point.x - this.lastCenter.x
+                    this.parent.y += point.y - this.lastCenter.y
                 }
                 this.lastCenter = point
             }

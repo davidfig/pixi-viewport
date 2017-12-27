@@ -98,7 +98,6 @@ function gui(viewport, drawWorld, target)
     }
     guiWorld()
     guiTestDirty()
-    _gui.add(_viewport, 'threshold')
     guiDrag()
     guiPinch()
     guiWheel()

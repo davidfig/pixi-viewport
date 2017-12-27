@@ -182,9 +182,9 @@ module.exports = class Bounce extends Plugin
                 {
                     x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
                 }
-                if (exists(x) && this.parent.container.x !== x)
+                if (exists(x) && this.parent.x !== x)
                 {
-                    this.toX = new Ease.to(this.parent.container, { x }, this.time, { ease: this.ease })
+                    this.toX = new Ease.to(this.parent, { x }, this.time, { ease: this.ease })
                     this.parent.emit('bounce-start-x', this.parent)
                 }
             }
@@ -199,9 +199,9 @@ module.exports = class Bounce extends Plugin
                 {
                     y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
                 }
-                if (exists(y) && this.parent.container.y !== y)
+                if (exists(y) && this.parent.y !== y)
                 {
-                    this.toY = new Ease.to(this.parent.container, { y }, this.time, { ease: this.ease })
+                    this.toY = new Ease.to(this.parent, { y }, this.time, { ease: this.ease })
                     this.parent.emit('bounce-start-y', this.parent)
                 }
             }

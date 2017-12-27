@@ -1,5 +1,4 @@
-const Loop = require('yy-loop')
-const Input = require('yy-input')
+const PIXI = require('pixi.js')
 const exists = require('exists')
 
 const Drag = require('./drag')
@@ -16,23 +15,17 @@ const MouseEdges = require('./mouse-edges')
 
 const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
-module.exports = class Viewport extends Loop
+module.exports = class Viewport extends PIXI.Container
 {
     /**
-     * @param {PIXI.Container} container to apply viewport
-     * @param {number} [options]
-     * @param {HTMLElement} [options.div=document.body] use this div to create the mouse/touch listeners
-     * @param {number} [options.screenWidth] these values are needed for clamp, bounce, and pinch plugins
-     * @param {number} [options.screenHeight]
-     * @param {number} [options.worldWidth]
-     * @param {number} [options.worldHeight]
-     * @param {number} [options.threshold=5] threshold for click
-     * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
-     * @param {boolean} [options.pauseOnBlur] pause when app loses focus
-     * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
-     * @param {number} [options.preventDefault] call preventDefault after listeners
+     * @param {object} [options]
+     * @param {number} [options.screenWidth=window.innerWidth]
+     * @param {number} [options.screenHeight=window.innerHeight]
+     * @param {number} [options.worldWidth=this.width]
+     * @param {number} [options.worldHeight=this.height]
+     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (will not update hitArea on resize)
      *
-     * @emits click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
      * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
      * @emits drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
      * @emits pinch-start(viewport) emitted when a pinch starts
@@ -50,37 +43,20 @@ module.exports = class Viewport extends Loop
      * @emits mouse-edge-start(Viewport) emitted when mouse-edge starts
      * @emits mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
-    constructor(container, options)
+    constructor(options)
     {
         options = options || {}
-        super({ pauseOnBlur: options.pauseOnBlur, maxFrameTime: options.maxFrameTime })
-        this.container = container
+        super()
         this.plugins = []
         this._screenWidth = options.screenWidth
         this._screenHeight = options.screenHeight
         this._worldWidth = options.worldWidth
         this._worldHeight = options.worldHeight
-        this.threshold = typeof options.threshold === 'undefined' ? 5 : options.threshold
-        this.maxFrameTime = options.maxFrameTime || 1000 / 60
-        this.pointers = []
-        if (!options.noListeners)
-        {
-            this.listeners(options.div || document.body, options.threshold, options.preventDefault)
-        }
-        this.interval(this.updateFrame.bind(this))
+        this.forceHitArea = options.forceHitArea
+        this.threshold = exists(options.threshold) ? options.threshold : 5
+        this.listeners()
+        PIXI.ticker.shared.add(() => this.updateFrame(PIXI.ticker.shared.elapsedMS))
     }
-
-    /**
-     * start requestAnimationFrame() loop to handle animations; alternatively, call update() manually on each frame
-     * @inherited from yy-loop
-     */
-    // start()
-
-    /**
-     * update loop -- may be called manually or use start/stop() for Viewport to handle updates
-     * @inherited from yy-loop
-     */
-    // update()
 
     /**
      * update frame for animations
@@ -98,12 +74,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * stop loop
-     * @inherited from yy-loop
-     */
-    // stop()
-
-    /**
      * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
      * @param {number} screenWidth
      * @param {number} screenHeight
@@ -112,17 +82,15 @@ module.exports = class Viewport extends Loop
      */
     resize(screenWidth, screenHeight, worldWidth, worldHeight)
     {
-        this._screenWidth = screenWidth
-        this._screenHeight = screenHeight
-        if (worldWidth)
+        this._screenWidth = screenWidth || window.innerWidth
+        this._screenHeight = screenHeight || window.innerHeight
+        this._worldWidth = worldWidth
+        this._worldHeight = worldHeight
+        if (!this._forceHitArea)
         {
-            this._worldWidth = worldWidth
-            this._worldHeight = worldHeight
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
         }
-        if (exists(worldWidth) || exists(worldHeight))
-        {
-            this.resizePlugins()
-        }
+        this.resizePlugins()
     }
 
     /**
@@ -169,7 +137,14 @@ module.exports = class Viewport extends Loop
      */
     get worldWidth()
     {
-        return this._worldWidth
+        if (this._worldWidth)
+        {
+            return this._worldWidth
+        }
+        else
+        {
+            return this.width
+        }
     }
     set worldWidth(value)
     {
@@ -182,7 +157,14 @@ module.exports = class Viewport extends Loop
      */
     get worldHeight()
     {
-        return this._worldHeight
+        if (this._worldHeight)
+        {
+            return this._worldHeight
+        }
+        else
+        {
+            return this.height
+        }
     }
     set worldHeight(value)
     {
@@ -191,27 +173,36 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * add or remove mouse/touch listeners
+     * add input listeners
      * @private
      */
-    listeners(div, threshold, preventDefault)
+    listeners()
     {
-        this.input = new Input({ div, threshold, preventDefault })
-        this.input.on('down', this.down, this)
-        this.input.on('move', this.move, this)
-        this.input.on('up', this.up, this)
-        this.input.on('click', this.click, this)
-        this.input.on('wheel', this.handleWheel, this)
+        this.pointers = []
+        this.interactive = true
+        this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        this.on('pointerdown', this.down, this)
+        this.on('pointermove', this.move, this)
+        this.on('pointerup', this.up, this)
+        this.on('pointercancel', this.up, this)
+        this.on('pointerout', this.up, this)
+        this.on('tap', this.tap, this)
+
+        // this.input.on('wheel', this.handleWheel, this)
     }
 
     /**
      * handle down events
      * @private
      */
-    down(x, y, data)
+    down(e)
     {
         let result
-        this.pointers.push({ id: data.id })
+        const index = this.findPointerIndex(e.data.identifier)
+        if (index === -1)
+        {
+            this.pointers.push({ id: e.data.identifier })
+        }
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -243,20 +234,23 @@ module.exports = class Viewport extends Loop
      * handle move events
      * @private
      */
-    move()
+    move(e)
     {
-        let result
-        for (let type of PLUGIN_ORDER)
+        if (this.findPointerIndex(e.data.identifier) !== -1)
         {
-            if (this.plugins[type])
+            let result
+            for (let type of PLUGIN_ORDER)
             {
-                if (this.plugins[type].move(...arguments))
+                if (this.plugins[type])
                 {
-                    result = true
+                    if (this.plugins[type].move(e))
+                    {
+                        result = true
+                    }
                 }
             }
+            return result
         }
-        return result
     }
 
     /**
@@ -266,10 +260,9 @@ module.exports = class Viewport extends Loop
      */
     findPointerIndex(id)
     {
-        for (let i = 0; i < this.pointers.length; i++)
+        for (let i = 0, _i = this.pointers.length; i < _i; i++)
         {
-            const pointer = this.pointers[i]
-            if (pointer.id === id)
+            if (this.pointers[i].id === id)
             {
                 return i
             }
@@ -281,10 +274,9 @@ module.exports = class Viewport extends Loop
      * handle up events
      * @private
      */
-    up(x, y, data)
+    up(e)
     {
-
-        const index = this.findPointerIndex(data.id)
+        const index = this.findPointerIndex(e.data.identifier)
         if (index !== -1)
         {
             this.pointers.splice(index, 1)
@@ -293,7 +285,7 @@ module.exports = class Viewport extends Loop
             {
                 if (this.plugins[type])
                 {
-                    if (this.plugins[type].up(...arguments))
+                    if (this.plugins[type].up(e))
                     {
                         result = true
                     }
@@ -324,18 +316,6 @@ module.exports = class Viewport extends Loop
     }
 
     /**
-     * handle click events
-     * @private
-     * @param {number} x
-     * @param {number} y
-     */
-    click(x, y)
-    {
-        const point = { x, y }
-        this.emit('click', { screen: point, world: this.toWorld(point), viewport: this})
-    }
-
-    /**
      * change coordinates from screen to world
      * @param {number|PIXI.Point} x
      * @param {number} [y]
@@ -347,11 +327,11 @@ module.exports = class Viewport extends Loop
         {
             const x = arguments[0]
             const y = arguments[1]
-            return this.container.toLocal({ x, y })
+            return this.toLocal({ x, y })
         }
         else
         {
-            return this.container.toLocal(arguments[0])
+            return this.toLocal(arguments[0])
         }
     }
 
@@ -367,12 +347,12 @@ module.exports = class Viewport extends Loop
         {
             const x = arguments[0]
             const y = arguments[1]
-            return this.container.toGlobal({ x, y })
+            return this.toGlobal({ x, y })
         }
         else
         {
             const point = arguments[0]
-            return this.container.toGlobal(point)
+            return this.toGlobal(point)
         }
     }
 
@@ -381,7 +361,7 @@ module.exports = class Viewport extends Loop
      */
     get worldScreenWidth()
     {
-        return this._screenWidth / this.container.scale.x
+        return this._screenWidth / this.scale.x
     }
 
     /**
@@ -389,7 +369,7 @@ module.exports = class Viewport extends Loop
      */
     get worldScreenHeight()
     {
-        return this._screenHeight / this.container.scale.y
+        return this._screenHeight / this.scale.y
     }
 
     /**
@@ -397,7 +377,7 @@ module.exports = class Viewport extends Loop
      */
     get screenWorldWidth()
     {
-        return this._worldWidth * this.container.scale.x
+        return this._worldWidth * this.scale.x
     }
 
     /**
@@ -405,7 +385,7 @@ module.exports = class Viewport extends Loop
      */
     get screenWorldHeight()
     {
-        return this._worldHeight * this.container.scale.y
+        return this._worldHeight * this.scale.y
     }
 
     /**
@@ -414,7 +394,7 @@ module.exports = class Viewport extends Loop
      */
     get center()
     {
-        return { x: this.worldScreenWidth / 2 - this.container.x / this.container.scale.x, y: this.worldScreenHeight / 2 - this.container.y / this.container.scale.y }
+        return { x: this.worldScreenWidth / 2 - this.x / this.scale.x, y: this.worldScreenHeight / 2 - this.y / this.scale.y }
     }
 
     /**
@@ -436,7 +416,7 @@ module.exports = class Viewport extends Loop
             x = arguments[0].x
             y = arguments[0].y
         }
-        this.container.position.set((this.worldScreenWidth / 2 - x) * this.container.scale.x, (this.worldScreenHeight / 2 - y) * this.container.scale.y)
+        this.position.set((this.worldScreenWidth / 2 - x) * this.scale.x, (this.worldScreenHeight / 2 - y) * this.scale.y)
         this._reset()
         this.dirty = true
         return this
@@ -448,7 +428,7 @@ module.exports = class Viewport extends Loop
      */
     get corner()
     {
-        return { x: -this.container.x / this.container.scale.x, y: -this.container.y / this.container.scale.y }
+        return { x: -this.x / this.scale.x, y: -this.y / this.scale.y }
     }
 
     /**
@@ -461,11 +441,11 @@ module.exports = class Viewport extends Loop
     {
         if (arguments.length === 1)
         {
-            this.container.position.set(-arguments[0].x * this.container.scale.x, -arguments[0].y * this.container.scale.y)
+            this.position.set(-arguments[0].x * this.scale.x, -arguments[0].y * this.scale.y)
         }
         else
         {
-            this.container.position.set(-arguments[0] * this.container.scale.x, -arguments[1] * this.container.scale.y)
+            this.position.set(-arguments[0] * this.scale.x, -arguments[1] * this.scale.y)
         }
         this._reset()
         if (this.plugins['clamp'])
@@ -490,8 +470,8 @@ module.exports = class Viewport extends Loop
             save = this.center
         }
         width = width || this._worldWidth
-        this.container.scale.x = this._screenWidth / width
-        this.container.scale.y = this.container.scale.x
+        this.scale.x = this._screenWidth / width
+        this.scale.y = this.scale.x
         if (center)
         {
             this.moveCenter(save)
@@ -513,8 +493,8 @@ module.exports = class Viewport extends Loop
             save = this.center
         }
         height = height || this._worldHeight
-        this.container.scale.y = this._screenHeight / height
-        this.container.scale.x = this.container.scale.y
+        this.scale.y = this._screenHeight / height
+        this.scale.x = this.scale.y
         if (center)
         {
             this.moveCenter(save)
@@ -534,15 +514,15 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        this.container.scale.x = this._screenWidth / this._worldWidth
-        this.container.scale.y = this._screenHeight / this._worldHeight
-        if (this.container.scale.x < this.container.scale.y)
+        this.scale.x = this._screenWidth / this._worldWidth
+        this.scale.y = this._screenHeight / this._worldHeight
+        if (this.scale.x < this.scale.y)
         {
-            this.container.scale.y = this.container.scale.x
+            this.scale.y = this.scale.x
         }
         else
         {
-            this.container.scale.x = this.container.scale.y
+            this.scale.x = this.scale.y
         }
         if (center)
         {
@@ -563,15 +543,15 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        this.container.scale.x = this._screenWidth / this._worldWidth
-        this.container.scale.y = this._screenHeight / this._worldHeight
-        if (this.container.scale.x < this.container.scale.y)
+        this.scale.x = this._screenWidth / this._worldWidth
+        this.scale.y = this._screenHeight / this._worldHeight
+        if (this.scale.x < this.scale.y)
         {
-            this.container.scale.y = this.container.scale.x
+            this.scale.y = this.scale.x
         }
         else
         {
-            this.container.scale.x = this.container.scale.y
+            this.scale.x = this.scale.y
         }
         if (center)
         {
@@ -593,8 +573,8 @@ module.exports = class Viewport extends Loop
         {
             save = this.center
         }
-        const scale = this.container.scale.x + this.container.scale.x * percent
-        this.container.scale.set(scale)
+        const scale = this.scale.x + this.scale.x * percent
+        this.scale.set(scale)
         if (center)
         {
             this.moveCenter(save)
@@ -642,8 +622,8 @@ module.exports = class Viewport extends Loop
         result.top = this.top < 0
         result.bottom = this.bottom > this._worldHeight
         result.cornerPoint = {
-            x: this._worldWidth * this.container.scale.x - this._screenWidth,
-            y: this._worldHeight * this.container.scale.y - this._screenHeight
+            x: this._worldWidth * this.scale.x - this._screenWidth,
+            y: this._worldHeight * this.scale.y - this._screenHeight
         }
         return result
     }
@@ -654,7 +634,7 @@ module.exports = class Viewport extends Loop
      */
     get right()
     {
-        return -this.container.x / this.container.scale.x + this.worldScreenWidth
+        return -this.x / this.scale.x + this.worldScreenWidth
     }
 
     /**
@@ -663,7 +643,7 @@ module.exports = class Viewport extends Loop
      */
     get left()
     {
-        return -this.container.x / this.container.scale.x
+        return -this.x / this.scale.x
     }
 
     /**
@@ -672,7 +652,7 @@ module.exports = class Viewport extends Loop
      */
     get top()
     {
-        return -this.container.y / this.container.scale.y
+        return -this.y / this.scale.y
     }
 
     /**
@@ -681,7 +661,7 @@ module.exports = class Viewport extends Loop
      */
     get bottom()
     {
-        return -this.container.y / this.container.scale.y + this.worldScreenHeight
+        return -this.y / this.scale.y + this.worldScreenHeight
     }
 
     /**
@@ -695,6 +675,28 @@ module.exports = class Viewport extends Loop
     set dirty(value)
     {
         this._dirty = value
+    }
+
+    /**
+     * force the hitArea from the default {x:0, y:0, width:this.worldWidth, height:this.worldHeight}
+     * @type {PIXI.Rectangle}
+     */
+    get forceHitArea()
+    {
+        return this._forceHitArea
+    }
+    set forceHitArea(value)
+    {
+        if (value)
+        {
+            this._forceHitArea = value
+            this.hitArea = value
+        }
+        else
+        {
+            this._forceHitArea = false
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        }
     }
 
     /**
