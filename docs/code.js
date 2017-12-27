@@ -156,10 +156,10 @@ window.onload = function ()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
-    _viewport.interval(
-        function ()
+    _viewport.add(
+        function (elapsed)
         {
-            _ease.update()
+            _ease.update(elapsed)
             if (!gui.options.testDirty)
             {
                 _renderer.dirty = true

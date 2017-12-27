@@ -67,7 +67,7 @@ module.exports = class Viewport extends Loop
         {
             this.listeners(options.div || document.body, options.threshold, options.preventDefault)
         }
-        this.interval(this.updateFrame.bind(this))
+        this.add(this.updateFrame.bind(this))
     }
 
     /**
