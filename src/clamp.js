@@ -64,25 +64,25 @@ module.exports = class clamp extends Plugin
                 switch (this.underflowX)
                 {
                     case -1:
-                        this.parent.container.x = 0
+                        this.parent.x = 0
                         break
                     case 1:
-                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
                         break
                     default:
-                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
                 }
             }
             else
             {
                 if (oob.left)
                 {
-                    this.parent.container.x = 0
+                    this.parent.x = 0
                     decelerate.x = 0
                 }
                 else if (oob.right)
                 {
-                    this.parent.container.x = -point.x
+                    this.parent.x = -point.x
                     decelerate.x = 0
                 }
             }
@@ -94,25 +94,25 @@ module.exports = class clamp extends Plugin
                 switch (this.underflowY)
                 {
                     case -1:
-                        this.parent.container.y = 0
+                        this.parent.y = 0
                         break
                     case 1:
-                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
                         break
                     default:
-                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
                 }
             }
             else
             {
                 if (oob.top)
                 {
-                    this.parent.container.y = 0
+                    this.parent.y = 0
                     decelerate.y = 0
                 }
                 else if (oob.bottom)
                 {
-                    this.parent.container.y = -point.y
+                    this.parent.y = -point.y
                     decelerate.y = 0
                 }
             }

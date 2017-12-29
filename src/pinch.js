@@ -20,8 +20,7 @@ module.exports = class Pinch extends Plugin
 
     down()
     {
-        const pointers = this.parent.pointers
-        if (pointers.length >= 2)
+        if (this.parent.countDownPointers() >= 2)
         {
             this.active = true
         }
@@ -29,83 +28,81 @@ module.exports = class Pinch extends Plugin
 
     move(e)
     {
-        if (this.paused)
+        if (this.paused || !this.active)
         {
             return
         }
+
         const x = e.data.global.x
         const y = e.data.global.y
-        const pointers = this.parent.pointers
-        if (this.active)
-        {
-            const first = pointers[0]
-            const second = pointers[1]
-            let last
-            if (first.last && second.last)
-            {
-                last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-            }
-            if (first.id === e.data.identifier)
-            {
-                first.last = { x, y }
-            }
-            else if (second.id === e.data.identifier)
-            {
-                second.last = { x, y }
-            }
-            if (last)
-            {
-                let oldPoint
-                const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
-                if (!this.center)
-                {
-                    oldPoint = this.parent.toLocal(point)
-                }
-                const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
-                this.parent.scale.x += change
-                this.parent.scale.y += change
-                const clamp = this.parent.plugins['clamp-zoom']
-                if (clamp)
-                {
-                    clamp.clamp()
-                }
-                if (this.center)
-                {
-                    this.parent.moveCenter(this.center)
-                }
-                else
-                {
-                    const newPoint = this.parent.toGlobal(oldPoint)
-                    this.parent.x += point.x - newPoint.x
-                    this.parent.y += point.y - newPoint.y
-                }
 
-                if (!this.noDrag && this.lastCenter)
-                {
-                    this.parent.x += point.x - this.lastCenter.x
-                    this.parent.y += point.y - this.lastCenter.y
-                }
-                this.lastCenter = point
+        const pointers = this.parent.trackedPointers
+        const first = pointers[0]
+        const second = pointers[1]
+        let last
+        if (first.last && second.last)
+        {
+            last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+        }
+        if (first.pointerId === e.data.pointerId)
+        {
+            first.last = { x, y }
+        }
+        else if (second.pointerId === e.data.pointerId)
+        {
+            second.last = { x, y }
+        }
+        if (last)
+        {
+            let oldPoint
+            const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
+            if (!this.center)
+            {
+                oldPoint = this.parent.toLocal(point)
+            }
+            const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+            const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
+            this.parent.scale.x += change
+            this.parent.scale.y += change
+            const clamp = this.parent.plugins['clamp-zoom']
+            if (clamp)
+            {
+                clamp.clamp()
+            }
+            if (this.center)
+            {
+                this.parent.moveCenter(this.center)
             }
             else
             {
-                if (!this.pinching)
-                {
-                    this.parent.emit('pinch-start', this.parent)
-                    this.pinching = true
-                }
+                const newPoint = this.parent.toGlobal(oldPoint)
+                this.parent.x += point.x - newPoint.x
+                this.parent.y += point.y - newPoint.y
             }
-            this.parent.dirty = true
+
+            if (!this.noDrag && this.lastCenter)
+            {
+                this.parent.x += point.x - this.lastCenter.x
+                this.parent.y += point.y - this.lastCenter.y
+            }
+            this.lastCenter = point
         }
+        else
+        {
+            if (!this.pinching)
+            {
+                this.parent.emit('pinch-start', this.parent)
+                this.pinching = true
+            }
+        }
+        this.parent.dirty = true
     }
 
     up()
     {
         if (this.pinching)
         {
-            const pointers = this.parent.pointers
-            if (pointers.length < 2)
+            if (this.parent.countDownPointers() <= 2)
             {
                 this.active = false
                 this.lastCenter = null

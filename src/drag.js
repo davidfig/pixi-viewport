@@ -46,8 +46,8 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        const pointers = this.parent.pointers
-        if (pointers.length === 1)
+
+        if (this.parent.countDownPointers() === 1)
         {
             this.last = { x: e.data.global.x, y: e.data.global.y }
             return true
@@ -70,8 +70,8 @@ module.exports = class Drag extends Plugin
         const y = e.data.global.y
         if (this.last)
         {
-            const pointers = this.parent.pointers
-            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
+            const count = this.parent.countDownPointers()
+            if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y

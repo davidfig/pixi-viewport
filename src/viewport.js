@@ -24,7 +24,8 @@ module.exports = class Viewport extends PIXI.Container
      * @param {number} [options.worldWidth=this.width]
      * @param {number} [options.worldHeight=this.height]
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
-     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (will not update hitArea on resize)
+     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (setting this will result in hitArea not being resized when viewport.resize() is called)
+     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      *
      * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
      * @emits drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
@@ -55,7 +56,8 @@ module.exports = class Viewport extends PIXI.Container
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
         this.listeners()
-        PIXI.ticker.shared.add(() => this.updateFrame(PIXI.ticker.shared.elapsedMS))
+        const ticker = options.ticker || PIXI.ticker.shared
+        ticker.add(() => this.updateFrame(ticker.elapsedMS))
     }
 
     /**
@@ -178,17 +180,18 @@ module.exports = class Viewport extends PIXI.Container
      */
     listeners()
     {
-        this.pointers = []
         this.interactive = true
-        this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        if (!this.forceHitArea)
+        {
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        }
         this.on('pointerdown', this.down, this)
         this.on('pointermove', this.move, this)
         this.on('pointerup', this.up, this)
         this.on('pointercancel', this.up, this)
         this.on('pointerout', this.up, this)
         this.on('tap', this.tap, this)
-
-        // this.input.on('wheel', this.handleWheel, this)
+        document.body.addEventListener('wheel', () => this.handleWheel())
     }
 
     /**
@@ -197,23 +200,13 @@ module.exports = class Viewport extends PIXI.Container
      */
     down(e)
     {
-        let result
-        const index = this.findPointerIndex(e.data.identifier)
-        if (index === -1)
-        {
-            this.pointers.push({ id: e.data.identifier })
-        }
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                if (this.plugins[type].down(...arguments))
-                {
-                    result = true
-                }
+                this.plugins[type].down(e)
             }
         }
-        return result
     }
 
     /**
@@ -236,38 +229,13 @@ module.exports = class Viewport extends PIXI.Container
      */
     move(e)
     {
-        if (this.findPointerIndex(e.data.identifier) !== -1)
+        for (let type of PLUGIN_ORDER)
         {
-            let result
-            for (let type of PLUGIN_ORDER)
+            if (this.plugins[type])
             {
-                if (this.plugins[type])
-                {
-                    if (this.plugins[type].move(e))
-                    {
-                        result = true
-                    }
-                }
-            }
-            return result
-        }
-    }
-
-    /**
-     * find pointer id
-     * @private
-     * @param {*} id
-     */
-    findPointerIndex(id)
-    {
-        for (let i = 0, _i = this.pointers.length; i < _i; i++)
-        {
-            if (this.pointers[i].id === id)
-            {
-                return i
+                this.plugins[type].move(e)
             }
         }
-        return -1
     }
 
     /**
@@ -276,22 +244,12 @@ module.exports = class Viewport extends PIXI.Container
      */
     up(e)
     {
-        const index = this.findPointerIndex(e.data.identifier)
-        if (index !== -1)
+        for (let type of PLUGIN_ORDER)
         {
-            this.pointers.splice(index, 1)
-            let result
-            for (let type of PLUGIN_ORDER)
+            if (this.plugins[type])
             {
-                if (this.plugins[type])
-                {
-                    if (this.plugins[type].up(e))
-                    {
-                        result = true
-                    }
-                }
+                this.plugins[type].up(e)
             }
-            return result
         }
     }
 
@@ -299,14 +257,14 @@ module.exports = class Viewport extends PIXI.Container
      * handle wheel events
      * @private
      */
-    handleWheel(dx, dy, dz, data)
+    handleWheel(e)
     {
         let result
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                if (this.plugins[type].wheel(dx, dy, dz, data))
+                if (this.plugins[type].wheel(e))
                 {
                     result = true
                 }
@@ -697,6 +655,28 @@ module.exports = class Viewport extends PIXI.Container
             this._forceHitArea = false
             this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
         }
+    }
+
+    /**
+     * @private
+     * @return {number} count of mouse/touch pointers that are down on the container
+     */
+    countDownPointers()
+    {
+        let count = 0
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            if (key === 'MOUSE')
+            {
+                count += pointers[key].leftDown ? 1 : 0
+            }
+            else
+            {
+                count++
+            }
+        }
+        return count
     }
 
     /**

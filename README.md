@@ -48,7 +48,8 @@ https://davidfig.github.io/pixi-viewport/
      * @param {number} [options.worldWidth=this.width]
      * @param {number} [options.worldHeight=this.height]
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
-     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (will not update hitArea on resize)
+     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (setting this will result in hitArea not being resized when viewport.resize() is called)
+     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      *
      * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
      * @emits drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends

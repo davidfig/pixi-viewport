@@ -97,7 +97,6 @@ function gui(viewport, drawWorld, target)
         }
     }
     guiWorld()
-    guiTestDirty()
     guiDrag()
     guiPinch()
     guiWheel()
@@ -115,11 +114,6 @@ function guiWorld()
 {
     _world.add(_viewport, 'worldWidth').onChange(_drawWorld)
     _world.add(_viewport, 'worldHeight').onChange(_drawWorld)
-}
-
-function guiTestDirty()
-{
-    _gui.add(_options, 'testDirty')
 }
 
 function guiDrag()

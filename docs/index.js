@@ -26,7 +26,7 @@ function viewport()
     _viewport = _renderer.stage.addChild(new Viewport())
     _viewport
         .drag({ clampWheel: true })
-    //     .wheel()
+        .wheel()
         .pinch()
         .on('click', click)
         .decelerate()
@@ -163,33 +163,33 @@ window.onload = function ()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
-    _viewport.add(
-        function (elapsed)
-        {
-            _ease.update(elapsed)
-            if (!gui.options.testDirty)
-            {
-                _renderer.dirty = true
-            }
-            if (_viewport.dirty)
-            {
-                _renderer.dirty = true
-                _viewport.dirty = false
-            }
-            _renderer.update()
-        }
-    )
+    // _viewport.add(
+    //     function (elapsed)
+    //     {
+    //         _ease.update(elapsed)
+    //         if (!gui.options.testDirty)
+    //         {
+    //             _renderer.dirty = true
+    //         }
+    //         if (_viewport.dirty)
+    //         {
+    //             _renderer.dirty = true
+    //             _viewport.dirty = false
+    //         }
+    //         _renderer.update()
+    //     }
+    // )
     drawWorld()
     events()
 
     PIXI.ticker.shared.add(() =>
     {
-        // _ease.update(PIXI.ticker.shared.elapsedMS)
+        _ease.update(PIXI.ticker.shared.elapsedMS)
         _fps.frame()
     })
     _renderer.start()
 
-    // gui.gui(_viewport, drawWorld, _object)
+    gui.gui(_viewport, drawWorld, _object)
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
@@ -293,7 +293,6 @@ function gui(viewport, drawWorld, target)
         }
     }
     guiWorld()
-    guiTestDirty()
     guiDrag()
     guiPinch()
     guiWheel()
@@ -311,11 +310,6 @@ function guiWorld()
 {
     _world.add(_viewport, 'worldWidth').onChange(_drawWorld)
     _world.add(_viewport, 'worldHeight').onChange(_drawWorld)
-}
-
-function guiTestDirty()
-{
-    _gui.add(_options, 'testDirty')
 }
 
 function guiDrag()
@@ -62424,25 +62418,25 @@ module.exports = class clamp extends Plugin
                 switch (this.underflowX)
                 {
                     case -1:
-                        this.parent.container.x = 0
+                        this.parent.x = 0
                         break
                     case 1:
-                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
                         break
                     default:
-                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
                 }
             }
             else
             {
                 if (oob.left)
                 {
-                    this.parent.container.x = 0
+                    this.parent.x = 0
                     decelerate.x = 0
                 }
                 else if (oob.right)
                 {
-                    this.parent.container.x = -point.x
+                    this.parent.x = -point.x
                     decelerate.x = 0
                 }
             }
@@ -62454,25 +62448,25 @@ module.exports = class clamp extends Plugin
                 switch (this.underflowY)
                 {
                     case -1:
-                        this.parent.container.y = 0
+                        this.parent.y = 0
                         break
                     case 1:
-                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
                         break
                     default:
-                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
                 }
             }
             else
             {
                 if (oob.top)
                 {
-                    this.parent.container.y = 0
+                    this.parent.y = 0
                     decelerate.y = 0
                 }
                 else if (oob.bottom)
                 {
-                    this.parent.container.y = -point.y
+                    this.parent.y = -point.y
                     decelerate.y = 0
                 }
             }
@@ -62507,6 +62501,7 @@ module.exports = class Decelerate extends Plugin
     {
         this.saved = []
         this.x = this.y = false
+
     }
 
     move()
@@ -62516,8 +62511,8 @@ module.exports = class Decelerate extends Plugin
             return
         }
 
-        const pointers = this.parent.pointers
-        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
+        const count = this.parent.countDownPointers()
+        if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
         {
             this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() })
             if (this.saved.length > 60)
@@ -62529,8 +62524,7 @@ module.exports = class Decelerate extends Plugin
 
     up()
     {
-        const pointers = this.parent.pointers
-        if (pointers.length === 0 && this.saved.length)
+        if (this.parent.countDownPointers() === 1 && this.saved.length)
         {
             const now = performance.now()
             for (let save of this.saved)
@@ -62650,8 +62644,8 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        const pointers = this.parent.pointers
-        if (pointers.length === 1)
+
+        if (this.parent.countDownPointers() === 1)
         {
             this.last = { x: e.data.global.x, y: e.data.global.y }
             return true
@@ -62674,8 +62668,8 @@ module.exports = class Drag extends Plugin
         const y = e.data.global.y
         if (this.last)
         {
-            const pointers = this.parent.pointers
-            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
+            const count = this.parent.countDownPointers()
+            if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
@@ -62935,70 +62929,74 @@ module.exports = class MouseEdges extends Plugin
         this.horizontal = this.vertical = null
     }
 
-    move(x, y, data)
+    move(e)
     {
-        const pointers = this.parent.pointers
-        if (pointers.length === 0)
+
+        if (typeof e.originalEvent !== MouseEvent || e.originalEvent.buttons === 0)
         {
-            if (this.radiusSquared)
+            return
+        }
+        const x = e.originalEvent.clientX
+        const y = e.originalEvent.clientY
+
+        if (this.radiusSquared)
+        {
+            const center = this.parent.toScreen(this.parent.center)
+            const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
+            if (distance >= this.radiusSquared)
             {
-                const center = this.parent.toScreen(this.parent.center)
-                const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
-                if (distance >= this.radiusSquared)
+                const angle = Math.atan2(center.y - y, center.x - x)
+                if (this.linear)
                 {
-                    const angle = Math.atan2(center.y - y, center.x - x)
-                    if (this.linear)
-                    {
-                        this.horizontal = Math.round(Math.cos(angle)) * this.speed * this.reverse * (60 / 1000)
-                        this.vertical = Math.round(Math.sin(angle)) * this.speed * this.reverse * (60 / 1000)
-                    }
-                    else
-                    {
-                        this.horizontal = Math.cos(angle) * this.speed * this.reverse * (60 / 1000)
-                        this.vertical = Math.sin(angle) * this.speed * this.reverse * (60 / 1000)
-                    }
+                    this.horizontal = Math.round(Math.cos(angle)) * this.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.round(Math.sin(angle)) * this.speed * this.reverse * (60 / 1000)
                 }
                 else
                 {
-                    if (this.horizontal)
-                    {
-                        this.decelerateHorizontal()
-                    }
-                    if (this.vertical)
-                    {
-                        this.decelerateVertical()
-                    }
-                    this.horizontal = this.vertical = 0
+                    this.horizontal = Math.cos(angle) * this.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.sin(angle) * this.speed * this.reverse * (60 / 1000)
                 }
             }
             else
             {
-                if (exists(this.left) && x < this.left)
-                {
-                    this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else if (exists(this.right) && x > this.right)
-                {
-                    this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else
+                if (this.horizontal)
                 {
                     this.decelerateHorizontal()
-                    this.horizontal = 0
                 }
-                if (exists(this.top) && y < this.top)
-                {
-                    this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else if (exists(this.bottom) && y > this.bottom)
-                {
-                    this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else
+                if (this.vertical)
                 {
                     this.decelerateVertical()
-                    this.vertical = 0
                 }
+                this.horizontal = this.vertical = 0
+            }
+        }
+        else
+        {
+            if (exists(this.left) && x < this.left)
+            {
+                this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else if (exists(this.right) && x > this.right)
+            {
+                this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateHorizontal()
+                this.horizontal = 0
+            }
+            if (exists(this.top) && y < this.top)
+            {
+                this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else if (exists(this.bottom) && y > this.bottom)
+            {
+                this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateVertical()
+                this.vertical = 0
             }
         }
     }
@@ -63079,8 +63077,7 @@ module.exports = class Pinch extends Plugin
 
     down()
     {
-        const pointers = this.parent.pointers
-        if (pointers.length >= 2)
+        if (this.parent.countDownPointers() >= 2)
         {
             this.active = true
         }
@@ -63088,83 +63085,81 @@ module.exports = class Pinch extends Plugin
 
     move(e)
     {
-        if (this.paused)
+        if (this.paused || !this.active)
         {
             return
         }
+
         const x = e.data.global.x
         const y = e.data.global.y
-        const pointers = this.parent.pointers
-        if (this.active)
-        {
-            const first = pointers[0]
-            const second = pointers[1]
-            let last
-            if (first.last && second.last)
-            {
-                last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-            }
-            if (first.id === e.data.identifier)
-            {
-                first.last = { x, y }
-            }
-            else if (second.id === e.data.identifier)
-            {
-                second.last = { x, y }
-            }
-            if (last)
-            {
-                let oldPoint
-                const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
-                if (!this.center)
-                {
-                    oldPoint = this.parent.toLocal(point)
-                }
-                const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
-                this.parent.scale.x += change
-                this.parent.scale.y += change
-                const clamp = this.parent.plugins['clamp-zoom']
-                if (clamp)
-                {
-                    clamp.clamp()
-                }
-                if (this.center)
-                {
-                    this.parent.moveCenter(this.center)
-                }
-                else
-                {
-                    const newPoint = this.parent.toGlobal(oldPoint)
-                    this.parent.x += point.x - newPoint.x
-                    this.parent.y += point.y - newPoint.y
-                }
 
-                if (!this.noDrag && this.lastCenter)
-                {
-                    this.parent.x += point.x - this.lastCenter.x
-                    this.parent.y += point.y - this.lastCenter.y
-                }
-                this.lastCenter = point
+        const pointers = this.parent.trackedPointers
+        const first = pointers[0]
+        const second = pointers[1]
+        let last
+        if (first.last && second.last)
+        {
+            last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+        }
+        if (first.pointerId === e.data.pointerId)
+        {
+            first.last = { x, y }
+        }
+        else if (second.pointerId === e.data.pointerId)
+        {
+            second.last = { x, y }
+        }
+        if (last)
+        {
+            let oldPoint
+            const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
+            if (!this.center)
+            {
+                oldPoint = this.parent.toLocal(point)
+            }
+            const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+            const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
+            this.parent.scale.x += change
+            this.parent.scale.y += change
+            const clamp = this.parent.plugins['clamp-zoom']
+            if (clamp)
+            {
+                clamp.clamp()
+            }
+            if (this.center)
+            {
+                this.parent.moveCenter(this.center)
             }
             else
             {
-                if (!this.pinching)
-                {
-                    this.parent.emit('pinch-start', this.parent)
-                    this.pinching = true
-                }
+                const newPoint = this.parent.toGlobal(oldPoint)
+                this.parent.x += point.x - newPoint.x
+                this.parent.y += point.y - newPoint.y
             }
-            this.parent.dirty = true
+
+            if (!this.noDrag && this.lastCenter)
+            {
+                this.parent.x += point.x - this.lastCenter.x
+                this.parent.y += point.y - this.lastCenter.y
+            }
+            this.lastCenter = point
         }
+        else
+        {
+            if (!this.pinching)
+            {
+                this.parent.emit('pinch-start', this.parent)
+                this.pinching = true
+            }
+        }
+        this.parent.dirty = true
     }
 
     up()
     {
         if (this.pinching)
         {
-            const pointers = this.parent.pointers
-            if (pointers.length < 2)
+            if (this.parent.countDownPointers() <= 2)
             {
                 this.active = false
                 this.lastCenter = null
@@ -63291,7 +63286,8 @@ module.exports = class SnapZoom extends Plugin
         {
             return
         }
-        if (this.interrupt && this.parent.input.pointers.length !== 0)
+
+        if (this.interrupt && this.parent.countDownPointers() !== 0)
         {
             return
         }
@@ -63303,9 +63299,9 @@ module.exports = class SnapZoom extends Plugin
         }
         if (!this.snapping)
         {
-            if (this.parent.container.scale.x !== this.x_scale || this.parent.container.scale.y !== this.y_scale)
+            if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
             {
-                this.snapping = new Ease.to(this.parent.container.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
+                this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
                 this.parent.emit('snap-zoom-start', this.parent)
             }
         }
@@ -63482,7 +63478,8 @@ module.exports = class Viewport extends PIXI.Container
      * @param {number} [options.worldWidth=this.width]
      * @param {number} [options.worldHeight=this.height]
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
-     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (will not update hitArea on resize)
+     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (setting this will result in hitArea not being resized when viewport.resize() is called)
+     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      *
      * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
      * @emits drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
@@ -63513,7 +63510,8 @@ module.exports = class Viewport extends PIXI.Container
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
         this.listeners()
-        PIXI.ticker.shared.add(() => this.updateFrame(PIXI.ticker.shared.elapsedMS))
+        const ticker = options.ticker || PIXI.ticker.shared
+        ticker.add(() => this.updateFrame(ticker.elapsedMS))
     }
 
     /**
@@ -63636,17 +63634,18 @@ module.exports = class Viewport extends PIXI.Container
      */
     listeners()
     {
-        this.pointers = []
         this.interactive = true
-        this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        if (!this.forceHitArea)
+        {
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        }
         this.on('pointerdown', this.down, this)
         this.on('pointermove', this.move, this)
         this.on('pointerup', this.up, this)
         this.on('pointercancel', this.up, this)
         this.on('pointerout', this.up, this)
         this.on('tap', this.tap, this)
-
-        // this.input.on('wheel', this.handleWheel, this)
+        document.body.addEventListener('wheel', () => this.handleWheel())
     }
 
     /**
@@ -63655,23 +63654,13 @@ module.exports = class Viewport extends PIXI.Container
      */
     down(e)
     {
-        let result
-        const index = this.findPointerIndex(e.data.identifier)
-        if (index === -1)
-        {
-            this.pointers.push({ id: e.data.identifier })
-        }
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                if (this.plugins[type].down(...arguments))
-                {
-                    result = true
-                }
+                this.plugins[type].down(e)
             }
         }
-        return result
     }
 
     /**
@@ -63694,38 +63683,13 @@ module.exports = class Viewport extends PIXI.Container
      */
     move(e)
     {
-        if (this.findPointerIndex(e.data.identifier) !== -1)
+        for (let type of PLUGIN_ORDER)
         {
-            let result
-            for (let type of PLUGIN_ORDER)
+            if (this.plugins[type])
             {
-                if (this.plugins[type])
-                {
-                    if (this.plugins[type].move(e))
-                    {
-                        result = true
-                    }
-                }
-            }
-            return result
-        }
-    }
-
-    /**
-     * find pointer id
-     * @private
-     * @param {*} id
-     */
-    findPointerIndex(id)
-    {
-        for (let i = 0, _i = this.pointers.length; i < _i; i++)
-        {
-            if (this.pointers[i].id === id)
-            {
-                return i
+                this.plugins[type].move(e)
             }
         }
-        return -1
     }
 
     /**
@@ -63734,22 +63698,12 @@ module.exports = class Viewport extends PIXI.Container
      */
     up(e)
     {
-        const index = this.findPointerIndex(e.data.identifier)
-        if (index !== -1)
+        for (let type of PLUGIN_ORDER)
         {
-            this.pointers.splice(index, 1)
-            let result
-            for (let type of PLUGIN_ORDER)
+            if (this.plugins[type])
             {
-                if (this.plugins[type])
-                {
-                    if (this.plugins[type].up(e))
-                    {
-                        result = true
-                    }
-                }
+                this.plugins[type].up(e)
             }
-            return result
         }
     }
 
@@ -63757,14 +63711,14 @@ module.exports = class Viewport extends PIXI.Container
      * handle wheel events
      * @private
      */
-    handleWheel(dx, dy, dz, data)
+    handleWheel(e)
     {
         let result
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
-                if (this.plugins[type].wheel(dx, dy, dz, data))
+                if (this.plugins[type].wheel(e))
                 {
                     result = true
                 }
@@ -64158,6 +64112,28 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
+     * @private
+     * @return {number} count of mouse/touch pointers that are down on the container
+     */
+    countDownPointers()
+    {
+        let count = 0
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            if (key === 'MOUSE')
+            {
+                count += pointers[key].leftDown ? 1 : 0
+            }
+            else
+            {
+                count++
+            }
+        }
+        return count
+    }
+
+    /**
      * clamps and resets bounce and decelerate (as needed) after manually moving viewport
      * @private
      */
@@ -64393,7 +64369,7 @@ module.exports = class Wheel extends Plugin
      * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      *
-     * @event wheel({wheel: {dx, dy, dz}, viewport})
+     * @event wheel({wheel: {dx, dy, dz}, event, viewport})
      */
     constructor(parent, options)
     {
@@ -64404,7 +64380,7 @@ module.exports = class Wheel extends Plugin
         this.reverse = options.reverse
     }
 
-    wheel(dx, dy, dz, data)
+    wheel(e)
     {
         if (this.paused)
         {
@@ -64414,20 +64390,20 @@ module.exports = class Wheel extends Plugin
         let change
         if (this.reverse)
         {
-            change = dy > 0 ? 1 + this.percent : 1 - this.percent
+            change = e.deltaY > 0 ? 1 + this.percent : 1 - this.percent
         }
         else
         {
-            change = dy > 0 ? 1 - this.percent : 1 + this.percent
+            change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
         }
-        let point = { x: data.x, y: data.y }
+        let point = { x: e.clientX, y: e.clientY }
         let oldPoint
         if (!this.center)
         {
-            oldPoint = this.parent.container.toLocal(point)
+            oldPoint = this.parent.toLocal(point)
         }
-        this.parent.container.scale.x *= change
-        this.parent.container.scale.y *= change
+        this.parent.scale.x *= change
+        this.parent.scale.y *= change
         const clamp = this.parent.plugins['clamp-zoom']
         if (clamp)
         {
@@ -64440,12 +64416,12 @@ module.exports = class Wheel extends Plugin
         }
         else
         {
-            const newPoint = this.parent.container.toGlobal(oldPoint)
-            this.parent.container.x += point.x - newPoint.x
-            this.parent.container.y += point.y - newPoint.y
+            const newPoint = this.parent.toGlobal(oldPoint)
+            this.parent.x += point.x - newPoint.x
+            this.parent.y += point.y - newPoint.y
         }
-        data.event.preventDefault()
-        this.parent.emit('wheel', { wheel: {dx, dy, dz}, viewport: this.parent})
+        e.preventDefault()
+        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
     }
 }
 },{"./plugin":404}],409:[function(require,module,exports){

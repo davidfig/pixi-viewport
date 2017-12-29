@@ -25,7 +25,7 @@ function viewport()
     _viewport = _renderer.stage.addChild(new Viewport())
     _viewport
         .drag({ clampWheel: true })
-    //     .wheel()
+        .wheel()
         .pinch()
         .on('click', click)
         .decelerate()
@@ -188,7 +188,7 @@ window.onload = function ()
     })
     _renderer.start()
 
-    // gui.gui(_viewport, drawWorld, _object)
+    gui.gui(_viewport, drawWorld, _object)
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }

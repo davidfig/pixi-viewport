@@ -61,70 +61,73 @@ module.exports = class MouseEdges extends Plugin
         this.horizontal = this.vertical = null
     }
 
-    move(x, y, data)
+    move(e)
     {
-        const pointers = this.parent.pointers
-        if (pointers.length === 0)
+        if (e.data.identifier !== 'MOUSE' || e.data.buttons !== 0)
         {
-            if (this.radiusSquared)
+            return
+        }
+        const x = e.data.global.x
+        const y = e.data.global.y
+
+        if (this.radiusSquared)
+        {
+            const center = this.parent.toScreen(this.parent.center)
+            const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
+            if (distance >= this.radiusSquared)
             {
-                const center = this.parent.toScreen(this.parent.center)
-                const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
-                if (distance >= this.radiusSquared)
+                const angle = Math.atan2(center.y - y, center.x - x)
+                if (this.linear)
                 {
-                    const angle = Math.atan2(center.y - y, center.x - x)
-                    if (this.linear)
-                    {
-                        this.horizontal = Math.round(Math.cos(angle)) * this.speed * this.reverse * (60 / 1000)
-                        this.vertical = Math.round(Math.sin(angle)) * this.speed * this.reverse * (60 / 1000)
-                    }
-                    else
-                    {
-                        this.horizontal = Math.cos(angle) * this.speed * this.reverse * (60 / 1000)
-                        this.vertical = Math.sin(angle) * this.speed * this.reverse * (60 / 1000)
-                    }
+                    this.horizontal = Math.round(Math.cos(angle)) * this.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.round(Math.sin(angle)) * this.speed * this.reverse * (60 / 1000)
                 }
                 else
                 {
-                    if (this.horizontal)
-                    {
-                        this.decelerateHorizontal()
-                    }
-                    if (this.vertical)
-                    {
-                        this.decelerateVertical()
-                    }
-                    this.horizontal = this.vertical = 0
+                    this.horizontal = Math.cos(angle) * this.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.sin(angle) * this.speed * this.reverse * (60 / 1000)
                 }
             }
             else
             {
-                if (exists(this.left) && x < this.left)
-                {
-                    this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else if (exists(this.right) && x > this.right)
-                {
-                    this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else
+                if (this.horizontal)
                 {
                     this.decelerateHorizontal()
-                    this.horizontal = 0
                 }
-                if (exists(this.top) && y < this.top)
-                {
-                    this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else if (exists(this.bottom) && y > this.bottom)
-                {
-                    this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
-                }
-                else
+                if (this.vertical)
                 {
                     this.decelerateVertical()
-                    this.vertical = 0
                 }
+                this.horizontal = this.vertical = 0
+            }
+        }
+        else
+        {
+            if (exists(this.left) && x < this.left)
+            {
+                this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else if (exists(this.right) && x > this.right)
+            {
+                this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateHorizontal()
+                this.horizontal = 0
+            }
+            if (exists(this.top) && y < this.top)
+            {
+                this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else if (exists(this.bottom) && y > this.bottom)
+            {
+                this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateVertical()
+                this.vertical = 0
             }
         }
     }

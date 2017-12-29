@@ -25,6 +25,7 @@ module.exports = class Decelerate extends Plugin
     {
         this.saved = []
         this.x = this.y = false
+
     }
 
     move()
@@ -34,8 +35,8 @@ module.exports = class Decelerate extends Plugin
             return
         }
 
-        const pointers = this.parent.pointers
-        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
+        const count = this.parent.countDownPointers()
+        if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
         {
             this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() })
             if (this.saved.length > 60)
@@ -47,8 +48,7 @@ module.exports = class Decelerate extends Plugin
 
     up()
     {
-        const pointers = this.parent.pointers
-        if (pointers.length === 0 && this.saved.length)
+        if (this.parent.countDownPointers() === 1 && this.saved.length)
         {
             const now = performance.now()
             for (let save of this.saved)
