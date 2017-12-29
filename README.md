@@ -10,8 +10,7 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
 ```js
     const Viewport = require('pixi-viewport')
 
-    const container = new PIXI.Container()
-    const viewport = new Viewport(container, 
+    const viewport = new Viewport( 
     {
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
@@ -27,9 +26,6 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
         .decelerate()
         .bounce()
 
-    // starts an automatic update loop for animations related to the viewport
-    viewport
-        .start()
 ```
 
 ## Live Example
