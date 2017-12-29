@@ -42,20 +42,14 @@ https://davidfig.github.io/pixi-viewport/
 ## API Reference
 ```js
     /**
-     * @param {PIXI.Container} container to apply viewport
-     * @param {number} [options]
-     * @param {HTMLElement} [options.div=document.body] use this div to create the mouse/touch listeners
-     * @param {number} [options.screenWidth] these values are needed for clamp, bounce, and pinch plugins
-     * @param {number} [options.screenHeight]
-     * @param {number} [options.worldWidth]
-     * @param {number} [options.worldHeight]
-     * @param {number} [options.threshold=5] threshold for click
-     * @param {number} [options.maxFrameTime=1000 / 60] maximum frame time for animations
-     * @param {boolean} [options.pauseOnBlur] pause when app loses focus
-     * @param {boolean} [options.noListeners] manually call touch/mouse callback down/move/up
-     * @param {number} [options.preventDefault] call preventDefault after listeners
+     * @param {object} [options]
+     * @param {number} [options.screenWidth=window.innerWidth]
+     * @param {number} [options.screenHeight=window.innerHeight]
+     * @param {number} [options.worldWidth=this.width]
+     * @param {number} [options.worldHeight=this.height]
+     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (will not update hitArea on resize)
      *
-     * @emits click({screen: {x, y}, world: {x, y}, viewport}) emitted when viewport is clicked
      * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
      * @emits drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
      * @emits pinch-start(viewport) emitted when a pinch starts
@@ -73,25 +67,7 @@ https://davidfig.github.io/pixi-viewport/
      * @emits mouse-edge-start(Viewport) emitted when mouse-edge starts
      * @emits mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
-    constructor(container, options)
-
-    /**
-     * start requestAnimationFrame() loop to handle animations; alternatively, call update() manually on each frame
-     * @inherited from yy-loop
-     */
-    // start()
-
-    /**
-     * update loop -- may be called manually or use start/stop() for Viewport to handle updates
-     * @inherited from yy-loop
-     */
-    // update()
-
-    /**
-     * stop loop
-     * @inherited from yy-loop
-     */
-    // stop()
+    constructor(options)
 
     /**
      * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
@@ -273,6 +249,12 @@ https://davidfig.github.io/pixi-viewport/
      * @type {boolean}
      */
     get dirty()
+
+    /**
+     * force the hitArea from the default {x:0, y:0, width:this.worldWidth, height:this.worldHeight}
+     * @type {PIXI.Rectangle}
+     */
+    get forceHitArea()
 
     /**
      * removes installed plugin

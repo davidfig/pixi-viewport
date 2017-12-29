@@ -162,12 +162,28 @@ window.onload = function ()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
+    // _viewport.add(
+    //     function (elapsed)
+    //     {
+    //         _ease.update(elapsed)
+    //         if (!gui.options.testDirty)
+    //         {
+    //             _renderer.dirty = true
+    //         }
+    //         if (_viewport.dirty)
+    //         {
+    //             _renderer.dirty = true
+    //             _viewport.dirty = false
+    //         }
+    //         _renderer.update()
+    //     }
+    // )
     drawWorld()
     events()
 
     PIXI.ticker.shared.add(() =>
     {
-        // _ease.update(PIXI.ticker.shared.elapsedMS)
+        _ease.update(PIXI.ticker.shared.elapsedMS)
         _fps.frame()
     })
     _renderer.start()

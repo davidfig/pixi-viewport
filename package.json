@@ -10,7 +10,7 @@
     "test": "budo docs/code.js:index.js --dir docs --live",
     "build": "browserify docs/code.js -o docs/index.js",
     "docs": "markdown-api README.md src/viewport.js",
-    "prepublishOnly": "yarn build && yarn docs"
+    "setup": "yarn build && yarn docs"
   },
   "repository": {
     "type": "git",
