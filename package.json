@@ -35,8 +35,8 @@
   "homepage": "https://github.com/davidfig/pixi-viewport#readme",
   "dependencies": {
     "exists": "^1.0.1",
-    "pixi-ease": "^0.14.3",
-    "yy-input": "^0.11.2",
+    "pixi-ease": "^0.14.4",
+    "yy-input": "^0.11.3",
     "yy-loop": "^0.4.1"
   },
   "devDependencies": {
