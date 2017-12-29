@@ -62931,13 +62931,12 @@ module.exports = class MouseEdges extends Plugin
 
     move(e)
     {
-
-        if (typeof e.originalEvent !== MouseEvent || e.originalEvent.buttons === 0)
+        if (e.data.identifier !== 'MOUSE' || e.data.buttons !== 0)
         {
             return
         }
-        const x = e.originalEvent.clientX
-        const y = e.originalEvent.clientY
+        const x = e.data.global.x
+        const y = e.data.global.y
 
         if (this.radiusSquared)
         {
@@ -63394,7 +63393,7 @@ module.exports = class Snap extends Plugin
 
     up()
     {
-        if (this.parent.input.pointers.length === 0)
+        if (this.parent.countDownPointers() === 1)
         {
             const decelerate = this.parent.plugins['decelerate']
             if (decelerate && (decelerate.x || decelerate.y))
@@ -63410,7 +63409,7 @@ module.exports = class Snap extends Plugin
         {
             return
         }
-        if (this.interrupt && this.parent.input.pointers.length !== 0)
+        if (this.interrupt && this.parent.countDownPointers() !== 0)
         {
             return
         }
