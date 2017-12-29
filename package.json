@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "exists": "^1.0.1",
-    "pixi-ease": "^0.14.3"
+    "pixi-ease": "^0.15.2"
   },
   "devDependencies": {
     "fork-me-github": "^1.0.3",

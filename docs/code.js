@@ -18,7 +18,7 @@ const OBJECT_SPEED = 0.25
 const ANIMATE_TIME = 1500
 const FADE_TIME = 2000
 
-let _fps, _renderer, _viewport, _ease, _object, _targetAnimation, _stars = []
+let _fps, _renderer, _viewport, _ease, _object, _stars = []
 
 function viewport()
 {
@@ -35,6 +35,7 @@ function viewport()
 
 function resize()
 {
+    _renderer.renderer.resize(window.innerWidth, window.innerHeight)
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
 }
 
@@ -43,7 +44,7 @@ function addCounter(name)
     const counter = new Counter({ side: 'top-left' })
     counter.log(name)
     const ease = _ease.to(counter.div.style, { opacity: 0 }, FADE_TIME, { ease: 'easeInOutSine' })
-    ease.on('done', () => counter.div.remove())
+    ease.once('done', () => counter.div.remove())
 }
 
 function events()
@@ -99,13 +100,11 @@ function stars()
 
 function createTarget()
 {
-    _targetAnimation = _ease.target(_object,
-        {
-            x: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER),
-            y: Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
-        }, OBJECT_SPEED
-    )
-    _targetAnimation.on('done', createTarget)
+
+    const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
+    const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
+    const target = _ease.target(_object, { x, y }, OBJECT_SPEED)
+    target.once('done', createTarget)
 }
 
 function object()
@@ -135,7 +134,7 @@ function click(e)
     sprite.rotation = Random.range(-0.1, 0.1)
     sprite.position = _viewport.toLocal(e.data.global)
     const fade = _ease.to(sprite, { alpha: 0 }, ANIMATE_TIME)
-    fade.on('done', () => _renderer.stage.removeChild(sprite))
+    fade.once('done', () => _renderer.stage.removeChild(sprite))
 }
 
 function drawWorld()
@@ -151,7 +150,7 @@ function drawWorld()
 window.onload = function ()
 {
     _fps = new FPS({ side: 'bottom-left' })
-    _renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, autoresize: true })
+    _renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
     document.body.appendChild(_renderer.view)
     _renderer.view.style.position = 'fixed'
     _renderer.view.style.width = '100vw'
@@ -162,31 +161,10 @@ window.onload = function ()
     window.addEventListener('resize', resize)
 
     _ease = new Ease.list()
-    // _viewport.add(
-    //     function (elapsed)
-    //     {
-    //         _ease.update(elapsed)
-    //         if (!gui.options.testDirty)
-    //         {
-    //             _renderer.dirty = true
-    //         }
-    //         if (_viewport.dirty)
-    //         {
-    //             _renderer.dirty = true
-    //             _viewport.dirty = false
-    //         }
-    //         _renderer.update()
-    //     }
-    // )
     drawWorld()
     events()
 
-    PIXI.ticker.shared.add(() =>
-    {
-        _ease.update(PIXI.ticker.shared.elapsedMS)
-        _fps.frame()
-    })
-    _renderer.start()
+    PIXI.ticker.shared.add(() => _fps.frame())
 
     gui.gui(_viewport, drawWorld, _object)
 
