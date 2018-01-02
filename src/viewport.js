@@ -191,7 +191,7 @@ module.exports = class Viewport extends PIXI.Container
         this.on('pointercancel', this.up, this)
         this.on('pointerout', this.up, this)
         this.on('tap', this.tap, this)
-        document.body.addEventListener('wheel', () => this.handleWheel())
+        document.body.addEventListener('wheel', (e) => this.handleWheel(e))
     }
 
     /**
