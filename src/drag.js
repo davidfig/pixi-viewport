@@ -47,7 +47,7 @@ module.exports = class Drag extends Plugin
             return
         }
 
-        if (this.parent.countDownPointers() === 1)
+        if (this.parent.countDownPointers() <= 1)
         {
             this.last = { x: e.data.global.x, y: e.data.global.y }
             return true
