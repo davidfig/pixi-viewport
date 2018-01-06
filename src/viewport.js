@@ -56,21 +56,21 @@ module.exports = class Viewport extends PIXI.Container
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
         this.listeners()
-        const ticker = options.ticker || PIXI.ticker.shared
-        ticker.add(() => this.updateFrame(ticker.elapsedMS))
+        this.ticker = options.ticker || PIXI.ticker.shared
+        this.ticker.add(() => this.updateFrame())
     }
 
     /**
      * update frame for animations
      * @private
      */
-    updateFrame(elapsed)
+    updateFrame()
     {
         for (let plugin of PLUGIN_ORDER)
         {
             if (this.plugins[plugin])
             {
-                this.plugins[plugin].update(elapsed)
+                this.plugins[plugin].update(this.ticker.elapsedMS)
             }
         }
     }
@@ -185,11 +185,11 @@ module.exports = class Viewport extends PIXI.Container
         {
             this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
         }
-        this.on('pointerdown', this.down, this)
-        this.on('pointermove', this.move, this)
-        this.on('pointerup', this.up, this)
-        this.on('pointercancel', this.up, this)
-        this.on('pointerout', this.up, this)
+        this.on('pointerdown', this.down)
+        this.on('pointermove', this.move)
+        this.on('pointerup', this.up)
+        this.on('pointercancel', this.up)
+        this.on('pointerout', this.up)
         document.body.addEventListener('wheel', (e) => this.handleWheel(e))
     }
 
