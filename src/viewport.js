@@ -192,6 +192,7 @@ module.exports = class Viewport extends PIXI.Container
         this.on('pointerout', this.up)
         this.on('tap', this.tap)
         document.body.addEventListener('wheel', (e) => this.handleWheel(e))
+        this.leftDown = false
     }
 
     /**
@@ -200,6 +201,10 @@ module.exports = class Viewport extends PIXI.Container
      */
     down(e)
     {
+        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
+            this.leftDown = true
+        }
+        
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -244,6 +249,10 @@ module.exports = class Viewport extends PIXI.Container
      */
     up(e)
     {
+        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
+            this.leftDown = false
+        }
+        
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -669,7 +678,7 @@ module.exports = class Viewport extends PIXI.Container
         {
             if (key === 'MOUSE')
             {
-                count += pointers[key].leftDown ? 1 : 0
+                count += this.leftDown ? 1 : 0
             }
             else
             {
