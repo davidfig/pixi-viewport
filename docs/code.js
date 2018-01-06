@@ -4,7 +4,7 @@ const Random = require('yy-random')
 const Renderer = require('yy-renderer')
 const Counter = require('yy-counter')
 
-const Viewport = require('../src/')
+const Viewport = require('../dist/')
 
 const gui = require('./gui')
 

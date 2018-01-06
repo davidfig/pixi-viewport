@@ -11,7 +11,7 @@
     "build": "browserify docs/code.js -o docs/index.js",
     "docs": "markdown-api README.md src/viewport.js",
     "prepublishOnly": "yarn build && yarn docs",
-    "prepublish": "./node_modules/.bin/babel src --out-dir dist -s"
+    "prepublish": "./node_modules/babel-cli/bin/babel.js src/ --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -41,8 +41,8 @@
     "yy-loop": "^0.3.5"
   },
   "devDependencies": {
-    "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "fork-me-github": "^1.0.3",
     "highlight.js": "^9.12.0",
     "pixi.js": "^4.6.2",
