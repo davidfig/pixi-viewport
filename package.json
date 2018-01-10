@@ -51,7 +51,7 @@
     "pixi.js": "^4.6.2",
     "yy-counter": "^2.1.0",
     "yy-fps": "^0.6.0",
-    "yy-jsdoc-template": "^1.0.0",
+    "yy-jsdoc-template": "^1.1.0",
     "yy-random": "^1.6.0"
   }
 }

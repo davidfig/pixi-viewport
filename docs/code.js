@@ -28,7 +28,7 @@ function viewport()
         .drag({ clampWheel: true })
         .wheel()
         .pinch()
-        .on('click', click)
+        .on('pointertap', click)
         .decelerate()
         .bounce()
     resize()
@@ -50,7 +50,6 @@ function addCounter(name)
 
 function events()
 {
-    _viewport.on('click', () => addCounter('click'))
     _viewport.on('drag-start', () => addCounter('drag-start'))
     _viewport.on('drag-end', () => addCounter('drag-end'))
     _viewport.on('pinch-start', () => addCounter('pinch-start'))
@@ -148,6 +147,19 @@ function drawWorld()
     _viewport.moveCorner(0, 0)
 }
 
+function API()
+{
+    const button = document.createElement('button')
+    document.body.appendChild(button)
+    button.innerText = 'API Documentation'
+    button.style.backgroundColor = 'rgba(0,0,0,0.75)'
+    button.style.color = 'white'
+    button.style.position = 'fixed'
+    button.style.left = 0
+    button.style.top = 0
+    button.onclick = () => window.location.href = '/jsdoc/'
+}
+
 window.onload = function ()
 {
     _fps = new FPS({ side: 'bottom-left' })
@@ -168,6 +180,8 @@ window.onload = function ()
     PIXI.ticker.shared.add(() => _fps.frame())
 
     gui.gui(_viewport, drawWorld, _object)
+
+    API()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }

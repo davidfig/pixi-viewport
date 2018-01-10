@@ -30,12 +30,13 @@
         "private": false,
         "lenient": true,
         "destination": "./docs/jsdoc",
-        "template": "../yy-jsdoc-template/"
+        "template": "./node_modules/yy-jsdoc-template/"
     },
     "plugins": [
-        "../yy-jsdoc-template/plugins/skip-node_modules",
+        "./node_modules/yy-jsdoc-template/plugins/skip-node_modules",
         "plugins/markdown"
     ],
+    "readmeShowNav": "Viewport",
     "templates": {
         "default": {
             "outputSourceFiles": true
