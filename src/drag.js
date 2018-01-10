@@ -51,13 +51,12 @@ module.exports = class Drag extends Plugin
         if (this.parent.countDownPointers() <= 1)
         {
             this.last = { x: e.data.global.x, y: e.data.global.y }
-            return true
         }
     }
 
     get active()
     {
-        return this.last ? true : false
+        return this.moved
     }
 
     move(e)
@@ -96,14 +95,29 @@ module.exports = class Drag extends Plugin
         }
     }
 
-    up()
+    up(e)
     {
-        if (this.last && this.moved)
+        if (this.parent.countDownPointers() === 2)
+        {
+            if (e.data.originalEvent.touches)
+            {
+                const pointers = this.parent.trackedPointers
+                for (let key in pointers)
+                {
+                    const pointer = pointers[key]
+                    if (pointer.pointerId !== 'MOUSE' && pointer.pointerId !== e.data.pointerId)
+                    {
+                        this.last = { x: pointer.last.x, y: pointer.last.y }
+                    }
+                }
+                this.moved = false
+            }
+        }
+        else if (this.last && this.moved)
         {
             this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
-            this.moved = false
+            this.last = this.moved = false
         }
-        this.last = null
     }
 
     wheel(dx, dy)

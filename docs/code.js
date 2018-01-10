@@ -4,8 +4,8 @@ const Random = require('yy-random')
 const Counter = require('yy-counter')
 const FPS = require('yy-fps')
 
-const Viewport = require('../dist/viewport')
-// const Viewport = require('..')
+// const Viewport = require('../dist/viewport')
+const Viewport = require('../src/viewport')
 
 const gui = require('./gui')
 

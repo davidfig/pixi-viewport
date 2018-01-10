@@ -38,65 +38,68 @@ module.exports = class Pinch extends Plugin
         const y = e.data.global.y
 
         const pointers = this.parent.trackedPointers
-        const first = pointers[0]
-        const second = pointers[1]
-        let last
-        if (first.last && second.last)
+        if (Object.keys(pointers).length >= 2)
         {
-            last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-        }
-        if (first.pointerId === e.data.pointerId)
-        {
-            first.last = { x, y }
-        }
-        else if (second.pointerId === e.data.pointerId)
-        {
-            second.last = { x, y }
-        }
-        if (last)
-        {
-            let oldPoint
-            const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
-            if (!this.center)
+            const first = pointers[0]
+            const second = pointers[1]
+            let last
+            if (first.last && second.last)
             {
-                oldPoint = this.parent.toLocal(point)
+                last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
             }
-            const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-            const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
-            this.parent.scale.x += change
-            this.parent.scale.y += change
-            const clamp = this.parent.plugins['clamp-zoom']
-            if (clamp)
+            if (first.pointerId === e.data.pointerId)
             {
-                clamp.clamp()
+                first.last = { x, y }
             }
-            if (this.center)
+            else if (second.pointerId === e.data.pointerId)
             {
-                this.parent.moveCenter(this.center)
+                second.last = { x, y }
+            }
+            if (last)
+            {
+                let oldPoint
+                const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
+                if (!this.center)
+                {
+                    oldPoint = this.parent.toLocal(point)
+                }
+                const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
+                this.parent.scale.x += change
+                this.parent.scale.y += change
+                const clamp = this.parent.plugins['clamp-zoom']
+                if (clamp)
+                {
+                    clamp.clamp()
+                }
+                if (this.center)
+                {
+                    this.parent.moveCenter(this.center)
+                }
+                else
+                {
+                    const newPoint = this.parent.toGlobal(oldPoint)
+                    this.parent.x += point.x - newPoint.x
+                    this.parent.y += point.y - newPoint.y
+                }
+
+                if (!this.noDrag && this.lastCenter)
+                {
+                    this.parent.x += point.x - this.lastCenter.x
+                    this.parent.y += point.y - this.lastCenter.y
+                }
+                this.lastCenter = point
             }
             else
             {
-                const newPoint = this.parent.toGlobal(oldPoint)
-                this.parent.x += point.x - newPoint.x
-                this.parent.y += point.y - newPoint.y
+                if (!this.pinching)
+                {
+                    this.parent.emit('pinch-start', this.parent)
+                    this.pinching = true
+                }
             }
-
-            if (!this.noDrag && this.lastCenter)
-            {
-                this.parent.x += point.x - this.lastCenter.x
-                this.parent.y += point.y - this.lastCenter.y
-            }
-            this.lastCenter = point
+            this.parent.dirty = true
         }
-        else
-        {
-            if (!this.pinching)
-            {
-                this.parent.emit('pinch-start', this.parent)
-                this.pinching = true
-            }
-        }
-        this.parent.dirty = true
     }
 
     up()
