@@ -24,7 +24,7 @@ module.exports = class Viewport extends PIXI.Container
      * @param {number} [options.worldWidth=this.width]
      * @param {number} [options.worldHeight=this.height]
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
-     * @param {PIXI.Rectangle} [options.forceHitArea] change the default hitArea from world size to a new value (setting this will result in hitArea not being resized when viewport.resize() is called)
+     * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      *
      * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
@@ -53,18 +53,19 @@ module.exports = class Viewport extends PIXI.Container
         this._screenHeight = options.screenHeight
         this._worldWidth = options.worldWidth
         this._worldHeight = options.worldHeight
+        this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
         this.listeners()
         this.ticker = options.ticker || PIXI.ticker.shared
-        this.ticker.add(() => this.updateFrame())
+        this.ticker.add(() => this.update())
     }
 
     /**
-     * update frame for animations
+     * update animations
      * @private
      */
-    updateFrame()
+    update()
     {
         for (let plugin of PLUGIN_ORDER)
         {
@@ -72,6 +73,13 @@ module.exports = class Viewport extends PIXI.Container
             {
                 this.plugins[plugin].update(this.ticker.elapsedMS)
             }
+        }
+        if (!this.forceHitArea)
+        {
+            this.hitArea.x = this.left
+            this.hitArea.y = this.top
+            this.hitArea.width = this.worldScreenWidth
+            this.hitArea.height = this.worldScreenHeight
         }
     }
 
@@ -88,10 +96,6 @@ module.exports = class Viewport extends PIXI.Container
         this._screenHeight = screenHeight || window.innerHeight
         this._worldWidth = worldWidth
         this._worldHeight = worldHeight
-        if (!this._forceHitArea)
-        {
-            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
-        }
         this.resizePlugins()
     }
 
@@ -203,7 +207,7 @@ module.exports = class Viewport extends PIXI.Container
         if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
             this.leftDown = true
         }
-        
+
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -251,7 +255,7 @@ module.exports = class Viewport extends PIXI.Container
         if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
             this.leftDown = false
         }
-        
+
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])

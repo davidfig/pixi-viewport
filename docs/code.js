@@ -29,7 +29,7 @@ function viewport()
         .pinch()
         .on('click', click)
         .decelerate()
-        .bounce()
+        // .bounce()
     resize()
 }
 
