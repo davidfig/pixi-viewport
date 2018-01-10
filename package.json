@@ -2,7 +2,7 @@
   "name": "pixi-viewport",
   "version": "0.21.4",
   "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
-  "main": "index.js",
+  "main": "dist/viewport.js",
   "directories": {
     "doc": "docs"
   },
@@ -10,7 +10,8 @@
     "test": "budo docs/code.js:index.js --dir docs --live",
     "build": "browserify docs/code.js -o docs/index.js",
     "docs": "markdown-api README.md src/viewport.js",
-    "setup": "yarn build && yarn docs"
+    "transpile": "./node_modules/.bin/babel src/ --out-dir dist --source-maps inline",
+    "setup": "npm run transpile && npm run build && npm run docs"
   },
   "repository": {
     "type": "git",
@@ -38,14 +39,16 @@
   },
   "dependencies": {
     "exists": "^1.0.1",
-    "pixi-ease": "^0.15.2"
+    "pixi-ease": "^0.14.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "fork-me-github": "^1.0.3",
     "highlight.js": "^9.12.0",
     "pixi.js": "^4.6.2",
     "yy-counter": "^2.1.0",
-    "yy-fps": "^0.5.3",
+    "yy-fps": "^0.6.0",
     "yy-random": "^1.6.0"
   }
 }

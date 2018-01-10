@@ -4,7 +4,8 @@ const Random = require('yy-random')
 const Counter = require('yy-counter')
 const FPS = require('yy-fps')
 
-const Viewport = require('..')
+const Viewport = require('../dist/viewport')
+// const Viewport = require('..')
 
 const gui = require('./gui')
 
@@ -29,7 +30,7 @@ function viewport()
         .pinch()
         .on('click', click)
         .decelerate()
-        // .bounce()
+        .bounce()
     resize()
 }
 
