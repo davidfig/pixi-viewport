@@ -4,8 +4,8 @@ const Random = require('yy-random')
 const Counter = require('yy-counter')
 const FPS = require('yy-fps')
 
-const Viewport = require('../dist/viewport')
-// const Viewport = require('../src/viewport')
+// const Viewport = require('../dist/viewport')
+const Viewport = require('../src/viewport')
 
 const gui = require('./gui')
 
@@ -16,7 +16,6 @@ const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
-const ANIMATE_TIME = 1500
 const FADE_TIME = 2000
 
 let _fps, _renderer, _viewport, _ease, _object, _stars = []
@@ -28,7 +27,6 @@ function viewport()
         .drag({ clampWheel: true })
         .wheel()
         .pinch()
-        .on('pointertap', click)
         .decelerate()
         .bounce()
     resize()
@@ -116,25 +114,6 @@ function object()
     _object.position.set(100, 100)
     _ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
     createTarget()
-}
-
-function click(e)
-{
-    for (let star of _stars)
-    {
-        if (star.containsPoint(e.data.global))
-        {
-            const scale = star.scale.x
-            _ease.to(star, { scale: scale * 2 }, ANIMATE_TIME, { reverse: true, ease: 'easeInOutSine' })
-            return
-        }
-    }
-    const sprite = _viewport.addChild(new PIXI.Text('click', {fill: 0xff0000}))
-    sprite.anchor.set(0.5)
-    sprite.rotation = Random.range(-0.1, 0.1)
-    sprite.position = _viewport.toLocal(e.data.global)
-    const fade = _ease.to(sprite, { alpha: 0 }, ANIMATE_TIME)
-    fade.once('done', () => _renderer.stage.removeChild(sprite))
 }
 
 function drawWorld()
