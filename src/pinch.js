@@ -3,6 +3,7 @@ const Plugin = require('./plugin')
 module.exports = class Pinch extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {boolean} [options.noDrag] disable two-finger dragging

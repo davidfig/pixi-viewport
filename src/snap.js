@@ -5,6 +5,7 @@ const exists = require('exists')
 module.exports = class Snap extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {number} x
      * @param {number} y

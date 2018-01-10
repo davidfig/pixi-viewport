@@ -1,0 +1,52 @@
+{
+    "applicationName": "pixi-viewport",
+    "disqus": "",
+    "googleAnalytics": "",
+    "openGraph": {
+        "title": "",
+        "type": "website",
+        "image": "",
+        "site_name": "",
+        "url": ""
+    },
+    "meta": {
+        "title": "DomEase",
+        "description": "",
+        "keyword": ""
+    },
+    "linenums": true,
+    "source": {
+        "include": [
+            "./src",
+            "./node_modules/eventemitter3"
+        ],
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "opts": {
+        "readme": "./README.md",
+        "encoding": "utf8",
+        "recurse": true,
+        "private": false,
+        "lenient": true,
+        "destination": "./docs/jsdoc",
+        "template": "../yy-jsdoc-template/"
+    },
+    "plugins": [
+        "../yy-jsdoc-template/plugins/skip-node_modules",
+        "plugins/markdown"
+    ],
+    "templates": {
+        "default": {
+            "outputSourceFiles": true
+        },
+        "applicationName": "pixi-viewport",
+        "footer"        : "by YOPEY YOPEY LLC (yopeyopey.com)",
+        "copyright"     : "Copyright © 2018 YOPEY YOPEY LLC.",
+        "meta": {
+            "title": "pixi-viewport API Documentation",
+            "description": "Documentation for pixi-viewport library",
+            "keyword": "docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"
+        }
+    }
+}

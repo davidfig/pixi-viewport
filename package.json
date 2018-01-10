@@ -9,7 +9,7 @@
   "scripts": {
     "test": "budo docs/code.js:index.js --dir docs --live",
     "build": "browserify docs/code.js -o docs/index.js",
-    "docs": "markdown-api README.md src/viewport.js",
+    "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
     "transpile": "./node_modules/.bin/babel src/ --out-dir dist --source-maps inline",
     "setup": "npm run transpile && npm run build && npm run docs"
   },
@@ -38,17 +38,20 @@
     "pixi.js": ">=4.6.0"
   },
   "dependencies": {
+    "eventemitter3": "^3.0.0",
     "exists": "^1.0.1",
-    "pixi-ease": "^0.14.3"
+    "pixi-ease": ">=0.14.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "fork-me-github": "^1.0.3",
     "highlight.js": "^9.12.0",
+    "jsdoc": "^3.5.5",
     "pixi.js": "^4.6.2",
     "yy-counter": "^2.1.0",
     "yy-fps": "^0.6.0",
+    "yy-jsdoc-template": "^1.0.0",
     "yy-random": "^1.6.0"
   }
 }

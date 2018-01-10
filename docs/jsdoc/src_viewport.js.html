@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>pixi-viewport API Documentation</title>
+    
+    <meta name="description" content="Documentation for pixi-viewport library" />
+    
+        <meta name="keywords" content="docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d" />
+        <meta name="keyword" content="docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d" />
+    
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,700" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"pixi-viewport","footer":"by YOPEY YOPEY LLC (yopeyopey.com)","copyright":"Copyright © 2018 YOPEY YOPEY LLC.","meta":{"title":"pixi-viewport API Documentation","description":"Documentation for pixi-viewport library","keyword":"docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">pixi-viewport</a></h3>
+    <button id="menuToggle" class="btn btn-link btn-lg menu-toggle">
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+    </button>
+    <div class="search">
+        <input id="search" type="text" class="form-control input-md" placeholder="Search...">
+    </div>
+    <ul class="list">
+    
+        
+    
+        
+        <li class="item" data-name="Viewport">
+            <span class="title  ">
+                
+                <a href="Viewport.html">Viewport</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="Viewport#bottom"><a href="Viewport.html#bottom">bottom</a></li>
+            
+                <li class="parent " data-name="Viewport#center"><a href="Viewport.html#center">center</a></li>
+            
+                <li class="parent " data-name="Viewport#corner"><a href="Viewport.html#corner">corner</a></li>
+            
+                <li class="parent " data-name="Viewport#dirty"><a href="Viewport.html#dirty">dirty</a></li>
+            
+                <li class="parent " data-name="Viewport#forceHitArea"><a href="Viewport.html#forceHitArea">forceHitArea</a></li>
+            
+                <li class="parent " data-name="Viewport#left"><a href="Viewport.html#left">left</a></li>
+            
+                <li class="parent " data-name="Viewport#right"><a href="Viewport.html#right">right</a></li>
+            
+                <li class="parent " data-name="Viewport#screenHeight"><a href="Viewport.html#screenHeight">screenHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWidth"><a href="Viewport.html#screenWidth">screenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWorldHeight"><a href="Viewport.html#screenWorldHeight">screenWorldHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWorldWidth"><a href="Viewport.html#screenWorldWidth">screenWorldWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#top"><a href="Viewport.html#top">top</a></li>
+            
+                <li class="parent " data-name="Viewport#worldHeight"><a href="Viewport.html#worldHeight">worldHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#worldScreenHeight"><a href="Viewport.html#worldScreenHeight">worldScreenHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#worldScreenWidth"><a href="Viewport.html#worldScreenWidth">worldScreenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#worldWidth"><a href="Viewport.html#worldWidth">worldWidth</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Viewport#bounce"><a href="Viewport.html#bounce">bounce</a></li>
+            
+                <li class="parent  " data-name="Viewport#clamp"><a href="Viewport.html#clamp">clamp</a></li>
+            
+                <li class="parent  " data-name="Viewport#clampZoom"><a href="Viewport.html#clampZoom">clampZoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#decelerate"><a href="Viewport.html#decelerate">decelerate</a></li>
+            
+                <li class="parent  " data-name="Viewport#drag"><a href="Viewport.html#drag">drag</a></li>
+            
+                <li class="  " data-name="Viewport#emit~"><a href="Viewport.html#emit">emit</a></li>
+            
+                <li class="  " data-name="Viewport#eventNames~"><a href="Viewport.html#eventNames">eventNames</a></li>
+            
+                <li class="parent  " data-name="Viewport#fit"><a href="Viewport.html#fit">fit</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitHeight"><a href="Viewport.html#fitHeight">fitHeight</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitWidth"><a href="Viewport.html#fitWidth">fitWidth</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitWorld"><a href="Viewport.html#fitWorld">fitWorld</a></li>
+            
+                <li class="parent  " data-name="Viewport#follow"><a href="Viewport.html#follow">follow</a></li>
+            
+                <li class="  " data-name="Viewport#listenerCount~"><a href="Viewport.html#listenerCount">listenerCount</a></li>
+            
+                <li class="parent  " data-name="Viewport#mouseEdges"><a href="Viewport.html#mouseEdges">mouseEdges</a></li>
+            
+                <li class="parent  " data-name="Viewport#moveCenter"><a href="Viewport.html#moveCenter">moveCenter</a></li>
+            
+                <li class="parent  " data-name="Viewport#moveCorner"><a href="Viewport.html#moveCorner">moveCorner</a></li>
+            
+                <li class="  " data-name="Viewport#once~"><a href="Viewport.html#once">once</a></li>
+            
+                <li class="  " data-name="Viewport#on~"><a href="Viewport.html#on">on</a></li>
+            
+                <li class="parent  " data-name="Viewport#pausePlugin"><a href="Viewport.html#pausePlugin">pausePlugin</a></li>
+            
+                <li class="parent  " data-name="Viewport#pinch"><a href="Viewport.html#pinch">pinch</a></li>
+            
+                <li class="  " data-name="Viewport#removeAllListeners~"><a href="Viewport.html#removeAllListeners">removeAllListeners</a></li>
+            
+                <li class="  " data-name="Viewport#removeListener~"><a href="Viewport.html#removeListener">removeListener</a></li>
+            
+                <li class="parent  " data-name="Viewport#removePlugin"><a href="Viewport.html#removePlugin">removePlugin</a></li>
+            
+                <li class="parent  " data-name="Viewport#resize"><a href="Viewport.html#resize">resize</a></li>
+            
+                <li class="parent  " data-name="Viewport#resumePlugin"><a href="Viewport.html#resumePlugin">resumePlugin</a></li>
+            
+                <li class="parent  " data-name="Viewport#snap"><a href="Viewport.html#snap">snap</a></li>
+            
+                <li class="parent  " data-name="Viewport#snapZoom"><a href="Viewport.html#snapZoom">snapZoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#toScreen"><a href="Viewport.html#toScreen">toScreen</a></li>
+            
+                <li class="parent  " data-name="Viewport#toWorld"><a href="Viewport.html#toWorld">toWorld</a></li>
+            
+                <li class="parent  " data-name="Viewport#wheel"><a href="Viewport.html#wheel">wheel</a></li>
+            
+                <li class="parent  " data-name="Viewport#zoom"><a href="Viewport.html#zoom">zoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#zoomPercent"><a href="Viewport.html#zoomPercent">zoomPercent</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li class="parent" data-name="Viewport#event:bounce-x-end"><a href="Viewport.html#event:bounce-x-end">bounce-x-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-x-start"><a href="Viewport.html#event:bounce-x-start">bounce-x-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-y-end"><a href="Viewport.html#event:bounce-y-end">bounce-y-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-y-start"><a href="Viewport.html#event:bounce-y-start">bounce-y-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:drag"><a href="Viewport.html#event:drag">drag</a></li>
+            
+                <li class="parent" data-name="Viewport#event:drag-end"><a href="Viewport.html#event:drag-end">drag-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:mouse-edge-end"><a href="Viewport.html#event:mouse-edge-end">mouse-edge-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:mouse-edge-start"><a href="Viewport.html#event:mouse-edge-start">mouse-edge-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:pinch-end"><a href="Viewport.html#event:pinch-end">pinch-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:pinch-start"><a href="Viewport.html#event:pinch-start">pinch-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-end"><a href="Viewport.html#event:snap-end">snap-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-start"><a href="Viewport.html#event:snap-start">snap-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-zoom-end"><a href="Viewport.html#event:snap-zoom-end">snap-zoom-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-zoom-start"><a href="Viewport.html#event:snap-zoom-start">snap-zoom-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:wheel"><a href="Viewport.html#event:wheel">wheel</a></li>
+            
+                <li class="parent" data-name="Viewport#event:wheel-scroll"><a href="Viewport.html#event:wheel-scroll">wheel-scroll</a></li>
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="src_viewport.js.html">Source: src/viewport.js</h1>
+        
+
+
+    
+    <section>
+        <header>
+            <div class="header content-size">
+                <h2>src/viewport.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>const PIXI = require('pixi.js')
+const exists = require('exists')
+
+const Drag = require('./drag')
+const Pinch = require('./pinch')
+const Clamp = require('./clamp')
+const ClampZoom = require('./clamp-zoom')
+const Decelerate = require('./decelerate')
+const Bounce = require('./bounce')
+const Snap = require('./snap')
+const SnapZoom = require('./snap-zoom')
+const Follow = require('./follow')
+const Wheel = require('./wheel')
+const MouseEdges = require('./mouse-edges')
+
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
+
+class Viewport extends PIXI.Container
+{
+    /**
+     * @extends PIXI.Container
+     * @extends EventEmitter
+     * @param {object} [options]
+     * @param {number} [options.screenWidth=window.innerWidth]
+     * @param {number} [options.screenHeight=window.innerHeight]
+     * @param {number} [options.worldWidth=this.width]
+     * @param {number} [options.worldHeight=this.height]
+     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+     * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
+     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @fires drag-start
+     * @fires drag-end
+     * @fires pinch-start
+     * @fires pinch-end
+     * @fires snap-start
+     * @fires snap-end
+     * @fires snap-zoom-start
+     * @fires snap-zoom-end
+     * @fires bounce-x-start
+     * @fires bounce-x-end
+     * @fires bounce-y-start
+     * @fires bounce-y-end
+     * @fires wheel
+     * @fires wheel-scroll
+     * @fires mouse-edge-start
+     * @fires mouse-edge-end
+     */
+    constructor(options)
+    {
+        options = options || {}
+        super()
+        this.plugins = []
+        this._screenWidth = options.screenWidth
+        this._screenHeight = options.screenHeight
+        this._worldWidth = options.worldWidth
+        this._worldHeight = options.worldHeight
+        this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
+        this.forceHitArea = options.forceHitArea
+        this.threshold = exists(options.threshold) ? options.threshold : 5
+        this.listeners()
+        this.ticker = options.ticker || PIXI.ticker.shared
+        this.ticker.add(() => this.update())
+    }
+
+    /**
+     * update animations
+     * @private
+     */
+    update()
+    {
+        for (let plugin of PLUGIN_ORDER)
+        {
+            if (this.plugins[plugin])
+            {
+                this.plugins[plugin].update(this.ticker.elapsedMS)
+            }
+        }
+        if (!this.forceHitArea)
+        {
+            this.hitArea.x = this.left
+            this.hitArea.y = this.top
+            this.hitArea.width = this.worldScreenWidth
+            this.hitArea.height = this.worldScreenHeight
+        }
+    }
+
+    /**
+     * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
+     * @param {number} screenWidth
+     * @param {number} screenHeight
+     * @param {number} [worldWidth]
+     * @param {number} [worldHeight]
+     */
+    resize(screenWidth, screenHeight, worldWidth, worldHeight)
+    {
+        this._screenWidth = screenWidth || window.innerWidth
+        this._screenHeight = screenHeight || window.innerHeight
+        this._worldWidth = worldWidth
+        this._worldHeight = worldHeight
+        this.resizePlugins()
+    }
+
+    /**
+     * called after a worldWidth/Height change
+     * @private
+     */
+    resizePlugins()
+    {
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].resize()
+            }
+        }
+    }
+
+    /**
+     * screen width in screen pixels
+     * @type {number}
+     */
+    get screenWidth()
+    {
+        return this._screenWidth
+    }
+    set screenWidth(value)
+    {
+        this._screenWidth = value
+    }
+
+    /**
+     * screen height in screen pixels
+     * @type {number}
+     */
+    get screenHeight()
+    {
+        return this._screenHeight
+    }
+    set screenHeight(value)
+    {
+        this._screenHeight = value
+    }
+
+    /**
+     * world width in pixels
+     * @type {number}
+     */
+    get worldWidth()
+    {
+        if (this._worldWidth)
+        {
+            return this._worldWidth
+        }
+        else
+        {
+            return this.width
+        }
+    }
+    set worldWidth(value)
+    {
+        this._worldWidth = value
+        this.resizePlugins()
+    }
+
+    /**
+     * world height in pixels
+     * @type {number}
+     */
+    get worldHeight()
+    {
+        if (this._worldHeight)
+        {
+            return this._worldHeight
+        }
+        else
+        {
+            return this.height
+        }
+    }
+    set worldHeight(value)
+    {
+        this._worldHeight = value
+        this.resizePlugins()
+    }
+
+    /**
+     * add input listeners
+     * @private
+     */
+    listeners()
+    {
+        this.interactive = true
+        if (!this.forceHitArea)
+        {
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        }
+        this.on('pointerdown', this.down)
+        this.on('pointermove', this.move)
+        this.on('pointerup', this.up)
+        this.on('pointercancel', this.up)
+        this.on('pointerout', this.up)
+        document.body.addEventListener('wheel', (e) => this.handleWheel(e))
+        this.leftDown = false
+    }
+
+    /**
+     * handle down events
+     * @private
+     */
+    down(e)
+    {
+        if (e.data.originalEvent instanceof MouseEvent &amp;&amp; e.data.originalEvent.button == 0) {
+            this.leftDown = true
+        }
+
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].down(e)
+            }
+        }
+    }
+
+    /**
+     * whether change exceeds threshold
+     * @private
+     * @param {number} change
+     */
+    checkThreshold(change)
+    {
+        if (Math.abs(change) >= this.threshold)
+        {
+            return true
+        }
+        return false
+    }
+
+    /**
+     * handle move events
+     * @private
+     */
+    move(e)
+    {
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].move(e)
+            }
+        }
+    }
+
+    /**
+     * handle up events
+     * @private
+     */
+    up(e)
+    {
+        if (e.data.originalEvent instanceof MouseEvent &amp;&amp; e.data.originalEvent.button == 0) {
+            this.leftDown = false
+        }
+
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].up(e)
+            }
+        }
+    }
+
+    /**
+     * handle wheel events
+     * @private
+     */
+    handleWheel(e)
+    {
+        let result
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                if (this.plugins[type].wheel(e))
+                {
+                    result = true
+                }
+            }
+        }
+        return result
+    }
+
+    /**
+     * change coordinates from screen to world
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @returns {PIXI.Point}
+     */
+    toWorld()
+    {
+        if (arguments.length === 2)
+        {
+            const x = arguments[0]
+            const y = arguments[1]
+            return this.toLocal({ x, y })
+        }
+        else
+        {
+            return this.toLocal(arguments[0])
+        }
+    }
+
+    /**
+     * change coordinates from world to screen
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @returns {PIXI.Point}
+     */
+    toScreen()
+    {
+        if (arguments.length === 2)
+        {
+            const x = arguments[0]
+            const y = arguments[1]
+            return this.toGlobal({ x, y })
+        }
+        else
+        {
+            const point = arguments[0]
+            return this.toGlobal(point)
+        }
+    }
+
+    /**
+     * screen width in world coordinates
+     * @type {number}
+     */
+    get worldScreenWidth()
+    {
+        return this._screenWidth / this.scale.x
+    }
+
+    /**
+     * screen height in world coordinates
+     * @type {number}
+     */
+    get worldScreenHeight()
+    {
+        return this._screenHeight / this.scale.y
+    }
+
+    /**
+     * world width in screen coordinates
+     * @type {number}
+     */
+    get screenWorldWidth()
+    {
+        return this._worldWidth * this.scale.x
+    }
+
+    /**
+     * world height in screen coordinates
+     * @type {number}
+     */
+    get screenWorldHeight()
+    {
+        return this._worldHeight * this.scale.y
+    }
+
+    /**
+     * get center of screen in world coordinates
+     * @type {PIXI.PointLike}
+     */
+    get center()
+    {
+        return { x: this.worldScreenWidth / 2 - this.x / this.scale.x, y: this.worldScreenHeight / 2 - this.y / this.scale.y }
+    }
+
+    /**
+     * move center of viewport to point
+     * @param {(number|PIXI.PointLike)} x or point
+     * @param {number} [y]
+     * @return {Viewport} this
+     */
+    moveCenter(/*x, y | PIXI.Point*/)
+    {
+        let x, y
+        if (!isNaN(arguments[0]))
+        {
+            x = arguments[0]
+            y = arguments[1]
+        }
+        else
+        {
+            x = arguments[0].x
+            y = arguments[0].y
+        }
+        this.position.set((this.worldScreenWidth / 2 - x) * this.scale.x, (this.worldScreenHeight / 2 - y) * this.scale.y)
+        this._reset()
+        this.dirty = true
+        return this
+    }
+
+    /**
+     * top-left corner
+     * @type {PIXI.PointLike}
+     */
+    get corner()
+    {
+        return { x: -this.x / this.scale.x, y: -this.y / this.scale.y }
+    }
+
+    /**
+     * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
+     * @param {number|PIXI.Point} x|point
+     * @param {number} y
+     * @return {Viewport} this
+     */
+    moveCorner(/*x, y | point*/)
+    {
+        if (arguments.length === 1)
+        {
+            this.position.set(-arguments[0].x * this.scale.x, -arguments[0].y * this.scale.y)
+        }
+        else
+        {
+            this.position.set(-arguments[0] * this.scale.x, -arguments[1] * this.scale.y)
+        }
+        this._reset()
+        if (this.plugins['clamp'])
+        {
+            this.plugins['clamp'].update()
+        }
+        this.dirty = true
+        return this
+    }
+
+    /**
+     * change zoom so the width fits in the viewport
+     * @param {number} [width=this._worldWidth] in world coordinates
+     * @param {boolean} [center] maintain the same center
+     * @return {Viewport} this
+     */
+    fitWidth(width, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        width = width || this._worldWidth
+        this.scale.x = this._screenWidth / width
+        this.scale.y = this.scale.x
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so the height fits in the viewport
+     * @param {number} [height=this._worldHeight] in world coordinates
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fitHeight(height, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        height = height || this._worldHeight
+        this.scale.y = this._screenHeight / height
+        this.scale.x = this.scale.y
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fitWorld(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.scale.x = this._screenWidth / this._worldWidth
+        this.scale.y = this._screenHeight / this._worldHeight
+        if (this.scale.x &lt; this.scale.y)
+        {
+            this.scale.y = this.scale.x
+        }
+        else
+        {
+            this.scale.x = this.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fit(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.scale.x = this._screenWidth / this._worldWidth
+        this.scale.y = this._screenHeight / this._worldHeight
+        if (this.scale.x &lt; this.scale.y)
+        {
+            this.scale.y = this.scale.x
+        }
+        else
+        {
+            this.scale.x = this.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * zoom viewport by a certain percent (in both x and y direction)
+     * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoomPercent(percent, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        const scale = this.scale.x + this.scale.x * percent
+        this.scale.set(scale)
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * zoom viewport by increasing/decreasing width by a certain number of pixels
+     * @param {number} change in pixels
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoom(change, center)
+    {
+        this.fitWidth(change + this.worldScreenWidth, center)
+    }
+
+    /**
+     * @param {object} [options]
+     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     */
+    snapZoom(options)
+    {
+        this.plugins['snap-zoom'] = new SnapZoom(this, options)
+        return this
+    }
+
+    /**
+     * @private
+     * @typedef OutOfBounds
+     * @type {object}
+     * @property {boolean} left
+     * @property {boolean} right
+     * @property {boolean} top
+     * @property {boolean} bottom
+     */
+
+    /**
+     * is container out of world bounds
+     * @return {OutOfBounds}
+     * @private
+     */
+    OOB()
+    {
+        const result = {}
+        result.left = this.left &lt; 0
+        result.right = this.right > this._worldWidth
+        result.top = this.top &lt; 0
+        result.bottom = this.bottom > this._worldHeight
+        result.cornerPoint = {
+            x: this._worldWidth * this.scale.x - this._screenWidth,
+            y: this._worldHeight * this.scale.y - this._screenHeight
+        }
+        return result
+    }
+
+    /**
+     * world coordinates of the right edge of the screen
+     * @type {number}
+     */
+    get right()
+    {
+        return -this.x / this.scale.x + this.worldScreenWidth
+    }
+
+    /**
+     * world coordinates of the left edge of the screen
+     * @type {number}
+     */
+    get left()
+    {
+        return -this.x / this.scale.x
+    }
+
+    /**
+     * world coordinates of the top edge of the screen
+     * @type {number}
+     */
+    get top()
+    {
+        return -this.y / this.scale.y
+    }
+
+    /**
+     * world coordinates of the bottom edge of the screen
+     * @type {number}
+     */
+    get bottom()
+    {
+        return -this.y / this.scale.y + this.worldScreenHeight
+    }
+
+    /**
+     * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
+     * @type {boolean}
+     */
+    get dirty()
+    {
+        return this._dirty
+    }
+    set dirty(value)
+    {
+        this._dirty = value
+    }
+
+    /**
+     * permanently changes the Viewport's hitArea
+     * &lt;p>NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)&lt;/p>
+     * @type {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)}
+     */
+    get forceHitArea()
+    {
+        return this._forceHitArea
+    }
+    set forceHitArea(value)
+    {
+        if (value)
+        {
+            this._forceHitArea = value
+            this.hitArea = value
+        }
+        else
+        {
+            this._forceHitArea = false
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        }
+    }
+
+    /**
+     * @private
+     * @return {number} count of mouse/touch pointers that are down on the container
+     */
+    countDownPointers()
+    {
+        let count = 0
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            if (key === 'MOUSE')
+            {
+                count += this.leftDown ? 1 : 0
+            }
+            else
+            {
+                count++
+            }
+        }
+        return count
+    }
+
+    /**
+     * clamps and resets bounce and decelerate (as needed) after manually moving viewport
+     * @private
+     */
+    _reset()
+    {
+        if (this.plugins['bounce'])
+        {
+            this.plugins['bounce'].reset()
+            this.plugins['bounce'].bounce()
+        }
+        if (this.plugins['decelerate'])
+        {
+            this.plugins['decelerate'].reset()
+        }
+        if (this.plugins['snap'])
+        {
+            this.plugins['snap'].reset()
+        }
+        if (this.plugins['clamp'])
+        {
+            this.plugins['clamp'].update()
+        }
+        if (this.plugins['clamp-zoom'])
+        {
+            this.plugins['clamp-zoom'].clamp()
+        }
+    }
+
+    // PLUGINS
+
+    /**
+     * removes installed plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    removePlugin(type)
+    {
+        if (this.plugins[type])
+        {
+            this.plugins[type] = null
+        }
+    }
+
+    /**
+     * pause plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    pausePlugin(type)
+    {
+        if (this.plugins[type])
+        {
+            this.plugins[type].pause()
+        }
+    }
+
+    /**
+     * resume plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    resumePlugin(type)
+    {
+        if (this.plugins[type])
+        {
+            this.plugins[type].resume()
+        }
+    }
+
+    /**
+     * enable one-finger touch to drag
+     * @param {object} [options]
+     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
+     * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
+     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     */
+    drag(options)
+    {
+        this.plugins['drag'] = new Drag(this, options)
+        return this
+    }
+
+    /**
+     * enable clamp to boundaries of world
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} options
+     * @param {string} [options.direction=all] (all, x, or y)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @return {Viewport} this
+     */
+    clamp(options)
+    {
+        this.plugins['clamp'] = new Clamp(this, options)
+        return this
+    }
+
+    /**
+     * decelerate after a move
+     * @param {object} [options]
+     * @param {number} [options.friction=0.95] percent to decelerate after movement
+     * @param {number} [options.bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
+     * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
+     * @return {Viewport} this
+     */
+    decelerate(options)
+    {
+        this.plugins['decelerate'] = new Decelerate(this, options)
+        return this
+    }
+
+    /**
+     * bounce on borders
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
+     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
+     * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @return {Viewport} this
+     */
+    bounce(options)
+    {
+        this.plugins['bounce'] = new Bounce(this, options)
+        return this
+    }
+
+    /**
+     * enable pinch to zoom and two-finger touch to drag
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {number} [options.percent=1.0] percent to modify pinch speed
+     * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
+     * @return {Viewport} this
+     */
+    pinch(options)
+    {
+        this.plugins['pinch'] = new Pinch(this, options)
+        return this
+    }
+
+    /**
+     * snap to a point
+     * @param {number} x
+     * @param {number} y
+     * @param {object} [options]
+     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
+     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
+     * @return {Viewport} this
+     */
+    snap(x, y, options)
+    {
+        this.plugins['snap'] = new Snap(this, x, y, options)
+        return this
+    }
+
+    /**
+     * follow a target
+     * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
+     * @param {object} [options]
+     * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
+     * @return {Viewport} this
+     */
+    follow(target, options)
+    {
+        this.plugins['follow'] = new Follow(this, target, options)
+        return this
+    }
+
+    /**
+     * zoom using mouse wheel
+     * @param {object} [options]
+     * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {boolean} [options.reverse] reverse the direction of the scroll
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
+     * @return {Viewport} this
+     */
+    wheel(options)
+    {
+        this.plugins['wheel'] = new Wheel(this, options)
+        return this
+    }
+
+    /**
+     * enable clamping of zoom to constraints
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {number} [options.minWidth] minimum width
+     * @param {number} [options.minHeight] minimum height
+     * @param {number} [options.maxWidth] maximum width
+     * @param {number} [options.maxHeight] maximum height
+     * @return {Viewport} this
+     */
+    clampZoom(options)
+    {
+        this.plugins['clamp-zoom'] = new ClampZoom(this, options)
+        return this
+    }
+
+    /**
+     * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
+     * @param {object} [options]
+     * @param {number} [options.radius] distance from center of screen in screen pixels
+     * @param {number} [options.distance] distance from all sides in screen pixels
+     * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
+     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
+     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
+     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
+     * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
+     * @param {boolean} [options.reverse] reverse direction of scroll
+     * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
+     * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     */
+    mouseEdges(options)
+    {
+        this.plugins['mouse-edges'] = new MouseEdges(this, options)
+        return this
+    }
+}
+
+/**
+ * fires when a drag starts
+ * @event Viewport#drag
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a drag ends
+ * @event Viewport#drag-end
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a pinch starts
+ * @event Viewport#pinch-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a pinch end
+ * @event Viewport#pinch-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap starts
+ * @event Viewport#snap-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap ends
+ * @event Viewport#snap-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap-zoom starts
+ * @event Viewport#snap-zoom-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap-zoom ends
+ * @event Viewport#snap-zoom-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce starts in the x direction
+ * @event Viewport#bounce-x-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce ends in the x direction
+ * @event Viewport#bounce-x-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce starts in the y direction
+ * @event Viewport#bounce-y-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce ends in the y direction
+ * @event Viewport#bounce-y-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when for a mouse wheel event
+ * @event Viewport#wheel
+ * @type {object}
+ * @property {object} wheel
+ * @property {number} wheel.dx
+ * @property {number} wheel.dy
+ * @property {number} wheel.dz
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a wheel-scroll occurs
+ * @event Viewport#wheel-scroll
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a mouse-edge starts to scroll
+ * @event Viewport#mouse-edge-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when the mouse-edge scrolling ends
+ * @event Viewport#mouse-edge-end
+ * @type {Viewport}
+ */
+
+module.exports = Viewport</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer class="content-size">
+            <div class="footer">
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jan 10 2018 09:37:58 GMT+0800 (DST)
+            </div>
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

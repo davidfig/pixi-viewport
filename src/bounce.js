@@ -6,6 +6,7 @@ const Plugin = require('./plugin')
 module.exports = class Bounce extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
@@ -13,11 +14,10 @@ module.exports = class Bounce extends Plugin
      * @param {number} [options.time=150] time in ms to finish bounce
      * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     *
-     * @emits bounce-start-x(Viewport) emitted when a bounce on the x-axis starts
-     * @emits bounce.end-x(Viewport) emitted when a bounce on the x-axis ends
-     * @emits bounce-start-y(Viewport) emitted when a bounce on the y-axis starts
-     * @emits bounce-end-y(Viewport) emitted when a bounce on the y-axis ends
+     * @fires bounce-start-x
+     * @fires bounce.end-x
+     * @fires bounce-start-y
+     * @fires bounce-end-y
      */
     constructor(parent, options)
     {
@@ -91,7 +91,7 @@ module.exports = class Bounce extends Plugin
             if (this.toX.update(elapsed))
             {
                 this.toX = null
-                this.parent.emit('bounce-end-x', this.parent)
+                this.parent.emit('bounce-x-end', this.parent)
             }
             this.parent.dirty = true
         }
@@ -100,7 +100,7 @@ module.exports = class Bounce extends Plugin
             if (this.toY.update(elapsed))
             {
                 this.toY = null
-                this.parent.emit('bounce-end-y', this.parent)
+                this.parent.emit('bounce-y-end', this.parent)
             }
             this.parent.dirty = true
         }
@@ -185,7 +185,7 @@ module.exports = class Bounce extends Plugin
                 if (exists(x) && this.parent.x !== x)
                 {
                     this.toX = new Ease.to(this.parent, { x }, this.time, { ease: this.ease })
-                    this.parent.emit('bounce-start-x', this.parent)
+                    this.parent.emit('bounce-x-start', this.parent)
                 }
             }
             if (!this.toY && !decelerate.y)
@@ -202,7 +202,7 @@ module.exports = class Bounce extends Plugin
                 if (exists(y) && this.parent.y !== y)
                 {
                     this.toY = new Ease.to(this.parent, { y }, this.time, { ease: this.ease })
-                    this.parent.emit('bounce-start-y', this.parent)
+                    this.parent.emit('bounce-y-start', this.parent)
                 }
             }
         }

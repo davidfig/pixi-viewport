@@ -7,6 +7,7 @@ module.exports = class MouseEdges extends Plugin
 {
     /**
      * Scroll viewport when mouse hovers near one of the edges.
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.radius] distance from center of screen in screen pixels

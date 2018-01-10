@@ -5,6 +5,7 @@ const exists = require('exists')
 module.exports = class SnapZoom extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)

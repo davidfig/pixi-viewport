@@ -3,6 +3,7 @@ const Plugin = require('./plugin')
 module.exports = class ClampZoom extends Plugin
 {
     /**
+     * @private
      * @param {object} [options]
      * @param {number} [options.minWidth] minimum width
      * @param {number} [options.minHeight] minimum height

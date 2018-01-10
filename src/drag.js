@@ -5,6 +5,7 @@ module.exports = class Drag extends Plugin
 {
     /**
      * enable one-finger touch to drag
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)

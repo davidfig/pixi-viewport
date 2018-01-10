@@ -5,6 +5,7 @@ const Plugin = require('./plugin')
 module.exports = class Decelerate extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.friction=0.95] percent to decelerate after movement

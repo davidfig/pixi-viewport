@@ -3,6 +3,7 @@ const Plugin = require('./plugin')
 module.exports = class clamp extends Plugin
 {
     /**
+     * @private
      * @param {object} options
      * @param {string} [options.direction=all] (all, x, or y)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen

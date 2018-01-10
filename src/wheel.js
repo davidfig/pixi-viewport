@@ -3,6 +3,7 @@ const Plugin = require('./plugin')
 module.exports = class Wheel extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin

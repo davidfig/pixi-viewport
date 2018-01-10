@@ -3,6 +3,7 @@ const Plugin = require('./plugin')
 module.exports = class Follow extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]

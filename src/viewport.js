@@ -15,9 +15,11 @@ const MouseEdges = require('./mouse-edges')
 
 const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
-module.exports = class Viewport extends PIXI.Container
+class Viewport extends PIXI.Container
 {
     /**
+     * @extends PIXI.Container
+     * @extends EventEmitter
      * @param {object} [options]
      * @param {number} [options.screenWidth=window.innerWidth]
      * @param {number} [options.screenHeight=window.innerHeight]
@@ -26,23 +28,22 @@ module.exports = class Viewport extends PIXI.Container
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
-     *
-     * @emits drag-start({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag starts
-     * @emits drag-end({screen: {x, y}, world: {x, y}, viewport}) emitted when a drag ends
-     * @emits pinch-start(viewport) emitted when a pinch starts
-     * @emits pinch-end(viewport) emitted when a pinch ends
-     * @emits snap-start(viewport) emitted each time a snap animation starts
-     * @emits snap-end(viewport) emitted each time snap reaches its target
-     * @emits snap-zoom-start(viewport) emitted each time a snap-zoom animation starts
-     * @emits snap-zoom-end(viewport) emitted each time snap-zoom reaches its target
-     * @emits bounce-start-x(viewport) emitted when a bounce on the x-axis starts
-     * @emits bounce.end-x(viewport) emitted when a bounce on the x-axis ends
-     * @emits bounce-start-y(viewport) emitted when a bounce on the y-axis starts
-     * @emits bounce-end-y(viewport) emitted when a bounce on the y-axis ends
-     * @emits wheel({wheel: {dx, dy, dz}, viewport})
-     * @emits wheel-scroll(viewport)
-     * @emits mouse-edge-start(Viewport) emitted when mouse-edge starts
-     * @emits mouse-edge-end(Viewport) emitted when mouse-edge ends
+     * @fires drag-start
+     * @fires drag-end
+     * @fires pinch-start
+     * @fires pinch-end
+     * @fires snap-start
+     * @fires snap-end
+     * @fires snap-zoom-start
+     * @fires snap-zoom-end
+     * @fires bounce-x-start
+     * @fires bounce-x-end
+     * @fires bounce-y-start
+     * @fires bounce-y-end
+     * @fires wheel
+     * @fires wheel-scroll
+     * @fires mouse-edge-start
+     * @fires mouse-edge-end
      */
     constructor(options)
     {
@@ -115,6 +116,7 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
+     * screen width in screen pixels
      * @type {number}
      */
     get screenWidth()
@@ -127,6 +129,7 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
+     * screen height in screen pixels
      * @type {number}
      */
     get screenHeight()
@@ -139,6 +142,7 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
+     * world width in pixels
      * @type {number}
      */
     get worldWidth()
@@ -159,6 +163,7 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
+     * world height in pixels
      * @type {number}
      */
     get worldHeight()
@@ -327,7 +332,8 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number} screen width in world coordinates
+     * screen width in world coordinates
+     * @type {number}
      */
     get worldScreenWidth()
     {
@@ -335,7 +341,8 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number} screen height in world coordinates
+     * screen height in world coordinates
+     * @type {number}
      */
     get worldScreenHeight()
     {
@@ -343,7 +350,8 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number} world width in screen coordinates
+     * world width in screen coordinates
+     * @type {number}
      */
     get screenWorldWidth()
     {
@@ -351,7 +359,8 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number} world height in screen coordinates
+     * world height in screen coordinates
+     * @type {number}
      */
     get screenWorldHeight()
     {
@@ -360,7 +369,7 @@ module.exports = class Viewport extends PIXI.Container
 
     /**
      * get center of screen in world coordinates
-     * @type {{x: number, y: number}}
+     * @type {PIXI.PointLike}
      */
     get center()
     {
@@ -369,7 +378,7 @@ module.exports = class Viewport extends PIXI.Container
 
     /**
      * move center of viewport to point
-     * @param {number|PIXI.Point} x|point
+     * @param {(number|PIXI.PointLike)} x or point
      * @param {number} [y]
      * @return {Viewport} this
      */
@@ -394,7 +403,7 @@ module.exports = class Viewport extends PIXI.Container
 
     /**
      * top-left corner
-     * @type {{x: number, y: number}
+     * @type {PIXI.PointLike}
      */
     get corner()
     {
@@ -580,8 +589,18 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
+     * @private
+     * @typedef OutOfBounds
+     * @type {object}
+     * @property {boolean} left
+     * @property {boolean} right
+     * @property {boolean} top
+     * @property {boolean} bottom
+     */
+
+    /**
      * is container out of world bounds
-     * @return { left:boolean, right: boolean, top: boolean, bottom: boolean }
+     * @return {OutOfBounds}
      * @private
      */
     OOB()
@@ -648,8 +667,9 @@ module.exports = class Viewport extends PIXI.Container
     }
 
     /**
-     * force the hitArea from the default {x:0, y:0, width:this.worldWidth, height:this.worldHeight}
-     * @type {PIXI.Rectangle}
+     * permanently changes the Viewport's hitArea
+     * <p>NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)</p>
+     * @type {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)}
      */
     get forceHitArea()
     {
@@ -914,3 +934,112 @@ module.exports = class Viewport extends PIXI.Container
         return this
     }
 }
+
+/**
+ * fires when a drag starts
+ * @event Viewport#drag
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a drag ends
+ * @event Viewport#drag-end
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a pinch starts
+ * @event Viewport#pinch-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a pinch end
+ * @event Viewport#pinch-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap starts
+ * @event Viewport#snap-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap ends
+ * @event Viewport#snap-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap-zoom starts
+ * @event Viewport#snap-zoom-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap-zoom ends
+ * @event Viewport#snap-zoom-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce starts in the x direction
+ * @event Viewport#bounce-x-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce ends in the x direction
+ * @event Viewport#bounce-x-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce starts in the y direction
+ * @event Viewport#bounce-y-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce ends in the y direction
+ * @event Viewport#bounce-y-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when for a mouse wheel event
+ * @event Viewport#wheel
+ * @type {object}
+ * @property {object} wheel
+ * @property {number} wheel.dx
+ * @property {number} wheel.dy
+ * @property {number} wheel.dz
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a wheel-scroll occurs
+ * @event Viewport#wheel-scroll
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a mouse-edge starts to scroll
+ * @event Viewport#mouse-edge-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when the mouse-edge scrolling ends
+ * @event Viewport#mouse-edge-end
+ * @type {Viewport}
+ */
+
+module.exports = Viewport
