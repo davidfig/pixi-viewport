@@ -3,9 +3,10 @@ const Ease = require('pixi-ease')
 const Random = require('yy-random')
 const Counter = require('yy-counter')
 const FPS = require('yy-fps')
+const clicked = require('clicked')
 
-const Viewport = require('../dist/viewport')
-// const Viewport = require('../src/viewport')
+// const Viewport = require('../dist/viewport')
+const Viewport = require('../src/viewport')
 
 const gui = require('./gui')
 
@@ -131,12 +132,15 @@ function API()
     const button = document.createElement('button')
     document.body.appendChild(button)
     button.innerText = 'API Documentation'
-    button.style.backgroundColor = 'rgba(0,0,0,0.75)'
+    button.style.backgroundColor = '#3498db'
     button.style.color = 'white'
     button.style.position = 'fixed'
-    button.style.left = 0
-    button.style.top = 0
-    button.onclick = () => window.location.href = '/jsdoc/'
+    button.style.left = '1em'
+    button.style.top = '1em'
+    button.style.backgroundImage = 'linear-gradient(to bottom, #3498db, #2980b9)'
+    // button.style.borderRadius = '20px'
+    button.style.padding = '10px 20px 10px 20px'
+    clicked(button,  () => window.location.href = '/jsdoc/')
 }
 
 window.onload = function ()
