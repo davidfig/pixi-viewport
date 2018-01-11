@@ -141,7 +141,7 @@ function API()
     button.style.backgroundImage = 'linear-gradient(to bottom, #3498db, #2980b9)'
     // button.style.borderRadius = '20px'
     button.style.padding = '10px 20px 10px 20px'
-    clicked(button,  () => window.location.href = '/jsdoc/')
+    clicked(button,  () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
 }
 
 window.onload = function ()
