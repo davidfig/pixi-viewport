@@ -68,19 +68,22 @@ class Viewport extends PIXI.Container
      */
     update()
     {
-        for (let plugin of PLUGIN_ORDER)
+        if (!this._pause)
         {
-            if (this.plugins[plugin])
+            for (let plugin of PLUGIN_ORDER)
             {
-                this.plugins[plugin].update(this.ticker.elapsedMS)
+                if (this.plugins[plugin])
+                {
+                    this.plugins[plugin].update(this.ticker.elapsedMS)
+                }
             }
-        }
-        if (!this.forceHitArea)
-        {
-            this.hitArea.x = this.left
-            this.hitArea.y = this.top
-            this.hitArea.width = this.worldScreenWidth
-            this.hitArea.height = this.worldScreenHeight
+            if (!this.forceHitArea)
+            {
+                this.hitArea.x = this.left
+                this.hitArea.y = this.top
+                this.hitArea.width = this.worldScreenWidth
+                this.hitArea.height = this.worldScreenHeight
+            }
         }
     }
 
@@ -932,6 +935,17 @@ class Viewport extends PIXI.Container
     {
         this.plugins['mouse-edges'] = new MouseEdges(this, options)
         return this
+    }
+
+    /**
+     * pause viewport (including animation updates such as decelerate)
+     * @type {boolean}
+     */
+    get pause() { return this._pause }
+    set pause(value)
+    {
+        this._pause = value
+        this.interactive = !value
     }
 }
 
