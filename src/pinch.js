@@ -3,6 +3,7 @@ const Plugin = require('./plugin')
 module.exports = class Pinch extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {boolean} [options.noDrag] disable two-finger dragging
@@ -20,22 +21,24 @@ module.exports = class Pinch extends Plugin
 
     down()
     {
-        const pointers = this.parent.pointers
-        if (pointers.length >= 2)
+        if (this.parent.countDownPointers() >= 2)
         {
             this.active = true
         }
     }
 
-    move(x, y, data)
+    move(e)
     {
-        if (this.paused)
+        if (this.paused || !this.active)
         {
             return
         }
 
-        const pointers = this.parent.pointers
-        if (this.active)
+        const x = e.data.global.x
+        const y = e.data.global.y
+
+        const pointers = this.parent.trackedPointers
+        if (Object.keys(pointers).length >= 2)
         {
             const first = pointers[0]
             const second = pointers[1]
@@ -44,11 +47,11 @@ module.exports = class Pinch extends Plugin
             {
                 last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
             }
-            if (first.id === data.id)
+            if (first.pointerId === e.data.pointerId)
             {
                 first.last = { x, y }
             }
-            else if (second.id === data.id)
+            else if (second.pointerId === e.data.pointerId)
             {
                 second.last = { x, y }
             }
@@ -58,12 +61,12 @@ module.exports = class Pinch extends Plugin
                 const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
                 if (!this.center)
                 {
-                    oldPoint = this.parent.container.toLocal(point)
+                    oldPoint = this.parent.toLocal(point)
                 }
                 const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                const change = ((dist - last) / this.parent.screenWidth) * this.parent.container.scale.x * this.percent
-                this.parent.container.scale.x += change
-                this.parent.container.scale.y += change
+                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
+                this.parent.scale.x += change
+                this.parent.scale.y += change
                 const clamp = this.parent.plugins['clamp-zoom']
                 if (clamp)
                 {
@@ -75,15 +78,15 @@ module.exports = class Pinch extends Plugin
                 }
                 else
                 {
-                    const newPoint = this.parent.container.toGlobal(oldPoint)
-                    this.parent.container.x += point.x - newPoint.x
-                    this.parent.container.y += point.y - newPoint.y
+                    const newPoint = this.parent.toGlobal(oldPoint)
+                    this.parent.x += point.x - newPoint.x
+                    this.parent.y += point.y - newPoint.y
                 }
 
                 if (!this.noDrag && this.lastCenter)
                 {
-                    this.parent.container.x += point.x - this.lastCenter.x
-                    this.parent.container.y += point.y - this.lastCenter.y
+                    this.parent.x += point.x - this.lastCenter.x
+                    this.parent.y += point.y - this.lastCenter.y
                 }
                 this.lastCenter = point
             }
@@ -103,8 +106,7 @@ module.exports = class Pinch extends Plugin
     {
         if (this.pinching)
         {
-            const pointers = this.parent.pointers
-            if (pointers.length < 2)
+            if (this.parent.countDownPointers() <= 2)
             {
                 this.active = false
                 this.lastCenter = null

@@ -3,13 +3,14 @@ const Plugin = require('./plugin')
 module.exports = class Wheel extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin
      * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      *
-     * @event wheel({wheel: {dx, dy, dz}, viewport})
+     * @event wheel({wheel: {dx, dy, dz}, event, viewport})
      */
     constructor(parent, options)
     {
@@ -20,7 +21,7 @@ module.exports = class Wheel extends Plugin
         this.reverse = options.reverse
     }
 
-    wheel(dx, dy, dz, data)
+    wheel(e)
     {
         if (this.paused)
         {
@@ -30,20 +31,20 @@ module.exports = class Wheel extends Plugin
         let change
         if (this.reverse)
         {
-            change = dy > 0 ? 1 + this.percent : 1 - this.percent
+            change = e.deltaY > 0 ? 1 + this.percent : 1 - this.percent
         }
         else
         {
-            change = dy > 0 ? 1 - this.percent : 1 + this.percent
+            change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
         }
-        let point = { x: data.x, y: data.y }
+        let point = { x: e.clientX, y: e.clientY }
         let oldPoint
         if (!this.center)
         {
-            oldPoint = this.parent.container.toLocal(point)
+            oldPoint = this.parent.toLocal(point)
         }
-        this.parent.container.scale.x *= change
-        this.parent.container.scale.y *= change
+        this.parent.scale.x *= change
+        this.parent.scale.y *= change
         const clamp = this.parent.plugins['clamp-zoom']
         if (clamp)
         {
@@ -56,11 +57,11 @@ module.exports = class Wheel extends Plugin
         }
         else
         {
-            const newPoint = this.parent.container.toGlobal(oldPoint)
-            this.parent.container.x += point.x - newPoint.x
-            this.parent.container.y += point.y - newPoint.y
+            const newPoint = this.parent.toGlobal(oldPoint)
+            this.parent.x += point.x - newPoint.x
+            this.parent.y += point.y - newPoint.y
         }
-        data.event.preventDefault()
-        this.parent.emit('wheel', { wheel: {dx, dy, dz}, viewport: this.parent})
+        e.preventDefault()
+        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
     }
 }

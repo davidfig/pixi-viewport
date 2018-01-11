@@ -5,6 +5,7 @@ const Plugin = require('./plugin')
 module.exports = class Decelerate extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.friction=0.95] percent to decelerate after movement
@@ -25,6 +26,7 @@ module.exports = class Decelerate extends Plugin
     {
         this.saved = []
         this.x = this.y = false
+
     }
 
     move()
@@ -34,10 +36,10 @@ module.exports = class Decelerate extends Plugin
             return
         }
 
-        const pointers = this.parent.pointers
-        if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
+        const count = this.parent.countDownPointers()
+        if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
         {
-            this.saved.push({ x: this.parent.container.x, y: this.parent.container.y, time: performance.now() })
+            this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() })
             if (this.saved.length > 60)
             {
                 this.saved.splice(0, 30)
@@ -47,8 +49,7 @@ module.exports = class Decelerate extends Plugin
 
     up()
     {
-        const pointers = this.parent.pointers
-        if (pointers.length === 0 && this.saved.length)
+        if (this.parent.countDownPointers() <= 1 && this.saved.length)
         {
             const now = performance.now()
             for (let save of this.saved)
@@ -56,8 +57,8 @@ module.exports = class Decelerate extends Plugin
                 if (save.time >= now - 100)
                 {
                     const time = now - save.time
-                    this.x = (this.parent.container.x - save.x) / time
-                    this.y = (this.parent.container.y - save.y) / time
+                    this.x = (this.parent.x - save.x) / time
+                    this.y = (this.parent.y - save.y) / time
                     this.percentChangeX = this.percentChangeY = this.friction
                     break
                 }
@@ -94,7 +95,7 @@ module.exports = class Decelerate extends Plugin
 
         if (this.x)
         {
-            this.parent.container.x += this.x * elapsed
+            this.parent.x += this.x * elapsed
             this.x *= this.percentChangeX
             if (Math.abs(this.x) < this.minSpeed)
             {
@@ -104,7 +105,7 @@ module.exports = class Decelerate extends Plugin
         }
         if (this.y)
         {
-            this.parent.container.y += this.y * elapsed
+            this.parent.y += this.y * elapsed
             this.y *= this.percentChangeY
             if (Math.abs(this.y) < this.minSpeed)
             {

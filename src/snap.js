@@ -5,6 +5,7 @@ const exists = require('exists')
 module.exports = class Snap extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {number} x
      * @param {number} y
@@ -53,7 +54,7 @@ module.exports = class Snap extends Plugin
 
     up()
     {
-        if (this.parent.input.pointers.length === 0)
+        if (this.parent.countDownPointers() === 1)
         {
             const decelerate = this.parent.plugins['decelerate']
             if (decelerate && (decelerate.x || decelerate.y))
@@ -69,7 +70,7 @@ module.exports = class Snap extends Plugin
         {
             return
         }
-        if (this.interrupt && this.parent.input.pointers.length !== 0)
+        if (this.interrupt && this.parent.countDownPointers() !== 0)
         {
             return
         }

@@ -5,6 +5,7 @@ module.exports = class Drag extends Plugin
 {
     /**
      * enable one-finger touch to drag
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
@@ -40,43 +41,44 @@ module.exports = class Drag extends Plugin
         }
     }
 
-    down(x, y)
+    down(e)
     {
         if (this.paused)
         {
             return
         }
-        const pointers = this.parent.pointers
-        if (pointers.length === 1)
+
+        if (this.parent.countDownPointers() <= 1)
         {
-            this.last = { x, y }
-            return true
+            this.last = { x: e.data.global.x, y: e.data.global.y }
         }
     }
 
     get active()
     {
-        return this.last ? true : false
+        return this.moved
     }
 
-    move(x, y)
+    move(e)
     {
         if (this.paused)
         {
             return
         }
 
+        const x = e.data.global.x
+        const y = e.data.global.y
         if (this.last)
         {
-            const pointers = this.parent.pointers
-            if (pointers.length === 1 || (pointers.length > 1 && !this.parent.plugins['pinch']))
+            const count = this.parent.countDownPointers()
+            if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
                 if (this.moved || (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY)))
                 {
-                    this.parent.container.x += distX
-                    this.parent.container.y += distY
+                    this.parent.x += distX
+                    this.parent.y += distY
                     this.last = { x, y }
                     if (!this.moved)
                     {
@@ -93,14 +95,29 @@ module.exports = class Drag extends Plugin
         }
     }
 
-    up()
+    up(e)
     {
-        if (this.last && this.moved)
+        if (this.parent.countDownPointers() === 2)
+        {
+            if (e.data.originalEvent.touches)
+            {
+                const pointers = this.parent.trackedPointers
+                for (let key in pointers)
+                {
+                    const pointer = pointers[key]
+                    if (pointer.pointerId !== 'MOUSE' && pointer.pointerId !== e.data.pointerId)
+                    {
+                        this.last = { x: pointer.last.x, y: pointer.last.y }
+                    }
+                }
+                this.moved = false
+            }
+        }
+        else if (this.last && this.moved)
         {
             this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
-            this.moved = false
+            this.last = this.moved = false
         }
-        this.last = null
     }
 
     wheel(dx, dy)
@@ -115,8 +132,8 @@ module.exports = class Drag extends Plugin
             const wheel = this.parent.plugins['wheel']
             if (!wheel)
             {
-                this.parent.container.x += dx * this.wheelScroll * this.reverse
-                this.parent.container.y += dy * this.wheelScroll * this.reverse
+                this.parent.x += dx * this.wheelScroll * this.reverse
+                this.parent.y += dy * this.wheelScroll * this.reverse
                 if (this.clampWheel)
                 {
                     this.clamp()
@@ -146,25 +163,25 @@ module.exports = class Drag extends Plugin
                 switch (this.underflowX)
                 {
                     case -1:
-                        this.parent.container.x = 0
+                        this.parent.x = 0
                         break
                     case 1:
-                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
                         break
                     default:
-                        this.parent.container.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
                 }
             }
             else
             {
                 if (oob.left)
                 {
-                    this.parent.container.x = 0
+                    this.parent.x = 0
                     decelerate.x = 0
                 }
                 else if (oob.right)
                 {
-                    this.parent.container.x = -point.x
+                    this.parent.x = -point.x
                     decelerate.x = 0
                 }
             }
@@ -176,25 +193,25 @@ module.exports = class Drag extends Plugin
                 switch (this.underflowY)
                 {
                     case -1:
-                        this.parent.container.y = 0
+                        this.parent.y = 0
                         break
                     case 1:
-                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
                         break
                     default:
-                        this.parent.container.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
                 }
             }
             else
             {
                 if (oob.top)
                 {
-                    this.parent.container.y = 0
+                    this.parent.y = 0
                     decelerate.y = 0
                 }
                 else if (oob.bottom)
                 {
-                    this.parent.container.y = -point.y
+                    this.parent.y = -point.y
                     decelerate.y = 0
                 }
             }

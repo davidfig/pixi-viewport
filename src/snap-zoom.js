@@ -5,6 +5,7 @@ const exists = require('exists')
 module.exports = class SnapZoom extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
@@ -87,7 +88,8 @@ module.exports = class SnapZoom extends Plugin
         {
             return
         }
-        if (this.interrupt && this.parent.input.pointers.length !== 0)
+
+        if (this.interrupt && this.parent.countDownPointers() !== 0)
         {
             return
         }
@@ -99,9 +101,9 @@ module.exports = class SnapZoom extends Plugin
         }
         if (!this.snapping)
         {
-            if (this.parent.container.scale.x !== this.x_scale || this.parent.container.scale.y !== this.y_scale)
+            if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
             {
-                this.snapping = new Ease.to(this.parent.container.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
+                this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
                 this.parent.emit('snap-zoom-start', this.parent)
             }
         }
