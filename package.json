@@ -11,7 +11,7 @@
     "build": "browserify docs/code.js -o docs/index.js",
     "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
     "transpile": "./node_modules/.bin/babel src/ --out-dir dist --source-maps inline",
-    "setup": "npm run transpile && npm run build && npm run docs"
+    "prepublishOnly": "npm run transpile && npm run build && npm run docs"
   },
   "repository": {
     "type": "git",
