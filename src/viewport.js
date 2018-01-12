@@ -337,6 +337,7 @@ class Viewport extends PIXI.Container
     /**
      * screen width in world coordinates
      * @type {number}
+     * @readonly
      */
     get worldScreenWidth()
     {
