@@ -346,6 +346,7 @@ class Viewport extends PIXI.Container
     /**
      * screen height in world coordinates
      * @type {number}
+     * @readonly
      */
     get worldScreenHeight()
     {
@@ -355,6 +356,7 @@ class Viewport extends PIXI.Container
     /**
      * world width in screen coordinates
      * @type {number}
+     * @readonly
      */
     get screenWorldWidth()
     {
@@ -364,6 +366,7 @@ class Viewport extends PIXI.Container
     /**
      * world height in screen coordinates
      * @type {number}
+     * @readonly
      */
     get screenWorldHeight()
     {
@@ -373,6 +376,7 @@ class Viewport extends PIXI.Container
     /**
      * get center of screen in world coordinates
      * @type {PIXI.PointLike}
+     * @readonly
      */
     get center()
     {
@@ -407,6 +411,7 @@ class Viewport extends PIXI.Container
     /**
      * top-left corner
      * @type {PIXI.PointLike}
+     * @readonly
      */
     get corner()
     {
@@ -623,6 +628,7 @@ class Viewport extends PIXI.Container
     /**
      * world coordinates of the right edge of the screen
      * @type {number}
+     * @readonly
      */
     get right()
     {
@@ -632,6 +638,7 @@ class Viewport extends PIXI.Container
     /**
      * world coordinates of the left edge of the screen
      * @type {number}
+     * @readonly
      */
     get left()
     {
@@ -641,6 +648,7 @@ class Viewport extends PIXI.Container
     /**
      * world coordinates of the top edge of the screen
      * @type {number}
+     * @readonly
      */
     get top()
     {
@@ -650,6 +658,7 @@ class Viewport extends PIXI.Container
     /**
      * world coordinates of the bottom edge of the screen
      * @type {number}
+     * @readonly
      */
     get bottom()
     {
