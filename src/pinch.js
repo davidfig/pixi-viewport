@@ -37,16 +37,12 @@ module.exports = class Pinch extends Plugin
         const x = e.data.global.x
         const y = e.data.global.y
 
-        const pointers = this.parent.trackedPointers
-        if (Object.keys(pointers).length >= 2)
+        const pointers = this.parent.getTouchPointers()
+        if (pointers.length >= 2)
         {
             const first = pointers[0]
             const second = pointers[1]
-            let last
-            if (first.last && second.last)
-            {
-                last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-            }
+            const last = (first.last && second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null
             if (first.pointerId === e.data.pointerId)
             {
                 first.last = { x, y }
@@ -82,7 +78,6 @@ module.exports = class Pinch extends Plugin
                     this.parent.x += point.x - newPoint.x
                     this.parent.y += point.y - newPoint.y
                 }
-
                 if (!this.noDrag && this.lastCenter)
                 {
                     this.parent.x += point.x - this.lastCenter.x
@@ -106,7 +101,7 @@ module.exports = class Pinch extends Plugin
     {
         if (this.pinching)
         {
-            if (this.parent.countDownPointers() <= 2)
+            if (this.parent.getTouchPointers().length <= 2)
             {
                 this.active = false
                 this.lastCenter = null

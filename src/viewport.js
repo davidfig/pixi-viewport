@@ -693,8 +693,9 @@ class Viewport extends PIXI.Container
     }
 
     /**
+     * count of mouse/touch pointers that are down on the viewport
      * @private
-     * @return {number} count of mouse/touch pointers that are down on the container
+     * @return {number}
      */
     countDownPointers()
     {
@@ -712,6 +713,25 @@ class Viewport extends PIXI.Container
             }
         }
         return count
+    }
+
+    /**
+     * array of touch pointers that are down on the viewport
+     * @private
+     * @return {PIXI.InteractionTrackingData[]}
+     */
+    getTouchPointers()
+    {
+        let results = []
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            if (key !== 'MOUSE')
+            {
+                results.push(pointers[key])
+            }
+        }
+        return results
     }
 
     /**

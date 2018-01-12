@@ -141,7 +141,7 @@ function API()
     button.style.backgroundImage = 'linear-gradient(to bottom, #3498db, #2980b9)'
     // button.style.borderRadius = '20px'
     button.style.padding = '10px 20px 10px 20px'
-    clicked(button,  () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
+    clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
 }
 
 window.onload = function ()
@@ -62934,16 +62934,12 @@ module.exports = class Pinch extends Plugin
         const x = e.data.global.x
         const y = e.data.global.y
 
-        const pointers = this.parent.trackedPointers
-        if (Object.keys(pointers).length >= 2)
+        const pointers = this.parent.getTouchPointers()
+        if (pointers.length >= 2)
         {
             const first = pointers[0]
             const second = pointers[1]
-            let last
-            if (first.last && second.last)
-            {
-                last = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-            }
+            const last = (first.last && second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null
             if (first.pointerId === e.data.pointerId)
             {
                 first.last = { x, y }
@@ -62979,7 +62975,6 @@ module.exports = class Pinch extends Plugin
                     this.parent.x += point.x - newPoint.x
                     this.parent.y += point.y - newPoint.y
                 }
-
                 if (!this.noDrag && this.lastCenter)
                 {
                     this.parent.x += point.x - this.lastCenter.x
@@ -63003,7 +62998,7 @@ module.exports = class Pinch extends Plugin
     {
         if (this.pinching)
         {
-            if (this.parent.countDownPointers() <= 2)
+            if (this.parent.getTouchPointers().length <= 2)
             {
                 this.active = false
                 this.lastCenter = null
@@ -63993,8 +63988,9 @@ class Viewport extends PIXI.Container
     }
 
     /**
+     * count of mouse/touch pointers that are down on the viewport
      * @private
-     * @return {number} count of mouse/touch pointers that are down on the container
+     * @return {number}
      */
     countDownPointers()
     {
@@ -64012,6 +64008,25 @@ class Viewport extends PIXI.Container
             }
         }
         return count
+    }
+
+    /**
+     * array of touch pointers that are down on the viewport
+     * @private
+     * @return {PIXI.InteractionTrackingData[]}
+     */
+    getTouchPointers()
+    {
+        let results = []
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            if (key !== 'MOUSE')
+            {
+                results.push(pointers[key])
+            }
+        }
+        return results
     }
 
     /**
