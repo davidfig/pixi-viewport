@@ -107,7 +107,10 @@ module.exports = class Drag extends Plugin
                     const pointer = pointers[key]
                     if (pointer.pointerId !== 'MOUSE' && pointer.pointerId !== e.data.pointerId)
                     {
-                        this.last = { x: pointer.last.x, y: pointer.last.y }
+                        if (pointer.last)
+                        {
+                            this.last = { x: pointer.last.x, y: pointer.last.y }
+                        }
                     }
                 }
                 this.moved = false
