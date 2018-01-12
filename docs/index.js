@@ -63635,6 +63635,7 @@ class Viewport extends PIXI.Container
     /**
      * screen width in world coordinates
      * @type {number}
+     * @readonly
      */
     get worldScreenWidth()
     {
@@ -63644,6 +63645,7 @@ class Viewport extends PIXI.Container
     /**
      * screen height in world coordinates
      * @type {number}
+     * @readonly
      */
     get worldScreenHeight()
     {
@@ -63653,6 +63655,7 @@ class Viewport extends PIXI.Container
     /**
      * world width in screen coordinates
      * @type {number}
+     * @readonly
      */
     get screenWorldWidth()
     {
@@ -63662,6 +63665,7 @@ class Viewport extends PIXI.Container
     /**
      * world height in screen coordinates
      * @type {number}
+     * @readonly
      */
     get screenWorldHeight()
     {
@@ -63675,6 +63679,10 @@ class Viewport extends PIXI.Container
     get center()
     {
         return { x: this.worldScreenWidth / 2 - this.x / this.scale.x, y: this.worldScreenHeight / 2 - this.y / this.scale.y }
+    }
+    set center(value)
+    {
+        this.moveCenter(value)
     }
 
     /**
@@ -63698,7 +63706,6 @@ class Viewport extends PIXI.Container
         }
         this.position.set((this.worldScreenWidth / 2 - x) * this.scale.x, (this.worldScreenHeight / 2 - y) * this.scale.y)
         this._reset()
-        this.dirty = true
         return this
     }
 
@@ -63709,6 +63716,10 @@ class Viewport extends PIXI.Container
     get corner()
     {
         return { x: -this.x / this.scale.x, y: -this.y / this.scale.y }
+    }
+    set corner(value)
+    {
+        this.moveCorner(value)
     }
 
     /**
@@ -63728,11 +63739,6 @@ class Viewport extends PIXI.Container
             this.position.set(-arguments[0] * this.scale.x, -arguments[1] * this.scale.y)
         }
         this._reset()
-        if (this.plugins['clamp'])
-        {
-            this.plugins['clamp'].update()
-        }
-        this.dirty = true
         return this
     }
 
@@ -63926,6 +63932,11 @@ class Viewport extends PIXI.Container
     {
         return -this.x / this.scale.x + this.worldScreenWidth
     }
+    set right(value)
+    {
+        this.x = value * this.scale.x - this.worldScreenWidth
+        this._reset()
+    }
 
     /**
      * world coordinates of the left edge of the screen
@@ -63934,6 +63945,11 @@ class Viewport extends PIXI.Container
     get left()
     {
         return -this.x / this.scale.x
+    }
+    set left(value)
+    {
+        this.x = -value * this.scale.x
+        this._reset()
     }
 
     /**
@@ -63944,6 +63960,11 @@ class Viewport extends PIXI.Container
     {
         return -this.y / this.scale.y
     }
+    set top(value)
+    {
+        this.y = -value * this.scale.y
+        this._reset()
+    }
 
     /**
      * world coordinates of the bottom edge of the screen
@@ -63953,7 +63974,11 @@ class Viewport extends PIXI.Container
     {
         return -this.y / this.scale.y + this.worldScreenHeight
     }
-
+    set bottom(value)
+    {
+        this.y = -value * this.scale.y - this.worldScreenHeight
+        this._reset()
+    }
     /**
      * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
      * @type {boolean}
@@ -64059,6 +64084,7 @@ class Viewport extends PIXI.Container
         {
             this.plugins['clamp-zoom'].clamp()
         }
+        this.dirty = true
     }
 
     // PLUGINS
