@@ -10,6 +10,7 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
 ```js
     var Viewport = require('pixi-viewport');
 
+    // create viewport
     var viewport = new Viewport( 
     {
         screenWidth: window.innerWidth,
@@ -18,13 +19,15 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
         worldHeight: 1000
     });
 
-    // activate plugins with the following plugins
+    // activate plugins
     viewport
         .drag()
         .pinch()
         .wheel()
         .decelerate()
         .bounce();
+
+    viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE));
 ```
 
 ## Live Example
