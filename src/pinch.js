@@ -84,6 +84,7 @@ module.exports = class Pinch extends Plugin
                     this.parent.y += point.y - this.lastCenter.y
                 }
                 this.lastCenter = point
+                this.moved = true
             }
             else
             {
@@ -106,6 +107,7 @@ module.exports = class Pinch extends Plugin
                 this.active = false
                 this.lastCenter = null
                 this.pinching = false
+                this.moved = false
                 this.parent.emit('pinch-end', this.parent)
             }
         }

@@ -30,6 +30,7 @@ function viewport()
         .pinch()
         .decelerate()
         .bounce()
+        .on('clicked', click)
     resize()
 }
 
@@ -49,6 +50,7 @@ function addCounter(name)
 
 function events()
 {
+    _viewport.on('clicked', () => addCounter('clicked'))
     _viewport.on('drag-start', () => addCounter('drag-start'))
     _viewport.on('drag-end', () => addCounter('drag-end'))
     _viewport.on('pinch-start', () => addCounter('pinch-start'))
@@ -115,6 +117,24 @@ function object()
     _object.position.set(100, 100)
     _ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
     createTarget()
+}
+
+function click(data)
+{
+    for (let star of _stars)
+    {
+        if (star.containsPoint(data.screen))
+        {
+            _ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, FADE_TIME, { reverse: true, ease: 'easeInOutSine' })
+            return
+        }
+    }
+    const sprite = _viewport.addChild(new PIXI.Text('click', { fill: 0xff0000 }))
+    sprite.anchor.set(0.5)
+    sprite.rotation = Random.range(-0.1, 0.1)
+    sprite.position = data.world
+    const fade = _ease.to(sprite, { alpha: 0 }, FADE_TIME)
+    fade.on('done', () => _viewport.removeChild(sprite))
 }
 
 function drawWorld()
