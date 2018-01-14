@@ -997,7 +997,7 @@ class Viewport extends PIXI.Container
 
 /**
  * fires when a drag starts
- * @event Viewport#drag
+ * @event Viewport#drag-start
  * @type {object}
  * @property {PIXI.PointLike} screen
  * @property {PIXI.PointLike} world
