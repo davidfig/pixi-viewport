@@ -31,6 +31,7 @@ function viewport()
         .pinch()
         .decelerate()
         .bounce()
+        .on('clicked', click)
     resize()
 }
 
@@ -50,6 +51,7 @@ function addCounter(name)
 
 function events()
 {
+    _viewport.on('clicked', () => addCounter('clicked'))
     _viewport.on('drag-start', () => addCounter('drag-start'))
     _viewport.on('drag-end', () => addCounter('drag-end'))
     _viewport.on('pinch-start', () => addCounter('pinch-start'))
@@ -116,6 +118,24 @@ function object()
     _object.position.set(100, 100)
     _ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
     createTarget()
+}
+
+function click(data)
+{
+    for (let star of _stars)
+    {
+        if (star.containsPoint(data.screen))
+        {
+            _ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, FADE_TIME, { reverse: true, ease: 'easeInOutSine' })
+            return
+        }
+    }
+    const sprite = _viewport.addChild(new PIXI.Text('click', { fill: 0xff0000 }))
+    sprite.anchor.set(0.5)
+    sprite.rotation = Random.range(-0.1, 0.1)
+    sprite.position = data.world
+    const fade = _ease.to(sprite, { alpha: 0 }, FADE_TIME)
+    fade.on('done', () => _viewport.removeChild(sprite))
 }
 
 function drawWorld()
@@ -62473,6 +62493,7 @@ module.exports = class Drag extends Plugin
         if (this.parent.countDownPointers() <= 1)
         {
             this.last = { x: e.data.global.x, y: e.data.global.y }
+            this.clickedAvailable = true
         }
     }
 
@@ -62535,13 +62556,21 @@ module.exports = class Drag extends Plugin
                         }
                     }
                 }
+                this.clickedAvailable = false
                 this.moved = false
             }
         }
-        else if (this.last && this.moved)
+        else if (this.last)
         {
-            this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
-            this.last = this.moved = false
+            if (this.moved)
+            {
+                this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
+                this.last = this.moved = false
+            }
+            else if (this.clickedAvailable)
+            {
+                this.parent.emit('clicked', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent })
+            }
         }
     }
 
@@ -62984,6 +63013,7 @@ module.exports = class Pinch extends Plugin
                     this.parent.y += point.y - this.lastCenter.y
                 }
                 this.lastCenter = point
+                this.moved = true
             }
             else
             {
@@ -63006,6 +63036,7 @@ module.exports = class Pinch extends Plugin
                 this.active = false
                 this.lastCenter = null
                 this.pinching = false
+                this.moved = false
                 this.parent.emit('pinch-end', this.parent)
             }
         }
@@ -63326,6 +63357,7 @@ class Viewport extends PIXI.Container
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @fires clicked
      * @fires drag-start
      * @fires drag-end
      * @fires pinch-start
@@ -64294,8 +64326,17 @@ class Viewport extends PIXI.Container
 }
 
 /**
+ * fires after a mouse or touch click
+ * @event Viewport#clicked
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
  * fires when a drag starts
- * @event Viewport#drag
+ * @event Viewport#drag-start
  * @type {object}
  * @property {PIXI.PointLike} screen
  * @property {PIXI.PointLike} world
