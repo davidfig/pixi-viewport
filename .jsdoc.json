@@ -1,7 +1,6 @@
 {
     "applicationName": "pixi-viewport",
     "disqus": "",
-    "googleAnalytics": "",
     "openGraph": {
         "title": "",
         "type": "website",
@@ -30,7 +29,7 @@
         "private": false,
         "lenient": true,
         "destination": "./docs/jsdoc",
-        "template": "./node_modules/yy-jsdoc-template/"
+        "template": "./node_modules/yy-jsdoc-template"
     },
     "plugins": [
         "./node_modules/yy-jsdoc-template/plugins/skip-node_modules",
@@ -48,6 +47,10 @@
             "title": "pixi-viewport API Documentation",
             "description": "Documentation for pixi-viewport library",
             "keyword": "docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"
+        },
+        "matomo": {
+            "url": "https://analytics.yopeyopey.com/piwik/",
+            "id": 13
         }
     }
 }
