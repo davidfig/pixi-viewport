@@ -189,7 +189,7 @@ window.onload = function ()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
-},{"../src/viewport":403,"./gui":2,"./highlight":3,"clicked":5,"pixi-ease":192,"pixi.js":336,"yy-counter":389,"yy-fps":390,"yy-random":391}],2:[function(require,module,exports){
+},{"../src/viewport":412,"./gui":2,"./highlight":3,"clicked":6,"pixi-ease":194,"pixi.js":338,"yy-counter":398,"yy-fps":399,"yy-random":400}],2:[function(require,module,exports){
 let _viewport, _drawWorld, _gui, _options, _world
 
 const TEST = false
@@ -827,7 +827,7 @@ module.exports = function highlight(url)
 
 // for eslint
 /* globals window, XMLHttpRequest, document */
-},{"fork-me-github":8,"highlight.js":10}],4:[function(require,module,exports){
+},{"fork-me-github":9,"highlight.js":11}],4:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -1034,6 +1034,8 @@ exports.nextCombination = function(v) {
 
 
 },{}],5:[function(require,module,exports){
+
+},{}],6:[function(require,module,exports){
 /**
  * Javascript: create click event for both mouse and touch
  * @example
@@ -1136,7 +1138,7 @@ function clicked(element, callback, options)
 }
 
 module.exports = clicked;
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = earcut;
@@ -1788,7 +1790,7 @@ earcut.flatten = function (data) {
     return result;
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = exists;
 
 module.exports.allExist = allExist;
@@ -1801,7 +1803,7 @@ function allExist (/* vals */) {
   var vals = Array.prototype.slice.call(arguments);
   return vals.every(exists);
 }
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // Programatically add fork me on github ribbon from javascript without making changes to CSS, HTML, or adding image files
 // by David Figatner
 // copyright 2017 YOPEY YOPEY LLC
@@ -1955,7 +1957,7 @@ module.exports = function forkMe(url, options)
     sheet.insertRule('.' + a.className + '::before' + before + '}')
     sheet.insertRule('.' + a.className + '::after' + after + '}')
 }
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /*
 Syntax highlighting with language autodetection.
 https://highlightjs.org/
@@ -2773,7 +2775,7 @@ https://highlightjs.org/
   return hljs;
 }));
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var hljs = require('./highlight');
 
 hljs.registerLanguage('1c', require('./languages/1c'));
@@ -2954,7 +2956,7 @@ hljs.registerLanguage('xquery', require('./languages/xquery'));
 hljs.registerLanguage('zephir', require('./languages/zephir'));
 
 module.exports = hljs;
-},{"./highlight":9,"./languages/1c":11,"./languages/abnf":12,"./languages/accesslog":13,"./languages/actionscript":14,"./languages/ada":15,"./languages/apache":16,"./languages/applescript":17,"./languages/arduino":18,"./languages/armasm":19,"./languages/asciidoc":20,"./languages/aspectj":21,"./languages/autohotkey":22,"./languages/autoit":23,"./languages/avrasm":24,"./languages/awk":25,"./languages/axapta":26,"./languages/bash":27,"./languages/basic":28,"./languages/bnf":29,"./languages/brainfuck":30,"./languages/cal":31,"./languages/capnproto":32,"./languages/ceylon":33,"./languages/clean":34,"./languages/clojure":36,"./languages/clojure-repl":35,"./languages/cmake":37,"./languages/coffeescript":38,"./languages/coq":39,"./languages/cos":40,"./languages/cpp":41,"./languages/crmsh":42,"./languages/crystal":43,"./languages/cs":44,"./languages/csp":45,"./languages/css":46,"./languages/d":47,"./languages/dart":48,"./languages/delphi":49,"./languages/diff":50,"./languages/django":51,"./languages/dns":52,"./languages/dockerfile":53,"./languages/dos":54,"./languages/dsconfig":55,"./languages/dts":56,"./languages/dust":57,"./languages/ebnf":58,"./languages/elixir":59,"./languages/elm":60,"./languages/erb":61,"./languages/erlang":63,"./languages/erlang-repl":62,"./languages/excel":64,"./languages/fix":65,"./languages/flix":66,"./languages/fortran":67,"./languages/fsharp":68,"./languages/gams":69,"./languages/gauss":70,"./languages/gcode":71,"./languages/gherkin":72,"./languages/glsl":73,"./languages/go":74,"./languages/golo":75,"./languages/gradle":76,"./languages/groovy":77,"./languages/haml":78,"./languages/handlebars":79,"./languages/haskell":80,"./languages/haxe":81,"./languages/hsp":82,"./languages/htmlbars":83,"./languages/http":84,"./languages/hy":85,"./languages/inform7":86,"./languages/ini":87,"./languages/irpf90":88,"./languages/java":89,"./languages/javascript":90,"./languages/jboss-cli":91,"./languages/json":92,"./languages/julia":94,"./languages/julia-repl":93,"./languages/kotlin":95,"./languages/lasso":96,"./languages/ldif":97,"./languages/leaf":98,"./languages/less":99,"./languages/lisp":100,"./languages/livecodeserver":101,"./languages/livescript":102,"./languages/llvm":103,"./languages/lsl":104,"./languages/lua":105,"./languages/makefile":106,"./languages/markdown":107,"./languages/mathematica":108,"./languages/matlab":109,"./languages/maxima":110,"./languages/mel":111,"./languages/mercury":112,"./languages/mipsasm":113,"./languages/mizar":114,"./languages/mojolicious":115,"./languages/monkey":116,"./languages/moonscript":117,"./languages/n1ql":118,"./languages/nginx":119,"./languages/nimrod":120,"./languages/nix":121,"./languages/nsis":122,"./languages/objectivec":123,"./languages/ocaml":124,"./languages/openscad":125,"./languages/oxygene":126,"./languages/parser3":127,"./languages/perl":128,"./languages/pf":129,"./languages/php":130,"./languages/pony":131,"./languages/powershell":132,"./languages/processing":133,"./languages/profile":134,"./languages/prolog":135,"./languages/protobuf":136,"./languages/puppet":137,"./languages/purebasic":138,"./languages/python":139,"./languages/q":140,"./languages/qml":141,"./languages/r":142,"./languages/rib":143,"./languages/roboconf":144,"./languages/routeros":145,"./languages/rsl":146,"./languages/ruby":147,"./languages/ruleslanguage":148,"./languages/rust":149,"./languages/scala":150,"./languages/scheme":151,"./languages/scilab":152,"./languages/scss":153,"./languages/shell":154,"./languages/smali":155,"./languages/smalltalk":156,"./languages/sml":157,"./languages/sqf":158,"./languages/sql":159,"./languages/stan":160,"./languages/stata":161,"./languages/step21":162,"./languages/stylus":163,"./languages/subunit":164,"./languages/swift":165,"./languages/taggerscript":166,"./languages/tap":167,"./languages/tcl":168,"./languages/tex":169,"./languages/thrift":170,"./languages/tp":171,"./languages/twig":172,"./languages/typescript":173,"./languages/vala":174,"./languages/vbnet":175,"./languages/vbscript":177,"./languages/vbscript-html":176,"./languages/verilog":178,"./languages/vhdl":179,"./languages/vim":180,"./languages/x86asm":181,"./languages/xl":182,"./languages/xml":183,"./languages/xquery":184,"./languages/yaml":185,"./languages/zephir":186}],11:[function(require,module,exports){
+},{"./highlight":10,"./languages/1c":12,"./languages/abnf":13,"./languages/accesslog":14,"./languages/actionscript":15,"./languages/ada":16,"./languages/apache":17,"./languages/applescript":18,"./languages/arduino":19,"./languages/armasm":20,"./languages/asciidoc":21,"./languages/aspectj":22,"./languages/autohotkey":23,"./languages/autoit":24,"./languages/avrasm":25,"./languages/awk":26,"./languages/axapta":27,"./languages/bash":28,"./languages/basic":29,"./languages/bnf":30,"./languages/brainfuck":31,"./languages/cal":32,"./languages/capnproto":33,"./languages/ceylon":34,"./languages/clean":35,"./languages/clojure":37,"./languages/clojure-repl":36,"./languages/cmake":38,"./languages/coffeescript":39,"./languages/coq":40,"./languages/cos":41,"./languages/cpp":42,"./languages/crmsh":43,"./languages/crystal":44,"./languages/cs":45,"./languages/csp":46,"./languages/css":47,"./languages/d":48,"./languages/dart":49,"./languages/delphi":50,"./languages/diff":51,"./languages/django":52,"./languages/dns":53,"./languages/dockerfile":54,"./languages/dos":55,"./languages/dsconfig":56,"./languages/dts":57,"./languages/dust":58,"./languages/ebnf":59,"./languages/elixir":60,"./languages/elm":61,"./languages/erb":62,"./languages/erlang":64,"./languages/erlang-repl":63,"./languages/excel":65,"./languages/fix":66,"./languages/flix":67,"./languages/fortran":68,"./languages/fsharp":69,"./languages/gams":70,"./languages/gauss":71,"./languages/gcode":72,"./languages/gherkin":73,"./languages/glsl":74,"./languages/go":75,"./languages/golo":76,"./languages/gradle":77,"./languages/groovy":78,"./languages/haml":79,"./languages/handlebars":80,"./languages/haskell":81,"./languages/haxe":82,"./languages/hsp":83,"./languages/htmlbars":84,"./languages/http":85,"./languages/hy":86,"./languages/inform7":87,"./languages/ini":88,"./languages/irpf90":89,"./languages/java":90,"./languages/javascript":91,"./languages/jboss-cli":92,"./languages/json":93,"./languages/julia":95,"./languages/julia-repl":94,"./languages/kotlin":96,"./languages/lasso":97,"./languages/ldif":98,"./languages/leaf":99,"./languages/less":100,"./languages/lisp":101,"./languages/livecodeserver":102,"./languages/livescript":103,"./languages/llvm":104,"./languages/lsl":105,"./languages/lua":106,"./languages/makefile":107,"./languages/markdown":108,"./languages/mathematica":109,"./languages/matlab":110,"./languages/maxima":111,"./languages/mel":112,"./languages/mercury":113,"./languages/mipsasm":114,"./languages/mizar":115,"./languages/mojolicious":116,"./languages/monkey":117,"./languages/moonscript":118,"./languages/n1ql":119,"./languages/nginx":120,"./languages/nimrod":121,"./languages/nix":122,"./languages/nsis":123,"./languages/objectivec":124,"./languages/ocaml":125,"./languages/openscad":126,"./languages/oxygene":127,"./languages/parser3":128,"./languages/perl":129,"./languages/pf":130,"./languages/php":131,"./languages/pony":132,"./languages/powershell":133,"./languages/processing":134,"./languages/profile":135,"./languages/prolog":136,"./languages/protobuf":137,"./languages/puppet":138,"./languages/purebasic":139,"./languages/python":140,"./languages/q":141,"./languages/qml":142,"./languages/r":143,"./languages/rib":144,"./languages/roboconf":145,"./languages/routeros":146,"./languages/rsl":147,"./languages/ruby":148,"./languages/ruleslanguage":149,"./languages/rust":150,"./languages/scala":151,"./languages/scheme":152,"./languages/scilab":153,"./languages/scss":154,"./languages/shell":155,"./languages/smali":156,"./languages/smalltalk":157,"./languages/sml":158,"./languages/sqf":159,"./languages/sql":160,"./languages/stan":161,"./languages/stata":162,"./languages/step21":163,"./languages/stylus":164,"./languages/subunit":165,"./languages/swift":166,"./languages/taggerscript":167,"./languages/tap":168,"./languages/tcl":169,"./languages/tex":170,"./languages/thrift":171,"./languages/tp":172,"./languages/twig":173,"./languages/typescript":174,"./languages/vala":175,"./languages/vbnet":176,"./languages/vbscript":178,"./languages/vbscript-html":177,"./languages/verilog":179,"./languages/vhdl":180,"./languages/vim":181,"./languages/x86asm":182,"./languages/xl":183,"./languages/xml":184,"./languages/xquery":185,"./languages/yaml":186,"./languages/zephir":187}],12:[function(require,module,exports){
 module.exports = function(hljs){
 
   // общий паттерн для определения идентификаторов
@@ -3464,7 +3466,7 @@ module.exports = function(hljs){
     ]  
   }
 };
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function(hljs) {
     var regexes = {
         ruleDeclaration: "^[a-zA-Z][a-zA-Z0-9-]*",
@@ -3535,7 +3537,7 @@ module.exports = function(hljs) {
       ]
     };
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -3573,7 +3575,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
   var IDENT_FUNC_RETURN_TYPE_RE = '([*]|[a-zA-Z_$][a-zA-Z0-9_$]*)';
@@ -3647,7 +3649,7 @@ module.exports = function(hljs) {
     illegal: /#/
   };
 };
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = // We try to support full Ada2012
 //
 // We highlight all appearances of types, keywords, literals (string, char, number, bool)
@@ -3820,7 +3822,7 @@ function(hljs) {
         ]
     };
 };
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUMBER = {className: 'number', begin: '[\\$%]\\d+'};
   return {
@@ -3866,7 +3868,7 @@ module.exports = function(hljs) {
     illegal: /\S/
   };
 };
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: ''});
   var PARAMS = {
@@ -3952,7 +3954,7 @@ module.exports = function(hljs) {
     illegal: '//|->|=>|\\[\\['
   };
 };
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function(hljs) {
   var CPP = hljs.getLanguage('cpp').exports;
 	return {
@@ -4052,7 +4054,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = function(hljs) {
     //local labels: %?[FB]?[AT]?\d{1,2}\w+
   return {
@@ -4144,7 +4146,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['adoc'],
@@ -4332,7 +4334,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function (hljs) {
   var KEYWORDS =
     'false synchronized int abstract float private char boolean static null if const ' +
@@ -4477,7 +4479,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function(hljs) {
   var BACKTICK_ESCAPE = {
     begin: '`[\\s\\S]'
@@ -4536,7 +4538,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = function(hljs) {
     var KEYWORDS = 'ByRef Case Const ContinueCase ContinueLoop ' +
         'Default Dim Do Else ElseIf EndFunc EndIf EndSelect ' +
@@ -4672,7 +4674,7 @@ module.exports = function(hljs) {
         ]
     }
 };
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -4734,7 +4736,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function(hljs) {
   var VARIABLE = {
     className: 'variable',
@@ -4787,7 +4789,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: 'false int abstract private char boolean static null if for true ' +
@@ -4818,7 +4820,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = function(hljs) {
   var VAR = {
     className: 'variable',
@@ -4893,7 +4895,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -4944,7 +4946,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = function(hljs){
   return {
     contains: [
@@ -4973,7 +4975,7 @@ module.exports = function(hljs){
     ]
   };
 };
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = function(hljs){
   var LITERAL = {
     className: 'literal',
@@ -5010,7 +5012,7 @@ module.exports = function(hljs){
     ]
   };
 };
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS =
     'div mod in and or not xor asserterror begin case do downto else end exit for if of repeat then to ' +
@@ -5090,7 +5092,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['capnp'],
@@ -5139,7 +5141,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function(hljs) {
   // 2.3. Identifiers and keywords
   var KEYWORDS =
@@ -5206,7 +5208,7 @@ module.exports = function(hljs) {
     ].concat(EXPRESSIONS)
   };
 };
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['clean','icl','dcl'],
@@ -5231,7 +5233,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -5246,7 +5248,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = function(hljs) {
   var keywords = {
     'builtin-name':
@@ -5342,7 +5344,7 @@ module.exports = function(hljs) {
     contains: [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
   }
 };
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['cmake.in'],
@@ -5380,7 +5382,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -5526,7 +5528,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -5593,7 +5595,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function cos (hljs) {
 
   var STRINGS = {
@@ -5717,7 +5719,7 @@ module.exports = function cos (hljs) {
     ]
   };
 };
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = function(hljs) {
   var CPP_PRIMITIVE_TYPES = {
     className: 'keyword',
@@ -5892,7 +5894,7 @@ module.exports = function(hljs) {
     }
   };
 };
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function(hljs) {
   var RESOURCES = 'primitive rsc_template';
 
@@ -5986,7 +5988,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUM_SUFFIX = '(_[uif](8|16|32|64))?';
   var CRYSTAL_IDENT_RE = '[a-zA-Z_]\\w*[!?=]?';
@@ -6180,7 +6182,7 @@ module.exports = function(hljs) {
     contains: CRYSTAL_DEFAULT_CONTAINS
   };
 };
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -6357,7 +6359,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: false,
@@ -6379,7 +6381,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
   var RULE = {
@@ -6484,7 +6486,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = /**
  * Known issues:
  *
@@ -6742,7 +6744,7 @@ function(hljs) {
     ]
   };
 };
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = function (hljs) {
   var SUBST = {
     className: 'subst',
@@ -6843,7 +6845,7 @@ module.exports = function (hljs) {
     ]
   }
 };
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS =
     'exports register file shl array record property for mod while set ally label uses raise not ' +
@@ -6912,7 +6914,7 @@ module.exports = function(hljs) {
     ].concat(COMMENT_MODES)
   };
 };
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['patch'],
@@ -6952,7 +6954,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = function(hljs) {
   var FILTER = {
     begin: /\|[A-Za-z]+:?/,
@@ -7016,7 +7018,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['bind', 'zone'],
@@ -7045,7 +7047,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['docker'],
@@ -7067,7 +7069,7 @@ module.exports = function(hljs) {
     illegal: '</'
   }
 };
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT = hljs.COMMENT(
     /^\s*@?rem\b/, /$/,
@@ -7119,7 +7121,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports = function(hljs) {
   var QUOTED_PROPERTY = {
     className: 'string',
@@ -7166,7 +7168,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRINGS = {
     className: 'string',
@@ -7290,7 +7292,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = function(hljs) {
   var EXPRESSION_KEYWORDS = 'if eq ne lt lte gt gte select default math sep';
   return {
@@ -7322,7 +7324,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = function(hljs) {
     var commentMode = hljs.COMMENT(/\(\*/, /\*\)/);
 
@@ -7355,7 +7357,7 @@ module.exports = function(hljs) {
         ]
     };
 };
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = function(hljs) {
   var ELIXIR_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_]*(\\!|\\?)?';
   var ELIXIR_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
@@ -7452,7 +7454,7 @@ module.exports = function(hljs) {
     contains: ELIXIR_DEFAULT_CONTAINS
   };
 };
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT = {
     variants: [
@@ -7536,7 +7538,7 @@ module.exports = function(hljs) {
     illegal: /;/
   };
 };
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     subLanguage: 'xml',
@@ -7551,7 +7553,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -7597,7 +7599,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = function(hljs) {
   var BASIC_ATOM_RE = '[a-z\'][a-zA-Z0-9_\']*';
   var FUNCTION_NAME_RE = '(' + BASIC_ATOM_RE + ':' + BASIC_ATOM_RE + '|' + BASIC_ATOM_RE + ')';
@@ -7743,7 +7745,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['xlsx', 'xls'],
@@ -7791,7 +7793,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -7820,7 +7822,7 @@ module.exports = function(hljs) {
     case_insensitive: true
   };
 };
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports = function (hljs) {
 
     var CHAR = {
@@ -7865,7 +7867,7 @@ module.exports = function (hljs) {
         ]
     };
 };
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = function(hljs) {
   var PARAMS = {
     className: 'params',
@@ -7936,7 +7938,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 module.exports = function(hljs) {
   var TYPEPARAM = {
     begin: '<', end: '>',
@@ -7995,7 +7997,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 module.exports = function (hljs) {
   var KEYWORDS = {
     'keyword':
@@ -8149,7 +8151,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword: 'and bool break call callexe checkinterrupt clear clearg closeall cls comlog compile ' +
@@ -8373,7 +8375,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports = function(hljs) {
     var GCODE_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
     var GCODE_CLOSE_RE = '\\%';
@@ -8440,7 +8442,7 @@ module.exports = function(hljs) {
         ].concat(GCODE_CODE)
     };
 };
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 module.exports = function (hljs) {
   return {
     aliases: ['feature'],
@@ -8477,7 +8479,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -8594,7 +8596,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 module.exports = function(hljs) {
   var GO_KEYWORDS = {
     keyword:
@@ -8648,7 +8650,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 module.exports = function(hljs) {
     return {
       keywords: {
@@ -8671,7 +8673,7 @@ module.exports = function(hljs) {
       ]
     }
 };
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -8706,7 +8708,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 module.exports = function(hljs) {
     return {
         keywords: {
@@ -8800,7 +8802,7 @@ module.exports = function(hljs) {
         illegal: /#|<\//
     }
 };
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 module.exports = // TODO support filter tags like :javascript, support inline HTML
 function(hljs) {
   return {
@@ -8907,7 +8909,7 @@ function(hljs) {
     ]
   };
 };
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILT_INS = {'builtin-name': 'each in with if else unless bindattr action collection debugger log outlet template unbound view yield'};
   return {
@@ -8941,7 +8943,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT = {
     variants: [
@@ -9063,7 +9065,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
   var IDENT_FUNC_RETURN_TYPE_RE = '([*]|[a-zA-Z_$][a-zA-Z0-9_$]*)';
@@ -9175,7 +9177,7 @@ module.exports = function(hljs) {
     illegal: /<\//
   };
 };
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -9221,7 +9223,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILT_INS = 'action collection component concat debugger each each-in else get hash if input link-to loc log mut outlet partial query-params render textarea unbound unless with yield view';
 
@@ -9292,7 +9294,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 module.exports = function(hljs) {
   var VERSION = 'HTTP/[0-9\\.]+';
   return {
@@ -9333,7 +9335,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 module.exports = function(hljs) {
   var keywords = {
     'builtin-name':
@@ -9435,7 +9437,7 @@ module.exports = function(hljs) {
     contains: [SHEBANG, LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
   }
 };
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 module.exports = function(hljs) {
   var START_BRACKET = '\\[';
   var END_BRACKET = '\\]';
@@ -9492,7 +9494,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRING = {
     className: "string",
@@ -9558,7 +9560,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 module.exports = function(hljs) {
   var PARAMS = {
     className: 'params',
@@ -9634,7 +9636,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 module.exports = function(hljs) {
   var JAVA_IDENT_RE = '[\u00C0-\u02B8a-zA-Z_$][\u00C0-\u02B8a-zA-Z_$0-9]*';
   var GENERIC_IDENT_RE = JAVA_IDENT_RE + '(<' + JAVA_IDENT_RE + '(\\s*,\\s*' + JAVA_IDENT_RE + ')*>)?';
@@ -9742,7 +9744,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],90:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
   var KEYWORDS = {
@@ -9913,7 +9915,7 @@ module.exports = function(hljs) {
     illegal: /#(?!!)/
   };
 };
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports = function (hljs) {
   var PARAM = {
     begin: /[\w-]+ *=/, returnBegin: true,
@@ -9960,7 +9962,7 @@ module.exports = function (hljs) {
     ]
   }
 };
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = function(hljs) {
   var LITERALS = {literal: 'true false null'};
   var TYPES = [
@@ -9997,7 +9999,7 @@ module.exports = function(hljs) {
     illegal: '\\S'
   };
 };
-},{}],93:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -10021,7 +10023,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = function(hljs) {
   // Since there are numerous special names in Julia, it is too much trouble
   // to maintain them by hand. Hence these names (i.e. keywords, literals and
@@ -10183,7 +10185,7 @@ module.exports = function(hljs) {
 
   return DEFAULT;
 };
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -10357,7 +10359,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 module.exports = function(hljs) {
   var LASSO_IDENT_RE = '[a-zA-Z_][\\w.]*';
   var LASSO_ANGLE_RE = '<\\?(lasso(script)?|=)';
@@ -10520,7 +10522,7 @@ module.exports = function(hljs) {
     ].concat(LASSO_CODE)
   };
 };
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -10543,7 +10545,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 module.exports = function (hljs) {
   return {
     contains: [
@@ -10583,7 +10585,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],99:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE        = '[\\w-]+'; // yes, Less identifiers may begin with a digit
   var INTERP_IDENT_RE = '(' + IDENT_RE + '|@{' + IDENT_RE + '})';
@@ -10723,7 +10725,7 @@ module.exports = function(hljs) {
     contains: RULES
   };
 };
-},{}],100:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 module.exports = function(hljs) {
   var LISP_IDENT_RE = '[a-zA-Z_\\-\\+\\*\\/\\<\\=\\>\\&\\#][a-zA-Z0-9_\\-\\+\\*\\/\\<\\=\\>\\&\\#!]*';
   var MEC_RE = '\\|[^]*?\\|';
@@ -10826,7 +10828,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports = function(hljs) {
   var VARIABLE = {
     begin: '\\b[gtps][A-Z]+[A-Za-z0-9_\\-]*\\b|\\$_[A-Z]+',
@@ -10983,7 +10985,7 @@ module.exports = function(hljs) {
     illegal: ';$|^\\[|^=|&|{'
   };
 };
-},{}],102:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -11132,7 +11134,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],103:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 module.exports = function(hljs) {
   var identifier = '([-a-zA-Z$._][\\w\\-$.]*)';
   return {
@@ -11221,7 +11223,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 module.exports = function(hljs) {
 
     var LSL_STRING_ESCAPE_CHARS = {
@@ -11304,7 +11306,7 @@ module.exports = function(hljs) {
         ]
     };
 };
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = function(hljs) {
   var OPENING_LONG_BRACKET = '\\[=*\\[';
   var CLOSING_LONG_BRACKET = '\\]=*\\]';
@@ -11370,7 +11372,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = function(hljs) {
   /* Variables: simple (eg $(var)) and special (eg $@) */
   var VARIABLE = {
@@ -11451,7 +11453,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['md', 'mkdown', 'mkd'],
@@ -11559,7 +11561,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['mma'],
@@ -11617,7 +11619,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMON_CONTAINS = [
     hljs.C_NUMBER_MODE,
@@ -11705,7 +11707,7 @@ module.exports = function(hljs) {
     ].concat(COMMON_CONTAINS)
   };
 };
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = 'if then else elseif for thru do while unless step in and or not';
   var LITERALS = 'true false unknown inf minf ind und %e %i %pi %phi %gamma';
@@ -12111,7 +12113,7 @@ module.exports = function(hljs) {
     illegal: /@/
   }
 };
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords:
@@ -12336,7 +12338,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],112:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -12418,7 +12420,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 module.exports = function(hljs) {
     //local labels: %?[FB]?[AT]?\d{1,2}\w+
   return {
@@ -12504,7 +12506,7 @@ module.exports = function(hljs) {
     illegal: '\/'
   };
 };
-},{}],114:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords:
@@ -12523,7 +12525,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],115:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     subLanguage: 'xml',
@@ -12548,7 +12550,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUMBER = {
     className: 'number', relevance: 0,
@@ -12623,7 +12625,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -12735,7 +12737,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -12804,7 +12806,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 module.exports = function(hljs) {
   var VAR = {
     className: 'variable',
@@ -12897,7 +12899,7 @@ module.exports = function(hljs) {
     illegal: '[^\\s\\}]'
   };
 };
-},{}],120:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['nim'],
@@ -12952,7 +12954,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],121:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 module.exports = function(hljs) {
   var NIX_KEYWORDS = {
     keyword:
@@ -13001,7 +13003,7 @@ module.exports = function(hljs) {
     contains: EXPRESSIONS
   };
 };
-},{}],122:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 module.exports = function(hljs) {
   var CONSTANTS = {
     className: 'variable',
@@ -13107,7 +13109,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],123:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 module.exports = function(hljs) {
   var API_CLASS = {
     className: 'built_in',
@@ -13198,7 +13200,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],124:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 module.exports = function(hljs) {
   /* missing support for heredoc-like string (OCaml 4.0.2+) */
   return {
@@ -13269,7 +13271,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],125:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 module.exports = function(hljs) {
 	var SPECIAL_VARS = {
 		className: 'keyword',
@@ -13326,7 +13328,7 @@ module.exports = function(hljs) {
 		]
 	}
 };
-},{}],126:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 module.exports = function(hljs) {
   var OXYGENE_KEYWORDS = 'abstract add and array as asc aspect assembly async begin break block by case class concat const copy constructor continue '+
     'create default delegate desc distinct div do downto dynamic each else empty end ensure enum equals event except exit extension external false '+
@@ -13396,7 +13398,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],127:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 module.exports = function(hljs) {
   var CURLY_SUBCOMMENT = hljs.COMMENT(
     '{',
@@ -13444,7 +13446,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],128:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 module.exports = function(hljs) {
   var PERL_KEYWORDS = 'getpwent getservent quotemeta msgrcv scalar kill dbmclose undef lc ' +
     'ma syswrite tr send umask sysopen shmwrite vec qx utime local oct semctl localtime ' +
@@ -13601,7 +13603,7 @@ module.exports = function(hljs) {
     contains: PERL_DEFAULT_CONTAINS
   };
 };
-},{}],129:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 module.exports = function(hljs) {
   var MACRO = {
     className: 'variable',
@@ -13653,7 +13655,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],130:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 module.exports = function(hljs) {
   var VARIABLE = {
     begin: '\\$+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*'
@@ -13780,7 +13782,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],131:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -13871,7 +13873,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],132:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 module.exports = function(hljs) {
   var BACKTICK_ESCAPE = {
     begin: '`[\\s\\S]',
@@ -13952,7 +13954,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],133:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -14000,7 +14002,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],134:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -14030,7 +14032,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],135:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var ATOM = {
@@ -14118,7 +14120,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],136:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -14154,7 +14156,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],137:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var PUPPET_KEYWORDS = {
@@ -14269,7 +14271,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
 
 function(hljs) {
@@ -14327,7 +14329,7 @@ function(hljs) {
     ]
   };
 };
-},{}],139:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -14443,7 +14445,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 module.exports = function(hljs) {
   var Q_KEYWORDS = {
   keyword:
@@ -14466,7 +14468,7 @@ module.exports = function(hljs) {
      ]
   };
 };
-},{}],141:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
       keyword:
@@ -14635,7 +14637,7 @@ module.exports = function(hljs) {
     illegal: /#/
   };
 };
-},{}],142:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*';
 
@@ -14705,7 +14707,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],143:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords:
@@ -14732,7 +14734,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],144:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENTIFIER = '[a-zA-Z-_][^\\n{]+\\{';
 
@@ -14799,7 +14801,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],145:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 module.exports = // Colors from RouterOS terminal:
 //   green        - #0E9A00
 //   teal         - #0C9A9A
@@ -14958,7 +14960,7 @@ function(hljs) {
     ]
   };
 };
-},{}],146:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -14994,7 +14996,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],147:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 module.exports = function(hljs) {
   var RUBY_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
   var RUBY_KEYWORDS = {
@@ -15171,7 +15173,7 @@ module.exports = function(hljs) {
     contains: COMMENT_MODES.concat(IRB_DEFAULT).concat(RUBY_DEFAULT_CONTAINS)
   };
 };
-},{}],148:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -15232,7 +15234,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],149:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUM_SUFFIX = '([ui](8|16|32|64|128|size)|f(32|64))\?';
   var KEYWORDS =
@@ -15340,7 +15342,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],150:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var ANNOTATION = { className: 'meta', begin: '@[A-Za-z]+' };
@@ -15455,7 +15457,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],151:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 module.exports = function(hljs) {
   var SCHEME_IDENT_RE = '[^\\(\\)\\[\\]\\{\\}",\'`;#|\\\\\\s]+';
   var SCHEME_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+([./]\\d+)?';
@@ -15599,7 +15601,7 @@ module.exports = function(hljs) {
     contains: [SHEBANG, NUMBER, STRING, QUOTED_IDENT, QUOTED_LIST, LIST].concat(COMMENT_MODES)
   };
 };
-},{}],152:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var COMMON_CONTAINS = [
@@ -15653,7 +15655,7 @@ module.exports = function(hljs) {
     ].concat(COMMON_CONTAINS)
   };
 };
-},{}],153:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
   var VARIABLE = {
@@ -15751,7 +15753,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],154:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['console'],
@@ -15766,7 +15768,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],155:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 module.exports = function(hljs) {
   var smali_instr_low_prio = ['add', 'and', 'cmp', 'cmpg', 'cmpl', 'const', 'div', 'double', 'float', 'goto', 'if', 'int', 'long', 'move', 'mul', 'neg', 'new', 'nop', 'not', 'or', 'rem', 'return', 'shl', 'shr', 'sput', 'sub', 'throw', 'ushr', 'xor'];
   var smali_instr_high_prio = ['aget', 'aput', 'array', 'check', 'execute', 'fill', 'filled', 'goto/16', 'goto/32', 'iget', 'instance', 'invoke', 'iput', 'monitor', 'packed', 'sget', 'sparse'];
@@ -15822,7 +15824,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],156:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 module.exports = function(hljs) {
   var VAR_IDENT_RE = '[a-z][a-zA-Z0-9_]*';
   var CHAR = {
@@ -15872,7 +15874,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],157:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['ml'],
@@ -15938,7 +15940,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],158:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 module.exports = function(hljs) {
   var CPP = hljs.getLanguage('cpp').exports;
 
@@ -16309,7 +16311,7 @@ module.exports = function(hljs) {
     illegal: /#/
   };
 };
-},{}],159:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT_MODE = hljs.COMMENT('--', '$');
   return {
@@ -16469,7 +16471,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],160:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -16552,7 +16554,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],161:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['do', 'ado'],
@@ -16590,7 +16592,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],162:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 module.exports = function(hljs) {
   var STEP21_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
   var STEP21_KEYWORDS = {
@@ -16637,7 +16639,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],163:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var VARIABLE = {
@@ -17091,7 +17093,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],164:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 module.exports = function(hljs) {
   var DETAILS = {
     className: 'string',
@@ -17125,7 +17127,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],165:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 module.exports = function(hljs) {
   var SWIFT_KEYWORDS = {
       keyword: '__COLUMN__ __FILE__ __FUNCTION__ __LINE__ as as! as? associativity ' +
@@ -17242,7 +17244,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],166:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var COMMENT = {
@@ -17286,7 +17288,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],167:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -17322,7 +17324,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],168:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['tk'],
@@ -17383,7 +17385,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMAND = {
     className: 'tag',
@@ -17445,7 +17447,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],170:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILT_IN_TYPES = 'bool byte i16 i32 i64 double string binary';
   return {
@@ -17480,7 +17482,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],171:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 module.exports = function(hljs) {
   var TPID = {
     className: 'number',
@@ -17564,7 +17566,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],172:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 module.exports = function(hljs) {
   var PARAMS = {
     className: 'params',
@@ -17630,7 +17632,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],173:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -17786,7 +17788,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],174:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -17836,7 +17838,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['vb'],
@@ -17892,7 +17894,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],176:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     subLanguage: 'xml',
@@ -17904,7 +17906,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],177:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['vbs'],
@@ -17943,7 +17945,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],178:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 module.exports = function(hljs) {
   var SV_KEYWORDS = {
     keyword:
@@ -18042,7 +18044,7 @@ module.exports = function(hljs) {
     ]
   }; // return
 };
-},{}],179:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 module.exports = function(hljs) {
   // Regular expression for VHDL numeric literals.
 
@@ -18103,7 +18105,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],180:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     lexemes: /[!#@\w]+/,
@@ -18209,7 +18211,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],181:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -18345,7 +18347,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],182:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILTIN_MODULES =
     'ObjectLoader Animate MovieCredits Slides Filters Shading Materials LensFlare Mapping VLCAudioVideo ' +
@@ -18418,7 +18420,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],183:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 module.exports = function(hljs) {
   var XML_IDENT_RE = '[A-Za-z0-9\\._:-]+';
   var TAG_INTERNALS = {
@@ -18521,7 +18523,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],184:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = 'for let if while then else return where group by xquery encoding version' +
     'module namespace boundary-space preserve strip default collation base-uri ordering' +
@@ -18592,7 +18594,7 @@ module.exports = function(hljs) {
     contains: CONTAINS
   };
 };
-},{}],185:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 module.exports = function(hljs) {
   var LITERALS = 'true false yes no null';
 
@@ -18680,7 +18682,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],186:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRING = {
     className: 'string',
@@ -18787,7 +18789,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],187:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 /**
  * isMobile.js v0.4.1
  *
@@ -18926,7 +18928,7 @@ module.exports = function(hljs) {
 
 })(this);
 
-},{}],188:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19093,7 +19095,7 @@ MiniSignal.MiniSignalBinding = MiniSignalBinding;
 exports['default'] = MiniSignal;
 module.exports = exports['default'];
 
-},{}],189:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -19185,7 +19187,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],190:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 'use strict'
 
 module.exports = function parseURI (str, opts) {
@@ -19217,7 +19219,235 @@ module.exports = function parseURI (str, opts) {
   return uri
 }
 
-},{}],191:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,require('_process'))
+},{"_process":373}],193:[function(require,module,exports){
 
 /*
 	Copyright © 2001 Robert Penner
@@ -19485,7 +19715,7 @@ module.exports = function parseURI (str, opts) {
 
 }).call(this);
 
-},{}],192:[function(require,module,exports){
+},{}],194:[function(require,module,exports){
 const list = require('./src/list')
 
 module.exports = {
@@ -19500,7 +19730,7 @@ module.exports = {
     movie: require('./src/movie'),
     load: require('./src/load')
 }
-},{"./src/angle":194,"./src/face":195,"./src/list":196,"./src/load":197,"./src/movie":198,"./src/shake":199,"./src/target":200,"./src/tint":201,"./src/to":202,"./src/wait":203}],193:[function(require,module,exports){
+},{"./src/angle":196,"./src/face":197,"./src/list":198,"./src/load":199,"./src/movie":200,"./src/shake":201,"./src/target":202,"./src/tint":203,"./src/to":204,"./src/wait":205}],195:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -19838,7 +20068,7 @@ if ('undefined' !== typeof module) {
   module.exports = EventEmitter;
 }
 
-},{}],194:[function(require,module,exports){
+},{}],196:[function(require,module,exports){
 const wait = require('./wait')
 
 /** animate object's {x, y} using an angle */
@@ -19905,7 +20135,7 @@ module.exports = class angle extends wait
         this.angle += Math.PI
     }
 }
-},{"./wait":203}],195:[function(require,module,exports){
+},{"./wait":205}],197:[function(require,module,exports){
 const Angle = require('yy-angle')
 const wait = require('./wait')
 
@@ -19975,7 +20205,7 @@ module.exports = class face extends wait
         }
     }
 }
-},{"./wait":203,"yy-angle":387}],196:[function(require,module,exports){
+},{"./wait":205,"yy-angle":396}],198:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const Events = require('eventemitter3')
 
@@ -20145,7 +20375,7 @@ module.exports = class List extends Events
     /** helper to add to the list a new Ease.wait class; see Ease.to class below for parameters */
     wait() { return this.add(new Wait(...arguments)) }
 }
-},{"./angle":194,"./face":195,"./load":197,"./movie":198,"./shake":199,"./target":200,"./tint":201,"./to":202,"./wait":203,"eventemitter3":193,"pixi.js":336}],197:[function(require,module,exports){
+},{"./angle":196,"./face":197,"./load":199,"./movie":200,"./shake":201,"./target":202,"./tint":203,"./to":204,"./wait":205,"eventemitter3":195,"pixi.js":338}],199:[function(require,module,exports){
 const wait = require('./wait')
 const to = require('./to')
 const tint = require('./tint')
@@ -20186,7 +20416,7 @@ module.exports = function load(object, load)
             return new movie(object, object[1], null, options)
     }
 }
-},{"./angle":194,"./face":195,"./movie":198,"./shake":199,"./target":200,"./tint":201,"./to":202,"./wait":203}],198:[function(require,module,exports){
+},{"./angle":196,"./face":197,"./movie":200,"./shake":201,"./target":202,"./tint":203,"./to":204,"./wait":205}],200:[function(require,module,exports){
 const wait = require('./wait')
 
 /**
@@ -20289,7 +20519,7 @@ module.exports = class movie extends wait
         }
     }
 }
-},{"./wait":203}],199:[function(require,module,exports){
+},{"./wait":205}],201:[function(require,module,exports){
 const wait = require('./wait')
 
 /**
@@ -20394,7 +20624,7 @@ module.exports = class shake extends wait
         }
     }
 }
-},{"./wait":203}],200:[function(require,module,exports){
+},{"./wait":205}],202:[function(require,module,exports){
 const wait = require('./wait')
 
 /** move an object to a target's location */
@@ -20467,7 +20697,7 @@ module.exports = class target extends wait
         }
     }
 }
-},{"./wait":203}],201:[function(require,module,exports){
+},{"./wait":205}],203:[function(require,module,exports){
 const Color = require('yy-color')
 const wait = require('./wait')
 
@@ -20585,7 +20815,7 @@ module.exports = class tint extends wait
         }
     }
 }
-},{"./wait":203,"yy-color":388}],202:[function(require,module,exports){
+},{"./wait":205,"yy-color":397}],204:[function(require,module,exports){
 const wait = require('./wait')
 
 /** animate any numeric parameter of an object or array of objects */
@@ -20780,7 +21010,7 @@ module.exports = class to extends wait
         }
     }
 }
-},{"./wait":203}],203:[function(require,module,exports){
+},{"./wait":205}],205:[function(require,module,exports){
 const Easing = require('penner')
 const EventEmitter = require('eventemitter3')
 
@@ -20993,7 +21223,7 @@ module.exports = class wait extends EventEmitter
     calculate() { }
     done() { }
 }
-},{"eventemitter3":193,"penner":191}],204:[function(require,module,exports){
+},{"eventemitter3":195,"penner":193}],206:[function(require,module,exports){
 var EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 
 /**
@@ -21114,7 +21344,7 @@ Buffer.prototype.destroy = function(){
 
 module.exports = Buffer;
 
-},{}],205:[function(require,module,exports){
+},{}],207:[function(require,module,exports){
 
 var Texture = require('./GLTexture');
 
@@ -21342,7 +21572,7 @@ Framebuffer.createFloat32 = function(gl, width, height, data)
 
 module.exports = Framebuffer;
 
-},{"./GLTexture":207}],206:[function(require,module,exports){
+},{"./GLTexture":209}],208:[function(require,module,exports){
 
 var compileProgram = require('./shader/compileProgram'),
 	extractAttributes = require('./shader/extractAttributes'),
@@ -21438,7 +21668,7 @@ Shader.prototype.destroy = function()
 
 module.exports = Shader;
 
-},{"./shader/compileProgram":212,"./shader/extractAttributes":214,"./shader/extractUniforms":215,"./shader/generateUniformAccessObject":216,"./shader/setPrecision":220}],207:[function(require,module,exports){
+},{"./shader/compileProgram":214,"./shader/extractAttributes":216,"./shader/extractUniforms":217,"./shader/generateUniformAccessObject":218,"./shader/setPrecision":222}],209:[function(require,module,exports){
 
 /**
  * Helper class to create a WebGL Texture
@@ -21773,7 +22003,7 @@ Texture.fromData = function(gl, data, width, height)
 
 module.exports = Texture;
 
-},{}],208:[function(require,module,exports){
+},{}],210:[function(require,module,exports){
 
 // state object//
 var setVertexAttribArrays = require( './setVertexAttribArrays' );
@@ -22041,7 +22271,7 @@ VertexArrayObject.prototype.getSize = function()
     return attrib.buffer.data.length / (( attrib.stride/4 ) || attrib.attribute.size);
 };
 
-},{"./setVertexAttribArrays":211}],209:[function(require,module,exports){
+},{"./setVertexAttribArrays":213}],211:[function(require,module,exports){
 
 /**
  * Helper class to create a webGL Context
@@ -22069,7 +22299,7 @@ var createContext = function(canvas, options)
 
 module.exports = createContext;
 
-},{}],210:[function(require,module,exports){
+},{}],212:[function(require,module,exports){
 var gl = {
     createContext:          require('./createContext'),
     setVertexAttribArrays:  require('./setVertexAttribArrays'),
@@ -22096,7 +22326,7 @@ if (typeof window !== 'undefined')
     window.PIXI.glCore = gl;
 }
 
-},{"./GLBuffer":204,"./GLFramebuffer":205,"./GLShader":206,"./GLTexture":207,"./VertexArrayObject":208,"./createContext":209,"./setVertexAttribArrays":211,"./shader":217}],211:[function(require,module,exports){
+},{"./GLBuffer":206,"./GLFramebuffer":207,"./GLShader":208,"./GLTexture":209,"./VertexArrayObject":210,"./createContext":211,"./setVertexAttribArrays":213,"./shader":219}],213:[function(require,module,exports){
 // var GL_MAP = {};
 
 /**
@@ -22153,7 +22383,7 @@ var setVertexAttribArrays = function (gl, attribs, state)
 
 module.exports = setVertexAttribArrays;
 
-},{}],212:[function(require,module,exports){
+},{}],214:[function(require,module,exports){
 
 /**
  * @class
@@ -22235,7 +22465,7 @@ var compileShader = function (gl, type, src)
 
 module.exports = compileProgram;
 
-},{}],213:[function(require,module,exports){
+},{}],215:[function(require,module,exports){
 /**
  * @class
  * @memberof PIXI.glCore.shader
@@ -22315,7 +22545,7 @@ var booleanArray = function(size)
 
 module.exports = defaultValue;
 
-},{}],214:[function(require,module,exports){
+},{}],216:[function(require,module,exports){
 
 var mapType = require('./mapType');
 var mapSize = require('./mapSize');
@@ -22358,7 +22588,7 @@ var pointer = function(type, normalized, stride, start){
 
 module.exports = extractAttributes;
 
-},{"./mapSize":218,"./mapType":219}],215:[function(require,module,exports){
+},{"./mapSize":220,"./mapType":221}],217:[function(require,module,exports){
 var mapType = require('./mapType');
 var defaultValue = require('./defaultValue');
 
@@ -22395,7 +22625,7 @@ var extractUniforms = function(gl, program)
 
 module.exports = extractUniforms;
 
-},{"./defaultValue":213,"./mapType":219}],216:[function(require,module,exports){
+},{"./defaultValue":215,"./mapType":221}],218:[function(require,module,exports){
 /**
  * Extracts the attributes
  * @class
@@ -22518,7 +22748,7 @@ function getUniformGroup(nameTokens, uniform)
 
 module.exports = generateUniformAccessObject;
 
-},{}],217:[function(require,module,exports){
+},{}],219:[function(require,module,exports){
 module.exports = {
     compileProgram: require('./compileProgram'),
     defaultValue: require('./defaultValue'),
@@ -22529,7 +22759,7 @@ module.exports = {
     mapSize: require('./mapSize'),
     mapType: require('./mapType')
 };
-},{"./compileProgram":212,"./defaultValue":213,"./extractAttributes":214,"./extractUniforms":215,"./generateUniformAccessObject":216,"./mapSize":218,"./mapType":219,"./setPrecision":220}],218:[function(require,module,exports){
+},{"./compileProgram":214,"./defaultValue":215,"./extractAttributes":216,"./extractUniforms":217,"./generateUniformAccessObject":218,"./mapSize":220,"./mapType":221,"./setPrecision":222}],220:[function(require,module,exports){
 /**
  * @class
  * @memberof PIXI.glCore.shader
@@ -22567,7 +22797,7 @@ var GLSL_TO_SIZE = {
 
 module.exports = mapSize;
 
-},{}],219:[function(require,module,exports){
+},{}],221:[function(require,module,exports){
 
 
 var mapType = function(gl, type) 
@@ -22615,7 +22845,7 @@ var GL_TO_GLSL_TYPES = {
 
 module.exports = mapType;
 
-},{}],220:[function(require,module,exports){
+},{}],222:[function(require,module,exports){
 /**
  * Sets the float precision on the shader. If the precision is already present this function will do nothing
  * @param {string} src       the shader source
@@ -22635,7 +22865,7 @@ var setPrecision = function(src, precision)
 
 module.exports = setPrecision;
 
-},{}],221:[function(require,module,exports){
+},{}],223:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23129,7 +23359,7 @@ exports.default = AccessibilityManager;
 core.WebGLRenderer.registerPlugin('accessibility', AccessibilityManager);
 core.CanvasRenderer.registerPlugin('accessibility', AccessibilityManager);
 
-},{"../core":246,"./accessibleTarget":222,"ismobilejs":187}],222:[function(require,module,exports){
+},{"../core":248,"./accessibleTarget":224,"ismobilejs":188}],224:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -23187,7 +23417,7 @@ exports.default = {
   _accessibleDiv: false
 };
 
-},{}],223:[function(require,module,exports){
+},{}],225:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23212,7 +23442,7 @@ Object.defineProperty(exports, 'AccessibilityManager', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./AccessibilityManager":221,"./accessibleTarget":222}],224:[function(require,module,exports){
+},{"./AccessibilityManager":223,"./accessibleTarget":224}],226:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23435,7 +23665,7 @@ var Application = function () {
 
 exports.default = Application;
 
-},{"./autoDetectRenderer":226,"./const":227,"./display/Container":229,"./settings":282,"./ticker":302}],225:[function(require,module,exports){
+},{"./autoDetectRenderer":228,"./const":229,"./display/Container":231,"./settings":284,"./ticker":304}],227:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23463,7 +23693,7 @@ function checkPrecision(src, def) {
 
             return copy;
         }
-    } else if (src.substring(0, 9) !== 'precision') {
+    } else if (src.trim().substring(0, 9) !== 'precision') {
         return 'precision ' + def + ' float;\n' + src;
     }
 
@@ -23487,11 +23717,14 @@ var Shader = function (_GLShader) {
      * @param {WebGLRenderingContext} gl - The current WebGL rendering context
      * @param {string|string[]} vertexSrc - The vertex shader source as an array of strings.
      * @param {string|string[]} fragmentSrc - The fragment shader source as an array of strings.
+     * @param {object} [attributeLocations] - A key value pair showing which location eact attribute should sit.
+                       e.g. {position:0, uvs:1}.
+     * @param {string} [precision] - The float precision of the shader. Options are 'lowp', 'mediump' or 'highp'.
      */
-    function Shader(gl, vertexSrc, fragmentSrc) {
+    function Shader(gl, vertexSrc, fragmentSrc, attributeLocations, precision) {
         _classCallCheck(this, Shader);
 
-        return _possibleConstructorReturn(this, _GLShader.call(this, gl, checkPrecision(vertexSrc, _settings2.default.PRECISION_VERTEX), checkPrecision(fragmentSrc, _settings2.default.PRECISION_FRAGMENT)));
+        return _possibleConstructorReturn(this, _GLShader.call(this, gl, checkPrecision(vertexSrc, precision || _settings2.default.PRECISION_VERTEX), checkPrecision(fragmentSrc, precision || _settings2.default.PRECISION_FRAGMENT), undefined, attributeLocations));
     }
 
     return Shader;
@@ -23499,7 +23732,7 @@ var Shader = function (_GLShader) {
 
 exports.default = Shader;
 
-},{"./settings":282,"pixi-gl-core":210}],226:[function(require,module,exports){
+},{"./settings":284,"pixi-gl-core":212}],228:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23568,7 +23801,7 @@ function autoDetectRenderer(options, arg1, arg2, arg3) {
     return new _CanvasRenderer2.default(options, arg1, arg2);
 }
 
-},{"./renderers/canvas/CanvasRenderer":258,"./renderers/webgl/WebGLRenderer":265,"./utils":306}],227:[function(require,module,exports){
+},{"./renderers/canvas/CanvasRenderer":260,"./renderers/webgl/WebGLRenderer":267,"./utils":308}],229:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23581,7 +23814,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.6.2';
+var VERSION = exports.VERSION = '4.7.0';
 
 /**
  * Two Pi.
@@ -23911,7 +24144,7 @@ var UPDATE_PRIORITY = exports.UPDATE_PRIORITY = {
   UTILITY: -50
 };
 
-},{}],228:[function(require,module,exports){
+},{}],230:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24254,7 +24487,7 @@ var Bounds = function () {
 
 exports.default = Bounds;
 
-},{"../math":251}],229:[function(require,module,exports){
+},{"../math":253}],231:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24872,7 +25105,7 @@ var Container = function (_DisplayObject) {
 exports.default = Container;
 Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
-},{"../utils":306,"./DisplayObject":230}],230:[function(require,module,exports){
+},{"../utils":308,"./DisplayObject":232}],232:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25527,12 +25760,14 @@ var DisplayObject = function (_EventEmitter) {
         {
             if (this._mask) {
                 this._mask.renderable = true;
+                this._mask.isMask = false;
             }
 
             this._mask = value;
 
             if (this._mask) {
                 this._mask.renderable = false;
+                this._mask.isMask = true;
             }
         }
 
@@ -25564,7 +25799,7 @@ var DisplayObject = function (_EventEmitter) {
 exports.default = DisplayObject;
 DisplayObject.prototype.displayObjectUpdateTransform = DisplayObject.prototype.updateTransform;
 
-},{"../const":227,"../math":251,"../settings":282,"./Bounds":228,"./Transform":231,"./TransformStatic":233,"eventemitter3":370}],231:[function(require,module,exports){
+},{"../const":229,"../math":253,"../settings":284,"./Bounds":230,"./Transform":233,"./TransformStatic":235,"eventemitter3":372}],233:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25745,7 +25980,7 @@ var Transform = function (_TransformBase) {
 
 exports.default = Transform;
 
-},{"../math":251,"./TransformBase":232}],232:[function(require,module,exports){
+},{"../math":253,"./TransformBase":234}],234:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25832,7 +26067,7 @@ TransformBase.prototype.updateWorldTransform = TransformBase.prototype.updateTra
 
 TransformBase.IDENTITY = new TransformBase();
 
-},{"../math":251}],233:[function(require,module,exports){
+},{"../math":253}],235:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26042,7 +26277,7 @@ var TransformStatic = function (_TransformBase) {
 
 exports.default = TransformStatic;
 
-},{"../math":251,"./TransformBase":232}],234:[function(require,module,exports){
+},{"../math":253,"./TransformBase":234}],236:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -26558,13 +26793,13 @@ var Graphics = function (_Container) {
         }
 
         if (!anticlockwise && endAngle <= startAngle) {
-            endAngle += Math.PI * 2;
+            endAngle += _const.PI_2;
         } else if (anticlockwise && startAngle <= endAngle) {
-            startAngle += Math.PI * 2;
+            startAngle += _const.PI_2;
         }
 
         var sweep = endAngle - startAngle;
-        var segs = Math.ceil(Math.abs(sweep) / (Math.PI * 2)) * 40;
+        var segs = Math.ceil(Math.abs(sweep) / _const.PI_2) * 40;
 
         if (sweep === 0) {
             return this;
@@ -26758,6 +26993,39 @@ var Graphics = function (_Container) {
         this.drawShape(shape);
 
         return this;
+    };
+
+    /**
+     * Draw a star shape with an abitrary number of points.
+     *
+     * @param {number} x - Center X position of the star
+     * @param {number} y - Center Y position of the star
+     * @param {number} points - The number of points of the star, must be > 1
+     * @param {number} radius - The outer radius of the star
+     * @param {number} [innerRadius] - The inner radius between points, default half `radius`
+     * @param {number} [rotation=0] - The rotation of the star in radians, where 0 is vertical
+     * @return {PIXI.Graphics} This Graphics object. Good for chaining method calls
+     */
+
+
+    Graphics.prototype.drawStar = function drawStar(x, y, points, radius, innerRadius) {
+        var rotation = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+
+        innerRadius = innerRadius || radius / 2;
+
+        var startAngle = -1 * Math.PI / 2 + rotation;
+        var len = points * 2;
+        var delta = _const.PI_2 / len;
+        var polygon = [];
+
+        for (var i = 0; i < len; i++) {
+            var r = i % 2 ? innerRadius : radius;
+            var angle = i * delta + startAngle;
+
+            polygon.push(x + r * Math.cos(angle), y + r * Math.sin(angle));
+        }
+
+        return this.drawPolygon(polygon);
     };
 
     /**
@@ -27214,7 +27482,7 @@ exports.default = Graphics;
 
 Graphics._SPRITE_TEXTURE = null;
 
-},{"../const":227,"../display/Bounds":228,"../display/Container":229,"../math":251,"../renderers/canvas/CanvasRenderer":258,"../sprites/Sprite":283,"../textures/RenderTexture":294,"../textures/Texture":296,"../utils":306,"./GraphicsData":235,"./utils/bezierCurveTo":237}],235:[function(require,module,exports){
+},{"../const":229,"../display/Bounds":230,"../display/Container":231,"../math":253,"../renderers/canvas/CanvasRenderer":260,"../sprites/Sprite":285,"../textures/RenderTexture":296,"../textures/Texture":298,"../utils":308,"./GraphicsData":237,"./utils/bezierCurveTo":239}],237:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -27243,58 +27511,72 @@ var GraphicsData = function () {
     _classCallCheck(this, GraphicsData);
 
     /**
-     * @member {number} the width of the line to draw
+     * the width of the line to draw
+     * @member {number}
      */
     this.lineWidth = lineWidth;
+
     /**
-     * @member {boolean} if true the liens will be draw using LINES instead of TRIANGLE_STRIP
+     * if true the liens will be draw using LINES instead of TRIANGLE_STRIP
+     * @member {boolean}
      */
     this.nativeLines = nativeLines;
 
     /**
-     * @member {number} the color of the line to draw
+     * the color of the line to draw
+     * @member {number}
      */
     this.lineColor = lineColor;
 
     /**
-     * @member {number} the alpha of the line to draw
+     * the alpha of the line to draw
+     * @member {number}
      */
     this.lineAlpha = lineAlpha;
 
     /**
-     * @member {number} cached tint of the line to draw
+     * cached tint of the line to draw
+     * @member {number}
+     * @private
      */
     this._lineTint = lineColor;
 
     /**
-     * @member {number} the color of the fill
+     * the color of the fill
+     * @member {number}
      */
     this.fillColor = fillColor;
 
     /**
-     * @member {number} the alpha of the fill
+     * the alpha of the fill
+     * @member {number}
      */
     this.fillAlpha = fillAlpha;
 
     /**
-     * @member {number} cached tint of the fill
+     * cached tint of the fill
+     * @member {number}
+     * @private
      */
     this._fillTint = fillColor;
 
     /**
-     * @member {boolean} whether or not the shape is filled with a colour
+     * whether or not the shape is filled with a colour
+     * @member {boolean}
      */
     this.fill = fill;
 
     this.holes = [];
 
     /**
-     * @member {PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.Rectangle|PIXI.RoundedRectangle} The shape object to draw.
+     * The shape object to draw.
+     * @member {PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.Rectangle|PIXI.RoundedRectangle}
      */
     this.shape = shape;
 
     /**
-     * @member {number} The type of the shape, see the Const.Shapes file for all the existing types,
+     * The type of the shape, see the Const.Shapes file for all the existing types,
+     * @member {number}
      */
     this.type = shape.type;
   }
@@ -27336,7 +27618,7 @@ var GraphicsData = function () {
 
 exports.default = GraphicsData;
 
-},{}],236:[function(require,module,exports){
+},{}],238:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27605,7 +27887,7 @@ exports.default = CanvasGraphicsRenderer;
 
 _CanvasRenderer2.default.registerPlugin('graphics', CanvasGraphicsRenderer);
 
-},{"../../const":227,"../../renderers/canvas/CanvasRenderer":258}],237:[function(require,module,exports){
+},{"../../const":229,"../../renderers/canvas/CanvasRenderer":260}],239:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -27655,7 +27937,7 @@ function bezierCurveTo(fromX, fromY, cpX, cpY, cpX2, cpY2, toX, toY) {
     return path;
 }
 
-},{}],238:[function(require,module,exports){
+},{}],240:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -27920,7 +28202,7 @@ exports.default = GraphicsRenderer;
 
 _WebGLRenderer2.default.registerPlugin('graphics', GraphicsRenderer);
 
-},{"../../const":227,"../../renderers/webgl/WebGLRenderer":265,"../../renderers/webgl/utils/ObjectRenderer":275,"../../utils":306,"./WebGLGraphicsData":239,"./shaders/PrimitiveShader":240,"./utils/buildCircle":241,"./utils/buildPoly":243,"./utils/buildRectangle":244,"./utils/buildRoundedRectangle":245}],239:[function(require,module,exports){
+},{"../../const":229,"../../renderers/webgl/WebGLRenderer":267,"../../renderers/webgl/utils/ObjectRenderer":277,"../../utils":308,"./WebGLGraphicsData":241,"./shaders/PrimitiveShader":242,"./utils/buildCircle":243,"./utils/buildPoly":245,"./utils/buildRectangle":246,"./utils/buildRoundedRectangle":247}],241:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28063,7 +28345,7 @@ var WebGLGraphicsData = function () {
 
 exports.default = WebGLGraphicsData;
 
-},{"pixi-gl-core":210}],240:[function(require,module,exports){
+},{"pixi-gl-core":212}],242:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28108,7 +28390,7 @@ var PrimitiveShader = function (_Shader) {
 
 exports.default = PrimitiveShader;
 
-},{"../../../Shader":225}],241:[function(require,module,exports){
+},{"../../../Shader":227}],243:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28201,7 +28483,7 @@ function buildCircle(graphicsData, webGLData, webGLDataNativeLines) {
     }
 }
 
-},{"../../../const":227,"../../../utils":306,"./buildLine":242}],242:[function(require,module,exports){
+},{"../../../const":229,"../../../utils":308,"./buildLine":244}],244:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28471,7 +28753,7 @@ function buildNativeLine(graphicsData, webGLData) {
     }
 }
 
-},{"../../../math":251,"../../../utils":306}],243:[function(require,module,exports){
+},{"../../../math":253,"../../../utils":308}],245:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28557,7 +28839,7 @@ function buildPoly(graphicsData, webGLData, webGLDataNativeLines) {
     }
 }
 
-},{"../../../utils":306,"./buildLine":242,"earcut":6}],244:[function(require,module,exports){
+},{"../../../utils":308,"./buildLine":244,"earcut":7}],246:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28633,7 +28915,7 @@ function buildRectangle(graphicsData, webGLData, webGLDataNativeLines) {
     }
 }
 
-},{"../../../utils":306,"./buildLine":242}],245:[function(require,module,exports){
+},{"../../../utils":308,"./buildLine":244}],247:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -28789,7 +29071,7 @@ function quadraticBezierCurve(fromX, fromY, cpX, cpY, toX, toY) {
     return points;
 }
 
-},{"../../../utils":306,"./buildLine":242,"earcut":6}],246:[function(require,module,exports){
+},{"../../../utils":308,"./buildLine":244,"earcut":7}],248:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29175,7 +29457,7 @@ exports.WebGLRenderer = _WebGLRenderer2.default; /**
                                                   * @namespace PIXI
                                                   */
 
-},{"./Application":224,"./Shader":225,"./autoDetectRenderer":226,"./const":227,"./display/Bounds":228,"./display/Container":229,"./display/DisplayObject":230,"./display/Transform":231,"./display/TransformBase":232,"./display/TransformStatic":233,"./graphics/Graphics":234,"./graphics/GraphicsData":235,"./graphics/canvas/CanvasGraphicsRenderer":236,"./graphics/webgl/GraphicsRenderer":238,"./math":251,"./renderers/canvas/CanvasRenderer":258,"./renderers/canvas/utils/CanvasRenderTarget":260,"./renderers/webgl/WebGLRenderer":265,"./renderers/webgl/filters/Filter":267,"./renderers/webgl/filters/spriteMask/SpriteMaskFilter":270,"./renderers/webgl/managers/WebGLManager":274,"./renderers/webgl/utils/ObjectRenderer":275,"./renderers/webgl/utils/Quad":276,"./renderers/webgl/utils/RenderTarget":277,"./settings":282,"./sprites/Sprite":283,"./sprites/canvas/CanvasSpriteRenderer":284,"./sprites/canvas/CanvasTinter":285,"./sprites/webgl/SpriteRenderer":287,"./text/Text":289,"./text/TextMetrics":290,"./text/TextStyle":291,"./textures/BaseRenderTexture":292,"./textures/BaseTexture":293,"./textures/RenderTexture":294,"./textures/Spritesheet":295,"./textures/Texture":296,"./textures/TextureMatrix":297,"./textures/TextureUvs":298,"./textures/VideoBaseTexture":299,"./ticker":302,"./utils":306,"pixi-gl-core":210}],247:[function(require,module,exports){
+},{"./Application":226,"./Shader":227,"./autoDetectRenderer":228,"./const":229,"./display/Bounds":230,"./display/Container":231,"./display/DisplayObject":232,"./display/Transform":233,"./display/TransformBase":234,"./display/TransformStatic":235,"./graphics/Graphics":236,"./graphics/GraphicsData":237,"./graphics/canvas/CanvasGraphicsRenderer":238,"./graphics/webgl/GraphicsRenderer":240,"./math":253,"./renderers/canvas/CanvasRenderer":260,"./renderers/canvas/utils/CanvasRenderTarget":262,"./renderers/webgl/WebGLRenderer":267,"./renderers/webgl/filters/Filter":269,"./renderers/webgl/filters/spriteMask/SpriteMaskFilter":272,"./renderers/webgl/managers/WebGLManager":276,"./renderers/webgl/utils/ObjectRenderer":277,"./renderers/webgl/utils/Quad":278,"./renderers/webgl/utils/RenderTarget":279,"./settings":284,"./sprites/Sprite":285,"./sprites/canvas/CanvasSpriteRenderer":286,"./sprites/canvas/CanvasTinter":287,"./sprites/webgl/SpriteRenderer":289,"./text/Text":291,"./text/TextMetrics":292,"./text/TextStyle":293,"./textures/BaseRenderTexture":294,"./textures/BaseTexture":295,"./textures/RenderTexture":296,"./textures/Spritesheet":297,"./textures/Texture":298,"./textures/TextureMatrix":299,"./textures/TextureUvs":300,"./textures/VideoBaseTexture":301,"./ticker":304,"./utils":308,"pixi-gl-core":212}],249:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29368,7 +29650,7 @@ var GroupD8 = {
 
 exports.default = GroupD8;
 
-},{"./Matrix":248}],248:[function(require,module,exports){
+},{"./Matrix":250}],250:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -29899,7 +30181,7 @@ var Matrix = function () {
 
 exports.default = Matrix;
 
-},{"./Point":250}],249:[function(require,module,exports){
+},{"./Point":252}],251:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -30016,7 +30298,7 @@ var ObservablePoint = function () {
 
 exports.default = ObservablePoint;
 
-},{}],250:[function(require,module,exports){
+},{}],252:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -30107,7 +30389,7 @@ var Point = function () {
 
 exports.default = Point;
 
-},{}],251:[function(require,module,exports){
+},{}],253:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30195,7 +30477,7 @@ Object.defineProperty(exports, 'RoundedRectangle', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./GroupD8":247,"./Matrix":248,"./ObservablePoint":249,"./Point":250,"./shapes/Circle":252,"./shapes/Ellipse":253,"./shapes/Polygon":254,"./shapes/Rectangle":255,"./shapes/RoundedRectangle":256}],252:[function(require,module,exports){
+},{"./GroupD8":249,"./Matrix":250,"./ObservablePoint":251,"./Point":252,"./shapes/Circle":254,"./shapes/Ellipse":255,"./shapes/Polygon":256,"./shapes/Rectangle":257,"./shapes/RoundedRectangle":258}],254:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30309,7 +30591,7 @@ var Circle = function () {
 
 exports.default = Circle;
 
-},{"../../const":227,"./Rectangle":255}],253:[function(require,module,exports){
+},{"../../const":229,"./Rectangle":257}],255:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30431,7 +30713,7 @@ var Ellipse = function () {
 
 exports.default = Ellipse;
 
-},{"../../const":227,"./Rectangle":255}],254:[function(require,module,exports){
+},{"../../const":229,"./Rectangle":257}],256:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30562,7 +30844,7 @@ var Polygon = function () {
 
 exports.default = Polygon;
 
-},{"../../const":227,"../Point":250}],255:[function(require,module,exports){
+},{"../../const":229,"../Point":252}],257:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30825,7 +31107,7 @@ var Rectangle = function () {
 
 exports.default = Rectangle;
 
-},{"../../const":227}],256:[function(require,module,exports){
+},{"../../const":229}],258:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -30958,7 +31240,7 @@ var RoundedRectangle = function () {
 
 exports.default = RoundedRectangle;
 
-},{"../../const":227}],257:[function(require,module,exports){
+},{"../../const":229}],259:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31323,7 +31605,7 @@ var SystemRenderer = function (_EventEmitter) {
 
 exports.default = SystemRenderer;
 
-},{"../const":227,"../display/Container":229,"../math":251,"../settings":282,"../textures/RenderTexture":294,"../utils":306,"eventemitter3":370}],258:[function(require,module,exports){
+},{"../const":229,"../display/Container":231,"../math":253,"../settings":284,"../textures/RenderTexture":296,"../utils":308,"eventemitter3":372}],260:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31688,7 +31970,7 @@ var CanvasRenderer = function (_SystemRenderer) {
 exports.default = CanvasRenderer;
 _utils.pluginTarget.mixin(CanvasRenderer);
 
-},{"../../const":227,"../../settings":282,"../../utils":306,"../SystemRenderer":257,"./utils/CanvasMaskManager":259,"./utils/CanvasRenderTarget":260,"./utils/mapCanvasBlendModesToPixi":262}],259:[function(require,module,exports){
+},{"../../const":229,"../../settings":284,"../../utils":308,"../SystemRenderer":259,"./utils/CanvasMaskManager":261,"./utils/CanvasRenderTarget":262,"./utils/mapCanvasBlendModesToPixi":264}],261:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31857,7 +32139,7 @@ var CanvasMaskManager = function () {
 
 exports.default = CanvasMaskManager;
 
-},{"../../../const":227}],260:[function(require,module,exports){
+},{"../../../const":229}],262:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31981,7 +32263,7 @@ var CanvasRenderTarget = function () {
 
 exports.default = CanvasRenderTarget;
 
-},{"../../../settings":282}],261:[function(require,module,exports){
+},{"../../../settings":284}],263:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32042,7 +32324,7 @@ function canUseNewCanvasBlendModes() {
     return data[0] === 255 && data[1] === 0 && data[2] === 0;
 }
 
-},{}],262:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32114,7 +32396,7 @@ function mapCanvasBlendModesToPixi() {
     return array;
 }
 
-},{"../../../const":227,"./canUseNewCanvasBlendModes":261}],263:[function(require,module,exports){
+},{"../../../const":229,"./canUseNewCanvasBlendModes":263}],265:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32234,7 +32516,7 @@ var TextureGarbageCollector = function () {
 
 exports.default = TextureGarbageCollector;
 
-},{"../../const":227,"../../settings":282}],264:[function(require,module,exports){
+},{"../../const":229,"../../settings":284}],266:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -32490,7 +32772,7 @@ var TextureManager = function () {
 
 exports.default = TextureManager;
 
-},{"../../const":227,"../../utils":306,"./utils/RenderTarget":277,"pixi-gl-core":210}],265:[function(require,module,exports){
+},{"../../const":229,"../../utils":308,"./utils/RenderTarget":279,"pixi-gl-core":212}],267:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33307,7 +33589,7 @@ var WebGLRenderer = function (_SystemRenderer) {
 exports.default = WebGLRenderer;
 _utils.pluginTarget.mixin(WebGLRenderer);
 
-},{"../../const":227,"../../textures/BaseTexture":293,"../../utils":306,"../SystemRenderer":257,"./TextureGarbageCollector":263,"./TextureManager":264,"./WebGLState":266,"./managers/FilterManager":271,"./managers/MaskManager":272,"./managers/StencilManager":273,"./utils/ObjectRenderer":275,"./utils/RenderTarget":277,"./utils/mapWebGLDrawModesToPixi":280,"./utils/validateContext":281,"pixi-gl-core":210}],266:[function(require,module,exports){
+},{"../../const":229,"../../textures/BaseTexture":295,"../../utils":308,"../SystemRenderer":259,"./TextureGarbageCollector":265,"./TextureManager":266,"./WebGLState":268,"./managers/FilterManager":273,"./managers/MaskManager":274,"./managers/StencilManager":275,"./utils/ObjectRenderer":277,"./utils/RenderTarget":279,"./utils/mapWebGLDrawModesToPixi":282,"./utils/validateContext":283,"pixi-gl-core":212}],268:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33587,7 +33869,7 @@ var WebGLState = function () {
 
 exports.default = WebGLState;
 
-},{"./utils/mapWebGLBlendModesToPixi":279}],267:[function(require,module,exports){
+},{"./utils/mapWebGLBlendModesToPixi":281}],269:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33783,7 +34065,7 @@ var Filter = function () {
 
 exports.default = Filter;
 
-},{"../../../const":227,"../../../settings":282,"../../../utils":306,"./extractUniformsFromSrc":268}],268:[function(require,module,exports){
+},{"../../../const":229,"../../../settings":284,"../../../utils":308,"./extractUniformsFromSrc":270}],270:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33845,7 +34127,7 @@ function extractUniformsFromString(string) {
     return uniforms;
 }
 
-},{"pixi-gl-core":210}],269:[function(require,module,exports){
+},{"pixi-gl-core":212}],271:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33860,6 +34142,7 @@ var _math = require('../../../math');
  * @param filterArea {Rectangle} The filter area
  * @param sprite {Sprite} the target sprite
  * @param outputMatrix {Matrix} @alvin
+ * @private
  */
 // TODO playing around here.. this is temporary - (will end up in the shader)
 // this returns a matrix that will normalise map filter cords in the filter to screen space
@@ -33904,7 +34187,7 @@ function calculateSpriteMatrix(outputMatrix, filterArea, textureSize, sprite) {
     return mappedMatrix;
 }
 
-},{"../../../math":251}],270:[function(require,module,exports){
+},{"../../../math":253}],272:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -33992,7 +34275,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":251,"../../../../textures/TextureMatrix":297,"../Filter":267,"path":406}],271:[function(require,module,exports){
+},{"../../../../math":253,"../../../../textures/TextureMatrix":299,"../Filter":269,"path":192}],273:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34586,7 +34869,7 @@ var FilterManager = function (_WebGLManager) {
 
 exports.default = FilterManager;
 
-},{"../../../Shader":225,"../../../math":251,"../filters/filterTransforms":269,"../utils/Quad":276,"../utils/RenderTarget":277,"./WebGLManager":274,"bit-twiddle":4}],272:[function(require,module,exports){
+},{"../../../Shader":227,"../../../math":253,"../filters/filterTransforms":271,"../utils/Quad":278,"../utils/RenderTarget":279,"./WebGLManager":276,"bit-twiddle":4}],274:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34796,7 +35079,7 @@ var MaskManager = function (_WebGLManager) {
 
 exports.default = MaskManager;
 
-},{"../filters/spriteMask/SpriteMaskFilter":270,"./WebGLManager":274}],273:[function(require,module,exports){
+},{"../filters/spriteMask/SpriteMaskFilter":272,"./WebGLManager":276}],275:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34949,7 +35232,7 @@ var StencilManager = function (_WebGLManager) {
 
 exports.default = StencilManager;
 
-},{"./WebGLManager":274}],274:[function(require,module,exports){
+},{"./WebGLManager":276}],276:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35004,7 +35287,7 @@ var WebGLManager = function () {
 
 exports.default = WebGLManager;
 
-},{}],275:[function(require,module,exports){
+},{}],277:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35082,7 +35365,7 @@ var ObjectRenderer = function (_WebGLManager) {
 
 exports.default = ObjectRenderer;
 
-},{"../managers/WebGLManager":274}],276:[function(require,module,exports){
+},{"../managers/WebGLManager":276}],278:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35263,7 +35546,7 @@ var Quad = function () {
 
 exports.default = Quad;
 
-},{"../../../utils/createIndicesForQuads":304,"pixi-gl-core":210}],277:[function(require,module,exports){
+},{"../../../utils/createIndicesForQuads":306,"pixi-gl-core":212}],279:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35590,7 +35873,7 @@ var RenderTarget = function () {
 
 exports.default = RenderTarget;
 
-},{"../../../const":227,"../../../math":251,"../../../settings":282,"pixi-gl-core":210}],278:[function(require,module,exports){
+},{"../../../const":229,"../../../math":253,"../../../settings":284,"pixi-gl-core":212}],280:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35665,7 +35948,7 @@ function generateIfTestSrc(maxIfs) {
     return src;
 }
 
-},{"pixi-gl-core":210}],279:[function(require,module,exports){
+},{"pixi-gl-core":212}],281:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35714,7 +35997,7 @@ function mapWebGLBlendModesToPixi(gl) {
     return array;
 }
 
-},{"../../../const":227}],280:[function(require,module,exports){
+},{"../../../const":229}],282:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35746,7 +36029,7 @@ function mapWebGLDrawModesToPixi(gl) {
   return object;
 }
 
-},{"../../../const":227}],281:[function(require,module,exports){
+},{"../../../const":229}],283:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35762,7 +36045,7 @@ function validateContext(gl) {
     }
 }
 
-},{}],282:[function(require,module,exports){
+},{}],284:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -35990,14 +36273,24 @@ exports.default = {
    *
    * @static
    * @constant
-   * @memberof PIXI
+   * @memberof PIXI.settings
    * @type {boolean}
    */
-  CAN_UPLOAD_SAME_BUFFER: (0, _canUploadSameBuffer2.default)()
+  CAN_UPLOAD_SAME_BUFFER: (0, _canUploadSameBuffer2.default)(),
 
+  /**
+   * Default Mesh `canvasPadding`.
+   *
+   * @see PIXI.mesh.Mesh#canvasPadding
+   * @static
+   * @constant
+   * @memberof PIXI.settings
+   * @type {number}
+   */
+  MESH_CANVAS_PADDING: 0
 };
 
-},{"./utils/canUploadSameBuffer":303,"./utils/maxRecommendedTextures":308}],283:[function(require,module,exports){
+},{"./utils/canUploadSameBuffer":305,"./utils/maxRecommendedTextures":310}],285:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -36620,7 +36913,7 @@ var Sprite = function (_Container) {
 
 exports.default = Sprite;
 
-},{"../const":227,"../display/Container":229,"../math":251,"../textures/Texture":296,"../utils":306}],284:[function(require,module,exports){
+},{"../const":229,"../display/Container":231,"../math":253,"../textures/Texture":298,"../utils":308}],286:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -36773,7 +37066,7 @@ exports.default = CanvasSpriteRenderer;
 
 _CanvasRenderer2.default.registerPlugin('sprite', CanvasSpriteRenderer);
 
-},{"../../const":227,"../../math":251,"../../renderers/canvas/CanvasRenderer":258,"./CanvasTinter":285}],285:[function(require,module,exports){
+},{"../../const":229,"../../math":253,"../../renderers/canvas/CanvasRenderer":260,"./CanvasTinter":287}],287:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37024,7 +37317,7 @@ CanvasTinter.tintMethod = CanvasTinter.canUseMultiply ? CanvasTinter.tintWithMul
 
 exports.default = CanvasTinter;
 
-},{"../../renderers/canvas/utils/canUseNewCanvasBlendModes":261,"../../utils":306}],286:[function(require,module,exports){
+},{"../../renderers/canvas/utils/canUseNewCanvasBlendModes":263,"../../utils":308}],288:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -37077,7 +37370,7 @@ var Buffer = function () {
 
 exports.default = Buffer;
 
-},{}],287:[function(require,module,exports){
+},{}],289:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37628,7 +37921,7 @@ exports.default = SpriteRenderer;
 
 _WebGLRenderer2.default.registerPlugin('sprite', SpriteRenderer);
 
-},{"../../renderers/webgl/WebGLRenderer":265,"../../renderers/webgl/utils/ObjectRenderer":275,"../../renderers/webgl/utils/checkMaxIfStatmentsInShader":278,"../../settings":282,"../../utils":306,"../../utils/createIndicesForQuads":304,"./BatchBuffer":286,"./generateMultiTextureShader":288,"bit-twiddle":4,"pixi-gl-core":210}],288:[function(require,module,exports){
+},{"../../renderers/webgl/WebGLRenderer":267,"../../renderers/webgl/utils/ObjectRenderer":277,"../../renderers/webgl/utils/checkMaxIfStatmentsInShader":280,"../../settings":284,"../../utils":308,"../../utils/createIndicesForQuads":306,"./BatchBuffer":288,"./generateMultiTextureShader":290,"bit-twiddle":4,"pixi-gl-core":212}],290:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -37691,7 +37984,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":225,"path":406}],289:[function(require,module,exports){
+},{"../../Shader":227,"path":192}],291:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38346,7 +38639,7 @@ var Text = function (_Sprite) {
 
 exports.default = Text;
 
-},{"../const":227,"../math":251,"../settings":282,"../sprites/Sprite":283,"../textures/Texture":296,"../utils":306,"../utils/trimCanvas":311,"./TextMetrics":290,"./TextStyle":291}],290:[function(require,module,exports){
+},{"../const":229,"../math":253,"../settings":284,"../sprites/Sprite":285,"../textures/Texture":298,"../utils":308,"../utils/trimCanvas":313,"./TextMetrics":292,"./TextStyle":293}],292:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38649,7 +38942,7 @@ TextMetrics._context = canvas.getContext('2d');
  */
 TextMetrics._fonts = {};
 
-},{}],291:[function(require,module,exports){
+},{}],293:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39370,7 +39663,7 @@ var TextStyle = function () {
 
 /**
  * Utility function to convert hexadecimal colors to strings, and simply return the color if it's a string.
- *
+ * @private
  * @param {number|number[]} color
  * @return {string} The color as a string.
  */
@@ -39392,7 +39685,7 @@ function getSingleColor(color) {
 /**
  * Utility function to convert hexadecimal colors to strings, and simply return the color if it's a string.
  * This version can also convert array of colors
- *
+ * @private
  * @param {number|number[]} color
  * @return {string} The color as a string.
  */
@@ -39411,7 +39704,7 @@ function getColor(color) {
 /**
  * Utility function to convert hexadecimal colors to strings, and simply return the color if it's a string.
  * This version can also convert array of colors
- *
+ * @private
  * @param {Array} array1 First array to compare
  * @param {Array} array2 Second array to compare
  * @return {boolean} Do the arrays contain the same values in the same order
@@ -39436,7 +39729,7 @@ function areArraysEqual(array1, array2) {
 
 /**
  * Utility function to ensure that object properties are copied by value, and not by reference
- *
+ * @private
  * @param {Object} target Target object to copy properties into
  * @param {Object} source Source object for the proporties to copy
  * @param {string} propertyObj Object containing properties names we want to loop over
@@ -39451,7 +39744,7 @@ function deepCopyProperties(target, source, propertyObj) {
     }
 }
 
-},{"../const":227,"../utils":306}],292:[function(require,module,exports){
+},{"../const":229,"../utils":308}],294:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39613,7 +39906,7 @@ var BaseRenderTexture = function (_BaseTexture) {
 
 exports.default = BaseRenderTexture;
 
-},{"../settings":282,"./BaseTexture":293}],293:[function(require,module,exports){
+},{"../settings":284,"./BaseTexture":295}],295:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40459,7 +40752,7 @@ var BaseTexture = function (_EventEmitter) {
 
 exports.default = BaseTexture;
 
-},{"../settings":282,"../utils":306,"../utils/determineCrossOrigin":305,"bit-twiddle":4,"eventemitter3":370}],294:[function(require,module,exports){
+},{"../settings":284,"../utils":308,"../utils/determineCrossOrigin":307,"bit-twiddle":4,"eventemitter3":372}],296:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40613,7 +40906,7 @@ var RenderTexture = function (_Texture) {
 
 exports.default = RenderTexture;
 
-},{"./BaseRenderTexture":292,"./Texture":296}],295:[function(require,module,exports){
+},{"./BaseRenderTexture":294,"./Texture":298}],297:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40783,25 +41076,28 @@ var Spritesheet = function () {
 
         while (frameIndex - initialFrameIndex < maxFrames && frameIndex < this._frameKeys.length) {
             var i = this._frameKeys[frameIndex];
-            var rect = this._frames[i].frame;
+            var data = this._frames[i];
+            var rect = data.frame;
 
             if (rect) {
                 var frame = null;
                 var trim = null;
-                var orig = new _.Rectangle(0, 0, Math.floor(this._frames[i].sourceSize.w * sourceScale) / this.resolution, Math.floor(this._frames[i].sourceSize.h * sourceScale) / this.resolution);
+                var sourceSize = data.trimmed !== false && data.sourceSize ? data.sourceSize : data.frame;
 
-                if (this._frames[i].rotated) {
+                var orig = new _.Rectangle(0, 0, Math.floor(sourceSize.w * sourceScale) / this.resolution, Math.floor(sourceSize.h * sourceScale) / this.resolution);
+
+                if (data.rotated) {
                     frame = new _.Rectangle(Math.floor(rect.x * sourceScale) / this.resolution, Math.floor(rect.y * sourceScale) / this.resolution, Math.floor(rect.h * sourceScale) / this.resolution, Math.floor(rect.w * sourceScale) / this.resolution);
                 } else {
                     frame = new _.Rectangle(Math.floor(rect.x * sourceScale) / this.resolution, Math.floor(rect.y * sourceScale) / this.resolution, Math.floor(rect.w * sourceScale) / this.resolution, Math.floor(rect.h * sourceScale) / this.resolution);
                 }
 
                 //  Check to see if the sprite is trimmed
-                if (this._frames[i].trimmed) {
-                    trim = new _.Rectangle(Math.floor(this._frames[i].spriteSourceSize.x * sourceScale) / this.resolution, Math.floor(this._frames[i].spriteSourceSize.y * sourceScale) / this.resolution, Math.floor(rect.w * sourceScale) / this.resolution, Math.floor(rect.h * sourceScale) / this.resolution);
+                if (data.trimmed !== false && data.spriteSourceSize) {
+                    trim = new _.Rectangle(Math.floor(data.spriteSourceSize.x * sourceScale) / this.resolution, Math.floor(data.spriteSourceSize.y * sourceScale) / this.resolution, Math.floor(rect.w * sourceScale) / this.resolution, Math.floor(rect.h * sourceScale) / this.resolution);
                 }
 
-                this.textures[i] = new _.Texture(this.baseTexture, frame, orig, trim, this._frames[i].rotated ? 2 : 0);
+                this.textures[i] = new _.Texture(this.baseTexture, frame, orig, trim, data.rotated ? 2 : 0);
 
                 // lets also add the frame to pixi's global cache for fromFrame and fromImage functions
                 _.Texture.addToCache(this.textures[i], i);
@@ -40875,7 +41171,7 @@ var Spritesheet = function () {
 
 exports.default = Spritesheet;
 
-},{"../":246,"../utils":306}],296:[function(require,module,exports){
+},{"../":248,"../utils":308}],298:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41567,7 +41863,7 @@ Texture.WHITE = createWhiteTexture();
 removeAllHandlers(Texture.WHITE);
 removeAllHandlers(Texture.WHITE.baseTexture);
 
-},{"../math":251,"../settings":282,"../utils":306,"./BaseTexture":293,"./TextureUvs":298,"./VideoBaseTexture":299,"eventemitter3":370}],297:[function(require,module,exports){
+},{"../math":253,"../settings":284,"../utils":308,"./BaseTexture":295,"./TextureUvs":300,"./VideoBaseTexture":301,"eventemitter3":372}],299:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41731,7 +42027,7 @@ var TextureMatrix = function () {
 
 exports.default = TextureMatrix;
 
-},{"../math/Matrix":248}],298:[function(require,module,exports){
+},{"../math/Matrix":250}],300:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41836,7 +42132,7 @@ var TextureUvs = function () {
 
 exports.default = TextureUvs;
 
-},{"../math/GroupD8":247}],299:[function(require,module,exports){
+},{"../math/GroupD8":249}],301:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42178,7 +42474,7 @@ function createSource(path, type) {
     return source;
 }
 
-},{"../const":227,"../ticker":302,"../utils":306,"../utils/determineCrossOrigin":305,"./BaseTexture":293}],300:[function(require,module,exports){
+},{"../const":229,"../ticker":304,"../utils":308,"../utils/determineCrossOrigin":307,"./BaseTexture":295}],302:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42651,7 +42947,7 @@ var Ticker = function () {
 
 exports.default = Ticker;
 
-},{"../const":227,"../settings":282,"./TickerListener":301}],301:[function(require,module,exports){
+},{"../const":229,"../settings":284,"./TickerListener":303}],303:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -42825,7 +43121,7 @@ var TickerListener = function () {
 
 exports.default = TickerListener;
 
-},{}],302:[function(require,module,exports){
+},{}],304:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42905,7 +43201,7 @@ shared.destroy = function () {
 exports.shared = shared;
 exports.Ticker = _Ticker2.default;
 
-},{"./Ticker":300}],303:[function(require,module,exports){
+},{"./Ticker":302}],305:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -42919,7 +43215,7 @@ function canUploadSameBuffer() {
 	return !ios;
 }
 
-},{}],304:[function(require,module,exports){
+},{}],306:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -42953,7 +43249,7 @@ function createIndicesForQuads(size) {
     return indices;
 }
 
-},{}],305:[function(require,module,exports){
+},{}],307:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43009,7 +43305,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":412}],306:[function(require,module,exports){
+},{"url":394}],308:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43175,7 +43471,7 @@ function getResolutionOfUrl(url, defaultValue) {
 /**
  * Typedef for decomposeDataUri return object.
  *
- * @typedef {object} DecomposedDataUri
+ * @typedef {object} PIXI.utils~DecomposedDataUri
  * @property {mediaType} Media type, eg. `image`
  * @property {subType} Sub type, eg. `png`
  * @property {encoding} Data encoding, eg. `base64`
@@ -43189,7 +43485,7 @@ function getResolutionOfUrl(url, defaultValue) {
  * @memberof PIXI.utils
  * @function decomposeDataUri
  * @param {string} dataUri - the data URI to check
- * @return {DecomposedDataUri|undefined} The decomposed data uri or undefined
+ * @return {PIXI.utils~DecomposedDataUri|undefined} The decomposed data uri or undefined
  */
 function decomposeDataUri(dataUri) {
     var dataUriMatch = _const.DATA_URI.exec(dataUri);
@@ -43227,7 +43523,7 @@ function getUrlFileExtension(url) {
 /**
  * Typedef for Size object.
  *
- * @typedef {object} Size
+ * @typedef {object} PIXI.utils~Size
  * @property {width} Width component
  * @property {height} Height component
  */
@@ -43238,7 +43534,7 @@ function getUrlFileExtension(url) {
  * @memberof PIXI.utils
  * @function getSvgSize
  * @param {string} svgString - a serialized svg element
- * @return {Size|undefined} image extension
+ * @return {PIXI.utils~Size|undefined} image extension
  */
 function getSvgSize(svgString) {
     var sizeMatch = _const.SVG_SIZE.exec(svgString);
@@ -43412,6 +43708,7 @@ function correctBlendMode(blendMode, premultiplied) {
 /**
  * premultiplies tint
  *
+ * @memberof PIXI.utils
  * @param {number} tint integet RGB
  * @param {number} alpha floating point alpha (0.0-1.0)
  * @returns {number} tint multiplied by alpha
@@ -43437,6 +43734,7 @@ function premultiplyTint(tint, alpha) {
 /**
  * combines rgb and alpha to out array
  *
+ * @memberof PIXI.utils
  * @param {Float32Array|number[]} rgb input rgb
  * @param {number} alpha alpha param
  * @param {Float32Array} [out] output
@@ -43462,6 +43760,7 @@ function premultiplyRgba(rgb, alpha, out, premultiply) {
 /**
  * converts integer tint and float alpha to vec4 form, premultiplies by default
  *
+ * @memberof PIXI.utils
  * @param {number} tint input tint
  * @param {number} alpha alpha param
  * @param {Float32Array} [out] output
@@ -43483,7 +43782,7 @@ function premultiplyTintToRgba(tint, alpha, out, premultiply) {
     return out;
 }
 
-},{"../const":227,"../settings":282,"./mapPremultipliedBlendModes":307,"./mixin":309,"./pluginTarget":310,"eventemitter3":370,"ismobilejs":187,"remove-array-items":371}],307:[function(require,module,exports){
+},{"../const":229,"../settings":284,"./mapPremultipliedBlendModes":309,"./mixin":311,"./pluginTarget":312,"eventemitter3":372,"ismobilejs":188,"remove-array-items":378}],309:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43526,7 +43825,7 @@ function mapPremultipliedBlendModes() {
     return array;
 }
 
-},{"../const":227}],308:[function(require,module,exports){
+},{"../const":229}],310:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43548,7 +43847,7 @@ function maxRecommendedTextures(max) {
     return max;
 }
 
-},{"ismobilejs":187}],309:[function(require,module,exports){
+},{"ismobilejs":188}],311:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -43610,7 +43909,7 @@ function performMixins() {
     mixins.length = 0;
 }
 
-},{}],310:[function(require,module,exports){
+},{}],312:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -43676,7 +43975,7 @@ exports.default = {
     }
 };
 
-},{}],311:[function(require,module,exports){
+},{}],313:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43752,7 +44051,7 @@ function trimCanvas(canvas) {
     };
 }
 
-},{}],312:[function(require,module,exports){
+},{}],314:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44896,7 +45195,7 @@ function deprecation(core) {
     }
 }
 
-},{}],313:[function(require,module,exports){
+},{}],315:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45076,7 +45375,7 @@ exports.default = CanvasExtract;
 
 core.CanvasRenderer.registerPlugin('extract', CanvasExtract);
 
-},{"../../core":246}],314:[function(require,module,exports){
+},{"../../core":248}],316:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45101,7 +45400,7 @@ Object.defineProperty(exports, 'canvas', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./canvas/CanvasExtract":313,"./webgl/WebGLExtract":315}],315:[function(require,module,exports){
+},{"./canvas/CanvasExtract":315,"./webgl/WebGLExtract":317}],317:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45191,12 +45490,14 @@ var WebGLExtract = function () {
         var frame = void 0;
         var flipY = false;
         var renderTexture = void 0;
+        var generated = false;
 
         if (target) {
             if (target instanceof core.RenderTexture) {
                 renderTexture = target;
             } else {
                 renderTexture = this.renderer.generateTexture(target);
+                generated = true;
             }
         }
 
@@ -45246,7 +45547,11 @@ var WebGLExtract = function () {
             }
         }
 
+        if (generated) {
+            renderTexture.destroy(true);
+        }
         // send the canvas back..
+
         return canvasBuffer.canvas;
     };
 
@@ -45266,12 +45571,14 @@ var WebGLExtract = function () {
         var resolution = void 0;
         var frame = void 0;
         var renderTexture = void 0;
+        var generated = false;
 
         if (target) {
             if (target instanceof core.RenderTexture) {
                 renderTexture = target;
             } else {
                 renderTexture = this.renderer.generateTexture(target);
+                generated = true;
             }
         }
 
@@ -45302,6 +45609,10 @@ var WebGLExtract = function () {
             gl.readPixels(frame.x * resolution, frame.y * resolution, width, height, gl.RGBA, gl.UNSIGNED_BYTE, webglPixels);
         }
 
+        if (generated) {
+            renderTexture.destroy(true);
+        }
+
         return webglPixels;
     };
 
@@ -45324,7 +45635,7 @@ exports.default = WebGLExtract;
 
 core.WebGLRenderer.registerPlugin('extract', WebGLExtract);
 
-},{"../../core":246}],316:[function(require,module,exports){
+},{"../../core":248}],318:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -45344,7 +45655,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
- * @typedef FrameObject
+ * @typedef PIXI.extras.AnimatedSprite~FrameObject
  * @type {object}
  * @property {PIXI.Texture} texture - The {@link PIXI.Texture} of the frame
  * @property {number} time - the duration of the frame in ms
@@ -45374,7 +45685,7 @@ var AnimatedSprite = function (_core$Sprite) {
     _inherits(AnimatedSprite, _core$Sprite);
 
     /**
-     * @param {PIXI.Texture[]|FrameObject[]} textures - an array of {@link PIXI.Texture} or frame
+     * @param {PIXI.Texture[]|PIXI.extras.AnimatedSprite~FrameObject[]} textures - an array of {@link PIXI.Texture} or frame
      *  objects that make up the animation
      * @param {boolean} [autoUpdate=true] - Whether to use PIXI.ticker.shared to auto update animation time.
      */
@@ -45733,7 +46044,7 @@ var AnimatedSprite = function (_core$Sprite) {
 
 exports.default = AnimatedSprite;
 
-},{"../core":246}],317:[function(require,module,exports){
+},{"../core":248}],319:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -46324,7 +46635,7 @@ exports.default = BitmapText;
 
 BitmapText.fonts = {};
 
-},{"../core":246,"../core/math/ObservablePoint":249,"../core/settings":282,"../core/utils":306}],318:[function(require,module,exports){
+},{"../core":248,"../core/math/ObservablePoint":251,"../core/settings":284,"../core/utils":308}],320:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -46770,7 +47081,7 @@ var TilingSprite = function (_core$Sprite) {
 
 exports.default = TilingSprite;
 
-},{"../core":246,"../core/sprites/canvas/CanvasTinter":285}],319:[function(require,module,exports){
+},{"../core":248,"../core/sprites/canvas/CanvasTinter":287}],321:[function(require,module,exports){
 'use strict';
 
 var _core = require('../core');
@@ -47174,7 +47485,7 @@ DisplayObject.prototype._cacheAsBitmapDestroy = function _cacheAsBitmapDestroy(o
     this.destroy(options);
 };
 
-},{"../core":246,"../core/textures/BaseTexture":293,"../core/textures/Texture":296,"../core/utils":306}],320:[function(require,module,exports){
+},{"../core":248,"../core/textures/BaseTexture":295,"../core/textures/Texture":298,"../core/utils":308}],322:[function(require,module,exports){
 'use strict';
 
 var _core = require('../core');
@@ -47187,13 +47498,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
  * The instance name of the object.
  *
  * @memberof PIXI.DisplayObject#
- * @member {string}
+ * @member {string} name
  */
 core.DisplayObject.prototype.name = null;
 
 /**
  * Returns the display object in the container
  *
+ * @method getChildByName
  * @memberof PIXI.Container#
  * @param {string} name - instance name
  * @return {PIXI.DisplayObject} The child with the specified name.
@@ -47208,7 +47520,7 @@ core.Container.prototype.getChildByName = function getChildByName(name) {
     return null;
 };
 
-},{"../core":246}],321:[function(require,module,exports){
+},{"../core":248}],323:[function(require,module,exports){
 'use strict';
 
 var _core = require('../core');
@@ -47220,6 +47532,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /**
  * Returns the global position of the displayObject. Does not depend on object scale, rotation and pivot.
  *
+ * @method getGlobalPosition
  * @memberof PIXI.DisplayObject#
  * @param {Point} point - the point to write the global value to. If null a new point will be returned
  * @param {boolean} skipUpdate - setting to true will stop the transforms of the scene graph from
@@ -47241,7 +47554,7 @@ core.DisplayObject.prototype.getGlobalPosition = function getGlobalPosition() {
     return point;
 };
 
-},{"../core":246}],322:[function(require,module,exports){
+},{"../core":248}],324:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47293,7 +47606,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // imported for side effect of extending the prototype only, contains no exports
 
-},{"./AnimatedSprite":316,"./BitmapText":317,"./TilingSprite":318,"./cacheAsBitmap":319,"./getChildByName":320,"./getGlobalPosition":321,"./webgl/TilingSpriteRenderer":323}],323:[function(require,module,exports){
+},{"./AnimatedSprite":318,"./BitmapText":319,"./TilingSprite":320,"./cacheAsBitmap":321,"./getChildByName":322,"./getGlobalPosition":323,"./webgl/TilingSpriteRenderer":325}],325:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47455,7 +47768,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":246,"../../core/const":227,"path":406}],324:[function(require,module,exports){
+},{"../../core":248,"../../core/const":229,"path":192}],326:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47539,7 +47852,7 @@ var AlphaFilter = function (_core$Filter) {
 
 exports.default = AlphaFilter;
 
-},{"../../core":246,"path":406}],325:[function(require,module,exports){
+},{"../../core":248,"path":192}],327:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47713,7 +48026,7 @@ var BlurFilter = function (_core$Filter) {
 
 exports.default = BlurFilter;
 
-},{"../../core":246,"./BlurXFilter":326,"./BlurYFilter":327}],326:[function(require,module,exports){
+},{"../../core":248,"./BlurXFilter":328,"./BlurYFilter":329}],328:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47879,7 +48192,7 @@ var BlurXFilter = function (_core$Filter) {
 
 exports.default = BlurXFilter;
 
-},{"../../core":246,"./generateBlurFragSource":328,"./generateBlurVertSource":329,"./getMaxBlurKernelSize":330}],327:[function(require,module,exports){
+},{"../../core":248,"./generateBlurFragSource":330,"./generateBlurVertSource":331,"./getMaxBlurKernelSize":332}],329:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48044,7 +48357,7 @@ var BlurYFilter = function (_core$Filter) {
 
 exports.default = BlurYFilter;
 
-},{"../../core":246,"./generateBlurFragSource":328,"./generateBlurVertSource":329,"./getMaxBlurKernelSize":330}],328:[function(require,module,exports){
+},{"../../core":248,"./generateBlurFragSource":330,"./generateBlurVertSource":331,"./getMaxBlurKernelSize":332}],330:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48091,7 +48404,7 @@ function generateFragBlurSource(kernelSize) {
     return fragSource;
 }
 
-},{}],329:[function(require,module,exports){
+},{}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48135,7 +48448,7 @@ function generateVertBlurSource(kernelSize, x) {
     return vertSource;
 }
 
-},{}],330:[function(require,module,exports){
+},{}],332:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -48151,7 +48464,7 @@ function getMaxKernelSize(gl) {
     return kernelSize;
 }
 
-},{}],331:[function(require,module,exports){
+},{}],333:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48702,7 +49015,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":246,"path":406}],332:[function(require,module,exports){
+},{"../../core":248,"path":192}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48752,7 +49065,7 @@ var DisplacementFilter = function (_core$Filter) {
         // vertex shader
         'attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 filterMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec2 vFilterCoord;\n\nvoid main(void)\n{\n   gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n   vFilterCoord = ( filterMatrix * vec3( aTextureCoord, 1.0)  ).xy;\n   vTextureCoord = aTextureCoord;\n}',
         // fragment shader
-        'varying vec2 vFilterCoord;\nvarying vec2 vTextureCoord;\n\nuniform vec2 scale;\n\nuniform sampler2D uSampler;\nuniform sampler2D mapSampler;\n\nuniform vec4 filterClamp;\n\nvoid main(void)\n{\n   vec4 map =  texture2D(mapSampler, vFilterCoord);\n\n   map -= 0.5;\n   map.xy *= scale;\n\n   gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), filterClamp.xy, filterClamp.zw));\n}\n'));
+        'varying vec2 vFilterCoord;\nvarying vec2 vTextureCoord;\n\nuniform vec2 scale;\n\nuniform sampler2D uSampler;\nuniform sampler2D mapSampler;\n\nuniform vec4 filterArea;\nuniform vec4 filterClamp;\n\nvoid main(void)\n{\n  vec4 map =  texture2D(mapSampler, vFilterCoord);\n\n  map -= 0.5;\n  map.xy *= scale / filterArea.xy;\n\n  gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), filterClamp.xy, filterClamp.zw));\n}\n'));
 
         _this.maskSprite = sprite;
         _this.maskMatrix = maskMatrix;
@@ -48779,11 +49092,9 @@ var DisplacementFilter = function (_core$Filter) {
 
 
     DisplacementFilter.prototype.apply = function apply(filterManager, input, output) {
-        var ratio = 1 / output.destinationFrame.width * (output.size.width / input.size.width);
-
         this.uniforms.filterMatrix = filterManager.calculateSpriteMatrix(this.maskMatrix, this.maskSprite);
-        this.uniforms.scale.x = this.scale.x * ratio;
-        this.uniforms.scale.y = this.scale.y * ratio;
+        this.uniforms.scale.x = this.scale.x;
+        this.uniforms.scale.y = this.scale.y;
 
         // draw the filter...
         filterManager.applyFilter(this, input, output);
@@ -48812,7 +49123,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":246,"path":406}],333:[function(require,module,exports){
+},{"../../core":248,"path":192}],335:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48866,7 +49177,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":246,"path":406}],334:[function(require,module,exports){
+},{"../../core":248,"path":192}],336:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48945,7 +49256,7 @@ Object.defineProperty(exports, 'AlphaFilter', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./alpha/AlphaFilter":324,"./blur/BlurFilter":325,"./blur/BlurXFilter":326,"./blur/BlurYFilter":327,"./colormatrix/ColorMatrixFilter":331,"./displacement/DisplacementFilter":332,"./fxaa/FXAAFilter":333,"./noise/NoiseFilter":335}],335:[function(require,module,exports){
+},{"./alpha/AlphaFilter":326,"./blur/BlurFilter":327,"./blur/BlurXFilter":328,"./blur/BlurYFilter":329,"./colormatrix/ColorMatrixFilter":333,"./displacement/DisplacementFilter":334,"./fxaa/FXAAFilter":335,"./noise/NoiseFilter":337}],337:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49042,7 +49353,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":246,"path":406}],336:[function(require,module,exports){
+},{"../../core":248,"path":192}],338:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -49156,7 +49467,7 @@ if (typeof _deprecation2.default === 'function') {
 global.PIXI = exports; // eslint-disable-line
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./accessibility":223,"./core":246,"./deprecation":312,"./extract":314,"./extras":322,"./filters":334,"./interaction":341,"./loaders":344,"./mesh":353,"./particles":356,"./polyfill":362,"./prepare":366}],337:[function(require,module,exports){
+},{"./accessibility":225,"./core":248,"./deprecation":314,"./extract":316,"./extras":324,"./filters":336,"./interaction":343,"./loaders":346,"./mesh":355,"./particles":358,"./polyfill":364,"./prepare":368}],339:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49380,7 +49691,7 @@ var InteractionData = function () {
 
 exports.default = InteractionData;
 
-},{"../core":246}],338:[function(require,module,exports){
+},{"../core":248}],340:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -49465,7 +49776,7 @@ var InteractionEvent = function () {
 
 exports.default = InteractionEvent;
 
-},{}],339:[function(require,module,exports){
+},{}],341:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49509,7 +49820,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 // Mix interactiveTarget into core.DisplayObject.prototype, after deprecation has been handled
 core.utils.mixins.delayMixin(core.DisplayObject.prototype, _interactiveTarget2.default);
 
-var MOUSE_POINTER_ID = 'MOUSE';
+var MOUSE_POINTER_ID = 1;
 
 // helpers for hitTest() - only used inside hitTest()
 var hitTestEvent = {
@@ -50484,21 +50795,37 @@ var InteractionManager = function (_EventEmitter) {
         var hit = false;
         var interactiveParent = interactive;
 
-        // if the displayobject has a hitArea, then it does not need to hitTest children.
+        // Flag here can set to false if the event is outside the parents hitArea or mask
+        var hitTestChildren = true;
+
+        // If there is a hitArea, no need to test against anything else if the pointer is not within the hitArea
+        // There is also no longer a need to hitTest children.
         if (displayObject.hitArea) {
+            if (hitTest) {
+                displayObject.worldTransform.applyInverse(point, this._tempPoint);
+                if (!displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y)) {
+                    hitTest = false;
+                    hitTestChildren = false;
+                } else {
+                    hit = true;
+                }
+            }
             interactiveParent = false;
         }
-        // it has a mask! Then lets hit test that before continuing
-        else if (hitTest && displayObject._mask) {
-                if (!displayObject._mask.containsPoint(point)) {
-                    hitTest = false;
+        // If there is a mask, no need to test against anything else if the pointer is not within the mask
+        else if (displayObject._mask) {
+                if (hitTest) {
+                    if (!displayObject._mask.containsPoint(point)) {
+                        hitTest = false;
+                        hitTestChildren = false;
+                    }
                 }
             }
 
         // ** FREE TIP **! If an object is not interactive or has no buttons in it
         // (such as a game scene!) set interactiveChildren to false for that displayObject.
         // This will allow PixiJS to completely ignore and bypass checking the displayObjects children.
-        if (displayObject.interactiveChildren && displayObject.children) {
+        if (hitTestChildren && displayObject.interactiveChildren && displayObject.children) {
             var children = displayObject.children;
 
             for (var i = children.length - 1; i >= 0; i--) {
@@ -50540,12 +50867,8 @@ var InteractionManager = function (_EventEmitter) {
             // has already been hit - but only if it was interactive, otherwise we need to keep
             // looking for an interactive child, just in case we hit one
             if (hitTest && !interactionEvent.target) {
-                if (displayObject.hitArea) {
-                    displayObject.worldTransform.applyInverse(point, this._tempPoint);
-                    if (displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y)) {
-                        hit = true;
-                    }
-                } else if (displayObject.containsPoint) {
+                // already tested against hitArea if it is defined
+                if (!displayObject.hitArea && displayObject.containsPoint) {
                     if (displayObject.containsPoint(point)) {
                         hit = true;
                     }
@@ -51224,7 +51547,7 @@ exports.default = InteractionManager;
 core.WebGLRenderer.registerPlugin('interaction', InteractionManager);
 core.CanvasRenderer.registerPlugin('interaction', InteractionManager);
 
-},{"../core":246,"./InteractionData":337,"./InteractionEvent":338,"./InteractionTrackingData":340,"./interactiveTarget":342,"eventemitter3":370}],340:[function(require,module,exports){
+},{"../core":248,"./InteractionData":339,"./InteractionEvent":340,"./InteractionTrackingData":342,"./interactiveTarget":344,"eventemitter3":372}],342:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -51400,7 +51723,7 @@ InteractionTrackingData.FLAGS = Object.freeze({
     RIGHT_DOWN: 1 << 2
 });
 
-},{}],341:[function(require,module,exports){
+},{}],343:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51452,7 +51775,7 @@ Object.defineProperty(exports, 'InteractionEvent', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./InteractionData":337,"./InteractionEvent":338,"./InteractionManager":339,"./InteractionTrackingData":340,"./interactiveTarget":342}],342:[function(require,module,exports){
+},{"./InteractionData":339,"./InteractionEvent":340,"./InteractionManager":341,"./InteractionTrackingData":342,"./interactiveTarget":344}],344:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51569,7 +51892,7 @@ exports.default = {
   _trackedPointers: undefined
 };
 
-},{}],343:[function(require,module,exports){
+},{}],345:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51661,7 +51984,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":246,"../extras":322,"path":406,"resource-loader":376}],344:[function(require,module,exports){
+},{"../core":248,"../extras":324,"path":192,"resource-loader":383}],346:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51789,7 +52112,7 @@ AppPrototype.destroy = function destroy(removeView) {
     this._parentDestroy(removeView);
 };
 
-},{"../core/Application":224,"./bitmapFontParser":343,"./loader":345,"./spritesheetParser":346,"./textureParser":347,"resource-loader":376}],345:[function(require,module,exports){
+},{"../core/Application":226,"./bitmapFontParser":345,"./loader":347,"./spritesheetParser":348,"./textureParser":349,"resource-loader":383}],347:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51960,7 +52283,7 @@ var Resource = _resourceLoader2.default.Resource;
 
 Resource.setExtensionXhrType('fnt', Resource.XHR_RESPONSE_TYPE.DOCUMENT);
 
-},{"./bitmapFontParser":343,"./spritesheetParser":346,"./textureParser":347,"eventemitter3":370,"resource-loader":376,"resource-loader/lib/middlewares/parsing/blob":377}],346:[function(require,module,exports){
+},{"./bitmapFontParser":345,"./spritesheetParser":348,"./textureParser":349,"eventemitter3":372,"resource-loader":383,"resource-loader/lib/middlewares/parsing/blob":384}],348:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51978,7 +52301,6 @@ exports.default = function () {
 
         var loadOptions = {
             crossOrigin: resource.crossOrigin,
-            loadType: _resourceLoader.Resource.LOAD_TYPE.IMAGE,
             metadata: resource.metadata.imageMetadata,
             parentResource: resource
         };
@@ -51987,6 +52309,12 @@ exports.default = function () {
 
         // load the image for this sheet
         this.add(imageResourceName, resourcePath, loadOptions, function onImageLoad(res) {
+            if (res.error) {
+                next(res.error);
+
+                return;
+            }
+
             var spritesheet = new _core.Spritesheet(res.texture.baseTexture, resource.data, resource.url);
 
             spritesheet.parse(function () {
@@ -52019,7 +52347,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":246,"resource-loader":376,"url":412}],347:[function(require,module,exports){
+},{"../core":248,"resource-loader":383,"url":394}],349:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52042,7 +52370,7 @@ var _Texture2 = _interopRequireDefault(_Texture);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../core/textures/Texture":296,"resource-loader":376}],348:[function(require,module,exports){
+},{"../core/textures/Texture":298,"resource-loader":383}],350:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52153,7 +52481,7 @@ var Mesh = function (_core$Container) {
      *
      * @member {number}
      */
-    _this.canvasPadding = 0;
+    _this.canvasPadding = core.settings.MESH_CANVAS_PADDING;
 
     /**
      * The way the Mesh should be drawn, can be any of the {@link PIXI.mesh.Mesh.DRAW_MODES} consts
@@ -52411,7 +52739,7 @@ Mesh.DRAW_MODES = {
   TRIANGLES: 1
 };
 
-},{"../core":246,"../core/textures/Texture":296}],349:[function(require,module,exports){
+},{"../core":248,"../core/textures/Texture":298}],351:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52580,6 +52908,7 @@ var NineSlicePlane = function (_Plane) {
         var context = renderer.context;
 
         context.globalAlpha = this.worldAlpha;
+        renderer.setBlendMode(this.blendMode);
 
         var transform = this.worldTransform;
         var res = renderer.resolution;
@@ -52797,7 +53126,7 @@ var NineSlicePlane = function (_Plane) {
 
 exports.default = NineSlicePlane;
 
-},{"./Plane":350}],350:[function(require,module,exports){
+},{"./Plane":352}],352:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52938,7 +53267,7 @@ var Plane = function (_Mesh) {
 
 exports.default = Plane;
 
-},{"./Mesh":348}],351:[function(require,module,exports){
+},{"./Mesh":350}],353:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53174,7 +53503,7 @@ var Rope = function (_Mesh) {
 
 exports.default = Rope;
 
-},{"./Mesh":348}],352:[function(require,module,exports){
+},{"./Mesh":350}],354:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53230,6 +53559,7 @@ var MeshSpriteRenderer = function () {
             context.setTransform(transform.a * res, transform.b * res, transform.c * res, transform.d * res, transform.tx * res, transform.ty * res);
         }
 
+        renderer.context.globalAlpha = mesh.worldAlpha;
         renderer.setBlendMode(mesh.blendMode);
 
         if (mesh.drawMode === _Mesh2.default.DRAW_MODES.TRIANGLE_MESH) {
@@ -53340,9 +53670,11 @@ var MeshSpriteRenderer = function () {
         var y1 = vertices[index1 + 1];
         var y2 = vertices[index2 + 1];
 
-        if (mesh.canvasPadding > 0) {
-            var paddingX = mesh.canvasPadding / mesh.worldTransform.a;
-            var paddingY = mesh.canvasPadding / mesh.worldTransform.d;
+        var canvasPadding = mesh.canvasPadding / this.renderer.resolution;
+
+        if (canvasPadding > 0) {
+            var paddingX = canvasPadding / Math.abs(mesh.worldTransform.a);
+            var paddingY = canvasPadding / Math.abs(mesh.worldTransform.d);
             var centerX = (x0 + x1 + x2) / 3;
             var centerY = (y0 + y1 + y2) / 3;
 
@@ -53457,7 +53789,7 @@ exports.default = MeshSpriteRenderer;
 
 core.CanvasRenderer.registerPlugin('mesh', MeshSpriteRenderer);
 
-},{"../../core":246,"../Mesh":348}],353:[function(require,module,exports){
+},{"../../core":248,"../Mesh":350}],355:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53518,7 +53850,7 @@ Object.defineProperty(exports, 'Rope', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./Mesh":348,"./NineSlicePlane":349,"./Plane":350,"./Rope":351,"./canvas/CanvasMeshRenderer":352,"./webgl/MeshRenderer":354}],354:[function(require,module,exports){
+},{"./Mesh":350,"./NineSlicePlane":351,"./Plane":352,"./Rope":353,"./canvas/CanvasMeshRenderer":354,"./webgl/MeshRenderer":356}],356:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53669,7 +54001,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":246,"../Mesh":348,"path":406,"pixi-gl-core":210}],355:[function(require,module,exports){
+},{"../../core":248,"../Mesh":350,"path":192,"pixi-gl-core":212}],357:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -53722,13 +54054,14 @@ var ParticleContainer = function (_core$Container) {
      * @param {number} [maxSize=1500] - The maximum number of particles that can be rendered by the container.
      *  Affects size of allocated buffers.
      * @param {object} [properties] - The properties of children that should be uploaded to the gpu and applied.
-     * @param {boolean} [properties.scale=false] - When true, scale be uploaded and applied.
+     * @param {boolean} [properties.vertices=false] - When true, vertices be uploaded and applied.
+     *                  if sprite's ` scale/anchor/trim/frame/orig` is dynamic, please set `true`.
      * @param {boolean} [properties.position=true] - When true, position be uploaded and applied.
      * @param {boolean} [properties.rotation=false] - When true, rotation be uploaded and applied.
      * @param {boolean} [properties.uvs=false] - When true, uvs be uploaded and applied.
      * @param {boolean} [properties.tint=false] - When true, alpha and tint be uploaded and applied.
      * @param {number} [batchSize=16384] - Number of particles per batch. If less than maxSize, it uses maxSize instead.
-     * @param {boolean} [autoResize=true] If true, container allocates more batches in case
+     * @param {boolean} [autoResize=false] If true, container allocates more batches in case
      *  there are more than `maxSize` particles.
      */
     function ParticleContainer() {
@@ -53851,11 +54184,11 @@ var ParticleContainer = function (_core$Container) {
 
     ParticleContainer.prototype.setProperties = function setProperties(properties) {
         if (properties) {
-            this._properties[0] = 'scale' in properties ? !!properties.scale : this._properties[0];
+            this._properties[0] = 'vertices' in properties || 'scale' in properties ? !!properties.vertices || !!properties.scale : this._properties[0];
             this._properties[1] = 'position' in properties ? !!properties.position : this._properties[1];
             this._properties[2] = 'rotation' in properties ? !!properties.rotation : this._properties[2];
             this._properties[3] = 'uvs' in properties ? !!properties.uvs : this._properties[3];
-            this._properties[4] = 'alpha' in properties || 'tint' in properties ? !!properties.alpha || !!properties.tint : this._properties[4];
+            this._properties[4] = 'tint' in properties || 'alpha' in properties ? !!properties.tint || !!properties.alpha : this._properties[4];
         }
     };
 
@@ -54048,7 +54381,7 @@ var ParticleContainer = function (_core$Container) {
 
 exports.default = ParticleContainer;
 
-},{"../core":246,"../core/utils":306}],356:[function(require,module,exports){
+},{"../core":248,"../core/utils":308}],358:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54073,7 +54406,7 @@ Object.defineProperty(exports, 'ParticleRenderer', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./ParticleContainer":355,"./webgl/ParticleRenderer":358}],357:[function(require,module,exports){
+},{"./ParticleContainer":357,"./webgl/ParticleRenderer":360}],359:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54320,7 +54653,7 @@ var ParticleBuffer = function () {
 
 exports.default = ParticleBuffer;
 
-},{"../../core/utils/createIndicesForQuads":304,"pixi-gl-core":210}],358:[function(require,module,exports){
+},{"../../core/utils/createIndicesForQuads":306,"pixi-gl-core":212}],360:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54796,7 +55129,7 @@ exports.default = ParticleRenderer;
 
 core.WebGLRenderer.registerPlugin('particle', ParticleRenderer);
 
-},{"../../core":246,"../../core/utils":306,"./ParticleBuffer":357,"./ParticleShader":359}],359:[function(require,module,exports){
+},{"../../core":248,"../../core/utils":308,"./ParticleBuffer":359,"./ParticleShader":361}],361:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54829,7 +55162,7 @@ var ParticleShader = function (_Shader) {
 
         return _possibleConstructorReturn(this, _Shader.call(this, gl,
         // vertex shader
-        ['attribute vec2 aVertexPosition;', 'attribute vec2 aTextureCoord;', 'attribute vec4 aColor;', 'attribute vec2 aPositionCoord;', 'attribute vec2 aScale;', 'attribute float aRotation;', 'uniform mat3 projectionMatrix;', 'uniform vec4 uColor;', 'varying vec2 vTextureCoord;', 'varying vec4 vColor;', 'void main(void){', '   float x = (aVertexPosition.x) * cos(aRotation) - (aVertexPosition.y) * sin(aRotation);', '   float y = (aVertexPosition.x) * sin(aRotation) + (aVertexPosition.y) * cos(aRotation);', '   vec2 v = vec2(x, y);', '   v = v + aPositionCoord;', '   gl_Position = vec4((projectionMatrix * vec3(v, 1.0)).xy, 0.0, 1.0);', '   vTextureCoord = aTextureCoord;', '   vColor = aColor * uColor;', '}'].join('\n'),
+        ['attribute vec2 aVertexPosition;', 'attribute vec2 aTextureCoord;', 'attribute vec4 aColor;', 'attribute vec2 aPositionCoord;', 'attribute float aRotation;', 'uniform mat3 projectionMatrix;', 'uniform vec4 uColor;', 'varying vec2 vTextureCoord;', 'varying vec4 vColor;', 'void main(void){', '   float x = (aVertexPosition.x) * cos(aRotation) - (aVertexPosition.y) * sin(aRotation);', '   float y = (aVertexPosition.x) * sin(aRotation) + (aVertexPosition.y) * cos(aRotation);', '   vec2 v = vec2(x, y);', '   v = v + aPositionCoord;', '   gl_Position = vec4((projectionMatrix * vec3(v, 1.0)).xy, 0.0, 1.0);', '   vTextureCoord = aTextureCoord;', '   vColor = aColor * uColor;', '}'].join('\n'),
         // hello
         ['varying vec2 vTextureCoord;', 'varying vec4 vColor;', 'uniform sampler2D uSampler;', 'void main(void){', '  vec4 color = texture2D(uSampler, vTextureCoord) * vColor;', '  gl_FragColor = color;', '}'].join('\n')));
     }
@@ -54839,7 +55172,7 @@ var ParticleShader = function (_Shader) {
 
 exports.default = ParticleShader;
 
-},{"../../core/Shader":225}],360:[function(require,module,exports){
+},{"../../core/Shader":227}],362:[function(require,module,exports){
 "use strict";
 
 // References:
@@ -54857,7 +55190,7 @@ if (!Math.sign) {
     };
 }
 
-},{}],361:[function(require,module,exports){
+},{}],363:[function(require,module,exports){
 'use strict';
 
 var _objectAssign = require('object-assign');
@@ -54872,7 +55205,7 @@ if (!Object.assign) {
 // https://github.com/sindresorhus/object-assign
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 
-},{"object-assign":189}],362:[function(require,module,exports){
+},{"object-assign":190}],364:[function(require,module,exports){
 'use strict';
 
 require('./Object.assign');
@@ -54897,7 +55230,7 @@ if (!window.Uint16Array) {
     window.Uint16Array = Array;
 }
 
-},{"./Math.sign":360,"./Object.assign":361,"./requestAnimationFrame":363}],363:[function(require,module,exports){
+},{"./Math.sign":362,"./Object.assign":363,"./requestAnimationFrame":365}],365:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -54974,7 +55307,7 @@ if (!global.cancelAnimationFrame) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],364:[function(require,module,exports){
+},{}],366:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55462,7 +55795,7 @@ function findTextStyle(item, queue) {
     return false;
 }
 
-},{"../core":246,"./limiters/CountLimiter":367}],365:[function(require,module,exports){
+},{"../core":248,"./limiters/CountLimiter":369}],367:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55582,7 +55915,7 @@ function uploadBaseTextures(prepare, item) {
 
 core.CanvasRenderer.registerPlugin('prepare', CanvasPrepare);
 
-},{"../../core":246,"../BasePrepare":364}],366:[function(require,module,exports){
+},{"../../core":248,"../BasePrepare":366}],368:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55634,7 +55967,7 @@ Object.defineProperty(exports, 'TimeLimiter', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./BasePrepare":364,"./canvas/CanvasPrepare":365,"./limiters/CountLimiter":367,"./limiters/TimeLimiter":368,"./webgl/WebGLPrepare":369}],367:[function(require,module,exports){
+},{"./BasePrepare":366,"./canvas/CanvasPrepare":367,"./limiters/CountLimiter":369,"./limiters/TimeLimiter":370,"./webgl/WebGLPrepare":371}],369:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -55692,7 +56025,7 @@ var CountLimiter = function () {
 
 exports.default = CountLimiter;
 
-},{}],368:[function(require,module,exports){
+},{}],370:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -55750,7 +56083,7 @@ var TimeLimiter = function () {
 
 exports.default = TimeLimiter;
 
-},{}],369:[function(require,module,exports){
+},{}],371:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55872,7 +56205,7 @@ function findGraphics(item, queue) {
 
 core.WebGLRenderer.registerPlugin('prepare', WebGLPrepare);
 
-},{"../../core":246,"../BasePrepare":364}],370:[function(require,module,exports){
+},{"../../core":248,"../BasePrepare":366}],372:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -56185,7 +56518,909 @@ if ('undefined' !== typeof module) {
   module.exports = EventEmitter;
 }
 
-},{}],371:[function(require,module,exports){
+},{}],373:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],374:[function(require,module,exports){
+(function (global){
+/*! https://mths.be/punycode v1.4.1 by @mathias */
+;(function(root) {
+
+	/** Detect free variables */
+	var freeExports = typeof exports == 'object' && exports &&
+		!exports.nodeType && exports;
+	var freeModule = typeof module == 'object' && module &&
+		!module.nodeType && module;
+	var freeGlobal = typeof global == 'object' && global;
+	if (
+		freeGlobal.global === freeGlobal ||
+		freeGlobal.window === freeGlobal ||
+		freeGlobal.self === freeGlobal
+	) {
+		root = freeGlobal;
+	}
+
+	/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */
+	var punycode,
+
+	/** Highest positive signed 32-bit float value */
+	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
+
+	/** Bootstring parameters */
+	base = 36,
+	tMin = 1,
+	tMax = 26,
+	skew = 38,
+	damp = 700,
+	initialBias = 72,
+	initialN = 128, // 0x80
+	delimiter = '-', // '\x2D'
+
+	/** Regular expressions */
+	regexPunycode = /^xn--/,
+	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
+	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
+
+	/** Error messages */
+	errors = {
+		'overflow': 'Overflow: input needs wider integers to process',
+		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+		'invalid-input': 'Invalid input'
+	},
+
+	/** Convenience shortcuts */
+	baseMinusTMin = base - tMin,
+	floor = Math.floor,
+	stringFromCharCode = String.fromCharCode,
+
+	/** Temporary variable */
+	key;
+
+	/*--------------------------------------------------------------------------*/
+
+	/**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */
+	function error(type) {
+		throw new RangeError(errors[type]);
+	}
+
+	/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */
+	function map(array, fn) {
+		var length = array.length;
+		var result = [];
+		while (length--) {
+			result[length] = fn(array[length]);
+		}
+		return result;
+	}
+
+	/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings or email
+	 * addresses.
+	 * @private
+	 * @param {String} domain The domain name or email address.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */
+	function mapDomain(string, fn) {
+		var parts = string.split('@');
+		var result = '';
+		if (parts.length > 1) {
+			// In email addresses, only the domain name should be punycoded. Leave
+			// the local part (i.e. everything up to `@`) intact.
+			result = parts[0] + '@';
+			string = parts[1];
+		}
+		// Avoid `split(regex)` for IE8 compatibility. See #17.
+		string = string.replace(regexSeparators, '\x2E');
+		var labels = string.split('.');
+		var encoded = map(labels, fn).join('.');
+		return result + encoded;
+	}
+
+	/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */
+	function ucs2decode(string) {
+		var output = [],
+		    counter = 0,
+		    length = string.length,
+		    value,
+		    extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */
+	function ucs2encode(array) {
+		return map(array, function(value) {
+			var output = '';
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+			return output;
+		}).join('');
+	}
+
+	/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */
+	function basicToDigit(codePoint) {
+		if (codePoint - 48 < 10) {
+			return codePoint - 22;
+		}
+		if (codePoint - 65 < 26) {
+			return codePoint - 65;
+		}
+		if (codePoint - 97 < 26) {
+			return codePoint - 97;
+		}
+		return base;
+	}
+
+	/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */
+	function digitToBasic(digit, flag) {
+		//  0..25 map to ASCII a..z or A..Z
+		// 26..35 map to ASCII 0..9
+		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+	}
+
+	/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */
+	function adapt(delta, numPoints, firstTime) {
+		var k = 0;
+		delta = firstTime ? floor(delta / damp) : delta >> 1;
+		delta += floor(delta / numPoints);
+		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+			delta = floor(delta / baseMinusTMin);
+		}
+		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+	}
+
+	/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */
+	function decode(input) {
+		// Don't use UCS-2
+		var output = [],
+		    inputLength = input.length,
+		    out,
+		    i = 0,
+		    n = initialN,
+		    bias = initialBias,
+		    basic,
+		    j,
+		    index,
+		    oldi,
+		    w,
+		    k,
+		    digit,
+		    t,
+		    /** Cached calculation results */
+		    baseMinusT;
+
+		// Handle the basic code points: let `basic` be the number of input code
+		// points before the last delimiter, or `0` if there is none, then copy
+		// the first basic code points to the output.
+
+		basic = input.lastIndexOf(delimiter);
+		if (basic < 0) {
+			basic = 0;
+		}
+
+		for (j = 0; j < basic; ++j) {
+			// if it's not a basic code point
+			if (input.charCodeAt(j) >= 0x80) {
+				error('not-basic');
+			}
+			output.push(input.charCodeAt(j));
+		}
+
+		// Main decoding loop: start just after the last delimiter if any basic code
+		// points were copied; start at the beginning otherwise.
+
+		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+			// `index` is the index of the next character to be consumed.
+			// Decode a generalized variable-length integer into `delta`,
+			// which gets added to `i`. The overflow checking is easier
+			// if we increase `i` as we go, then subtract off its starting
+			// value at the end to obtain `delta`.
+			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+
+				if (index >= inputLength) {
+					error('invalid-input');
+				}
+
+				digit = basicToDigit(input.charCodeAt(index++));
+
+				if (digit >= base || digit > floor((maxInt - i) / w)) {
+					error('overflow');
+				}
+
+				i += digit * w;
+				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+				if (digit < t) {
+					break;
+				}
+
+				baseMinusT = base - t;
+				if (w > floor(maxInt / baseMinusT)) {
+					error('overflow');
+				}
+
+				w *= baseMinusT;
+
+			}
+
+			out = output.length + 1;
+			bias = adapt(i - oldi, out, oldi == 0);
+
+			// `i` was supposed to wrap around from `out` to `0`,
+			// incrementing `n` each time, so we'll fix that now:
+			if (floor(i / out) > maxInt - n) {
+				error('overflow');
+			}
+
+			n += floor(i / out);
+			i %= out;
+
+			// Insert `n` at position `i` of the output
+			output.splice(i++, 0, n);
+
+		}
+
+		return ucs2encode(output);
+	}
+
+	/**
+	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
+	 * Punycode string of ASCII-only symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */
+	function encode(input) {
+		var n,
+		    delta,
+		    handledCPCount,
+		    basicLength,
+		    bias,
+		    j,
+		    m,
+		    q,
+		    k,
+		    t,
+		    currentValue,
+		    output = [],
+		    /** `inputLength` will hold the number of code points in `input`. */
+		    inputLength,
+		    /** Cached calculation results */
+		    handledCPCountPlusOne,
+		    baseMinusT,
+		    qMinusT;
+
+		// Convert the input in UCS-2 to Unicode
+		input = ucs2decode(input);
+
+		// Cache the length
+		inputLength = input.length;
+
+		// Initialize the state
+		n = initialN;
+		delta = 0;
+		bias = initialBias;
+
+		// Handle the basic code points
+		for (j = 0; j < inputLength; ++j) {
+			currentValue = input[j];
+			if (currentValue < 0x80) {
+				output.push(stringFromCharCode(currentValue));
+			}
+		}
+
+		handledCPCount = basicLength = output.length;
+
+		// `handledCPCount` is the number of code points that have been handled;
+		// `basicLength` is the number of basic code points.
+
+		// Finish the basic string - if it is not empty - with a delimiter
+		if (basicLength) {
+			output.push(delimiter);
+		}
+
+		// Main encoding loop:
+		while (handledCPCount < inputLength) {
+
+			// All non-basic code points < n have been handled already. Find the next
+			// larger one:
+			for (m = maxInt, j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
+
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow
+			handledCPCountPlusOne = handledCPCount + 1;
+			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+				error('overflow');
+			}
+
+			delta += (m - n) * handledCPCountPlusOne;
+			n = m;
+
+			for (j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+
+				if (currentValue < n && ++delta > maxInt) {
+					error('overflow');
+				}
+
+				if (currentValue == n) {
+					// Represent delta as a generalized variable-length integer
+					for (q = delta, k = base; /* no condition */; k += base) {
+						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+						if (q < t) {
+							break;
+						}
+						qMinusT = q - t;
+						baseMinusT = base - t;
+						output.push(
+							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+						);
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+
+			++delta;
+			++n;
+
+		}
+		return output.join('');
+	}
+
+	/**
+	 * Converts a Punycode string representing a domain name or an email address
+	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+	 * it doesn't matter if you call it on a string that has already been
+	 * converted to Unicode.
+	 * @memberOf punycode
+	 * @param {String} input The Punycoded domain name or email address to
+	 * convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 */
+	function toUnicode(input) {
+		return mapDomain(input, function(string) {
+			return regexPunycode.test(string)
+				? decode(string.slice(4).toLowerCase())
+				: string;
+		});
+	}
+
+	/**
+	 * Converts a Unicode string representing a domain name or an email address to
+	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
+	 * i.e. it doesn't matter if you call it with a domain that's already in
+	 * ASCII.
+	 * @memberOf punycode
+	 * @param {String} input The domain name or email address to convert, as a
+	 * Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name or
+	 * email address.
+	 */
+	function toASCII(input) {
+		return mapDomain(input, function(string) {
+			return regexNonASCII.test(string)
+				? 'xn--' + encode(string)
+				: string;
+		});
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	/** Define the public API */
+	punycode = {
+		/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */
+		'version': '1.4.1',
+		/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */
+		'ucs2': {
+			'decode': ucs2decode,
+			'encode': ucs2encode
+		},
+		'decode': decode,
+		'encode': encode,
+		'toASCII': toASCII,
+		'toUnicode': toUnicode
+	};
+
+	/** Expose `punycode` */
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		typeof define == 'function' &&
+		typeof define.amd == 'object' &&
+		define.amd
+	) {
+		define('punycode', function() {
+			return punycode;
+		});
+	} else if (freeExports && freeModule) {
+		if (module.exports == freeExports) {
+			// in Node.js, io.js, or RingoJS v0.8.0+
+			freeModule.exports = punycode;
+		} else {
+			// in Narwhal or RingoJS v0.7.0-
+			for (key in punycode) {
+				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+			}
+		}
+	} else {
+		// in Rhino or a web browser
+		root.punycode = punycode;
+	}
+
+}(this));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],375:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+},{}],376:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+},{}],377:[function(require,module,exports){
+'use strict';
+
+exports.decode = exports.parse = require('./decode');
+exports.encode = exports.stringify = require('./encode');
+
+},{"./decode":375,"./encode":376}],378:[function(require,module,exports){
 'use strict'
 
 /**
@@ -56215,7 +57450,7 @@ module.exports = function removeItems(arr, startIdx, removeCount)
   arr.length = len
 }
 
-},{}],372:[function(require,module,exports){
+},{}],379:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56868,7 +58103,7 @@ var Loader = function () {
 
 exports.default = Loader;
 
-},{"./Resource":373,"./async":374,"mini-signals":188,"parse-uri":190}],373:[function(require,module,exports){
+},{"./Resource":380,"./async":381,"mini-signals":189,"parse-uri":191}],380:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58024,7 +59259,7 @@ function reqType(xhr) {
     return xhr.toString().replace('object ', '');
 }
 
-},{"mini-signals":188,"parse-uri":190}],374:[function(require,module,exports){
+},{"mini-signals":189,"parse-uri":191}],381:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58233,7 +59468,7 @@ function queue(worker, concurrency) {
     return q;
 }
 
-},{}],375:[function(require,module,exports){
+},{}],382:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58301,7 +59536,7 @@ function encodeBinary(input) {
     return output;
 }
 
-},{}],376:[function(require,module,exports){
+},{}],383:[function(require,module,exports){
 'use strict';
 
 // import Loader from './Loader';
@@ -58325,7 +59560,7 @@ module.exports = Loader;
 // export default Loader;
 module.exports.default = Loader;
 
-},{"./Loader":372,"./Resource":373,"./async":374,"./b64":375}],377:[function(require,module,exports){
+},{"./Loader":379,"./Resource":380,"./async":381,"./b64":382}],384:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58413,7 +59648,7 @@ function blobMiddlewareFactory() {
     };
 }
 
-},{"../../Resource":373,"../../b64":375}],378:[function(require,module,exports){
+},{"../../Resource":380,"../../b64":382}],385:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -58475,7 +59710,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":379,"./lib/tychei":380,"./lib/xor128":381,"./lib/xor4096":382,"./lib/xorshift7":383,"./lib/xorwow":384,"./seedrandom":385}],379:[function(require,module,exports){
+},{"./lib/alea":386,"./lib/tychei":387,"./lib/xor128":388,"./lib/xor4096":389,"./lib/xorshift7":390,"./lib/xorwow":391,"./seedrandom":392}],386:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -58591,7 +59826,7 @@ if (module && module.exports) {
 
 
 
-},{}],380:[function(require,module,exports){
+},{}],387:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -58696,7 +59931,7 @@ if (module && module.exports) {
 
 
 
-},{}],381:[function(require,module,exports){
+},{}],388:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -58779,7 +60014,7 @@ if (module && module.exports) {
 
 
 
-},{}],382:[function(require,module,exports){
+},{}],389:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -58927,7 +60162,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],383:[function(require,module,exports){
+},{}],390:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -59026,7 +60261,7 @@ if (module && module.exports) {
 );
 
 
-},{}],384:[function(require,module,exports){
+},{}],391:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -59114,7 +60349,7 @@ if (module && module.exports) {
 
 
 
-},{}],385:[function(require,module,exports){
+},{}],392:[function(require,module,exports){
 /*
 Copyright 2014 David Bau.
 
@@ -59363,7 +60598,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":405}],386:[function(require,module,exports){
+},{"crypto":5}],393:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -60560,5089 +61795,7 @@ else {
 
 })(Math);
 
-},{}],387:[function(require,module,exports){
-// angle.js <https://github.com/davidfig/anglejs>
-// Released under MIT license <https://github.com/davidfig/angle/blob/master/LICENSE>
-// Author: David Figatner
-// Copyright (c) 2016-17 YOPEY YOPEY LLC
-
-const _toDegreeConversion = 180 / Math.PI
-const _toRadianConversion = Math.PI / 180
-
-
-/** @constant {number} */
-const UP = Math.PI / 2
-const DOWN = 3 * Math.PI / 2
-const LEFT = Math.PI
-const RIGHT = 0
-
-const NORTH = UP
-const SOUTH = DOWN
-const WEST = LEFT
-const EAST = RIGHT
-
-const PI_2 = Math.PI * 2
-const PI_QUARTER = Math.PI / 4
-const PI_HALF = Math.PI / 2
-
-/**
- * converts from radians to degrees (all other functions expect radians)
- * @param {number} radians
- * @return {number} degrees
- */
-function toDegrees(radians)
-{
-    return radians * _toDegreeConversion
-}
-
-/**
- * converts from degrees to radians (all other functions expect radians)
- * @param {number} degrees
- * @return {number} radians
- */
-function toRadians(degrees)
-{
-    return degrees * _toRadianConversion
-}
-
-/**
- * returns whether the target angle is between angle1 and angle2 (in radians)
- * (based on: http://stackoverflow.com/questions/11406189/determine-if-angle-lies-between-2-other-angles)
- * @param {number} target angle
- * @param {number} angle1
- * @param {number} angle2
- * @return {boolean}
- */
-function isAngleBetween(target, angle1, angle2)
-{
-    const rAngle = ((angle2 - angle1) % PI_2 + PI_2) % PI_2
-    if (rAngle >= Math.PI)
-    {
-        const swap = angle1
-        angle1 = angle2
-        angle2 = swap
-    }
-
-    if (angle1 <= angle2)
-    {
-        return target >= angle1 && target <= angle2
-    }
-    else
-    {
-        return target >= angle1 || target <= angle2
-    }
-}
-
-/**
- * returns +1 or -1 based on whether the difference between two angles is positive or negative (in radians)
- * @param {number} target angle
- * @param {number} source angle
- * @return {number} 1 or -1
- */
-function differenceAnglesSign(target, source)
-{
-    function mod(a, n)
-    {
-        return (a % n + n) % n
-    }
-
-    const a = target - source
-    return mod((a + Math.PI), PI_2) - Math.PI > 0 ? 1 : -1
-}
-
-/**
- * returns the normalized difference between two angles (in radians)
- * @param {number} a - first angle
- * @param {number} b - second angle
- * @return {number} normalized difference between a and b
- */
-function differenceAngles(a, b)
-{
-    const c = Math.abs(a - b) % PI_2
-    return c > Math.PI ? (PI_2 - c) : c
-}
-
-/**
- * returns a target angle that is the shortest way to rotate an object between start and to--may choose a negative angle
- * @param {number} start
- * @param {number} to
- * @return {number} shortest target angle
- */
-function shortestAngle(start, to)
-{
-    const difference = differenceAngles(to, start)
-    const sign = differenceAnglesSign(to, start)
-    const delta = difference * sign
-    return delta + start
-}
-
-/**
- * returns the normalized angle (0 - PI x 2)
- * @param {number} radians
- * @return {number} normalized angle in radians
- */
-function normalize(radians)
-{
-    return radians - PI_2 * Math.floor(radians / PI_2)
-}
-
-/**
- * returns angle between two points (in radians)
- * @param {Point} [point1] {x: x, y: y}
- * @param {Point} [point2] {x: x, y: y}
- * @param {number} [x1]
- * @param {number} [y1]
- * @param {number} [x2]
- * @param {number} [y2]
- * @return {number} angle
- */
-function angleTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
-{
-    if (arguments.length === 4)
-    {
-        return Math.atan2(arguments[3] - arguments[1], arguments[2] - arguments[0])
-    }
-    else
-    {
-        return Math.atan2(arguments[1].y - arguments[0].y, arguments[1].x - arguments[0].x)
-    }
-}
-
-/**
- * returns distance between two points
- * @param {Point} [point1] {x: x, y: y}
- * @param {Point} [point2] {x: x, y: y}
- * @param {number} [x1]
- * @param {number} [y1]
- * @param {number} [x2]
- * @param {number} [y2]
- * @return {number} distance
- */
-function distanceTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
-{
-    if (arguments.length === 2)
-    {
-        return Math.sqrt(Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2))
-    }
-    else
-    {
-        return Math.sqrt(Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2))
-    }
-}
-
-/**
- * returns the squared distance between two points
- * @param {Point} [point1] {x: x, y: y}
- * @param {Point} [point2] {x: x, y: y}
- * @param {number} [x1]
- * @param {number} [y1]
- * @param {number} [x2]
- * @param {number} [y2]
- * @return {number} squared distance
- */
-function distanceTwoPointsSquared(/* (point1, point2) OR (x1, y1, x2, y2) */)
-{
-    if (arguments.length === 2)
-    {
-        return Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2)
-    }
-    else
-    {
-        return Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2)
-    }
-}
-
-/**
- * returns the closest cardinal (N, S, E, W) to the given angle (in radians)
- * @param {number} angle
- * @return {number} closest cardinal in radians
- */
-function closestAngle(angle)
-{
-    const left = differenceAngles(angle, LEFT)
-    const right = differenceAngles(angle, RIGHT)
-    const up = differenceAngles(angle, UP)
-    const down = differenceAngles(angle, DOWN)
-    if (left <= right && left <= up && left <= down)
-    {
-        return LEFT
-    }
-    else if (right <= up && right <= down)
-    {
-        return RIGHT
-    }
-    else if (up <= down)
-    {
-        return UP
-    }
-    else
-    {
-        return DOWN
-    }
-}
-
-/**
- * checks whether angles a1 and a2 are equal (after normalizing)
- * @param {number} a1
- * @param {number} a2
- * @param {number} [wiggle] return true if the difference between the angles is <= wiggle
- * @return {boolean} a1 === a2
- */
-function equals(a1, a2, wiggle)
-{
-    if (wiggle)
-    {
-        return differenceAngles(a1, a2) < wiggle
-    }
-    else
-    {
-        return normalize(a1) === normalize(a2)
-    }
-}
-
-/**
- * return a text representation of the cardinal direction
- * @param {number} angle
- * @returns {string} UP, DOWN, LEFT, RIGHT, or NOT CARDINAL
- */
-function explain(angle)
-{
-    switch (angle)
-    {
-        case UP: return 'UP'
-        case DOWN: return 'DOWN'
-        case LEFT: return 'LEFT'
-        case RIGHT: return 'RIGHT'
-        default: return 'NOT CARDINAL'
-    }
-}
-
-module.exports = {
-    UP, DOWN, LEFT, RIGHT,
-    NORTH, SOUTH, WEST, EAST,
-    PI_2, PI_QUARTER, PI_HALF,
-
-    toDegrees,
-    toRadians,
-    isAngleBetween,
-    differenceAnglesSign,
-    differenceAngles,
-    shortestAngle,
-    normalize,
-    angleTwoPoints,
-    distanceTwoPoints,
-    distanceTwoPointsSquared,
-    closestAngle,
-    equals,
-    explain
-}
-},{}],388:[function(require,module,exports){
-/**
- * @file color.js
- * @author David Figatner
- * @license MIT
- * @copyright YOPEY YOPEY LLC 2016
- * {@link https://github.com/davidfig/color}
- */
-
-const Random = require('yy-random');
-
-/** @class */
-class Color
-{
-    /**
-     * converts a #FFFFFF to 0x123456
-     * @param  {string} color
-     * @return {string}
-     */
-    poundToHex(color)
-    {
-        return '0x' + parseInt(color.substr(1)).toString(16);
-    }
-
-    /**
-     * converts a 0x123456 to #FFFFFF
-     * @param  {string} color
-     * @return {string}
-     */
-    hexToPound(color)
-    {
-        return '#' + color.substr(2);
-    }
-
-    /**
-     * converts a number to #FFFFFF
-     * @param  {number} color
-     * @return {string}
-     */
-    valueToPound(color)
-    {
-        return '#' + color.toString(16);
-    }
-
-    /**
-     * based on tinycolor
-     * https://github.com/bgrins/TinyColor
-     * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
-     * @param {string} color
-     * @returns {object}
-     */
-    hexToHsl (color)
-    {
-        var rgb = this.hexToRgb(color),
-            r = rgb.r,
-            g = rgb.g,
-            b = rgb.b;
-        var max = Math.max(r, g, b),
-            min = Math.min(r, g, b);
-        var h, s, l = (max + min) / 2;
-
-        if (max === min)
-        {
-            h = s = 0; // achromatic
-        }
-        else
-        {
-            var d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-            }
-
-            h /= 6;
-        }
-
-        return { h: h, s: s, l: l };
-    }
-
-    /** based on tinycolor
-    * https://github.com/bgrins/TinyColor
-    * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
-    * @param {object|number} color {h, s, b} or h
-    * @param {number} [s]
-    * @param {number} [l]
-    * @returns number
-    */
-    hslToHex(color)
-    {
-        var r, g, b, h, s, l;
-        if (arguments.length === 1)
-        {
-            h = color.h,
-            s = color.s,
-            l = color.l;
-        }
-        else
-        {
-            h = arguments[0];
-            s = arguments[1];
-            l = arguments[2];
-        }
-
-        function hue2rgb(p, q, t) {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1/6) return p + (q - p) * 6 * t;
-            if (t < 1/2) return q;
-            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-            return p;
-        }
-
-        if (s === 0)
-        {
-            r = g = b = l; // achromatic
-        }
-        else
-        {
-            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            var p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1/3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1/3);
-        }
-
-        return this.rgbToHex(r * 255, g * 255, b * 255);
-    }
-
-    /* darkens a color by the percentage
-    * @param {object} color in hex (0xabcdef)
-    * @param {number} amount
-    * @return {number}
-    */
-    darken(color, amount)
-    {
-        return this.blend(amount, color, 0);
-    }
-
-    /** based on tinycolor
-    * https://github.com/bgrins/TinyColor
-    * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
-    * @param {object} color
-    * @param {number} amount
-    */
-    saturate(color, amount)
-    {
-        amount = (amount === 0) ? 0 : (amount || 10);
-        var hsl = this.hexToHsl(color);
-        hsl.s += amount / 100;
-        hsl.s = Math.min(1, Math.max(0, hsl.s));
-        return this.hslToHex(hsl);
-    }
-
-    /** based on tinycolor
-    * https://github.com/bgrins/TinyColor
-    * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
-    * @param {object} color
-    * @param {number} amount
-    */
-    desaturate(color, amount) {
-        amount = (amount === 0) ? 0 : (amount || 10);
-        var hsl = this.hexToHsl(color);
-        hsl.s -= amount / 100;
-        hsl.s = Math.min(1, Math.max(0, hsl.s));
-        return this.hslToHex(hsl);
-    }
-
-    /**
-     * blends two colors together
-     * @param  {number} percent [0.0 - 1.0]
-     * @param  {string} color1 first color in 0x123456 format
-     * @param  {string} color2 second color in 0x123456 format
-     * @return {number}
-     */
-    blend(percent, color1, color2)
-    {
-        if (percent === 0)
-        {
-            return color1;
-        }
-        if (percent === 1)
-        {
-            return color2;
-        }
-        var r1 = color1 >> 16;
-        var g1 = color1 >> 8 & 0x0000ff;
-        var b1 = color1 & 0x0000ff;
-        var r2 = color2 >> 16;
-        var g2 = color2 >> 8 & 0x0000ff;
-        var b2 = color2 & 0x0000ff;
-        var percent1 = 1 - percent;
-        var r = percent1 * r1 + percent * r2;
-        var g = percent1 * g1 + percent * g2;
-        var b = percent1 * b1 + percent * b2;
-        return r << 16 | g << 8 | b;
-    }
-
-    /**
-     * returns a hex color into an rgb value
-     * @param  {number} hex
-     * @return {string}
-     */
-    hexToRgb(hex)
-    {
-        if (hex === 0)
-        {
-            hex = '0x000000';
-        }
-        else if (typeof hex !== 'string')
-        {
-            var s = '000000' + hex.toString(16);
-            hex = '0x' + s.substr(s.length - 6);
-        }
-        var result = /^0x?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
-    }
-
-    /**
-     * rgb color to hex in the form of 0x123456
-     * @param  {number|string} r first number or 'rgb(...)' string
-     * @param  {number|null} g
-     * @param  {number|null} b
-     * @return {string}
-     */
-    rgbToHex(r, g, b)
-    {
-        if (arguments.length === 1) {
-            if (Array.isArray(arguments[0])) {
-                var number = arguments[0];
-                r = number[0];
-                g = number[1];
-                b = number[2];
-            } else {
-                var parse = r.replace(/( *rgb *\( *)|( )|(\) *;?)/,'');
-                var numbers = parse.split(',');
-                r = numbers[0];
-                g = numbers[1];
-                b = numbers[2];
-            }
-        }
-        return '0x' + ((1 << 24) + (parseInt(r) << 16) + (parseInt(g) << 8) + parseInt(b)).toString(16).slice(1);
-    }
-
-    /**
-     * returns a random color with balanced r, g, b values (i.e., r, g, b either have the same value or are 0)
-     * @param {number} min value for random number
-     * @param {number} max value for random number
-     * @return {number} color
-     */
-    random(min, max)
-    {
-        function random()
-        {
-            return Random.range(min, max);
-        }
-
-        var colors = [{r:1, g:1, b:1}, {r:1, g:1, b:0}, {r:1,g:0,b:1}, {r:0,g:1,b:1}, {r:1,g:0,b:0}, {r:0,g:1,b:0}, {r:0,g:0,b:1}];
-        var color = Random.pick(colors);
-        min = min || 0;
-        max = max || 255;
-        return this.rgbToHex(color.r ? random() : 0, color.g ? random() : 0, color.b ? random() : 0);
-    }
-
-    // h: 0-360, s: 0-1, l: 0-1
-    /**
-     * returns a random color based on hsl
-     * @param {number} hMin [0, 360]
-     * @param {number} hMax [hMin, 360]
-     * @param {number} sMin [0, 1]
-     * @param {number} sMax [sMin, 1]
-     * @param {number} lMin [0, 1]
-     * @param {number} lMax [lMin, 1]
-     */
-    randomHSL(hMin, hMax, sMin, sMax, lMin, lMax)
-    {
-        var color = {
-            h: Random.range(hMin, hMax),
-            s: Random.range(sMin, sMax, true),
-            l: Random.range(lMin, lMax, true)
-        };
-        return this.hslToHex(color);
-    }
-
-    /**
-     * returns random colors based on HSL with different hues
-     * based on http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
-     * @returns {number[]} colors in hex format (0x123456)
-     */
-    randomGoldenRatioHSL(count, saturation, luminosity)
-    {
-        const goldenRatio = 0.618033988749895;
-        let h = Random.get(1, true);
-        const colors = [];
-        for (let i = 0; i < count; i++)
-        {
-            colors.push(this.hslToHex(h, saturation, luminosity));
-            h = (h + goldenRatio) % 1;
-        }
-        return colors;
-    }
-};
-
-module.exports = new Color();
-},{"yy-random":391}],389:[function(require,module,exports){
-// yy-counter
-// In-browser counter to watch changeable values like counters or FPS
-// David Figatner
-// (c) YOPEY YOPEY LLC 2017
-// MIT License
-// https://github.com/davidfig/counter
-
-module.exports = class Counter
-{
-    /**
-     * @param {object} [options]
-     * @param {string} [options.side=rightbottom] side to place the panel (combination of right/left and bottom/top)
-     * @param {number} [options.padding=7px]
-     * @param {string} [options.color=white]
-     * @param {string} [options.background=rgba(0,0,0,0.5)]
-     * @param {*} {options.xxx} where xxx is a CSS style for the div
-     */
-    constructor(options)
-    {
-        options = options || {}
-        options.side = options.side || 'rightbottom'
-        options.side.toLowerCase()
-        options.padding = options.padding || '7px'
-        options.color = options.color || 'white'
-        options.background = options.background || 'rgba(0,0,0,0.5)'
-        this.div = document.createElement('div')
-        Counter.findParent(options.side).appendChild(this.div)
-        for (let style in options)
-        {
-            if (style !== 'parent' && style !== 'side')
-            {
-                this.div.style[style] = options[style]
-            }
-        }
-    }
-
-    /**
-     * find the parent div for one of the corners
-     * @param {string} [options.side] side to place the panel (combination of right/left and bottom/top)
-     * @return {HTMLElement}
-     */
-    static findParent(side)
-    {
-        const styles = []
-        let name = 'yy-counter-'
-        if (side.indexOf('left') !== -1)
-        {
-            name += 'left-'
-            styles['left'] = 0
-        }
-        else
-        {
-            name += 'right-'
-            styles['right'] = 0
-        }
-        if (side.indexOf('top') !== -1)
-        {
-            name += 'top'
-            styles['top'] = 0
-        }
-        else
-        {
-            name += 'bottom'
-            styles['bottom'] = 0
-        }
-        const test = document.getElementById(name)
-        if (test)
-        {
-            return test
-        }
-        const container = document.createElement('div')
-        container.id = name
-        container.style.overflow = 'hidden'
-        container.style.position = 'fixed'
-        container.style.zIndex = 10000
-        container.style.pointerEvents = 'none'
-        container.style.userSelect = 'none'
-        for (let style in styles)
-        {
-            container.style[style] = styles[style]
-        }
-        document.body.appendChild(container)
-        return container
-    }
-
-    /**
-     * replaces the innerHTML of the console
-     * @param {string|number} text1
-     * @param {string|number} [text2]
-     * @param {string|number} [...textn] any number of arguments
-     */
-    log()
-    {
-        let s = ''
-        for (let arg of arguments)
-        {
-            s += '<div>' + arg + '</div>'
-        }
-        this.div.innerHTML =  s
-    }
-
-    /**
-     * appends to the innerHTML of the console
-     * @param {string|number} text1
-     * @param {string|number} [text2]
-     * @param {string|number} [...textn] any number of arguments
-     */
-    append()
-    {
-        let s = this.div.innerHTML
-        for (let arg of arguments)
-        {
-            s += '<div>' + arg + '</div>'
-        }
-        this.div.innerHTML = s
-    }
-}
-},{}],390:[function(require,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Color = require('tinycolor2');
-var Counter = require('yy-counter');
-
-var STYLES = {
-    'background': 'rgba(0, 0, 0, 0.5)',
-    'color': 'white'
-};
-
-var STYLES_FPS = {
-    'padding': '0.1em 0.5em'
-};
-
-var STYLES_METER = {};
-
-module.exports = function () {
-    /**
-     * @param {object} [options]
-     * @param {boolean} [options.meter=true] include a meter with the FPS
-     * @param {string} [options.side=bottom-right] include any combination of left/right and top/bottom
-     * @param {number} [options.FPS=60] desired FPS
-     * @param {number} [options.tolerance=1] minimum tolerance for fluctuations in FPS number
-     * @param {number} [options.meterWidth=100] width of meter div
-     * @param {number} [options.meterHeight=25] height of meter div
-     * @param {number} [options.meterLineHeight=4] height of meter line
-     * @param {styles[]} [options.styles] CSS styles to apply to the div (in javascript format)
-     * @param {styles[]} [options.stylesFPS] CSS styles to apply to the FPS text (in javascript format)
-     * @param {styles[]} [options.stylesMeter] CSS styles to apply to the FPS meter (in javascript format)
-     * @param {string} [options.text=" FPS"] change the text to the right of the FPS
-     */
-    function FPS(options) {
-        _classCallCheck(this, FPS);
-
-        this.options = options || {};
-        this.tolerance = this.options.tolerance || 1;
-        this.FPS = this.options.FPS || 60;
-        this.meterWidth = this.options.meterWidth || 100;
-        this.meterHeight = this.options.meterHeight || 25;
-        this.meterLineHeight = this.options.meterLineHeight || 4;
-        this.div = document.createElement('div');
-        Counter.findParent(this.options.side || 'bottom-right').appendChild(this.div);
-        this.style(this.div, STYLES, this.options.styles);
-        this.divFPS();
-        this.meter = typeof this.options.meter === 'undefined' || this.options.meter;
-        this.lastTime = 0;
-        this.frameNumber = 0;
-        this.lastUpdate = 0;
-        this.lastFPS = '--';
-    }
-
-    /**
-     * change desired FPS
-     * @type {number}
-     */
-
-
-    _createClass(FPS, [{
-        key: 'remove',
-
-
-        /**
-         * remove meter from DOM
-         */
-        value: function remove() {
-            this.div.remove();
-        }
-
-        /**
-         * @type {boolean} meter (the FPS graph) is on or off
-         */
-
-    }, {
-        key: 'style',
-        value: function style(div, style1, style2) {
-            for (var style in style1) {
-                div.style[style] = style1[style];
-            }
-            if (style2) {
-                for (var _style in style2) {
-                    div.style[_style] = style2[_style];
-                }
-            }
-        }
-
-        /**
-         * create div for text FPS
-         * @private
-         * @param {HTMLElement} div
-         * @param {object} options (see contructor)
-         */
-
-    }, {
-        key: 'divFPS',
-        value: function divFPS() {
-            var div = this.div;
-            var options = this.options;
-            var divFPS = document.createElement('div');
-            div.appendChild(divFPS);
-            this.fpsSpan = document.createElement('span');
-            divFPS.appendChild(this.fpsSpan);
-            var span = document.createElement('span');
-            divFPS.appendChild(span);
-            span.innerText = typeof options.text !== 'undefined' ? options.text : ' FPS';
-            this.style(div, STYLES_FPS, options.stylesFPS);
-        }
-
-        /**
-         * create div for FPS meter
-         * @private
-         * @param {HTMLElement} div
-         * @param {object} options (see contructor)
-         */
-
-    }, {
-        key: 'divMeter',
-        value: function divMeter() {
-            var div = this.div;
-            var options = this.options;
-            if (!this.meterCanvas) {
-                this.meterCanvas = document.createElement('canvas');
-                div.appendChild(this.meterCanvas);
-                this.meterCanvas.width = this.meterWidth;
-                this.meterCanvas.height = this.meterHeight;
-                this.meterCanvas.style.width = div.width + 'px';
-                this.meterCanvas.style.height = div.height + 'px';
-                this.style(this.meterCanvas, STYLES_METER, options.stylesMeter);
-            } else {
-                this.meterCanvas.style.display = 'block';
-            }
-        }
-
-        /**
-         * call this at the start of the frame to calculate FPS
-         */
-
-    }, {
-        key: 'frame',
-        value: function frame() {
-            this.frameNumber++;
-            var currentTime = performance.now() - this.lastTime;
-
-            // skip large differences to remove garbage
-            if (currentTime > 500) {
-                if (this.lastTime !== 0) {
-                    this.lastFPS = Math.floor(this.frameNumber / (currentTime / 1000));
-                    if (this.lastFPS >= this.FPS - this.tolerance && this.lastFPS <= this.FPS + this.tolerance) {
-                        this.lastFPS = this.FPS;
-                    }
-                }
-                this.lastTime = performance.now();
-                this.frameNumber = 0;
-            }
-            this.fpsSpan.innerText = this.lastFPS;
-            if (this.meterCanvas && this.lastFPS !== '--') {
-                this.meterUpdate(this.lastFPS / this.FPS);
-            }
-        }
-    }, {
-        key: 'meterUpdate',
-        value: function meterUpdate(percent) {
-            var c = this.meterCanvas.getContext('2d');
-            var data = c.getImageData(0, 0, this.meterCanvas.width, this.meterCanvas.height);
-            c.putImageData(data, -1, 0);
-            c.clearRect(this.meterCanvas.width - 1, 0, 1, this.meterCanvas.height);
-            if (percent < 0.5) {
-                c.fillStyle = Color.mix('#ff0000', '0xffa500', percent * 200).toHexString();
-            } else {
-                c.fillStyle = Color.mix('#ffa500', '#00ff00', (percent - 0.5) * 200).toHexString();
-            }
-            var height = (this.meterCanvas.height - this.meterLineHeight) * (1 - percent);
-            c.fillRect(this.meterCanvas.width - 1, height, 1, this.meterLineHeight);
-        }
-    }, {
-        key: 'side',
-        value: function side(options) {
-            if (options.side) {
-                options.side = options.side.toLowerCase();
-                if (options.side.indexOf('left') !== -1) {
-                    STYLES['left'] = 0;
-                    delete STYLES['right'];
-                } else {
-                    STYLES['right'] = 0;
-                    delete STYLES['left'];
-                }
-                if (options.side.indexOf('top') !== -1) {
-                    STYLES['top'] = 0;
-                    delete STYLES['bottom'];
-                } else {
-                    STYLES['bottom'] = 0;
-                    delete STYLES['top'];
-                }
-            } else {
-                STYLES['right'] = 0;
-                STYLES['bottom'] = 0;
-            }
-        }
-    }, {
-        key: 'fps',
-        get: function get() {
-            return this.FPS;
-        },
-        set: function set(value) {
-            this.FPS = value;
-        }
-    }, {
-        key: 'meter',
-        get: function get() {
-            return this._meter;
-        },
-        set: function set(value) {
-            if (value) {
-                this.divMeter();
-            } else if (this.meterCanvas) {
-                this.meterCanvas.style.display = 'none';
-            }
-        }
-    }]);
-
-    return FPS;
-}();
-
-},{"tinycolor2":386,"yy-counter":389}],391:[function(require,module,exports){
-// yy-random
-// by David Figatner
-// MIT license
-// copyright YOPEY YOPEY LLC 2016-17
-// https://github.com/davidfig/random
-
-const seedrandom = require('seedrandom')
-
-class Random
-{
-    constructor()
-    {
-        this.generator = Math.random
-    }
-
-    /**
-     * generates a seeded number
-     * @param {number} seed
-     * @param {object} [options]
-     * @param {string} [PRNG="alea"] - name of algorithm, see https://github.com/davidbau/seedrandom
-     * @param {boolean} [save=true]
-     */
-    seed(seed, options)
-    {
-        options = options || {}
-        this.generator = seedrandom[options.PRNG || 'alea'](seed, { state: options.state })
-        this.options = options
-    }
-
-    /**
-     * saves the state of the random generator
-     * can only be used after Random.seed() is called
-     * @returns {number} state
-     */
-    save()
-    {
-        if (this.generator !== Math.random)
-        {
-            return this.generator.state()
-        }
-    }
-
-    /**
-     * restores the state of the random generator
-     * @param {number} state
-     */
-    restore(state)
-    {
-        this.generator = seedrandom[this.options.PRNG || 'alea']('', { state })
-    }
-
-    /**
-     * changes the generator to use the old Math.sin-based random function
-     * based on : http://stackoverflow.com/questions/521295/javascript-random-seeds
-     * (deprecated) Use only for compatibility purposes
-     * @param {number} seed
-     */
-    seedOld(seed)
-    {
-        this.generator = function()
-        {
-            const x = Math.sin(seed++) * 10000
-            return x - Math.floor(x)
-        }
-    }
-
-    /**
-     * create a separate random generator using the seed
-     * @param {number} seed
-     * @return {object}
-     */
-    separateSeed(seed)
-    {
-        const random = new Random()
-        random.seed(seed)
-        return random
-    }
-
-    /**
-     * resets the random number this.generator to Math.random()
-     */
-    reset()
-    {
-        this.generator = Math.random
-    }
-
-    /**
-     * returns a random number using the this.generator between [0, ceiling - 1]
-     * @param {number} ceiling
-     * @param {boolean} [useFloat=false]
-     * @return {number}
-     */
-    get(ceiling, useFloat)
-    {
-        const negative = ceiling < 0 ? -1 : 1
-        ceiling *= negative
-        let result
-        if (useFloat)
-        {
-            result = this.generator() * ceiling
-        }
-        else
-        {
-            result = Math.floor(this.generator() * ceiling)
-        }
-        return result * negative
-    }
-
-    /**
-     * returns a random integer between 0 - Number.MAX_SAFE_INTEGER
-     * @return {number}
-     */
-    getHuge()
-    {
-        return this.get(Number.MAX_SAFE_INTEGER)
-    }
-
-    /**
-     * random number [middle - range, middle + range]
-     * @param {number} middle
-     * @param {number} delta
-     * @param {boolean} [useFloat=false]
-     * @return {number}
-     */
-    middle(middle, delta, useFloat)
-    {
-        const half = delta / 2
-        return this.range(middle - half, middle + half, useFloat)
-    }
-
-    /**
-     * random number [start, end]
-     * @param {number} start
-     * @param {number} end
-     * @param {boolean} [useFloat=false] if true, then range is (start, end)--i.e., not inclusive to start and end
-     * @return {number}
-     */
-    range(start, end, useFloat)
-    {
-        // case where there is no range
-        if (end === start)
-        {
-            return end
-        }
-
-        if (useFloat)
-        {
-            return this.get(end - start, true) + start
-        }
-        else
-        {
-            let range
-            if (start < 0 && end > 0)
-            {
-                range = -start + end + 1
-            }
-            else if (start === 0 && end > 0)
-            {
-                range = end + 1
-            }
-            else if (start < 0 && end === 0)
-            {
-                range = start - 1
-                start = 1
-            }
-            else if (start < 0 && end < 0)
-            {
-                range = end - start - 1
-            }
-            else
-            {
-                range = end - start + 1
-            }
-            return Math.floor(this.generator() * range) + start
-        }
-    }
-
-    /**
-     * an array of random numbers between [start, end]
-     * @param {number} start
-     * @param {number} end
-     * @param {number} count
-     * @param {boolean} [useFloat=false]
-     * @return {number[]}
-     */
-    rangeMultiple(start, end, count, useFloat)
-    {
-        var array = []
-        for (let i = 0; i < count; i++)
-        {
-            array.push(this.range(start, end, useFloat))
-        }
-        return array
-    }
-
-    /**
-     * an array of random numbers between [middle - range, middle + range]
-     * @param {number} middle
-     * @param {number} range
-     * @param {number} count
-     * @param {boolean} [useFloat=false]
-     * @return {number[]}
-     */
-    middleMultiple(middle, range, count, useFloat)
-    {
-        const array = []
-        for (let i = 0; i < count; i++)
-        {
-            array.push(middle(middle, range, useFloat))
-        }
-        return array
-    }
-
-    /**
-     * @param {number} [chance=0.5]
-     * returns random sign (either +1 or -1)
-     * @return {number}
-     */
-    sign(chance)
-    {
-        chance = chance || 0.5
-        return this.generator() < chance ? 1 : -1
-    }
-
-    /**
-     * tells you whether a random chance was achieved
-     * @param {number} [percent=0.5]
-     * @return {boolean}
-     */
-    chance(percent)
-    {
-        return this.generator() < (percent || 0.5)
-    }
-
-    /**
-     * returns a random angle in radians [0 - 2 * Math.PI)
-     */
-    angle()
-    {
-        return this.get(Math.PI * 2, true)
-    }
-
-    /**
-     * Shuffle array (either in place or copied)
-     * from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-     * @param {Array} array
-     * @param {boolean} [copy=false] whether to shuffle in place (default) or return a new shuffled array
-     * @return {Array} a shuffled array
-     */
-    shuffle(array, copy)
-    {
-        if (copy)
-        {
-            array = array.slice()
-        }
-        if (array.length === 0)
-        {
-            return array
-        }
-
-        let currentIndex = array.length, temporaryValue, randomIndex
-
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex)
-        {
-            // Pick a remaining element...
-            randomIndex = this.get(currentIndex)
-            currentIndex -= 1
-
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex]
-            array[currentIndex] = array[randomIndex]
-            array[randomIndex] = temporaryValue
-        }
-        return array
-    }
-
-    /**
-     * picks a random element from an array
-     * @param {Array} array
-     * @return {*}
-     */
-    pick(array, remove)
-    {
-        if (!remove)
-        {
-            return array[this.get(array.length)]
-        }
-        else
-        {
-            const pick = this.get(array.length)
-            const temp = array[pick]
-            array.splice(pick, 1)
-            return temp
-        }
-    }
-
-    /**
-     * returns a random property from an object
-     * from http://stackoverflow.com/questions/2532218/pick-random-property-from-a-javascript-object
-     * @param {object} obj
-     * @return {*}
-     */
-    property(obj)
-    {
-        var result
-        var count = 0
-        for (var prop in obj)
-        {
-            if (this.chance(1 / ++count))
-            {
-                result = prop
-            }
-        }
-        return result
-    }
-
-    /**
-     * creates a random set where each entry is a value between [min, max]
-     * @param {number} min
-     * @param {number} max
-     * @param {number} amount of numbers in set
-     * @param {number[]}
-     */
-    set(min, max, amount)
-    {
-        var set = [], all = [], i
-        for (i = min; i < max; i++)
-        {
-            all.push(i)
-        }
-
-        for (i = 0; i < amount; i++)
-        {
-            var found = this.get(all.length)
-            set.push(all[found])
-            all.splice(found, 1)
-        }
-        return set
-    }
-
-
-    /**
-     * returns a set of numbers with a randomly even distribution (i.e., no overlapping and filling the space)
-     * @param {number} start position
-     * @param {number} end position
-     * @param {number} count of non-start/end points
-     * @param {boolean} [includeStart=false] includes start point (count++)
-     * @param {boolean} [includeEnd=false] includes end point (count++)
-     * @param {boolean} [useFloat=false]
-     * @param {number[]}
-     */
-    distribution(start, end, count, includeStart, includeEnd, useFloat)
-    {
-        var interval = Math.floor((end - start) / count)
-        var halfInterval = interval / 2
-        var quarterInterval = interval / 4
-        var set = []
-        if (includeStart)
-        {
-            set.push(start)
-        }
-        for (var i = 0; i < count; i++)
-        {
-            set.push(start + i * interval + halfInterval + this.range(-quarterInterval, quarterInterval, useFloat))
-        }
-        if (includeEnd)
-        {
-            set.push(end)
-        }
-        return set
-    }
-
-    /**
-     * returns a random number based on weighted probability between [min, max]
-     * from http://stackoverflow.com/questions/22656126/javascript-random-number-with-weighted-probability
-     * @param {number} min value
-     * @param {number} max value
-     * @param {number} target for average value
-     * @param {number} stddev - standard deviation
-     */
-    weightedProbabilityInt(min, max, target, stddev)
-    {
-        function normRand()
-        {
-            let x1, x2, rad
-            do
-            {
-                x1 = 2 * this.get(1, true) - 1
-                x2 = 2 * this.get(1, true) - 1
-                rad = x1 * x1 + x2 * x2
-            } while (rad >= 1 || rad === 0)
-            const c = Math.sqrt(-2 * Math.log(rad) / rad)
-            return x1 * c
-        }
-
-        stddev = stddev || 1
-        if (Math.random() < 0.81546)
-        {
-            while (true)
-            {
-                const sample = ((normRand() * stddev) + target)
-                if (sample >= min && sample <= max)
-                {
-                    return sample
-                }
-            }
-        }
-        else
-        {
-            return this.range(min, max)
-        }
-    }
-
-    /*
-     * returns a random hex color (0 - 0xffffff)
-     * @return {number}
-     */
-    color()
-    {
-        return this.get(0xffffff)
-    }
-}
-
-module.exports = new Random()
-},{"seedrandom":378}],392:[function(require,module,exports){
-const Ease = require('pixi-ease')
-const exists = require('exists')
-
-const Plugin = require('./plugin')
-
-module.exports = class Bounce extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
-     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
-     * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     * @fires bounce-start-x
-     * @fires bounce.end-x
-     * @fires bounce-start-y
-     * @fires bounce-end-y
-     */
-    constructor(parent, options)
-    {
-        super(parent)
-        options = options || {}
-        this.time = options.time || 150
-        this.ease = options.ease || 'easeInOutSine'
-        this.friction = options.friction || 0.5
-        options.sides = options.sides || 'all'
-        if (options.sides)
-        {
-            if (options.sides === 'all')
-            {
-                this.top = this.bottom = this.left = this.right = true
-            }
-            else if (options.sides === 'horizontal')
-            {
-                this.right = this.left = true
-            }
-            else if (options.sides === 'vertical')
-            {
-                this.top = this.bottom = true
-            }
-            else
-            {
-                this.top = options.sides.indexOf('top') !== -1
-                this.bottom = options.sides.indexOf('bottom') !== -1
-                this.left = options.sides.indexOf('left') !== -1
-                this.right = options.sides.indexOf('right') !== -1
-            }
-        }
-        this.parseUnderflow(options.underflow || 'center')
-        this.last = {}
-    }
-
-    parseUnderflow(clamp)
-    {
-        clamp = clamp.toLowerCase()
-        if (clamp === 'center')
-        {
-            this.underflowX = 0
-            this.underflowY = 0
-        }
-        else
-        {
-            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
-            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
-        }
-    }
-
-    down()
-    {
-        this.toX = this.toY = null
-    }
-
-    up()
-    {
-        this.bounce()
-    }
-
-    update(elapsed)
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        this.bounce()
-        if (this.toX)
-        {
-            if (this.toX.update(elapsed))
-            {
-                this.toX = null
-                this.parent.emit('bounce-x-end', this.parent)
-            }
-            this.parent.dirty = true
-        }
-        if (this.toY)
-        {
-            if (this.toY.update(elapsed))
-            {
-                this.toY = null
-                this.parent.emit('bounce-y-end', this.parent)
-            }
-            this.parent.dirty = true
-        }
-    }
-
-    calcUnderflowX()
-    {
-        let x
-        switch (this.underflowX)
-        {
-            case -1:
-                x = 0
-                break
-            case 1:
-                x = (this.parent.screenWidth - this.parent.screenWorldWidth)
-                break
-            default:
-                x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
-        }
-        return x
-    }
-
-    calcUnderflowY()
-    {
-        let y
-        switch (this.underflowY)
-        {
-            case -1:
-                y = 0
-                break
-            case 1:
-                y = (this.parent.screenHeight - this.parent.screenWorldHeight)
-                break
-            default:
-                y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
-        }
-        return y
-    }
-
-    bounce()
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        let oob
-        let decelerate = this.parent.plugins['decelerate']
-        if (decelerate && (decelerate.x || decelerate.y))
-        {
-            if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))
-            {
-                oob = this.parent.OOB()
-                if ((oob.left && this.left) || (oob.right && this.right))
-                {
-                    decelerate.percentChangeX = this.friction
-                }
-                if ((oob.top && this.top) || (oob.bottom && this.bottom))
-                {
-                    decelerate.percentChangeY = this.friction
-                }
-            }
-        }
-        const drag = this.parent.plugins['drag'] || {}
-        const pinch = this.parent.plugins['pinch'] || {}
-        decelerate = decelerate || {}
-        if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
-        {
-            oob = oob || this.parent.OOB()
-            const point = oob.cornerPoint
-            if (!this.toX && !decelerate.x)
-            {
-                let x
-                if (oob.left && this.left)
-                {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : 0
-                }
-                else if (oob.right && this.right)
-                {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
-                }
-                if (exists(x) && this.parent.x !== x)
-                {
-                    this.toX = new Ease.to(this.parent, { x }, this.time, { ease: this.ease })
-                    this.parent.emit('bounce-x-start', this.parent)
-                }
-            }
-            if (!this.toY && !decelerate.y)
-            {
-                let y
-                if (oob.top && this.top)
-                {
-                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : 0
-                }
-                else if (oob.bottom && this.bottom)
-                {
-                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
-                }
-                if (exists(y) && this.parent.y !== y)
-                {
-                    this.toY = new Ease.to(this.parent, { y }, this.time, { ease: this.ease })
-                    this.parent.emit('bounce-y-start', this.parent)
-                }
-            }
-        }
-    }
-
-    reset()
-    {
-        this.toX = this.toY = null
-    }
-}
-},{"./plugin":400,"exists":7,"pixi-ease":192}],393:[function(require,module,exports){
-const Plugin = require('./plugin')
-
-module.exports = class ClampZoom extends Plugin
-{
-    /**
-     * @private
-     * @param {object} [options]
-     * @param {number} [options.minWidth] minimum width
-     * @param {number} [options.minHeight] minimum height
-     * @param {number} [options.maxWidth] maximum width
-     * @param {number} [options.maxHeight] maximum height
-     */
-    constructor(parent, options)
-    {
-        super(parent)
-        this.minWidth = options.minWidth
-        this.minHeight = options.minHeight
-        this.maxWidth = options.maxWidth
-        this.maxHeight = options.maxHeight
-    }
-
-    resize()
-    {
-        this.clamp()
-    }
-
-    clamp()
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        let width = this.parent.worldScreenWidth
-        let height = this.parent.worldScreenHeight
-        if (this.minWidth && width < this.minWidth)
-        {
-            this.parent.fitWidth(this.minWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxWidth && width > this.maxWidth)
-        {
-            this.parent.fitWidth(this.maxWidth)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.minHeight && height < this.minHeight)
-        {
-            this.parent.fitHeight(this.minHeight)
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-        }
-        if (this.maxHeight && height > this.maxHeight)
-        {
-            this.parent.fitHeight(this.maxHeight)
-        }
-    }
-}
-
-},{"./plugin":400}],394:[function(require,module,exports){
-const Plugin = require('./plugin')
-
-module.exports = class clamp extends Plugin
-{
-    /**
-     * @private
-     * @param {object} options
-     * @param {string} [options.direction=all] (all, x, or y)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     */
-    constructor(parent, options)
-    {
-        options = options || {}
-        super(parent)
-        switch (options.direction)
-        {
-            case 'x':
-                this.x = true
-                break
-            case 'y':
-                this.y = true
-                break
-            default:
-                this.x = this.y = true
-                break
-        }
-        this.parseUnderflow(options.underflow || 'center')
-        this.move()
-    }
-
-    parseUnderflow(clamp)
-    {
-        clamp = clamp.toLowerCase()
-        if (clamp === 'center')
-        {
-            this.underflowX = 0
-            this.underflowY = 0
-        }
-        else
-        {
-            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
-            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
-        }
-    }
-
-    move()
-    {
-        this.update()
-    }
-
-    update()
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        const oob = this.parent.OOB()
-        const point = oob.cornerPoint
-        const decelerate = this.parent.plugins['decelerate'] || {}
-        if (this.x)
-        {
-            if (this.parent.screenWorldWidth < this.parent.screenWidth)
-            {
-                switch (this.underflowX)
-                {
-                    case -1:
-                        this.parent.x = 0
-                        break
-                    case 1:
-                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
-                        break
-                    default:
-                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
-                }
-            }
-            else
-            {
-                if (oob.left)
-                {
-                    this.parent.x = 0
-                    decelerate.x = 0
-                }
-                else if (oob.right)
-                {
-                    this.parent.x = -point.x
-                    decelerate.x = 0
-                }
-            }
-        }
-        if (this.y)
-        {
-            if (this.parent.screenWorldHeight < this.parent.screenHeight)
-            {
-                switch (this.underflowY)
-                {
-                    case -1:
-                        this.parent.y = 0
-                        break
-                    case 1:
-                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
-                        break
-                    default:
-                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
-                }
-            }
-            else
-            {
-                if (oob.top)
-                {
-                    this.parent.y = 0
-                    decelerate.y = 0
-                }
-                else if (oob.bottom)
-                {
-                    this.parent.y = -point.y
-                    decelerate.y = 0
-                }
-            }
-        }
-    }
-}
-},{"./plugin":400}],395:[function(require,module,exports){
-const exists = require('exists')
-
-const Plugin = require('./plugin')
-
-module.exports = class Decelerate extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {number} [options.friction=0.95] percent to decelerate after movement
-     * @param {number} [options.bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
-     * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
-     */
-    constructor(parent, options)
-    {
-        super(parent)
-        options = options || {}
-        this.friction = options.friction || 0.95
-        this.bounce = options.bounce || 0.5
-        this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
-        this.saved = []
-    }
-
-    down()
-    {
-        this.saved = []
-        this.x = this.y = false
-
-    }
-
-    move()
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        const count = this.parent.countDownPointers()
-        if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
-        {
-            this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() })
-            if (this.saved.length > 60)
-            {
-                this.saved.splice(0, 30)
-            }
-        }
-    }
-
-    up()
-    {
-        if (this.parent.countDownPointers() <= 1 && this.saved.length)
-        {
-            const now = performance.now()
-            for (let save of this.saved)
-            {
-                if (save.time >= now - 100)
-                {
-                    const time = now - save.time
-                    this.x = (this.parent.x - save.x) / time
-                    this.y = (this.parent.y - save.y) / time
-                    this.percentChangeX = this.percentChangeY = this.friction
-                    break
-                }
-            }
-        }
-    }
-
-    /**
-     * manually activate plugin
-     * @param {object} options
-     * @param {number} [options.x]
-     * @param {number} [options.y]
-     */
-    activate(options)
-    {
-        if (exists(options.x))
-        {
-            this.x = options.x
-            this.percentChangeX = this.friction
-        }
-        if (exists(options.y))
-        {
-            this.y = options.y
-            this.percentChangeY = this.friction
-        }
-    }
-
-    update(elapsed)
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        if (this.x)
-        {
-            this.parent.x += this.x * elapsed
-            this.x *= this.percentChangeX
-            if (Math.abs(this.x) < this.minSpeed)
-            {
-                this.x = 0
-            }
-            this.parent.dirty = true
-        }
-        if (this.y)
-        {
-            this.parent.y += this.y * elapsed
-            this.y *= this.percentChangeY
-            if (Math.abs(this.y) < this.minSpeed)
-            {
-                this.y = 0
-            }
-            this.parent.dirty = true
-        }
-    }
-
-    reset()
-    {
-        this.x = this.y = null
-    }
-}
-},{"./plugin":400,"exists":7}],396:[function(require,module,exports){
-const exists = require('exists')
-
-const Plugin = require('./plugin')
-module.exports = class Drag extends Plugin
-{
-    /**
-     * enable one-finger touch to drag
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
-     * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
-     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
-     * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     */
-    constructor(parent, options)
-    {
-        options = options || {}
-        super(parent)
-        this.moved = false
-        this.wheelActive = exists(options.wheel) ? options.wheel : true
-        this.wheelScroll = options.wheelScroll || 1
-        this.reverse = options.reverse ? 1 : -1
-        this.clampWheel = options.clampWheel
-        this.parseUnderflow(options.underflow || 'center')
-    }
-
-    parseUnderflow(clamp)
-    {
-        clamp = clamp.toLowerCase()
-        if (clamp === 'center')
-        {
-            this.underflowX = 0
-            this.underflowY = 0
-        }
-        else
-        {
-            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
-            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
-        }
-    }
-
-    down(e)
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        if (this.parent.countDownPointers() <= 1)
-        {
-            this.last = { x: e.data.global.x, y: e.data.global.y }
-            this.clickedAvailable = true
-        }
-    }
-
-    get active()
-    {
-        return this.moved
-    }
-
-    move(e)
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        const x = e.data.global.x
-        const y = e.data.global.y
-        if (this.last)
-        {
-            const count = this.parent.countDownPointers()
-            if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
-            {
-                const distX = x - this.last.x
-                const distY = y - this.last.y
-                if (this.moved || (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY)))
-                {
-                    this.parent.x += distX
-                    this.parent.y += distY
-                    this.last = { x, y }
-                    if (!this.moved)
-                    {
-                        this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
-                    }
-                    this.moved = true
-                    this.parent.dirty = true
-                }
-            }
-            else
-            {
-                this.moved = false
-            }
-        }
-    }
-
-    up(e)
-    {
-        if (this.parent.countDownPointers() === 2)
-        {
-            if (e.data.originalEvent.touches)
-            {
-                const pointers = this.parent.trackedPointers
-                for (let key in pointers)
-                {
-                    const pointer = pointers[key]
-                    if (pointer.pointerId !== 'MOUSE' && pointer.pointerId !== e.data.pointerId)
-                    {
-                        if (pointer.last)
-                        {
-                            this.last = { x: pointer.last.x, y: pointer.last.y }
-                        }
-                    }
-                }
-                this.clickedAvailable = false
-                this.moved = false
-            }
-        }
-        else if (this.last)
-        {
-            if (this.moved)
-            {
-                this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
-                this.last = this.moved = false
-            }
-            else if (this.clickedAvailable)
-            {
-                this.parent.emit('clicked', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent })
-            }
-        }
-    }
-
-    wheel(dx, dy)
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        if (this.wheelActive)
-        {
-            const wheel = this.parent.plugins['wheel']
-            if (!wheel)
-            {
-                this.parent.x += dx * this.wheelScroll * this.reverse
-                this.parent.y += dy * this.wheelScroll * this.reverse
-                if (this.clampWheel)
-                {
-                    this.clamp()
-                }
-                this.parent.emit('wheel-scroll', this.parent)
-                this.parent.dirty = true
-                return true
-            }
-        }
-    }
-
-    resume()
-    {
-        this.last = null
-        this.paused = false
-    }
-
-    clamp()
-    {
-        const oob = this.parent.OOB()
-        const point = oob.cornerPoint
-        const decelerate = this.parent.plugins['decelerate'] || {}
-        if (this.clampWheel !== 'y')
-        {
-            if (this.parent.screenWorldWidth < this.parent.screenWidth)
-            {
-                switch (this.underflowX)
-                {
-                    case -1:
-                        this.parent.x = 0
-                        break
-                    case 1:
-                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
-                        break
-                    default:
-                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
-                }
-            }
-            else
-            {
-                if (oob.left)
-                {
-                    this.parent.x = 0
-                    decelerate.x = 0
-                }
-                else if (oob.right)
-                {
-                    this.parent.x = -point.x
-                    decelerate.x = 0
-                }
-            }
-        }
-        if (this.clampWheel !== 'x')
-        {
-            if (this.parent.screenWorldHeight < this.parent.screenHeight)
-            {
-                switch (this.underflowY)
-                {
-                    case -1:
-                        this.parent.y = 0
-                        break
-                    case 1:
-                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
-                        break
-                    default:
-                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
-                }
-            }
-            else
-            {
-                if (oob.top)
-                {
-                    this.parent.y = 0
-                    decelerate.y = 0
-                }
-                else if (oob.bottom)
-                {
-                    this.parent.y = -point.y
-                    decelerate.y = 0
-                }
-            }
-        }
-    }
-}
-},{"./plugin":400,"exists":7}],397:[function(require,module,exports){
-const Plugin = require('./plugin')
-
-module.exports = class Follow extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
-     * @param {object} [options]
-     * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
-     * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
-     */
-    constructor(parent, target, options)
-    {
-        super(parent)
-        options = options || {}
-        this.speed = options.speed || 0
-        this.target = target
-        this.radius = options.radius
-    }
-
-    update()
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        const center = this.parent.center
-        let toX = this.target.x, toY = this.target.y
-        if (this.radius)
-        {
-            const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2))
-            if (distance > this.radius)
-            {
-                const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x)
-                toX = this.target.x - Math.cos(angle) * this.radius
-                toY = this.target.y - Math.sin(angle) * this.radius
-            }
-            else
-            {
-                return
-            }
-        }
-        if (this.speed)
-        {
-            const deltaX = toX - center.x
-            const deltaY = toY - center.y
-            if (deltaX || deltaY)
-            {
-                const angle = Math.atan2(toY - center.y, toX - center.x)
-                const changeX = Math.cos(angle) * this.speed
-                const changeY = Math.sin(angle) * this.speed
-                const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
-                const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
-                this.parent.moveCenter(x, y)
-            }
-        }
-        else
-        {
-            this.parent.moveCenter(toX, toY)
-        }
-    }
-}
-},{"./plugin":400}],398:[function(require,module,exports){
-const exists = require('exists')
-const Angle = require('yy-angle')
-
-const Plugin = require('./plugin')
-
-module.exports = class MouseEdges extends Plugin
-{
-    /**
-     * Scroll viewport when mouse hovers near one of the edges.
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {number} [options.radius] distance from center of screen in screen pixels
-     * @param {number} [options.distance] distance from all sides in screen pixels
-     * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
-     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
-     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
-     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
-     * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
-     * @param {boolean} [options.reverse] reverse direction of scroll
-     * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
-     * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
-     *
-     * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
-     * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
-     */
-    constructor(parent, options)
-    {
-        super(parent)
-        options = options || {}
-        this.options = options
-        this.reverse = options.reverse ? 1 : -1
-        this.noDecelerate = options.noDecelerate
-        this.linear = options.linear
-        this.radiusSquared = Math.pow(options.radius, 2)
-        this.resize()
-        this.speed = options.speed || 8
-    }
-
-    resize()
-    {
-        const options = this.options
-        const distance = options.distance
-        if (exists(distance))
-        {
-            this.left = distance
-            this.top = distance
-            this.right = window.innerWidth - distance
-            this.bottom = window.innerHeight - distance
-        }
-        else if (!this.radius)
-        {
-            this.left = exists(options.left) ? options.left : null
-            this.top = exists(options.top) ? options.top : null
-            this.right = exists(options.right) ? window.innerWidth - options.right : null
-            this.bottom = exists(options.bottom) ? window.innerHeight - options.bottom : null
-        }
-    }
-
-    down()
-    {
-        this.horizontal = this.vertical = null
-    }
-
-    move(e)
-    {
-        if (e.data.identifier !== 'MOUSE' || e.data.buttons !== 0)
-        {
-            return
-        }
-        const x = e.data.global.x
-        const y = e.data.global.y
-
-        if (this.radiusSquared)
-        {
-            const center = this.parent.toScreen(this.parent.center)
-            const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
-            if (distance >= this.radiusSquared)
-            {
-                const angle = Math.atan2(center.y - y, center.x - x)
-                if (this.linear)
-                {
-                    this.horizontal = Math.round(Math.cos(angle)) * this.speed * this.reverse * (60 / 1000)
-                    this.vertical = Math.round(Math.sin(angle)) * this.speed * this.reverse * (60 / 1000)
-                }
-                else
-                {
-                    this.horizontal = Math.cos(angle) * this.speed * this.reverse * (60 / 1000)
-                    this.vertical = Math.sin(angle) * this.speed * this.reverse * (60 / 1000)
-                }
-            }
-            else
-            {
-                if (this.horizontal)
-                {
-                    this.decelerateHorizontal()
-                }
-                if (this.vertical)
-                {
-                    this.decelerateVertical()
-                }
-                this.horizontal = this.vertical = 0
-            }
-        }
-        else
-        {
-            if (exists(this.left) && x < this.left)
-            {
-                this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
-            }
-            else if (exists(this.right) && x > this.right)
-            {
-                this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
-            }
-            else
-            {
-                this.decelerateHorizontal()
-                this.horizontal = 0
-            }
-            if (exists(this.top) && y < this.top)
-            {
-                this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
-            }
-            else if (exists(this.bottom) && y > this.bottom)
-            {
-                this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
-            }
-            else
-            {
-                this.decelerateVertical()
-                this.vertical = 0
-            }
-        }
-    }
-
-    decelerateHorizontal()
-    {
-        const decelerate = this.parent.plugins['decelerate']
-        if (this.horizontal && decelerate && !this.noDecelerate)
-        {
-            decelerate.activate({ x: (this.horizontal * this.speed * this.reverse) / (1000 / 60) })
-        }
-    }
-
-    decelerateVertical()
-    {
-        const decelerate = this.parent.plugins['decelerate']
-        if (this.vertical && decelerate && !this.noDecelerate)
-        {
-            decelerate.activate({ y: (this.vertical * this.speed * this.reverse) / (1000 / 60)})
-        }
-    }
-
-    up()
-    {
-        if (this.horizontal)
-        {
-            this.decelerateHorizontal()
-        }
-        if (this.vertical)
-        {
-            this.decelerateVertical()
-        }
-        this.horizontal = this.vertical = null
-    }
-
-    update()
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        if (this.horizontal || this.vertical)
-        {
-            const center = this.parent.center
-            if (this.horizontal)
-            {
-                center.x += this.horizontal * this.speed
-            }
-            if (this.vertical)
-            {
-                center.y += this.vertical * this.speed
-            }
-            this.parent.moveCenter(center)
-        }
-    }
-}
-},{"./plugin":400,"exists":7,"yy-angle":387}],399:[function(require,module,exports){
-const Plugin = require('./plugin')
-
-module.exports = class Pinch extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {boolean} [options.noDrag] disable two-finger dragging
-     * @param {number} [options.percent=1.0] percent to modify pinch speed
-     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
-     */
-    constructor(parent, options)
-    {
-        super(parent)
-        options = options || {}
-        this.percent = options.percent || 1.0
-        this.noDrag = options.noDrag
-        this.center = options.center
-    }
-
-    down()
-    {
-        if (this.parent.countDownPointers() >= 2)
-        {
-            this.active = true
-        }
-    }
-
-    move(e)
-    {
-        if (this.paused || !this.active)
-        {
-            return
-        }
-
-        const x = e.data.global.x
-        const y = e.data.global.y
-
-        const pointers = this.parent.getTouchPointers()
-        if (pointers.length >= 2)
-        {
-            const first = pointers[0]
-            const second = pointers[1]
-            const last = (first.last && second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null
-            if (first.pointerId === e.data.pointerId)
-            {
-                first.last = { x, y }
-            }
-            else if (second.pointerId === e.data.pointerId)
-            {
-                second.last = { x, y }
-            }
-            if (last)
-            {
-                let oldPoint
-                const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
-                if (!this.center)
-                {
-                    oldPoint = this.parent.toLocal(point)
-                }
-                const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
-                this.parent.scale.x += change
-                this.parent.scale.y += change
-                const clamp = this.parent.plugins['clamp-zoom']
-                if (clamp)
-                {
-                    clamp.clamp()
-                }
-                if (this.center)
-                {
-                    this.parent.moveCenter(this.center)
-                }
-                else
-                {
-                    const newPoint = this.parent.toGlobal(oldPoint)
-                    this.parent.x += point.x - newPoint.x
-                    this.parent.y += point.y - newPoint.y
-                }
-                if (!this.noDrag && this.lastCenter)
-                {
-                    this.parent.x += point.x - this.lastCenter.x
-                    this.parent.y += point.y - this.lastCenter.y
-                }
-                this.lastCenter = point
-                this.moved = true
-            }
-            else
-            {
-                if (!this.pinching)
-                {
-                    this.parent.emit('pinch-start', this.parent)
-                    this.pinching = true
-                }
-            }
-            this.parent.dirty = true
-        }
-    }
-
-    up()
-    {
-        if (this.pinching)
-        {
-            if (this.parent.getTouchPointers().length <= 2)
-            {
-                this.active = false
-                this.lastCenter = null
-                this.pinching = false
-                this.moved = false
-                this.parent.emit('pinch-end', this.parent)
-            }
-        }
-    }
-}
-},{"./plugin":400}],400:[function(require,module,exports){
-module.exports = class Plugin
-{
-    constructor(parent)
-    {
-        this.parent = parent
-        this.paused = false
-    }
-
-    down() { }
-    move() { }
-    up() { }
-    wheel() { }
-    update() { }
-    resize() { }
-    reset() { }
-
-    pause()
-    {
-        this.paused = true
-    }
-
-    resume()
-    {
-        this.paused = false
-    }
-}
-},{}],401:[function(require,module,exports){
-const Plugin = require('./plugin')
-const Ease = require('pixi-ease')
-const exists = require('exists')
-
-module.exports = class SnapZoom extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
-     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
-     * @param {number} [options.time=1000]
-     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
-     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
-     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     *
-     * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
-     * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
-     */
-    constructor(parent, options)
-    {
-        super(parent)
-        options = options || {}
-        this.width = options.width
-        this.height = options.height
-        if (this.width > 0)
-        {
-            this.x_scale = parent._screenWidth / this.width
-        }
-        if (this.height > 0)
-        {
-            this.y_scale = parent._screenHeight / this.height
-        }
-        this.xIndependent = exists(this.x_scale)
-        this.yIndependent = exists(this.y_scale)
-        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale
-        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale
-
-        this.time = exists(options.time) ? options.time : 1000
-        this.ease = options.ease || 'easeInOutSine'
-        this.center = options.center
-        this.stopOnResize = options.stopOnResize
-        this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
-        this.interrupt = exists(options.interrupt) ? options.interrupt : true
-
-        if (this.time == 0)
-        {
-            parent.container.scale.x = this.x_scale
-            parent.container.scale.y = this.y_scale
-            if (this.removeOnComplete)
-            {
-                this.parent.removePlugin('snap-zoom')
-            }
-        }
-    }
-
-    resize()
-    {
-        this.snapping = null
-
-        if (this.width > 0)
-        {
-            this.x_scale = this.parent._screenWidth / this.width
-        }
-        if (this.height > 0)
-        {
-            this.y_scale = this.parent._screenHeight / this.height
-        }
-        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale
-        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale
-    }
-
-    reset()
-    {
-        this.snapping = null
-    }
-
-    down()
-    {
-        this.snapping = null
-    }
-
-    update(elapsed)
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        if (this.interrupt && this.parent.countDownPointers() !== 0)
-        {
-            return
-        }
-
-        let oldCenter
-        if (!this.center)
-        {
-            oldCenter = this.parent.center
-        }
-        if (!this.snapping)
-        {
-            if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
-            {
-                this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
-                this.parent.emit('snap-zoom-start', this.parent)
-            }
-        }
-        else if (this.snapping)
-        {
-            if (this.snapping.update(elapsed))
-            {
-                if (this.removeOnComplete)
-                {
-                    this.parent.removePlugin('snap-zoom')
-                }
-                this.parent.emit('snap-zoom-end', this.parent)
-                this.snapping = null
-            }
-            const clamp = this.parent.plugins['clamp-zoom']
-            if (clamp)
-            {
-                clamp.clamp()
-            }
-            if (!this.center)
-            {
-                this.parent.moveCenter(oldCenter)
-            }
-            else
-            {
-                this.parent.moveCenter(this.center)
-            }
-        }
-    }
-
-    resume()
-    {
-        this.snapping = null
-        super.resume()
-    }
-}
-},{"./plugin":400,"exists":7,"pixi-ease":192}],402:[function(require,module,exports){
-const Plugin = require('./plugin')
-const Ease = require('pixi-ease')
-const exists = require('exists')
-
-module.exports = class Snap extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {number} x
-     * @param {number} y
-     * @param {object} [options]
-     * @param {boolean} [options.topLeft] snap to the top-left of viewport instead of center
-     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
-     * @param {number} [options.time=1000]
-     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
-     *
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
-     * @event snap-end(Viewport) emitted each time snap reaches its target
-     */
-    constructor(parent, x, y, options)
-    {
-        super(parent)
-        options = options || {}
-        this.friction = options.friction || 0.8
-        this.time = options.time || 1000
-        this.ease = options.ease || 'easeInOutSine'
-        this.x = x
-        this.y = y
-        this.topLeft = options.topLeft
-        this.interrupt = exists(options.interrupt) ? options.interrupt : true
-        this.removeOnComplete = options.removeOnComplete
-    }
-
-    startEase()
-    {
-        const current = this.topLeft ? this.parent.corner : this.parent.center
-        this.deltaX = this.x - current.x
-        this.deltaY = this.y - current.y
-        this.startX = current.x
-        this.startY = current.y
-    }
-
-    down()
-    {
-        if (this.interrupt)
-        {
-            this.snapping = null
-        }
-    }
-
-    up()
-    {
-        if (this.parent.countDownPointers() === 1)
-        {
-            const decelerate = this.parent.plugins['decelerate']
-            if (decelerate && (decelerate.x || decelerate.y))
-            {
-                decelerate.percentChangeX = decelerate.percentChangeY = this.friction
-            }
-        }
-    }
-
-    update(elapsed)
-    {
-        if (this.paused)
-        {
-            return
-        }
-        if (this.interrupt && this.parent.countDownPointers() !== 0)
-        {
-            return
-        }
-        if (!this.snapping)
-        {
-            const current = this.topLeft ? this.parent.corner : this.parent.center
-            if (current.x !== this.x || current.y !== this.y)
-            {
-                this.percent = 0
-                this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
-                this.startEase()
-                this.parent.emit('snap-start', this.parent)
-            }
-        }
-        else
-        {
-            const finished = this.snapping.update(elapsed)
-            const x = this.startX + this.deltaX * this.percent
-            const y = this.startY + this.deltaY * this.percent
-            if (this.topLeft)
-            {
-                this.parent.moveCorner(x, y)
-            }
-            else
-            {
-                this.parent.moveCenter(x, y)
-            }
-
-            if (finished)
-            {
-                if (this.removeOnComplete)
-                {
-                    this.parent.removePlugin('snap')
-                }
-                this.parent.emit('snap-end', this.parent )
-                this.snapping = null
-            }
-        }
-    }
-}
-},{"./plugin":400,"exists":7,"pixi-ease":192}],403:[function(require,module,exports){
-const PIXI = require('pixi.js')
-const exists = require('exists')
-
-const Drag = require('./drag')
-const Pinch = require('./pinch')
-const Clamp = require('./clamp')
-const ClampZoom = require('./clamp-zoom')
-const Decelerate = require('./decelerate')
-const Bounce = require('./bounce')
-const Snap = require('./snap')
-const SnapZoom = require('./snap-zoom')
-const Follow = require('./follow')
-const Wheel = require('./wheel')
-const MouseEdges = require('./mouse-edges')
-
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
-
-class Viewport extends PIXI.Container
-{
-    /**
-     * @extends PIXI.Container
-     * @extends EventEmitter
-     * @param {object} [options]
-     * @param {number} [options.screenWidth=window.innerWidth]
-     * @param {number} [options.screenHeight=window.innerHeight]
-     * @param {number} [options.worldWidth=this.width]
-     * @param {number} [options.worldHeight=this.height]
-     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
-     * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
-     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
-     * @fires clicked
-     * @fires drag-start
-     * @fires drag-end
-     * @fires pinch-start
-     * @fires pinch-end
-     * @fires snap-start
-     * @fires snap-end
-     * @fires snap-zoom-start
-     * @fires snap-zoom-end
-     * @fires bounce-x-start
-     * @fires bounce-x-end
-     * @fires bounce-y-start
-     * @fires bounce-y-end
-     * @fires wheel
-     * @fires wheel-scroll
-     * @fires mouse-edge-start
-     * @fires mouse-edge-end
-     */
-    constructor(options)
-    {
-        options = options || {}
-        super()
-        this.plugins = []
-        this._screenWidth = options.screenWidth
-        this._screenHeight = options.screenHeight
-        this._worldWidth = options.worldWidth
-        this._worldHeight = options.worldHeight
-        this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
-        this.forceHitArea = options.forceHitArea
-        this.threshold = exists(options.threshold) ? options.threshold : 5
-        this.listeners()
-        this.ticker = options.ticker || PIXI.ticker.shared
-        this.ticker.add(() => this.update())
-    }
-
-    /**
-     * update animations
-     * @private
-     */
-    update()
-    {
-        if (!this._pause)
-        {
-            for (let plugin of PLUGIN_ORDER)
-            {
-                if (this.plugins[plugin])
-                {
-                    this.plugins[plugin].update(this.ticker.elapsedMS)
-                }
-            }
-            if (!this.forceHitArea)
-            {
-                this.hitArea.x = this.left
-                this.hitArea.y = this.top
-                this.hitArea.width = this.worldScreenWidth
-                this.hitArea.height = this.worldScreenHeight
-            }
-        }
-    }
-
-    /**
-     * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
-     * @param {number} screenWidth
-     * @param {number} screenHeight
-     * @param {number} [worldWidth]
-     * @param {number} [worldHeight]
-     */
-    resize(screenWidth, screenHeight, worldWidth, worldHeight)
-    {
-        this._screenWidth = screenWidth || window.innerWidth
-        this._screenHeight = screenHeight || window.innerHeight
-        this._worldWidth = worldWidth
-        this._worldHeight = worldHeight
-        this.resizePlugins()
-    }
-
-    /**
-     * called after a worldWidth/Height change
-     * @private
-     */
-    resizePlugins()
-    {
-        for (let type of PLUGIN_ORDER)
-        {
-            if (this.plugins[type])
-            {
-                this.plugins[type].resize()
-            }
-        }
-    }
-
-    /**
-     * screen width in screen pixels
-     * @type {number}
-     */
-    get screenWidth()
-    {
-        return this._screenWidth
-    }
-    set screenWidth(value)
-    {
-        this._screenWidth = value
-    }
-
-    /**
-     * screen height in screen pixels
-     * @type {number}
-     */
-    get screenHeight()
-    {
-        return this._screenHeight
-    }
-    set screenHeight(value)
-    {
-        this._screenHeight = value
-    }
-
-    /**
-     * world width in pixels
-     * @type {number}
-     */
-    get worldWidth()
-    {
-        if (this._worldWidth)
-        {
-            return this._worldWidth
-        }
-        else
-        {
-            return this.width
-        }
-    }
-    set worldWidth(value)
-    {
-        this._worldWidth = value
-        this.resizePlugins()
-    }
-
-    /**
-     * world height in pixels
-     * @type {number}
-     */
-    get worldHeight()
-    {
-        if (this._worldHeight)
-        {
-            return this._worldHeight
-        }
-        else
-        {
-            return this.height
-        }
-    }
-    set worldHeight(value)
-    {
-        this._worldHeight = value
-        this.resizePlugins()
-    }
-
-    /**
-     * add input listeners
-     * @private
-     */
-    listeners()
-    {
-        this.interactive = true
-        if (!this.forceHitArea)
-        {
-            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
-        }
-        this.on('pointerdown', this.down)
-        this.on('pointermove', this.move)
-        this.on('pointerup', this.up)
-        this.on('pointercancel', this.up)
-        this.on('pointerout', this.up)
-        document.body.addEventListener('wheel', (e) => this.handleWheel(e))
-        this.leftDown = false
-    }
-
-    /**
-     * handle down events
-     * @private
-     */
-    down(e)
-    {
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
-            this.leftDown = true
-        }
-
-        for (let type of PLUGIN_ORDER)
-        {
-            if (this.plugins[type])
-            {
-                this.plugins[type].down(e)
-            }
-        }
-    }
-
-    /**
-     * whether change exceeds threshold
-     * @private
-     * @param {number} change
-     */
-    checkThreshold(change)
-    {
-        if (Math.abs(change) >= this.threshold)
-        {
-            return true
-        }
-        return false
-    }
-
-    /**
-     * handle move events
-     * @private
-     */
-    move(e)
-    {
-        for (let type of PLUGIN_ORDER)
-        {
-            if (this.plugins[type])
-            {
-                this.plugins[type].move(e)
-            }
-        }
-    }
-
-    /**
-     * handle up events
-     * @private
-     */
-    up(e)
-    {
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
-            this.leftDown = false
-        }
-
-        for (let type of PLUGIN_ORDER)
-        {
-            if (this.plugins[type])
-            {
-                this.plugins[type].up(e)
-            }
-        }
-    }
-
-    /**
-     * handle wheel events
-     * @private
-     */
-    handleWheel(e)
-    {
-        let result
-        for (let type of PLUGIN_ORDER)
-        {
-            if (this.plugins[type])
-            {
-                if (this.plugins[type].wheel(e))
-                {
-                    result = true
-                }
-            }
-        }
-        return result
-    }
-
-    /**
-     * change coordinates from screen to world
-     * @param {number|PIXI.Point} x
-     * @param {number} [y]
-     * @returns {PIXI.Point}
-     */
-    toWorld()
-    {
-        if (arguments.length === 2)
-        {
-            const x = arguments[0]
-            const y = arguments[1]
-            return this.toLocal({ x, y })
-        }
-        else
-        {
-            return this.toLocal(arguments[0])
-        }
-    }
-
-    /**
-     * change coordinates from world to screen
-     * @param {number|PIXI.Point} x
-     * @param {number} [y]
-     * @returns {PIXI.Point}
-     */
-    toScreen()
-    {
-        if (arguments.length === 2)
-        {
-            const x = arguments[0]
-            const y = arguments[1]
-            return this.toGlobal({ x, y })
-        }
-        else
-        {
-            const point = arguments[0]
-            return this.toGlobal(point)
-        }
-    }
-
-    /**
-     * screen width in world coordinates
-     * @type {number}
-     * @readonly
-     */
-    get worldScreenWidth()
-    {
-        return this._screenWidth / this.scale.x
-    }
-
-    /**
-     * screen height in world coordinates
-     * @type {number}
-     * @readonly
-     */
-    get worldScreenHeight()
-    {
-        return this._screenHeight / this.scale.y
-    }
-
-    /**
-     * world width in screen coordinates
-     * @type {number}
-     * @readonly
-     */
-    get screenWorldWidth()
-    {
-        return this._worldWidth * this.scale.x
-    }
-
-    /**
-     * world height in screen coordinates
-     * @type {number}
-     * @readonly
-     */
-    get screenWorldHeight()
-    {
-        return this._worldHeight * this.scale.y
-    }
-
-    /**
-     * get center of screen in world coordinates
-     * @type {PIXI.PointLike}
-     */
-    get center()
-    {
-        return { x: this.worldScreenWidth / 2 - this.x / this.scale.x, y: this.worldScreenHeight / 2 - this.y / this.scale.y }
-    }
-    set center(value)
-    {
-        this.moveCenter(value)
-    }
-
-    /**
-     * move center of viewport to point
-     * @param {(number|PIXI.PointLike)} x or point
-     * @param {number} [y]
-     * @return {Viewport} this
-     */
-    moveCenter(/*x, y | PIXI.Point*/)
-    {
-        let x, y
-        if (!isNaN(arguments[0]))
-        {
-            x = arguments[0]
-            y = arguments[1]
-        }
-        else
-        {
-            x = arguments[0].x
-            y = arguments[0].y
-        }
-        this.position.set((this.worldScreenWidth / 2 - x) * this.scale.x, (this.worldScreenHeight / 2 - y) * this.scale.y)
-        this._reset()
-        return this
-    }
-
-    /**
-     * top-left corner
-     * @type {PIXI.PointLike}
-     */
-    get corner()
-    {
-        return { x: -this.x / this.scale.x, y: -this.y / this.scale.y }
-    }
-    set corner(value)
-    {
-        this.moveCorner(value)
-    }
-
-    /**
-     * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
-     * @param {number|PIXI.Point} x|point
-     * @param {number} y
-     * @return {Viewport} this
-     */
-    moveCorner(/*x, y | point*/)
-    {
-        if (arguments.length === 1)
-        {
-            this.position.set(-arguments[0].x * this.scale.x, -arguments[0].y * this.scale.y)
-        }
-        else
-        {
-            this.position.set(-arguments[0] * this.scale.x, -arguments[1] * this.scale.y)
-        }
-        this._reset()
-        return this
-    }
-
-    /**
-     * change zoom so the width fits in the viewport
-     * @param {number} [width=this._worldWidth] in world coordinates
-     * @param {boolean} [center] maintain the same center
-     * @return {Viewport} this
-     */
-    fitWidth(width, center)
-    {
-        let save
-        if (center)
-        {
-            save = this.center
-        }
-        width = width || this._worldWidth
-        this.scale.x = this._screenWidth / width
-        this.scale.y = this.scale.x
-        if (center)
-        {
-            this.moveCenter(save)
-        }
-        return this
-    }
-
-    /**
-     * change zoom so the height fits in the viewport
-     * @param {number} [height=this._worldHeight] in world coordinates
-     * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @return {Viewport} this
-     */
-    fitHeight(height, center)
-    {
-        let save
-        if (center)
-        {
-            save = this.center
-        }
-        height = height || this._worldHeight
-        this.scale.y = this._screenHeight / height
-        this.scale.x = this.scale.y
-        if (center)
-        {
-            this.moveCenter(save)
-        }
-        return this
-    }
-
-    /**
-     * change zoom so it fits the entire world in the viewport
-     * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @return {Viewport} this
-     */
-    fitWorld(center)
-    {
-        let save
-        if (center)
-        {
-            save = this.center
-        }
-        this.scale.x = this._screenWidth / this._worldWidth
-        this.scale.y = this._screenHeight / this._worldHeight
-        if (this.scale.x < this.scale.y)
-        {
-            this.scale.y = this.scale.x
-        }
-        else
-        {
-            this.scale.x = this.scale.y
-        }
-        if (center)
-        {
-            this.moveCenter(save)
-        }
-        return this
-    }
-
-    /**
-     * change zoom so it fits the entire world in the viewport
-     * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @return {Viewport} this
-     */
-    fit(center)
-    {
-        let save
-        if (center)
-        {
-            save = this.center
-        }
-        this.scale.x = this._screenWidth / this._worldWidth
-        this.scale.y = this._screenHeight / this._worldHeight
-        if (this.scale.x < this.scale.y)
-        {
-            this.scale.y = this.scale.x
-        }
-        else
-        {
-            this.scale.x = this.scale.y
-        }
-        if (center)
-        {
-            this.moveCenter(save)
-        }
-        return this
-    }
-
-    /**
-     * zoom viewport by a certain percent (in both x and y direction)
-     * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
-     * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @return {Viewport} the viewport
-     */
-    zoomPercent(percent, center)
-    {
-        let save
-        if (center)
-        {
-            save = this.center
-        }
-        const scale = this.scale.x + this.scale.x * percent
-        this.scale.set(scale)
-        if (center)
-        {
-            this.moveCenter(save)
-        }
-        return this
-    }
-
-    /**
-     * zoom viewport by increasing/decreasing width by a certain number of pixels
-     * @param {number} change in pixels
-     * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @return {Viewport} the viewport
-     */
-    zoom(change, center)
-    {
-        this.fitWidth(change + this.worldScreenWidth, center)
-    }
-
-    /**
-     * @param {object} [options]
-     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
-     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
-     * @param {number} [options.time=1000]
-     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
-     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
-     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     */
-    snapZoom(options)
-    {
-        this.plugins['snap-zoom'] = new SnapZoom(this, options)
-        return this
-    }
-
-    /**
-     * @private
-     * @typedef OutOfBounds
-     * @type {object}
-     * @property {boolean} left
-     * @property {boolean} right
-     * @property {boolean} top
-     * @property {boolean} bottom
-     */
-
-    /**
-     * is container out of world bounds
-     * @return {OutOfBounds}
-     * @private
-     */
-    OOB()
-    {
-        const result = {}
-        result.left = this.left < 0
-        result.right = this.right > this._worldWidth
-        result.top = this.top < 0
-        result.bottom = this.bottom > this._worldHeight
-        result.cornerPoint = {
-            x: this._worldWidth * this.scale.x - this._screenWidth,
-            y: this._worldHeight * this.scale.y - this._screenHeight
-        }
-        return result
-    }
-
-    /**
-     * world coordinates of the right edge of the screen
-     * @type {number}
-     */
-    get right()
-    {
-        return -this.x / this.scale.x + this.worldScreenWidth
-    }
-    set right(value)
-    {
-        this.x = value * this.scale.x - this.worldScreenWidth
-        this._reset()
-    }
-
-    /**
-     * world coordinates of the left edge of the screen
-     * @type {number}
-     */
-    get left()
-    {
-        return -this.x / this.scale.x
-    }
-    set left(value)
-    {
-        this.x = -value * this.scale.x
-        this._reset()
-    }
-
-    /**
-     * world coordinates of the top edge of the screen
-     * @type {number}
-     */
-    get top()
-    {
-        return -this.y / this.scale.y
-    }
-    set top(value)
-    {
-        this.y = -value * this.scale.y
-        this._reset()
-    }
-
-    /**
-     * world coordinates of the bottom edge of the screen
-     * @type {number}
-     */
-    get bottom()
-    {
-        return -this.y / this.scale.y + this.worldScreenHeight
-    }
-    set bottom(value)
-    {
-        this.y = -value * this.scale.y - this.worldScreenHeight
-        this._reset()
-    }
-    /**
-     * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
-     * @type {boolean}
-     */
-    get dirty()
-    {
-        return this._dirty
-    }
-    set dirty(value)
-    {
-        this._dirty = value
-    }
-
-    /**
-     * permanently changes the Viewport's hitArea
-     * <p>NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)</p>
-     * @type {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)}
-     */
-    get forceHitArea()
-    {
-        return this._forceHitArea
-    }
-    set forceHitArea(value)
-    {
-        if (value)
-        {
-            this._forceHitArea = value
-            this.hitArea = value
-        }
-        else
-        {
-            this._forceHitArea = false
-            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
-        }
-    }
-
-    /**
-     * count of mouse/touch pointers that are down on the viewport
-     * @private
-     * @return {number}
-     */
-    countDownPointers()
-    {
-        let count = 0
-        const pointers = this.trackedPointers
-        for (let key in pointers)
-        {
-            if (key === 'MOUSE')
-            {
-                count += this.leftDown ? 1 : 0
-            }
-            else
-            {
-                count++
-            }
-        }
-        return count
-    }
-
-    /**
-     * array of touch pointers that are down on the viewport
-     * @private
-     * @return {PIXI.InteractionTrackingData[]}
-     */
-    getTouchPointers()
-    {
-        let results = []
-        const pointers = this.trackedPointers
-        for (let key in pointers)
-        {
-            if (key !== 'MOUSE')
-            {
-                results.push(pointers[key])
-            }
-        }
-        return results
-    }
-
-    /**
-     * clamps and resets bounce and decelerate (as needed) after manually moving viewport
-     * @private
-     */
-    _reset()
-    {
-        if (this.plugins['bounce'])
-        {
-            this.plugins['bounce'].reset()
-            this.plugins['bounce'].bounce()
-        }
-        if (this.plugins['decelerate'])
-        {
-            this.plugins['decelerate'].reset()
-        }
-        if (this.plugins['snap'])
-        {
-            this.plugins['snap'].reset()
-        }
-        if (this.plugins['clamp'])
-        {
-            this.plugins['clamp'].update()
-        }
-        if (this.plugins['clamp-zoom'])
-        {
-            this.plugins['clamp-zoom'].clamp()
-        }
-        this.dirty = true
-    }
-
-    // PLUGINS
-
-    /**
-     * removes installed plugin
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    removePlugin(type)
-    {
-        if (this.plugins[type])
-        {
-            this.plugins[type] = null
-        }
-    }
-
-    /**
-     * pause plugin
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    pausePlugin(type)
-    {
-        if (this.plugins[type])
-        {
-            this.plugins[type].pause()
-        }
-    }
-
-    /**
-     * resume plugin
-     * @param {string} type of plugin (e.g., 'drag', 'pinch')
-     */
-    resumePlugin(type)
-    {
-        if (this.plugins[type])
-        {
-            this.plugins[type].resume()
-        }
-    }
-
-    /**
-     * enable one-finger touch to drag
-     * @param {object} [options]
-     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
-     * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
-     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     */
-    drag(options)
-    {
-        this.plugins['drag'] = new Drag(this, options)
-        return this
-    }
-
-    /**
-     * enable clamp to boundaries of world
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} options
-     * @param {string} [options.direction=all] (all, x, or y)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     * @return {Viewport} this
-     */
-    clamp(options)
-    {
-        this.plugins['clamp'] = new Clamp(this, options)
-        return this
-    }
-
-    /**
-     * decelerate after a move
-     * @param {object} [options]
-     * @param {number} [options.friction=0.95] percent to decelerate after movement
-     * @param {number} [options.bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
-     * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
-     * @return {Viewport} this
-     */
-    decelerate(options)
-    {
-        this.plugins['decelerate'] = new Decelerate(this, options)
-        return this
-    }
-
-    /**
-     * bounce on borders
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} [options]
-     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
-     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
-     * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     * @return {Viewport} this
-     */
-    bounce(options)
-    {
-        this.plugins['bounce'] = new Bounce(this, options)
-        return this
-    }
-
-    /**
-     * enable pinch to zoom and two-finger touch to drag
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {number} [options.percent=1.0] percent to modify pinch speed
-     * @param {boolean} [options.noDrag] disable two-finger dragging
-     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
-     * @return {Viewport} this
-     */
-    pinch(options)
-    {
-        this.plugins['pinch'] = new Pinch(this, options)
-        return this
-    }
-
-    /**
-     * snap to a point
-     * @param {number} x
-     * @param {number} y
-     * @param {object} [options]
-     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
-     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
-     * @param {number} [options.time=1000]
-     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
-     * @return {Viewport} this
-     */
-    snap(x, y, options)
-    {
-        this.plugins['snap'] = new Snap(this, x, y, options)
-        return this
-    }
-
-    /**
-     * follow a target
-     * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
-     * @param {object} [options]
-     * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
-     * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
-     * @return {Viewport} this
-     */
-    follow(target, options)
-    {
-        this.plugins['follow'] = new Follow(this, target, options)
-        return this
-    }
-
-    /**
-     * zoom using mouse wheel
-     * @param {object} [options]
-     * @param {number} [options.percent=0.1] percent to scroll with each spin
-     * @param {boolean} [options.reverse] reverse the direction of the scroll
-     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
-     * @return {Viewport} this
-     */
-    wheel(options)
-    {
-        this.plugins['wheel'] = new Wheel(this, options)
-        return this
-    }
-
-    /**
-     * enable clamping of zoom to constraints
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} [options]
-     * @param {number} [options.minWidth] minimum width
-     * @param {number} [options.minHeight] minimum height
-     * @param {number} [options.maxWidth] maximum width
-     * @param {number} [options.maxHeight] maximum height
-     * @return {Viewport} this
-     */
-    clampZoom(options)
-    {
-        this.plugins['clamp-zoom'] = new ClampZoom(this, options)
-        return this
-    }
-
-    /**
-     * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
-     * @param {object} [options]
-     * @param {number} [options.radius] distance from center of screen in screen pixels
-     * @param {number} [options.distance] distance from all sides in screen pixels
-     * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
-     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
-     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
-     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
-     * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
-     * @param {boolean} [options.reverse] reverse direction of scroll
-     * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
-     * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
-     */
-    mouseEdges(options)
-    {
-        this.plugins['mouse-edges'] = new MouseEdges(this, options)
-        return this
-    }
-
-    /**
-     * pause viewport (including animation updates such as decelerate)
-     * @type {boolean}
-     */
-    get pause() { return this._pause }
-    set pause(value)
-    {
-        this._pause = value
-        this.interactive = !value
-    }
-}
-
-/**
- * fires after a mouse or touch click
- * @event Viewport#clicked
- * @type {object}
- * @property {PIXI.PointLike} screen
- * @property {PIXI.PointLike} world
- * @property {Viewport} viewport
- */
-
-/**
- * fires when a drag starts
- * @event Viewport#drag-start
- * @type {object}
- * @property {PIXI.PointLike} screen
- * @property {PIXI.PointLike} world
- * @property {Viewport} viewport
- */
-
-/**
- * fires when a drag ends
- * @event Viewport#drag-end
- * @type {object}
- * @property {PIXI.PointLike} screen
- * @property {PIXI.PointLike} world
- * @property {Viewport} viewport
- */
-
-/**
- * fires when a pinch starts
- * @event Viewport#pinch-start
- * @type {Viewport}
- */
-
-/**
- * fires when a pinch end
- * @event Viewport#pinch-end
- * @type {Viewport}
- */
-
-/**
- * fires when a snap starts
- * @event Viewport#snap-start
- * @type {Viewport}
- */
-
-/**
- * fires when a snap ends
- * @event Viewport#snap-end
- * @type {Viewport}
- */
-
-/**
- * fires when a snap-zoom starts
- * @event Viewport#snap-zoom-start
- * @type {Viewport}
- */
-
-/**
- * fires when a snap-zoom ends
- * @event Viewport#snap-zoom-end
- * @type {Viewport}
- */
-
-/**
- * fires when a bounce starts in the x direction
- * @event Viewport#bounce-x-start
- * @type {Viewport}
- */
-
-/**
- * fires when a bounce ends in the x direction
- * @event Viewport#bounce-x-end
- * @type {Viewport}
- */
-
-/**
- * fires when a bounce starts in the y direction
- * @event Viewport#bounce-y-start
- * @type {Viewport}
- */
-
-/**
- * fires when a bounce ends in the y direction
- * @event Viewport#bounce-y-end
- * @type {Viewport}
- */
-
-/**
- * fires when for a mouse wheel event
- * @event Viewport#wheel
- * @type {object}
- * @property {object} wheel
- * @property {number} wheel.dx
- * @property {number} wheel.dy
- * @property {number} wheel.dz
- * @property {Viewport} viewport
- */
-
-/**
- * fires when a wheel-scroll occurs
- * @event Viewport#wheel-scroll
- * @type {Viewport}
- */
-
-/**
- * fires when a mouse-edge starts to scroll
- * @event Viewport#mouse-edge-start
- * @type {Viewport}
- */
-
-/**
- * fires when the mouse-edge scrolling ends
- * @event Viewport#mouse-edge-end
- * @type {Viewport}
- */
-
-module.exports = Viewport
-},{"./bounce":392,"./clamp":394,"./clamp-zoom":393,"./decelerate":395,"./drag":396,"./follow":397,"./mouse-edges":398,"./pinch":399,"./snap":402,"./snap-zoom":401,"./wheel":404,"exists":7,"pixi.js":336}],404:[function(require,module,exports){
-const Plugin = require('./plugin')
-
-module.exports = class Wheel extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {number} [options.percent=0.1] percent to scroll with each spin
-     * @param {boolean} [options.reverse] reverse the direction of the scroll
-     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
-     *
-     * @event wheel({wheel: {dx, dy, dz}, event, viewport})
-     */
-    constructor(parent, options)
-    {
-        super(parent)
-        options = options || {}
-        this.percent = options.percent || 0.1
-        this.center = options.center
-        this.reverse = options.reverse
-    }
-
-    wheel(e)
-    {
-        if (this.paused)
-        {
-            return
-        }
-
-        let change
-        if (this.reverse)
-        {
-            change = e.deltaY > 0 ? 1 + this.percent : 1 - this.percent
-        }
-        else
-        {
-            change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
-        }
-        let point = { x: e.clientX, y: e.clientY }
-        let oldPoint
-        if (!this.center)
-        {
-            oldPoint = this.parent.toLocal(point)
-        }
-        this.parent.scale.x *= change
-        this.parent.scale.y *= change
-        const clamp = this.parent.plugins['clamp-zoom']
-        if (clamp)
-        {
-            clamp.clamp()
-        }
-
-        if (this.center)
-        {
-            this.parent.moveCenter(this.center)
-        }
-        else
-        {
-            const newPoint = this.parent.toGlobal(oldPoint)
-            this.parent.x += point.x - newPoint.x
-            this.parent.y += point.y - newPoint.y
-        }
-        e.preventDefault()
-        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
-    }
-}
-},{"./plugin":400}],405:[function(require,module,exports){
-
-},{}],406:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require('_process'))
-},{"_process":407}],407:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],408:[function(require,module,exports){
-(function (global){
-/*! https://mths.be/punycode v1.4.1 by @mathias */
-;(function(root) {
-
-	/** Detect free variables */
-	var freeExports = typeof exports == 'object' && exports &&
-		!exports.nodeType && exports;
-	var freeModule = typeof module == 'object' && module &&
-		!module.nodeType && module;
-	var freeGlobal = typeof global == 'object' && global;
-	if (
-		freeGlobal.global === freeGlobal ||
-		freeGlobal.window === freeGlobal ||
-		freeGlobal.self === freeGlobal
-	) {
-		root = freeGlobal;
-	}
-
-	/**
-	 * The `punycode` object.
-	 * @name punycode
-	 * @type Object
-	 */
-	var punycode,
-
-	/** Highest positive signed 32-bit float value */
-	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
-
-	/** Bootstring parameters */
-	base = 36,
-	tMin = 1,
-	tMax = 26,
-	skew = 38,
-	damp = 700,
-	initialBias = 72,
-	initialN = 128, // 0x80
-	delimiter = '-', // '\x2D'
-
-	/** Regular expressions */
-	regexPunycode = /^xn--/,
-	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
-	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
-
-	/** Error messages */
-	errors = {
-		'overflow': 'Overflow: input needs wider integers to process',
-		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-		'invalid-input': 'Invalid input'
-	},
-
-	/** Convenience shortcuts */
-	baseMinusTMin = base - tMin,
-	floor = Math.floor,
-	stringFromCharCode = String.fromCharCode,
-
-	/** Temporary variable */
-	key;
-
-	/*--------------------------------------------------------------------------*/
-
-	/**
-	 * A generic error utility function.
-	 * @private
-	 * @param {String} type The error type.
-	 * @returns {Error} Throws a `RangeError` with the applicable error message.
-	 */
-	function error(type) {
-		throw new RangeError(errors[type]);
-	}
-
-	/**
-	 * A generic `Array#map` utility function.
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} callback The function that gets called for every array
-	 * item.
-	 * @returns {Array} A new array of values returned by the callback function.
-	 */
-	function map(array, fn) {
-		var length = array.length;
-		var result = [];
-		while (length--) {
-			result[length] = fn(array[length]);
-		}
-		return result;
-	}
-
-	/**
-	 * A simple `Array#map`-like wrapper to work with domain name strings or email
-	 * addresses.
-	 * @private
-	 * @param {String} domain The domain name or email address.
-	 * @param {Function} callback The function that gets called for every
-	 * character.
-	 * @returns {Array} A new string of characters returned by the callback
-	 * function.
-	 */
-	function mapDomain(string, fn) {
-		var parts = string.split('@');
-		var result = '';
-		if (parts.length > 1) {
-			// In email addresses, only the domain name should be punycoded. Leave
-			// the local part (i.e. everything up to `@`) intact.
-			result = parts[0] + '@';
-			string = parts[1];
-		}
-		// Avoid `split(regex)` for IE8 compatibility. See #17.
-		string = string.replace(regexSeparators, '\x2E');
-		var labels = string.split('.');
-		var encoded = map(labels, fn).join('.');
-		return result + encoded;
-	}
-
-	/**
-	 * Creates an array containing the numeric code points of each Unicode
-	 * character in the string. While JavaScript uses UCS-2 internally,
-	 * this function will convert a pair of surrogate halves (each of which
-	 * UCS-2 exposes as separate characters) into a single code point,
-	 * matching UTF-16.
-	 * @see `punycode.ucs2.encode`
-	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-	 * @memberOf punycode.ucs2
-	 * @name decode
-	 * @param {String} string The Unicode input string (UCS-2).
-	 * @returns {Array} The new array of code points.
-	 */
-	function ucs2decode(string) {
-		var output = [],
-		    counter = 0,
-		    length = string.length,
-		    value,
-		    extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
-
-	/**
-	 * Creates a string based on an array of numeric code points.
-	 * @see `punycode.ucs2.decode`
-	 * @memberOf punycode.ucs2
-	 * @name encode
-	 * @param {Array} codePoints The array of numeric code points.
-	 * @returns {String} The new Unicode string (UCS-2).
-	 */
-	function ucs2encode(array) {
-		return map(array, function(value) {
-			var output = '';
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-			return output;
-		}).join('');
-	}
-
-	/**
-	 * Converts a basic code point into a digit/integer.
-	 * @see `digitToBasic()`
-	 * @private
-	 * @param {Number} codePoint The basic numeric code point value.
-	 * @returns {Number} The numeric value of a basic code point (for use in
-	 * representing integers) in the range `0` to `base - 1`, or `base` if
-	 * the code point does not represent a value.
-	 */
-	function basicToDigit(codePoint) {
-		if (codePoint - 48 < 10) {
-			return codePoint - 22;
-		}
-		if (codePoint - 65 < 26) {
-			return codePoint - 65;
-		}
-		if (codePoint - 97 < 26) {
-			return codePoint - 97;
-		}
-		return base;
-	}
-
-	/**
-	 * Converts a digit/integer into a basic code point.
-	 * @see `basicToDigit()`
-	 * @private
-	 * @param {Number} digit The numeric value of a basic code point.
-	 * @returns {Number} The basic code point whose value (when used for
-	 * representing integers) is `digit`, which needs to be in the range
-	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-	 * used; else, the lowercase form is used. The behavior is undefined
-	 * if `flag` is non-zero and `digit` has no uppercase form.
-	 */
-	function digitToBasic(digit, flag) {
-		//  0..25 map to ASCII a..z or A..Z
-		// 26..35 map to ASCII 0..9
-		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
-	}
-
-	/**
-	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * https://tools.ietf.org/html/rfc3492#section-3.4
-	 * @private
-	 */
-	function adapt(delta, numPoints, firstTime) {
-		var k = 0;
-		delta = firstTime ? floor(delta / damp) : delta >> 1;
-		delta += floor(delta / numPoints);
-		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
-			delta = floor(delta / baseMinusTMin);
-		}
-		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-	}
-
-	/**
-	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-	 * symbols.
-	 * @memberOf punycode
-	 * @param {String} input The Punycode string of ASCII-only symbols.
-	 * @returns {String} The resulting string of Unicode symbols.
-	 */
-	function decode(input) {
-		// Don't use UCS-2
-		var output = [],
-		    inputLength = input.length,
-		    out,
-		    i = 0,
-		    n = initialN,
-		    bias = initialBias,
-		    basic,
-		    j,
-		    index,
-		    oldi,
-		    w,
-		    k,
-		    digit,
-		    t,
-		    /** Cached calculation results */
-		    baseMinusT;
-
-		// Handle the basic code points: let `basic` be the number of input code
-		// points before the last delimiter, or `0` if there is none, then copy
-		// the first basic code points to the output.
-
-		basic = input.lastIndexOf(delimiter);
-		if (basic < 0) {
-			basic = 0;
-		}
-
-		for (j = 0; j < basic; ++j) {
-			// if it's not a basic code point
-			if (input.charCodeAt(j) >= 0x80) {
-				error('not-basic');
-			}
-			output.push(input.charCodeAt(j));
-		}
-
-		// Main decoding loop: start just after the last delimiter if any basic code
-		// points were copied; start at the beginning otherwise.
-
-		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
-
-			// `index` is the index of the next character to be consumed.
-			// Decode a generalized variable-length integer into `delta`,
-			// which gets added to `i`. The overflow checking is easier
-			// if we increase `i` as we go, then subtract off its starting
-			// value at the end to obtain `delta`.
-			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
-
-				if (index >= inputLength) {
-					error('invalid-input');
-				}
-
-				digit = basicToDigit(input.charCodeAt(index++));
-
-				if (digit >= base || digit > floor((maxInt - i) / w)) {
-					error('overflow');
-				}
-
-				i += digit * w;
-				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-
-				if (digit < t) {
-					break;
-				}
-
-				baseMinusT = base - t;
-				if (w > floor(maxInt / baseMinusT)) {
-					error('overflow');
-				}
-
-				w *= baseMinusT;
-
-			}
-
-			out = output.length + 1;
-			bias = adapt(i - oldi, out, oldi == 0);
-
-			// `i` was supposed to wrap around from `out` to `0`,
-			// incrementing `n` each time, so we'll fix that now:
-			if (floor(i / out) > maxInt - n) {
-				error('overflow');
-			}
-
-			n += floor(i / out);
-			i %= out;
-
-			// Insert `n` at position `i` of the output
-			output.splice(i++, 0, n);
-
-		}
-
-		return ucs2encode(output);
-	}
-
-	/**
-	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
-	 * Punycode string of ASCII-only symbols.
-	 * @memberOf punycode
-	 * @param {String} input The string of Unicode symbols.
-	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-	 */
-	function encode(input) {
-		var n,
-		    delta,
-		    handledCPCount,
-		    basicLength,
-		    bias,
-		    j,
-		    m,
-		    q,
-		    k,
-		    t,
-		    currentValue,
-		    output = [],
-		    /** `inputLength` will hold the number of code points in `input`. */
-		    inputLength,
-		    /** Cached calculation results */
-		    handledCPCountPlusOne,
-		    baseMinusT,
-		    qMinusT;
-
-		// Convert the input in UCS-2 to Unicode
-		input = ucs2decode(input);
-
-		// Cache the length
-		inputLength = input.length;
-
-		// Initialize the state
-		n = initialN;
-		delta = 0;
-		bias = initialBias;
-
-		// Handle the basic code points
-		for (j = 0; j < inputLength; ++j) {
-			currentValue = input[j];
-			if (currentValue < 0x80) {
-				output.push(stringFromCharCode(currentValue));
-			}
-		}
-
-		handledCPCount = basicLength = output.length;
-
-		// `handledCPCount` is the number of code points that have been handled;
-		// `basicLength` is the number of basic code points.
-
-		// Finish the basic string - if it is not empty - with a delimiter
-		if (basicLength) {
-			output.push(delimiter);
-		}
-
-		// Main encoding loop:
-		while (handledCPCount < inputLength) {
-
-			// All non-basic code points < n have been handled already. Find the next
-			// larger one:
-			for (m = maxInt, j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-				if (currentValue >= n && currentValue < m) {
-					m = currentValue;
-				}
-			}
-
-			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-			// but guard against overflow
-			handledCPCountPlusOne = handledCPCount + 1;
-			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-				error('overflow');
-			}
-
-			delta += (m - n) * handledCPCountPlusOne;
-			n = m;
-
-			for (j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-
-				if (currentValue < n && ++delta > maxInt) {
-					error('overflow');
-				}
-
-				if (currentValue == n) {
-					// Represent delta as a generalized variable-length integer
-					for (q = delta, k = base; /* no condition */; k += base) {
-						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-						if (q < t) {
-							break;
-						}
-						qMinusT = q - t;
-						baseMinusT = base - t;
-						output.push(
-							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
-						);
-						q = floor(qMinusT / baseMinusT);
-					}
-
-					output.push(stringFromCharCode(digitToBasic(q, 0)));
-					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-					delta = 0;
-					++handledCPCount;
-				}
-			}
-
-			++delta;
-			++n;
-
-		}
-		return output.join('');
-	}
-
-	/**
-	 * Converts a Punycode string representing a domain name or an email address
-	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
-	 * it doesn't matter if you call it on a string that has already been
-	 * converted to Unicode.
-	 * @memberOf punycode
-	 * @param {String} input The Punycoded domain name or email address to
-	 * convert to Unicode.
-	 * @returns {String} The Unicode representation of the given Punycode
-	 * string.
-	 */
-	function toUnicode(input) {
-		return mapDomain(input, function(string) {
-			return regexPunycode.test(string)
-				? decode(string.slice(4).toLowerCase())
-				: string;
-		});
-	}
-
-	/**
-	 * Converts a Unicode string representing a domain name or an email address to
-	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
-	 * i.e. it doesn't matter if you call it with a domain that's already in
-	 * ASCII.
-	 * @memberOf punycode
-	 * @param {String} input The domain name or email address to convert, as a
-	 * Unicode string.
-	 * @returns {String} The Punycode representation of the given domain name or
-	 * email address.
-	 */
-	function toASCII(input) {
-		return mapDomain(input, function(string) {
-			return regexNonASCII.test(string)
-				? 'xn--' + encode(string)
-				: string;
-		});
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	/** Define the public API */
-	punycode = {
-		/**
-		 * A string representing the current Punycode.js version number.
-		 * @memberOf punycode
-		 * @type String
-		 */
-		'version': '1.4.1',
-		/**
-		 * An object of methods to convert from JavaScript's internal character
-		 * representation (UCS-2) to Unicode code points, and back.
-		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-		 * @memberOf punycode
-		 * @type Object
-		 */
-		'ucs2': {
-			'decode': ucs2decode,
-			'encode': ucs2encode
-		},
-		'decode': decode,
-		'encode': encode,
-		'toASCII': toASCII,
-		'toUnicode': toUnicode
-	};
-
-	/** Expose `punycode` */
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		typeof define == 'function' &&
-		typeof define.amd == 'object' &&
-		define.amd
-	) {
-		define('punycode', function() {
-			return punycode;
-		});
-	} else if (freeExports && freeModule) {
-		if (module.exports == freeExports) {
-			// in Node.js, io.js, or RingoJS v0.8.0+
-			freeModule.exports = punycode;
-		} else {
-			// in Narwhal or RingoJS v0.7.0-
-			for (key in punycode) {
-				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
-			}
-		}
-	} else {
-		// in Rhino or a web browser
-		root.punycode = punycode;
-	}
-
-}(this));
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],409:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-module.exports = function(qs, sep, eq, options) {
-  sep = sep || '&';
-  eq = eq || '=';
-  var obj = {};
-
-  if (typeof qs !== 'string' || qs.length === 0) {
-    return obj;
-  }
-
-  var regexp = /\+/g;
-  qs = qs.split(sep);
-
-  var maxKeys = 1000;
-  if (options && typeof options.maxKeys === 'number') {
-    maxKeys = options.maxKeys;
-  }
-
-  var len = qs.length;
-  // maxKeys <= 0 means that we should not limit keys count
-  if (maxKeys > 0 && len > maxKeys) {
-    len = maxKeys;
-  }
-
-  for (var i = 0; i < len; ++i) {
-    var x = qs[i].replace(regexp, '%20'),
-        idx = x.indexOf(eq),
-        kstr, vstr, k, v;
-
-    if (idx >= 0) {
-      kstr = x.substr(0, idx);
-      vstr = x.substr(idx + 1);
-    } else {
-      kstr = x;
-      vstr = '';
-    }
-
-    k = decodeURIComponent(kstr);
-    v = decodeURIComponent(vstr);
-
-    if (!hasOwnProperty(obj, k)) {
-      obj[k] = v;
-    } else if (isArray(obj[k])) {
-      obj[k].push(v);
-    } else {
-      obj[k] = [obj[k], v];
-    }
-  }
-
-  return obj;
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-},{}],410:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-var stringifyPrimitive = function(v) {
-  switch (typeof v) {
-    case 'string':
-      return v;
-
-    case 'boolean':
-      return v ? 'true' : 'false';
-
-    case 'number':
-      return isFinite(v) ? v : '';
-
-    default:
-      return '';
-  }
-};
-
-module.exports = function(obj, sep, eq, name) {
-  sep = sep || '&';
-  eq = eq || '=';
-  if (obj === null) {
-    obj = undefined;
-  }
-
-  if (typeof obj === 'object') {
-    return map(objectKeys(obj), function(k) {
-      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-      if (isArray(obj[k])) {
-        return map(obj[k], function(v) {
-          return ks + encodeURIComponent(stringifyPrimitive(v));
-        }).join(sep);
-      } else {
-        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-      }
-    }).join(sep);
-
-  }
-
-  if (!name) return '';
-  return encodeURIComponent(stringifyPrimitive(name)) + eq +
-         encodeURIComponent(stringifyPrimitive(obj));
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-function map (xs, f) {
-  if (xs.map) return xs.map(f);
-  var res = [];
-  for (var i = 0; i < xs.length; i++) {
-    res.push(f(xs[i], i));
-  }
-  return res;
-}
-
-var objectKeys = Object.keys || function (obj) {
-  var res = [];
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-  }
-  return res;
-};
-
-},{}],411:[function(require,module,exports){
-'use strict';
-
-exports.decode = exports.parse = require('./decode');
-exports.encode = exports.stringify = require('./encode');
-
-},{"./decode":409,"./encode":410}],412:[function(require,module,exports){
+},{}],394:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -66376,7 +62529,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":413,"punycode":408,"querystring":411}],413:[function(require,module,exports){
+},{"./util":395,"punycode":374,"querystring":377}],395:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -66394,4 +62547,3959 @@ module.exports = {
   }
 };
 
-},{}]},{},[1]);
+},{}],396:[function(require,module,exports){
+// angle.js <https://github.com/davidfig/anglejs>
+// Released under MIT license <https://github.com/davidfig/angle/blob/master/LICENSE>
+// Author: David Figatner
+// Copyright (c) 2016-17 YOPEY YOPEY LLC
+
+const _toDegreeConversion = 180 / Math.PI
+const _toRadianConversion = Math.PI / 180
+
+
+/** @constant {number} */
+const UP = Math.PI / 2
+const DOWN = 3 * Math.PI / 2
+const LEFT = Math.PI
+const RIGHT = 0
+
+const NORTH = UP
+const SOUTH = DOWN
+const WEST = LEFT
+const EAST = RIGHT
+
+const PI_2 = Math.PI * 2
+const PI_QUARTER = Math.PI / 4
+const PI_HALF = Math.PI / 2
+
+/**
+ * converts from radians to degrees (all other functions expect radians)
+ * @param {number} radians
+ * @return {number} degrees
+ */
+function toDegrees(radians)
+{
+    return radians * _toDegreeConversion
+}
+
+/**
+ * converts from degrees to radians (all other functions expect radians)
+ * @param {number} degrees
+ * @return {number} radians
+ */
+function toRadians(degrees)
+{
+    return degrees * _toRadianConversion
+}
+
+/**
+ * returns whether the target angle is between angle1 and angle2 (in radians)
+ * (based on: http://stackoverflow.com/questions/11406189/determine-if-angle-lies-between-2-other-angles)
+ * @param {number} target angle
+ * @param {number} angle1
+ * @param {number} angle2
+ * @return {boolean}
+ */
+function isAngleBetween(target, angle1, angle2)
+{
+    const rAngle = ((angle2 - angle1) % PI_2 + PI_2) % PI_2
+    if (rAngle >= Math.PI)
+    {
+        const swap = angle1
+        angle1 = angle2
+        angle2 = swap
+    }
+
+    if (angle1 <= angle2)
+    {
+        return target >= angle1 && target <= angle2
+    }
+    else
+    {
+        return target >= angle1 || target <= angle2
+    }
+}
+
+/**
+ * returns +1 or -1 based on whether the difference between two angles is positive or negative (in radians)
+ * @param {number} target angle
+ * @param {number} source angle
+ * @return {number} 1 or -1
+ */
+function differenceAnglesSign(target, source)
+{
+    function mod(a, n)
+    {
+        return (a % n + n) % n
+    }
+
+    const a = target - source
+    return mod((a + Math.PI), PI_2) - Math.PI > 0 ? 1 : -1
+}
+
+/**
+ * returns the normalized difference between two angles (in radians)
+ * @param {number} a - first angle
+ * @param {number} b - second angle
+ * @return {number} normalized difference between a and b
+ */
+function differenceAngles(a, b)
+{
+    const c = Math.abs(a - b) % PI_2
+    return c > Math.PI ? (PI_2 - c) : c
+}
+
+/**
+ * returns a target angle that is the shortest way to rotate an object between start and to--may choose a negative angle
+ * @param {number} start
+ * @param {number} to
+ * @return {number} shortest target angle
+ */
+function shortestAngle(start, to)
+{
+    const difference = differenceAngles(to, start)
+    const sign = differenceAnglesSign(to, start)
+    const delta = difference * sign
+    return delta + start
+}
+
+/**
+ * returns the normalized angle (0 - PI x 2)
+ * @param {number} radians
+ * @return {number} normalized angle in radians
+ */
+function normalize(radians)
+{
+    return radians - PI_2 * Math.floor(radians / PI_2)
+}
+
+/**
+ * returns angle between two points (in radians)
+ * @param {Point} [point1] {x: x, y: y}
+ * @param {Point} [point2] {x: x, y: y}
+ * @param {number} [x1]
+ * @param {number} [y1]
+ * @param {number} [x2]
+ * @param {number} [y2]
+ * @return {number} angle
+ */
+function angleTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
+{
+    if (arguments.length === 4)
+    {
+        return Math.atan2(arguments[3] - arguments[1], arguments[2] - arguments[0])
+    }
+    else
+    {
+        return Math.atan2(arguments[1].y - arguments[0].y, arguments[1].x - arguments[0].x)
+    }
+}
+
+/**
+ * returns distance between two points
+ * @param {Point} [point1] {x: x, y: y}
+ * @param {Point} [point2] {x: x, y: y}
+ * @param {number} [x1]
+ * @param {number} [y1]
+ * @param {number} [x2]
+ * @param {number} [y2]
+ * @return {number} distance
+ */
+function distanceTwoPoints(/* (point1, point2) OR (x1, y1, x2, y2) */)
+{
+    if (arguments.length === 2)
+    {
+        return Math.sqrt(Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2))
+    }
+    else
+    {
+        return Math.sqrt(Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2))
+    }
+}
+
+/**
+ * returns the squared distance between two points
+ * @param {Point} [point1] {x: x, y: y}
+ * @param {Point} [point2] {x: x, y: y}
+ * @param {number} [x1]
+ * @param {number} [y1]
+ * @param {number} [x2]
+ * @param {number} [y2]
+ * @return {number} squared distance
+ */
+function distanceTwoPointsSquared(/* (point1, point2) OR (x1, y1, x2, y2) */)
+{
+    if (arguments.length === 2)
+    {
+        return Math.pow(arguments[1].x - arguments[0].x, 2) + Math.pow(arguments[1].y - arguments[0].y, 2)
+    }
+    else
+    {
+        return Math.pow(arguments[2] - arguments[0], 2) + Math.pow(arguments[3] - arguments[1], 2)
+    }
+}
+
+/**
+ * returns the closest cardinal (N, S, E, W) to the given angle (in radians)
+ * @param {number} angle
+ * @return {number} closest cardinal in radians
+ */
+function closestAngle(angle)
+{
+    const left = differenceAngles(angle, LEFT)
+    const right = differenceAngles(angle, RIGHT)
+    const up = differenceAngles(angle, UP)
+    const down = differenceAngles(angle, DOWN)
+    if (left <= right && left <= up && left <= down)
+    {
+        return LEFT
+    }
+    else if (right <= up && right <= down)
+    {
+        return RIGHT
+    }
+    else if (up <= down)
+    {
+        return UP
+    }
+    else
+    {
+        return DOWN
+    }
+}
+
+/**
+ * checks whether angles a1 and a2 are equal (after normalizing)
+ * @param {number} a1
+ * @param {number} a2
+ * @param {number} [wiggle] return true if the difference between the angles is <= wiggle
+ * @return {boolean} a1 === a2
+ */
+function equals(a1, a2, wiggle)
+{
+    if (wiggle)
+    {
+        return differenceAngles(a1, a2) < wiggle
+    }
+    else
+    {
+        return normalize(a1) === normalize(a2)
+    }
+}
+
+/**
+ * return a text representation of the cardinal direction
+ * @param {number} angle
+ * @returns {string} UP, DOWN, LEFT, RIGHT, or NOT CARDINAL
+ */
+function explain(angle)
+{
+    switch (angle)
+    {
+        case UP: return 'UP'
+        case DOWN: return 'DOWN'
+        case LEFT: return 'LEFT'
+        case RIGHT: return 'RIGHT'
+        default: return 'NOT CARDINAL'
+    }
+}
+
+module.exports = {
+    UP, DOWN, LEFT, RIGHT,
+    NORTH, SOUTH, WEST, EAST,
+    PI_2, PI_QUARTER, PI_HALF,
+
+    toDegrees,
+    toRadians,
+    isAngleBetween,
+    differenceAnglesSign,
+    differenceAngles,
+    shortestAngle,
+    normalize,
+    angleTwoPoints,
+    distanceTwoPoints,
+    distanceTwoPointsSquared,
+    closestAngle,
+    equals,
+    explain
+}
+},{}],397:[function(require,module,exports){
+/**
+ * @file color.js
+ * @author David Figatner
+ * @license MIT
+ * @copyright YOPEY YOPEY LLC 2016
+ * {@link https://github.com/davidfig/color}
+ */
+
+const Random = require('yy-random');
+
+/** @class */
+class Color
+{
+    /**
+     * converts a #FFFFFF to 0x123456
+     * @param  {string} color
+     * @return {string}
+     */
+    poundToHex(color)
+    {
+        return '0x' + parseInt(color.substr(1)).toString(16);
+    }
+
+    /**
+     * converts a 0x123456 to #FFFFFF
+     * @param  {string} color
+     * @return {string}
+     */
+    hexToPound(color)
+    {
+        return '#' + color.substr(2);
+    }
+
+    /**
+     * converts a number to #FFFFFF
+     * @param  {number} color
+     * @return {string}
+     */
+    valueToPound(color)
+    {
+        return '#' + color.toString(16);
+    }
+
+    /**
+     * based on tinycolor
+     * https://github.com/bgrins/TinyColor
+     * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
+     * @param {string} color
+     * @returns {object}
+     */
+    hexToHsl (color)
+    {
+        var rgb = this.hexToRgb(color),
+            r = rgb.r,
+            g = rgb.g,
+            b = rgb.b;
+        var max = Math.max(r, g, b),
+            min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+
+        if (max === min)
+        {
+            h = s = 0; // achromatic
+        }
+        else
+        {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+            }
+
+            h /= 6;
+        }
+
+        return { h: h, s: s, l: l };
+    }
+
+    /** based on tinycolor
+    * https://github.com/bgrins/TinyColor
+    * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
+    * @param {object|number} color {h, s, b} or h
+    * @param {number} [s]
+    * @param {number} [l]
+    * @returns number
+    */
+    hslToHex(color)
+    {
+        var r, g, b, h, s, l;
+        if (arguments.length === 1)
+        {
+            h = color.h,
+            s = color.s,
+            l = color.l;
+        }
+        else
+        {
+            h = arguments[0];
+            s = arguments[1];
+            l = arguments[2];
+        }
+
+        function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        if (s === 0)
+        {
+            r = g = b = l; // achromatic
+        }
+        else
+        {
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return this.rgbToHex(r * 255, g * 255, b * 255);
+    }
+
+    /* darkens a color by the percentage
+    * @param {object} color in hex (0xabcdef)
+    * @param {number} amount
+    * @return {number}
+    */
+    darken(color, amount)
+    {
+        return this.blend(amount, color, 0);
+    }
+
+    /** based on tinycolor
+    * https://github.com/bgrins/TinyColor
+    * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
+    * @param {object} color
+    * @param {number} amount
+    */
+    saturate(color, amount)
+    {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = this.hexToHsl(color);
+        hsl.s += amount / 100;
+        hsl.s = Math.min(1, Math.max(0, hsl.s));
+        return this.hslToHex(hsl);
+    }
+
+    /** based on tinycolor
+    * https://github.com/bgrins/TinyColor
+    * BSD license: https://github.com/bgrins/TinyColor/blob/master/LICENSE
+    * @param {object} color
+    * @param {number} amount
+    */
+    desaturate(color, amount) {
+        amount = (amount === 0) ? 0 : (amount || 10);
+        var hsl = this.hexToHsl(color);
+        hsl.s -= amount / 100;
+        hsl.s = Math.min(1, Math.max(0, hsl.s));
+        return this.hslToHex(hsl);
+    }
+
+    /**
+     * blends two colors together
+     * @param  {number} percent [0.0 - 1.0]
+     * @param  {string} color1 first color in 0x123456 format
+     * @param  {string} color2 second color in 0x123456 format
+     * @return {number}
+     */
+    blend(percent, color1, color2)
+    {
+        if (percent === 0)
+        {
+            return color1;
+        }
+        if (percent === 1)
+        {
+            return color2;
+        }
+        var r1 = color1 >> 16;
+        var g1 = color1 >> 8 & 0x0000ff;
+        var b1 = color1 & 0x0000ff;
+        var r2 = color2 >> 16;
+        var g2 = color2 >> 8 & 0x0000ff;
+        var b2 = color2 & 0x0000ff;
+        var percent1 = 1 - percent;
+        var r = percent1 * r1 + percent * r2;
+        var g = percent1 * g1 + percent * g2;
+        var b = percent1 * b1 + percent * b2;
+        return r << 16 | g << 8 | b;
+    }
+
+    /**
+     * returns a hex color into an rgb value
+     * @param  {number} hex
+     * @return {string}
+     */
+    hexToRgb(hex)
+    {
+        if (hex === 0)
+        {
+            hex = '0x000000';
+        }
+        else if (typeof hex !== 'string')
+        {
+            var s = '000000' + hex.toString(16);
+            hex = '0x' + s.substr(s.length - 6);
+        }
+        var result = /^0x?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+
+    /**
+     * rgb color to hex in the form of 0x123456
+     * @param  {number|string} r first number or 'rgb(...)' string
+     * @param  {number|null} g
+     * @param  {number|null} b
+     * @return {string}
+     */
+    rgbToHex(r, g, b)
+    {
+        if (arguments.length === 1) {
+            if (Array.isArray(arguments[0])) {
+                var number = arguments[0];
+                r = number[0];
+                g = number[1];
+                b = number[2];
+            } else {
+                var parse = r.replace(/( *rgb *\( *)|( )|(\) *;?)/,'');
+                var numbers = parse.split(',');
+                r = numbers[0];
+                g = numbers[1];
+                b = numbers[2];
+            }
+        }
+        return '0x' + ((1 << 24) + (parseInt(r) << 16) + (parseInt(g) << 8) + parseInt(b)).toString(16).slice(1);
+    }
+
+    /**
+     * returns a random color with balanced r, g, b values (i.e., r, g, b either have the same value or are 0)
+     * @param {number} min value for random number
+     * @param {number} max value for random number
+     * @return {number} color
+     */
+    random(min, max)
+    {
+        function random()
+        {
+            return Random.range(min, max);
+        }
+
+        var colors = [{r:1, g:1, b:1}, {r:1, g:1, b:0}, {r:1,g:0,b:1}, {r:0,g:1,b:1}, {r:1,g:0,b:0}, {r:0,g:1,b:0}, {r:0,g:0,b:1}];
+        var color = Random.pick(colors);
+        min = min || 0;
+        max = max || 255;
+        return this.rgbToHex(color.r ? random() : 0, color.g ? random() : 0, color.b ? random() : 0);
+    }
+
+    // h: 0-360, s: 0-1, l: 0-1
+    /**
+     * returns a random color based on hsl
+     * @param {number} hMin [0, 360]
+     * @param {number} hMax [hMin, 360]
+     * @param {number} sMin [0, 1]
+     * @param {number} sMax [sMin, 1]
+     * @param {number} lMin [0, 1]
+     * @param {number} lMax [lMin, 1]
+     */
+    randomHSL(hMin, hMax, sMin, sMax, lMin, lMax)
+    {
+        var color = {
+            h: Random.range(hMin, hMax),
+            s: Random.range(sMin, sMax, true),
+            l: Random.range(lMin, lMax, true)
+        };
+        return this.hslToHex(color);
+    }
+
+    /**
+     * returns random colors based on HSL with different hues
+     * based on http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
+     * @returns {number[]} colors in hex format (0x123456)
+     */
+    randomGoldenRatioHSL(count, saturation, luminosity)
+    {
+        const goldenRatio = 0.618033988749895;
+        let h = Random.get(1, true);
+        const colors = [];
+        for (let i = 0; i < count; i++)
+        {
+            colors.push(this.hslToHex(h, saturation, luminosity));
+            h = (h + goldenRatio) % 1;
+        }
+        return colors;
+    }
+};
+
+module.exports = new Color();
+},{"yy-random":400}],398:[function(require,module,exports){
+// yy-counter
+// In-browser counter to watch changeable values like counters or FPS
+// David Figatner
+// (c) YOPEY YOPEY LLC 2017
+// MIT License
+// https://github.com/davidfig/counter
+
+module.exports = class Counter
+{
+    /**
+     * @param {object} [options]
+     * @param {string} [options.side=rightbottom] side to place the panel (combination of right/left and bottom/top)
+     * @param {number} [options.padding=7px]
+     * @param {string} [options.color=white]
+     * @param {string} [options.background=rgba(0,0,0,0.5)]
+     * @param {*} {options.xxx} where xxx is a CSS style for the div
+     */
+    constructor(options)
+    {
+        options = options || {}
+        options.side = options.side || 'rightbottom'
+        options.side.toLowerCase()
+        options.padding = options.padding || '7px'
+        options.color = options.color || 'white'
+        options.background = options.background || 'rgba(0,0,0,0.5)'
+        this.div = document.createElement('div')
+        Counter.findParent(options.side).appendChild(this.div)
+        for (let style in options)
+        {
+            if (style !== 'parent' && style !== 'side')
+            {
+                this.div.style[style] = options[style]
+            }
+        }
+    }
+
+    /**
+     * find the parent div for one of the corners
+     * @param {string} [options.side] side to place the panel (combination of right/left and bottom/top)
+     * @return {HTMLElement}
+     */
+    static findParent(side)
+    {
+        const styles = []
+        let name = 'yy-counter-'
+        if (side.indexOf('left') !== -1)
+        {
+            name += 'left-'
+            styles['left'] = 0
+        }
+        else
+        {
+            name += 'right-'
+            styles['right'] = 0
+        }
+        if (side.indexOf('top') !== -1)
+        {
+            name += 'top'
+            styles['top'] = 0
+        }
+        else
+        {
+            name += 'bottom'
+            styles['bottom'] = 0
+        }
+        const test = document.getElementById(name)
+        if (test)
+        {
+            return test
+        }
+        const container = document.createElement('div')
+        container.id = name
+        container.style.overflow = 'hidden'
+        container.style.position = 'fixed'
+        container.style.zIndex = 10000
+        container.style.pointerEvents = 'none'
+        container.style.userSelect = 'none'
+        for (let style in styles)
+        {
+            container.style[style] = styles[style]
+        }
+        document.body.appendChild(container)
+        return container
+    }
+
+    /**
+     * replaces the innerHTML of the console
+     * @param {string|number} text1
+     * @param {string|number} [text2]
+     * @param {string|number} [...textn] any number of arguments
+     */
+    log()
+    {
+        let s = ''
+        for (let arg of arguments)
+        {
+            s += '<div>' + arg + '</div>'
+        }
+        this.div.innerHTML =  s
+    }
+
+    /**
+     * appends to the innerHTML of the console
+     * @param {string|number} text1
+     * @param {string|number} [text2]
+     * @param {string|number} [...textn] any number of arguments
+     */
+    append()
+    {
+        let s = this.div.innerHTML
+        for (let arg of arguments)
+        {
+            s += '<div>' + arg + '</div>'
+        }
+        this.div.innerHTML = s
+    }
+}
+},{}],399:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Color = require('tinycolor2');
+var Counter = require('yy-counter');
+
+var STYLES = {
+    'background': 'rgba(0, 0, 0, 0.5)',
+    'color': 'white'
+};
+
+var STYLES_FPS = {
+    'padding': '0.1em 0.5em'
+};
+
+var STYLES_METER = {};
+
+module.exports = function () {
+    /**
+     * @param {object} [options]
+     * @param {boolean} [options.meter=true] include a meter with the FPS
+     * @param {string} [options.side=bottom-right] include any combination of left/right and top/bottom
+     * @param {number} [options.FPS=60] desired FPS
+     * @param {number} [options.tolerance=1] minimum tolerance for fluctuations in FPS number
+     * @param {number} [options.meterWidth=100] width of meter div
+     * @param {number} [options.meterHeight=25] height of meter div
+     * @param {number} [options.meterLineHeight=4] height of meter line
+     * @param {styles[]} [options.styles] CSS styles to apply to the div (in javascript format)
+     * @param {styles[]} [options.stylesFPS] CSS styles to apply to the FPS text (in javascript format)
+     * @param {styles[]} [options.stylesMeter] CSS styles to apply to the FPS meter (in javascript format)
+     * @param {string} [options.text=" FPS"] change the text to the right of the FPS
+     */
+    function FPS(options) {
+        _classCallCheck(this, FPS);
+
+        this.options = options || {};
+        this.tolerance = this.options.tolerance || 1;
+        this.FPS = this.options.FPS || 60;
+        this.meterWidth = this.options.meterWidth || 100;
+        this.meterHeight = this.options.meterHeight || 25;
+        this.meterLineHeight = this.options.meterLineHeight || 4;
+        this.div = document.createElement('div');
+        Counter.findParent(this.options.side || 'bottom-right').appendChild(this.div);
+        this.style(this.div, STYLES, this.options.styles);
+        this.divFPS();
+        this.meter = typeof this.options.meter === 'undefined' || this.options.meter;
+        this.lastTime = 0;
+        this.frameNumber = 0;
+        this.lastUpdate = 0;
+        this.lastFPS = '--';
+    }
+
+    /**
+     * change desired FPS
+     * @type {number}
+     */
+
+
+    _createClass(FPS, [{
+        key: 'remove',
+
+
+        /**
+         * remove meter from DOM
+         */
+        value: function remove() {
+            this.div.remove();
+        }
+
+        /**
+         * @type {boolean} meter (the FPS graph) is on or off
+         */
+
+    }, {
+        key: 'style',
+        value: function style(div, style1, style2) {
+            for (var style in style1) {
+                div.style[style] = style1[style];
+            }
+            if (style2) {
+                for (var _style in style2) {
+                    div.style[_style] = style2[_style];
+                }
+            }
+        }
+
+        /**
+         * create div for text FPS
+         * @private
+         * @param {HTMLElement} div
+         * @param {object} options (see contructor)
+         */
+
+    }, {
+        key: 'divFPS',
+        value: function divFPS() {
+            var div = this.div;
+            var options = this.options;
+            var divFPS = document.createElement('div');
+            div.appendChild(divFPS);
+            this.fpsSpan = document.createElement('span');
+            divFPS.appendChild(this.fpsSpan);
+            var span = document.createElement('span');
+            divFPS.appendChild(span);
+            span.innerText = typeof options.text !== 'undefined' ? options.text : ' FPS';
+            this.style(div, STYLES_FPS, options.stylesFPS);
+        }
+
+        /**
+         * create div for FPS meter
+         * @private
+         * @param {HTMLElement} div
+         * @param {object} options (see contructor)
+         */
+
+    }, {
+        key: 'divMeter',
+        value: function divMeter() {
+            var div = this.div;
+            var options = this.options;
+            if (!this.meterCanvas) {
+                this.meterCanvas = document.createElement('canvas');
+                div.appendChild(this.meterCanvas);
+                this.meterCanvas.width = this.meterWidth;
+                this.meterCanvas.height = this.meterHeight;
+                this.meterCanvas.style.width = div.width + 'px';
+                this.meterCanvas.style.height = div.height + 'px';
+                this.style(this.meterCanvas, STYLES_METER, options.stylesMeter);
+            } else {
+                this.meterCanvas.style.display = 'block';
+            }
+        }
+
+        /**
+         * call this at the start of the frame to calculate FPS
+         */
+
+    }, {
+        key: 'frame',
+        value: function frame() {
+            this.frameNumber++;
+            var currentTime = performance.now() - this.lastTime;
+
+            // skip large differences to remove garbage
+            if (currentTime > 500) {
+                if (this.lastTime !== 0) {
+                    this.lastFPS = Math.floor(this.frameNumber / (currentTime / 1000));
+                    if (this.lastFPS >= this.FPS - this.tolerance && this.lastFPS <= this.FPS + this.tolerance) {
+                        this.lastFPS = this.FPS;
+                    }
+                }
+                this.lastTime = performance.now();
+                this.frameNumber = 0;
+            }
+            this.fpsSpan.innerText = this.lastFPS;
+            if (this.meterCanvas && this.lastFPS !== '--') {
+                this.meterUpdate(this.lastFPS / this.FPS);
+            }
+        }
+    }, {
+        key: 'meterUpdate',
+        value: function meterUpdate(percent) {
+            var c = this.meterCanvas.getContext('2d');
+            var data = c.getImageData(0, 0, this.meterCanvas.width, this.meterCanvas.height);
+            c.putImageData(data, -1, 0);
+            c.clearRect(this.meterCanvas.width - 1, 0, 1, this.meterCanvas.height);
+            if (percent < 0.5) {
+                c.fillStyle = Color.mix('#ff0000', '0xffa500', percent * 200).toHexString();
+            } else {
+                c.fillStyle = Color.mix('#ffa500', '#00ff00', (percent - 0.5) * 200).toHexString();
+            }
+            var height = (this.meterCanvas.height - this.meterLineHeight) * (1 - percent);
+            c.fillRect(this.meterCanvas.width - 1, height, 1, this.meterLineHeight);
+        }
+    }, {
+        key: 'side',
+        value: function side(options) {
+            if (options.side) {
+                options.side = options.side.toLowerCase();
+                if (options.side.indexOf('left') !== -1) {
+                    STYLES['left'] = 0;
+                    delete STYLES['right'];
+                } else {
+                    STYLES['right'] = 0;
+                    delete STYLES['left'];
+                }
+                if (options.side.indexOf('top') !== -1) {
+                    STYLES['top'] = 0;
+                    delete STYLES['bottom'];
+                } else {
+                    STYLES['bottom'] = 0;
+                    delete STYLES['top'];
+                }
+            } else {
+                STYLES['right'] = 0;
+                STYLES['bottom'] = 0;
+            }
+        }
+    }, {
+        key: 'fps',
+        get: function get() {
+            return this.FPS;
+        },
+        set: function set(value) {
+            this.FPS = value;
+        }
+    }, {
+        key: 'meter',
+        get: function get() {
+            return this._meter;
+        },
+        set: function set(value) {
+            if (value) {
+                this.divMeter();
+            } else if (this.meterCanvas) {
+                this.meterCanvas.style.display = 'none';
+            }
+        }
+    }]);
+
+    return FPS;
+}();
+
+},{"tinycolor2":393,"yy-counter":398}],400:[function(require,module,exports){
+// yy-random
+// by David Figatner
+// MIT license
+// copyright YOPEY YOPEY LLC 2016-17
+// https://github.com/davidfig/random
+
+const seedrandom = require('seedrandom')
+
+class Random
+{
+    constructor()
+    {
+        this.generator = Math.random
+    }
+
+    /**
+     * generates a seeded number
+     * @param {number} seed
+     * @param {object} [options]
+     * @param {string} [PRNG="alea"] - name of algorithm, see https://github.com/davidbau/seedrandom
+     * @param {boolean} [save=true]
+     */
+    seed(seed, options)
+    {
+        options = options || {}
+        this.generator = seedrandom[options.PRNG || 'alea'](seed, { state: options.state })
+        this.options = options
+    }
+
+    /**
+     * saves the state of the random generator
+     * can only be used after Random.seed() is called
+     * @returns {number} state
+     */
+    save()
+    {
+        if (this.generator !== Math.random)
+        {
+            return this.generator.state()
+        }
+    }
+
+    /**
+     * restores the state of the random generator
+     * @param {number} state
+     */
+    restore(state)
+    {
+        this.generator = seedrandom[this.options.PRNG || 'alea']('', { state })
+    }
+
+    /**
+     * changes the generator to use the old Math.sin-based random function
+     * based on : http://stackoverflow.com/questions/521295/javascript-random-seeds
+     * (deprecated) Use only for compatibility purposes
+     * @param {number} seed
+     */
+    seedOld(seed)
+    {
+        this.generator = function()
+        {
+            const x = Math.sin(seed++) * 10000
+            return x - Math.floor(x)
+        }
+    }
+
+    /**
+     * create a separate random generator using the seed
+     * @param {number} seed
+     * @return {object}
+     */
+    separateSeed(seed)
+    {
+        const random = new Random()
+        random.seed(seed)
+        return random
+    }
+
+    /**
+     * resets the random number this.generator to Math.random()
+     */
+    reset()
+    {
+        this.generator = Math.random
+    }
+
+    /**
+     * returns a random number using the this.generator between [0, ceiling - 1]
+     * @param {number} ceiling
+     * @param {boolean} [useFloat=false]
+     * @return {number}
+     */
+    get(ceiling, useFloat)
+    {
+        const negative = ceiling < 0 ? -1 : 1
+        ceiling *= negative
+        let result
+        if (useFloat)
+        {
+            result = this.generator() * ceiling
+        }
+        else
+        {
+            result = Math.floor(this.generator() * ceiling)
+        }
+        return result * negative
+    }
+
+    /**
+     * returns a random integer between 0 - Number.MAX_SAFE_INTEGER
+     * @return {number}
+     */
+    getHuge()
+    {
+        return this.get(Number.MAX_SAFE_INTEGER)
+    }
+
+    /**
+     * random number [middle - range, middle + range]
+     * @param {number} middle
+     * @param {number} delta
+     * @param {boolean} [useFloat=false]
+     * @return {number}
+     */
+    middle(middle, delta, useFloat)
+    {
+        const half = delta / 2
+        return this.range(middle - half, middle + half, useFloat)
+    }
+
+    /**
+     * random number [start, end]
+     * @param {number} start
+     * @param {number} end
+     * @param {boolean} [useFloat=false] if true, then range is (start, end)--i.e., not inclusive to start and end
+     * @return {number}
+     */
+    range(start, end, useFloat)
+    {
+        // case where there is no range
+        if (end === start)
+        {
+            return end
+        }
+
+        if (useFloat)
+        {
+            return this.get(end - start, true) + start
+        }
+        else
+        {
+            let range
+            if (start < 0 && end > 0)
+            {
+                range = -start + end + 1
+            }
+            else if (start === 0 && end > 0)
+            {
+                range = end + 1
+            }
+            else if (start < 0 && end === 0)
+            {
+                range = start - 1
+                start = 1
+            }
+            else if (start < 0 && end < 0)
+            {
+                range = end - start - 1
+            }
+            else
+            {
+                range = end - start + 1
+            }
+            return Math.floor(this.generator() * range) + start
+        }
+    }
+
+    /**
+     * an array of random numbers between [start, end]
+     * @param {number} start
+     * @param {number} end
+     * @param {number} count
+     * @param {boolean} [useFloat=false]
+     * @return {number[]}
+     */
+    rangeMultiple(start, end, count, useFloat)
+    {
+        var array = []
+        for (let i = 0; i < count; i++)
+        {
+            array.push(this.range(start, end, useFloat))
+        }
+        return array
+    }
+
+    /**
+     * an array of random numbers between [middle - range, middle + range]
+     * @param {number} middle
+     * @param {number} range
+     * @param {number} count
+     * @param {boolean} [useFloat=false]
+     * @return {number[]}
+     */
+    middleMultiple(middle, range, count, useFloat)
+    {
+        const array = []
+        for (let i = 0; i < count; i++)
+        {
+            array.push(middle(middle, range, useFloat))
+        }
+        return array
+    }
+
+    /**
+     * @param {number} [chance=0.5]
+     * returns random sign (either +1 or -1)
+     * @return {number}
+     */
+    sign(chance)
+    {
+        chance = chance || 0.5
+        return this.generator() < chance ? 1 : -1
+    }
+
+    /**
+     * tells you whether a random chance was achieved
+     * @param {number} [percent=0.5]
+     * @return {boolean}
+     */
+    chance(percent)
+    {
+        return this.generator() < (percent || 0.5)
+    }
+
+    /**
+     * returns a random angle in radians [0 - 2 * Math.PI)
+     */
+    angle()
+    {
+        return this.get(Math.PI * 2, true)
+    }
+
+    /**
+     * Shuffle array (either in place or copied)
+     * from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+     * @param {Array} array
+     * @param {boolean} [copy=false] whether to shuffle in place (default) or return a new shuffled array
+     * @return {Array} a shuffled array
+     */
+    shuffle(array, copy)
+    {
+        if (copy)
+        {
+            array = array.slice()
+        }
+        if (array.length === 0)
+        {
+            return array
+        }
+
+        let currentIndex = array.length, temporaryValue, randomIndex
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex)
+        {
+            // Pick a remaining element...
+            randomIndex = this.get(currentIndex)
+            currentIndex -= 1
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex]
+            array[currentIndex] = array[randomIndex]
+            array[randomIndex] = temporaryValue
+        }
+        return array
+    }
+
+    /**
+     * picks a random element from an array
+     * @param {Array} array
+     * @return {*}
+     */
+    pick(array, remove)
+    {
+        if (!remove)
+        {
+            return array[this.get(array.length)]
+        }
+        else
+        {
+            const pick = this.get(array.length)
+            const temp = array[pick]
+            array.splice(pick, 1)
+            return temp
+        }
+    }
+
+    /**
+     * returns a random property from an object
+     * from http://stackoverflow.com/questions/2532218/pick-random-property-from-a-javascript-object
+     * @param {object} obj
+     * @return {*}
+     */
+    property(obj)
+    {
+        var result
+        var count = 0
+        for (var prop in obj)
+        {
+            if (this.chance(1 / ++count))
+            {
+                result = prop
+            }
+        }
+        return result
+    }
+
+    /**
+     * creates a random set where each entry is a value between [min, max]
+     * @param {number} min
+     * @param {number} max
+     * @param {number} amount of numbers in set
+     * @param {number[]}
+     */
+    set(min, max, amount)
+    {
+        var set = [], all = [], i
+        for (i = min; i < max; i++)
+        {
+            all.push(i)
+        }
+
+        for (i = 0; i < amount; i++)
+        {
+            var found = this.get(all.length)
+            set.push(all[found])
+            all.splice(found, 1)
+        }
+        return set
+    }
+
+
+    /**
+     * returns a set of numbers with a randomly even distribution (i.e., no overlapping and filling the space)
+     * @param {number} start position
+     * @param {number} end position
+     * @param {number} count of non-start/end points
+     * @param {boolean} [includeStart=false] includes start point (count++)
+     * @param {boolean} [includeEnd=false] includes end point (count++)
+     * @param {boolean} [useFloat=false]
+     * @param {number[]}
+     */
+    distribution(start, end, count, includeStart, includeEnd, useFloat)
+    {
+        var interval = Math.floor((end - start) / count)
+        var halfInterval = interval / 2
+        var quarterInterval = interval / 4
+        var set = []
+        if (includeStart)
+        {
+            set.push(start)
+        }
+        for (var i = 0; i < count; i++)
+        {
+            set.push(start + i * interval + halfInterval + this.range(-quarterInterval, quarterInterval, useFloat))
+        }
+        if (includeEnd)
+        {
+            set.push(end)
+        }
+        return set
+    }
+
+    /**
+     * returns a random number based on weighted probability between [min, max]
+     * from http://stackoverflow.com/questions/22656126/javascript-random-number-with-weighted-probability
+     * @param {number} min value
+     * @param {number} max value
+     * @param {number} target for average value
+     * @param {number} stddev - standard deviation
+     */
+    weightedProbabilityInt(min, max, target, stddev)
+    {
+        function normRand()
+        {
+            let x1, x2, rad
+            do
+            {
+                x1 = 2 * this.get(1, true) - 1
+                x2 = 2 * this.get(1, true) - 1
+                rad = x1 * x1 + x2 * x2
+            } while (rad >= 1 || rad === 0)
+            const c = Math.sqrt(-2 * Math.log(rad) / rad)
+            return x1 * c
+        }
+
+        stddev = stddev || 1
+        if (Math.random() < 0.81546)
+        {
+            while (true)
+            {
+                const sample = ((normRand() * stddev) + target)
+                if (sample >= min && sample <= max)
+                {
+                    return sample
+                }
+            }
+        }
+        else
+        {
+            return this.range(min, max)
+        }
+    }
+
+    /*
+     * returns a random hex color (0 - 0xffffff)
+     * @return {number}
+     */
+    color()
+    {
+        return this.get(0xffffff)
+    }
+}
+
+module.exports = new Random()
+},{"seedrandom":385}],401:[function(require,module,exports){
+const Ease = require('pixi-ease')
+const exists = require('exists')
+
+const Plugin = require('./plugin')
+
+module.exports = class Bounce extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
+     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
+     * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @fires bounce-start-x
+     * @fires bounce.end-x
+     * @fires bounce-start-y
+     * @fires bounce-end-y
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.time = options.time || 150
+        this.ease = options.ease || 'easeInOutSine'
+        this.friction = options.friction || 0.5
+        options.sides = options.sides || 'all'
+        if (options.sides)
+        {
+            if (options.sides === 'all')
+            {
+                this.top = this.bottom = this.left = this.right = true
+            }
+            else if (options.sides === 'horizontal')
+            {
+                this.right = this.left = true
+            }
+            else if (options.sides === 'vertical')
+            {
+                this.top = this.bottom = true
+            }
+            else
+            {
+                this.top = options.sides.indexOf('top') !== -1
+                this.bottom = options.sides.indexOf('bottom') !== -1
+                this.left = options.sides.indexOf('left') !== -1
+                this.right = options.sides.indexOf('right') !== -1
+            }
+        }
+        this.parseUnderflow(options.underflow || 'center')
+        this.last = {}
+    }
+
+    parseUnderflow(clamp)
+    {
+        clamp = clamp.toLowerCase()
+        if (clamp === 'center')
+        {
+            this.underflowX = 0
+            this.underflowY = 0
+        }
+        else
+        {
+            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
+        }
+    }
+
+    down()
+    {
+        this.toX = this.toY = null
+    }
+
+    up()
+    {
+        this.bounce()
+    }
+
+    update(elapsed)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        this.bounce()
+        if (this.toX)
+        {
+            if (this.toX.update(elapsed))
+            {
+                this.toX = null
+                this.parent.emit('bounce-x-end', this.parent)
+            }
+            this.parent.dirty = true
+        }
+        if (this.toY)
+        {
+            if (this.toY.update(elapsed))
+            {
+                this.toY = null
+                this.parent.emit('bounce-y-end', this.parent)
+            }
+            this.parent.dirty = true
+        }
+    }
+
+    calcUnderflowX()
+    {
+        let x
+        switch (this.underflowX)
+        {
+            case -1:
+                x = 0
+                break
+            case 1:
+                x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                break
+            default:
+                x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+        }
+        return x
+    }
+
+    calcUnderflowY()
+    {
+        let y
+        switch (this.underflowY)
+        {
+            case -1:
+                y = 0
+                break
+            case 1:
+                y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                break
+            default:
+                y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+        }
+        return y
+    }
+
+    bounce()
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        let oob
+        let decelerate = this.parent.plugins['decelerate']
+        if (decelerate && (decelerate.x || decelerate.y))
+        {
+            if ((decelerate.x && decelerate.percentChangeX === decelerate.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.friction))
+            {
+                oob = this.parent.OOB()
+                if ((oob.left && this.left) || (oob.right && this.right))
+                {
+                    decelerate.percentChangeX = this.friction
+                }
+                if ((oob.top && this.top) || (oob.bottom && this.bottom))
+                {
+                    decelerate.percentChangeY = this.friction
+                }
+            }
+        }
+        const drag = this.parent.plugins['drag'] || {}
+        const pinch = this.parent.plugins['pinch'] || {}
+        decelerate = decelerate || {}
+        if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
+        {
+            oob = oob || this.parent.OOB()
+            const point = oob.cornerPoint
+            if (!this.toX && !decelerate.x)
+            {
+                let x
+                if (oob.left && this.left)
+                {
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : 0
+                }
+                else if (oob.right && this.right)
+                {
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
+                }
+                if (exists(x) && this.parent.x !== x)
+                {
+                    this.toX = new Ease.to(this.parent, { x }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-x-start', this.parent)
+                }
+            }
+            if (!this.toY && !decelerate.y)
+            {
+                let y
+                if (oob.top && this.top)
+                {
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : 0
+                }
+                else if (oob.bottom && this.bottom)
+                {
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
+                }
+                if (exists(y) && this.parent.y !== y)
+                {
+                    this.toY = new Ease.to(this.parent, { y }, this.time, { ease: this.ease })
+                    this.parent.emit('bounce-y-start', this.parent)
+                }
+            }
+        }
+    }
+
+    reset()
+    {
+        this.toX = this.toY = null
+    }
+}
+},{"./plugin":409,"exists":8,"pixi-ease":194}],402:[function(require,module,exports){
+const Plugin = require('./plugin')
+
+module.exports = class ClampZoom extends Plugin
+{
+    /**
+     * @private
+     * @param {object} [options]
+     * @param {number} [options.minWidth] minimum width
+     * @param {number} [options.minHeight] minimum height
+     * @param {number} [options.maxWidth] maximum width
+     * @param {number} [options.maxHeight] maximum height
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        this.minWidth = options.minWidth
+        this.minHeight = options.minHeight
+        this.maxWidth = options.maxWidth
+        this.maxHeight = options.maxHeight
+    }
+
+    resize()
+    {
+        this.clamp()
+    }
+
+    clamp()
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        let width = this.parent.worldScreenWidth
+        let height = this.parent.worldScreenHeight
+        if (this.minWidth && width < this.minWidth)
+        {
+            this.parent.fitWidth(this.minWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
+        }
+        if (this.maxWidth && width > this.maxWidth)
+        {
+            this.parent.fitWidth(this.maxWidth)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
+        }
+        if (this.minHeight && height < this.minHeight)
+        {
+            this.parent.fitHeight(this.minHeight)
+            width = this.parent.worldScreenWidth
+            height = this.parent.worldScreenHeight
+        }
+        if (this.maxHeight && height > this.maxHeight)
+        {
+            this.parent.fitHeight(this.maxHeight)
+        }
+    }
+}
+
+},{"./plugin":409}],403:[function(require,module,exports){
+const Plugin = require('./plugin')
+
+module.exports = class clamp extends Plugin
+{
+    /**
+     * @private
+     * @param {object} options
+     * @param {string} [options.direction=all] (all, x, or y)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     */
+    constructor(parent, options)
+    {
+        options = options || {}
+        super(parent)
+        switch (options.direction)
+        {
+            case 'x':
+                this.x = true
+                break
+            case 'y':
+                this.y = true
+                break
+            default:
+                this.x = this.y = true
+                break
+        }
+        this.parseUnderflow(options.underflow || 'center')
+        this.move()
+    }
+
+    parseUnderflow(clamp)
+    {
+        clamp = clamp.toLowerCase()
+        if (clamp === 'center')
+        {
+            this.underflowX = 0
+            this.underflowY = 0
+        }
+        else
+        {
+            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
+        }
+    }
+
+    move()
+    {
+        this.update()
+    }
+
+    update()
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        const oob = this.parent.OOB()
+        const point = oob.cornerPoint
+        const decelerate = this.parent.plugins['decelerate'] || {}
+        if (this.x)
+        {
+            if (this.parent.screenWorldWidth < this.parent.screenWidth)
+            {
+                switch (this.underflowX)
+                {
+                    case -1:
+                        this.parent.x = 0
+                        break
+                    case 1:
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                        break
+                    default:
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                }
+            }
+            else
+            {
+                if (oob.left)
+                {
+                    this.parent.x = 0
+                    decelerate.x = 0
+                }
+                else if (oob.right)
+                {
+                    this.parent.x = -point.x
+                    decelerate.x = 0
+                }
+            }
+        }
+        if (this.y)
+        {
+            if (this.parent.screenWorldHeight < this.parent.screenHeight)
+            {
+                switch (this.underflowY)
+                {
+                    case -1:
+                        this.parent.y = 0
+                        break
+                    case 1:
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                        break
+                    default:
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                }
+            }
+            else
+            {
+                if (oob.top)
+                {
+                    this.parent.y = 0
+                    decelerate.y = 0
+                }
+                else if (oob.bottom)
+                {
+                    this.parent.y = -point.y
+                    decelerate.y = 0
+                }
+            }
+        }
+    }
+}
+},{"./plugin":409}],404:[function(require,module,exports){
+const exists = require('exists')
+
+const Plugin = require('./plugin')
+
+module.exports = class Decelerate extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {number} [options.friction=0.95] percent to decelerate after movement
+     * @param {number} [options.bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
+     * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.friction = options.friction || 0.95
+        this.bounce = options.bounce || 0.5
+        this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
+        this.saved = []
+    }
+
+    down()
+    {
+        this.saved = []
+        this.x = this.y = false
+
+    }
+
+    move()
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        const count = this.parent.countDownPointers()
+        if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
+        {
+            this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() })
+            if (this.saved.length > 60)
+            {
+                this.saved.splice(0, 30)
+            }
+        }
+    }
+
+    up()
+    {
+        if (this.parent.countDownPointers() === 0 && this.saved.length)
+        {
+            const now = performance.now()
+            for (let save of this.saved)
+            {
+                if (save.time >= now - 100)
+                {
+                    const time = now - save.time
+                    this.x = (this.parent.x - save.x) / time
+                    this.y = (this.parent.y - save.y) / time
+                    this.percentChangeX = this.percentChangeY = this.friction
+                    break
+                }
+            }
+        }
+    }
+
+    /**
+     * manually activate plugin
+     * @param {object} options
+     * @param {number} [options.x]
+     * @param {number} [options.y]
+     */
+    activate(options)
+    {
+        if (exists(options.x))
+        {
+            this.x = options.x
+            this.percentChangeX = this.friction
+        }
+        if (exists(options.y))
+        {
+            this.y = options.y
+            this.percentChangeY = this.friction
+        }
+    }
+
+    update(elapsed)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        if (this.x)
+        {
+            this.parent.x += this.x * elapsed
+            this.x *= this.percentChangeX
+            if (Math.abs(this.x) < this.minSpeed)
+            {
+                this.x = 0
+            }
+            this.parent.dirty = true
+        }
+        if (this.y)
+        {
+            this.parent.y += this.y * elapsed
+            this.y *= this.percentChangeY
+            if (Math.abs(this.y) < this.minSpeed)
+            {
+                this.y = 0
+            }
+            this.parent.dirty = true
+        }
+    }
+
+    reset()
+    {
+        this.x = this.y = null
+    }
+}
+},{"./plugin":409,"exists":8}],405:[function(require,module,exports){
+const exists = require('exists')
+
+const Plugin = require('./plugin')
+module.exports = class Drag extends Plugin
+{
+    /**
+     * enable one-finger touch to drag
+     * @private
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
+     * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
+     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+     * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     */
+    constructor(parent, options)
+    {
+        options = options || {}
+        super(parent)
+        this.moved = false
+        this.wheelActive = exists(options.wheel) ? options.wheel : true
+        this.wheelScroll = options.wheelScroll || 1
+        this.reverse = options.reverse ? 1 : -1
+        this.clampWheel = options.clampWheel
+        this.parseUnderflow(options.underflow || 'center')
+    }
+
+    parseUnderflow(clamp)
+    {
+        clamp = clamp.toLowerCase()
+        if (clamp === 'center')
+        {
+            this.underflowX = 0
+            this.underflowY = 0
+        }
+        else
+        {
+            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
+        }
+    }
+
+    down(e)
+    {
+        if (this.paused)
+        {
+            return
+        }
+        if (this.parent.touches.length <= 1)
+        {
+            this.last = { x: e.data.global.x, y: e.data.global.y }
+            this.clickedAvailable = true
+        }
+    }
+
+    get active()
+    {
+        return this.moved
+    }
+
+    move(e)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        const x = e.data.global.x
+        const y = e.data.global.y
+        if (this.last)
+        {
+            const count = this.parent.countDownPointers()
+            if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
+            {
+                const distX = x - this.last.x
+                const distY = y - this.last.y
+                if (this.moved || (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY)))
+                {
+                    this.parent.x += distX
+                    this.parent.y += distY
+                    this.last = { x, y }
+                    if (!this.moved)
+                    {
+                        this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
+                    }
+                    this.moved = true
+                    this.parent.dirty = true
+                }
+            }
+            else
+            {
+                this.moved = false
+            }
+        }
+    }
+
+    up()
+    {
+        const touches = this.parent.getTouchPointers()
+        if (touches.length === 1)
+        {
+            const pointer = touches[0]
+            if (pointer.last)
+            {
+                this.last = { x: pointer.last.x, y: pointer.last.y }
+            }
+            this.clickedAvailable = false
+            this.moved = false
+        }
+        else if (this.last)
+        {
+            if (this.moved)
+            {
+                this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
+                this.last = this.moved = false
+            }
+            else if (this.clickedAvailable)
+            {
+                this.parent.emit('clicked', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent })
+            }
+        }
+    }
+
+    wheel(dx, dy)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        if (this.wheelActive)
+        {
+            const wheel = this.parent.plugins['wheel']
+            if (!wheel)
+            {
+                this.parent.x += dx * this.wheelScroll * this.reverse
+                this.parent.y += dy * this.wheelScroll * this.reverse
+                if (this.clampWheel)
+                {
+                    this.clamp()
+                }
+                this.parent.emit('wheel-scroll', this.parent)
+                this.parent.dirty = true
+                return true
+            }
+        }
+    }
+
+    resume()
+    {
+        this.last = null
+        this.paused = false
+    }
+
+    clamp()
+    {
+        const oob = this.parent.OOB()
+        const point = oob.cornerPoint
+        const decelerate = this.parent.plugins['decelerate'] || {}
+        if (this.clampWheel !== 'y')
+        {
+            if (this.parent.screenWorldWidth < this.parent.screenWidth)
+            {
+                switch (this.underflowX)
+                {
+                    case -1:
+                        this.parent.x = 0
+                        break
+                    case 1:
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                        break
+                    default:
+                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                }
+            }
+            else
+            {
+                if (oob.left)
+                {
+                    this.parent.x = 0
+                    decelerate.x = 0
+                }
+                else if (oob.right)
+                {
+                    this.parent.x = -point.x
+                    decelerate.x = 0
+                }
+            }
+        }
+        if (this.clampWheel !== 'x')
+        {
+            if (this.parent.screenWorldHeight < this.parent.screenHeight)
+            {
+                switch (this.underflowY)
+                {
+                    case -1:
+                        this.parent.y = 0
+                        break
+                    case 1:
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                        break
+                    default:
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                }
+            }
+            else
+            {
+                if (oob.top)
+                {
+                    this.parent.y = 0
+                    decelerate.y = 0
+                }
+                else if (oob.bottom)
+                {
+                    this.parent.y = -point.y
+                    decelerate.y = 0
+                }
+            }
+        }
+    }
+}
+},{"./plugin":409,"exists":8}],406:[function(require,module,exports){
+const Plugin = require('./plugin')
+
+module.exports = class Follow extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
+     * @param {object} [options]
+     * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
+     */
+    constructor(parent, target, options)
+    {
+        super(parent)
+        options = options || {}
+        this.speed = options.speed || 0
+        this.target = target
+        this.radius = options.radius
+    }
+
+    update()
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        const center = this.parent.center
+        let toX = this.target.x, toY = this.target.y
+        if (this.radius)
+        {
+            const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2))
+            if (distance > this.radius)
+            {
+                const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x)
+                toX = this.target.x - Math.cos(angle) * this.radius
+                toY = this.target.y - Math.sin(angle) * this.radius
+            }
+            else
+            {
+                return
+            }
+        }
+        if (this.speed)
+        {
+            const deltaX = toX - center.x
+            const deltaY = toY - center.y
+            if (deltaX || deltaY)
+            {
+                const angle = Math.atan2(toY - center.y, toX - center.x)
+                const changeX = Math.cos(angle) * this.speed
+                const changeY = Math.sin(angle) * this.speed
+                const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
+                const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
+                this.parent.moveCenter(x, y)
+            }
+        }
+        else
+        {
+            this.parent.moveCenter(toX, toY)
+        }
+    }
+}
+},{"./plugin":409}],407:[function(require,module,exports){
+const exists = require('exists')
+const Angle = require('yy-angle')
+
+const Plugin = require('./plugin')
+
+module.exports = class MouseEdges extends Plugin
+{
+    /**
+     * Scroll viewport when mouse hovers near one of the edges.
+     * @private
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {number} [options.radius] distance from center of screen in screen pixels
+     * @param {number} [options.distance] distance from all sides in screen pixels
+     * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
+     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
+     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
+     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
+     * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
+     * @param {boolean} [options.reverse] reverse direction of scroll
+     * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
+     * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     *
+     * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
+     * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.options = options
+        this.reverse = options.reverse ? 1 : -1
+        this.noDecelerate = options.noDecelerate
+        this.linear = options.linear
+        this.radiusSquared = Math.pow(options.radius, 2)
+        this.resize()
+        this.speed = options.speed || 8
+    }
+
+    resize()
+    {
+        const options = this.options
+        const distance = options.distance
+        if (exists(distance))
+        {
+            this.left = distance
+            this.top = distance
+            this.right = window.innerWidth - distance
+            this.bottom = window.innerHeight - distance
+        }
+        else if (!this.radius)
+        {
+            this.left = exists(options.left) ? options.left : null
+            this.top = exists(options.top) ? options.top : null
+            this.right = exists(options.right) ? window.innerWidth - options.right : null
+            this.bottom = exists(options.bottom) ? window.innerHeight - options.bottom : null
+        }
+    }
+
+    down()
+    {
+        this.horizontal = this.vertical = null
+    }
+
+    move(e)
+    {
+        if (e.data.identifier !== 'MOUSE' || e.data.buttons !== 0)
+        {
+            return
+        }
+        const x = e.data.global.x
+        const y = e.data.global.y
+
+        if (this.radiusSquared)
+        {
+            const center = this.parent.toScreen(this.parent.center)
+            const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
+            if (distance >= this.radiusSquared)
+            {
+                const angle = Math.atan2(center.y - y, center.x - x)
+                if (this.linear)
+                {
+                    this.horizontal = Math.round(Math.cos(angle)) * this.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.round(Math.sin(angle)) * this.speed * this.reverse * (60 / 1000)
+                }
+                else
+                {
+                    this.horizontal = Math.cos(angle) * this.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.sin(angle) * this.speed * this.reverse * (60 / 1000)
+                }
+            }
+            else
+            {
+                if (this.horizontal)
+                {
+                    this.decelerateHorizontal()
+                }
+                if (this.vertical)
+                {
+                    this.decelerateVertical()
+                }
+                this.horizontal = this.vertical = 0
+            }
+        }
+        else
+        {
+            if (exists(this.left) && x < this.left)
+            {
+                this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else if (exists(this.right) && x > this.right)
+            {
+                this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateHorizontal()
+                this.horizontal = 0
+            }
+            if (exists(this.top) && y < this.top)
+            {
+                this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else if (exists(this.bottom) && y > this.bottom)
+            {
+                this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateVertical()
+                this.vertical = 0
+            }
+        }
+    }
+
+    decelerateHorizontal()
+    {
+        const decelerate = this.parent.plugins['decelerate']
+        if (this.horizontal && decelerate && !this.noDecelerate)
+        {
+            decelerate.activate({ x: (this.horizontal * this.speed * this.reverse) / (1000 / 60) })
+        }
+    }
+
+    decelerateVertical()
+    {
+        const decelerate = this.parent.plugins['decelerate']
+        if (this.vertical && decelerate && !this.noDecelerate)
+        {
+            decelerate.activate({ y: (this.vertical * this.speed * this.reverse) / (1000 / 60)})
+        }
+    }
+
+    up()
+    {
+        if (this.horizontal)
+        {
+            this.decelerateHorizontal()
+        }
+        if (this.vertical)
+        {
+            this.decelerateVertical()
+        }
+        this.horizontal = this.vertical = null
+    }
+
+    update()
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        if (this.horizontal || this.vertical)
+        {
+            const center = this.parent.center
+            if (this.horizontal)
+            {
+                center.x += this.horizontal * this.speed
+            }
+            if (this.vertical)
+            {
+                center.y += this.vertical * this.speed
+            }
+            this.parent.moveCenter(center)
+        }
+    }
+}
+},{"./plugin":409,"exists":8,"yy-angle":396}],408:[function(require,module,exports){
+const Plugin = require('./plugin')
+
+module.exports = class Pinch extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {number} [options.percent=1.0] percent to modify pinch speed
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.percent = options.percent || 1.0
+        this.noDrag = options.noDrag
+        this.center = options.center
+    }
+
+    down()
+    {
+        if (this.parent.countDownPointers() >= 2)
+        {
+            this.active = true
+        }
+    }
+
+    move(e)
+    {
+        if (this.paused || !this.active)
+        {
+            return
+        }
+
+        const x = e.data.global.x
+        const y = e.data.global.y
+
+        const pointers = this.parent.getTouchPointers()
+        if (pointers.length >= 2)
+        {
+            const first = pointers[0]
+            const second = pointers[1]
+            const last = (first.last && second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null
+            if (first.pointerId === e.data.pointerId)
+            {
+                first.last = { x, y }
+            }
+            else if (second.pointerId === e.data.pointerId)
+            {
+                second.last = { x, y }
+            }
+            if (last)
+            {
+                let oldPoint
+                const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
+                if (!this.center)
+                {
+                    oldPoint = this.parent.toLocal(point)
+                }
+                const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
+                this.parent.scale.x += change
+                this.parent.scale.y += change
+                const clamp = this.parent.plugins['clamp-zoom']
+                if (clamp)
+                {
+                    clamp.clamp()
+                }
+                if (this.center)
+                {
+                    this.parent.moveCenter(this.center)
+                }
+                else
+                {
+                    const newPoint = this.parent.toGlobal(oldPoint)
+                    this.parent.x += point.x - newPoint.x
+                    this.parent.y += point.y - newPoint.y
+                }
+                if (!this.noDrag && this.lastCenter)
+                {
+                    this.parent.x += point.x - this.lastCenter.x
+                    this.parent.y += point.y - this.lastCenter.y
+                }
+                this.lastCenter = point
+                this.moved = true
+            }
+            else
+            {
+                if (!this.pinching)
+                {
+                    this.parent.emit('pinch-start', this.parent)
+                    this.pinching = true
+                }
+            }
+            this.parent.dirty = true
+        }
+    }
+
+    up()
+    {
+        if (this.pinching)
+        {
+            if (this.parent.touches.length <= 1)
+            {
+                this.active = false
+                this.lastCenter = null
+                this.pinching = false
+                this.moved = false
+                this.parent.emit('pinch-end', this.parent)
+            }
+        }
+    }
+}
+},{"./plugin":409}],409:[function(require,module,exports){
+module.exports = class Plugin
+{
+    constructor(parent)
+    {
+        this.parent = parent
+        this.paused = false
+    }
+
+    down() { }
+    move() { }
+    up() { }
+    wheel() { }
+    update() { }
+    resize() { }
+    reset() { }
+
+    pause()
+    {
+        this.paused = true
+    }
+
+    resume()
+    {
+        this.paused = false
+    }
+}
+},{}],410:[function(require,module,exports){
+const Plugin = require('./plugin')
+const Ease = require('pixi-ease')
+const exists = require('exists')
+
+module.exports = class SnapZoom extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     *
+     * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
+     * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.width = options.width
+        this.height = options.height
+        if (this.width > 0)
+        {
+            this.x_scale = parent._screenWidth / this.width
+        }
+        if (this.height > 0)
+        {
+            this.y_scale = parent._screenHeight / this.height
+        }
+        this.xIndependent = exists(this.x_scale)
+        this.yIndependent = exists(this.y_scale)
+        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale
+        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale
+
+        this.time = exists(options.time) ? options.time : 1000
+        this.ease = options.ease || 'easeInOutSine'
+        this.center = options.center
+        this.stopOnResize = options.stopOnResize
+        this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
+        this.interrupt = exists(options.interrupt) ? options.interrupt : true
+
+        if (this.time == 0)
+        {
+            parent.container.scale.x = this.x_scale
+            parent.container.scale.y = this.y_scale
+            if (this.removeOnComplete)
+            {
+                this.parent.removePlugin('snap-zoom')
+            }
+        }
+    }
+
+    resize()
+    {
+        this.snapping = null
+
+        if (this.width > 0)
+        {
+            this.x_scale = this.parent._screenWidth / this.width
+        }
+        if (this.height > 0)
+        {
+            this.y_scale = this.parent._screenHeight / this.height
+        }
+        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale
+        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale
+    }
+
+    reset()
+    {
+        this.snapping = null
+    }
+
+    down()
+    {
+        this.snapping = null
+    }
+
+    update(elapsed)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        if (this.interrupt && this.parent.countDownPointers() !== 0)
+        {
+            return
+        }
+
+        let oldCenter
+        if (!this.center)
+        {
+            oldCenter = this.parent.center
+        }
+        if (!this.snapping)
+        {
+            if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
+            {
+                this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
+                this.parent.emit('snap-zoom-start', this.parent)
+            }
+        }
+        else if (this.snapping)
+        {
+            if (this.snapping.update(elapsed))
+            {
+                if (this.removeOnComplete)
+                {
+                    this.parent.removePlugin('snap-zoom')
+                }
+                this.parent.emit('snap-zoom-end', this.parent)
+                this.snapping = null
+            }
+            const clamp = this.parent.plugins['clamp-zoom']
+            if (clamp)
+            {
+                clamp.clamp()
+            }
+            if (!this.center)
+            {
+                this.parent.moveCenter(oldCenter)
+            }
+            else
+            {
+                this.parent.moveCenter(this.center)
+            }
+        }
+    }
+
+    resume()
+    {
+        this.snapping = null
+        super.resume()
+    }
+}
+},{"./plugin":409,"exists":8,"pixi-ease":194}],411:[function(require,module,exports){
+const Plugin = require('./plugin')
+const Ease = require('pixi-ease')
+const exists = require('exists')
+
+module.exports = class Snap extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {number} x
+     * @param {number} y
+     * @param {object} [options]
+     * @param {boolean} [options.topLeft] snap to the top-left of viewport instead of center
+     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     *
+     * @event snap-start(Viewport) emitted each time a snap animation starts
+     * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
+     * @event snap-end(Viewport) emitted each time snap reaches its target
+     */
+    constructor(parent, x, y, options)
+    {
+        super(parent)
+        options = options || {}
+        this.friction = options.friction || 0.8
+        this.time = options.time || 1000
+        this.ease = options.ease || 'easeInOutSine'
+        this.x = x
+        this.y = y
+        this.topLeft = options.topLeft
+        this.interrupt = exists(options.interrupt) ? options.interrupt : true
+        this.removeOnComplete = options.removeOnComplete
+    }
+
+    startEase()
+    {
+        const current = this.topLeft ? this.parent.corner : this.parent.center
+        this.deltaX = this.x - current.x
+        this.deltaY = this.y - current.y
+        this.startX = current.x
+        this.startY = current.y
+    }
+
+    down()
+    {
+        if (this.interrupt)
+        {
+            this.snapping = null
+        }
+    }
+
+    up()
+    {
+        if (this.parent.countDownPointers() === 0)
+        {
+            const decelerate = this.parent.plugins['decelerate']
+            if (decelerate && (decelerate.x || decelerate.y))
+            {
+                decelerate.percentChangeX = decelerate.percentChangeY = this.friction
+            }
+        }
+    }
+
+    update(elapsed)
+    {
+        if (this.paused)
+        {
+            return
+        }
+        if (this.interrupt && this.parent.countDownPointers() !== 0)
+        {
+            return
+        }
+        if (!this.snapping)
+        {
+            const current = this.topLeft ? this.parent.corner : this.parent.center
+            if (current.x !== this.x || current.y !== this.y)
+            {
+                this.percent = 0
+                this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
+                this.startEase()
+                this.parent.emit('snap-start', this.parent)
+            }
+        }
+        else
+        {
+            const finished = this.snapping.update(elapsed)
+            const x = this.startX + this.deltaX * this.percent
+            const y = this.startY + this.deltaY * this.percent
+            if (this.topLeft)
+            {
+                this.parent.moveCorner(x, y)
+            }
+            else
+            {
+                this.parent.moveCenter(x, y)
+            }
+
+            if (finished)
+            {
+                if (this.removeOnComplete)
+                {
+                    this.parent.removePlugin('snap')
+                }
+                this.parent.emit('snap-end', this.parent )
+                this.snapping = null
+            }
+        }
+    }
+}
+},{"./plugin":409,"exists":8,"pixi-ease":194}],412:[function(require,module,exports){
+const PIXI = require('pixi.js')
+const exists = require('exists')
+
+const Drag = require('./drag')
+const Pinch = require('./pinch')
+const Clamp = require('./clamp')
+const ClampZoom = require('./clamp-zoom')
+const Decelerate = require('./decelerate')
+const Bounce = require('./bounce')
+const Snap = require('./snap')
+const SnapZoom = require('./snap-zoom')
+const Follow = require('./follow')
+const Wheel = require('./wheel')
+const MouseEdges = require('./mouse-edges')
+
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
+
+class Viewport extends PIXI.Container
+{
+    /**
+     * @extends PIXI.Container
+     * @extends EventEmitter
+     * @param {object} [options]
+     * @param {number} [options.screenWidth=window.innerWidth]
+     * @param {number} [options.screenHeight=window.innerHeight]
+     * @param {number} [options.worldWidth=this.width]
+     * @param {number} [options.worldHeight=this.height]
+     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+     * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
+     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @fires clicked
+     * @fires drag-start
+     * @fires drag-end
+     * @fires pinch-start
+     * @fires pinch-end
+     * @fires snap-start
+     * @fires snap-end
+     * @fires snap-zoom-start
+     * @fires snap-zoom-end
+     * @fires bounce-x-start
+     * @fires bounce-x-end
+     * @fires bounce-y-start
+     * @fires bounce-y-end
+     * @fires wheel
+     * @fires wheel-scroll
+     * @fires mouse-edge-start
+     * @fires mouse-edge-end
+     */
+    constructor(options)
+    {
+        options = options || {}
+        super()
+        this.plugins = []
+        this._screenWidth = options.screenWidth
+        this._screenHeight = options.screenHeight
+        this._worldWidth = options.worldWidth
+        this._worldHeight = options.worldHeight
+        this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
+        this.forceHitArea = options.forceHitArea
+        this.threshold = exists(options.threshold) ? options.threshold : 5
+        this.listeners()
+
+        /**
+         * active touch point ids on the viewport
+         * @type {number[]}
+         * @readonly
+         */
+        this.touches = []
+
+        this.ticker = options.ticker || PIXI.ticker.shared
+        this.ticker.add(() => this.update())
+    }
+
+    /**
+     * update animations
+     * @private
+     */
+    update()
+    {
+        if (!this._pause)
+        {
+            for (let plugin of PLUGIN_ORDER)
+            {
+                if (this.plugins[plugin])
+                {
+                    this.plugins[plugin].update(this.ticker.elapsedMS)
+                }
+            }
+            if (!this.forceHitArea)
+            {
+                this.hitArea.x = this.left
+                this.hitArea.y = this.top
+                this.hitArea.width = this.worldScreenWidth
+                this.hitArea.height = this.worldScreenHeight
+            }
+        }
+    }
+
+    /**
+     * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
+     * @param {number} screenWidth
+     * @param {number} screenHeight
+     * @param {number} [worldWidth]
+     * @param {number} [worldHeight]
+     */
+    resize(screenWidth, screenHeight, worldWidth, worldHeight)
+    {
+        this._screenWidth = screenWidth || window.innerWidth
+        this._screenHeight = screenHeight || window.innerHeight
+        this._worldWidth = worldWidth
+        this._worldHeight = worldHeight
+        this.resizePlugins()
+    }
+
+    /**
+     * called after a worldWidth/Height change
+     * @private
+     */
+    resizePlugins()
+    {
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].resize()
+            }
+        }
+    }
+
+    /**
+     * screen width in screen pixels
+     * @type {number}
+     */
+    get screenWidth()
+    {
+        return this._screenWidth
+    }
+    set screenWidth(value)
+    {
+        this._screenWidth = value
+    }
+
+    /**
+     * screen height in screen pixels
+     * @type {number}
+     */
+    get screenHeight()
+    {
+        return this._screenHeight
+    }
+    set screenHeight(value)
+    {
+        this._screenHeight = value
+    }
+
+    /**
+     * world width in pixels
+     * @type {number}
+     */
+    get worldWidth()
+    {
+        if (this._worldWidth)
+        {
+            return this._worldWidth
+        }
+        else
+        {
+            return this.width
+        }
+    }
+    set worldWidth(value)
+    {
+        this._worldWidth = value
+        this.resizePlugins()
+    }
+
+    /**
+     * world height in pixels
+     * @type {number}
+     */
+    get worldHeight()
+    {
+        if (this._worldHeight)
+        {
+            return this._worldHeight
+        }
+        else
+        {
+            return this.height
+        }
+    }
+    set worldHeight(value)
+    {
+        this._worldHeight = value
+        this.resizePlugins()
+    }
+
+    /**
+     * add input listeners
+     * @private
+     */
+    listeners()
+    {
+        this.interactive = true
+        if (!this.forceHitArea)
+        {
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        }
+        this.on('pointerdown', this.down)
+        this.on('pointermove', this.move)
+        this.on('pointerup', this.up)
+        this.on('pointercancel', this.up)
+        this.on('pointerout', this.up)
+        document.body.addEventListener('wheel', (e) => this.handleWheel(e))
+        this.leftDown = false
+    }
+
+    /**
+     * handle down events
+     * @private
+     */
+    down(e)
+    {
+        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        {
+            this.leftDown = true
+        }
+
+        if (e.data.pointerType !== 'mouse')
+        {
+            this.touches.push(e.data.pointerId)
+        }
+
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].down(e)
+            }
+        }
+    }
+
+    /**
+     * whether change exceeds threshold
+     * @private
+     * @param {number} change
+     */
+    checkThreshold(change)
+    {
+        if (Math.abs(change) >= this.threshold)
+        {
+            return true
+        }
+        return false
+    }
+
+    /**
+     * handle move events
+     * @private
+     */
+    move(e)
+    {
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].move(e)
+            }
+        }
+    }
+
+    /**
+     * handle up events
+     * @private
+     */
+    up(e)
+    {
+        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        {
+            this.leftDown = false
+        }
+
+        if (e.data.pointerType !== 'mouse')
+        {
+            for (let i = 0; i < this.touches.length; i++)
+            {
+                if (this.touches[i] === e.data.pointerId)
+                {
+                    this.touches.splice(i, 1)
+                    break
+                }
+            }
+        }
+
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                this.plugins[type].up(e)
+            }
+        }
+    }
+
+    /**
+     * handle wheel events
+     * @private
+     */
+    handleWheel(e)
+    {
+        let result
+        for (let type of PLUGIN_ORDER)
+        {
+            if (this.plugins[type])
+            {
+                if (this.plugins[type].wheel(e))
+                {
+                    result = true
+                }
+            }
+        }
+        return result
+    }
+
+    /**
+     * change coordinates from screen to world
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @returns {PIXI.Point}
+     */
+    toWorld()
+    {
+        if (arguments.length === 2)
+        {
+            const x = arguments[0]
+            const y = arguments[1]
+            return this.toLocal({ x, y })
+        }
+        else
+        {
+            return this.toLocal(arguments[0])
+        }
+    }
+
+    /**
+     * change coordinates from world to screen
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @returns {PIXI.Point}
+     */
+    toScreen()
+    {
+        if (arguments.length === 2)
+        {
+            const x = arguments[0]
+            const y = arguments[1]
+            return this.toGlobal({ x, y })
+        }
+        else
+        {
+            const point = arguments[0]
+            return this.toGlobal(point)
+        }
+    }
+
+    /**
+     * screen width in world coordinates
+     * @type {number}
+     * @readonly
+     */
+    get worldScreenWidth()
+    {
+        return this._screenWidth / this.scale.x
+    }
+
+    /**
+     * screen height in world coordinates
+     * @type {number}
+     * @readonly
+     */
+    get worldScreenHeight()
+    {
+        return this._screenHeight / this.scale.y
+    }
+
+    /**
+     * world width in screen coordinates
+     * @type {number}
+     * @readonly
+     */
+    get screenWorldWidth()
+    {
+        return this._worldWidth * this.scale.x
+    }
+
+    /**
+     * world height in screen coordinates
+     * @type {number}
+     * @readonly
+     */
+    get screenWorldHeight()
+    {
+        return this._worldHeight * this.scale.y
+    }
+
+    /**
+     * get center of screen in world coordinates
+     * @type {PIXI.PointLike}
+     */
+    get center()
+    {
+        return { x: this.worldScreenWidth / 2 - this.x / this.scale.x, y: this.worldScreenHeight / 2 - this.y / this.scale.y }
+    }
+    set center(value)
+    {
+        this.moveCenter(value)
+    }
+
+    /**
+     * move center of viewport to point
+     * @param {(number|PIXI.PointLike)} x or point
+     * @param {number} [y]
+     * @return {Viewport} this
+     */
+    moveCenter(/*x, y | PIXI.Point*/)
+    {
+        let x, y
+        if (!isNaN(arguments[0]))
+        {
+            x = arguments[0]
+            y = arguments[1]
+        }
+        else
+        {
+            x = arguments[0].x
+            y = arguments[0].y
+        }
+        this.position.set((this.worldScreenWidth / 2 - x) * this.scale.x, (this.worldScreenHeight / 2 - y) * this.scale.y)
+        this._reset()
+        return this
+    }
+
+    /**
+     * top-left corner
+     * @type {PIXI.PointLike}
+     */
+    get corner()
+    {
+        return { x: -this.x / this.scale.x, y: -this.y / this.scale.y }
+    }
+    set corner(value)
+    {
+        this.moveCorner(value)
+    }
+
+    /**
+     * move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed)
+     * @param {number|PIXI.Point} x|point
+     * @param {number} y
+     * @return {Viewport} this
+     */
+    moveCorner(/*x, y | point*/)
+    {
+        if (arguments.length === 1)
+        {
+            this.position.set(-arguments[0].x * this.scale.x, -arguments[0].y * this.scale.y)
+        }
+        else
+        {
+            this.position.set(-arguments[0] * this.scale.x, -arguments[1] * this.scale.y)
+        }
+        this._reset()
+        return this
+    }
+
+    /**
+     * change zoom so the width fits in the viewport
+     * @param {number} [width=this._worldWidth] in world coordinates
+     * @param {boolean} [center] maintain the same center
+     * @return {Viewport} this
+     */
+    fitWidth(width, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        width = width || this._worldWidth
+        this.scale.x = this._screenWidth / width
+        this.scale.y = this.scale.x
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so the height fits in the viewport
+     * @param {number} [height=this._worldHeight] in world coordinates
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fitHeight(height, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        height = height || this._worldHeight
+        this.scale.y = this._screenHeight / height
+        this.scale.x = this.scale.y
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fitWorld(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.scale.x = this._screenWidth / this._worldWidth
+        this.scale.y = this._screenHeight / this._worldHeight
+        if (this.scale.x < this.scale.y)
+        {
+            this.scale.y = this.scale.x
+        }
+        else
+        {
+            this.scale.x = this.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * change zoom so it fits the entire world in the viewport
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    fit(center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        this.scale.x = this._screenWidth / this._worldWidth
+        this.scale.y = this._screenHeight / this._worldHeight
+        if (this.scale.x < this.scale.y)
+        {
+            this.scale.y = this.scale.x
+        }
+        else
+        {
+            this.scale.x = this.scale.y
+        }
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * zoom viewport by a certain percent (in both x and y direction)
+     * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoomPercent(percent, center)
+    {
+        let save
+        if (center)
+        {
+            save = this.center
+        }
+        const scale = this.scale.x + this.scale.x * percent
+        this.scale.set(scale)
+        if (center)
+        {
+            this.moveCenter(save)
+        }
+        return this
+    }
+
+    /**
+     * zoom viewport by increasing/decreasing width by a certain number of pixels
+     * @param {number} change in pixels
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} the viewport
+     */
+    zoom(change, center)
+    {
+        this.fitWidth(change + this.worldScreenWidth, center)
+    }
+
+    /**
+     * @param {object} [options]
+     * @param {number} [options.width] the desired width to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     */
+    snapZoom(options)
+    {
+        this.plugins['snap-zoom'] = new SnapZoom(this, options)
+        return this
+    }
+
+    /**
+     * @private
+     * @typedef OutOfBounds
+     * @type {object}
+     * @property {boolean} left
+     * @property {boolean} right
+     * @property {boolean} top
+     * @property {boolean} bottom
+     */
+
+    /**
+     * is container out of world bounds
+     * @return {OutOfBounds}
+     * @private
+     */
+    OOB()
+    {
+        const result = {}
+        result.left = this.left < 0
+        result.right = this.right > this._worldWidth
+        result.top = this.top < 0
+        result.bottom = this.bottom > this._worldHeight
+        result.cornerPoint = {
+            x: this._worldWidth * this.scale.x - this._screenWidth,
+            y: this._worldHeight * this.scale.y - this._screenHeight
+        }
+        return result
+    }
+
+    /**
+     * world coordinates of the right edge of the screen
+     * @type {number}
+     */
+    get right()
+    {
+        return -this.x / this.scale.x + this.worldScreenWidth
+    }
+    set right(value)
+    {
+        this.x = value * this.scale.x - this.worldScreenWidth
+        this._reset()
+    }
+
+    /**
+     * world coordinates of the left edge of the screen
+     * @type {number}
+     */
+    get left()
+    {
+        return -this.x / this.scale.x
+    }
+    set left(value)
+    {
+        this.x = -value * this.scale.x
+        this._reset()
+    }
+
+    /**
+     * world coordinates of the top edge of the screen
+     * @type {number}
+     */
+    get top()
+    {
+        return -this.y / this.scale.y
+    }
+    set top(value)
+    {
+        this.y = -value * this.scale.y
+        this._reset()
+    }
+
+    /**
+     * world coordinates of the bottom edge of the screen
+     * @type {number}
+     */
+    get bottom()
+    {
+        return -this.y / this.scale.y + this.worldScreenHeight
+    }
+    set bottom(value)
+    {
+        this.y = -value * this.scale.y - this.worldScreenHeight
+        this._reset()
+    }
+    /**
+     * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
+     * @type {boolean}
+     */
+    get dirty()
+    {
+        return this._dirty
+    }
+    set dirty(value)
+    {
+        this._dirty = value
+    }
+
+    /**
+     * permanently changes the Viewport's hitArea
+     * <p>NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)</p>
+     * @type {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)}
+     */
+    get forceHitArea()
+    {
+        return this._forceHitArea
+    }
+    set forceHitArea(value)
+    {
+        if (value)
+        {
+            this._forceHitArea = value
+            this.hitArea = value
+        }
+        else
+        {
+            this._forceHitArea = false
+            this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
+        }
+    }
+
+    /**
+     * count of mouse/touch pointers that are down on the viewport
+     * @private
+     * @return {number}
+     */
+    countDownPointers()
+    {
+        return this.leftDown + this.touches.length
+    }
+
+    /**
+     * array of touch pointers that are down on the viewport
+     * @private
+     * @return {PIXI.InteractionTrackingData[]}
+     */
+    getTouchPointers()
+    {
+        const results = []
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            const pointer = pointers[key]
+            if (this.touches.indexOf(pointer.pointerId) !== -1)
+            {
+                results.push(pointer)
+            }
+        }
+        return results
+    }
+
+    /**
+     * clamps and resets bounce and decelerate (as needed) after manually moving viewport
+     * @private
+     */
+    _reset()
+    {
+        if (this.plugins['bounce'])
+        {
+            this.plugins['bounce'].reset()
+            this.plugins['bounce'].bounce()
+        }
+        if (this.plugins['decelerate'])
+        {
+            this.plugins['decelerate'].reset()
+        }
+        if (this.plugins['snap'])
+        {
+            this.plugins['snap'].reset()
+        }
+        if (this.plugins['clamp'])
+        {
+            this.plugins['clamp'].update()
+        }
+        if (this.plugins['clamp-zoom'])
+        {
+            this.plugins['clamp-zoom'].clamp()
+        }
+        this.dirty = true
+    }
+
+    // PLUGINS
+
+    /**
+     * removes installed plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    removePlugin(type)
+    {
+        if (this.plugins[type])
+        {
+            this.plugins[type] = null
+        }
+    }
+
+    /**
+     * pause plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    pausePlugin(type)
+    {
+        if (this.plugins[type])
+        {
+            this.plugins[type].pause()
+        }
+    }
+
+    /**
+     * resume plugin
+     * @param {string} type of plugin (e.g., 'drag', 'pinch')
+     */
+    resumePlugin(type)
+    {
+        if (this.plugins[type])
+        {
+            this.plugins[type].resume()
+        }
+    }
+
+    /**
+     * enable one-finger touch to drag
+     * @param {object} [options]
+     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
+     * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
+     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     */
+    drag(options)
+    {
+        this.plugins['drag'] = new Drag(this, options)
+        return this
+    }
+
+    /**
+     * enable clamp to boundaries of world
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} options
+     * @param {string} [options.direction=all] (all, x, or y)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @return {Viewport} this
+     */
+    clamp(options)
+    {
+        this.plugins['clamp'] = new Clamp(this, options)
+        return this
+    }
+
+    /**
+     * decelerate after a move
+     * @param {object} [options]
+     * @param {number} [options.friction=0.95] percent to decelerate after movement
+     * @param {number} [options.bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
+     * @param {number} [options.minSpeed=0.01] minimum velocity before stopping/reversing acceleration
+     * @return {Viewport} this
+     */
+    decelerate(options)
+    {
+        this.plugins['decelerate'] = new Decelerate(this, options)
+        return this
+    }
+
+    /**
+     * bounce on borders
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
+     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
+     * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @return {Viewport} this
+     */
+    bounce(options)
+    {
+        this.plugins['bounce'] = new Bounce(this, options)
+        return this
+    }
+
+    /**
+     * enable pinch to zoom and two-finger touch to drag
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {number} [options.percent=1.0] percent to modify pinch speed
+     * @param {boolean} [options.noDrag] disable two-finger dragging
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of two fingers
+     * @return {Viewport} this
+     */
+    pinch(options)
+    {
+        this.plugins['pinch'] = new Pinch(this, options)
+        return this
+    }
+
+    /**
+     * snap to a point
+     * @param {number} x
+     * @param {number} y
+     * @param {object} [options]
+     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
+     * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
+     * @param {number} [options.time=1000]
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
+     * @return {Viewport} this
+     */
+    snap(x, y, options)
+    {
+        this.plugins['snap'] = new Snap(this, x, y, options)
+        return this
+    }
+
+    /**
+     * follow a target
+     * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
+     * @param {object} [options]
+     * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
+     * @return {Viewport} this
+     */
+    follow(target, options)
+    {
+        this.plugins['follow'] = new Follow(this, target, options)
+        return this
+    }
+
+    /**
+     * zoom using mouse wheel
+     * @param {object} [options]
+     * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {boolean} [options.reverse] reverse the direction of the scroll
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
+     * @return {Viewport} this
+     */
+    wheel(options)
+    {
+        this.plugins['wheel'] = new Wheel(this, options)
+        return this
+    }
+
+    /**
+     * enable clamping of zoom to constraints
+     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {number} [options.minWidth] minimum width
+     * @param {number} [options.minHeight] minimum height
+     * @param {number} [options.maxWidth] maximum width
+     * @param {number} [options.maxHeight] maximum height
+     * @return {Viewport} this
+     */
+    clampZoom(options)
+    {
+        this.plugins['clamp-zoom'] = new ClampZoom(this, options)
+        return this
+    }
+
+    /**
+     * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
+     * @param {object} [options]
+     * @param {number} [options.radius] distance from center of screen in screen pixels
+     * @param {number} [options.distance] distance from all sides in screen pixels
+     * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
+     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
+     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
+     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
+     * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
+     * @param {boolean} [options.reverse] reverse direction of scroll
+     * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
+     * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     */
+    mouseEdges(options)
+    {
+        this.plugins['mouse-edges'] = new MouseEdges(this, options)
+        return this
+    }
+
+    /**
+     * pause viewport (including animation updates such as decelerate)
+     * @type {boolean}
+     */
+    get pause() { return this._pause }
+    set pause(value)
+    {
+        this._pause = value
+        this.interactive = !value
+    }
+}
+
+/**
+ * fires after a mouse or touch click
+ * @event Viewport#clicked
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a drag starts
+ * @event Viewport#drag-start
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a drag ends
+ * @event Viewport#drag-end
+ * @type {object}
+ * @property {PIXI.PointLike} screen
+ * @property {PIXI.PointLike} world
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a pinch starts
+ * @event Viewport#pinch-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a pinch end
+ * @event Viewport#pinch-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap starts
+ * @event Viewport#snap-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap ends
+ * @event Viewport#snap-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap-zoom starts
+ * @event Viewport#snap-zoom-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a snap-zoom ends
+ * @event Viewport#snap-zoom-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce starts in the x direction
+ * @event Viewport#bounce-x-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce ends in the x direction
+ * @event Viewport#bounce-x-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce starts in the y direction
+ * @event Viewport#bounce-y-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a bounce ends in the y direction
+ * @event Viewport#bounce-y-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when for a mouse wheel event
+ * @event Viewport#wheel
+ * @type {object}
+ * @property {object} wheel
+ * @property {number} wheel.dx
+ * @property {number} wheel.dy
+ * @property {number} wheel.dz
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when a wheel-scroll occurs
+ * @event Viewport#wheel-scroll
+ * @type {Viewport}
+ */
+
+/**
+ * fires when a mouse-edge starts to scroll
+ * @event Viewport#mouse-edge-start
+ * @type {Viewport}
+ */
+
+/**
+ * fires when the mouse-edge scrolling ends
+ * @event Viewport#mouse-edge-end
+ * @type {Viewport}
+ */
+
+module.exports = Viewport
+},{"./bounce":401,"./clamp":403,"./clamp-zoom":402,"./decelerate":404,"./drag":405,"./follow":406,"./mouse-edges":407,"./pinch":408,"./snap":411,"./snap-zoom":410,"./wheel":413,"exists":8,"pixi.js":338}],413:[function(require,module,exports){
+const Plugin = require('./plugin')
+
+module.exports = class Wheel extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {object} [options]
+     * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {boolean} [options.reverse] reverse the direction of the scroll
+     * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
+     *
+     * @event wheel({wheel: {dx, dy, dz}, event, viewport})
+     */
+    constructor(parent, options)
+    {
+        super(parent)
+        options = options || {}
+        this.percent = options.percent || 0.1
+        this.center = options.center
+        this.reverse = options.reverse
+    }
+
+    wheel(e)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        let change
+        if (this.reverse)
+        {
+            change = e.deltaY > 0 ? 1 + this.percent : 1 - this.percent
+        }
+        else
+        {
+            change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
+        }
+        let point = { x: e.clientX, y: e.clientY }
+        let oldPoint
+        if (!this.center)
+        {
+            oldPoint = this.parent.toLocal(point)
+        }
+        this.parent.scale.x *= change
+        this.parent.scale.y *= change
+        const clamp = this.parent.plugins['clamp-zoom']
+        if (clamp)
+        {
+            clamp.clamp()
+        }
+
+        if (this.center)
+        {
+            this.parent.moveCenter(this.center)
+        }
+        else
+        {
+            const newPoint = this.parent.toGlobal(oldPoint)
+            this.parent.x += point.x - newPoint.x
+            this.parent.y += point.y - newPoint.y
+        }
+        e.preventDefault()
+        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
+    }
+}
+},{"./plugin":409}]},{},[1]);
