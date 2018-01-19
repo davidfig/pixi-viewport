@@ -86,7 +86,7 @@ class Viewport extends PIXI.Container
                     this.plugins[plugin].update(this.ticker.elapsedMS)
                 }
             }
-            if (!this.forceHitArea)
+            if (this.dirty && !this.forceHitArea)
             {
                 this.hitArea.x = this.left
                 this.hitArea.y = this.top
@@ -752,7 +752,7 @@ class Viewport extends PIXI.Container
      */
     countDownPointers()
     {
-        return this.leftDown + this.touches.length
+        return (this.leftDown ? 1 : 0) + this.touches.length
     }
 
     /**
