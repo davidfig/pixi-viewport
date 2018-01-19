@@ -59,6 +59,14 @@ class Viewport extends PIXI.Container
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
         this.listeners()
+
+        /**
+         * active touch point ids on the viewport
+         * @type {number[]}
+         * @readonly
+         */
+        this.touches = []
+
         this.ticker = options.ticker || PIXI.ticker.shared
         this.ticker.add(() => this.update())
     }
@@ -213,8 +221,14 @@ class Viewport extends PIXI.Container
      */
     down(e)
     {
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
+        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        {
             this.leftDown = true
+        }
+
+        if (e.data.pointerType !== 'mouse')
+        {
+            this.touches.push(e.data.pointerId)
         }
 
         for (let type of PLUGIN_ORDER)
@@ -261,8 +275,21 @@ class Viewport extends PIXI.Container
      */
     up(e)
     {
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
+        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        {
             this.leftDown = false
+        }
+
+        if (e.data.pointerType !== 'mouse')
+        {
+            for (let i = 0; i < this.touches.length; i++)
+            {
+                if (this.touches[i] === e.data.pointerId)
+                {
+                    this.touches.splice(i, 1)
+                    break
+                }
+            }
         }
 
         for (let type of PLUGIN_ORDER)
@@ -725,20 +752,7 @@ class Viewport extends PIXI.Container
      */
     countDownPointers()
     {
-        let count = 0
-        const pointers = this.trackedPointers
-        for (let key in pointers)
-        {
-            if (key === 'MOUSE')
-            {
-                count += this.leftDown ? 1 : 0
-            }
-            else
-            {
-                count++
-            }
-        }
-        return count
+        return this.leftDown + this.touches.length
     }
 
     /**
@@ -748,13 +762,14 @@ class Viewport extends PIXI.Container
      */
     getTouchPointers()
     {
-        let results = []
+        const results = []
         const pointers = this.trackedPointers
         for (let key in pointers)
         {
-            if (key !== 'MOUSE')
+            const pointer = pointers[key]
+            if (this.touches.indexOf(pointer.pointerId) !== -1)
             {
-                results.push(pointers[key])
+                results.push(pointer)
             }
         }
         return results

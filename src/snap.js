@@ -54,7 +54,7 @@ module.exports = class Snap extends Plugin
 
     up()
     {
-        if (this.parent.countDownPointers() === 1)
+        if (this.parent.countDownPointers() === 0)
         {
             const decelerate = this.parent.plugins['decelerate']
             if (decelerate && (decelerate.x || decelerate.y))

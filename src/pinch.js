@@ -102,7 +102,7 @@ module.exports = class Pinch extends Plugin
     {
         if (this.pinching)
         {
-            if (this.parent.getTouchPointers().length <= 2)
+            if (this.parent.touches.length <= 1)
             {
                 this.active = false
                 this.lastCenter = null

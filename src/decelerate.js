@@ -49,7 +49,7 @@ module.exports = class Decelerate extends Plugin
 
     up()
     {
-        if (this.parent.countDownPointers() <= 1 && this.saved.length)
+        if (this.parent.countDownPointers() === 0 && this.saved.length)
         {
             const now = performance.now()
             for (let save of this.saved)

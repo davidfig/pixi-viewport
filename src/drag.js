@@ -47,8 +47,7 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-
-        if (this.parent.countDownPointers() <= 1)
+        if (this.parent.touches.length <= 1)
         {
             this.last = { x: e.data.global.x, y: e.data.global.y }
             this.clickedAvailable = true
@@ -96,27 +95,18 @@ module.exports = class Drag extends Plugin
         }
     }
 
-    up(e)
+    up()
     {
-        if (this.parent.countDownPointers() === 2)
+        const touches = this.parent.getTouchPointers()
+        if (touches.length === 1)
         {
-            if (e.data.originalEvent.touches)
+            const pointer = touches[0]
+            if (pointer.last)
             {
-                const pointers = this.parent.trackedPointers
-                for (let key in pointers)
-                {
-                    const pointer = pointers[key]
-                    if (pointer.pointerId !== 'MOUSE' && pointer.pointerId !== e.data.pointerId)
-                    {
-                        if (pointer.last)
-                        {
-                            this.last = { x: pointer.last.x, y: pointer.last.y }
-                        }
-                    }
-                }
-                this.clickedAvailable = false
-                this.moved = false
+                this.last = { x: pointer.last.x, y: pointer.last.y }
             }
+            this.clickedAvailable = false
+            this.moved = false
         }
         else if (this.last)
         {

@@ -3,8 +3,10 @@ A highly configurable viewport/2D camera designed to work with pixi.js.
 
 Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.
 
+All features are configurable and removable, so set up the viewport to be exactly what you need.
+
 ## Rationale
-I wanted to improve my work on yy-viewport with a complete rewrite of a viewport/2D camera for use with pixi.js. I added options that I need in my games, including edges that bounce, deceleration, and highly configurable options to tweak the feel of the viewport. 
+I kept rewriting 2d cameras for the games I developed with pixi.js, so I decided to package up a generic one. I included options that I need in my games, including edges that bounce, deceleration, and lots of options to tweak the feel of the viewport. 
 
 ## Simple Example
 ```js
@@ -19,6 +21,11 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
         worldHeight: 1000
     });
 
+    // add the viewport to the stage
+    var app = PIXI.Application();
+    document.body.appendChild(app.view);
+    app.addChild(viewport);
+
     // activate plugins
     viewport
         .drag()
@@ -27,7 +34,10 @@ I wanted to improve my work on yy-viewport with a complete rewrite of a viewport
         .decelerate()
         .bounce();
 
-    viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE));
+    // add a red box
+    var sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE));
+    sprite.tint = 0xff0000;
+    sprite.position.set(100, 100);
 ```
 
 ## Live Example
