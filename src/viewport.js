@@ -86,7 +86,7 @@ class Viewport extends PIXI.Container
                     this.plugins[plugin].update(this.ticker.elapsedMS)
                 }
             }
-            if (this.dirty && !this.forceHitArea)
+            if (!this.forceHitArea)
             {
                 this.hitArea.x = this.left
                 this.hitArea.y = this.top
