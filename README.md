@@ -22,7 +22,7 @@ I kept rewriting 2d cameras for the games I developed with pixi.js, so I decided
     });
 
     // add the viewport to the stage
-    var app = PIXI.Application();
+    var app = new PIXI.Application();
     document.body.appendChild(app.view);
     app.addChild(viewport);
 
