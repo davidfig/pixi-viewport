@@ -238,6 +238,16 @@ class Viewport extends PIXI.Container
                 this.plugins[type].down(e)
             }
         }
+
+        if (this.countDownPointers() === 1)
+        {
+            this.last = { x: e.data.global.x, y: e.data.global.y }
+            this.clickedAvailable = true
+        }
+        else
+        {
+            this.clickedAvailable = false
+        }
     }
 
     /**
@@ -265,6 +275,16 @@ class Viewport extends PIXI.Container
             if (this.plugins[type])
             {
                 this.plugins[type].move(e)
+            }
+        }
+
+        if (this.clickedAvailable)
+        {
+            const distX = e.data.global.x - this.last.x
+            const distY = e.data.global.y - this.last.y
+            if (this.checkThreshold(distX) || this.checkThreshold(distY))
+            {
+                this.clickedAvailable = false
             }
         }
     }
@@ -298,6 +318,12 @@ class Viewport extends PIXI.Container
             {
                 this.plugins[type].up(e)
             }
+        }
+
+        if (this.clickedAvailable && this.countDownPointers() === 0)
+        {
+            this.emit('clicked', { screen: this.last, world: this.toWorld(this.last), viewport: this })
+            this.clickedAvailable = false
         }
     }
 

@@ -47,10 +47,13 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        if (this.parent.touches.length <= 1)
+        if (this.parent.countDownPointers() === 1)
         {
             this.last = { x: e.data.global.x, y: e.data.global.y }
-            this.clickedAvailable = true
+        }
+        else
+        {
+            this.last = null
         }
     }
 
@@ -105,7 +108,6 @@ module.exports = class Drag extends Plugin
             {
                 this.last = { x: pointer.last.x, y: pointer.last.y }
             }
-            this.clickedAvailable = false
             this.moved = false
         }
         else if (this.last)
@@ -114,10 +116,6 @@ module.exports = class Drag extends Plugin
             {
                 this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                 this.last = this.moved = false
-            }
-            else if (this.clickedAvailable)
-            {
-                this.parent.emit('clicked', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent })
             }
         }
     }

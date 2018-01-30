@@ -5,8 +5,8 @@ const Counter = require('yy-counter')
 const FPS = require('yy-fps')
 const clicked = require('clicked')
 
-const Viewport = require('../dist/viewport')
-// const Viewport = require('../src/viewport')
+// const Viewport = require('../dist/viewport')
+const Viewport = require('../src/viewport')
 
 const gui = require('./gui')
 
