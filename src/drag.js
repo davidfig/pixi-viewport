@@ -69,10 +69,10 @@ module.exports = class Drag extends Plugin
             return
         }
 
-        const x = e.data.global.x
-        const y = e.data.global.y
         if (this.last)
         {
+            const x = e.data.global.x
+            const y = e.data.global.y
             const count = this.parent.countDownPointers()
             if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
             {

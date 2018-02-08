@@ -64498,10 +64498,10 @@ module.exports = class Drag extends Plugin
             return
         }
 
-        const x = e.data.global.x
-        const y = e.data.global.y
         if (this.last)
         {
+            const x = e.data.global.x
+            const y = e.data.global.y
             const count = this.parent.countDownPointers()
             if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
             {
@@ -65513,6 +65513,7 @@ class Viewport extends PIXI.Container
         this.on('pointerdown', this.down)
         this.on('pointermove', this.move)
         this.on('pointerup', this.up)
+        this.on('pointerupoutside', this.up)
         this.on('pointercancel', this.up)
         this.on('pointerout', this.up)
         document.body.addEventListener('wheel', (e) => this.handleWheel(e))

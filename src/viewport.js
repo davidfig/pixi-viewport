@@ -209,6 +209,7 @@ class Viewport extends PIXI.Container
         this.on('pointerdown', this.down)
         this.on('pointermove', this.move)
         this.on('pointerup', this.up)
+        this.on('pointerupoutside', this.up)
         this.on('pointercancel', this.up)
         this.on('pointerout', this.up)
         document.body.addEventListener('wheel', (e) => this.handleWheel(e))
