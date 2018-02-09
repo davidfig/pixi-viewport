@@ -8,6 +8,7 @@ module.exports = class Drag extends Plugin
      * @private
      * @param {Viewport} parent
      * @param {object} [options]
+     * @param {string} [options.direction=all] direction to drag (all, x, or y)
      * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
      * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
@@ -23,6 +24,8 @@ module.exports = class Drag extends Plugin
         this.wheelScroll = options.wheelScroll || 1
         this.reverse = options.reverse ? 1 : -1
         this.clampWheel = options.clampWheel
+        this.xDirection = !options.direction || options.direction === 'all' || options.direction === 'x'
+        this.yDirection = !options.direction || options.direction === 'all' || options.direction === 'y'
         this.parseUnderflow(options.underflow || 'center')
     }
 
@@ -78,10 +81,16 @@ module.exports = class Drag extends Plugin
             {
                 const distX = x - this.last.x
                 const distY = y - this.last.y
-                if (this.moved || (this.parent.checkThreshold(distX) || this.parent.checkThreshold(distY)))
+                if (this.moved || ((this.xDirection && this.parent.checkThreshold(distX)) || (this.yDirection && this.parent.checkThreshold(distY))))
                 {
-                    this.parent.x += distX
-                    this.parent.y += distY
+                    if (this.xDirection)
+                    {
+                        this.parent.x += distX
+                    }
+                    if (this.yDirection)
+                    {
+                        this.parent.y += distY
+                    }
                     this.last = { x, y }
                     if (!this.moved)
                     {

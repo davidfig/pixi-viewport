@@ -873,6 +873,7 @@ class Viewport extends PIXI.Container
     /**
      * enable one-finger touch to drag
      * @param {object} [options]
+     * @param {string} [options.direction=all] direction to drag (all, x, or y)
      * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
      * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
