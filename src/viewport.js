@@ -232,22 +232,29 @@ class Viewport extends PIXI.Container
             this.touches.push(e.data.pointerId)
         }
 
+        if (this.countDownPointers() === 1)
+        {
+            this.last = { x: e.data.global.x, y: e.data.global.y }
+
+            // clicked event does not fire if viewport is decelerating or bouncing
+            const decelerate = this.plugins['decelerate']
+            const bounce = this.plugins['bounce']
+            if ((!decelerate || (!decelerate.x && !decelerate.y)) && (!bounce || (!bounce.toX && !bounce.toY)))
+            {
+                this.clickedAvailable = true
+            }
+        }
+        else
+        {
+            this.clickedAvailable = false
+        }
+
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
             {
                 this.plugins[type].down(e)
             }
-        }
-
-        if (this.countDownPointers() === 1)
-        {
-            this.last = { x: e.data.global.x, y: e.data.global.y }
-            this.clickedAvailable = true
-        }
-        else
-        {
-            this.clickedAvailable = false
         }
     }
 
