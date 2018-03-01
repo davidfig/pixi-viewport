@@ -28,6 +28,7 @@ class Viewport extends PIXI.Container
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @fires clicked
      * @fires drag-start
      * @fires drag-end
@@ -58,7 +59,7 @@ class Viewport extends PIXI.Container
         this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
-        this.listeners()
+        this.listeners(options.divWheel || document.body)
 
         /**
          * active touch point ids on the viewport
@@ -199,7 +200,7 @@ class Viewport extends PIXI.Container
      * add input listeners
      * @private
      */
-    listeners()
+    listeners(div)
     {
         this.interactive = true
         if (!this.forceHitArea)
@@ -212,7 +213,7 @@ class Viewport extends PIXI.Container
         this.on('pointerupoutside', this.up)
         this.on('pointercancel', this.up)
         this.on('pointerout', this.up)
-        document.body.addEventListener('wheel', (e) => this.handleWheel(e))
+        div.addEventListener('wheel', (e) => this.handleWheel(e))
         this.leftDown = false
     }
 
