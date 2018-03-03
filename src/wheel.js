@@ -20,6 +20,23 @@ module.exports = class Wheel extends Plugin
         this.center = options.center
         this.reverse = options.reverse
     }
+    
+    getOffset(evt) {
+      var el = this.parent.divWheel,
+          x = 0,
+          y = 0;
+
+      while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+        x += el.offsetLeft - el.scrollLeft;
+        y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+      }
+
+      x = evt.clientX - x;
+      y = evt.clientY - y;
+
+      return { x: x, y: y };
+    }
 
     wheel(e)
     {
@@ -37,7 +54,7 @@ module.exports = class Wheel extends Plugin
         {
             change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
         }
-        let point = { x: e.clientX, y: e.clientY }
+        let point = this.getOffset(e);
         let oldPoint
         if (!this.center)
         {

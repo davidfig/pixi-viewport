@@ -59,7 +59,10 @@ class Viewport extends PIXI.Container
         this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
-        this.listeners(options.divWheel || document.body)
+        this.divWheel = options.divWheel || document.body
+        this.listeners(this.divWheel)
+        
+
 
         /**
          * active touch point ids on the viewport
