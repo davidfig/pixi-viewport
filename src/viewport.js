@@ -28,6 +28,7 @@ class Viewport extends PIXI.Container
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, used in divWheel to calculate pointer postion relative to
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @fires clicked
      * @fires drag-start
@@ -59,8 +60,8 @@ class Viewport extends PIXI.Container
         this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
-        this.divWheel = options.divWheel || document.body
-        this.listeners(this.divWheel)
+        this.interaction = options.interaction || null;
+        this.listeners(options.divWheel || document.body)
         
 
 
