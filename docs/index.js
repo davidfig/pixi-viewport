@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
@@ -189,7 +189,7 @@ window.onload = function ()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
-},{"../src/viewport":412,"./gui":2,"./highlight":3,"clicked":6,"pixi-ease":194,"pixi.js":338,"yy-counter":398,"yy-fps":399,"yy-random":400}],2:[function(require,module,exports){
+},{"../src/viewport":412,"./gui":2,"./highlight":3,"clicked":6,"pixi-ease":197,"pixi.js":338,"yy-counter":398,"yy-fps":399,"yy-random":400}],2:[function(require,module,exports){
 let _viewport, _drawWorld, _gui, _options, _world
 
 const TEST = false
@@ -827,7 +827,7 @@ module.exports = function highlight(url)
 
 // for eslint
 /* globals window, XMLHttpRequest, document */
-},{"fork-me-github":9,"highlight.js":11}],4:[function(require,module,exports){
+},{"fork-me-github":10,"highlight.js":12}],4:[function(require,module,exports){
 /**
  * Bit twiddling hacks for JavaScript.
  *
@@ -1791,6 +1791,344 @@ earcut.flatten = function (data) {
 };
 
 },{}],8:[function(require,module,exports){
+'use strict';
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} once Specify if the listener is a one-time listener.
+ * @returns {EventEmitter}
+ * @private
+ */
+function addListener(emitter, event, fn, context, once) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('The listener must be a function');
+  }
+
+  var listener = new EE(fn, context || emitter, once)
+    , evt = prefix ? prefix + event : event;
+
+  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+  else emitter._events[evt] = [emitter._events[evt], listener];
+
+  return emitter;
+}
+
+/**
+ * Clear event by name.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} evt The Event name.
+ * @private
+ */
+function clearEvent(emitter, evt) {
+  if (--emitter._eventsCount === 0) emitter._events = new Events();
+  else delete emitter._events[evt];
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Array} The registered listeners.
+ * @public
+ */
+EventEmitter.prototype.listeners = function listeners(event) {
+  var evt = prefix ? prefix + event : event
+    , handlers = this._events[evt];
+
+  if (!handlers) return [];
+  if (handlers.fn) return [handlers.fn];
+
+  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+    ee[i] = handlers[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Return the number of listeners listening to a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Number} The number of listeners.
+ * @public
+ */
+EventEmitter.prototype.listenerCount = function listenerCount(event) {
+  var evt = prefix ? prefix + event : event
+    , listeners = this._events[evt];
+
+  if (!listeners) return 0;
+  if (listeners.fn) return 1;
+  return listeners.length;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  return addListener(this, event, fn, context, false);
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  return addListener(this, event, fn, context, true);
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {*} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    clearEvent(this, evt);
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+      listeners.fn === fn &&
+      (!once || listeners.once) &&
+      (!context || listeners.context === context)
+    ) {
+      clearEvent(this, evt);
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+        listeners[i].fn !== fn ||
+        (once && !listeners[i].once) ||
+        (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else clearEvent(this, evt);
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {(String|Symbol)} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) clearEvent(this, evt);
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+if ('undefined' !== typeof module) {
+  module.exports = EventEmitter;
+}
+
+},{}],9:[function(require,module,exports){
 module.exports = exists;
 
 module.exports.allExist = allExist;
@@ -1803,7 +2141,7 @@ function allExist (/* vals */) {
   var vals = Array.prototype.slice.call(arguments);
   return vals.every(exists);
 }
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // Programatically add fork me on github ribbon from javascript without making changes to CSS, HTML, or adding image files
 // by David Figatner
 // copyright 2017 YOPEY YOPEY LLC
@@ -1957,7 +2295,7 @@ module.exports = function forkMe(url, options)
     sheet.insertRule('.' + a.className + '::before' + before + '}')
     sheet.insertRule('.' + a.className + '::after' + after + '}')
 }
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /*
 Syntax highlighting with language autodetection.
 https://highlightjs.org/
@@ -2775,7 +3113,7 @@ https://highlightjs.org/
   return hljs;
 }));
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var hljs = require('./highlight');
 
 hljs.registerLanguage('1c', require('./languages/1c'));
@@ -2956,7 +3294,7 @@ hljs.registerLanguage('xquery', require('./languages/xquery'));
 hljs.registerLanguage('zephir', require('./languages/zephir'));
 
 module.exports = hljs;
-},{"./highlight":10,"./languages/1c":12,"./languages/abnf":13,"./languages/accesslog":14,"./languages/actionscript":15,"./languages/ada":16,"./languages/apache":17,"./languages/applescript":18,"./languages/arduino":19,"./languages/armasm":20,"./languages/asciidoc":21,"./languages/aspectj":22,"./languages/autohotkey":23,"./languages/autoit":24,"./languages/avrasm":25,"./languages/awk":26,"./languages/axapta":27,"./languages/bash":28,"./languages/basic":29,"./languages/bnf":30,"./languages/brainfuck":31,"./languages/cal":32,"./languages/capnproto":33,"./languages/ceylon":34,"./languages/clean":35,"./languages/clojure":37,"./languages/clojure-repl":36,"./languages/cmake":38,"./languages/coffeescript":39,"./languages/coq":40,"./languages/cos":41,"./languages/cpp":42,"./languages/crmsh":43,"./languages/crystal":44,"./languages/cs":45,"./languages/csp":46,"./languages/css":47,"./languages/d":48,"./languages/dart":49,"./languages/delphi":50,"./languages/diff":51,"./languages/django":52,"./languages/dns":53,"./languages/dockerfile":54,"./languages/dos":55,"./languages/dsconfig":56,"./languages/dts":57,"./languages/dust":58,"./languages/ebnf":59,"./languages/elixir":60,"./languages/elm":61,"./languages/erb":62,"./languages/erlang":64,"./languages/erlang-repl":63,"./languages/excel":65,"./languages/fix":66,"./languages/flix":67,"./languages/fortran":68,"./languages/fsharp":69,"./languages/gams":70,"./languages/gauss":71,"./languages/gcode":72,"./languages/gherkin":73,"./languages/glsl":74,"./languages/go":75,"./languages/golo":76,"./languages/gradle":77,"./languages/groovy":78,"./languages/haml":79,"./languages/handlebars":80,"./languages/haskell":81,"./languages/haxe":82,"./languages/hsp":83,"./languages/htmlbars":84,"./languages/http":85,"./languages/hy":86,"./languages/inform7":87,"./languages/ini":88,"./languages/irpf90":89,"./languages/java":90,"./languages/javascript":91,"./languages/jboss-cli":92,"./languages/json":93,"./languages/julia":95,"./languages/julia-repl":94,"./languages/kotlin":96,"./languages/lasso":97,"./languages/ldif":98,"./languages/leaf":99,"./languages/less":100,"./languages/lisp":101,"./languages/livecodeserver":102,"./languages/livescript":103,"./languages/llvm":104,"./languages/lsl":105,"./languages/lua":106,"./languages/makefile":107,"./languages/markdown":108,"./languages/mathematica":109,"./languages/matlab":110,"./languages/maxima":111,"./languages/mel":112,"./languages/mercury":113,"./languages/mipsasm":114,"./languages/mizar":115,"./languages/mojolicious":116,"./languages/monkey":117,"./languages/moonscript":118,"./languages/n1ql":119,"./languages/nginx":120,"./languages/nimrod":121,"./languages/nix":122,"./languages/nsis":123,"./languages/objectivec":124,"./languages/ocaml":125,"./languages/openscad":126,"./languages/oxygene":127,"./languages/parser3":128,"./languages/perl":129,"./languages/pf":130,"./languages/php":131,"./languages/pony":132,"./languages/powershell":133,"./languages/processing":134,"./languages/profile":135,"./languages/prolog":136,"./languages/protobuf":137,"./languages/puppet":138,"./languages/purebasic":139,"./languages/python":140,"./languages/q":141,"./languages/qml":142,"./languages/r":143,"./languages/rib":144,"./languages/roboconf":145,"./languages/routeros":146,"./languages/rsl":147,"./languages/ruby":148,"./languages/ruleslanguage":149,"./languages/rust":150,"./languages/scala":151,"./languages/scheme":152,"./languages/scilab":153,"./languages/scss":154,"./languages/shell":155,"./languages/smali":156,"./languages/smalltalk":157,"./languages/sml":158,"./languages/sqf":159,"./languages/sql":160,"./languages/stan":161,"./languages/stata":162,"./languages/step21":163,"./languages/stylus":164,"./languages/subunit":165,"./languages/swift":166,"./languages/taggerscript":167,"./languages/tap":168,"./languages/tcl":169,"./languages/tex":170,"./languages/thrift":171,"./languages/tp":172,"./languages/twig":173,"./languages/typescript":174,"./languages/vala":175,"./languages/vbnet":176,"./languages/vbscript":178,"./languages/vbscript-html":177,"./languages/verilog":179,"./languages/vhdl":180,"./languages/vim":181,"./languages/x86asm":182,"./languages/xl":183,"./languages/xml":184,"./languages/xquery":185,"./languages/yaml":186,"./languages/zephir":187}],12:[function(require,module,exports){
+},{"./highlight":11,"./languages/1c":13,"./languages/abnf":14,"./languages/accesslog":15,"./languages/actionscript":16,"./languages/ada":17,"./languages/apache":18,"./languages/applescript":19,"./languages/arduino":20,"./languages/armasm":21,"./languages/asciidoc":22,"./languages/aspectj":23,"./languages/autohotkey":24,"./languages/autoit":25,"./languages/avrasm":26,"./languages/awk":27,"./languages/axapta":28,"./languages/bash":29,"./languages/basic":30,"./languages/bnf":31,"./languages/brainfuck":32,"./languages/cal":33,"./languages/capnproto":34,"./languages/ceylon":35,"./languages/clean":36,"./languages/clojure":38,"./languages/clojure-repl":37,"./languages/cmake":39,"./languages/coffeescript":40,"./languages/coq":41,"./languages/cos":42,"./languages/cpp":43,"./languages/crmsh":44,"./languages/crystal":45,"./languages/cs":46,"./languages/csp":47,"./languages/css":48,"./languages/d":49,"./languages/dart":50,"./languages/delphi":51,"./languages/diff":52,"./languages/django":53,"./languages/dns":54,"./languages/dockerfile":55,"./languages/dos":56,"./languages/dsconfig":57,"./languages/dts":58,"./languages/dust":59,"./languages/ebnf":60,"./languages/elixir":61,"./languages/elm":62,"./languages/erb":63,"./languages/erlang":65,"./languages/erlang-repl":64,"./languages/excel":66,"./languages/fix":67,"./languages/flix":68,"./languages/fortran":69,"./languages/fsharp":70,"./languages/gams":71,"./languages/gauss":72,"./languages/gcode":73,"./languages/gherkin":74,"./languages/glsl":75,"./languages/go":76,"./languages/golo":77,"./languages/gradle":78,"./languages/groovy":79,"./languages/haml":80,"./languages/handlebars":81,"./languages/haskell":82,"./languages/haxe":83,"./languages/hsp":84,"./languages/htmlbars":85,"./languages/http":86,"./languages/hy":87,"./languages/inform7":88,"./languages/ini":89,"./languages/irpf90":90,"./languages/java":91,"./languages/javascript":92,"./languages/jboss-cli":93,"./languages/json":94,"./languages/julia":96,"./languages/julia-repl":95,"./languages/kotlin":97,"./languages/lasso":98,"./languages/ldif":99,"./languages/leaf":100,"./languages/less":101,"./languages/lisp":102,"./languages/livecodeserver":103,"./languages/livescript":104,"./languages/llvm":105,"./languages/lsl":106,"./languages/lua":107,"./languages/makefile":108,"./languages/markdown":109,"./languages/mathematica":110,"./languages/matlab":111,"./languages/maxima":112,"./languages/mel":113,"./languages/mercury":114,"./languages/mipsasm":115,"./languages/mizar":116,"./languages/mojolicious":117,"./languages/monkey":118,"./languages/moonscript":119,"./languages/n1ql":120,"./languages/nginx":121,"./languages/nimrod":122,"./languages/nix":123,"./languages/nsis":124,"./languages/objectivec":125,"./languages/ocaml":126,"./languages/openscad":127,"./languages/oxygene":128,"./languages/parser3":129,"./languages/perl":130,"./languages/pf":131,"./languages/php":132,"./languages/pony":133,"./languages/powershell":134,"./languages/processing":135,"./languages/profile":136,"./languages/prolog":137,"./languages/protobuf":138,"./languages/puppet":139,"./languages/purebasic":140,"./languages/python":141,"./languages/q":142,"./languages/qml":143,"./languages/r":144,"./languages/rib":145,"./languages/roboconf":146,"./languages/routeros":147,"./languages/rsl":148,"./languages/ruby":149,"./languages/ruleslanguage":150,"./languages/rust":151,"./languages/scala":152,"./languages/scheme":153,"./languages/scilab":154,"./languages/scss":155,"./languages/shell":156,"./languages/smali":157,"./languages/smalltalk":158,"./languages/sml":159,"./languages/sqf":160,"./languages/sql":161,"./languages/stan":162,"./languages/stata":163,"./languages/step21":164,"./languages/stylus":165,"./languages/subunit":166,"./languages/swift":167,"./languages/taggerscript":168,"./languages/tap":169,"./languages/tcl":170,"./languages/tex":171,"./languages/thrift":172,"./languages/tp":173,"./languages/twig":174,"./languages/typescript":175,"./languages/vala":176,"./languages/vbnet":177,"./languages/vbscript":179,"./languages/vbscript-html":178,"./languages/verilog":180,"./languages/vhdl":181,"./languages/vim":182,"./languages/x86asm":183,"./languages/xl":184,"./languages/xml":185,"./languages/xquery":186,"./languages/yaml":187,"./languages/zephir":188}],13:[function(require,module,exports){
 module.exports = function(hljs){
 
   // общий паттерн для определения идентификаторов
@@ -3466,7 +3804,7 @@ module.exports = function(hljs){
     ]  
   }
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = function(hljs) {
     var regexes = {
         ruleDeclaration: "^[a-zA-Z][a-zA-Z0-9-]*",
@@ -3537,7 +3875,7 @@ module.exports = function(hljs) {
       ]
     };
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -3575,7 +3913,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
   var IDENT_FUNC_RETURN_TYPE_RE = '([*]|[a-zA-Z_$][a-zA-Z0-9_$]*)';
@@ -3649,7 +3987,7 @@ module.exports = function(hljs) {
     illegal: /#/
   };
 };
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = // We try to support full Ada2012
 //
 // We highlight all appearances of types, keywords, literals (string, char, number, bool)
@@ -3822,7 +4160,7 @@ function(hljs) {
         ]
     };
 };
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUMBER = {className: 'number', begin: '[\\$%]\\d+'};
   return {
@@ -3868,7 +4206,7 @@ module.exports = function(hljs) {
     illegal: /\S/
   };
 };
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRING = hljs.inherit(hljs.QUOTE_STRING_MODE, {illegal: ''});
   var PARAMS = {
@@ -3954,7 +4292,7 @@ module.exports = function(hljs) {
     illegal: '//|->|=>|\\[\\['
   };
 };
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = function(hljs) {
   var CPP = hljs.getLanguage('cpp').exports;
 	return {
@@ -4054,7 +4392,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = function(hljs) {
     //local labels: %?[FB]?[AT]?\d{1,2}\w+
   return {
@@ -4146,7 +4484,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['adoc'],
@@ -4334,7 +4672,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function (hljs) {
   var KEYWORDS =
     'false synchronized int abstract float private char boolean static null if const ' +
@@ -4479,7 +4817,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = function(hljs) {
   var BACKTICK_ESCAPE = {
     begin: '`[\\s\\S]'
@@ -4538,7 +4876,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = function(hljs) {
     var KEYWORDS = 'ByRef Case Const ContinueCase ContinueLoop ' +
         'Default Dim Do Else ElseIf EndFunc EndIf EndSelect ' +
@@ -4674,7 +5012,7 @@ module.exports = function(hljs) {
         ]
     }
 };
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -4736,7 +5074,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 module.exports = function(hljs) {
   var VARIABLE = {
     className: 'variable',
@@ -4789,7 +5127,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: 'false int abstract private char boolean static null if for true ' +
@@ -4820,7 +5158,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = function(hljs) {
   var VAR = {
     className: 'variable',
@@ -4895,7 +5233,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -4946,7 +5284,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = function(hljs){
   return {
     contains: [
@@ -4975,7 +5313,7 @@ module.exports = function(hljs){
     ]
   };
 };
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = function(hljs){
   var LITERAL = {
     className: 'literal',
@@ -5012,7 +5350,7 @@ module.exports = function(hljs){
     ]
   };
 };
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS =
     'div mod in and or not xor asserterror begin case do downto else end exit for if of repeat then to ' +
@@ -5092,7 +5430,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['capnp'],
@@ -5141,7 +5479,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = function(hljs) {
   // 2.3. Identifiers and keywords
   var KEYWORDS =
@@ -5208,7 +5546,7 @@ module.exports = function(hljs) {
     ].concat(EXPRESSIONS)
   };
 };
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['clean','icl','dcl'],
@@ -5233,7 +5571,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -5248,7 +5586,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 module.exports = function(hljs) {
   var keywords = {
     'builtin-name':
@@ -5344,7 +5682,7 @@ module.exports = function(hljs) {
     contains: [LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
   }
 };
-},{}],38:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['cmake.in'],
@@ -5382,7 +5720,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -5528,7 +5866,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -5595,7 +5933,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 module.exports = function cos (hljs) {
 
   var STRINGS = {
@@ -5719,7 +6057,7 @@ module.exports = function cos (hljs) {
     ]
   };
 };
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = function(hljs) {
   var CPP_PRIMITIVE_TYPES = {
     className: 'keyword',
@@ -5894,7 +6232,7 @@ module.exports = function(hljs) {
     }
   };
 };
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = function(hljs) {
   var RESOURCES = 'primitive rsc_template';
 
@@ -5988,7 +6326,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUM_SUFFIX = '(_[uif](8|16|32|64))?';
   var CRYSTAL_IDENT_RE = '[a-zA-Z_]\\w*[!?=]?';
@@ -6182,7 +6520,7 @@ module.exports = function(hljs) {
     contains: CRYSTAL_DEFAULT_CONTAINS
   };
 };
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -6359,7 +6697,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: false,
@@ -6381,7 +6719,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
   var RULE = {
@@ -6486,7 +6824,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 module.exports = /**
  * Known issues:
  *
@@ -6744,7 +7082,7 @@ function(hljs) {
     ]
   };
 };
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 module.exports = function (hljs) {
   var SUBST = {
     className: 'subst',
@@ -6845,7 +7183,7 @@ module.exports = function (hljs) {
     ]
   }
 };
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS =
     'exports register file shl array record property for mod while set ally label uses raise not ' +
@@ -6914,7 +7252,7 @@ module.exports = function(hljs) {
     ].concat(COMMENT_MODES)
   };
 };
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['patch'],
@@ -6954,7 +7292,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 module.exports = function(hljs) {
   var FILTER = {
     begin: /\|[A-Za-z]+:?/,
@@ -7018,7 +7356,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['bind', 'zone'],
@@ -7047,7 +7385,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['docker'],
@@ -7069,7 +7407,7 @@ module.exports = function(hljs) {
     illegal: '</'
   }
 };
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT = hljs.COMMENT(
     /^\s*@?rem\b/, /$/,
@@ -7121,7 +7459,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 module.exports = function(hljs) {
   var QUOTED_PROPERTY = {
     className: 'string',
@@ -7168,7 +7506,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRINGS = {
     className: 'string',
@@ -7292,7 +7630,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 module.exports = function(hljs) {
   var EXPRESSION_KEYWORDS = 'if eq ne lt lte gt gte select default math sep';
   return {
@@ -7324,7 +7662,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 module.exports = function(hljs) {
     var commentMode = hljs.COMMENT(/\(\*/, /\*\)/);
 
@@ -7357,7 +7695,7 @@ module.exports = function(hljs) {
         ]
     };
 };
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 module.exports = function(hljs) {
   var ELIXIR_IDENT_RE = '[a-zA-Z_][a-zA-Z0-9_]*(\\!|\\?)?';
   var ELIXIR_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
@@ -7454,7 +7792,7 @@ module.exports = function(hljs) {
     contains: ELIXIR_DEFAULT_CONTAINS
   };
 };
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT = {
     variants: [
@@ -7538,7 +7876,7 @@ module.exports = function(hljs) {
     illegal: /;/
   };
 };
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     subLanguage: 'xml',
@@ -7553,7 +7891,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -7599,7 +7937,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 module.exports = function(hljs) {
   var BASIC_ATOM_RE = '[a-z\'][a-zA-Z0-9_\']*';
   var FUNCTION_NAME_RE = '(' + BASIC_ATOM_RE + ':' + BASIC_ATOM_RE + '|' + BASIC_ATOM_RE + ')';
@@ -7745,7 +8083,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['xlsx', 'xls'],
@@ -7793,7 +8131,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -7822,7 +8160,7 @@ module.exports = function(hljs) {
     case_insensitive: true
   };
 };
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 module.exports = function (hljs) {
 
     var CHAR = {
@@ -7867,7 +8205,7 @@ module.exports = function (hljs) {
         ]
     };
 };
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 module.exports = function(hljs) {
   var PARAMS = {
     className: 'params',
@@ -7938,7 +8276,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 module.exports = function(hljs) {
   var TYPEPARAM = {
     begin: '<', end: '>',
@@ -7997,7 +8335,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 module.exports = function (hljs) {
   var KEYWORDS = {
     'keyword':
@@ -8151,7 +8489,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword: 'and bool break call callexe checkinterrupt clear clearg closeall cls comlog compile ' +
@@ -8375,7 +8713,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 module.exports = function(hljs) {
     var GCODE_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
     var GCODE_CLOSE_RE = '\\%';
@@ -8442,7 +8780,7 @@ module.exports = function(hljs) {
         ].concat(GCODE_CODE)
     };
 };
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 module.exports = function (hljs) {
   return {
     aliases: ['feature'],
@@ -8479,7 +8817,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -8596,7 +8934,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 module.exports = function(hljs) {
   var GO_KEYWORDS = {
     keyword:
@@ -8650,7 +8988,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 module.exports = function(hljs) {
     return {
       keywords: {
@@ -8673,7 +9011,7 @@ module.exports = function(hljs) {
       ]
     }
 };
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -8708,7 +9046,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 module.exports = function(hljs) {
     return {
         keywords: {
@@ -8802,7 +9140,7 @@ module.exports = function(hljs) {
         illegal: /#|<\//
     }
 };
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 module.exports = // TODO support filter tags like :javascript, support inline HTML
 function(hljs) {
   return {
@@ -8909,7 +9247,7 @@ function(hljs) {
     ]
   };
 };
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILT_INS = {'builtin-name': 'each in with if else unless bindattr action collection debugger log outlet template unbound view yield'};
   return {
@@ -8943,7 +9281,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT = {
     variants: [
@@ -9065,7 +9403,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z_$][a-zA-Z0-9_$]*';
   var IDENT_FUNC_RETURN_TYPE_RE = '([*]|[a-zA-Z_$][a-zA-Z0-9_$]*)';
@@ -9177,7 +9515,7 @@ module.exports = function(hljs) {
     illegal: /<\//
   };
 };
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -9223,7 +9561,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILT_INS = 'action collection component concat debugger each each-in else get hash if input link-to loc log mut outlet partial query-params render textarea unbound unless with yield view';
 
@@ -9294,7 +9632,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 module.exports = function(hljs) {
   var VERSION = 'HTTP/[0-9\\.]+';
   return {
@@ -9335,7 +9673,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 module.exports = function(hljs) {
   var keywords = {
     'builtin-name':
@@ -9437,7 +9775,7 @@ module.exports = function(hljs) {
     contains: [SHEBANG, LIST, STRING, HINT, HINT_COL, COMMENT, KEY, COLLECTION, NUMBER, LITERAL]
   }
 };
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 module.exports = function(hljs) {
   var START_BRACKET = '\\[';
   var END_BRACKET = '\\]';
@@ -9494,7 +9832,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRING = {
     className: "string",
@@ -9560,7 +9898,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 module.exports = function(hljs) {
   var PARAMS = {
     className: 'params',
@@ -9636,7 +9974,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],90:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 module.exports = function(hljs) {
   var JAVA_IDENT_RE = '[\u00C0-\u02B8a-zA-Z_$][\u00C0-\u02B8a-zA-Z_$0-9]*';
   var GENERIC_IDENT_RE = JAVA_IDENT_RE + '(<' + JAVA_IDENT_RE + '(\\s*,\\s*' + JAVA_IDENT_RE + ')*>)?';
@@ -9744,7 +10082,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[A-Za-z$_][0-9A-Za-z$_]*';
   var KEYWORDS = {
@@ -9915,7 +10253,7 @@ module.exports = function(hljs) {
     illegal: /#(?!!)/
   };
 };
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = function (hljs) {
   var PARAM = {
     begin: /[\w-]+ *=/, returnBegin: true,
@@ -9962,7 +10300,7 @@ module.exports = function (hljs) {
     ]
   }
 };
-},{}],93:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 module.exports = function(hljs) {
   var LITERALS = {literal: 'true false null'};
   var TYPES = [
@@ -9999,7 +10337,7 @@ module.exports = function(hljs) {
     illegal: '\\S'
   };
 };
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -10023,7 +10361,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 module.exports = function(hljs) {
   // Since there are numerous special names in Julia, it is too much trouble
   // to maintain them by hand. Hence these names (i.e. keywords, literals and
@@ -10185,7 +10523,7 @@ module.exports = function(hljs) {
 
   return DEFAULT;
 };
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -10359,7 +10697,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 module.exports = function(hljs) {
   var LASSO_IDENT_RE = '[a-zA-Z_][\\w.]*';
   var LASSO_ANGLE_RE = '<\\?(lasso(script)?|=)';
@@ -10522,7 +10860,7 @@ module.exports = function(hljs) {
     ].concat(LASSO_CODE)
   };
 };
-},{}],98:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -10545,7 +10883,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],99:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 module.exports = function (hljs) {
   return {
     contains: [
@@ -10585,7 +10923,7 @@ module.exports = function (hljs) {
     ]
   };
 };
-},{}],100:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE        = '[\\w-]+'; // yes, Less identifiers may begin with a digit
   var INTERP_IDENT_RE = '(' + IDENT_RE + '|@{' + IDENT_RE + '})';
@@ -10725,7 +11063,7 @@ module.exports = function(hljs) {
     contains: RULES
   };
 };
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 module.exports = function(hljs) {
   var LISP_IDENT_RE = '[a-zA-Z_\\-\\+\\*\\/\\<\\=\\>\\&\\#][a-zA-Z0-9_\\-\\+\\*\\/\\<\\=\\>\\&\\#!]*';
   var MEC_RE = '\\|[^]*?\\|';
@@ -10828,7 +11166,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],102:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 module.exports = function(hljs) {
   var VARIABLE = {
     begin: '\\b[gtps][A-Z]+[A-Za-z0-9_\\-]*\\b|\\$_[A-Z]+',
@@ -10985,7 +11323,7 @@ module.exports = function(hljs) {
     illegal: ';$|^\\[|^=|&|{'
   };
 };
-},{}],103:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -11134,7 +11472,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 module.exports = function(hljs) {
   var identifier = '([-a-zA-Z$._][\\w\\-$.]*)';
   return {
@@ -11223,7 +11561,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 module.exports = function(hljs) {
 
     var LSL_STRING_ESCAPE_CHARS = {
@@ -11306,7 +11644,7 @@ module.exports = function(hljs) {
         ]
     };
 };
-},{}],106:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 module.exports = function(hljs) {
   var OPENING_LONG_BRACKET = '\\[=*\\[';
   var CLOSING_LONG_BRACKET = '\\]=*\\]';
@@ -11372,7 +11710,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 module.exports = function(hljs) {
   /* Variables: simple (eg $(var)) and special (eg $@) */
   var VARIABLE = {
@@ -11453,7 +11791,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['md', 'mkdown', 'mkd'],
@@ -11561,7 +11899,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],109:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['mma'],
@@ -11619,7 +11957,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMON_CONTAINS = [
     hljs.C_NUMBER_MODE,
@@ -11707,7 +12045,7 @@ module.exports = function(hljs) {
     ].concat(COMMON_CONTAINS)
   };
 };
-},{}],111:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = 'if then else elseif for thru do while unless step in and or not';
   var LITERALS = 'true false unknown inf minf ind und %e %i %pi %phi %gamma';
@@ -12113,7 +12451,7 @@ module.exports = function(hljs) {
     illegal: /@/
   }
 };
-},{}],112:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords:
@@ -12338,7 +12676,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],113:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -12420,7 +12758,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],114:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 module.exports = function(hljs) {
     //local labels: %?[FB]?[AT]?\d{1,2}\w+
   return {
@@ -12506,7 +12844,7 @@ module.exports = function(hljs) {
     illegal: '\/'
   };
 };
-},{}],115:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords:
@@ -12525,7 +12863,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     subLanguage: 'xml',
@@ -12550,7 +12888,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUMBER = {
     className: 'number', relevance: 0,
@@ -12625,7 +12963,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],118:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -12737,7 +13075,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],119:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -12806,7 +13144,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],120:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 module.exports = function(hljs) {
   var VAR = {
     className: 'variable',
@@ -12899,7 +13237,7 @@ module.exports = function(hljs) {
     illegal: '[^\\s\\}]'
   };
 };
-},{}],121:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['nim'],
@@ -12954,7 +13292,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],122:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 module.exports = function(hljs) {
   var NIX_KEYWORDS = {
     keyword:
@@ -13003,7 +13341,7 @@ module.exports = function(hljs) {
     contains: EXPRESSIONS
   };
 };
-},{}],123:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 module.exports = function(hljs) {
   var CONSTANTS = {
     className: 'variable',
@@ -13109,7 +13447,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],124:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 module.exports = function(hljs) {
   var API_CLASS = {
     className: 'built_in',
@@ -13200,7 +13538,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],125:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 module.exports = function(hljs) {
   /* missing support for heredoc-like string (OCaml 4.0.2+) */
   return {
@@ -13271,7 +13609,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],126:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 module.exports = function(hljs) {
 	var SPECIAL_VARS = {
 		className: 'keyword',
@@ -13328,7 +13666,7 @@ module.exports = function(hljs) {
 		]
 	}
 };
-},{}],127:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 module.exports = function(hljs) {
   var OXYGENE_KEYWORDS = 'abstract add and array as asc aspect assembly async begin break block by case class concat const copy constructor continue '+
     'create default delegate desc distinct div do downto dynamic each else empty end ensure enum equals event except exit extension external false '+
@@ -13398,7 +13736,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],128:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 module.exports = function(hljs) {
   var CURLY_SUBCOMMENT = hljs.COMMENT(
     '{',
@@ -13446,7 +13784,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],129:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 module.exports = function(hljs) {
   var PERL_KEYWORDS = 'getpwent getservent quotemeta msgrcv scalar kill dbmclose undef lc ' +
     'ma syswrite tr send umask sysopen shmwrite vec qx utime local oct semctl localtime ' +
@@ -13603,7 +13941,7 @@ module.exports = function(hljs) {
     contains: PERL_DEFAULT_CONTAINS
   };
 };
-},{}],130:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 module.exports = function(hljs) {
   var MACRO = {
     className: 'variable',
@@ -13655,7 +13993,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],131:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 module.exports = function(hljs) {
   var VARIABLE = {
     begin: '\\$+[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*'
@@ -13782,7 +14120,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],132:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -13873,7 +14211,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],133:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 module.exports = function(hljs) {
   var BACKTICK_ESCAPE = {
     begin: '`[\\s\\S]',
@@ -13954,7 +14292,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],134:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -14002,7 +14340,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],135:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -14032,7 +14370,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],136:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var ATOM = {
@@ -14120,7 +14458,7 @@ module.exports = function(hljs) {
     ])
   };
 };
-},{}],137:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -14156,7 +14494,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],138:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var PUPPET_KEYWORDS = {
@@ -14271,7 +14609,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],139:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 module.exports = // Base deafult colors in PB IDE: background: #FFFFDF; foreground: #000000;
 
 function(hljs) {
@@ -14329,7 +14667,7 @@ function(hljs) {
     ]
   };
 };
-},{}],140:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -14445,7 +14783,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],141:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 module.exports = function(hljs) {
   var Q_KEYWORDS = {
   keyword:
@@ -14468,7 +14806,7 @@ module.exports = function(hljs) {
      ]
   };
 };
-},{}],142:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
       keyword:
@@ -14637,7 +14975,7 @@ module.exports = function(hljs) {
     illegal: /#/
   };
 };
-},{}],143:[function(require,module,exports){
+},{}],144:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*';
 
@@ -14707,7 +15045,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],144:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords:
@@ -14734,7 +15072,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],145:[function(require,module,exports){
+},{}],146:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENTIFIER = '[a-zA-Z-_][^\\n{]+\\{';
 
@@ -14801,7 +15139,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],146:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 module.exports = // Colors from RouterOS terminal:
 //   green        - #0E9A00
 //   teal         - #0C9A9A
@@ -14960,7 +15298,7 @@ function(hljs) {
     ]
   };
 };
-},{}],147:[function(require,module,exports){
+},{}],148:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -14996,7 +15334,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],148:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 module.exports = function(hljs) {
   var RUBY_METHOD_RE = '[a-zA-Z_]\\w*[!?=]?|[-+~]\\@|<<|>>|=~|===?|<=>|[<>]=?|\\*\\*|[-/+%^&*~`|]|\\[\\]=?';
   var RUBY_KEYWORDS = {
@@ -15173,7 +15511,7 @@ module.exports = function(hljs) {
     contains: COMMENT_MODES.concat(IRB_DEFAULT).concat(RUBY_DEFAULT_CONTAINS)
   };
 };
-},{}],149:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -15234,7 +15572,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],150:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 module.exports = function(hljs) {
   var NUM_SUFFIX = '([ui](8|16|32|64|128|size)|f(32|64))\?';
   var KEYWORDS =
@@ -15342,7 +15680,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],151:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var ANNOTATION = { className: 'meta', begin: '@[A-Za-z]+' };
@@ -15457,7 +15795,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],152:[function(require,module,exports){
+},{}],153:[function(require,module,exports){
 module.exports = function(hljs) {
   var SCHEME_IDENT_RE = '[^\\(\\)\\[\\]\\{\\}",\'`;#|\\\\\\s]+';
   var SCHEME_SIMPLE_NUMBER_RE = '(\\-|\\+)?\\d+([./]\\d+)?';
@@ -15601,7 +15939,7 @@ module.exports = function(hljs) {
     contains: [SHEBANG, NUMBER, STRING, QUOTED_IDENT, QUOTED_LIST, LIST].concat(COMMENT_MODES)
   };
 };
-},{}],153:[function(require,module,exports){
+},{}],154:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var COMMON_CONTAINS = [
@@ -15655,7 +15993,7 @@ module.exports = function(hljs) {
     ].concat(COMMON_CONTAINS)
   };
 };
-},{}],154:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 module.exports = function(hljs) {
   var IDENT_RE = '[a-zA-Z-][a-zA-Z0-9_-]*';
   var VARIABLE = {
@@ -15753,7 +16091,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],155:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['console'],
@@ -15768,7 +16106,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],156:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 module.exports = function(hljs) {
   var smali_instr_low_prio = ['add', 'and', 'cmp', 'cmpg', 'cmpl', 'const', 'div', 'double', 'float', 'goto', 'if', 'int', 'long', 'move', 'mul', 'neg', 'new', 'nop', 'not', 'or', 'rem', 'return', 'shl', 'shr', 'sput', 'sub', 'throw', 'ushr', 'xor'];
   var smali_instr_high_prio = ['aget', 'aput', 'array', 'check', 'execute', 'fill', 'filled', 'goto/16', 'goto/32', 'iget', 'instance', 'invoke', 'iput', 'monitor', 'packed', 'sget', 'sparse'];
@@ -15824,7 +16162,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],157:[function(require,module,exports){
+},{}],158:[function(require,module,exports){
 module.exports = function(hljs) {
   var VAR_IDENT_RE = '[a-z][a-zA-Z0-9_]*';
   var CHAR = {
@@ -15874,7 +16212,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],158:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['ml'],
@@ -15940,7 +16278,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],159:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 module.exports = function(hljs) {
   var CPP = hljs.getLanguage('cpp').exports;
 
@@ -16311,7 +16649,7 @@ module.exports = function(hljs) {
     illegal: /#/
   };
 };
-},{}],160:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMENT_MODE = hljs.COMMENT('--', '$');
   return {
@@ -16471,7 +16809,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],161:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     contains: [
@@ -16554,7 +16892,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],162:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['do', 'ado'],
@@ -16592,7 +16930,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],163:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 module.exports = function(hljs) {
   var STEP21_IDENT_RE = '[A-Z_][A-Z0-9_.]*';
   var STEP21_KEYWORDS = {
@@ -16639,7 +16977,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],164:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var VARIABLE = {
@@ -17093,7 +17431,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],165:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 module.exports = function(hljs) {
   var DETAILS = {
     className: 'string',
@@ -17127,7 +17465,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],166:[function(require,module,exports){
+},{}],167:[function(require,module,exports){
 module.exports = function(hljs) {
   var SWIFT_KEYWORDS = {
       keyword: '__COLUMN__ __FILE__ __FUNCTION__ __LINE__ as as! as? associativity ' +
@@ -17244,7 +17582,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],167:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 module.exports = function(hljs) {
 
   var COMMENT = {
@@ -17288,7 +17626,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],168:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -17324,7 +17662,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['tk'],
@@ -17385,7 +17723,7 @@ module.exports = function(hljs) {
     ]
   }
 };
-},{}],170:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 module.exports = function(hljs) {
   var COMMAND = {
     className: 'tag',
@@ -17447,7 +17785,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],171:[function(require,module,exports){
+},{}],172:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILT_IN_TYPES = 'bool byte i16 i32 i64 double string binary';
   return {
@@ -17482,7 +17820,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],172:[function(require,module,exports){
+},{}],173:[function(require,module,exports){
 module.exports = function(hljs) {
   var TPID = {
     className: 'number',
@@ -17566,7 +17904,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],173:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 module.exports = function(hljs) {
   var PARAMS = {
     className: 'params',
@@ -17632,7 +17970,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],174:[function(require,module,exports){
+},{}],175:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
@@ -17788,7 +18126,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],175:[function(require,module,exports){
+},{}],176:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     keywords: {
@@ -17838,7 +18176,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],176:[function(require,module,exports){
+},{}],177:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['vb'],
@@ -17894,7 +18232,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],177:[function(require,module,exports){
+},{}],178:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     subLanguage: 'xml',
@@ -17906,7 +18244,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],178:[function(require,module,exports){
+},{}],179:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     aliases: ['vbs'],
@@ -17945,7 +18283,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],179:[function(require,module,exports){
+},{}],180:[function(require,module,exports){
 module.exports = function(hljs) {
   var SV_KEYWORDS = {
     keyword:
@@ -18044,7 +18382,7 @@ module.exports = function(hljs) {
     ]
   }; // return
 };
-},{}],180:[function(require,module,exports){
+},{}],181:[function(require,module,exports){
 module.exports = function(hljs) {
   // Regular expression for VHDL numeric literals.
 
@@ -18105,7 +18443,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],181:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     lexemes: /[!#@\w]+/,
@@ -18211,7 +18549,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],182:[function(require,module,exports){
+},{}],183:[function(require,module,exports){
 module.exports = function(hljs) {
   return {
     case_insensitive: true,
@@ -18347,7 +18685,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],183:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 module.exports = function(hljs) {
   var BUILTIN_MODULES =
     'ObjectLoader Animate MovieCredits Slides Filters Shading Materials LensFlare Mapping VLCAudioVideo ' +
@@ -18420,7 +18758,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],184:[function(require,module,exports){
+},{}],185:[function(require,module,exports){
 module.exports = function(hljs) {
   var XML_IDENT_RE = '[A-Za-z0-9\\._:-]+';
   var TAG_INTERNALS = {
@@ -18523,7 +18861,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],185:[function(require,module,exports){
+},{}],186:[function(require,module,exports){
 module.exports = function(hljs) {
   var KEYWORDS = 'for let if while then else return where group by xquery encoding version' +
     'module namespace boundary-space preserve strip default collation base-uri ordering' +
@@ -18594,7 +18932,7 @@ module.exports = function(hljs) {
     contains: CONTAINS
   };
 };
-},{}],186:[function(require,module,exports){
+},{}],187:[function(require,module,exports){
 module.exports = function(hljs) {
   var LITERALS = 'true false yes no null';
 
@@ -18682,7 +19020,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],187:[function(require,module,exports){
+},{}],188:[function(require,module,exports){
 module.exports = function(hljs) {
   var STRING = {
     className: 'string',
@@ -18789,7 +19127,7 @@ module.exports = function(hljs) {
     ]
   };
 };
-},{}],188:[function(require,module,exports){
+},{}],189:[function(require,module,exports){
 /**
  * isMobile.js v0.4.1
  *
@@ -18928,7 +19266,7 @@ module.exports = function(hljs) {
 
 })(this);
 
-},{}],189:[function(require,module,exports){
+},{}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -19095,7 +19433,7 @@ MiniSignal.MiniSignalBinding = MiniSignalBinding;
 exports['default'] = MiniSignal;
 module.exports = exports['default'];
 
-},{}],190:[function(require,module,exports){
+},{}],191:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -19187,7 +19525,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],191:[function(require,module,exports){
+},{}],192:[function(require,module,exports){
 'use strict'
 
 module.exports = function parseURI (str, opts) {
@@ -19219,7 +19557,7 @@ module.exports = function parseURI (str, opts) {
   return uri
 }
 
-},{}],192:[function(require,module,exports){
+},{}],193:[function(require,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -19447,7 +19785,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":373}],193:[function(require,module,exports){
+},{"_process":373}],194:[function(require,module,exports){
 
 /*
 	Copyright © 2001 Robert Penner
@@ -19715,433 +20053,115 @@ var substr = 'ab'.substr(-1) === 'b'
 
 }).call(this);
 
-},{}],194:[function(require,module,exports){
-const list = require('./src/list')
-
-module.exports = {
-    list,
-    wait: require('./src/wait'),
-    to: require('./src/to'),
-    shake: require('./src/shake'),
-    tint: require('./src/tint'),
-    face: require('./src/face'),
-    angle: require('./src/angle'),
-    target: require('./src/target'),
-    movie: require('./src/movie'),
-    load: require('./src/load')
-}
-},{"./src/angle":196,"./src/face":197,"./src/list":198,"./src/load":199,"./src/movie":200,"./src/shake":201,"./src/target":202,"./src/tint":203,"./src/to":204,"./src/wait":205}],195:[function(require,module,exports){
+},{}],195:[function(require,module,exports){
 'use strict';
 
-var has = Object.prototype.hasOwnProperty
-  , prefix = '~';
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-/**
- * Constructor to create a storage for our `EE` objects.
- * An `Events` instance is a plain object whose properties are event names.
- *
- * @constructor
- * @private
- */
-function Events() {}
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-//
-// We try to not inherit from `Object.prototype`. In some engines creating an
-// instance in this way is faster than calling `Object.create(null)` directly.
-// If `Object.create(null)` is not supported we prefix the event names with a
-// character to make sure that the built-in object properties are not
-// overridden or used as an attack vector.
-//
-if (Object.create) {
-  Events.prototype = Object.create(null);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  //
-  // This hack is needed because the `__proto__` property is still inherited in
-  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
-  //
-  if (!new Events().__proto__) prefix = false;
-}
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-/**
- * Representation of a single event listener.
- *
- * @param {Function} fn The listener function.
- * @param {*} context The context to invoke the listener with.
- * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
- * @constructor
- * @private
- */
-function EE(fn, context, once) {
-  this.fn = fn;
-  this.context = context;
-  this.once = once || false;
-}
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-/**
- * Add a listener for a given event.
- *
- * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn The listener function.
- * @param {*} context The context to invoke the listener with.
- * @param {Boolean} once Specify if the listener is a one-time listener.
- * @returns {EventEmitter}
- * @private
- */
-function addListener(emitter, event, fn, context, once) {
-  if (typeof fn !== 'function') {
-    throw new TypeError('The listener must be a function');
-  }
+var wait = require('./wait');
 
-  var listener = new EE(fn, context || emitter, once)
-    , evt = prefix ? prefix + event : event;
+var angle = function (_wait) {
+    _inherits(angle, _wait);
 
-  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
-  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
-  else emitter._events[evt] = [emitter._events[evt], listener];
-
-  return emitter;
-}
-
-/**
- * Clear event by name.
- *
- * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
- * @param {(String|Symbol)} evt The Event name.
- * @private
- */
-function clearEvent(emitter, evt) {
-  if (--emitter._eventsCount === 0) emitter._events = new Events();
-  else delete emitter._events[evt];
-}
-
-/**
- * Minimal `EventEmitter` interface that is molded against the Node.js
- * `EventEmitter` interface.
- *
- * @constructor
- * @public
- */
-function EventEmitter() {
-  this._events = new Events();
-  this._eventsCount = 0;
-}
-
-/**
- * Return an array listing the events for which the emitter has registered
- * listeners.
- *
- * @returns {Array}
- * @public
- */
-EventEmitter.prototype.eventNames = function eventNames() {
-  var names = []
-    , events
-    , name;
-
-  if (this._eventsCount === 0) return names;
-
-  for (name in (events = this._events)) {
-    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
-  }
-
-  if (Object.getOwnPropertySymbols) {
-    return names.concat(Object.getOwnPropertySymbols(events));
-  }
-
-  return names;
-};
-
-/**
- * Return the listeners registered for a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @returns {Array} The registered listeners.
- * @public
- */
-EventEmitter.prototype.listeners = function listeners(event) {
-  var evt = prefix ? prefix + event : event
-    , handlers = this._events[evt];
-
-  if (!handlers) return [];
-  if (handlers.fn) return [handlers.fn];
-
-  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
-    ee[i] = handlers[i].fn;
-  }
-
-  return ee;
-};
-
-/**
- * Return the number of listeners listening to a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @returns {Number} The number of listeners.
- * @public
- */
-EventEmitter.prototype.listenerCount = function listenerCount(event) {
-  var evt = prefix ? prefix + event : event
-    , listeners = this._events[evt];
-
-  if (!listeners) return 0;
-  if (listeners.fn) return 1;
-  return listeners.length;
-};
-
-/**
- * Calls each of the listeners registered for a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @returns {Boolean} `true` if the event had listeners, else `false`.
- * @public
- */
-EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return false;
-
-  var listeners = this._events[evt]
-    , len = arguments.length
-    , args
-    , i;
-
-  if (listeners.fn) {
-    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
-
-    switch (len) {
-      case 1: return listeners.fn.call(listeners.context), true;
-      case 2: return listeners.fn.call(listeners.context, a1), true;
-      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
-      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
-      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
-      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
-    }
-
-    for (i = 1, args = new Array(len -1); i < len; i++) {
-      args[i - 1] = arguments[i];
-    }
-
-    listeners.fn.apply(listeners.context, args);
-  } else {
-    var length = listeners.length
-      , j;
-
-    for (i = 0; i < length; i++) {
-      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
-
-      switch (len) {
-        case 1: listeners[i].fn.call(listeners[i].context); break;
-        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
-        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
-        default:
-          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
-            args[j - 1] = arguments[j];
-          }
-
-          listeners[i].fn.apply(listeners[i].context, args);
-      }
-    }
-  }
-
-  return true;
-};
-
-/**
- * Add a listener for a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn The listener function.
- * @param {*} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @public
- */
-EventEmitter.prototype.on = function on(event, fn, context) {
-  return addListener(this, event, fn, context, false);
-};
-
-/**
- * Add a one-time listener for a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn The listener function.
- * @param {*} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @public
- */
-EventEmitter.prototype.once = function once(event, fn, context) {
-  return addListener(this, event, fn, context, true);
-};
-
-/**
- * Remove the listeners of a given event.
- *
- * @param {(String|Symbol)} event The event name.
- * @param {Function} fn Only remove the listeners that match this function.
- * @param {*} context Only remove the listeners that have this context.
- * @param {Boolean} once Only remove one-time listeners.
- * @returns {EventEmitter} `this`.
- * @public
- */
-EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return this;
-  if (!fn) {
-    clearEvent(this, evt);
-    return this;
-  }
-
-  var listeners = this._events[evt];
-
-  if (listeners.fn) {
-    if (
-      listeners.fn === fn &&
-      (!once || listeners.once) &&
-      (!context || listeners.context === context)
-    ) {
-      clearEvent(this, evt);
-    }
-  } else {
-    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-      if (
-        listeners[i].fn !== fn ||
-        (once && !listeners[i].once) ||
-        (context && listeners[i].context !== context)
-      ) {
-        events.push(listeners[i]);
-      }
-    }
-
-    //
-    // Reset the array, or remove it completely if we have no more listeners.
-    //
-    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
-    else clearEvent(this, evt);
-  }
-
-  return this;
-};
-
-/**
- * Remove all listeners, or those of the specified event.
- *
- * @param {(String|Symbol)} [event] The event name.
- * @returns {EventEmitter} `this`.
- * @public
- */
-EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-  var evt;
-
-  if (event) {
-    evt = prefix ? prefix + event : event;
-    if (this._events[evt]) clearEvent(this, evt);
-  } else {
-    this._events = new Events();
-    this._eventsCount = 0;
-  }
-
-  return this;
-};
-
-//
-// Alias methods names because people roll like that.
-//
-EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-//
-// Expose the prefix.
-//
-EventEmitter.prefixed = prefix;
-
-//
-// Allow `EventEmitter` to be imported as module namespace.
-//
-EventEmitter.EventEmitter = EventEmitter;
-
-//
-// Expose the module.
-//
-if ('undefined' !== typeof module) {
-  module.exports = EventEmitter;
-}
-
-},{}],196:[function(require,module,exports){
-const wait = require('./wait')
-
-/** animate object's {x, y} using an angle */
-module.exports = class angle extends wait
-{
     /**
+     * @private
+     * animate object's {x, y} using an angle
      * @param {object} object to animate
      * @param {number} angle in radians
      * @param {number} speed in pixels/millisecond
      * @param {number} [duration=0] in milliseconds; if 0, then continues forever
      * @param {object} [options] @see {@link Wait}
      */
-    constructor(object, angle, speed, duration, options)
-    {
-        options = options || {}
-        super(object, options)
-        this.type = 'Angle'
-        if (options.load)
-        {
-            this.load(options.load)
+    function angle(object, _angle, speed, duration, options) {
+        _classCallCheck(this, angle);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (angle.__proto__ || Object.getPrototypeOf(angle)).call(this, object, options));
+
+        _this.type = 'Angle';
+        if (options.load) {
+            _this.load(options.load);
+        } else {
+            _this.angle = _angle;
+            _this.speed = speed;
+            _this.duration = duration || 0;
         }
-        else
-        {
-            this.angle = angle
-            this.speed = speed
-            this.duration = duration || 0
+        return _this;
+    }
+
+    _createClass(angle, [{
+        key: 'save',
+        value: function save() {
+            var save = _get(angle.prototype.__proto__ || Object.getPrototypeOf(angle.prototype), 'save', this).call(this);
+            save.angle = this.angle;
+            save.speed = this.speed;
+            return save;
         }
-    }
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            _get(angle.prototype.__proto__ || Object.getPrototypeOf(angle.prototype), 'load', this).call(this, _load);
+            this.angle = _load.angle;
+            this.speed = _load.speed;
+        }
+    }, {
+        key: 'calculate',
+        value: function calculate(elapsed) {
+            this.object.x += this.cos * elapsed * this.speed;
+            this.object.y += this.sin * elapsed * this.speed;
+        }
+    }, {
+        key: 'reverse',
+        value: function reverse() {
+            this.angle += Math.PI;
+        }
+    }, {
+        key: 'angle',
+        get: function get() {
+            return this._angle;
+        },
+        set: function set(value) {
+            this._angle = value;
+            this.sin = Math.sin(this._angle);
+            this.cos = Math.cos(this._angle);
+        }
+    }]);
 
-    save()
-    {
-        const save = super.save()
-        save.angle = this.angle
-        save.speed = this.speed
-        return save
-    }
+    return angle;
+}(wait);
 
-    load(load)
-    {
-        super.load(load)
-        this.angle = load.angle
-        this.speed = load.speed
-    }
+module.exports = angle;
 
-    get angle()
-    {
-        return this._angle
-    }
-    set angle(value)
-    {
-        this._angle = value
-        this.sin = Math.sin(this._angle)
-        this.cos = Math.cos(this._angle)
-    }
+},{"./wait":205}],196:[function(require,module,exports){
+'use strict';
 
-    calculate(elapsed)
-    {
-        this.object.x += this.cos * elapsed * this.speed
-        this.object.y += this.sin * elapsed * this.speed
-    }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    reverse()
-    {
-        this.angle += Math.PI
-    }
-}
-},{"./wait":205}],197:[function(require,module,exports){
-const Angle = require('yy-angle')
-const wait = require('./wait')
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Angle = require('yy-angle');
+var wait = require('./wait');
 
 /** Rotates an object to face the target */
-module.exports = class face extends wait
-{
+
+var face = function (_wait) {
+    _inherits(face, _wait);
+
     /**
      * @param {object} object
      * @param {Point} target
@@ -20149,281 +20169,499 @@ module.exports = class face extends wait
      * @param {object} [options] @see {@link Wait}
      * @param {boolean} [options.keepAlive] don't stop animation when complete
      */
-    constructor(object, target, speed, options)
-    {
-        options = options || {}
-        super(object, options)
-        this.type = 'Face'
-        this.target = target
-        if (options.load)
-        {
-            this.load(options.load)
+    function face(object, target, speed, options) {
+        _classCallCheck(this, face);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (face.__proto__ || Object.getPrototypeOf(face)).call(this, object, options));
+
+        _this.type = 'Face';
+        _this.target = target;
+        if (options.load) {
+            _this.load(options.load);
+        } else {
+            _this.speed = speed;
         }
-        else
-        {
-            this.speed = speed
-        }
+        return _this;
     }
 
-    save()
-    {
-        if (this.options.cancel)
-        {
-            return null
+    _createClass(face, [{
+        key: 'save',
+        value: function save() {
+            if (this.options.cancel) {
+                return null;
+            }
+            var save = _get(face.prototype.__proto__ || Object.getPrototypeOf(face.prototype), 'save', this).call(this);
+            save.speed = this.speed;
+            save.keepAlive = this.options.keepAlive;
+            return save;
         }
-        const save = super.save()
-        save.speed = this.speed
-        save.keepAlive = this.options.keepAlive
-        return save
-    }
-
-    load(load)
-    {
-        super.load(load)
-        this.speed = load.speed
-        this.options.keepAlive = load.keepAlive
-    }
-
-    calculate(elapsed)
-    {
-        var angle = Angle.angleTwoPoints(this.object.position, this.target)
-        var difference = Angle.differenceAngles(angle, this.object.rotation)
-        if (difference === 0)
-        {
-            this.emit('done', this.object)
-            if (!this.options.keepAlive)
-            {
-                return true
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            _get(face.prototype.__proto__ || Object.getPrototypeOf(face.prototype), 'load', this).call(this, _load);
+            this.speed = _load.speed;
+            this.options.keepAlive = _load.keepAlive;
+        }
+    }, {
+        key: 'calculate',
+        value: function calculate(elapsed) {
+            var angle = Angle.angleTwoPoints(this.object.position, this.target);
+            var difference = Angle.differenceAngles(angle, this.object.rotation);
+            if (difference === 0) {
+                this.emit('done', this.object);
+                if (!this.options.keepAlive) {
+                    return true;
+                }
+            } else {
+                var sign = Angle.differenceAnglesSign(angle, this.object.rotation);
+                var change = this.speed * elapsed;
+                var delta = change > difference ? difference : change;
+                this.object.rotation += delta * sign;
             }
         }
-        else
-        {
-            var sign = Angle.differenceAnglesSign(angle, this.object.rotation)
-            var change = this.speed * elapsed
-            var delta = (change > difference) ? difference : change
-            this.object.rotation += delta * sign
-        }
-    }
-}
-},{"./wait":205,"yy-angle":396}],198:[function(require,module,exports){
-const PIXI = require('pixi.js')
-const Events = require('eventemitter3')
+    }]);
 
-const Angle = require('./angle')
-const Face = require('./face')
-const Load = require('./load')
-const Movie = require('./movie')
-const Shake = require('./shake')
-const Target = require('./target')
-const Tint = require('./tint')
-const To = require('./to')
-const Wait = require('./wait')
+    return face;
+}(wait);
 
-module.exports = class List extends Events
-{
+module.exports = face;
+
+},{"./wait":205,"yy-angle":396}],197:[function(require,module,exports){
+'use strict';
+
+var list = require('./list');
+
+module.exports = {
+    list: list,
+    wait: require('./wait'),
+    to: require('./to'),
+    shake: require('./shake'),
+    tint: require('./tint'),
+    face: require('./face'),
+    angle: require('./angle'),
+    target: require('./target'),
+    movie: require('./movie'),
+    load: require('./load')
+};
+
+},{"./angle":195,"./face":196,"./list":198,"./load":199,"./movie":200,"./shake":201,"./target":202,"./tint":203,"./to":204,"./wait":205}],198:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PIXI = require('pixi.js');
+var Events = require('eventemitter3');
+
+var Angle = require('./angle');
+var Face = require('./face');
+var Load = require('./load');
+var Movie = require('./movie');
+var Shake = require('./shake');
+var Target = require('./target');
+var Tint = require('./tint');
+var To = require('./to');
+var Wait = require('./wait');
+
+var Ease = function (_Events) {
+    _inherits(Ease, _Events);
+
     /**
-     * Helper list for multiple animations
+     * Main class for creating eases
      * @param {object} [options]
      * @param {boolean} [options.noTicker] don't add the update function to PIXI.ticker
      * @param {PIXI.ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for the list
-     *
-     * @event List#done(List) final animation completed in the list
-     * @event List#each(elapsed, List) each update after eases are updated
+     * @extends eventemitter
+     * @fire done
+     * @fire each
      */
-    constructor(options)
-    {
-        options = options || {}
-        super()
-        if (!options.noTicker)
-        {
-            const ticker = options.ticker || PIXI.ticker.shared
-            ticker.add(() => this.update(ticker.elapsedMS))
+    function Ease(options) {
+        _classCallCheck(this, Ease);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (Ease.__proto__ || Object.getPrototypeOf(Ease)).call(this));
+
+        if (!options.noTicker) {
+            var ticker = options.ticker || PIXI.ticker.shared;
+            ticker.add(function () {
+                return _this.update(ticker.elapsedMS);
+            });
         }
-        this.list = []
-        this.empty = true
+        _this.list = [];
+        _this.empty = true;
+        _this.removeWaiting = [];
+        _this.removeAllWaiting = false;
+        return _this;
     }
 
     /**
      * Add animation(s) to animation list
-     * @param {object|object[]...} any animation class
+     * @param {(object|object[])} any animation class
      * @return {object} first animation
      */
-    add()
-    {
-        let first
-        for (let arg of arguments)
-        {
-            if (Array.isArray(arg))
-            {
-                for (let entry of arg)
-                {
-                    if (!first)
-                    {
-                        first = entry
+
+
+    _createClass(Ease, [{
+        key: 'add',
+        value: function add() {
+            var first = void 0;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = arguments[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var arg = _step.value;
+
+                    if (Array.isArray(arg)) {
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                            for (var _iterator2 = arg[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var entry = _step2.value;
+
+                                if (!first) {
+                                    first = entry;
+                                }
+                                this.list.push(entry);
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+                    } else {
+                        first = arg;
+                        this.list.push(arg);
                     }
-                    this.list.push(entry)
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
                 }
             }
-            else
-            {
-                first = arg
-                this.list.push(arg)
+
+            this.empty = false;
+            return first;
+        }
+
+        /**
+         * remove animation(s)
+         * @param {object|array} animate - the animation (or array of animations) to remove; can be null
+         */
+
+    }, {
+        key: 'remove',
+        value: function remove(animate) {
+            if (this.inUpdate) {
+                this.removeWaiting.push(animate);
+            } else {
+                var index = this.list.indexOf(animate);
+                if (index !== -1) {
+                    this.list.splice(index, 1);
+                }
             }
         }
-        this.empty = false
-        return first
-    }
 
-    /**
-     * remove animation(s)
-     * @param {object|array} animate - the animation (or array of animations) to remove; can be null
-     * @inherited from yy-loop
-     */
-    remove(animate)
-    {
-        const index = this.list.indexOf(animate)
-        if (index !== -1)
-        {
-            this.list.splice(index, 1)
-        }
-    }
+        /**
+         * remove all animations from list
+         * @inherited from yy-loop
+         */
 
-    /**
-     * remove all animations from list
-     * @inherited from yy-loop
-     */
-    removeAll()
-    {
-        this.list = []
-    }
-
-    /**
-     * update frame
-     * this is automatically added to PIXI.ticker unless options.noTicker is set
-     * if using options.noTicker, this should be called manually
-     * @param {number} elasped time in MS since last update
-     */
-    update(elapsed)
-    {
-        for (let i = 0, _i = this.list.length; i < _i; i++)
-        {
-            if (this.list[i].update(elapsed))
-            {
-                this.list.splice(i, 1)
-                i--
-                _i--
+    }, {
+        key: 'removeAll',
+        value: function removeAll() {
+            if (this.inUpdate) {
+                this.removeAllWaiting = true;
+            } else {
+                this.list = [];
             }
         }
-        this.emit('each', this)
-        if (this.list.length === 0 && !this.empty)
-        {
-            this.emit('done', this)
-            this.empty = true
-        }
-    }
 
-    /**
-     * number of animations
-     * @type {number}
-     */
-    get count()
-    {
-        return this.list.length
-    }
+        /**
+         * update frame
+         * this is automatically added to PIXI.ticker unless options.noTicker is set
+         * if using options.noTicker, this should be called manually
+         * @param {number} elasped time in MS since last update
+         */
 
-    /**
-     * number of active animations
-     * @type {number}
-     */
-    get countRunning()
-    {
-        let count = 0
-        for (let entry of this.list)
-        {
-            if (!entry.pause)
-            {
-                count++
+    }, {
+        key: 'update',
+        value: function update(elapsed) {
+            this.inUpdate = true;
+            for (var i = 0, _i = this.list.length; i < _i; i++) {
+                if (this.list[i] && this.list[i].update(elapsed)) {
+                    this.list.splice(i, 1);
+                    i--;
+                    _i--;
+                }
+            }
+            this.emit('each', this);
+            if (this.list.length === 0 && !this.empty) {
+                this.emit('done', this);
+                this.empty = true;
+            }
+            this.inUpdate = false;
+            if (this.removeAllWaiting) {
+                this.removeAll();
+                this.removeAllWaiting = false;
+            }
+            while (this.removeWaiting.length) {
+                this.remove(this.removeWaiting.pop());
             }
         }
-        return count
-    }
 
-    /** helper to add to the list a new Ease.to class; see Ease.to class below for parameters */
-    to() { return this.add(new To(...arguments)) }
+        /**
+         * number of animations
+         * @type {number}
+         */
 
-    /** helper to add to the list a new Ease.angle class; see Ease.to class below for parameters */
-    angle() { return this.add(new Angle(...arguments)) }
+    }, {
+        key: 'to',
 
-    /** helper to add to the list a new Ease.face class; see Ease.to class below for parameters */
-    face() { return this.add(new Face(...arguments)) }
 
-    /** helper to add to the list a new Ease.load class; see Ease.to class below for parameters */
-    load() { return this.add(new Load(...arguments)) }
+        /**
+         * default options for all eases
+         * @typedef {object} EaseOptions
+         * @param {object} [EaseOptions.options]
+         * @param {number} [EaseOptions.options.wait=0] n milliseconds before starting animation (can also be used to pause animation for a length of time)
+         * @param {boolean} [EaseOptions.options.pause] start the animation paused
+         * @param {boolean|number} [EaseOptions.options.repeat] true: repeat animation forever n: repeat animation n times
+         * @param {boolean|number} [EaseOptions.options.reverse] true: reverse animation (if combined with repeat, then pulse) n: reverse animation n times
+         * @param {Function} [EaseOptions.options.load] loads an animation using an .save() object note the * parameters below cannot be loaded and must be re-set
+         * @param {string|Function} [EaseOptions.options.ease] name or function from easing.js (see http://easings.net for examples)
+         */
 
-    /** helper to add to the list a new Ease.movie class; see Ease.to class below for parameters */
-    movie() { return this.add(new Movie(...arguments)) }
+        /**
+         * ease parameters of object
+         * @param {PIXI.DisplayObject} object to animate
+         * @param {object} goto - parameters to animate, e.g.: {alpha: 5, scale: {3, 5}, scale: 5, rotation: Math.PI}
+         * @param {number} duration - time to run
+         * @fires done
+         * @fires wait
+         * @fires first
+         * @fires each
+         * @fires loop
+         * @fires reverse
+         */
+        value: function to() {
+            return this.add(new (Function.prototype.bind.apply(To, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
 
-    /** helper to add to the list a new Ease.shake class; see Ease.to class below for parameters */
-    shake() { return this.add(new Shake(...arguments)) }
+        /**
+         * animate object's {x, y} using an angle
+         * @param {object} object to animate
+         * @param {number} angle in radians
+         * @param {number} speed in pixels/millisecond
+         * @param {number} [duration=0] in milliseconds; if 0, then continues forever
+         * @param {object} [options] @see {@link Wait}
+         */
 
-    /** helper to add to the list a new Ease.target class; see Ease.to class below for parameters */
-    target() { return this.add(new Target(...arguments)) }
+    }, {
+        key: 'angle',
+        value: function angle() {
+            return this.add(new (Function.prototype.bind.apply(Angle, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
 
-    /** helper to add to the list a new Ease.angle tint; see Ease.to class below for parameters */
-    tint() { return this.add(new Tint(...arguments)) }
+        /** helper to add to the list a new Ease.face class; see Ease.to class below for parameters */
 
-    /** helper to add to the list a new Ease.wait class; see Ease.to class below for parameters */
-    wait() { return this.add(new Wait(...arguments)) }
-}
-},{"./angle":196,"./face":197,"./load":199,"./movie":200,"./shake":201,"./target":202,"./tint":203,"./to":204,"./wait":205,"eventemitter3":195,"pixi.js":338}],199:[function(require,module,exports){
-const wait = require('./wait')
-const to = require('./to')
-const tint = require('./tint')
-const shake = require('./shake')
-const angle = require('./angle')
-const face = require('./face')
-const target = require('./target')
-const movie = require('./movie')
+    }, {
+        key: 'face',
+        value: function face() {
+            return this.add(new (Function.prototype.bind.apply(Face, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
+
+        /** helper to add to the list a new Ease.load class; see Ease.to class below for parameters */
+
+    }, {
+        key: 'load',
+        value: function load() {
+            return this.add(new (Function.prototype.bind.apply(Load, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
+
+        /** helper to add to the list a new Ease.movie class; see Ease.to class below for parameters */
+
+    }, {
+        key: 'movie',
+        value: function movie() {
+            return this.add(new (Function.prototype.bind.apply(Movie, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
+
+        /** helper to add to the list a new Ease.shake class; see Ease.to class below for parameters */
+
+    }, {
+        key: 'shake',
+        value: function shake() {
+            return this.add(new (Function.prototype.bind.apply(Shake, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
+
+        /** helper to add to the list a new Ease.target class; see Ease.to class below for parameters */
+
+    }, {
+        key: 'target',
+        value: function target() {
+            return this.add(new (Function.prototype.bind.apply(Target, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
+
+        /** helper to add to the list a new Ease.angle tint; see Ease.to class below for parameters */
+
+    }, {
+        key: 'tint',
+        value: function tint() {
+            return this.add(new (Function.prototype.bind.apply(Tint, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
+
+        /** helper to add to the list a new Ease.wait class; see Ease.to class below for parameters */
+
+    }, {
+        key: 'wait',
+        value: function wait() {
+            return this.add(new (Function.prototype.bind.apply(Wait, [null].concat(Array.prototype.slice.call(arguments))))());
+        }
+    }, {
+        key: 'count',
+        get: function get() {
+            return this.list.length;
+        }
+
+        /**
+         * number of active animations
+         * @type {number}
+         */
+
+    }, {
+        key: 'countRunning',
+        get: function get() {
+            var count = 0;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
+
+            try {
+                for (var _iterator3 = this.list[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var entry = _step3.value;
+
+                    if (!entry.pause) {
+                        count++;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
+                    }
+                }
+            }
+
+            return count;
+        }
+    }]);
+
+    return Ease;
+}(Events);
+
+module.exports = Ease;
+
+},{"./angle":195,"./face":196,"./load":199,"./movie":200,"./shake":201,"./target":202,"./tint":203,"./to":204,"./wait":205,"eventemitter3":8,"pixi.js":338}],199:[function(require,module,exports){
+'use strict';
+
+var wait = require('./wait');
+var to = require('./to');
+var tint = require('./tint');
+var shake = require('./shake');
+var angle = require('./angle');
+var face = require('./face');
+var target = require('./target');
+var movie = require('./movie');
 
 /**
  * restart an animation = requires a saved state
  * @param {object} object(s) to animate
  */
-module.exports = function load(object, load)
-{
-    if (!load)
-    {
-        return null
+function load(object, load) {
+    if (!load) {
+        return null;
     }
-    const options = { load }
-    switch (load.type)
-    {
+    var options = { load: load };
+    switch (load.type) {
         case 'Wait':
-            return new wait(object, options)
+            return new wait(object, options);
         case 'To':
-            return new to(object, null, null, options)
+            return new to(object, null, null, options);
         case 'Tint':
-            return new tint(object, null, null, options)
+            return new tint(object, null, null, options);
         case 'Shake':
-            return new shake(object, null, null, options)
+            return new shake(object, null, null, options);
         case 'Angle':
-            return new angle(object, null, null, null, options)
+            return new angle(object, null, null, null, options);
         case 'Face':
-            return new face(object[0], object[1], null, options)
+            return new face(object[0], object[1], null, options);
         case 'Target':
-            return new target(object[0], object[1], null, options)
+            return new target(object[0], object[1], null, options);
         case 'Movie':
-            return new movie(object, object[1], null, options)
+            return new movie(object, object[1], null, options);
     }
 }
-},{"./angle":196,"./face":197,"./movie":200,"./shake":201,"./target":202,"./tint":203,"./to":204,"./wait":205}],200:[function(require,module,exports){
-const wait = require('./wait')
+
+module.exports = load;
+
+},{"./angle":195,"./face":196,"./movie":200,"./shake":201,"./target":202,"./tint":203,"./to":204,"./wait":205}],200:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var wait = require('./wait');
 
 /**
  * animate a movie of textures
  */
-module.exports = class movie extends wait
-{
+
+var movie = function (_wait) {
+    _inherits(movie, _wait);
+
     /**
      * @param {object} object to animate
      * @param {PIXI.Texture[]} textures
@@ -20443,193 +20681,220 @@ module.exports = class movie extends wait
      * @emits {loop} when animation is repeated
      * @emits {reverse} when animation is reversed
      */
-    constructor(object, textures, duration, options)
-    {
-        options = options || {}
-        super(object, options)
-        this.type = 'Movie'
-        if (Array.isArray(object))
-        {
-            this.list = object
-            this.object = this.list[0]
+    function movie(object, textures, duration, options) {
+        _classCallCheck(this, movie);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (movie.__proto__ || Object.getPrototypeOf(movie)).call(this, object, options));
+
+        _this.type = 'Movie';
+        if (Array.isArray(object)) {
+            _this.list = object;
+            _this.object = _this.list[0];
         }
-        if (options.load)
-        {
-            this.load(options.load)
+        if (options.load) {
+            _this.load(options.load);
+        } else {
+            _this.textures = textures;
+            _this.duration = duration;
+            _this.current = 0;
+            _this.length = textures.length;
+            _this.interval = duration / _this.length;
+            _this.isReverse = false;
+            _this.restart();
         }
-        else
-        {
-            this.textures = textures
-            this.duration = duration
-            this.current = 0
-            this.length = textures.length
-            this.interval = duration / this.length
-            this.isReverse = false
-            this.restart()
+        return _this;
+    }
+
+    _createClass(movie, [{
+        key: 'save',
+        value: function save() {
+            var save = _get(movie.prototype.__proto__ || Object.getPrototypeOf(movie.prototype), 'save', this).call(this);
+            save.goto = this.goto;
+            save.current = this.current;
+            save.length = this.length;
+            save.interval = this.interval;
+            return save;
         }
-    }
-
-    save()
-    {
-        const save = super.save()
-        save.goto = this.goto
-        save.current = this.current
-        save.length = this.length
-        save.interval = this.interval
-        return save
-    }
-
-    load(load)
-    {
-        super.load(load)
-        this.goto = load.goto
-        this.current = load.current
-        this.interval = load.current
-    }
-
-    restart()
-    {
-        this.current = 0
-        this.time = 0
-        this.isReverse = false
-    }
-
-    reverse()
-    {
-        this.isReverse = !this.isReverse
-    }
-
-    calculate()
-    {
-        let index = Math.round(this.options.ease(this.time, 0, this.length - 1, this.duration))
-        if (this.isReverse)
-        {
-            index = this.length - 1 - index
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            _get(movie.prototype.__proto__ || Object.getPrototypeOf(movie.prototype), 'load', this).call(this, _load);
+            this.goto = _load.goto;
+            this.current = _load.current;
+            this.interval = _load.current;
         }
-        if (this.list)
-        {
-            for (let i = 0; i < this.list.length; i++)
-            {
-                this.list[i].texture = this.textures[index]
+    }, {
+        key: 'restart',
+        value: function restart() {
+            this.current = 0;
+            this.time = 0;
+            this.isReverse = false;
+        }
+    }, {
+        key: 'reverse',
+        value: function reverse() {
+            this.isReverse = !this.isReverse;
+        }
+    }, {
+        key: 'calculate',
+        value: function calculate() {
+            var index = Math.round(this.options.ease(this.time, 0, this.length - 1, this.duration));
+            if (this.isReverse) {
+                index = this.length - 1 - index;
+            }
+            if (this.list) {
+                for (var i = 0; i < this.list.length; i++) {
+                    this.list[i].texture = this.textures[index];
+                }
+            } else {
+                this.object.texture = this.textures[index];
             }
         }
-        else
-        {
-            this.object.texture = this.textures[index]
-        }
-    }
-}
+    }]);
+
+    return movie;
+}(wait);
+
+module.exports = movie;
+
 },{"./wait":205}],201:[function(require,module,exports){
-const wait = require('./wait')
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var wait = require('./wait');
 
 /**
  * shakes an object or list of objects
  */
-module.exports = class shake extends wait
-{
+
+var shake = function (_wait) {
+    _inherits(shake, _wait);
+
     /**
      * @param {object|array} object or list of objects to shake
      * @param {number} amount to shake
      * @param {number} duration (in milliseconds) to shake
      * @param {object} options (see Animate.wait)
      */
-    constructor(object, amount, duration, options)
-    {
-        options = options || {}
-        super(object, options)
-        this.type = 'Shake'
-        if (Array.isArray(object))
-        {
-            this.array = true
-            this.list = object
+    function shake(object, amount, duration, options) {
+        _classCallCheck(this, shake);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (shake.__proto__ || Object.getPrototypeOf(shake)).call(this, object, options));
+
+        _this.type = 'Shake';
+        if (Array.isArray(object)) {
+            _this.array = true;
+            _this.list = object;
         }
-        if (options.load)
-        {
-            this.load(options.load)
+        if (options.load) {
+            _this.load(options.load);
+        } else {
+            if (_this.list) {
+                _this.start = [];
+                for (var i = 0; i < object.length; i++) {
+                    var target = object[i];
+                    _this.start[i] = { x: target.x, y: target.y };
+                }
+            } else {
+                _this.start = { x: object.x, y: object.y };
+            }
+            _this.amount = amount;
+            _this.duration = duration;
         }
-        else
-        {
-            if (this.list)
-            {
-                this.start = []
-                for (let i = 0; i < object.length; i++)
-                {
-                    const target = object[i]
-                    this.start[i] = {x: target.x, y: target.y}
+        return _this;
+    }
+
+    _createClass(shake, [{
+        key: 'save',
+        value: function save() {
+            var save = _get(shake.prototype.__proto__ || Object.getPrototypeOf(shake.prototype), 'save', this).call(this);
+            save.start = this.start;
+            save.amount = this.amount;
+            return save;
+        }
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            _get(shake.prototype.__proto__ || Object.getPrototypeOf(shake.prototype), 'load', this).call(this, _load);
+            this.start = _load.start;
+            this.amount = _load.amount;
+        }
+    }, {
+        key: 'calculate',
+        value: function calculate() /*elapsed*/{
+            var object = this.object;
+            var start = this.start;
+            var amount = this.amount;
+            if (this.array) {
+                var list = this.list;
+                for (var i = 0; i < list.length; i++) {
+                    var _object = list[i];
+                    var actual = start[i];
+                    _object.x = actual.x + Math.floor(Math.random() * amount * 2) - amount;
+                    _object.y = actual.y + Math.floor(Math.random() * amount * 2) - amount;
                 }
             }
-            else
-            {
-                this.start = {x: object.x, y: object.y}
-            }
-            this.amount = amount
-            this.duration = duration
+            object.x = start.x + Math.floor(Math.random() * amount * 2) - amount;
+            object.y = start.y + Math.floor(Math.random() * amount * 2) - amount;
         }
-    }
-
-    save()
-    {
-        const save = super.save()
-        save.start = this.start
-        save.amount = this.amount
-        return save
-    }
-
-    load(load)
-    {
-        super.load(load)
-        this.start = load.start
-        this.amount = load.amount
-    }
-
-    calculate(/*elapsed*/)
-    {
-        const object = this.object
-        const start = this.start
-        const amount = this.amount
-        if (this.array)
-        {
-            const list = this.list
-            for (let i = 0; i < list.length; i++)
-            {
-                const object = list[i]
-                const actual = start[i]
-                object.x = actual.x + Math.floor(Math.random() * amount * 2) - amount
-                object.y = actual.y + Math.floor(Math.random() * amount * 2) - amount
+    }, {
+        key: 'done',
+        value: function done() {
+            var object = this.object;
+            var start = this.start;
+            if (this.array) {
+                var list = this.list;
+                for (var i = 0; i < list.length; i++) {
+                    var _object2 = list[i];
+                    var actual = start[i];
+                    _object2.x = actual.x;
+                    _object2.y = actual.y;
+                }
+            } else {
+                object.x = start.x;
+                object.y = start.y;
             }
         }
-        object.x = start.x + Math.floor(Math.random() * amount * 2) - amount
-        object.y = start.y + Math.floor(Math.random() * amount * 2) - amount
-    }
+    }]);
 
-    done()
-    {
-        const object = this.object
-        const start = this.start
-        if (this.array)
-        {
-            const list = this.list
-            for (let i = 0; i < list.length; i++)
-            {
-                const object = list[i]
-                const actual = start[i]
-                object.x = actual.x
-                object.y = actual.y
-            }
-        }
-        else
-        {
-            object.x = start.x
-            object.y = start.y
-        }
-    }
-}
+    return shake;
+}(wait);
+
+module.exports = shake;
+
 },{"./wait":205}],202:[function(require,module,exports){
-const wait = require('./wait')
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var wait = require('./wait');
 
 /** move an object to a target's location */
-module.exports = class target extends wait
-{
+
+var target = function (_wait) {
+    _inherits(target, _wait);
+
     /**
      * move to a target
      * @param {object} object - object to animate
@@ -20638,190 +20903,251 @@ module.exports = class target extends wait
      * @param {object} [options] @see {@link Wait}
      * @param {boolean} [options.keepAlive] don't cancel the animation when target is reached
      */
-    constructor(object, target, speed, options)
-    {
-        options = options || {}
-        super(object, options)
-        this.type = 'Target'
-        this.target = target
-        if (options.load)
-        {
-            this.load(options.load)
+    function target(object, _target, speed, options) {
+        _classCallCheck(this, target);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (target.__proto__ || Object.getPrototypeOf(target)).call(this, object, options));
+
+        _this.type = 'Target';
+        _this.target = _target;
+        if (options.load) {
+            _this.load(options.load);
+        } else {
+            _this.speed = speed;
         }
-        else
-        {
-            this.speed = speed
-        }
+        return _this;
     }
 
-    save()
-    {
-        const save = super.save()
-        save.speed = this.speed
-        save.keepAlive = this.options.keepAlive
-        return save
-    }
-
-    load(load)
-    {
-        super.load(load)
-        this.speed = load.speed
-        this.options.keepAlive = load.keepAlive
-    }
-
-    calculate(elapsed)
-    {
-        const deltaX = this.target.x - this.object.x
-        const deltaY = this.target.y - this.object.y
-        if (deltaX === 0 && deltaY === 0)
-        {
-            this.emit('done', this.object)
-            if (!this.options.keepAlive)
-            {
-                return true
+    _createClass(target, [{
+        key: 'save',
+        value: function save() {
+            var save = _get(target.prototype.__proto__ || Object.getPrototypeOf(target.prototype), 'save', this).call(this);
+            save.speed = this.speed;
+            save.keepAlive = this.options.keepAlive;
+            return save;
+        }
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            _get(target.prototype.__proto__ || Object.getPrototypeOf(target.prototype), 'load', this).call(this, _load);
+            this.speed = _load.speed;
+            this.options.keepAlive = _load.keepAlive;
+        }
+    }, {
+        key: 'calculate',
+        value: function calculate(elapsed) {
+            var deltaX = this.target.x - this.object.x;
+            var deltaY = this.target.y - this.object.y;
+            if (deltaX === 0 && deltaY === 0) {
+                this.emit('done', this.object);
+                if (!this.options.keepAlive) {
+                    return true;
+                }
+            } else {
+                var angle = Math.atan2(deltaY, deltaX);
+                this.object.x += Math.cos(angle) * elapsed * this.speed;
+                this.object.y += Math.sin(angle) * elapsed * this.speed;
+                if (deltaX >= 0 !== this.target.x - this.object.x >= 0) {
+                    this.object.x = this.target.x;
+                }
+                if (deltaY >= 0 !== this.target.y - this.object.y >= 0) {
+                    this.object.y = this.target.y;
+                }
             }
         }
-        else
-        {
-            const angle = Math.atan2(deltaY, deltaX)
-            this.object.x += Math.cos(angle) * elapsed * this.speed
-            this.object.y += Math.sin(angle) * elapsed * this.speed
-            if ((deltaX >= 0) !== ((this.target.x - this.object.x) >= 0))
-            {
-                this.object.x = this.target.x
-            }
-            if ((deltaY >= 0) !== ((this.target.y - this.object.y) >= 0))
-            {
-                this.object.y = this.target.y
-            }
-        }
-    }
-}
+    }]);
+
+    return target;
+}(wait);
+
+module.exports = target;
+
 },{"./wait":205}],203:[function(require,module,exports){
-const Color = require('yy-color')
-const wait = require('./wait')
+'use strict';
 
-/** changes the tint of an object */
-module.exports = class tint extends wait
-{
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Color = require('yy-color');
+var wait = require('./wait');
+
+var tint = function (_wait) {
+    _inherits(tint, _wait);
+
     /**
      * @param {PIXI.DisplayObject|PIXI.DisplayObject[]} object
      * @param {number|number[]} tint
      * @param {number} [duration] in milliseconds
      * @param {object} [options] @see {@link Wait}
      */
-    constructor(object, tint, duration, options)
-    {
-        options = options || {}
-        super(object, options)
-        this.type = 'Tint'
-        if (Array.isArray(object))
-        {
-            this.list = object
-            this.object = this.list[0]
+    function tint(object, _tint, duration, options) {
+        _classCallCheck(this, tint);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (tint.__proto__ || Object.getPrototypeOf(tint)).call(this, object, options));
+
+        _this.type = 'Tint';
+        if (Array.isArray(object)) {
+            _this.list = object;
+            _this.object = _this.list[0];
         }
-        this.duration = duration
-        if (options.load)
-        {
-            this.load(options.load)
+        _this.duration = duration;
+        if (options.load) {
+            _this.load(options.load);
+        } else if (Array.isArray(_tint)) {
+            _this.tints = [_this.object.tint].concat(_toConsumableArray(_tint));
+        } else {
+            _this.start = _this.object.tint;
+            _this.to = _tint;
         }
-        else if (Array.isArray(tint))
-        {
-            this.tints = [this.object.tint, ...tint]
-        }
-        else
-        {
-            this.start = this.object.tint
-            this.to = tint
-        }
+        return _this;
     }
 
-    save()
-    {
-        const save = super.save()
-        save.start = this.start
-        save.to = this.to
-        return save
-    }
+    _createClass(tint, [{
+        key: 'save',
+        value: function save() {
+            var save = _get(tint.prototype.__proto__ || Object.getPrototypeOf(tint.prototype), 'save', this).call(this);
+            save.start = this.start;
+            save.to = this.to;
+            return save;
+        }
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            _get(tint.prototype.__proto__ || Object.getPrototypeOf(tint.prototype), 'load', this).call(this, _load);
+            this.start = _load.start;
+            this.to = _load.to;
+        }
+    }, {
+        key: 'calculate',
+        value: function calculate() {
+            var percent = this.options.ease(this.time, 0, 1, this.duration);
+            if (this.tints) {
+                var each = 1 / (this.tints.length - 1);
+                var per = each;
+                for (var i = 1; i < this.tints.length; i++) {
+                    if (percent <= per) {
+                        var color = Color.blend(1 - (per - percent) / each, this.tints[i - 1], this.tints[i]);
+                        if (this.list) {
+                            var _iteratorNormalCompletion = true;
+                            var _didIteratorError = false;
+                            var _iteratorError = undefined;
 
-    load(load)
-    {
-        super.load(load)
-        this.start = load.start
-        this.to = load.to
-    }
+                            try {
+                                for (var _iterator = this.list[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                    var object = _step.value;
 
-    calculate()
-    {
-        const percent = this.options.ease(this.time, 0, 1, this.duration)
-        if (this.tints)
-        {
-            const each = 1 / (this.tints.length - 1)
-            let per = each
-            for (let i = 1; i < this.tints.length; i++)
-            {
-                if (percent <= per)
-                {
-                    const color = Color.blend(1 - (per - percent) / each, this.tints[i - 1], this.tints[i])
-                    if (this.list)
-                    {
-                        for (let object of this.list)
-                        {
-                            object.tint = color
+                                    object.tint = color;
+                                }
+                            } catch (err) {
+                                _didIteratorError = true;
+                                _iteratorError = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                        _iterator.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError) {
+                                        throw _iteratorError;
+                                    }
+                                }
+                            }
+                        } else {
+                            this.object.tint = color;
+                        }
+                        break;
+                    }
+                    per += each;
+                }
+            } else {
+                var _color = Color.blend(percent, this.start, this.to);
+                if (this.list) {
+                    var _iteratorNormalCompletion2 = true;
+                    var _didIteratorError2 = false;
+                    var _iteratorError2 = undefined;
+
+                    try {
+                        for (var _iterator2 = this.list[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                            var _object = _step2.value;
+
+                            _object.tint = _color;
+                        }
+                    } catch (err) {
+                        _didIteratorError2 = true;
+                        _iteratorError2 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                _iterator2.return();
+                            }
+                        } finally {
+                            if (_didIteratorError2) {
+                                throw _iteratorError2;
+                            }
                         }
                     }
-                    else
-                    {
-                        this.object.tint = color
-                    }
-                    break;
-                }
-                per += each
-            }
-        }
-        else
-        {
-            const color = Color.blend(percent, this.start, this.to)
-            if (this.list)
-            {
-                for (let object of this.list)
-                {
-                    object.tint = color
+                } else {
+                    this.object.tint = _color;
                 }
             }
-            else
-            {
-                this.object.tint = color
+        }
+    }, {
+        key: 'reverse',
+        value: function reverse() {
+            if (this.tints) {
+                var tints = [];
+                for (var i = this.tints.length - 1; i >= 0; i--) {
+                    tints.push(this.tints[i]);
+                }
+                this.tints = tints;
+            } else {
+                var swap = this.to;
+                this.to = this.start;
+                this.start = swap;
             }
         }
-    }
+    }]);
 
-    reverse()
-    {
-        if (this.tints)
-        {
-            const tints = []
-            for (let i = this.tints.length - 1; i >= 0; i--)
-            {
-                tints.push(this.tints[i])
-            }
-            this.tints = tints
-        }
-        else
-        {
-            const swap = this.to
-            this.to = this.start
-            this.start = swap
-        }
-    }
-}
+    return tint;
+}(wait);
+
+module.exports = tint;
+
 },{"./wait":205,"yy-color":397}],204:[function(require,module,exports){
-const wait = require('./wait')
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var wait = require('./wait');
 
 /** animate any numeric parameter of an object or array of objects */
-module.exports = class to extends wait
-{
+
+var to = function (_wait) {
+    _inherits(to, _wait);
+
     /**
+     * @private
      * @param {object} object to animate
      * @param {object} goto - parameters to animate, e.g.: {alpha: 5, scale: {3, 5}, scale: 5, rotation: Math.PI}
      * @param {number} duration - time to run
@@ -20839,183 +21165,183 @@ module.exports = class to extends wait
      * @emits to:loop when animation is repeated
      * @emits to:reverse when animation is reversed
      */
-    constructor(object, goto, duration, options)
-    {
-        options = options || {}
-        super(object, options)
-        this.type = 'To'
-        if (Array.isArray(object))
-        {
-            this.list = object
-            this.object = this.list[0]
+    function to(object, goto, duration, options) {
+        _classCallCheck(this, to);
+
+        options = options || {};
+
+        var _this = _possibleConstructorReturn(this, (to.__proto__ || Object.getPrototypeOf(to)).call(this, object, options));
+
+        _this.type = 'To';
+        if (Array.isArray(object)) {
+            _this.list = object;
+            _this.object = _this.list[0];
         }
-        if (options.load)
-        {
-            this.load(options.load)
+        if (options.load) {
+            _this.load(options.load);
+        } else {
+            _this.goto = goto;
+            _this.fixScale();
+            _this.duration = duration;
+            _this.restart();
         }
-        else
-        {
-            this.goto = goto
-            this.fixScale()
-            this.duration = duration
-            this.restart()
-        }
+        return _this;
     }
 
     /**
      * converts scale from { scale: n } to { scale: { x: n, y: n }}
      * @private
      */
-    fixScale()
-    {
-        if (typeof this.goto['scale'] !== 'undefined' && !Number.isNaN(this.goto['scale']))
-        {
-            this.goto['scale'] = {x: this.goto['scale'], y: this.goto['scale']}
+
+
+    _createClass(to, [{
+        key: 'fixScale',
+        value: function fixScale() {
+            if (typeof this.goto['scale'] !== 'undefined' && !Number.isNaN(this.goto['scale'])) {
+                this.goto['scale'] = { x: this.goto['scale'], y: this.goto['scale'] };
+            }
         }
-    }
+    }, {
+        key: 'save',
+        value: function save() {
+            var save = _get(to.prototype.__proto__ || Object.getPrototypeOf(to.prototype), 'save', this).call(this);
+            save.goto = this.goto;
+            save.start = this.start;
+            save.delta = this.delta;
+            save.keys = this.keys;
+            return save;
+        }
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            _get(to.prototype.__proto__ || Object.getPrototypeOf(to.prototype), 'load', this).call(this, _load);
+            this.goto = _load.goto;
+            this.start = _load.start;
+            this.delta = _load.delta;
+            this.keys = _load.keys;
+        }
+    }, {
+        key: 'restart',
+        value: function restart() {
+            var i = 0;
+            var start = this.start = [];
+            var delta = this.delta = [];
+            var keys = this.keys = [];
+            var goto = this.goto;
+            var object = this.object;
 
-    save()
-    {
-        const save = super.save()
-        save.goto = this.goto
-        save.start = this.start
-        save.delta = this.delta
-        save.keys = this.keys
-        return save
-    }
+            // loops through all keys in goto object
+            for (var key in goto) {
 
-    load(load)
-    {
-        super.load(load)
-        this.goto = load.goto
-        this.start = load.start
-        this.delta = load.delta
-        this.keys = load.keys
-    }
+                // handles keys with one additional level e.g.: goto = {scale: {x: 5, y: 3}}
+                if (isNaN(goto[key])) {
+                    keys[i] = { key: key, children: [] };
+                    start[i] = [];
+                    delta[i] = [];
+                    var j = 0;
+                    for (var key2 in goto[key]) {
+                        keys[i].children[j] = key2;
+                        start[i][j] = parseFloat(object[key][key2]);
+                        start[i][j] = this._correctDOM(key2, start[i][j]);
+                        start[i][j] = isNaN(this.start[i][j]) ? 0 : start[i][j];
+                        delta[i][j] = goto[key][key2] - start[i][j];
+                        j++;
+                    }
+                } else {
+                    start[i] = parseFloat(object[key]);
+                    start[i] = this._correctDOM(key, start[i]);
+                    start[i] = isNaN(this.start[i]) ? 0 : start[i];
+                    delta[i] = goto[key] - start[i];
+                    keys[i] = key;
+                }
+                i++;
+            }
+            this.time = 0;
+        }
+    }, {
+        key: 'reverse',
+        value: function reverse() {
+            var object = this.object;
+            var keys = this.keys;
+            var goto = this.goto;
+            var delta = this.delta;
+            var start = this.start;
 
-    restart()
-    {
-        let i = 0
-        const start = this.start = []
-        const delta = this.delta = []
-        const keys = this.keys = []
-        const goto = this.goto
-        const object = this.object
-
-        // loops through all keys in goto object
-        for (let key in goto)
-        {
-
-            // handles keys with one additional level e.g.: goto = {scale: {x: 5, y: 3}}
-            if (isNaN(goto[key]))
-            {
-                keys[i] = { key: key, children: [] }
-                start[i] = []
-                delta[i] = []
-                let j = 0
-                for (let key2 in goto[key])
-                {
-                    keys[i].children[j] = key2
-                    start[i][j] = parseFloat(object[key][key2])
-                    start[i][j] = this._correctDOM(key2, start[i][j])
-                    start[i][j] = isNaN(this.start[i][j]) ? 0 : start[i][j]
-                    delta[i][j] = goto[key][key2] - start[i][j]
-                    j++
+            for (var i = 0, _i = keys.length; i < _i; i++) {
+                var key = keys[i];
+                if (isNaN(goto[key])) {
+                    for (var j = 0, _j = key.children.length; j < _j; j++) {
+                        delta[i][j] = -delta[i][j];
+                        start[i][j] = parseFloat(object[key.key][key.children[j]]);
+                        start[i][j] = isNaN(start[i][j]) ? 0 : start[i][j];
+                    }
+                } else {
+                    delta[i] = -delta[i];
+                    start[i] = parseFloat(object[key]);
+                    start[i] = isNaN(start[i]) ? 0 : start[i];
                 }
             }
-            else
-            {
-                start[i] = parseFloat(object[key])
-                start[i] = this._correctDOM(key, start[i])
-                start[i] = isNaN(this.start[i]) ? 0 : start[i]
-                delta[i] = goto[key] - start[i]
-                keys[i] = key
-            }
-            i++
         }
-        this.time = 0
-    }
-
-    reverse()
-    {
-        const object = this.object
-        const keys = this.keys
-        const goto = this.goto
-        const delta = this.delta
-        const start = this.start
-
-        for (let i = 0, _i = keys.length; i < _i; i++)
-        {
-            const key = keys[i]
-            if (isNaN(goto[key]))
-            {
-                for (let j = 0, _j = key.children.length; j < _j; j++)
-                {
-                    delta[i][j] = -delta[i][j]
-                    start[i][j] = parseFloat(object[key.key][key.children[j]])
-                    start[i][j] = isNaN(start[i][j]) ? 0 : start[i][j]
-                }
-            }
-            else
-            {
-                delta[i] = -delta[i]
-                start[i] = parseFloat(object[key])
-                start[i] = isNaN(start[i]) ? 0 : start[i]
-            }
-        }
-    }
-
-    calculate(/*elapsed*/)
-    {
-        const object = this.object
-        const list = this.list
-        const keys = this.keys
-        const goto = this.goto
-        const time = this.time
-        const start = this.start
-        const delta = this.delta
-        const duration = this.duration
-        const ease = this.options.ease
-        for (let i = 0, _i = this.keys.length; i < _i; i++)
-        {
-            const key = keys[i]
-            if (isNaN(goto[key]))
-            {
-                const key1 = key.key
-                for (let j = 0, _j = key.children.length; j < _j; j++)
-                {
-                    const key2 = key.children[j]
-                    const others = object[key1][key2] = (time >= duration) ? start[i][j] + delta[i][j] : ease(time, start[i][j], delta[i][j], duration)
-                    if (list)
-                    {
-                        for (let k = 1, _k = list.length; k < _k; k++)
-                        {
-                            list[k][key1][key2] = others
+    }, {
+        key: 'calculate',
+        value: function calculate() /*elapsed*/{
+            var object = this.object;
+            var list = this.list;
+            var keys = this.keys;
+            var goto = this.goto;
+            var time = this.time;
+            var start = this.start;
+            var delta = this.delta;
+            var duration = this.duration;
+            var ease = this.options.ease;
+            for (var i = 0, _i = this.keys.length; i < _i; i++) {
+                var key = keys[i];
+                if (isNaN(goto[key])) {
+                    var key1 = key.key;
+                    for (var j = 0, _j = key.children.length; j < _j; j++) {
+                        var key2 = key.children[j];
+                        var others = object[key1][key2] = time >= duration ? start[i][j] + delta[i][j] : ease(time, start[i][j], delta[i][j], duration);
+                        if (list) {
+                            for (var k = 1, _k = list.length; k < _k; k++) {
+                                list[k][key1][key2] = others;
+                            }
+                        }
+                    }
+                } else {
+                    var _key = keys[i];
+                    var _others = object[_key] = time >= duration ? start[i] + delta[i] : ease(time, start[i], delta[i], duration);
+                    if (list) {
+                        for (var _j2 = 1, _j3 = this.list.length; _j2 < _j3; _j2++) {
+                            list[_j2][_key] = _others;
                         }
                     }
                 }
             }
-            else
-            {
-                const key = keys[i]
-                const others = object[key] = (time >= duration) ? start[i] + delta[i] : ease(time, start[i], delta[i], duration)
-                if (list)
-                {
-                    for (let j = 1, _j = this.list.length; j < _j; j++)
-                    {
-                        list[j][key] = others
-                    }
-                }
-            }
         }
-    }
-}
-},{"./wait":205}],205:[function(require,module,exports){
-const Easing = require('penner')
-const EventEmitter = require('eventemitter3')
+    }]);
 
-module.exports = class wait extends EventEmitter
-{
+    return to;
+}(wait);
+
+module.exports = to;
+
+},{"./wait":205}],205:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Easing = require('penner');
+var EventEmitter = require('eventemitter3');
+
+var wait = function (_EventEmitter) {
+    _inherits(wait, _EventEmitter);
+
     /**
      * @param {object|object[]} object or list of objects to animate
      * @param {object} [options]
@@ -21035,195 +21361,180 @@ module.exports = class wait extends EventEmitter
      * @emits {loop} when animation is repeated
      * @emits {reverse} when animation is reversed
      */
-    constructor(object, options)
-    {
-        super()
-        this.object = object
-        this.options = options || {}
-        this.type = 'Wait'
-        if (this.options.load)
-        {
-            this.load(this.options.load)
+    function wait(object, options) {
+        _classCallCheck(this, wait);
+
+        var _this = _possibleConstructorReturn(this, (wait.__proto__ || Object.getPrototypeOf(wait)).call(this));
+
+        _this.object = object;
+        _this.options = options || {};
+        _this.type = 'Wait';
+        if (_this.options.load) {
+            _this.load(_this.options.load);
+        } else {
+            _this.time = 0;
         }
-        else
-        {
-            this.time = 0
+        if (_this.options.ease && typeof _this.options.ease !== 'function') {
+            _this.options.easeName = _this.options.ease;
+            _this.options.ease = Easing[_this.options.ease];
         }
-        if (this.options.ease && typeof this.options.ease !== 'function')
-        {
-            this.options.easeName = this.options.ease
-            this.options.ease = Easing[this.options.ease]
+        if (!_this.options.ease) {
+            _this.options.ease = Easing['linear'];
         }
-        if (!this.options.ease)
-        {
-            this.options.ease = Easing['linear']
-        }
+        return _this;
     }
 
-    save()
-    {
-        const save = { type: this.type, time: this.time, duration: this.duration, ease: this.options.easeName }
-        const options = this.options
-        if (options.wait)
-        {
-            save.wait = options.wait
+    _createClass(wait, [{
+        key: 'save',
+        value: function save() {
+            var save = { type: this.type, time: this.time, duration: this.duration, ease: this.options.easeName };
+            var options = this.options;
+            if (options.wait) {
+                save.wait = options.wait;
+            }
+            if (typeof options.id !== 'undefined') {
+                save.id = options.id;
+            }
+            if (options.pause) {
+                save.pause = options.pause;
+            }
+            if (options.repeat) {
+                save.repeat = options.repeat;
+            }
+            if (options.reverse) {
+                save.reverse = options.reverse;
+            }
+            return save;
         }
-        if (typeof options.id !== 'undefined')
-        {
-            save.id = options.id
+    }, {
+        key: 'load',
+        value: function load(_load) {
+            this.options.wait = _load.wait;
+            this.options.pause = _load.pause;
+            this.options.repeat = _load.repeat;
+            this.options.reverse = _load.reverse;
+            this.options.id = _load.id;
+            this.options.ease = _load.ease;
+            if (this.options.ease && typeof this.options.ease !== 'function') {
+                this.options.easeName = this.options.ease;
+                this.options.ease = Easing[this.options.ease];
+            }
+            if (!this.options.ease) {
+                this.options.ease = Easing['linear'];
+            }
+            this.time = _load.time;
+            this.duration = _load.duration;
         }
-        if (options.pause)
-        {
-            save.pause = options.pause
-        }
-        if (options.repeat)
-        {
-            save.repeat = options.repeat
-        }
-        if (options.reverse)
-        {
-            save.reverse = options.reverse
-        }
-        return save
-    }
 
-    load(load)
-    {
-        this.options.wait = load.wait
-        this.options.pause = load.pause
-        this.options.repeat = load.repeat
-        this.options.reverse = load.reverse
-        this.options.id = load.id
-        this.options.ease = load.ease
-        if (this.options.ease && typeof this.options.ease !== 'function')
-        {
-            this.options.easeName = this.options.ease
-            this.options.ease = Easing[this.options.ease]
-        }
-        if (!this.options.ease)
-        {
-            this.options.ease = Easing['linear']
-        }
-        this.time = load.time
-        this.duration = load.duration
-    }
+        /**
+         * pause this entry
+         * @type {boolean}
+         */
 
-    /**
-     * @type {boolean} pause this entry
-     */
-    set pause(value)
-    {
-        this.options.pause = value
-    }
-    get pause()
-    {
-        return this.options.pause
-    }
-
-    end(leftOver)
-    {
-        if (this.options.reverse)
-        {
-            this.reverse()
-            this.time = leftOver
-            if (!this.options.repeat)
-            {
-                if (this.options.reverse === true)
-                {
-                    this.options.reverse = false
+    }, {
+        key: 'end',
+        value: function end(leftOver) {
+            if (this.options.reverse) {
+                this.reverse();
+                this.time = leftOver;
+                if (!this.options.repeat) {
+                    if (this.options.reverse === true) {
+                        this.options.reverse = false;
+                    } else {
+                        this.options.reverse--;
+                    }
+                } else {
+                    if (this.options.repeat !== true) {
+                        this.options.repeat--;
+                    }
                 }
-                else
-                {
-                    this.options.reverse--
+                this.emit('loop', this.list || this.object);
+            } else if (this.options.repeat) {
+                this.time = leftOver;
+                if (this.options.repeat !== true) {
+                    this.options.repeat--;
+                }
+                this.emit('loop', this.list || this.object);
+            } else {
+                this.done();
+                this.emit('done', this.list || this.object, leftOver);
+                // this.list = this.object = null
+                return true;
+            }
+        }
+    }, {
+        key: 'update',
+        value: function update(elapsed) {
+            var options = this.options;
+            if (options.pause) {
+                return;
+            }
+            if (options.wait) {
+                options.wait -= elapsed;
+                if (options.wait <= 0) {
+                    elapsed = -options.wait;
+                    options.wait = false;
+                } else {
+                    this.emit('wait', elapsed, this.list || this.object);
+                    return;
                 }
             }
-            else
-            {
-                if (this.options.repeat !== true)
-                {
-                    this.options.repeat--
-                }
+            if (!this.first) {
+                this.first = true;
+                this.emit('first', this.list || this.object);
             }
-            this.emit('loop', this.list || this.object)
-        }
-        else if (this.options.repeat)
-        {
-            this.time = leftOver
-            if (this.options.repeat !== true)
-            {
-                this.options.repeat--
+            this.time += elapsed;
+            var leftOver = 0;
+            var duration = this.duration;
+            var time = this.time;
+            if (duration !== 0 && time > duration) {
+                leftOver = time - duration;
+                this.time = time = duration;
             }
-            this.emit('loop', this.list || this.object)
+            var force = this.calculate(elapsed);
+            this.emit('each', elapsed, this.list || this.object, this);
+            if (this.type === 'Wait' || duration !== 0 && time === duration) {
+                return this.end(leftOver);
+            }
+            return force || time === duration;
         }
-        else
-        {
-            this.done()
-            this.emit('done', this.list || this.object, leftOver)
-            // this.list = this.object = null
-            return true
-        }
-    }
 
-    update(elapsed)
-    {
-        const options = this.options
-        if (options.pause)
-        {
-            return
-        }
-        if (options.wait)
-        {
-            options.wait -= elapsed
-            if (options.wait <= 0)
-            {
-                elapsed = -options.wait
-                options.wait = false
-            }
-            else
-            {
-                this.emit('wait', elapsed, this.list || this.object)
-                return
-            }
-        }
-        if (!this.first)
-        {
-            this.first = true
-            this.emit('first', this.list || this.object)
-        }
-        this.time += elapsed
-        let leftOver = 0
-        const duration = this.duration
-        let time = this.time
-        if (duration !== 0 && time > duration)
-        {
-            leftOver = time - duration
-            this.time = time = duration
-        }
-        const force = this.calculate(elapsed)
-        this.emit('each', elapsed, this.list || this.object, this)
-        if (this.type === 'Wait' || (duration !== 0 && time === duration))
-        {
-            return this.end(leftOver)
-        }
-        return force || time === duration
-    }
+        // correct certain DOM values
 
-    // correct certain DOM values
-    _correctDOM(key, value)
-    {
-        switch (key)
-        {
-            case 'opacity':
-                return (isNaN(value)) ? 1 : value
+    }, {
+        key: '_correctDOM',
+        value: function _correctDOM(key, value) {
+            switch (key) {
+                case 'opacity':
+                    return isNaN(value) ? 1 : value;
+            }
+            return value;
         }
-        return value
-    }
+    }, {
+        key: 'reverse',
+        value: function reverse() {}
+    }, {
+        key: 'calculate',
+        value: function calculate() {}
+    }, {
+        key: 'done',
+        value: function done() {}
+    }, {
+        key: 'pause',
+        set: function set(value) {
+            this.options.pause = value;
+        },
+        get: function get() {
+            return this.options.pause;
+        }
+    }]);
 
-    reverse() {}
-    calculate() { }
-    done() { }
-}
-},{"eventemitter3":195,"penner":193}],206:[function(require,module,exports){
+    return wait;
+}(EventEmitter);
+
+module.exports = wait;
+
+},{"eventemitter3":8,"penner":194}],206:[function(require,module,exports){
 var EMPTY_ARRAY_BUFFER = new ArrayBuffer(0);
 
 /**
@@ -23359,7 +23670,7 @@ exports.default = AccessibilityManager;
 core.WebGLRenderer.registerPlugin('accessibility', AccessibilityManager);
 core.CanvasRenderer.registerPlugin('accessibility', AccessibilityManager);
 
-},{"../core":248,"./accessibleTarget":224,"ismobilejs":188}],224:[function(require,module,exports){
+},{"../core":248,"./accessibleTarget":224,"ismobilejs":189}],224:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -23610,11 +23921,12 @@ var Application = function () {
      * @param {Boolean} [removeView=false] Automatically remove canvas from DOM.
      */
     Application.prototype.destroy = function destroy(removeView) {
-        var oldTicker = this._ticker;
+        if (this._ticker) {
+            var oldTicker = this._ticker;
 
-        this.ticker = null;
-
-        oldTicker.destroy();
+            this.ticker = null;
+            oldTicker.destroy();
+        }
 
         this.stage.destroy();
         this.stage = null;
@@ -23814,7 +24126,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.7.0';
+var VERSION = exports.VERSION = '4.7.1';
 
 /**
  * Two Pi.
@@ -23965,7 +24277,7 @@ var SCALE_MODES = exports.SCALE_MODES = {
 /**
  * The wrap modes that are supported by pixi.
  *
- * The {@link PIXI.settings.WRAP_MODE} wrap mode affects the default wraping mode of future operations.
+ * The {@link PIXI.settings.WRAP_MODE} wrap mode affects the default wrapping mode of future operations.
  * It can be re-assigned to either CLAMP or REPEAT, depending upon suitability.
  * If the texture is non power of two then clamp will be used regardless as webGL can
  * only use REPEAT if the texture is po2.
@@ -24679,7 +24991,7 @@ var Container = function (_DisplayObject) {
 
     Container.prototype.setChildIndex = function setChildIndex(child, index) {
         if (index < 0 || index >= this.children.length) {
-            throw new Error('The supplied index is out of bounds');
+            throw new Error('The index ' + index + ' supplied is out of bounds ' + this.children.length);
         }
 
         var currentIndex = this.getChildIndex(child);
@@ -29661,6 +29973,8 @@ var _Point = require('./Point');
 
 var _Point2 = _interopRequireDefault(_Point);
 
+var _const = require('../const');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29668,8 +29982,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * The PixiJS Matrix class as an object, which makes it a lot faster,
  * here is a representation of it :
- * | a | b | tx|
- * | c | d | ty|
+ * | a | c | tx|
+ * | b | d | ty|
  * | 0 | 0 | 1 |
  *
  * @class
@@ -29678,8 +29992,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var Matrix = function () {
     /**
      * @param {number} [a=1] - x scale
-     * @param {number} [b=0] - y skew
-     * @param {number} [c=0] - x skew
+     * @param {number} [b=0] - x skew
+     * @param {number} [c=0] - y skew
      * @param {number} [d=1] - y scale
      * @param {number} [tx=0] - x translation
      * @param {number} [ty=0] - y translation
@@ -29972,25 +30286,13 @@ var Matrix = function () {
 
 
     Matrix.prototype.setTransform = function setTransform(x, y, pivotX, pivotY, scaleX, scaleY, rotation, skewX, skewY) {
-        var sr = Math.sin(rotation);
-        var cr = Math.cos(rotation);
-        var cy = Math.cos(skewY);
-        var sy = Math.sin(skewY);
-        var nsx = -Math.sin(skewX);
-        var cx = Math.cos(skewX);
+        this.a = Math.cos(rotation + skewY) * scaleX;
+        this.b = Math.sin(rotation + skewY) * scaleX;
+        this.c = -Math.sin(rotation - skewX) * scaleY;
+        this.d = Math.cos(rotation - skewX) * scaleY;
 
-        var a = cr * scaleX;
-        var b = sr * scaleX;
-        var c = -sr * scaleY;
-        var d = cr * scaleY;
-
-        this.a = cy * a + sy * c;
-        this.b = cy * b + sy * d;
-        this.c = nsx * a + cx * c;
-        this.d = nsx * b + cx * d;
-
-        this.tx = x + (pivotX * a + pivotY * c);
-        this.ty = y + (pivotX * b + pivotY * d);
+        this.tx = x - (pivotX * this.a + pivotY * this.c);
+        this.ty = y - (pivotX * this.b + pivotY * this.d);
 
         return this;
     };
@@ -30042,7 +30344,7 @@ var Matrix = function () {
 
         var delta = Math.abs(skewX + skewY);
 
-        if (delta < 0.00001) {
+        if (delta < 0.00001 || Math.abs(_const.PI_2 - delta) < 0.00001) {
             transform.rotation = skewY;
 
             if (a < 0 && d >= 0) {
@@ -30051,6 +30353,7 @@ var Matrix = function () {
 
             transform.skew.x = transform.skew.y = 0;
         } else {
+            transform.rotation = 0;
             transform.skew.x = skewX;
             transform.skew.y = skewY;
         }
@@ -30181,7 +30484,7 @@ var Matrix = function () {
 
 exports.default = Matrix;
 
-},{"./Point":252}],251:[function(require,module,exports){
+},{"../const":229,"./Point":252}],251:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -30972,7 +31275,7 @@ var Rectangle = function () {
      * Pads the rectangle making it grow in all directions.
      *
      * @param {number} paddingX - The horizontal padding amount.
-     * @param {number} paddingY - The vertical padding amount.
+     * @param {number} [paddingY] - The vertical padding amount.
      */
 
 
@@ -33970,7 +34273,7 @@ var Filter = function () {
      *
      * @member {number}
      */
-    this.resolution = _settings2.default.RESOLUTION;
+    this.resolution = _settings2.default.FILTER_RESOLUTION;
 
     /**
      * If enabled is true the filter is applied, if false it will not.
@@ -34275,7 +34578,7 @@ var SpriteMaskFilter = function (_Filter) {
 
 exports.default = SpriteMaskFilter;
 
-},{"../../../../math":253,"../../../../textures/TextureMatrix":299,"../Filter":269,"path":192}],273:[function(require,module,exports){
+},{"../../../../math":253,"../../../../textures/TextureMatrix":299,"../Filter":269,"path":193}],273:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -34335,12 +34638,13 @@ function FilterState() {
     this.resolution = 1;
 };
 
+var screenKey = 'screen';
+
 /**
  * @class
  * @memberof PIXI
  * @extends PIXI.WebGLManager
  */
-
 
 var FilterManager = function (_WebGLManager) {
     _inherits(FilterManager, _WebGLManager);
@@ -34364,6 +34668,11 @@ var FilterManager = function (_WebGLManager) {
         _this.filterData = null;
 
         _this.managedFilters = [];
+
+        _this.renderer.on('prerender', _this.onPrerender, _this);
+
+        _this._screenWidth = renderer.view.width;
+        _this._screenHeight = renderer.view.height;
         return _this;
     }
 
@@ -34399,15 +34708,18 @@ var FilterManager = function (_WebGLManager) {
 
         // get the current filter state..
         var currentState = filterData.stack[++filterData.index];
+        var renderTargetFrame = filterData.stack[0].destinationFrame;
 
         if (!currentState) {
             currentState = filterData.stack[filterData.index] = new FilterState();
         }
 
+        var fullScreen = target.filterArea && target.filterArea.x === 0 && target.filterArea.y === 0 && target.filterArea.width === renderer.screen.width && target.filterArea.height === renderer.screen.height;
+
         // for now we go off the filter of the first resolution..
         var resolution = filters[0].resolution;
         var padding = filters[0].padding | 0;
-        var targetBounds = target.filterArea || target.getBounds(true);
+        var targetBounds = fullScreen ? renderer.screen : target.filterArea || target.getBounds(true);
         var sourceFrame = currentState.sourceFrame;
         var destinationFrame = currentState.destinationFrame;
 
@@ -34416,16 +34728,18 @@ var FilterManager = function (_WebGLManager) {
         sourceFrame.width = (targetBounds.width * resolution | 0) / resolution;
         sourceFrame.height = (targetBounds.height * resolution | 0) / resolution;
 
-        if (filterData.stack[0].renderTarget.transform) {//
+        if (!fullScreen) {
+            if (filterData.stack[0].renderTarget.transform) {//
 
-            // TODO we should fit the rect around the transform..
-        } else if (filters[0].autoFit) {
-            sourceFrame.fit(filterData.stack[0].destinationFrame);
+                // TODO we should fit the rect around the transform..
+            } else if (filters[0].autoFit) {
+                sourceFrame.fit(renderTargetFrame);
+            }
+
+            // lets apply the padding After we fit the element to the screen.
+            // this should stop the strange side effects that can occur when cropping to the edges
+            sourceFrame.pad(padding);
         }
-
-        // lets apply the padding After we fit the element to the screen.
-        // this should stop the strange side effects that can occur when cropping to the edges
-        sourceFrame.pad(padding);
 
         destinationFrame.width = sourceFrame.width;
         destinationFrame.height = sourceFrame.height;
@@ -34763,6 +35077,8 @@ var FilterManager = function (_WebGLManager) {
         var renderer = this.renderer;
         var filters = this.managedFilters;
 
+        renderer.off('prerender', this.onPrerender, this);
+
         for (var i = 0; i < filters.length; i++) {
             if (!contextLost) {
                 filters[i].glShaders[renderer.CONTEXT_UID].destroy();
@@ -34794,11 +35110,17 @@ var FilterManager = function (_WebGLManager) {
 
 
     FilterManager.prototype.getPotRenderTarget = function getPotRenderTarget(gl, minWidth, minHeight, resolution) {
-        // TODO you could return a bigger texture if there is not one in the pool?
-        minWidth = _bitTwiddle2.default.nextPow2(minWidth * resolution);
-        minHeight = _bitTwiddle2.default.nextPow2(minHeight * resolution);
+        var key = screenKey;
 
-        var key = (minWidth & 0xFFFF) << 16 | minHeight & 0xFFFF;
+        minWidth *= resolution;
+        minHeight *= resolution;
+
+        if (minWidth !== this._screenWidth || minHeight !== this._screenHeight) {
+            // TODO you could return a bigger texture if there is not one in the pool?
+            minWidth = _bitTwiddle2.default.nextPow2(minWidth);
+            minHeight = _bitTwiddle2.default.nextPow2(minHeight);
+            key = (minWidth & 0xFFFF) << 16 | minHeight & 0xFFFF;
+        }
 
         if (!this.pool[key]) {
             this.pool[key] = [];
@@ -34859,9 +35181,36 @@ var FilterManager = function (_WebGLManager) {
     FilterManager.prototype.freePotRenderTarget = function freePotRenderTarget(renderTarget) {
         var minWidth = renderTarget.size.width * renderTarget.resolution;
         var minHeight = renderTarget.size.height * renderTarget.resolution;
-        var key = (minWidth & 0xFFFF) << 16 | minHeight & 0xFFFF;
+
+        var key = screenKey;
+
+        if (minWidth !== this._screenWidth || minHeight !== this._screenHeight) {
+            key = (minWidth & 0xFFFF) << 16 | minHeight & 0xFFFF;
+        }
 
         this.pool[key].push(renderTarget);
+    };
+
+    /**
+     * Called before the renderer starts rendering.
+     *
+     */
+
+
+    FilterManager.prototype.onPrerender = function onPrerender() {
+        if (this._screenWidth !== this.renderer.view.width || this._screenHeight !== this.renderer.view.height) {
+            this._screenWidth = this.renderer.view.width;
+            this._screenHeight = this.renderer.view.height;
+
+            var textures = this.pool[screenKey];
+
+            if (textures) {
+                for (var j = 0; j < textures.length; j++) {
+                    textures[j].destroy(true);
+                }
+            }
+            this.pool[screenKey] = [];
+        }
     };
 
     return FilterManager;
@@ -37984,7 +38333,7 @@ function generateSampleSrc(maxTextures) {
     return src;
 }
 
-},{"../../Shader":227,"path":192}],291:[function(require,module,exports){
+},{"../../Shader":227,"path":193}],291:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38168,8 +38517,8 @@ var Text = function (_Sprite) {
         var maxLineWidth = measured.maxLineWidth;
         var fontProperties = measured.fontProperties;
 
-        this.canvas.width = Math.ceil((width + style.padding * 2) * this.resolution);
-        this.canvas.height = Math.ceil((height + style.padding * 2) * this.resolution);
+        this.canvas.width = Math.ceil((Math.max(1, width) + style.padding * 2) * this.resolution);
+        this.canvas.height = Math.ceil((Math.max(1, height) + style.padding * 2) * this.resolution);
 
         context.scale(this.resolution, this.resolution);
 
@@ -38649,6 +38998,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * The TextMetrics object represents the measurement of a block of text with a specified style.
  *
+ * ```js
+ * let style = new PIXI.TextStyle({fontFamily : 'Arial', fontSize: 24, fill : 0xff1010, align : 'center'})
+ * let textMetrics = PIXI.TextMetrics.measureText('Your text', style)
+ * ```
+ *
  * @class
  * @memberOf PIXI
  */
@@ -38743,70 +39097,142 @@ var TextMetrics = function () {
 
         var context = canvas.getContext('2d');
 
-        // Greedy wrapping algorithm that will wrap words as the line grows longer
-        // than its horizontal bounds.
-        var result = '';
-        var firstChar = text.charAt(0);
-        var lines = text.split('\n');
-        var wordWrapWidth = style.wordWrapWidth;
-        var characterCache = {};
+        var line = '';
+        var width = 0;
+        var lines = '';
+        var cache = {};
+        var ls = style.letterSpacing;
 
-        for (var i = 0; i < lines.length; i++) {
-            var spaceLeft = wordWrapWidth;
-            var words = lines[i].split(' ');
+        // ideally there is letterSpacing after every char except the last one
+        // t_h_i_s_' '_i_s_' '_a_n_' '_e_x_a_m_p_l_e_' '_!
+        // so for convenience the above needs to be compared to width + 1 extra space
+        // t_h_i_s_' '_i_s_' '_a_n_' '_e_x_a_m_p_l_e_' '_!_
+        // ________________________________________________
+        // And then the final space is simply no appended to each line
+        var wordWrapWidth = style.wordWrapWidth + style.letterSpacing;
 
-            for (var j = 0; j < words.length; j++) {
-                var wordWidth = context.measureText(words[j]).width;
+        // get the width of a space and add it to cache
+        var spaceWidth = TextMetrics.getFromCache(' ', ls, cache, context);
 
-                if (style.breakWords && wordWidth > wordWrapWidth) {
-                    // Word should be split in the middle
-                    var characters = words[j].split('');
+        // break text into words
+        var words = text.split(' ');
 
-                    for (var c = 0; c < characters.length; c++) {
-                        var character = characters[c];
-                        var characterWidth = characterCache[character];
+        for (var i = 0; i < words.length; i++) {
+            var word = words[i];
 
-                        if (characterWidth === undefined) {
-                            characterWidth = context.measureText(character).width;
-                            characterCache[character] = characterWidth;
+            // get word width from cache if possible
+            var wordWidth = TextMetrics.getFromCache(word, ls, cache, context);
+
+            // word is longer than desired bounds
+            if (wordWidth > wordWrapWidth) {
+                // break large word over multiple lines
+                if (style.breakWords) {
+                    // add a space to the start of the word unless its at the beginning of the line
+                    var tmpWord = line.length > 0 ? ' ' + word : word;
+
+                    // break word into characters
+                    var characters = tmpWord.split('');
+
+                    // loop the characters
+                    for (var j = 0; j < characters.length; j++) {
+                        var character = characters[j];
+                        var characterWidth = TextMetrics.getFromCache(character, ls, cache, context);
+
+                        if (characterWidth + width > wordWrapWidth) {
+                            lines += TextMetrics.addLine(line);
+                            line = '';
+                            width = 0;
                         }
 
-                        if (characterWidth > spaceLeft) {
-                            result += '\n' + character;
-                            spaceLeft = wordWrapWidth - characterWidth;
-                        } else {
-                            if (c === 0 && (j > 0 || firstChar === ' ')) {
-                                result += ' ';
-                            }
-
-                            result += character;
-                            spaceLeft -= characterWidth;
-                        }
-                    }
-                } else {
-                    var wordWidthWithSpace = wordWidth + context.measureText(' ').width;
-
-                    if (j === 0 || wordWidthWithSpace > spaceLeft) {
-                        // Skip printing the newline if it's the first word of the line that is
-                        // greater than the word wrap width.
-                        if (j > 0) {
-                            result += '\n';
-                        }
-                        result += words[j];
-                        spaceLeft = wordWrapWidth - wordWidth;
-                    } else {
-                        spaceLeft -= wordWidthWithSpace;
-                        result += ' ' + words[j];
+                        line += character;
+                        width += characterWidth;
                     }
                 }
+
+                // run word out of the bounds
+                else {
+                        // if there are words in this line already
+                        // finish that line and start a new one
+                        if (line.length > 0) {
+                            lines += TextMetrics.addLine(line);
+                            line = '';
+                            width = 0;
+                        }
+
+                        // give it its own line
+                        lines += TextMetrics.addLine(word);
+                        line = '';
+                        width = 0;
+                    }
             }
 
-            if (i < lines.length - 1) {
-                result += '\n';
-            }
+            // word could fit
+            else {
+                    // word won't fit, start a new line
+                    if (wordWidth + width > wordWrapWidth) {
+                        lines += TextMetrics.addLine(line);
+                        line = '';
+                        width = 0;
+                    }
+
+                    // add the word to the current line
+                    if (line.length > 0) {
+                        // add a space if it is not the beginning
+                        line += ' ' + word;
+                    } else {
+                        // add without a space if it is the beginning
+                        line += word;
+                    }
+
+                    width += wordWidth + spaceWidth;
+                }
         }
 
-        return result;
+        lines += TextMetrics.addLine(line, false);
+
+        return lines;
+    };
+
+    /**
+     *  Convienience function for logging each line added
+     *  during the wordWrap method
+     *
+     * @param  {string}   line    - The line of text to add
+     * @param  {boolean}  newLine - Add new line character to end
+     * @return {string}   A formatted line
+     */
+
+
+    TextMetrics.addLine = function addLine(line) {
+        var newLine = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+        line = newLine ? line + '\n' : line;
+
+        return line;
+    };
+
+    /**
+     * Gets & sets the widths of calculated characters in a cache object
+     *
+     * @param  {string}                    key            The key
+     * @param  {number}                    letterSpacing  The letter spacing
+     * @param  {object}                    cache          The cache
+     * @param  {CanvasRenderingContext2D}  context        The canvas context
+     * @return {number}                    The from cache.
+     */
+
+
+    TextMetrics.getFromCache = function getFromCache(key, letterSpacing, cache, context) {
+        var width = cache[key];
+
+        if (width === undefined) {
+            var spacing = key.length * letterSpacing;
+
+            width = context.measureText(key).width + spacing;
+            cache[key] = width;
+        }
+
+        return width;
     };
 
     /**
@@ -43309,7 +43735,7 @@ function determineCrossOrigin(url) {
 'use strict';
 
 exports.__esModule = true;
-exports.premultiplyBlendMode = exports.BaseTextureCache = exports.TextureCache = exports.mixins = exports.pluginTarget = exports.EventEmitter = exports.removeItems = exports.isMobile = undefined;
+exports.premultiplyBlendMode = exports.BaseTextureCache = exports.TextureCache = exports.earcut = exports.mixins = exports.pluginTarget = exports.EventEmitter = exports.removeItems = exports.isMobile = undefined;
 exports.uid = uid;
 exports.hex2rgb = hex2rgb;
 exports.hex2string = hex2string;
@@ -43359,6 +43785,10 @@ var _mapPremultipliedBlendModes = require('./mapPremultipliedBlendModes');
 
 var _mapPremultipliedBlendModes2 = _interopRequireDefault(_mapPremultipliedBlendModes);
 
+var _earcut = require('earcut');
+
+var _earcut2 = _interopRequireDefault(_earcut);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -43389,6 +43819,7 @@ exports.removeItems = _removeArrayItems2.default;
 exports.EventEmitter = _eventemitter2.default;
 exports.pluginTarget = _pluginTarget2.default;
 exports.mixins = mixins;
+exports.earcut = _earcut2.default;
 
 /**
  * Gets the next unique identifier
@@ -43782,7 +44213,7 @@ function premultiplyTintToRgba(tint, alpha, out, premultiply) {
     return out;
 }
 
-},{"../const":229,"../settings":284,"./mapPremultipliedBlendModes":309,"./mixin":311,"./pluginTarget":312,"eventemitter3":372,"ismobilejs":188,"remove-array-items":378}],309:[function(require,module,exports){
+},{"../const":229,"../settings":284,"./mapPremultipliedBlendModes":309,"./mixin":311,"./pluginTarget":312,"earcut":7,"eventemitter3":372,"ismobilejs":189,"remove-array-items":378}],309:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43847,7 +44278,7 @@ function maxRecommendedTextures(max) {
     return max;
 }
 
-},{"ismobilejs":188}],311:[function(require,module,exports){
+},{"ismobilejs":189}],311:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -47768,7 +48199,7 @@ exports.default = TilingSpriteRenderer;
 
 core.WebGLRenderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
 
-},{"../../core":248,"../../core/const":229,"path":192}],326:[function(require,module,exports){
+},{"../../core":248,"../../core/const":229,"path":193}],326:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47852,7 +48283,7 @@ var AlphaFilter = function (_core$Filter) {
 
 exports.default = AlphaFilter;
 
-},{"../../core":248,"path":192}],327:[function(require,module,exports){
+},{"../../core":248,"path":193}],327:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -48763,7 +49194,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 
 
     ColorMatrixFilter.prototype.negative = function negative(multiply) {
-        var matrix = [0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0];
+        var matrix = [-1, 0, 0, 1, 0, 0, -1, 0, 1, 0, 0, 0, -1, 1, 0, 0, 0, 0, 1, 0];
 
         this._loadMatrix(matrix, multiply);
     };
@@ -49015,7 +49446,7 @@ var ColorMatrixFilter = function (_core$Filter) {
 exports.default = ColorMatrixFilter;
 ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
-},{"../../core":248,"path":192}],334:[function(require,module,exports){
+},{"../../core":248,"path":193}],334:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49123,7 +49554,7 @@ var DisplacementFilter = function (_core$Filter) {
 
 exports.default = DisplacementFilter;
 
-},{"../../core":248,"path":192}],335:[function(require,module,exports){
+},{"../../core":248,"path":193}],335:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49177,7 +49608,7 @@ var FXAAFilter = function (_core$Filter) {
 
 exports.default = FXAAFilter;
 
-},{"../../core":248,"path":192}],336:[function(require,module,exports){
+},{"../../core":248,"path":193}],336:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -49353,7 +49784,7 @@ var NoiseFilter = function (_core$Filter) {
 
 exports.default = NoiseFilter;
 
-},{"../../core":248,"path":192}],338:[function(require,module,exports){
+},{"../../core":248,"path":193}],338:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -49642,11 +50073,10 @@ var InteractionData = function () {
    * Copies properties from normalized event data.
    *
    * @param {Touch|MouseEvent|PointerEvent} event The normalized event data
-   * @private
    */
 
 
-  InteractionData.prototype._copyEvent = function _copyEvent(event) {
+  InteractionData.prototype.copyEvent = function copyEvent(event) {
     // isPrimary should only change on touchstart/pointerdown, so we don't want to overwrite
     // it with "false" on later events when our shim for it on touch events might not be
     // accurate
@@ -49654,7 +50084,9 @@ var InteractionData = function () {
       this.isPrimary = true;
     }
     this.button = event.button;
-    this.buttons = event.buttons;
+    // event.buttons is not available in all browsers (ie. Safari), but it does have a non-standard
+    // event.which property instead, which conveys the same information.
+    this.buttons = Number.isInteger(event.buttons) ? event.buttons : event.which;
     this.width = event.width;
     this.height = event.height;
     this.tiltX = event.tiltX;
@@ -49668,12 +50100,10 @@ var InteractionData = function () {
 
   /**
    * Resets the data for pooling.
-   *
-   * @private
    */
 
 
-  InteractionData.prototype._reset = function _reset() {
+  InteractionData.prototype.reset = function reset() {
     // isPrimary is the only property that we really need to reset - everything else is
     // guaranteed to be overwritten
     this.isPrimary = false;
@@ -49760,12 +50190,10 @@ var InteractionEvent = function () {
 
   /**
    * Resets the event.
-   *
-   * @private
    */
 
 
-  InteractionEvent.prototype._reset = function _reset() {
+  InteractionEvent.prototype.reset = function reset() {
     this.stopped = false;
     this.currentTarget = null;
     this.target = null;
@@ -51163,7 +51591,7 @@ var InteractionManager = function (_EventEmitter) {
 
         var events = this.normalizeToPointerData(originalEvent);
 
-        if (events[0].pointerType === 'mouse') {
+        if (events[0].pointerType === 'mouse' || events[0].pointerType === 'pen') {
             this.didMove = true;
 
             this.cursor = null;
@@ -51371,7 +51799,7 @@ var InteractionManager = function (_EventEmitter) {
         }
         // copy properties from the event, so that we can make sure that touch/pointer specific
         // data is available
-        interactionData._copyEvent(event);
+        interactionData.copyEvent(event);
 
         return interactionData;
     };
@@ -51389,7 +51817,7 @@ var InteractionManager = function (_EventEmitter) {
 
         if (interactionData) {
             delete this.activeInteractionData[pointerId];
-            interactionData._reset();
+            interactionData.reset();
             this.interactionDataPool.push(interactionData);
         }
     };
@@ -51426,7 +51854,7 @@ var InteractionManager = function (_EventEmitter) {
         }
 
         interactionData.originalEvent = pointerEvent;
-        interactionEvent._reset();
+        interactionEvent.reset();
 
         return interactionEvent;
     };
@@ -51984,7 +52412,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":248,"../extras":324,"path":192,"resource-loader":383}],346:[function(require,module,exports){
+},{"../core":248,"../extras":324,"path":193,"resource-loader":383}],346:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54001,7 +54429,7 @@ exports.default = MeshRenderer;
 
 core.WebGLRenderer.registerPlugin('mesh', MeshRenderer);
 
-},{"../../core":248,"../Mesh":350,"path":192,"pixi-gl-core":212}],357:[function(require,module,exports){
+},{"../../core":248,"../Mesh":350,"path":193,"pixi-gl-core":212}],357:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -54114,10 +54542,18 @@ var ParticleContainer = function (_core$Container) {
         _this._glBuffers = {};
 
         /**
-         * @member {number}
+         * for every batch stores _updateID corresponding to the last change in that batch
+         * @member {number[]}
          * @private
          */
-        _this._bufferToUpdate = 0;
+        _this._bufferUpdateIDs = [];
+
+        /**
+         * when child inserted, removed or changes position this number goes up
+         * @member {number[]}
+         * @private
+         */
+        _this._updateID = 0;
 
         /**
          * @member {boolean}
@@ -54251,9 +54687,10 @@ var ParticleContainer = function (_core$Container) {
     ParticleContainer.prototype.onChildrenChange = function onChildrenChange(smallestChildIndex) {
         var bufferIndex = Math.floor(smallestChildIndex / this._batchSize);
 
-        if (bufferIndex < this._bufferToUpdate) {
-            this._bufferToUpdate = bufferIndex;
+        while (this._bufferUpdateIDs.length < bufferIndex) {
+            this._bufferUpdateIDs.push(0);
         }
+        this._bufferUpdateIDs[bufferIndex] = ++this._updateID;
     };
 
     /**
@@ -54362,6 +54799,7 @@ var ParticleContainer = function (_core$Container) {
 
         this._properties = null;
         this._buffers = null;
+        this._bufferUpdateIDs = null;
     };
 
     _createClass(ParticleContainer, [{
@@ -54509,6 +54947,8 @@ var ParticleBuffer = function () {
         this.dynamicBuffer = null;
         this.dynamicData = null;
         this.dynamicDataUint32 = null;
+
+        this._updateID = 0;
 
         this.initBuffers();
     }
@@ -54842,6 +55282,8 @@ var ParticleRenderer = function (_core$ObjectRenderer) {
         // make sure the texture is bound..
         this.shader.uniforms.uSampler = renderer.bindTexture(baseTexture);
 
+        var updateStatic = false;
+
         // now lets upload and render the buffers..
         for (var i = 0, j = 0; i < totalChildren; i += batchSize, j += 1) {
             var amount = totalChildren - i;
@@ -54862,10 +55304,13 @@ var ParticleRenderer = function (_core$ObjectRenderer) {
             // we always upload the dynamic
             buffer.uploadDynamic(children, i, amount);
 
+            var bid = container._bufferUpdateIDs[i] || 0;
+
+            updateStatic = updateStatic || buffer._updateID < bid;
             // we only upload the static content when we have to!
-            if (container._bufferToUpdate === j) {
+            if (updateStatic) {
+                buffer._updateID = container._updateID;
                 buffer.uploadStatic(children, i, amount);
-                container._bufferToUpdate = j + 1;
             }
 
             // bind the buffer
@@ -55205,7 +55650,7 @@ if (!Object.assign) {
 // https://github.com/sindresorhus/object-assign
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 
-},{"object-assign":190}],364:[function(require,module,exports){
+},{"object-assign":191}],364:[function(require,module,exports){
 'use strict';
 
 require('./Object.assign');
@@ -58103,7 +58548,7 @@ var Loader = function () {
 
 exports.default = Loader;
 
-},{"./Resource":380,"./async":381,"mini-signals":189,"parse-uri":191}],380:[function(require,module,exports){
+},{"./Resource":380,"./async":381,"mini-signals":190,"parse-uri":192}],380:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -59259,7 +59704,7 @@ function reqType(xhr) {
     return xhr.toString().replace('object ', '');
 }
 
-},{"mini-signals":189,"parse-uri":191}],381:[function(require,module,exports){
+},{"mini-signals":190,"parse-uri":192}],381:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -64119,7 +64564,7 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":409,"exists":8,"pixi-ease":194}],402:[function(require,module,exports){
+},{"./plugin":409,"exists":9,"pixi-ease":197}],402:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class ClampZoom extends Plugin
@@ -64426,7 +64871,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":409,"exists":8}],405:[function(require,module,exports){
+},{"./plugin":409,"exists":9}],405:[function(require,module,exports){
 const exists = require('exists')
 
 const Plugin = require('./plugin')
@@ -64558,7 +65003,7 @@ module.exports = class Drag extends Plugin
         }
     }
 
-    wheel(dx, dy)
+    wheel(e)
     {
         if (this.paused)
         {
@@ -64570,14 +65015,15 @@ module.exports = class Drag extends Plugin
             const wheel = this.parent.plugins['wheel']
             if (!wheel)
             {
-                this.parent.x += dx * this.wheelScroll * this.reverse
-                this.parent.y += dy * this.wheelScroll * this.reverse
+                this.parent.x += e.deltaX * this.wheelScroll * this.reverse
+                this.parent.y += e.deltaY * this.wheelScroll * this.reverse
                 if (this.clampWheel)
                 {
                     this.clamp()
                 }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.dirty = true
+                e.preventDefault()
                 return true
             }
         }
@@ -64656,7 +65102,7 @@ module.exports = class Drag extends Plugin
         }
     }
 }
-},{"./plugin":409,"exists":8}],406:[function(require,module,exports){
+},{"./plugin":409,"exists":9}],406:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -64910,7 +65356,7 @@ module.exports = class MouseEdges extends Plugin
         }
     }
 }
-},{"./plugin":409,"exists":8,"yy-angle":396}],408:[function(require,module,exports){
+},{"./plugin":409,"exists":9,"yy-angle":396}],408:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -65196,7 +65642,7 @@ module.exports = class SnapZoom extends Plugin
         super.resume()
     }
 }
-},{"./plugin":409,"exists":8,"pixi-ease":194}],411:[function(require,module,exports){
+},{"./plugin":409,"exists":9,"pixi-ease":197}],411:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -65310,7 +65756,7 @@ module.exports = class Snap extends Plugin
         }
     }
 }
-},{"./plugin":409,"exists":8,"pixi-ease":194}],412:[function(require,module,exports){
+},{"./plugin":409,"exists":9,"pixi-ease":197}],412:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const exists = require('exists')
 
@@ -65341,6 +65787,7 @@ class Viewport extends PIXI.Container
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, used to calculate pointer postion relative to
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @fires clicked
      * @fires drag-start
@@ -65372,6 +65819,7 @@ class Viewport extends PIXI.Container
         this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
         this.forceHitArea = options.forceHitArea
         this.threshold = exists(options.threshold) ? options.threshold : 5
+        this.interaction = options.interaction || null
         this.listeners(options.divWheel || document.body)
 
         /**
@@ -66477,7 +66925,9 @@ class Viewport extends PIXI.Container
  */
 
 module.exports = Viewport
-},{"./bounce":401,"./clamp":403,"./clamp-zoom":402,"./decelerate":404,"./drag":405,"./follow":406,"./mouse-edges":407,"./pinch":408,"./snap":411,"./snap-zoom":410,"./wheel":413,"exists":8,"pixi.js":338}],413:[function(require,module,exports){
+},{"./bounce":401,"./clamp":403,"./clamp-zoom":402,"./decelerate":404,"./drag":405,"./follow":406,"./mouse-edges":407,"./pinch":408,"./snap":411,"./snap-zoom":410,"./wheel":413,"exists":9,"pixi.js":338}],413:[function(require,module,exports){
+const PIXI = require('pixi.js')
+
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
@@ -66501,6 +66951,21 @@ module.exports = class Wheel extends Plugin
         this.reverse = options.reverse
     }
 
+    getPointerPosition(evt)
+    {
+        let point = new PIXI.Point()
+        if (this.parent.interaction)
+        {
+            this.parent.interaction.mapPositionToPoint(point, evt.clientX, evt.clientY)
+        }
+        else
+        {
+            point.x = evt.clientX
+            point.y = evt.clientY
+        }
+        return point
+    }
+
     wheel(e)
     {
         if (this.paused)
@@ -66517,7 +66982,8 @@ module.exports = class Wheel extends Plugin
         {
             change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
         }
-        let point = { x: e.clientX, y: e.clientY }
+        let point = this.getPointerPosition(e)
+
         let oldPoint
         if (!this.center)
         {
@@ -66545,4 +67011,4 @@ module.exports = class Wheel extends Plugin
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
     }
 }
-},{"./plugin":409}]},{},[1]);
+},{"./plugin":409,"pixi.js":338}]},{},[1]);
