@@ -129,7 +129,7 @@ module.exports = class Drag extends Plugin
         }
     }
 
-    wheel(dx, dy)
+    wheel(e)
     {
         if (this.paused)
         {
@@ -141,14 +141,15 @@ module.exports = class Drag extends Plugin
             const wheel = this.parent.plugins['wheel']
             if (!wheel)
             {
-                this.parent.x += dx * this.wheelScroll * this.reverse
-                this.parent.y += dy * this.wheelScroll * this.reverse
+                this.parent.x += e.deltaX * this.wheelScroll * this.reverse
+                this.parent.y += e.deltaY * this.wheelScroll * this.reverse
                 if (this.clampWheel)
                 {
                     this.clamp()
                 }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.dirty = true
+                e.preventDefault()
                 return true
             }
         }

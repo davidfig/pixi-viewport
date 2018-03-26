@@ -63,8 +63,6 @@ class Viewport extends PIXI.Container
         this.interaction = options.interaction || null
         this.listeners(options.divWheel || document.body)
 
-
-
         /**
          * active touch point ids on the viewport
          * @type {number[]}
