@@ -79,7 +79,10 @@ module.exports = class SnapZoom extends Plugin
 
     down()
     {
-        this.snapping = null
+        if (this.interrupt)
+        {
+            this.snapping = null
+        }
     }
 
     update(elapsed)
