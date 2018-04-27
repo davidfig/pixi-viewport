@@ -1,4 +1,4 @@
-(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
@@ -189,7 +189,7 @@ window.onload = function ()
 
     require('./highlight')('https://github.com/davidfig/pixi-viewport')
 }
-},{"../src/viewport":412,"./gui":2,"./highlight":3,"clicked":6,"pixi-ease":197,"pixi.js":338,"yy-counter":398,"yy-fps":399,"yy-random":400}],2:[function(require,module,exports){
+},{"../src/viewport":413,"./gui":2,"./highlight":3,"clicked":6,"pixi-ease":197,"pixi.js":338,"yy-counter":399,"yy-fps":400,"yy-random":401}],2:[function(require,module,exports){
 let _viewport, _drawWorld, _gui, _options, _world
 
 const TEST = false
@@ -1036,20 +1036,28 @@ exports.nextCombination = function(v) {
 },{}],5:[function(require,module,exports){
 
 },{}],6:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 /**
  * Javascript: create click event for both mouse and touch
  * @example
  *
- * import clicked from 'clicked';
- * // or var clicked = require('clicked');
+ * const clicked = require('clicked')
  *
- *  function handleClick()
- *  {
- *      console.log('I was clicked.');
- *  }
+ * function handleClick()
+ * {
+ *    console.log('I was clicked.')
+ * }
  *
- *  var div = document.getElementById('clickme');
- *  clicked(div, handleClick, {thresshold: 15});
+ * const div = document.getElementById('clickme')
+ * const c = clicked(div, handleClick, {thresshold: 15})
+ *
+ * // change callback
+ * c.callback = () => console.log('different clicker')
  *
  */
 
@@ -1059,85 +1067,112 @@ exports.nextCombination = function(v) {
  * @param {object} [options]
  * @param {number} [options.thresshold=10] if touch moves threshhold-pixels then the touch-click is cancelled
  * @param {*} [options.args] arguments for callback function
- * @returns {object} object
- * @returns {function} object.disable() - disables clicked
- * @returns {function} object.enable() - enables clicked after disable() is called
+ * @returns {Clicked}
  */
-function clicked(element, callback, options)
-{
-    function touchstart(e)
-    {
-        if (disabled)
-        {
-            return;
-        }
-        if (e.touches.length === 1)
-        {
-            lastX = e.changedTouches[0].screenX;
-            lastY = e.changedTouches[0].screenY;
-            down = true;
-        }
-    }
-
-    function pastThreshhold(x, y)
-    {
-        return Math.abs(lastX - x) > threshhold || Math.abs(lastY - y) > threshhold;
-    }
-
-    function touchmove(e)
-    {
-        if (!down || e.touches.length !== 1)
-        {
-            touchcancel();
-            return;
-        }
-        var x = e.changedTouches[0].screenX;
-        var y = e.changedTouches[0].screenY;
-        if (pastThreshhold(x, y))
-        {
-            touchcancel();
-        }
-    }
-
-    function touchcancel()
-    {
-        down = false;
-    }
-
-    function touchend(e)
-    {
-        if (down)
-        {
-            e.preventDefault();
-            callback(e, options.args);
-        }
-    }
-
-    function mouseclick(e)
-    {
-        if (!disabled)
-        {
-            callback(e, options.args);
-        }
-    }
-
-    options = options || {};
-    var down, lastX, lastY, disabled;
-    var threshhold = options.thresshold || 10;
-
-    element.addEventListener('click', mouseclick);
-    element.addEventListener('touchstart', touchstart, { passive: true });
-    element.addEventListener('touchmove', touchmove, { passive: true });
-    element.addEventListener('touchcancel', touchcancel);
-    element.addEventListener('touchend', touchend);
-
-    return {
-        disable: function () { disabled = true; },
-        enable: function () { disabled = false; }
-    };
+function clicked(element, callback, options) {
+    return new Clicked(element, callback, options);
 }
 
+var Clicked = function () {
+    function Clicked(element, callback, options) {
+        var _this = this;
+
+        _classCallCheck(this, Clicked);
+
+        this.options = options || {};
+        this.threshhold = this.options.thresshold || 10;
+        this.events = {
+            mouseclick: function mouseclick(e) {
+                return _this.mouseclick(e);
+            },
+            touchstart: function touchstart(e) {
+                return _this.touchstart(e);
+            },
+            touchmove: function touchmove(e) {
+                return _this.touchmove(e);
+            },
+            touchcancel: function touchcancel(e) {
+                return _this.touchcancel(e);
+            },
+            touchend: function touchend(e) {
+                return _this.touchend(e);
+            }
+        };
+        element.addEventListener('click', this.events.mouseclick);
+        element.addEventListener('touchstart', this.events.touchstart, { passive: true });
+        element.addEventListener('touchmove', this.events.touchmove, { passive: true });
+        element.addEventListener('touchcancel', this.events.touchcancel);
+        element.addEventListener('touchend', this.events.touchend);
+        this.element = element;
+        this.callback = callback;
+    }
+
+    /**
+     * removes event listeners added by Clicked
+     */
+
+
+    _createClass(Clicked, [{
+        key: 'destroy',
+        value: function destroy() {
+            this.element.removeEventListener('click', this.events.mouseclick);
+            this.element.removeEventListener('touchstart', this.events.touchstart, { passive: true });
+            this.element.removeEventListener('touchmove', this.events.touchmove, { passive: true });
+            this.element.removeEventListener('touchcancel', this.events.touchcancel);
+            this.element.removeEventListener('touchend', this.events.touchend);
+        }
+    }, {
+        key: 'touchstart',
+        value: function touchstart(e) {
+            if (e.touches.length === 1) {
+                this.lastX = e.changedTouches[0].screenX;
+                this.lastY = e.changedTouches[0].screenY;
+                this.down = true;
+            }
+        }
+    }, {
+        key: 'pastThreshhold',
+        value: function pastThreshhold(x, y) {
+            return Math.abs(this.lastX - x) > this.threshhold || Math.abs(this.lastY - y) > this.threshhold;
+        }
+    }, {
+        key: 'touchmove',
+        value: function touchmove(e) {
+            if (!this.down || e.touches.length !== 1) {
+                this.touchcancel();
+                return;
+            }
+            var x = e.changedTouches[0].screenX;
+            var y = e.changedTouches[0].screenY;
+            if (this.pastThreshhold(x, y)) {
+                this.touchcancel();
+            }
+        }
+    }, {
+        key: 'touchcancel',
+        value: function touchcancel() {
+            this.down = false;
+        }
+    }, {
+        key: 'touchend',
+        value: function touchend(e) {
+            if (this.down) {
+                e.preventDefault();
+                this.callback(e, this.options.args);
+            }
+        }
+    }, {
+        key: 'mouseclick',
+        value: function mouseclick(e) {
+            this.callback(e, this.options.args);
+        }
+    }]);
+
+    return Clicked;
+}();
+
 module.exports = clicked;
+
 },{}],7:[function(require,module,exports){
 'use strict';
 
@@ -2142,13 +2177,19 @@ function allExist (/* vals */) {
   return vals.every(exists);
 }
 },{}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = forkMe;
 // Programatically add fork me on github ribbon from javascript without making changes to CSS, HTML, or adding image files
 // by David Figatner
-// copyright 2017 YOPEY YOPEY LLC
+// copyright 2018 YOPEY YOPEY LLC
 // MIT license
 // based on https://github.com/simonwhitaker/github-fork-ribbon-css (MIT license)
 
-const RIBBON = {
+var RIBBON = {
     width: '12.1em',
     height: '12.1em',
     overflow: 'hidden',
@@ -2159,60 +2200,18 @@ const RIBBON = {
     fontSize: '13px',
     textDecoration: 'none',
     textIndent: '-999999px'
-}
+};
 
-const BEFORE_AFTER = [
-    ['position', 'absolute'],
-    ['display', 'block'],
-    ['width', '15.38em'],
-    ['height', '1.54em'],
-    ['top', '3.23em'],
-    ['right', '-3.23em'],
-    ['-webkit-box-sizing', 'content-box'],
-    ['-moz-box-sizing', 'content-box'],
-    ['box-sizing', 'content-box'],
-    ['-webkit-transform', 'rotate(45deg)'],
-    ['-moz-transform', 'rotate(45deg)'],
-    ['-ms-Transform', 'rotate(45deg)'],
-    ['-o-transform', 'rotate(45deg)'],
-    ['transform', 'rotate(45deg)']
-]
+var BEFORE_AFTER = [['position', 'absolute'], ['display', 'block'], ['width', '15.38em'], ['height', '1.54em'], ['top', '3.23em'], ['right', '-3.23em'], ['-webkit-box-sizing', 'content-box'], ['-moz-box-sizing', 'content-box'], ['box-sizing', 'content-box'], ['-webkit-transform', 'rotate(45deg)'], ['-moz-transform', 'rotate(45deg)'], ['-ms-Transform', 'rotate(45deg)'], ['-o-transform', 'rotate(45deg)'], ['transform', 'rotate(45deg)']];
 
-const BEFORE = [
-    ['content', '""'],
-    ['padding', '.38em 0'],
-    ['background-color', '#a00'],
-    ['background-image', '-webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.15)))'],
-    ['background-image', '-webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'],
-    ['background-image', '-moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'],
-    ['background-image', '-ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'],
-    ['background-image', '-o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'],
-    ['background-image', 'linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'],
-    ['box-shadow', '0 .15em .23em 0 rgba(0, 0, 0, 0.5)'],
-    ['pointer-events', 'auto']
-]
+var BEFORE = [['content', '""'], ['padding', '.38em 0'], ['background-color', '#a00'], ['background-image', '-webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0.15)))'], ['background-image', '-webkit-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'], ['background-image', '-moz-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'], ['background-image', '-ms-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'], ['background-image', '-o-linear-gradient(top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'], ['background-image', 'linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.15))'], ['box-shadow', '0 .15em .23em 0 rgba(0, 0, 0, 0.5)'], ['pointer-events', 'auto']];
 
-const AFTER = [
-    ['content', 'attr(data-ribbon)'],
-    ['color', '#fff'],
-    ['font', '700 1em "Helvetica Neue", Helvetica, Arial, sans-serif'],
-    ['line-height', '1.54em'],
-    ['text-decoration', 'none'],
-    ['text-shadow', '0 -.08em rgba(0, 0, 0, 0.5)'],
-    ['text-align', 'center'],
-    ['text-indent', '0'],
-    ['padding', '.15em 0'],
-    ['margin', '.15em 0'],
-    ['border-width', '.08em 0'],
-    ['border-style', 'dotted'],
-    ['border-color', '#fff'],
-    ['border-color', 'rgba(255, 255, 255, 0.7)']
-]
+var AFTER = [['content', 'attr(data-ribbon)'], ['color', '#fff'], ['font', '700 1em "Helvetica Neue", Helvetica, Arial, sans-serif'], ['line-height', '1.54em'], ['text-decoration', 'none'], ['text-shadow', '0 -.08em rgba(0, 0, 0, 0.5)'], ['text-align', 'center'], ['text-indent', '0'], ['padding', '.15em 0'], ['margin', '.15em 0'], ['border-width', '.08em 0'], ['border-style', 'dotted'], ['border-color', '#fff'], ['border-color', 'rgba(255, 255, 255, 0.7)']];
 
 /**
  * Programmatically add "Fork me Github" Ribbon using inline CSS
  * Based on CSS from https,//github.com/simonwhitaker/github-fork-ribbon-css
- * @param {string} url - html link
+ * @param {string} [url] - do not need to include if URL is called from https://username.github.io/project/html
  * @param {object} [options]
  * @param {HTMLElement} [options.parent=document.body]
  * @param {boolean} [options.fixed]
@@ -2220,81 +2219,142 @@ const AFTER = [
  * @param {string} [options.text=fork me on github] text to show
  * @param {string} [options.background=#a00] color for ribbon
  */
-module.exports = function forkMe(url, options)
-{
-    options = options || {}
-    const a = document.createElement('a')
-    a.href = url
-    a.title = a.innerText = options.text || 'fork me on github'
-    a.setAttribute('data-ribbon', options.text || 'fork me on github')
-    a.className = 'github-fork-ribbon-' + Math.round(Math.random() * 100000)
-    if (options.parent)
-    {
-        options.parent.appendChild(a)
+function forkMe(url, options) {
+    options = options || {};
+    var a = document.createElement('a');
+    if (url) {
+        a.href = url;
+    } else {
+        var username = window.location.hostname.split('.')[0];
+        var project = window.location.pathname.split('/')[1];
+        a.href = 'https://github.com/' + username + '/' + project;
     }
-    else
-    {
-        document.body.appendChild(a)
+
+    a.title = a.innerText = options.text || 'fork me on github';
+    a.setAttribute('data-ribbon', options.text || 'fork me on github');
+    a.className = 'github-fork-ribbon-' + Math.round(Math.random() * 100000);
+    if (options.parent) {
+        options.parent.appendChild(a);
+    } else {
+        document.body.appendChild(a);
     }
-    a.style.position = options.fixed ? 'fixed' : 'absolute'
-    if (options.background)
-    {
-        BEFORE[2][1] = options.background
+    a.style.position = options.fixed ? 'fixed' : 'absolute';
+    if (options.background) {
+        BEFORE[2][1] = options.background;
     }
-    if (options.color)
-    {
-        AFTER[1][1] = options.color
+    if (options.color) {
+        AFTER[1][1] = options.color;
     }
-    for (let style in RIBBON)
-    {
-        a.style[style] = RIBBON[style]
+    for (var _style in RIBBON) {
+        a.style[_style] = RIBBON[_style];
     }
-    let beforeAfter = '{'
-    for (let style of BEFORE_AFTER)
-    {
-        beforeAfter += style[0] + ':' + style[1] + ';'
+    var beforeAfter = '{';
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _iterator = BEFORE_AFTER[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var _style2 = _step.value;
+
+            beforeAfter += _style2[0] + ':' + _style2[1] + ';';
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
     }
-    let before = beforeAfter
-    for (let style of BEFORE)
-    {
-        before += style[0] + ':' + style[1] + ';'
+
+    var before = beforeAfter;
+    var _iteratorNormalCompletion2 = true;
+    var _didIteratorError2 = false;
+    var _iteratorError2 = undefined;
+
+    try {
+        for (var _iterator2 = BEFORE[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _style3 = _step2.value;
+
+            before += _style3[0] + ':' + _style3[1] + ';';
+        }
+    } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+            }
+        } finally {
+            if (_didIteratorError2) {
+                throw _iteratorError2;
+            }
+        }
     }
-    let after = beforeAfter
-    for (let style of AFTER)
-    {
-        after += style[0] + ':' + style[1] + ';'
+
+    var after = beforeAfter;
+    var _iteratorNormalCompletion3 = true;
+    var _didIteratorError3 = false;
+    var _iteratorError3 = undefined;
+
+    try {
+        for (var _iterator3 = AFTER[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var _style4 = _step3.value;
+
+            after += _style4[0] + ':' + _style4[1] + ';';
+        }
+    } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
+            }
+        } finally {
+            if (_didIteratorError3) {
+                throw _iteratorError3;
+            }
+        }
     }
-    let bottom, left
-    if (options.side)
-    {
-        bottom = options.side.toLowerCase().indexOf('bottom') !== -1
-        left = options.side.toLowerCase().indexOf('left') !== -1
+
+    var bottom = void 0,
+        left = void 0;
+    if (options.side) {
+        bottom = options.side.toLowerCase().indexOf('bottom') !== -1;
+        left = options.side.toLowerCase().indexOf('left') !== -1;
     }
-    if (bottom)
-    {
-        a.style.top = 'auto'
-        a.style.bottom = 0
-        before += 'top:auto;bottom:3.23em;'
-        after += 'top:auto;bottom:3.23em;'
+    if (bottom) {
+        a.style.top = 'auto';
+        a.style.bottom = 0;
+        before += 'top:auto;bottom:3.23em;';
+        after += 'top:auto;bottom:3.23em;';
     }
-    if (left)
-    {
-        a.style.right = 'auto'
-        a.style.left = 0
-        before += 'right:auto;left:-3.23em;'
-        after += 'right:auto;left:-3.23em;'
+    if (left) {
+        a.style.right = 'auto';
+        a.style.left = 0;
+        before += 'right:auto;left:-3.23em;';
+        after += 'right:auto;left:-3.23em;';
     }
-    if ((left && !bottom) || (!left && bottom))
-    {
-        before += 'transform:rotate(-45deg);'
-        after += 'transform:rotate(-45deg);'
+    if (left && !bottom || !left && bottom) {
+        before += 'transform:rotate(-45deg);';
+        after += 'transform:rotate(-45deg);';
     }
-    const style = document.createElement('style')
-    document.head.appendChild(style)
-    const sheet = style.sheet
-    sheet.insertRule('.' + a.className + '::before' + before + '}')
-    sheet.insertRule('.' + a.className + '::after' + after + '}')
+    var style = document.createElement('style');
+    document.head.appendChild(style);
+    var sheet = style.sheet;
+    sheet.insertRule('.' + a.className + '::before' + before + '}');
+    sheet.insertRule('.' + a.className + '::after' + after + '}');
 }
+
 },{}],11:[function(require,module,exports){
 /*
 Syntax highlighting with language autodetection.
@@ -19785,7 +19845,7 @@ var substr = 'ab'.substr(-1) === 'b'
 ;
 
 }).call(this,require('_process'))
-},{"_process":373}],194:[function(require,module,exports){
+},{"_process":374}],194:[function(require,module,exports){
 
 /*
 	Copyright © 2001 Robert Penner
@@ -20228,7 +20288,7 @@ var face = function (_wait) {
 
 module.exports = face;
 
-},{"./wait":205,"yy-angle":396}],197:[function(require,module,exports){
+},{"./wait":205,"yy-angle":397}],197:[function(require,module,exports){
 'use strict';
 
 var list = require('./list');
@@ -21126,7 +21186,7 @@ var tint = function (_wait) {
 
 module.exports = tint;
 
-},{"./wait":205,"yy-color":397}],204:[function(require,module,exports){
+},{"./wait":205,"yy-color":398}],204:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -24126,7 +24186,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.7.1';
+var VERSION = exports.VERSION = '4.7.3';
 
 /**
  * Two Pi.
@@ -26111,7 +26171,7 @@ var DisplayObject = function (_EventEmitter) {
 exports.default = DisplayObject;
 DisplayObject.prototype.displayObjectUpdateTransform = DisplayObject.prototype.updateTransform;
 
-},{"../const":229,"../math":253,"../settings":284,"./Bounds":230,"./Transform":233,"./TransformStatic":235,"eventemitter3":372}],233:[function(require,module,exports){
+},{"../const":229,"../math":253,"../settings":284,"./Bounds":230,"./Transform":233,"./TransformStatic":235,"eventemitter3":373}],233:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -31908,7 +31968,7 @@ var SystemRenderer = function (_EventEmitter) {
 
 exports.default = SystemRenderer;
 
-},{"../const":229,"../display/Container":231,"../math":253,"../settings":284,"../textures/RenderTexture":296,"../utils":308,"eventemitter3":372}],260:[function(require,module,exports){
+},{"../const":229,"../display/Container":231,"../math":253,"../settings":284,"../textures/RenderTexture":296,"../utils":308,"eventemitter3":373}],260:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -41178,7 +41238,7 @@ var BaseTexture = function (_EventEmitter) {
 
 exports.default = BaseTexture;
 
-},{"../settings":284,"../utils":308,"../utils/determineCrossOrigin":307,"bit-twiddle":4,"eventemitter3":372}],296:[function(require,module,exports){
+},{"../settings":284,"../utils":308,"../utils/determineCrossOrigin":307,"bit-twiddle":4,"eventemitter3":373}],296:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -42289,7 +42349,7 @@ Texture.WHITE = createWhiteTexture();
 removeAllHandlers(Texture.WHITE);
 removeAllHandlers(Texture.WHITE.baseTexture);
 
-},{"../math":253,"../settings":284,"../utils":308,"./BaseTexture":295,"./TextureUvs":300,"./VideoBaseTexture":301,"eventemitter3":372}],299:[function(require,module,exports){
+},{"../math":253,"../settings":284,"../utils":308,"./BaseTexture":295,"./TextureUvs":300,"./VideoBaseTexture":301,"eventemitter3":373}],299:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43731,7 +43791,7 @@ function determineCrossOrigin(url) {
     return '';
 }
 
-},{"url":394}],308:[function(require,module,exports){
+},{"url":395}],308:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44213,7 +44273,7 @@ function premultiplyTintToRgba(tint, alpha, out, premultiply) {
     return out;
 }
 
-},{"../const":229,"../settings":284,"./mapPremultipliedBlendModes":309,"./mixin":311,"./pluginTarget":312,"earcut":7,"eventemitter3":372,"ismobilejs":189,"remove-array-items":378}],309:[function(require,module,exports){
+},{"../const":229,"../settings":284,"./mapPremultipliedBlendModes":309,"./mixin":311,"./pluginTarget":312,"earcut":7,"eventemitter3":373,"ismobilejs":189,"remove-array-items":379}],309:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44490,8 +44550,19 @@ exports.default = deprecation;
 // provide method to give a stack track for warnings
 // useful for tracking-down where deprecated methods/properties/classes
 // are being used within the code
+
+// A map of warning messages already fired
+var warnings = {};
+
+// provide method to give a stack track for warnings
+// useful for tracking-down where deprecated methods/properties/classes
+// are being used within the code
 function warn(msg) {
-    // @if DEBUG
+    // Ignore duplicat
+    if (warnings[msg]) {
+        return;
+    }
+
     /* eslint-disable no-console */
     var stack = new Error().stack;
 
@@ -44512,7 +44583,8 @@ function warn(msg) {
         }
     }
     /* eslint-enable no-console */
-    // @endif
+
+    warnings[msg] = true;
 }
 
 function deprecation(core) {
@@ -49898,7 +49970,7 @@ if (typeof _deprecation2.default === 'function') {
 global.PIXI = exports; // eslint-disable-line
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./accessibility":225,"./core":248,"./deprecation":314,"./extract":316,"./extras":324,"./filters":336,"./interaction":343,"./loaders":346,"./mesh":355,"./particles":358,"./polyfill":364,"./prepare":368}],339:[function(require,module,exports){
+},{"./accessibility":225,"./core":248,"./deprecation":314,"./extract":316,"./extras":324,"./filters":336,"./interaction":343,"./loaders":346,"./mesh":355,"./particles":358,"./polyfill":365,"./prepare":369}],339:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -51975,7 +52047,7 @@ exports.default = InteractionManager;
 core.WebGLRenderer.registerPlugin('interaction', InteractionManager);
 core.CanvasRenderer.registerPlugin('interaction', InteractionManager);
 
-},{"../core":248,"./InteractionData":339,"./InteractionEvent":340,"./InteractionTrackingData":342,"./interactiveTarget":344,"eventemitter3":372}],342:[function(require,module,exports){
+},{"../core":248,"./InteractionData":339,"./InteractionEvent":340,"./InteractionTrackingData":342,"./interactiveTarget":344,"eventemitter3":373}],342:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -52412,7 +52484,7 @@ function parse(resource, texture) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, texture);
 }
 
-},{"../core":248,"../extras":324,"path":193,"resource-loader":383}],346:[function(require,module,exports){
+},{"../core":248,"../extras":324,"path":193,"resource-loader":384}],346:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52540,7 +52612,7 @@ AppPrototype.destroy = function destroy(removeView) {
     this._parentDestroy(removeView);
 };
 
-},{"../core/Application":226,"./bitmapFontParser":345,"./loader":347,"./spritesheetParser":348,"./textureParser":349,"resource-loader":383}],347:[function(require,module,exports){
+},{"../core/Application":226,"./bitmapFontParser":345,"./loader":347,"./spritesheetParser":348,"./textureParser":349,"resource-loader":384}],347:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52711,7 +52783,7 @@ var Resource = _resourceLoader2.default.Resource;
 
 Resource.setExtensionXhrType('fnt', Resource.XHR_RESPONSE_TYPE.DOCUMENT);
 
-},{"./bitmapFontParser":345,"./spritesheetParser":348,"./textureParser":349,"eventemitter3":372,"resource-loader":383,"resource-loader/lib/middlewares/parsing/blob":384}],348:[function(require,module,exports){
+},{"./bitmapFontParser":345,"./spritesheetParser":348,"./textureParser":349,"eventemitter3":373,"resource-loader":384,"resource-loader/lib/middlewares/parsing/blob":385}],348:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52775,7 +52847,7 @@ function getResourcePath(resource, baseUrl) {
     return _url2.default.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
 }
 
-},{"../core":248,"resource-loader":383,"url":394}],349:[function(require,module,exports){
+},{"../core":248,"resource-loader":384,"url":395}],349:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -52798,7 +52870,7 @@ var _Texture2 = _interopRequireDefault(_Texture);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../core/textures/Texture":298,"resource-loader":383}],350:[function(require,module,exports){
+},{"../core/textures/Texture":298,"resource-loader":384}],350:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55638,6 +55710,18 @@ if (!Math.sign) {
 },{}],363:[function(require,module,exports){
 'use strict';
 
+// References:
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+
+if (!Number.isInteger) {
+    Number.isInteger = function numberIsInteger(value) {
+        return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+    };
+}
+
+},{}],364:[function(require,module,exports){
+'use strict';
+
 var _objectAssign = require('object-assign');
 
 var _objectAssign2 = _interopRequireDefault(_objectAssign);
@@ -55650,7 +55734,7 @@ if (!Object.assign) {
 // https://github.com/sindresorhus/object-assign
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 
-},{"object-assign":191}],364:[function(require,module,exports){
+},{"object-assign":191}],365:[function(require,module,exports){
 'use strict';
 
 require('./Object.assign');
@@ -55658,6 +55742,8 @@ require('./Object.assign');
 require('./requestAnimationFrame');
 
 require('./Math.sign');
+
+require('./Number.isInteger');
 
 if (!window.ArrayBuffer) {
     window.ArrayBuffer = Array;
@@ -55675,7 +55761,7 @@ if (!window.Uint16Array) {
     window.Uint16Array = Array;
 }
 
-},{"./Math.sign":362,"./Object.assign":363,"./requestAnimationFrame":365}],365:[function(require,module,exports){
+},{"./Math.sign":362,"./Number.isInteger":363,"./Object.assign":364,"./requestAnimationFrame":366}],366:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -55752,7 +55838,7 @@ if (!global.cancelAnimationFrame) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],366:[function(require,module,exports){
+},{}],367:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56240,7 +56326,7 @@ function findTextStyle(item, queue) {
     return false;
 }
 
-},{"../core":248,"./limiters/CountLimiter":369}],367:[function(require,module,exports){
+},{"../core":248,"./limiters/CountLimiter":370}],368:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56360,7 +56446,7 @@ function uploadBaseTextures(prepare, item) {
 
 core.CanvasRenderer.registerPlugin('prepare', CanvasPrepare);
 
-},{"../../core":248,"../BasePrepare":366}],368:[function(require,module,exports){
+},{"../../core":248,"../BasePrepare":367}],369:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56412,7 +56498,7 @@ Object.defineProperty(exports, 'TimeLimiter', {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./BasePrepare":366,"./canvas/CanvasPrepare":367,"./limiters/CountLimiter":369,"./limiters/TimeLimiter":370,"./webgl/WebGLPrepare":371}],369:[function(require,module,exports){
+},{"./BasePrepare":367,"./canvas/CanvasPrepare":368,"./limiters/CountLimiter":370,"./limiters/TimeLimiter":371,"./webgl/WebGLPrepare":372}],370:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -56470,7 +56556,7 @@ var CountLimiter = function () {
 
 exports.default = CountLimiter;
 
-},{}],370:[function(require,module,exports){
+},{}],371:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -56528,7 +56614,7 @@ var TimeLimiter = function () {
 
 exports.default = TimeLimiter;
 
-},{}],371:[function(require,module,exports){
+},{}],372:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -56650,7 +56736,7 @@ function findGraphics(item, queue) {
 
 core.WebGLRenderer.registerPlugin('prepare', WebGLPrepare);
 
-},{"../../core":248,"../BasePrepare":366}],372:[function(require,module,exports){
+},{"../../core":248,"../BasePrepare":367}],373:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -56963,7 +57049,7 @@ if ('undefined' !== typeof module) {
   module.exports = EventEmitter;
 }
 
-},{}],373:[function(require,module,exports){
+},{}],374:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -57149,7 +57235,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],374:[function(require,module,exports){
+},{}],375:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -57686,7 +57772,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],375:[function(require,module,exports){
+},{}],376:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -57772,7 +57858,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],376:[function(require,module,exports){
+},{}],377:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -57859,13 +57945,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],377:[function(require,module,exports){
+},{}],378:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":375,"./encode":376}],378:[function(require,module,exports){
+},{"./decode":376,"./encode":377}],379:[function(require,module,exports){
 'use strict'
 
 /**
@@ -57895,7 +57981,7 @@ module.exports = function removeItems(arr, startIdx, removeCount)
   arr.length = len
 }
 
-},{}],379:[function(require,module,exports){
+},{}],380:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -58548,7 +58634,7 @@ var Loader = function () {
 
 exports.default = Loader;
 
-},{"./Resource":380,"./async":381,"mini-signals":190,"parse-uri":192}],380:[function(require,module,exports){
+},{"./Resource":381,"./async":382,"mini-signals":190,"parse-uri":192}],381:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -59704,7 +59790,7 @@ function reqType(xhr) {
     return xhr.toString().replace('object ', '');
 }
 
-},{"mini-signals":190,"parse-uri":192}],381:[function(require,module,exports){
+},{"mini-signals":190,"parse-uri":192}],382:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -59913,7 +59999,7 @@ function queue(worker, concurrency) {
     return q;
 }
 
-},{}],382:[function(require,module,exports){
+},{}],383:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -59981,7 +60067,7 @@ function encodeBinary(input) {
     return output;
 }
 
-},{}],383:[function(require,module,exports){
+},{}],384:[function(require,module,exports){
 'use strict';
 
 // import Loader from './Loader';
@@ -60005,7 +60091,7 @@ module.exports = Loader;
 // export default Loader;
 module.exports.default = Loader;
 
-},{"./Loader":379,"./Resource":380,"./async":381,"./b64":382}],384:[function(require,module,exports){
+},{"./Loader":380,"./Resource":381,"./async":382,"./b64":383}],385:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -60093,7 +60179,7 @@ function blobMiddlewareFactory() {
     };
 }
 
-},{"../../Resource":380,"../../b64":382}],385:[function(require,module,exports){
+},{"../../Resource":381,"../../b64":383}],386:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -60155,7 +60241,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":386,"./lib/tychei":387,"./lib/xor128":388,"./lib/xor4096":389,"./lib/xorshift7":390,"./lib/xorwow":391,"./seedrandom":392}],386:[function(require,module,exports){
+},{"./lib/alea":387,"./lib/tychei":388,"./lib/xor128":389,"./lib/xor4096":390,"./lib/xorshift7":391,"./lib/xorwow":392,"./seedrandom":393}],387:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -60271,7 +60357,7 @@ if (module && module.exports) {
 
 
 
-},{}],387:[function(require,module,exports){
+},{}],388:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -60376,7 +60462,7 @@ if (module && module.exports) {
 
 
 
-},{}],388:[function(require,module,exports){
+},{}],389:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -60459,7 +60545,7 @@ if (module && module.exports) {
 
 
 
-},{}],389:[function(require,module,exports){
+},{}],390:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -60607,7 +60693,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],390:[function(require,module,exports){
+},{}],391:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -60706,7 +60792,7 @@ if (module && module.exports) {
 );
 
 
-},{}],391:[function(require,module,exports){
+},{}],392:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -60794,7 +60880,7 @@ if (module && module.exports) {
 
 
 
-},{}],392:[function(require,module,exports){
+},{}],393:[function(require,module,exports){
 /*
 Copyright 2014 David Bau.
 
@@ -61043,7 +61129,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":5}],393:[function(require,module,exports){
+},{"crypto":5}],394:[function(require,module,exports){
 // TinyColor v1.4.1
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
@@ -62240,7 +62326,7 @@ else {
 
 })(Math);
 
-},{}],394:[function(require,module,exports){
+},{}],395:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -62974,7 +63060,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":395,"punycode":374,"querystring":377}],395:[function(require,module,exports){
+},{"./util":396,"punycode":375,"querystring":378}],396:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -62992,7 +63078,7 @@ module.exports = {
   }
 };
 
-},{}],396:[function(require,module,exports){
+},{}],397:[function(require,module,exports){
 // angle.js <https://github.com/davidfig/anglejs>
 // Released under MIT license <https://github.com/davidfig/angle/blob/master/LICENSE>
 // Author: David Figatner
@@ -63268,7 +63354,7 @@ module.exports = {
     equals,
     explain
 }
-},{}],397:[function(require,module,exports){
+},{}],398:[function(require,module,exports){
 /**
  * @file color.js
  * @author David Figatner
@@ -63577,7 +63663,7 @@ class Color
 };
 
 module.exports = new Color();
-},{"yy-random":400}],398:[function(require,module,exports){
+},{"yy-random":401}],399:[function(require,module,exports){
 // yy-counter
 // In-browser counter to watch changeable values like counters or FPS
 // David Figatner
@@ -63695,7 +63781,7 @@ module.exports = class Counter
         this.div.innerHTML = s
     }
 }
-},{}],399:[function(require,module,exports){
+},{}],400:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -63922,7 +64008,7 @@ module.exports = function () {
     return FPS;
 }();
 
-},{"tinycolor2":393,"yy-counter":398}],400:[function(require,module,exports){
+},{"tinycolor2":394,"yy-counter":399}],401:[function(require,module,exports){
 // yy-random
 // by David Figatner
 // MIT license
@@ -64348,7 +64434,7 @@ class Random
 }
 
 module.exports = new Random()
-},{"seedrandom":385}],401:[function(require,module,exports){
+},{"seedrandom":386}],402:[function(require,module,exports){
 const Ease = require('pixi-ease')
 const exists = require('exists')
 
@@ -64564,7 +64650,7 @@ module.exports = class Bounce extends Plugin
         this.toX = this.toY = null
     }
 }
-},{"./plugin":409,"exists":9,"pixi-ease":197}],402:[function(require,module,exports){
+},{"./plugin":410,"exists":9,"pixi-ease":197}],403:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class ClampZoom extends Plugin
@@ -64625,7 +64711,7 @@ module.exports = class ClampZoom extends Plugin
     }
 }
 
-},{"./plugin":409}],403:[function(require,module,exports){
+},{"./plugin":410}],404:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class clamp extends Plugin
@@ -64748,7 +64834,7 @@ module.exports = class clamp extends Plugin
         }
     }
 }
-},{"./plugin":409}],404:[function(require,module,exports){
+},{"./plugin":410}],405:[function(require,module,exports){
 const exists = require('exists')
 
 const Plugin = require('./plugin')
@@ -64871,7 +64957,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":409,"exists":9}],405:[function(require,module,exports){
+},{"./plugin":410,"exists":9}],406:[function(require,module,exports){
 const exists = require('exists')
 
 const Plugin = require('./plugin')
@@ -65102,7 +65188,7 @@ module.exports = class Drag extends Plugin
         }
     }
 }
-},{"./plugin":409,"exists":9}],406:[function(require,module,exports){
+},{"./plugin":410,"exists":9}],407:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin
@@ -65167,7 +65253,7 @@ module.exports = class Follow extends Plugin
         }
     }
 }
-},{"./plugin":409}],407:[function(require,module,exports){
+},{"./plugin":410}],408:[function(require,module,exports){
 const exists = require('exists')
 const Angle = require('yy-angle')
 
@@ -65356,7 +65442,7 @@ module.exports = class MouseEdges extends Plugin
         }
     }
 }
-},{"./plugin":409,"exists":9,"yy-angle":396}],408:[function(require,module,exports){
+},{"./plugin":410,"exists":9,"yy-angle":397}],409:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Pinch extends Plugin
@@ -65472,7 +65558,7 @@ module.exports = class Pinch extends Plugin
         }
     }
 }
-},{"./plugin":409}],409:[function(require,module,exports){
+},{"./plugin":410}],410:[function(require,module,exports){
 module.exports = class Plugin
 {
     constructor(parent)
@@ -65499,7 +65585,7 @@ module.exports = class Plugin
         this.paused = false
     }
 }
-},{}],410:[function(require,module,exports){
+},{}],411:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -65514,11 +65600,14 @@ module.exports = class SnapZoom extends Plugin
      * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
      *
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
+     * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      */
     constructor(parent, options)
@@ -65546,8 +65635,7 @@ module.exports = class SnapZoom extends Plugin
         this.stopOnResize = options.stopOnResize
         this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
-
-        if (this.time == 0)
+        if (this.time === 0)
         {
             parent.container.scale.x = this.x_scale
             parent.container.scale.y = this.y_scale
@@ -65555,6 +65643,11 @@ module.exports = class SnapZoom extends Plugin
             {
                 this.parent.removePlugin('snap-zoom')
             }
+        }
+        else if (options.forceStart)
+        {
+            this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
+            this.parent.emit('snap-zoom-start', this.parent)
         }
     }
 
@@ -65581,7 +65674,14 @@ module.exports = class SnapZoom extends Plugin
 
     down()
     {
-        this.snapping = null
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap-zoom')
+        }
+        else if (this.interrupt)
+        {
+            this.snapping = null
+        }
     }
 
     update(elapsed)
@@ -65590,7 +65690,6 @@ module.exports = class SnapZoom extends Plugin
         {
             return
         }
-
         if (this.interrupt && this.parent.countDownPointers() !== 0)
         {
             return
@@ -65642,7 +65741,7 @@ module.exports = class SnapZoom extends Plugin
         super.resume()
     }
 }
-},{"./plugin":409,"exists":9,"pixi-ease":197}],411:[function(require,module,exports){
+},{"./plugin":410,"exists":9,"pixi-ease":197}],412:[function(require,module,exports){
 const Plugin = require('./plugin')
 const Ease = require('pixi-ease')
 const exists = require('exists')
@@ -65661,10 +65760,13 @@ module.exports = class Snap extends Plugin
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
      *
      * @event snap-start(Viewport) emitted each time a snap animation starts
      * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
      * @event snap-end(Viewport) emitted each time snap reaches its target
+     * @event snap-remove(Viewport) emitted if snap plugin is removed
      */
     constructor(parent, x, y, options)
     {
@@ -65678,6 +65780,14 @@ module.exports = class Snap extends Plugin
         this.topLeft = options.topLeft
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
         this.removeOnComplete = options.removeOnComplete
+        this.removeOnInterrupt = options.removeOnInterrupt
+        if (options.forceStart)
+        {
+            this.percent = 0
+            this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
+            this.startEase()
+            this.parent.emit('snap-start', this.parent)
+        }
     }
 
     startEase()
@@ -65691,7 +65801,11 @@ module.exports = class Snap extends Plugin
 
     down()
     {
-        if (this.interrupt)
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap')
+        }
+        else if (this.interrupt)
         {
             this.snapping = null
         }
@@ -65756,7 +65870,7 @@ module.exports = class Snap extends Plugin
         }
     }
 }
-},{"./plugin":409,"exists":9,"pixi-ease":197}],412:[function(require,module,exports){
+},{"./plugin":410,"exists":9,"pixi-ease":197}],413:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const exists = require('exists')
 
@@ -65792,20 +65906,28 @@ class Viewport extends PIXI.Container
      * @fires clicked
      * @fires drag-start
      * @fires drag-end
+     * @fires drag-remove
      * @fires pinch-start
      * @fires pinch-end
+     * @fires pinch-remove
      * @fires snap-start
      * @fires snap-end
+     * @fires snap-remove
      * @fires snap-zoom-start
      * @fires snap-zoom-end
+     * @fires snap-zoom-remove
      * @fires bounce-x-start
      * @fires bounce-x-end
      * @fires bounce-y-start
      * @fires bounce-y-end
+     * @fires bounce-remove
      * @fires wheel
+     * @fires wheel-remove
      * @fires wheel-scroll
+     * @fires wheel-scroll-remove
      * @fires mouse-edge-start
      * @fires mouse-edge-end
+     * @fires mouse-edge-remove
      */
     constructor(options)
     {
@@ -66411,9 +66533,11 @@ class Viewport extends PIXI.Container
      * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after fitting is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin is interrupted by any user input on the viewport
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
      */
     snapZoom(options)
     {
@@ -66612,6 +66736,7 @@ class Viewport extends PIXI.Container
         if (this.plugins[type])
         {
             this.plugins[type] = null
+            this.emit(type + '-remove')
         }
     }
 
@@ -66723,7 +66848,9 @@ class Viewport extends PIXI.Container
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
      * @return {Viewport} this
      */
     snap(x, y, options)
@@ -66925,7 +67052,7 @@ class Viewport extends PIXI.Container
  */
 
 module.exports = Viewport
-},{"./bounce":401,"./clamp":403,"./clamp-zoom":402,"./decelerate":404,"./drag":405,"./follow":406,"./mouse-edges":407,"./pinch":408,"./snap":411,"./snap-zoom":410,"./wheel":413,"exists":9,"pixi.js":338}],413:[function(require,module,exports){
+},{"./bounce":402,"./clamp":404,"./clamp-zoom":403,"./decelerate":405,"./drag":406,"./follow":407,"./mouse-edges":408,"./pinch":409,"./snap":412,"./snap-zoom":411,"./wheel":414,"exists":9,"pixi.js":338}],414:[function(require,module,exports){
 const PIXI = require('pixi.js')
 
 const Plugin = require('./plugin')
@@ -67011,4 +67138,4 @@ module.exports = class Wheel extends Plugin
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
     }
 }
-},{"./plugin":409,"pixi.js":338}]},{},[1]);
+},{"./plugin":410,"pixi.js":338}]},{},[1]);
