@@ -16,10 +16,13 @@ module.exports = class Snap extends Plugin
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
      *
      * @event snap-start(Viewport) emitted each time a snap animation starts
      * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
      * @event snap-end(Viewport) emitted each time snap reaches its target
+     * @event snap-remove(Viewport) emitted if snap plugin is removed
      */
     constructor(parent, x, y, options)
     {
@@ -33,6 +36,14 @@ module.exports = class Snap extends Plugin
         this.topLeft = options.topLeft
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
         this.removeOnComplete = options.removeOnComplete
+        this.removeOnInterrupt = options.removeOnInterrupt
+        if (options.forceStart)
+        {
+            this.percent = 0
+            this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
+            this.startEase()
+            this.parent.emit('snap-start', this.parent)
+        }
     }
 
     startEase()
@@ -46,7 +57,11 @@ module.exports = class Snap extends Plugin
 
     down()
     {
-        if (this.interrupt)
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap')
+        }
+        else if (this.interrupt)
         {
             this.snapping = null
         }

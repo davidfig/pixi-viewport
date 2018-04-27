@@ -33,20 +33,28 @@ class Viewport extends PIXI.Container
      * @fires clicked
      * @fires drag-start
      * @fires drag-end
+     * @fires drag-remove
      * @fires pinch-start
      * @fires pinch-end
+     * @fires pinch-remove
      * @fires snap-start
      * @fires snap-end
+     * @fires snap-remove
      * @fires snap-zoom-start
      * @fires snap-zoom-end
+     * @fires snap-zoom-remove
      * @fires bounce-x-start
      * @fires bounce-x-end
      * @fires bounce-y-start
      * @fires bounce-y-end
+     * @fires bounce-remove
      * @fires wheel
+     * @fires wheel-remove
      * @fires wheel-scroll
+     * @fires wheel-scroll-remove
      * @fires mouse-edge-start
      * @fires mouse-edge-end
+     * @fires mouse-edge-remove
      */
     constructor(options)
     {
@@ -652,9 +660,11 @@ class Viewport extends PIXI.Container
      * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after fitting is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin is interrupted by any user input on the viewport
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
      */
     snapZoom(options)
     {
@@ -853,6 +863,7 @@ class Viewport extends PIXI.Container
         if (this.plugins[type])
         {
             this.plugins[type] = null
+            this.emit(type + '-remove')
         }
     }
 
@@ -964,7 +975,9 @@ class Viewport extends PIXI.Container
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
      * @return {Viewport} this
      */
     snap(x, y, options)

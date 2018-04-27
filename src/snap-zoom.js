@@ -12,11 +12,14 @@ module.exports = class SnapZoom extends Plugin
      * @param {number} [options.height] the desired height to snap (to maintain aspect ratio, choose only width or height)
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {boolean} [options.removeOnComplete=true] removes this plugin after fitting is complete
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
      *
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
+     * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      */
     constructor(parent, options)
@@ -44,8 +47,7 @@ module.exports = class SnapZoom extends Plugin
         this.stopOnResize = options.stopOnResize
         this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
-
-        if (this.time == 0)
+        if (this.time === 0)
         {
             parent.container.scale.x = this.x_scale
             parent.container.scale.y = this.y_scale
@@ -53,6 +55,11 @@ module.exports = class SnapZoom extends Plugin
             {
                 this.parent.removePlugin('snap-zoom')
             }
+        }
+        else if (options.forceStart)
+        {
+            this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
+            this.parent.emit('snap-zoom-start', this.parent)
         }
     }
 
@@ -79,7 +86,11 @@ module.exports = class SnapZoom extends Plugin
 
     down()
     {
-        if (this.interrupt)
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap-zoom')
+        }
+        else if (this.interrupt)
         {
             this.snapping = null
         }
@@ -91,7 +102,6 @@ module.exports = class SnapZoom extends Plugin
         {
             return
         }
-
         if (this.interrupt && this.parent.countDownPointers() !== 0)
         {
             return
