@@ -65633,6 +65633,7 @@ module.exports = class SnapZoom extends Plugin
         this.ease = options.ease || 'easeInOutSine'
         this.center = options.center
         this.stopOnResize = options.stopOnResize
+        this.removeOnInterrupt = options.removeOnInterrupt
         this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
         this.interrupt = exists(options.interrupt) ? options.interrupt : true
         if (this.time === 0)
