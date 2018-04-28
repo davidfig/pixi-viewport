@@ -55,6 +55,14 @@ module.exports = class Snap extends Plugin
         this.startY = current.y
     }
 
+    wheel()
+    {
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap')
+        }
+    }
+
     down()
     {
         if (this.removeOnInterrupt)

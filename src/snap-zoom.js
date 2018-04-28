@@ -85,6 +85,14 @@ module.exports = class SnapZoom extends Plugin
         this.snapping = null
     }
 
+    wheel()
+    {
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap-zoom')
+        }
+    }
+
     down()
     {
         if (this.removeOnInterrupt)

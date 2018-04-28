@@ -65673,6 +65673,14 @@ module.exports = class SnapZoom extends Plugin
         this.snapping = null
     }
 
+    wheel()
+    {
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap-zoom')
+        }
+    }
+
     down()
     {
         if (this.removeOnInterrupt)
@@ -65798,6 +65806,14 @@ module.exports = class Snap extends Plugin
         this.deltaY = this.y - current.y
         this.startX = current.x
         this.startY = current.y
+    }
+
+    wheel()
+    {
+        if (this.removeOnInterrupt)
+        {
+            this.parent.removePlugin('snap')
+        }
     }
 
     down()
