@@ -2179,10 +2179,6 @@ function allExist (/* vals */) {
 },{}],10:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = forkMe;
 // Programatically add fork me on github ribbon from javascript without making changes to CSS, HTML, or adding image files
 // by David Figatner
 // copyright 2018 YOPEY YOPEY LLC
@@ -2219,7 +2215,7 @@ var AFTER = [['content', 'attr(data-ribbon)'], ['color', '#fff'], ['font', '700 
  * @param {string} [options.text=fork me on github] text to show
  * @param {string} [options.background=#a00] color for ribbon
  */
-function forkMe(url, options) {
+module.exports = function forkMe(url, options) {
     options = options || {};
     var a = document.createElement('a');
     if (url) {
@@ -2353,7 +2349,7 @@ function forkMe(url, options) {
     var sheet = style.sheet;
     sheet.insertRule('.' + a.className + '::before' + before + '}');
     sheet.insertRule('.' + a.className + '::after' + after + '}');
-}
+};
 
 },{}],11:[function(require,module,exports){
 /*
@@ -65010,9 +65006,10 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        if (this.parent.countDownPointers() === 1)
+        if (this.parent.countDownPointers() === 1 && this.parent.parent)
         {
-            this.last = { x: e.data.global.x, y: e.data.global.y }
+            const parent = this.parent.parent.toLocal(e.data.global)
+            this.last = { x: e.data.global.x, y: e.data.global.y, parent }
         }
         else
         {
@@ -65043,15 +65040,16 @@ module.exports = class Drag extends Plugin
                 const distY = y - this.last.y
                 if (this.moved || ((this.xDirection && this.parent.checkThreshold(distX)) || (this.yDirection && this.parent.checkThreshold(distY))))
                 {
+                    const newParent = this.parent.parent.toLocal(e.data.global)
                     if (this.xDirection)
                     {
-                        this.parent.x += distX
+                        this.parent.x += newParent.x - this.last.parent.x
                     }
                     if (this.yDirection)
                     {
-                        this.parent.y += distY
+                        this.parent.y += newParent.y - this.last.parent.y
                     }
-                    this.last = { x, y }
+                    this.last = { x, y, parent: newParent }
                     if (!this.moved)
                     {
                         this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
@@ -65075,7 +65073,8 @@ module.exports = class Drag extends Plugin
             const pointer = touches[0]
             if (pointer.last)
             {
-                this.last = { x: pointer.last.x, y: pointer.last.y }
+                const parent = this.parent.parent.toLocal(pointer.last)
+                this.last = { x: pointer.last.x, y: pointer.last.y, parent }
             }
             this.moved = false
         }
@@ -66552,8 +66551,8 @@ class Viewport extends PIXI.Container
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete] removes this plugin after fitting is complete
-     * @param {boolean} [options.removeOnInterrupt] removes this plugin is interrupted by any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
      */
     snapZoom(options)
@@ -66860,7 +66859,7 @@ class Viewport extends PIXI.Container
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
-     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
+     * @param {boolean} [options.topLeft] snap to the top-left of viewport instead of center
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
@@ -66868,7 +66867,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
-     * @return {Viewport} this
+ * @return {Viewport} this
      */
     snap(x, y, options)
     {

@@ -117,7 +117,8 @@ module.exports = class Drag extends Plugin
             const pointer = touches[0]
             if (pointer.last)
             {
-                this.last = { x: pointer.last.x, y: pointer.last.y }
+                const parent = this.parent.parent.toLocal(pointer.last)
+                this.last = { x: pointer.last.x, y: pointer.last.y, parent }
             }
             this.moved = false
         }
