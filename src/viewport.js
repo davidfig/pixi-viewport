@@ -662,8 +662,8 @@ class Viewport extends PIXI.Container
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of center of the viewport
      * @param {boolean} [options.interrupt=true] pause snapping with any user input on the viewport
-     * @param {boolean} [options.removeOnComplete] removes this plugin after fitting is complete
-     * @param {boolean} [options.removeOnInterrupt] removes this plugin is interrupted by any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
      */
     snapZoom(options)
@@ -970,7 +970,7 @@ class Viewport extends PIXI.Container
      * @param {number} x
      * @param {number} y
      * @param {object} [options]
-     * @param {boolean} [options.center] snap to the center of the camera instead of the top-left corner of viewport
+     * @param {boolean} [options.topLeft] snap to the top-left of viewport instead of center
      * @param {number} [options.friction=0.8] friction/frame to apply if decelerate is active
      * @param {number} [options.time=1000]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
@@ -978,7 +978,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
-     * @return {Viewport} this
+ * @return {Viewport} this
      */
     snap(x, y, options)
     {

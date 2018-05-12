@@ -4,21 +4,17 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            font-size: 1.5em;
         }
 
-        #canvas {
-            position: absolute;
-            top: 4em;
-            width: 100%;
-            height: calc(100% - 4em);
+        .title {
+            font-size: 1.75em;
         }
     </style>
-    <script src="/pixi-viewport.js"></script>
+    <script src="/library.js"></script>
     <script>
         function createViewport()
         {
-            viewport = renderer.stage.addChild(new PIXI.extras.Viewport({
+            viewport = renderer.stage.addChild(new Viewport({
                 screenWidth: window.innerWidth,
                 screenHeight: window.innerHeight,
                 worldWidth: width,
@@ -30,7 +26,9 @@
                 .decelerate()
                 .on('clicked', function (data)
                 {
-                    viewport.snap(data.world.x, data.world.y, { center: true, removeOnComplete: true, removeOnInterrupt: true, forceStart: true })
+                    const x = toPointer ? data.world.x : 100
+                    const y = toPointer ? data.world.y : 100
+                    viewport.snap(x, y, { topLeft, removeOnComplete, removeOnInterrupt, forceStart, interrupt })
                 })
         }
 
@@ -45,7 +43,37 @@
             }
         }
 
+        function createGUI()
+        {
+            var panel = new SettingsPanel()
+            panel.button('', () => {
+                toPointer = !toPointer
+                return toPointer ? 'Snap to Pointer' : 'Snap to (100, 100)'
+            }, { original: 'Snap to Pointer', background: 'green' })
+            panel.button('', () => {
+                interrupt = !interrupt
+                return 'options.interrupt = ' + (interrupt ? 'true' : 'false')
+            }, { original: 'options.interrupt = true' })
+            panel.button('', () => {
+                topLeft = !topLeft
+                return 'options.topLeft = ' + (topLeft ? 'true' : 'false')
+            }, { original: 'options.topLeft = false' })
+            panel.button('', () => {
+                removeOnInterrupt = !removeOnInterrupt
+                return 'options.removeOnInterrupt = ' + (removeOnInterrupt ? 'true' : 'false')
+            }, { original: 'options.removeOnInterrupt = true' })
+            panel.button('', () => {
+                removeOnComplete = !removeOnComplete
+                return 'options.removeOnComplete = ' + (removeOnComplete ? 'true' : 'false')
+            }, { original: 'options.removeOnComplete = true' })
+            panel.button('', () => {
+                forceStart = !forceStart
+                return 'options.forceStart = ' + (forceStart ? 'true' : 'false')
+            }, { original: 'options.forceStart = true' })
+        }
+
         var renderer, viewport, width = 5000, height = 5000
+        var topLeft, removeOnInterrupt = true, removeOnComplete = true, forceStart = true, toPointer = true, interrupt = true
 
         window.onload = function ()
         {
@@ -58,6 +86,7 @@
             renderer.view.style.left = 0
             createViewport()
             createWorld()
+            createGUI()
 
             PIXI.ticker.shared.add(function () { renderer.render() })
         }
@@ -65,8 +94,5 @@
 </head>
 
 <body>
-    <div>Example for <a href="https://github.com/davidfig/pixi-viewport.git/">github.com/davidfig/pixi-viewport/</a></div>
-    <div class="code">viewport.drag().pinch().decelerate()</div>
-    <div class="instructions">click to start a snap</div>
-    <div class="code">viewport.snap(x, y, { center: true, removeOnComplete: true, removeOnInterrupt: true, forceStart: true })</div>
+    <div class="title">viewport.snap() example for <a href="https://github.com/davidfig/pixi-viewport.git/">github.com/davidfig/pixi-viewport/</a></div>
 </body>

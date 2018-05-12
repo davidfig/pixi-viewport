@@ -50,9 +50,10 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        if (this.parent.countDownPointers() === 1)
+        if (this.parent.countDownPointers() === 1 && this.parent.parent)
         {
-            this.last = { x: e.data.global.x, y: e.data.global.y }
+            const parent = this.parent.parent.toLocal(e.data.global)
+            this.last = { x: e.data.global.x, y: e.data.global.y, parent }
         }
         else
         {
@@ -83,15 +84,16 @@ module.exports = class Drag extends Plugin
                 const distY = y - this.last.y
                 if (this.moved || ((this.xDirection && this.parent.checkThreshold(distX)) || (this.yDirection && this.parent.checkThreshold(distY))))
                 {
+                    const newParent = this.parent.parent.toLocal(e.data.global)
                     if (this.xDirection)
                     {
-                        this.parent.x += distX
+                        this.parent.x += newParent.x - this.last.parent.x
                     }
                     if (this.yDirection)
                     {
-                        this.parent.y += distY
+                        this.parent.y += newParent.y - this.last.parent.y
                     }
-                    this.last = { x, y }
+                    this.last = { x, y, parent: newParent }
                     if (!this.moved)
                     {
                         this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})

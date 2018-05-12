@@ -14,11 +14,11 @@
             height: calc(100% - 4em);
         }
     </style>
-    <script src="/pixi-viewport.js"></script>
+    <script src="/library.js"></script>
     <script>
         function createViewport()
         {
-            viewport = renderer.stage.addChild(new PIXI.extras.Viewport({
+            viewport = renderer.stage.addChild(new Viewport({
                 screenWidth: window.innerWidth,
                 screenHeight: window.innerHeight,
                 worldWidth: width,
