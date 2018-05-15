@@ -55,6 +55,7 @@ class Viewport extends PIXI.Container
      * @fires mouse-edge-start
      * @fires mouse-edge-end
      * @fires mouse-edge-remove
+     * @fires moved
      */
     constructor(options)
     {
@@ -1175,6 +1176,12 @@ class Viewport extends PIXI.Container
 /**
  * fires when the mouse-edge scrolling ends
  * @event Viewport#mouse-edge-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when viewport moves through UI interaction, deceleration, or follow
+ * @event Viewport#moved
  * @type {Viewport}
  */
 

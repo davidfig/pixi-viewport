@@ -54,11 +54,13 @@ module.exports = class Follow extends Plugin
                 const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
                 const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
                 this.parent.moveCenter(x, y)
+                this.parent.emit('moved', this.parent)
             }
         }
         else
         {
             this.parent.moveCenter(toX, toY)
+            this.parent.emit('moved', this.parent)
         }
     }
 }

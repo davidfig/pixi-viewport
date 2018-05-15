@@ -100,6 +100,7 @@ module.exports = class Drag extends Plugin
                     }
                     this.moved = true
                     this.parent.dirty = true
+                    this.parent.emit('moved', this.parent)
                 }
             }
             else

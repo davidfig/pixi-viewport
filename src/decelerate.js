@@ -93,6 +93,7 @@ module.exports = class Decelerate extends Plugin
             return
         }
 
+        let moved
         if (this.x)
         {
             this.parent.x += this.x * elapsed
@@ -101,7 +102,7 @@ module.exports = class Decelerate extends Plugin
             {
                 this.x = 0
             }
-            this.parent.dirty = true
+            moved = true
         }
         if (this.y)
         {
@@ -111,7 +112,12 @@ module.exports = class Decelerate extends Plugin
             {
                 this.y = 0
             }
+            moved = true
+        }
+        if (moved)
+        {
             this.parent.dirty = true
+            this.parent.emit('moved', this.parent)
         }
     }
 
