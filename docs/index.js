@@ -64709,30 +64709,37 @@ module.exports = class ClampZoom extends Plugin
 
 },{"./plugin":410}],404:[function(require,module,exports){
 const Plugin = require('./plugin')
+const exists = require('exists')
 
 module.exports = class clamp extends Plugin
 {
     /**
      * @private
      * @param {object} options
-     * @param {string} [options.direction=all] (all, x, or y)
+     * @param {(number|boolean)} [options.left] clamp left; true=0
+     * @param {(number|boolean)} [options.right] clamp right; true=viewport.worldWidth
+     * @param {(number|boolean)} [options.top] clamp top; true=0
+     * @param {(number|boolean)} [options.bottom] clamp bottom; true=viewport.worldHeight
+     * @param {string} [options.direction] (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight]; replaces left/right/top/bottom if set
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      */
     constructor(parent, options)
     {
         options = options || {}
         super(parent)
-        switch (options.direction)
+        if (typeof options.direction === 'undefined')
         {
-            case 'x':
-                this.x = true
-                break
-            case 'y':
-                this.y = true
-                break
-            default:
-                this.x = this.y = true
-                break
+            this.left = exists(options.left) ? options.left : null
+            this.right = exists(options.right) ? options.right : null
+            this.top = exists(options.top) ? options.top : null
+            this.bottom = exists(options.bottom) ? options.bottom : null
+        }
+        else
+        {
+            this.left = options.direction === 'x' || options.direction === 'all'
+            this.right = options.direction === 'x' || options.direction === 'all'
+            this.top = options.direction === 'y' || options.direction === 'all'
+            this.bottom = options.direction === 'y' || options.direction === 'all'
         }
         this.parseUnderflow(options.underflow || 'center')
         this.move()
@@ -64765,10 +64772,8 @@ module.exports = class clamp extends Plugin
             return
         }
 
-        const oob = this.parent.OOB()
-        const point = oob.cornerPoint
         const decelerate = this.parent.plugins['decelerate'] || {}
-        if (this.x)
+        if (this.left !== null || this.right !== null)
         {
             if (this.parent.screenWorldWidth < this.parent.screenWidth)
             {
@@ -64778,7 +64783,7 @@ module.exports = class clamp extends Plugin
                         this.parent.x = 0
                         break
                     case 1:
-                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                        this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth
                         break
                     default:
                         this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
@@ -64786,19 +64791,25 @@ module.exports = class clamp extends Plugin
             }
             else
             {
-                if (oob.left)
+                if (this.left !== null)
                 {
-                    this.parent.x = 0
-                    decelerate.x = 0
+                    if (this.parent.left < (this.left === true ? 0 : this.left))
+                    {
+                        this.parent.left = this.left === true ? 0 : this.left
+                        decelerate.x = 0
+                    }
                 }
-                else if (oob.right)
+                if (this.right !== null)
                 {
-                    this.parent.x = -point.x
-                    decelerate.x = 0
+                    if (this.parent.right > (this.right === true ? this.parent.worldWidth : this.right))
+                    {
+                        this.parent.right = this.right === true ? this.parent.worldWidth : this.right
+                        decelerate.x = 0
+                    }
                 }
             }
         }
-        if (this.y)
+        if (this.top !== null || this.bottom !== null)
         {
             if (this.parent.screenWorldHeight < this.parent.screenHeight)
             {
@@ -64816,21 +64827,27 @@ module.exports = class clamp extends Plugin
             }
             else
             {
-                if (oob.top)
+                if (this.top !== null)
                 {
-                    this.parent.y = 0
-                    decelerate.y = 0
+                    if (this.parent.top < (this.top === true ? 0 : this.top))
+                    {
+                        this.parent.top = this.top === true ? 0 : this.top
+                        decelerate.y = 0
+                    }
                 }
-                else if (oob.bottom)
+                if (this.bottom !== null)
                 {
-                    this.parent.y = -point.y
-                    decelerate.y = 0
+                    if (this.parent.bottom > (this.bottom === true ? this.parent.worldHeight : this.bottom))
+                    {
+                        this.parent.bottom = this.bottom === true ? this.parent.worldHeight : this.bottom
+                        decelerate.y = 0
+                    }
                 }
             }
         }
     }
 }
-},{"./plugin":410}],405:[function(require,module,exports){
+},{"./plugin":410,"exists":9}],405:[function(require,module,exports){
 const exists = require('exists')
 
 const Plugin = require('./plugin')
@@ -64926,6 +64943,7 @@ module.exports = class Decelerate extends Plugin
             return
         }
 
+        let moved
         if (this.x)
         {
             this.parent.x += this.x * elapsed
@@ -64934,7 +64952,7 @@ module.exports = class Decelerate extends Plugin
             {
                 this.x = 0
             }
-            this.parent.dirty = true
+            moved = true
         }
         if (this.y)
         {
@@ -64944,7 +64962,12 @@ module.exports = class Decelerate extends Plugin
             {
                 this.y = 0
             }
+            moved = true
+        }
+        if (moved)
+        {
             this.parent.dirty = true
+            this.parent.emit('moved', this.parent)
         }
     }
 
@@ -65006,7 +65029,8 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        if (this.parent.countDownPointers() === 1 && this.parent.parent)
+        const count = this.parent.countDownPointers()
+        if ((count === 1 || (count > 1 && !this.parent.plugins['pinch'])) && this.parent.parent)
         {
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
@@ -65028,7 +65052,6 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-
         if (this.last)
         {
             const x = e.data.global.x
@@ -65056,6 +65079,7 @@ module.exports = class Drag extends Plugin
                     }
                     this.moved = true
                     this.parent.dirty = true
+                    this.parent.emit('moved', this.parent)
                 }
             }
             else
@@ -65244,11 +65268,13 @@ module.exports = class Follow extends Plugin
                 const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
                 const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
                 this.parent.moveCenter(x, y)
+                this.parent.emit('moved', this.parent)
             }
         }
         else
         {
             this.parent.moveCenter(toX, toY)
+            this.parent.emit('moved', this.parent)
         }
     }
 }
@@ -65944,6 +65970,7 @@ class Viewport extends PIXI.Container
      * @fires mouse-edge-start
      * @fires mouse-edge-end
      * @fires mouse-edge-remove
+     * @fires moved
      */
     constructor(options)
     {
@@ -66600,7 +66627,7 @@ class Viewport extends PIXI.Container
     }
     set right(value)
     {
-        this.x = value * this.scale.x - this.worldScreenWidth
+        this.x = -value * this.scale.x + this.screenWidth
         this._reset()
     }
 
@@ -66642,7 +66669,7 @@ class Viewport extends PIXI.Container
     }
     set bottom(value)
     {
-        this.y = -value * this.scale.y - this.worldScreenHeight
+        this.y = -value * this.scale.y + this.screenHeight
         this._reset()
     }
     /**
@@ -66796,10 +66823,16 @@ class Viewport extends PIXI.Container
     }
 
     /**
-     * enable clamp to boundaries of world
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} options
-     * @param {string} [options.direction=all] (all, x, or y)
+     * clamp to world boundaries or other provided boundaries
+     * NOTES:
+     *   clamp is disabled if called with no options; use { direction: 'all' } for all edge clamping
+     *   screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {(number|boolean)} [options.left] clamp left; true=0
+     * @param {(number|boolean)} [options.right] clamp right; true=viewport.worldWidth
+     * @param {(number|boolean)} [options.top] clamp top; true=0
+     * @param {(number|boolean)} [options.bottom] clamp bottom; true=viewport.worldHeight
+     * @param {string} [options.direction] (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight]; replaces left/right/top/bottom if set
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
@@ -67064,6 +67097,12 @@ class Viewport extends PIXI.Container
 /**
  * fires when the mouse-edge scrolling ends
  * @event Viewport#mouse-edge-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when viewport moves through UI interaction, deceleration, or follow
+ * @event Viewport#moved
  * @type {Viewport}
  */
 

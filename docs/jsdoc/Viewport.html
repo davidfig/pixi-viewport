@@ -203,6 +203,8 @@
             
                 <li class="parent" data-name="Viewport#event:mouse-edge-start"><a href="Viewport.html#event:mouse-edge-start">mouse-edge-start</a></li>
             
+                <li class="parent" data-name="Viewport#event:moved"><a href="Viewport.html#event:moved">moved</a></li>
+            
                 <li class="parent" data-name="Viewport#event:pinch-end"><a href="Viewport.html#event:pinch-end">pinch-end</a></li>
             
                 <li class="parent" data-name="Viewport#event:pinch-start"><a href="Viewport.html#event:pinch-start">pinch-start</a></li>
@@ -264,7 +266,7 @@
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line59">viewport.js:59</a>
+            <a href="src_viewport.js.html#line60">viewport.js:60</a>
         </div>
         
     </div>
@@ -767,6 +769,8 @@
         <li>event:mouse-edge-end</li>
     
         <li>event:mouse-edge-remove</li>
+    
+        <li>event:moved</li>
     </ul>
     
 
@@ -1748,7 +1752,7 @@
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line948">viewport.js:948</a>
+            <a href="src_viewport.js.html#line955">viewport.js:955</a>
         </div>
         
     </div>
@@ -2110,7 +2114,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
             <span class="">
                 clamp
             </span>
-            <span class="signature">(options)</span><span class="type-signature"><a href="Viewport.html">Viewport</a></span>
+            <span class="signature">(<span class="optional">options</span>)</span><span class="type-signature"><a href="Viewport.html">Viewport</a></span>
             
             
             
@@ -2119,7 +2123,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line917">viewport.js:917</a>
+            <a href="src_viewport.js.html#line924">viewport.js:924</a>
         </div>
         
     </div>
@@ -2130,8 +2134,10 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
     
     <div class="description">
-        <p>enable clamp to boundaries of world
-NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly</p>
+        <p>clamp to world boundaries or other provided boundaries
+NOTES:
+  clamp is disabled if called with no options; use { direction: 'all' } for all edge clamping
+  screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly</p>
     </div>
     
 
@@ -2178,6 +2184,13 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
             
             <td class="description last">
                 
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
                 
                 
 
@@ -2203,6 +2216,154 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 	
         <tr>
             
+                <td class="name"><code>left</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp left; true=0</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>right</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp right; true=viewport.worldWidth</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>top</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp top; true=0</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>bottom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp bottom; true=viewport.worldHeight</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
                 <td class="name"><code>direction</code></td>
             
             
@@ -2218,8 +2379,6 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
             
                 <td class="default">
                 
-                    all
-                
                 </td>
             
             
@@ -2232,7 +2391,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
                         
                     
                 
-                <p>(all, x, or y)</p></td>
+                <p>(all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight]; replaces left/right/top/bottom if set</p></td>
         </tr>
 	
 	
@@ -2366,7 +2525,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1027">viewport.js:1027</a>
+            <a href="src_viewport.js.html#line1034">viewport.js:1034</a>
         </div>
         
     </div>
@@ -2666,7 +2825,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line931">viewport.js:931</a>
+            <a href="src_viewport.js.html#line938">viewport.js:938</a>
         </div>
         
     </div>
@@ -2955,7 +3114,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line903">viewport.js:903</a>
+            <a href="src_viewport.js.html#line904">viewport.js:904</a>
         </div>
         
     </div>
@@ -3548,7 +3707,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line600">viewport.js:600</a>
+            <a href="src_viewport.js.html#line601">viewport.js:601</a>
         </div>
         
     </div>
@@ -3705,7 +3864,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line549">viewport.js:549</a>
+            <a href="src_viewport.js.html#line550">viewport.js:550</a>
         </div>
         
     </div>
@@ -3904,7 +4063,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line526">viewport.js:526</a>
+            <a href="src_viewport.js.html#line527">viewport.js:527</a>
         </div>
         
     </div>
@@ -4103,7 +4262,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line571">viewport.js:571</a>
+            <a href="src_viewport.js.html#line572">viewport.js:572</a>
         </div>
         
     </div>
@@ -4260,7 +4419,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line997">viewport.js:997</a>
+            <a href="src_viewport.js.html#line1004">viewport.js:1004</a>
         </div>
         
     </div>
@@ -4694,7 +4853,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1047">viewport.js:1047</a>
+            <a href="src_viewport.js.html#line1054">viewport.js:1054</a>
         </div>
         
     </div>
@@ -5188,7 +5347,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line469">viewport.js:469</a>
+            <a href="src_viewport.js.html#line470">viewport.js:470</a>
         </div>
         
     </div>
@@ -5376,7 +5535,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line506">viewport.js:506</a>
+            <a href="src_viewport.js.html#line507">viewport.js:507</a>
         </div>
         
     </div>
@@ -6020,7 +6179,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line874">viewport.js:874</a>
+            <a href="src_viewport.js.html#line875">viewport.js:875</a>
         </div>
         
     </div>
@@ -6141,7 +6300,7 @@ listeners.</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line962">viewport.js:962</a>
+            <a href="src_viewport.js.html#line969">viewport.js:969</a>
         </div>
         
     </div>
@@ -6761,7 +6920,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line861">viewport.js:861</a>
+            <a href="src_viewport.js.html#line862">viewport.js:862</a>
         </div>
         
     </div>
@@ -6882,7 +7041,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line117">viewport.js:117</a>
+            <a href="src_viewport.js.html#line118">viewport.js:118</a>
         </div>
         
     </div>
@@ -7096,7 +7255,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line886">viewport.js:886</a>
+            <a href="src_viewport.js.html#line887">viewport.js:887</a>
         </div>
         
     </div>
@@ -7217,7 +7376,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line983">viewport.js:983</a>
+            <a href="src_viewport.js.html#line990">viewport.js:990</a>
         </div>
         
     </div>
@@ -7737,7 +7896,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line669">viewport.js:669</a>
+            <a href="src_viewport.js.html#line670">viewport.js:670</a>
         </div>
         
     </div>
@@ -8200,7 +8359,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line395">viewport.js:395</a>
+            <a href="src_viewport.js.html#line396">viewport.js:396</a>
         </div>
         
     </div>
@@ -8388,7 +8547,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line375">viewport.js:375</a>
+            <a href="src_viewport.js.html#line376">viewport.js:376</a>
         </div>
         
     </div>
@@ -8576,7 +8735,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1011">viewport.js:1011</a>
+            <a href="src_viewport.js.html#line1018">viewport.js:1018</a>
         </div>
         
     </div>
@@ -8861,7 +9020,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line652">viewport.js:652</a>
+            <a href="src_viewport.js.html#line653">viewport.js:653</a>
         </div>
         
     </div>
@@ -9046,7 +9205,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line630">viewport.js:630</a>
+            <a href="src_viewport.js.html#line631">viewport.js:631</a>
         </div>
         
     </div>
@@ -9241,7 +9400,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1134">viewport.js:1134</a>
+            <a href="src_viewport.js.html#line1141">viewport.js:1141</a>
         </div>
         
     </div>
@@ -9327,7 +9486,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1128">viewport.js:1128</a>
+            <a href="src_viewport.js.html#line1135">viewport.js:1135</a>
         </div>
         
     </div>
@@ -9413,7 +9572,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1146">viewport.js:1146</a>
+            <a href="src_viewport.js.html#line1153">viewport.js:1153</a>
         </div>
         
     </div>
@@ -9499,7 +9658,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1140">viewport.js:1140</a>
+            <a href="src_viewport.js.html#line1147">viewport.js:1147</a>
         </div>
         
     </div>
@@ -9585,7 +9744,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1065">viewport.js:1065</a>
+            <a href="src_viewport.js.html#line1072">viewport.js:1072</a>
         </div>
         
     </div>
@@ -9768,7 +9927,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1083">viewport.js:1083</a>
+            <a href="src_viewport.js.html#line1090">viewport.js:1090</a>
         </div>
         
     </div>
@@ -9951,7 +10110,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1074">viewport.js:1074</a>
+            <a href="src_viewport.js.html#line1081">viewport.js:1081</a>
         </div>
         
     </div>
@@ -10134,7 +10293,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1175">viewport.js:1175</a>
+            <a href="src_viewport.js.html#line1182">viewport.js:1182</a>
         </div>
         
     </div>
@@ -10220,7 +10379,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1169">viewport.js:1169</a>
+            <a href="src_viewport.js.html#line1176">viewport.js:1176</a>
         </div>
         
     </div>
@@ -10232,6 +10391,92 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
     
     <div class="description">
         <p>fires when a mouse-edge starts to scroll</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="Viewport.html">Viewport</a></span>
+
+
+            </li>
+        </ul>
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="event:moved">
+            <a class="share-icon" href="#event:moved"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                moved
+            </span>
+            
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_viewport.js.html#line1188">viewport.js:1188</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>fires when viewport moves through UI interaction, deceleration, or follow</p>
     </div>
     
 
@@ -10306,7 +10551,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1098">viewport.js:1098</a>
+            <a href="src_viewport.js.html#line1105">viewport.js:1105</a>
         </div>
         
     </div>
@@ -10392,7 +10637,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1092">viewport.js:1092</a>
+            <a href="src_viewport.js.html#line1099">viewport.js:1099</a>
         </div>
         
     </div>
@@ -10478,7 +10723,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1110">viewport.js:1110</a>
+            <a href="src_viewport.js.html#line1117">viewport.js:1117</a>
         </div>
         
     </div>
@@ -10564,7 +10809,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1104">viewport.js:1104</a>
+            <a href="src_viewport.js.html#line1111">viewport.js:1111</a>
         </div>
         
     </div>
@@ -10650,7 +10895,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1122">viewport.js:1122</a>
+            <a href="src_viewport.js.html#line1129">viewport.js:1129</a>
         </div>
         
     </div>
@@ -10736,7 +10981,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1116">viewport.js:1116</a>
+            <a href="src_viewport.js.html#line1123">viewport.js:1123</a>
         </div>
         
     </div>
@@ -10822,7 +11067,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1152">viewport.js:1152</a>
+            <a href="src_viewport.js.html#line1159">viewport.js:1159</a>
         </div>
         
     </div>
@@ -11075,7 +11320,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1163">viewport.js:1163</a>
+            <a href="src_viewport.js.html#line1170">viewport.js:1170</a>
         </div>
         
     </div>
@@ -11157,7 +11402,7 @@ NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat May 12 2018 13:14:36 GMT+0800 (DST)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 15 2018 12:30:58 GMT+0800 (DST)
             </div>
         </footer>
     </div>
