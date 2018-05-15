@@ -93,7 +93,7 @@ module.exports = class clamp extends Plugin
                 {
                     if (this.parent.right > (this.right === true ? this.parent.worldWidth : this.right))
                     {
-                        this.x = -(this.right === true ? this.parent.worldWidth : this.right) * this.parent.scale.x + this.parent.screenWidth
+                        this.parent.x = -(this.right === true ? this.parent.worldWidth : this.right) * this.parent.scale.x + this.parent.screenWidth
                         decelerate.x = 0
                     }
                 }
