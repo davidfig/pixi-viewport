@@ -712,7 +712,7 @@ class Viewport extends PIXI.Container
     }
     set right(value)
     {
-        this.x = value * this.scale.x - this.worldScreenWidth
+        this.x = -value * this.scale.x + this.worldScreenWidth
         this._reset()
     }
 
