@@ -11,8 +11,9 @@
     "build-demo": "./node_modules/.bin/browserify docs/code.js -o docs/index.js",
     "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
     "standalone": "./node_modules/.bin/browserify docs/standalone.js -o docs/library.js -t [ babelify ]",
+    "standalone-test": "./node_modules/.bin/budo docs/standalone.js:library.js --dir docs --live",
     "transpile": "./node_modules/.bin/babel src/ --out-dir dist --source-maps inline",
-    "prepublishOnly": "npm run transpile && npm run build-demo && npm run docs"
+    "prepublishOnly": "npm run transpile && npm run build-demo && npm run standalone && npm run docs"
   },
   "repository": {
     "type": "git",

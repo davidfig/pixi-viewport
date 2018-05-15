@@ -712,7 +712,7 @@ class Viewport extends PIXI.Container
     }
     set right(value)
     {
-        this.x = -value * this.scale.x + this.worldScreenWidth
+        this.x = -value * this.scale.x + this.screenWidth
         this._reset()
     }
 
@@ -754,7 +754,7 @@ class Viewport extends PIXI.Container
     }
     set bottom(value)
     {
-        this.y = -value * this.scale.y + this.worldScreenHeight
+        this.y = -value * this.scale.y + this.screenHeight
         this._reset()
     }
     /**
@@ -908,10 +908,16 @@ class Viewport extends PIXI.Container
     }
 
     /**
-     * enable clamp to boundaries of world
-     * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-     * @param {object} options
-     * @param {string} [options.direction=all] (all, x, or y)
+     * clamp to world boundaries or other provided boundaries
+     * NOTES:
+     *   clamp is disabled if called with no options; use { direction: 'all' } for all edge clamping
+     *   screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+     * @param {object} [options]
+     * @param {(number|boolean)} [options.left] clamp left; true=0
+     * @param {(number|boolean)} [options.right] clamp right; true=viewport.worldWidth
+     * @param {(number|boolean)} [options.top] clamp top; true=0
+     * @param {(number|boolean)} [options.bottom] clamp bottom; true=viewport.worldHeight
+     * @param {string} [options.direction] (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight]; replaces left/right/top/bottom if set
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
