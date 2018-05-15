@@ -50,7 +50,8 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        if (this.parent.countDownPointers() === 1 && this.parent.parent)
+        const count = this.parent.countDownPointers()
+        if ((count === 1 || (count > 1 && !this.parent.plugins['pinch'])) && this.parent.parent)
         {
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
@@ -72,7 +73,6 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-
         if (this.last)
         {
             const x = e.data.global.x
