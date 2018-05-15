@@ -85,7 +85,6 @@ module.exports = class clamp extends Plugin
                 {
                     if (this.parent.left < (this.left === true ? 0 : this.left))
                     {
-console.log(this.parent.left, this.left)
                         this.parent.left = this.left === true ? 0 : this.left
                         decelerate.x = 0
                     }
@@ -100,43 +99,41 @@ console.log(this.parent.left, this.left)
                 }
             }
         }
-        // if (this.top !== null || this.bottom !== null)
-        // {
-        //     if (this.parent.screenWorldHeight < this.parent.screenHeight)
-        //     {
-        //         switch (this.underflowY)
-        //         {
-        //             case -1:
-        //                 this.parent.y = 0
-        //                 break
-        //             case 1:
-        //                 this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
-        //                 break
-        //             default:
-        //                 this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
-        //         }
-        //     }
-        //     else
-        //     {
-        //         if (this.top !== null)
-        //         {
-        //             if (this.parent.top < this.top === true ? 0 : this.top * this.parent.scale.y)
-        //             {
-        //                 this.parent.y = this.top === true ? 0 : this.top * this.parent.scale.y
-        //                 decelerate.y = 0
-        //             }
-        //         }
-        //         if (this.bottom !== null)
-        //         {
-        //             if (this.parent.bottom > this.bottom === true ? this.parent._worldHeight : this.bottom)
-        //             {
-        //                 this.parent.y = this.bottom === true ?
-        //                     -this.parent._worldHeight * this.parent.scale.y - this.parent._screenHeight :
-        //                     -this.bottom * this.parent.scale.y - this.parent._screenHeight
-        //             }
-        //             decelerate.y = 0
-        //         }
-        //     }
-        // }
+        if (this.top !== null || this.bottom !== null)
+        {
+            if (this.parent.screenWorldHeight < this.parent.screenHeight)
+            {
+                switch (this.underflowY)
+                {
+                    case -1:
+                        this.parent.y = 0
+                        break
+                    case 1:
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                        break
+                    default:
+                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                }
+            }
+            else
+            {
+                if (this.top !== null)
+                {
+                    if (this.parent.top < (this.top === true ? 0 : this.top))
+                    {
+                        this.parent.top = this.top === true ? 0 : this.top
+                        decelerate.y = 0
+                    }
+                }
+                if (this.bottom !== null)
+                {
+                    if (this.parent.bottom > (this.bottom === true ? this.parent.worldHeight : this.bottom))
+                    {
+                        this.parent.bottom = this.bottom === true ? this.parent.worldHeight : this.bottom
+                        decelerate.y = 0
+                    }
+                }
+            }
+        }
     }
 }
