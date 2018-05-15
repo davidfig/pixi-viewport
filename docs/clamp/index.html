@@ -29,6 +29,7 @@
 
         function clamp()
         {
+console.log(options)
             viewport.clamp(options)
         }
 
@@ -50,23 +51,30 @@
             var panel = new SettingsPanel()
             panel.button('clamp.options', () =>{} )
             panel.input('direction', (value) => {
-                options.left = value === '' ? null : value
+                if (value === '')
+                {
+                    delete options.direction
+                }
+                else
+                {
+                    options.direction = value
+                }
                 clamp()
             }, { original: options.direction === null  ? '' : options.direction })
             panel.input('left', (value) => {
-                options.left = value === '' ? null : value
+                options.left = value === '' ? null : parseFloat(value)
                 clamp()
             }, { original: options.left === null  ? '' : options.left })
             panel.input('top', (value) => {
-                options.top = value === '' ? null : value
+                options.top = value === '' ? null : parseFloat(value)
                 clamp()
             }, { original: options.top === null  ? '' : options.top })
             panel.input('right', (value) => {
-                options.right = value === '' ? null : value
+                options.right = value === '' ? null : parseFloat(value)
                 clamp()
             }, { original: options.right === null  ? '' : options.right })
             panel.input('bottom', (value) => {
-                options.bottom = value === '' ? null : value
+                options.bottom = value === '' ? null : parseFloat(value)
                 clamp()
             }, { original: options.bottom === null  ? '' : options.bottom })
             panel.input('underflow', (value) => {
