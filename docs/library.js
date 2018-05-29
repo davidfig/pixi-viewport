@@ -46049,6 +46049,7 @@ module.exports = function (_Plugin) {
                         this.clamp();
                     }
                     this.parent.emit('wheel-scroll', this.parent);
+                    this.parent.emit('moved', this.parent);
                     this.parent.dirty = true;
                     e.preventDefault();
                     return true;
@@ -46080,11 +46081,11 @@ module.exports = function (_Plugin) {
                             this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
                     }
                 } else {
-                    if (oob.left) {
+                    if (this.parent.left < 0) {
                         this.parent.x = 0;
                         decelerate.x = 0;
-                    } else if (oob.right) {
-                        this.parent.x = -point.x;
+                    } else if (this.parent.right > this.parent.worldWidth) {
+                        this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth;
                         decelerate.x = 0;
                     }
                 }
@@ -46102,11 +46103,12 @@ module.exports = function (_Plugin) {
                             this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
                     }
                 } else {
-                    if (oob.top) {
+                    if (this.parent.top < 0) {
                         this.parent.y = 0;
                         decelerate.y = 0;
-                    } else if (oob.bottom) {
-                        this.parent.y = -point.y;
+                    }
+                    if (this.parent.bottom > this.parent.worldHeight) {
+                        this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight;
                         decelerate.y = 0;
                     }
                 }
@@ -47255,37 +47257,41 @@ var Viewport = function (_PIXI$Container) {
     }, {
         key: 'handleWheel',
         value: function handleWheel(e) {
-            var result = void 0;
-            var _iteratorNormalCompletion6 = true;
-            var _didIteratorError6 = false;
-            var _iteratorError6 = undefined;
+            // only handle wheel events where the mouse is over the viewport
+            var point = this.toLocal({ x: e.clientX, y: e.clientY });
+            if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom) {
+                var result = void 0;
+                var _iteratorNormalCompletion6 = true;
+                var _didIteratorError6 = false;
+                var _iteratorError6 = undefined;
 
-            try {
-                for (var _iterator6 = PLUGIN_ORDER[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                    var type = _step6.value;
+                try {
+                    for (var _iterator6 = PLUGIN_ORDER[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                        var type = _step6.value;
 
-                    if (this.plugins[type]) {
-                        if (this.plugins[type].wheel(e)) {
-                            result = true;
+                        if (this.plugins[type]) {
+                            if (this.plugins[type].wheel(e)) {
+                                result = true;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError6 = true;
+                    _iteratorError6 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                            _iterator6.return();
+                        }
+                    } finally {
+                        if (_didIteratorError6) {
+                            throw _iteratorError6;
                         }
                     }
                 }
-            } catch (err) {
-                _didIteratorError6 = true;
-                _iteratorError6 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                        _iterator6.return();
-                    }
-                } finally {
-                    if (_didIteratorError6) {
-                        throw _iteratorError6;
-                    }
-                }
-            }
 
-            return result;
+                return result;
+            }
         }
 
         /**

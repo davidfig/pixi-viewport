@@ -152,6 +152,7 @@ module.exports = class Drag extends Plugin
                     this.clamp()
                 }
                 this.parent.emit('wheel-scroll', this.parent)
+                this.parent.emit('moved', this.parent)
                 this.parent.dirty = true
                 e.preventDefault()
                 return true
@@ -188,14 +189,14 @@ module.exports = class Drag extends Plugin
             }
             else
             {
-                if (oob.left)
+                if (this.parent.left < 0)
                 {
                     this.parent.x = 0
                     decelerate.x = 0
                 }
-                else if (oob.right)
+                else if (this.parent.right > this.parent.worldWidth)
                 {
-                    this.parent.x = -point.x
+                    this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth
                     decelerate.x = 0
                 }
             }
@@ -218,14 +219,14 @@ module.exports = class Drag extends Plugin
             }
             else
             {
-                if (oob.top)
+                if (this.parent.top < 0)
                 {
                     this.parent.y = 0
                     decelerate.y = 0
                 }
-                else if (oob.bottom)
+                if (this.parent.bottom > this.parent.worldHeight)
                 {
-                    this.parent.y = -point.y
+                    this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight
                     decelerate.y = 0
                 }
             }

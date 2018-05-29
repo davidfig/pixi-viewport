@@ -65131,6 +65131,7 @@ module.exports = class Drag extends Plugin
                     this.clamp()
                 }
                 this.parent.emit('wheel-scroll', this.parent)
+                this.parent.emit('moved', this.parent)
                 this.parent.dirty = true
                 e.preventDefault()
                 return true
@@ -65167,14 +65168,14 @@ module.exports = class Drag extends Plugin
             }
             else
             {
-                if (oob.left)
+                if (this.parent.left < 0)
                 {
                     this.parent.x = 0
                     decelerate.x = 0
                 }
-                else if (oob.right)
+                else if (this.parent.right > this.parent.worldWidth)
                 {
-                    this.parent.x = -point.x
+                    this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth
                     decelerate.x = 0
                 }
             }
@@ -65197,14 +65198,14 @@ module.exports = class Drag extends Plugin
             }
             else
             {
-                if (oob.top)
+                if (this.parent.top < 0)
                 {
                     this.parent.y = 0
                     decelerate.y = 0
                 }
-                else if (oob.bottom)
+                if (this.parent.bottom > this.parent.worldHeight)
                 {
-                    this.parent.y = -point.y
+                    this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight
                     decelerate.y = 0
                 }
             }
@@ -66268,18 +66269,23 @@ class Viewport extends PIXI.Container
      */
     handleWheel(e)
     {
-        let result
-        for (let type of PLUGIN_ORDER)
+        // only handle wheel events where the mouse is over the viewport
+        const point = this.toLocal({ x: e.clientX, y: e.clientY })
+        if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom)
         {
-            if (this.plugins[type])
+            let result
+            for (let type of PLUGIN_ORDER)
             {
-                if (this.plugins[type].wheel(e))
+                if (this.plugins[type])
                 {
-                    result = true
+                    if (this.plugins[type].wheel(e))
+                    {
+                        result = true
+                    }
                 }
             }
+            return result
         }
-        return result
     }
 
     /**

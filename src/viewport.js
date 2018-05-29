@@ -353,18 +353,23 @@ class Viewport extends PIXI.Container
      */
     handleWheel(e)
     {
-        let result
-        for (let type of PLUGIN_ORDER)
+        // only handle wheel events where the mouse is over the viewport
+        const point = this.toLocal({ x: e.clientX, y: e.clientY })
+        if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom)
         {
-            if (this.plugins[type])
+            let result
+            for (let type of PLUGIN_ORDER)
             {
-                if (this.plugins[type].wheel(e))
+                if (this.plugins[type])
                 {
-                    result = true
+                    if (this.plugins[type].wheel(e))
+                    {
+                        result = true
+                    }
                 }
             }
+            return result
         }
-        return result
     }
 
     /**
