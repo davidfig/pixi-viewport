@@ -658,6 +658,7 @@ class Viewport extends PIXI.Container
     zoom(change, center)
     {
         this.fitWidth(change + this.worldScreenWidth, center)
+        return this
     }
 
     /**
