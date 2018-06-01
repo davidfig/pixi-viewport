@@ -66574,6 +66574,7 @@ class Viewport extends PIXI.Container
     zoom(change, center)
     {
         this.fitWidth(change + this.worldScreenWidth, center)
+        return this
     }
 
     /**
@@ -66869,7 +66870,7 @@ class Viewport extends PIXI.Container
      * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
+     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
