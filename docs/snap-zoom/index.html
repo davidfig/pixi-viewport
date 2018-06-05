@@ -14,11 +14,13 @@
             height: calc(100% - 4em);
         }
     </style>
-    <script src="/library.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.0/pixi.min.js"></script>
+    <script src="/settingspanel.js"></script>
+    <script src="/pixi-viewport.min.js"></script>
     <script>
         function createViewport()
         {
-            viewport = renderer.stage.addChild(new Viewport({
+            viewport = renderer.stage.addChild(new PIXI.extras.Viewport({
                 screenWidth: window.innerWidth,
                 screenHeight: window.innerHeight,
                 worldWidth: width,

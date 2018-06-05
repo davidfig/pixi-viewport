@@ -1,6 +1,6 @@
 {
   "name": "pixi-viewport",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
   "main": "dist/viewport.js",
   "types": "@types/index.d.ts",
@@ -8,13 +8,13 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "./node_modules/.bin/budo docs/code.js:index.js --dir docs --live",
-    "build-demo": "./node_modules/.bin/browserify docs/code.js -o docs/index.js",
-    "docs": "./node_modules/.bin/jsdoc -c .jsdoc.json",
-    "standalone": "./node_modules/.bin/browserify docs/standalone.js -o docs/library.js -t [ babelify ]",
-    "standalone-test": "./node_modules/.bin/budo docs/standalone.js:library.js --dir docs --live",
-    "transpile": "./node_modules/.bin/babel src/ --out-dir dist --source-maps inline",
-    "prepublishOnly": "npm run transpile && npm run build-demo && npm run standalone && npm run docs"
+    "test": "budo docs/code.js:index.js --dir docs --live",
+    "build-demo": "browserify docs/code.js -o docs/index.js",
+    "docs": "jsdoc -c .jsdoc.json",
+    "transpile": "babel src/ --out-dir dist --source-maps inline",
+    "library": "browserify node_modules/settingspanel/settingspanel.js -o docs/settinsgpanel.js && cp bundle/pixi-viewport.min.js docs/pixi-viewport.min.js",
+    "bundle": "browserify dist/viewport.js -o bundle/pixi-viewport.js && uglifyjs -mc -o bundle/pixi-viewport.min.js bundle/pixi-viewport.js",
+    "prepublishOnly": "npm run transpile && npm run build-demo && npm run bundle && npm run library && npm run docs"
   },
   "repository": {
     "type": "git",
@@ -43,23 +43,18 @@
   "dependencies": {
     "eventemitter3": "^3.1.0",
     "exists": "^1.0.1",
-    "pixi-ease": "^0.18.0"
+    "pixi-ease": "^1.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babelify": "^8.0.0",
-    "browserify": "^16.2.0",
-    "budo": "^11.2.0",
+    "babel-preset-env": "^1.7.0",
     "clicked": "^2.0.0",
     "fork-me-github": "^1.2.0",
     "highlight.js": "^9.12.0",
-    "jsdoc": "^3.5.5",
-    "pixi.js": "^4.7.3",
+    "pixi.js": "^4.8.0",
     "settingspanel": "^2.0.0",
     "yy-counter": "^2.1.0",
-    "yy-fps": "^0.6.0",
+    "yy-fps": "^1.0.0",
     "yy-jsdoc-template": "^1.3.0",
-    "yy-random": "^1.6.0"
+    "yy-random": "^1.7.1"
   }
 }

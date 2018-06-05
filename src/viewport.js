@@ -1,4 +1,3 @@
-const PIXI = require('pixi.js')
 const exists = require('exists')
 
 const Drag = require('./drag')
@@ -1196,5 +1195,7 @@ class Viewport extends PIXI.Container
  * @event Viewport#moved
  * @type {Viewport}
  */
+
+PIXI.extras.Viewport = Viewport
 
 module.exports = Viewport

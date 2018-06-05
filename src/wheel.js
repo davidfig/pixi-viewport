@@ -1,5 +1,3 @@
-const PIXI = require('pixi.js')
-
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
