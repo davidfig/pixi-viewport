@@ -49,6 +49,16 @@ sprite.position.set(100, 100);
 
     npm i pixi-viewport
 
+or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/) and use it like:
+
+```html
+<script src="/directory-to-file/pixi.js"></script>
+<script src="/directory-to-file/pixi-viewport.js"></script>
+<script>
+    var Viewport = new PIXI.extras.Viewport(options);
+</script>
+```
+
 ## license  
 MIT License  
 (c) 2018 [YOPEY YOPEY LLC](https://yopeyopey.com/) by [David Figatner](https://twitter.com/yopey_yopey/)
