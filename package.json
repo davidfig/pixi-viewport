@@ -12,8 +12,9 @@
     "build-demo": "browserify docs/code.js -o docs/index.js",
     "docs": "jsdoc -c .jsdoc.json",
     "transpile": "babel src/ --out-dir dist --source-maps inline",
-    "library": "browserify node_modules/settingspanel/settingspanel.js -o docs/settinsgpanel.js && cp bundle/pixi-viewport.min.js docs/pixi-viewport.min.js",
+    "library": "cp bundle/pixi-viewport.min.js docs/pixi-viewport.min.js",
     "bundle": "browserify dist/viewport.js -o bundle/pixi-viewport.js && uglifyjs -mc -o bundle/pixi-viewport.min.js bundle/pixi-viewport.js",
+    "bundle-test": "budo src/viewport.js:docs/pixi-viewport.min.js --dir docs",
     "prepublishOnly": "npm run transpile && npm run build-demo && npm run bundle && npm run library && npm run docs"
   },
   "repository": {

@@ -50,7 +50,7 @@
             var panel = new SettingsPanel()
             panel.button('', () => {
                 toPointer = !toPointer
-                return toPointer ? 'Snap to Pointer' : 'Snap to (100, 100)'
+                return toPointer ? 'Follow' : 'Snap to (100, 100)'
             }, { original: 'Snap to Pointer', background: 'green' })
             panel.button('', () => {
                 interrupt = !interrupt

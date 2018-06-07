@@ -419,5 +419,6 @@ class SettingsPanel
     }
 }
 
+window.SettingsPanel = SettingsPanel
 module.exports = SettingsPanel
 },{"clicked":1}]},{},[2]);
