@@ -2075,8 +2075,8 @@ var Viewport = function (_PIXI$Container) {
             if (center) {
                 save = this.center;
             }
-            width = width || this._worldWidth;
-            this.scale.x = this._screenWidth / width;
+            width = width || this.worldWidth;
+            this.scale.x = this.screenWidth / width;
             this.scale.y = this.scale.x;
             if (center) {
                 this.moveCenter(save);
@@ -2098,8 +2098,8 @@ var Viewport = function (_PIXI$Container) {
             if (center) {
                 save = this.center;
             }
-            height = height || this._worldHeight;
-            this.scale.y = this._screenHeight / height;
+            height = height || this.worldHeight;
+            this.scale.y = this.screenHeight / height;
             this.scale.x = this.scale.y;
             if (center) {
                 this.moveCenter(save);
@@ -2134,20 +2134,24 @@ var Viewport = function (_PIXI$Container) {
         }
 
         /**
-         * change zoom so it fits the entire world in the viewport
+         * change zoom so it fits the size or the entire world in the viewport
          * @param {boolean} [center] maintain the same center of the screen after zoom
+         * @param {number} [width] desired width
+         * @param {number} [height] desired height
          * @return {Viewport} this
          */
 
     }, {
         key: 'fit',
-        value: function fit(center) {
+        value: function fit(center, width, height) {
             var save = void 0;
             if (center) {
                 save = this.center;
             }
-            this.scale.x = this._screenWidth / this._worldWidth;
-            this.scale.y = this._screenHeight / this._worldHeight;
+            width = width || this.worldWidth;
+            height = height || this.worldHeight;
+            this.scale.x = this.screenWidth / width;
+            this.scale.y = this.screenHeight / height;
             if (this.scale.x < this.scale.y) {
                 this.scale.y = this.scale.x;
             } else {
