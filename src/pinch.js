@@ -77,11 +77,13 @@ module.exports = class Pinch extends Plugin
                     const newPoint = this.parent.toGlobal(oldPoint)
                     this.parent.x += point.x - newPoint.x
                     this.parent.y += point.y - newPoint.y
+                    this.parent.emit('moved', this.parent)
                 }
                 if (!this.noDrag && this.lastCenter)
                 {
                     this.parent.x += point.x - this.lastCenter.x
                     this.parent.y += point.y - this.lastCenter.y
+                    this.parent.emit('moved', this.parent)
                 }
                 this.lastCenter = point
                 this.moved = true
