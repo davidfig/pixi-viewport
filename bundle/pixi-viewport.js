@@ -1611,7 +1611,7 @@ var Viewport = function (_PIXI$Container) {
     _createClass(Viewport, [{
         key: 'update',
         value: function update() {
-            if (!this._pause) {
+            if (!this.pause) {
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
@@ -1742,6 +1742,9 @@ var Viewport = function (_PIXI$Container) {
     }, {
         key: 'down',
         value: function down(e) {
+            if (this.pause) {
+                return;
+            }
             if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
                 this.leftDown = true;
             }
@@ -1814,6 +1817,10 @@ var Viewport = function (_PIXI$Container) {
     }, {
         key: 'move',
         value: function move(e) {
+            if (this.pause) {
+                return;
+            }
+
             var _iteratorNormalCompletion4 = true;
             var _didIteratorError4 = false;
             var _iteratorError4 = undefined;
@@ -1858,6 +1865,10 @@ var Viewport = function (_PIXI$Container) {
     }, {
         key: 'up',
         value: function up(e) {
+            if (this.pause) {
+                return;
+            }
+
             if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
                 this.leftDown = false;
             }
@@ -1912,6 +1923,10 @@ var Viewport = function (_PIXI$Container) {
     }, {
         key: 'handleWheel',
         value: function handleWheel(e) {
+            if (this.pause) {
+                return;
+            }
+
             // only handle wheel events where the mouse is over the viewport
             var point = this.toLocal({ x: e.clientX, y: e.clientY });
             if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom) {
@@ -2744,7 +2759,6 @@ var Viewport = function (_PIXI$Container) {
         },
         set: function set(value) {
             this._pause = value;
-            this.interactive = !value;
         }
     }]);
 

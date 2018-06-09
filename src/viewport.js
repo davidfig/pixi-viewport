@@ -88,7 +88,7 @@ class Viewport extends PIXI.Container
      */
     update()
     {
-        if (!this._pause)
+        if (!this.pause)
         {
             for (let plugin of PLUGIN_ORDER)
             {
@@ -233,6 +233,10 @@ class Viewport extends PIXI.Container
      */
     down(e)
     {
+        if (this.pause)
+        {
+            return
+        }
         if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
         {
             this.leftDown = true
@@ -289,6 +293,11 @@ class Viewport extends PIXI.Container
      */
     move(e)
     {
+        if (this.pause)
+        {
+            return
+        }
+
         for (let type of PLUGIN_ORDER)
         {
             if (this.plugins[type])
@@ -314,6 +323,11 @@ class Viewport extends PIXI.Container
      */
     up(e)
     {
+        if (this.pause)
+        {
+            return
+        }
+
         if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
         {
             this.leftDown = false
@@ -352,6 +366,11 @@ class Viewport extends PIXI.Container
      */
     handleWheel(e)
     {
+        if (this.pause)
+        {
+            return
+        }
+
         // only handle wheel events where the mouse is over the viewport
         const point = this.toLocal({ x: e.clientX, y: e.clientY })
         if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom)
@@ -1070,7 +1089,6 @@ class Viewport extends PIXI.Container
     set pause(value)
     {
         this._pause = value
-        this.interactive = !value
     }
 }
 
