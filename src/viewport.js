@@ -81,16 +81,6 @@ class Viewport extends PIXI.Container
 
         this.ticker = options.ticker || PIXI.ticker.shared
         this.ticker.add(() => this.update())
-        this.on('moved', () =>
-        {
-            if (!this.forceHitArea)
-            {
-                this.hitArea.x = this.left
-                this.hitArea.y = this.top
-                this.hitArea.width = this.worldScreenWidth
-                this.hitArea.height = this.worldScreenHeight
-            }
-        })
     }
 
     /**
@@ -105,6 +95,13 @@ class Viewport extends PIXI.Container
             {
                 plugin.update(this.ticker.elapsedMS)
             }
+        }
+        if (!this.forceHitArea)
+        {
+            this.hitArea.x = this.left
+            this.hitArea.y = this.top
+            this.hitArea.width = this.worldScreenWidth
+            this.hitArea.height = this.worldScreenHeight
         }
     }
 

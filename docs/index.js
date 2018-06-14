@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const Ease = require('pixi-ease')
 const Random = require('yy-random')
@@ -23996,7 +23996,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.8.0';
+var VERSION = exports.VERSION = '4.8.1';
 
 /**
  * Two Pi.
@@ -37128,6 +37128,8 @@ var Sprite = function (_Container) {
     Sprite.prototype.destroy = function destroy(options) {
         _Container.prototype.destroy.call(this, options);
 
+        this._texture.off('update', this._onTextureUpdate, this);
+
         this._anchor = null;
 
         var destroyTexture = typeof options === 'boolean' ? options : options && options.texture;
@@ -39272,8 +39274,10 @@ var TextMetrics = function () {
                             width = 0;
                         }
 
-                        // give it its own line
-                        lines += TextMetrics.addLine(token);
+                        var isLastToken = i === tokens.length - 1;
+
+                        // give it its own line if it's not the end
+                        lines += TextMetrics.addLine(token, !isLastToken);
                         canPrependSpaces = false;
                         line = '';
                         width = 0;
@@ -47257,47 +47261,52 @@ var BitmapText = function (_core$Container) {
      *
      * @static
      * @param {XMLDocument} xml - The XML document data.
-     * @param {PIXI.Texture|PIXI.Texture[]} textures - List of textures for each page.
+     * @param {Object.<string, PIXI.Texture>|PIXI.Texture|PIXI.Texture[]} textures - List of textures for each page.
+     *  If providing an object, the key is the `<page>` element's `file` attribute in the FNT file.
      * @return {Object} Result font object with font, size, lineHeight and char fields.
      */
     BitmapText.registerFont = function registerFont(xml, textures) {
         var data = {};
         var info = xml.getElementsByTagName('info')[0];
         var common = xml.getElementsByTagName('common')[0];
-        var fileName = xml.getElementsByTagName('page')[0].getAttribute('file');
-        var res = (0, _utils.getResolutionOfUrl)(fileName, _settings2.default.RESOLUTION);
+        var pages = xml.getElementsByTagName('page');
+        var res = (0, _utils.getResolutionOfUrl)(pages[0].getAttribute('file'), _settings2.default.RESOLUTION);
+        var pagesTextures = {};
 
         data.font = info.getAttribute('face');
         data.size = parseInt(info.getAttribute('size'), 10);
         data.lineHeight = parseInt(common.getAttribute('lineHeight'), 10) / res;
         data.chars = {};
-        if (!(textures instanceof Array)) {
+
+        // Single texture, convert to list
+        if (textures instanceof core.Texture) {
             textures = [textures];
+        }
+
+        // Convert the input Texture, Textures or object
+        // into a page Texture lookup by "id"
+        for (var i = 0; i < pages.length; i++) {
+            var id = pages[i].getAttribute('id');
+            var file = pages[i].getAttribute('file');
+
+            pagesTextures[id] = textures instanceof Array ? textures[i] : textures[file];
         }
 
         // parse letters
         var letters = xml.getElementsByTagName('char');
-        var page = void 0;
 
-        for (var i = 0; i < letters.length; i++) {
-            var letter = letters[i];
+        for (var _i5 = 0; _i5 < letters.length; _i5++) {
+            var letter = letters[_i5];
             var charCode = parseInt(letter.getAttribute('id'), 10);
-            var textureRect = void 0;
-
-            page = parseInt(letter.getAttribute('page'), 10);
-            if (isNaN(page)) {
-                textureRect = new core.Rectangle(0, 0, 0, 0);
-                page = 0;
-            } else {
-                textureRect = new core.Rectangle(parseInt(letter.getAttribute('x'), 10) / res + textures[page].frame.x / res, parseInt(letter.getAttribute('y'), 10) / res + textures[page].frame.y / res, parseInt(letter.getAttribute('width'), 10) / res, parseInt(letter.getAttribute('height'), 10) / res);
-            }
+            var page = letter.getAttribute('page') || 0;
+            var textureRect = new core.Rectangle(parseInt(letter.getAttribute('x'), 10) / res + pagesTextures[page].frame.x / res, parseInt(letter.getAttribute('y'), 10) / res + pagesTextures[page].frame.y / res, parseInt(letter.getAttribute('width'), 10) / res, parseInt(letter.getAttribute('height'), 10) / res);
 
             data.chars[charCode] = {
                 xOffset: parseInt(letter.getAttribute('xoffset'), 10) / res,
                 yOffset: parseInt(letter.getAttribute('yoffset'), 10) / res,
                 xAdvance: parseInt(letter.getAttribute('xadvance'), 10) / res,
                 kerning: {},
-                texture: new core.Texture(textures[page].baseTexture, textureRect),
+                texture: new core.Texture(pagesTextures[page].baseTexture, textureRect),
                 page: page
             };
         }
@@ -47305,8 +47314,8 @@ var BitmapText = function (_core$Container) {
         // parse kernings
         var kernings = xml.getElementsByTagName('kerning');
 
-        for (var _i5 = 0; _i5 < kernings.length; _i5++) {
-            var kerning = kernings[_i5];
+        for (var _i6 = 0; _i6 < kernings.length; _i6++) {
+            var kerning = kernings[_i6];
             var first = parseInt(kerning.getAttribute('first'), 10) / res;
             var second = parseInt(kerning.getAttribute('second'), 10) / res;
             var amount = parseInt(kerning.getAttribute('amount'), 10) / res;
@@ -52834,42 +52843,48 @@ exports.default = function () {
         }
 
         var pages = resource.data.getElementsByTagName('page');
-        var textures = [];
-        var loadOptions = {
-            crossOrigin: resource.crossOrigin,
-            loadType: _resourceLoader.Resource.LOAD_TYPE.IMAGE,
-            metadata: resource.metadata.imageMetadata,
-            parentResource: resource
+        var textures = {};
+
+        // Handle completed, when the number of textures
+        // load is the same number as references in the fnt file
+        var completed = function completed(page) {
+            textures[page.metadata.pageFile] = page.texture;
+
+            if (Object.keys(textures).length === pages.length) {
+                parse(resource, textures);
+                next();
+            }
         };
 
-        for (var x = 0; x < pages.length; ++x) {
-            var textureUrl = xmlUrl + pages[x].getAttribute('file');
+        for (var i = 0; i < pages.length; ++i) {
+            var pageFile = pages[i].getAttribute('file');
+            var url = xmlUrl + pageFile;
+            var exists = false;
 
-            if (_core.utils.TextureCache[textureUrl]) {
-                textures.push(_core.utils.TextureCache[textureUrl]);
-            } else {
-                // load the texture for the font
-                this.add(resource.name + '_image' + x, textureUrl, loadOptions, function () {
-                    var nextTextures = [];
-
-                    for (var _x = 0; _x < pages.length; ++_x) {
-                        var nextTextureUrl = xmlUrl + pages[_x].getAttribute('file');
-
-                        if (_core.utils.TextureCache[nextTextureUrl]) {
-                            nextTextures.push(_core.utils.TextureCache[nextTextureUrl]);
-                        } else {
-                            return;
-                        }
-                    }
-                    parse(resource, nextTextures);
-                    next();
-                });
+            // incase the image is loaded outside
+            // using the same loader, resource will be available
+            for (var name in this.resources) {
+                if (this.resources[name].url === url) {
+                    this.resources[name].metadata.pageFile = pageFile;
+                    completed(this.resources[name]);
+                    exists = true;
+                    break;
+                }
             }
-        }
 
-        if (textures.length === pages.length) {
-            parse(resource, textures);
-            next();
+            // texture is not loaded, we'll attempt to add
+            // it to the load and add the texture to the list
+            if (!exists) {
+                // Standard loading options for images
+                var options = {
+                    crossOrigin: resource.crossOrigin,
+                    loadType: _resourceLoader.Resource.LOAD_TYPE.IMAGE,
+                    metadata: Object.assign({ pageFile: pageFile }, resource.metadata.imageMetadata),
+                    parentResource: resource
+                };
+
+                this.add(url, options, completed);
+            }
         }
     };
 };
@@ -52877,8 +52892,6 @@ exports.default = function () {
 var _path = require('path');
 
 var path = _interopRequireWildcard(_path);
-
-var _core = require('../core');
 
 var _resourceLoader = require('resource-loader');
 
@@ -52898,7 +52911,7 @@ function parse(resource, textures) {
     resource.bitmapFont = _extras.BitmapText.registerFont(resource.data, textures);
 }
 
-},{"../core":246,"../extras":322,"path":407,"resource-loader":377}],344:[function(require,module,exports){
+},{"../extras":322,"path":407,"resource-loader":377}],344:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -64873,16 +64886,6 @@ class Viewport extends PIXI.Container
 
         this.ticker = options.ticker || PIXI.ticker.shared
         this.ticker.add(() => this.update())
-        this.on('moved', () =>
-        {
-            if (!this.forceHitArea)
-            {
-                this.hitArea.x = this.left
-                this.hitArea.y = this.top
-                this.hitArea.width = this.worldScreenWidth
-                this.hitArea.height = this.worldScreenHeight
-            }
-        })
     }
 
     /**
@@ -64897,6 +64900,13 @@ class Viewport extends PIXI.Container
             {
                 plugin.update(this.ticker.elapsedMS)
             }
+        }
+        if (!this.forceHitArea)
+        {
+            this.hitArea.x = this.left
+            this.hitArea.y = this.top
+            this.hitArea.width = this.worldScreenWidth
+            this.hitArea.height = this.worldScreenHeight
         }
     }
 
