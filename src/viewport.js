@@ -60,7 +60,8 @@ class Viewport extends PIXI.Container
     {
         options = options || {}
         super()
-        this.plugins = []
+        this.plugins = {}
+        this.pluginsList = []
         this._screenWidth = options.screenWidth
         this._screenHeight = options.screenHeight
         this._worldWidth = options.worldWidth
@@ -80,6 +81,16 @@ class Viewport extends PIXI.Container
 
         this.ticker = options.ticker || PIXI.ticker.shared
         this.ticker.add(() => this.update())
+        this.on('moved', () =>
+        {
+            if (!this.forceHitArea)
+            {
+                this.hitArea.x = this.left
+                this.hitArea.y = this.top
+                this.hitArea.width = this.worldScreenWidth
+                this.hitArea.height = this.worldScreenHeight
+            }
+        })
     }
 
     /**
@@ -90,19 +101,9 @@ class Viewport extends PIXI.Container
     {
         if (!this.pause)
         {
-            for (let plugin of PLUGIN_ORDER)
+            for (let plugin of this.pluginsList)
             {
-                if (this.plugins[plugin])
-                {
-                    this.plugins[plugin].update(this.ticker.elapsedMS)
-                }
-            }
-            if (!this.forceHitArea)
-            {
-                this.hitArea.x = this.left
-                this.hitArea.y = this.top
-                this.hitArea.width = this.worldScreenWidth
-                this.hitArea.height = this.worldScreenHeight
+                plugin.update(this.ticker.elapsedMS)
             }
         }
     }
@@ -129,12 +130,9 @@ class Viewport extends PIXI.Container
      */
     resizePlugins()
     {
-        for (let type of PLUGIN_ORDER)
+        for (let plugin of this.pluginsList)
         {
-            if (this.plugins[type])
-            {
-                this.plugins[type].resize()
-            }
+            plugin.resize()
         }
     }
 
@@ -264,12 +262,9 @@ class Viewport extends PIXI.Container
             this.clickedAvailable = false
         }
 
-        for (let type of PLUGIN_ORDER)
+        for (let plugin of this.pluginsList)
         {
-            if (this.plugins[type])
-            {
-                this.plugins[type].down(e)
-            }
+            plugin.down(e)
         }
     }
 
@@ -298,12 +293,9 @@ class Viewport extends PIXI.Container
             return
         }
 
-        for (let type of PLUGIN_ORDER)
+        for (let plugin of this.pluginsList)
         {
-            if (this.plugins[type])
-            {
-                this.plugins[type].move(e)
-            }
+            plugin.move(e)
         }
 
         if (this.clickedAvailable)
@@ -345,12 +337,9 @@ class Viewport extends PIXI.Container
             }
         }
 
-        for (let type of PLUGIN_ORDER)
+        for (let plugin of this.pluginsList)
         {
-            if (this.plugins[type])
-            {
-                this.plugins[type].up(e)
-            }
+            plugin.up(e)
         }
 
         if (this.clickedAvailable && this.countDownPointers() === 0)
@@ -376,14 +365,11 @@ class Viewport extends PIXI.Container
         if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom)
         {
             let result
-            for (let type of PLUGIN_ORDER)
+            for (let plugin of this.pluginsList)
             {
-                if (this.plugins[type])
+                if (plugin.wheel(e))
                 {
-                    if (this.plugins[type].wheel(e))
-                    {
-                        result = true
-                    }
+                    result = true
                 }
             }
             return result
@@ -698,6 +684,7 @@ class Viewport extends PIXI.Container
     snapZoom(options)
     {
         this.plugins['snap-zoom'] = new SnapZoom(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -893,6 +880,7 @@ class Viewport extends PIXI.Container
         {
             this.plugins[type] = null
             this.emit(type + '-remove')
+            this.pluginsSort()
         }
     }
 
@@ -921,6 +909,22 @@ class Viewport extends PIXI.Container
     }
 
     /**
+     * sort plugins for updates
+     * @private
+     */
+    pluginsSort()
+    {
+        this.pluginsList = []
+        for (let plugin of PLUGIN_ORDER)
+        {
+            if (this.plugins[plugin])
+            {
+                this.pluginsList.push(this.plugins[plugin])
+            }
+        }
+    }
+
+    /**
      * enable one-finger touch to drag
      * @param {object} [options]
      * @param {string} [options.direction=all] direction to drag (all, x, or y)
@@ -932,6 +936,7 @@ class Viewport extends PIXI.Container
     drag(options)
     {
         this.plugins['drag'] = new Drag(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -952,6 +957,7 @@ class Viewport extends PIXI.Container
     clamp(options)
     {
         this.plugins['clamp'] = new Clamp(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -966,6 +972,7 @@ class Viewport extends PIXI.Container
     decelerate(options)
     {
         this.plugins['decelerate'] = new Decelerate(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -983,6 +990,7 @@ class Viewport extends PIXI.Container
     bounce(options)
     {
         this.plugins['bounce'] = new Bounce(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -997,6 +1005,7 @@ class Viewport extends PIXI.Container
     pinch(options)
     {
         this.plugins['pinch'] = new Pinch(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -1018,6 +1027,7 @@ class Viewport extends PIXI.Container
     snap(x, y, options)
     {
         this.plugins['snap'] = new Snap(this, x, y, options)
+        this.pluginsSort()
         return this
     }
 
@@ -1032,6 +1042,7 @@ class Viewport extends PIXI.Container
     follow(target, options)
     {
         this.plugins['follow'] = new Follow(this, target, options)
+        this.pluginsSort()
         return this
     }
 
@@ -1046,6 +1057,7 @@ class Viewport extends PIXI.Container
     wheel(options)
     {
         this.plugins['wheel'] = new Wheel(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -1062,6 +1074,7 @@ class Viewport extends PIXI.Container
     clampZoom(options)
     {
         this.plugins['clamp-zoom'] = new ClampZoom(this, options)
+        this.pluginsSort()
         return this
     }
 
@@ -1082,6 +1095,7 @@ class Viewport extends PIXI.Container
     mouseEdges(options)
     {
         this.plugins['mouse-edges'] = new MouseEdges(this, options)
+        this.pluginsSort()
         return this
     }
 

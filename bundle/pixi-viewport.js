@@ -1579,7 +1579,8 @@ var Viewport = function (_PIXI$Container) {
 
         var _this = _possibleConstructorReturn(this, (Viewport.__proto__ || Object.getPrototypeOf(Viewport)).call(this));
 
-        _this.plugins = [];
+        _this.plugins = {};
+        _this.pluginsList = [];
         _this._screenWidth = options.screenWidth;
         _this._screenHeight = options.screenHeight;
         _this._worldWidth = options.worldWidth;
@@ -1601,6 +1602,14 @@ var Viewport = function (_PIXI$Container) {
         _this.ticker.add(function () {
             return _this.update();
         });
+        _this.on('moved', function () {
+            if (!_this.forceHitArea) {
+                _this.hitArea.x = _this.left;
+                _this.hitArea.y = _this.top;
+                _this.hitArea.width = _this.worldScreenWidth;
+                _this.hitArea.height = _this.worldScreenHeight;
+            }
+        });
         return _this;
     }
 
@@ -1619,12 +1628,10 @@ var Viewport = function (_PIXI$Container) {
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = PLUGIN_ORDER[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    for (var _iterator = this.pluginsList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var plugin = _step.value;
 
-                        if (this.plugins[plugin]) {
-                            this.plugins[plugin].update(this.ticker.elapsedMS);
-                        }
+                        plugin.update(this.ticker.elapsedMS);
                     }
                 } catch (err) {
                     _didIteratorError = true;
@@ -1639,13 +1646,6 @@ var Viewport = function (_PIXI$Container) {
                             throw _iteratorError;
                         }
                     }
-                }
-
-                if (!this.forceHitArea) {
-                    this.hitArea.x = this.left;
-                    this.hitArea.y = this.top;
-                    this.hitArea.width = this.worldScreenWidth;
-                    this.hitArea.height = this.worldScreenHeight;
                 }
             }
         }
@@ -1681,12 +1681,10 @@ var Viewport = function (_PIXI$Container) {
             var _iteratorError2 = undefined;
 
             try {
-                for (var _iterator2 = PLUGIN_ORDER[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var type = _step2.value;
+                for (var _iterator2 = this.pluginsList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var plugin = _step2.value;
 
-                    if (this.plugins[type]) {
-                        this.plugins[type].resize();
-                    }
+                    plugin.resize();
                 }
             } catch (err) {
                 _didIteratorError2 = true;
@@ -1773,12 +1771,10 @@ var Viewport = function (_PIXI$Container) {
             var _iteratorError3 = undefined;
 
             try {
-                for (var _iterator3 = PLUGIN_ORDER[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var type = _step3.value;
+                for (var _iterator3 = this.pluginsList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var plugin = _step3.value;
 
-                    if (this.plugins[type]) {
-                        this.plugins[type].down(e);
-                    }
+                    plugin.down(e);
                 }
             } catch (err) {
                 _didIteratorError3 = true;
@@ -1828,12 +1824,10 @@ var Viewport = function (_PIXI$Container) {
             var _iteratorError4 = undefined;
 
             try {
-                for (var _iterator4 = PLUGIN_ORDER[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var type = _step4.value;
+                for (var _iterator4 = this.pluginsList[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var plugin = _step4.value;
 
-                    if (this.plugins[type]) {
-                        this.plugins[type].move(e);
-                    }
+                    plugin.move(e);
                 }
             } catch (err) {
                 _didIteratorError4 = true;
@@ -1889,12 +1883,10 @@ var Viewport = function (_PIXI$Container) {
             var _iteratorError5 = undefined;
 
             try {
-                for (var _iterator5 = PLUGIN_ORDER[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                    var type = _step5.value;
+                for (var _iterator5 = this.pluginsList[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                    var plugin = _step5.value;
 
-                    if (this.plugins[type]) {
-                        this.plugins[type].up(e);
-                    }
+                    plugin.up(e);
                 }
             } catch (err) {
                 _didIteratorError5 = true;
@@ -1938,13 +1930,11 @@ var Viewport = function (_PIXI$Container) {
                 var _iteratorError6 = undefined;
 
                 try {
-                    for (var _iterator6 = PLUGIN_ORDER[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                        var type = _step6.value;
+                    for (var _iterator6 = this.pluginsList[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                        var plugin = _step6.value;
 
-                        if (this.plugins[type]) {
-                            if (this.plugins[type].wheel(e)) {
-                                result = true;
-                            }
+                        if (plugin.wheel(e)) {
+                            result = true;
                         }
                     }
                 } catch (err) {
@@ -2216,6 +2206,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'snapZoom',
         value: function snapZoom(options) {
             this.plugins['snap-zoom'] = new SnapZoom(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2328,6 +2319,7 @@ var Viewport = function (_PIXI$Container) {
             if (this.plugins[type]) {
                 this.plugins[type] = null;
                 this.emit(type + '-remove');
+                this.pluginsSort();
             }
         }
 
@@ -2358,6 +2350,43 @@ var Viewport = function (_PIXI$Container) {
         }
 
         /**
+         * sort plugins for updates
+         * @private
+         */
+
+    }, {
+        key: 'pluginsSort',
+        value: function pluginsSort() {
+            this.pluginsList = [];
+            var _iteratorNormalCompletion7 = true;
+            var _didIteratorError7 = false;
+            var _iteratorError7 = undefined;
+
+            try {
+                for (var _iterator7 = PLUGIN_ORDER[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                    var plugin = _step7.value;
+
+                    if (this.plugins[plugin]) {
+                        this.pluginsList.push(this.plugins[plugin]);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError7 = true;
+                _iteratorError7 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                        _iterator7.return();
+                    }
+                } finally {
+                    if (_didIteratorError7) {
+                        throw _iteratorError7;
+                    }
+                }
+            }
+        }
+
+        /**
          * enable one-finger touch to drag
          * @param {object} [options]
          * @param {string} [options.direction=all] direction to drag (all, x, or y)
@@ -2371,6 +2400,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'drag',
         value: function drag(options) {
             this.plugins['drag'] = new Drag(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2393,6 +2423,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'clamp',
         value: function clamp(options) {
             this.plugins['clamp'] = new Clamp(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2409,6 +2440,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'decelerate',
         value: function decelerate(options) {
             this.plugins['decelerate'] = new Decelerate(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2428,6 +2460,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'bounce',
         value: function bounce(options) {
             this.plugins['bounce'] = new Bounce(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2444,6 +2477,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'pinch',
         value: function pinch(options) {
             this.plugins['pinch'] = new Pinch(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2467,6 +2501,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'snap',
         value: function snap(x, y, options) {
             this.plugins['snap'] = new Snap(this, x, y, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2483,6 +2518,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'follow',
         value: function follow(target, options) {
             this.plugins['follow'] = new Follow(this, target, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2499,6 +2535,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'wheel',
         value: function wheel(options) {
             this.plugins['wheel'] = new Wheel(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2517,6 +2554,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'clampZoom',
         value: function clampZoom(options) {
             this.plugins['clamp-zoom'] = new ClampZoom(this, options);
+            this.pluginsSort();
             return this;
         }
 
@@ -2539,6 +2577,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'mouseEdges',
         value: function mouseEdges(options) {
             this.plugins['mouse-edges'] = new MouseEdges(this, options);
+            this.pluginsSort();
             return this;
         }
 
