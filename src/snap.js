@@ -1,6 +1,5 @@
 const Plugin = require('./plugin')
-const Ease = require('pixi-ease')
-const exists = require('exists')
+const utils =  require('./utils')
 
 module.exports = class Snap extends Plugin
 {
@@ -30,29 +29,29 @@ module.exports = class Snap extends Plugin
         options = options || {}
         this.friction = options.friction || 0.8
         this.time = options.time || 1000
-        this.ease = options.ease || 'easeInOutSine'
+        this.ease = utils.ease(options.ease, 'easeInOutSine')
         this.x = x
         this.y = y
         this.topLeft = options.topLeft
-        this.interrupt = exists(options.interrupt) ? options.interrupt : true
+        this.interrupt = utils.defaults(options.interrupt, true)
         this.removeOnComplete = options.removeOnComplete
         this.removeOnInterrupt = options.removeOnInterrupt
         if (options.forceStart)
         {
-            this.percent = 0
-            this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
             this.startEase()
-            this.parent.emit('snap-start', this.parent)
         }
     }
 
-    startEase()
+    snapStart()
     {
+        this.percent = 0
+        this.snapping = { time: 0 }
         const current = this.topLeft ? this.parent.corner : this.parent.center
         this.deltaX = this.x - current.x
         this.deltaY = this.y - current.y
         this.startX = current.x
         this.startY = current.y
+        this.parent.emit('snap-start', this.parent)
     }
 
     wheel()
@@ -102,17 +101,26 @@ module.exports = class Snap extends Plugin
             const current = this.topLeft ? this.parent.corner : this.parent.center
             if (current.x !== this.x || current.y !== this.y)
             {
-                this.percent = 0
-                this.snapping = new Ease.to(this, { percent: 1 }, this.time, { ease: this.ease })
-                this.startEase()
-                this.parent.emit('snap-start', this.parent)
+                this.snapStart()
             }
         }
         else
         {
-            const finished = this.snapping.update(elapsed)
-            const x = this.startX + this.deltaX * this.percent
-            const y = this.startY + this.deltaY * this.percent
+            const snapping = this.snapping
+            snapping.time += elapsed
+            let finished, x, y
+            if (snapping.time > this.time)
+            {
+                finished = true
+                x = this.startX + this.deltaX
+                y = this.startY + this.deltaY
+            }
+            else
+            {
+                const percent = this.ease(snapping.time, 0, 1, this.time)
+                x = this.startX + this.deltaX * percent
+                y = this.startY + this.deltaY * percent
+            }
             if (this.topLeft)
             {
                 this.parent.moveCorner(x, y)

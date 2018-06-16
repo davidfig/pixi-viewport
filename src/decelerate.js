@@ -1,5 +1,4 @@
-const exists = require('exists')
-
+const utils =  require('./utils')
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -74,12 +73,13 @@ module.exports = class Decelerate extends Plugin
      */
     activate(options)
     {
-        if (exists(options.x))
+        options = options || {}
+        if (typeof options.x !== 'undefined')
         {
             this.x = options.x
             this.percentChangeX = this.friction
         }
-        if (exists(options.y))
+        if (typeof options.y !== 'undefined')
         {
             this.y = options.y
             this.percentChangeY = this.friction

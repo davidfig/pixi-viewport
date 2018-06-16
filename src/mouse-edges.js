@@ -1,6 +1,4 @@
-const exists = require('exists')
-const Angle = require('yy-angle')
-
+const utils =  require('./utils')
 const Plugin = require('./plugin')
 
 module.exports = class MouseEdges extends Plugin
@@ -41,7 +39,7 @@ module.exports = class MouseEdges extends Plugin
     {
         const options = this.options
         const distance = options.distance
-        if (exists(distance))
+        if (utils.exists(distance))
         {
             this.left = distance
             this.top = distance
@@ -50,10 +48,10 @@ module.exports = class MouseEdges extends Plugin
         }
         else if (!this.radius)
         {
-            this.left = exists(options.left) ? options.left : null
-            this.top = exists(options.top) ? options.top : null
-            this.right = exists(options.right) ? window.innerWidth - options.right : null
-            this.bottom = exists(options.bottom) ? window.innerHeight - options.bottom : null
+            this.left = utils.exists(options.left) ? options.left : null
+            this.top = utils.exists(options.top) ? options.top : null
+            this.right = utils.exists(options.right) ? window.innerWidth - options.right : null
+            this.bottom = utils.exists(options.bottom) ? window.innerHeight - options.bottom : null
         }
     }
 
@@ -74,7 +72,7 @@ module.exports = class MouseEdges extends Plugin
         if (this.radiusSquared)
         {
             const center = this.parent.toScreen(this.parent.center)
-            const distance = Angle.distanceTwoPointsSquared(center.x, center.y, x, y)
+            const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2)
             if (distance >= this.radiusSquared)
             {
                 const angle = Math.atan2(center.y - y, center.x - x)
@@ -104,11 +102,11 @@ module.exports = class MouseEdges extends Plugin
         }
         else
         {
-            if (exists(this.left) && x < this.left)
+            if (utils.exists(this.left) && x < this.left)
             {
                 this.horizontal = 1 * this.reverse * this.speed * (60 / 1000)
             }
-            else if (exists(this.right) && x > this.right)
+            else if (utils.exists(this.right) && x > this.right)
             {
                 this.horizontal = -1 * this.reverse * this.speed * (60 / 1000)
             }
@@ -117,11 +115,11 @@ module.exports = class MouseEdges extends Plugin
                 this.decelerateHorizontal()
                 this.horizontal = 0
             }
-            if (exists(this.top) && y < this.top)
+            if (utils.exists(this.top) && y < this.top)
             {
                 this.vertical = 1 * this.reverse * this.speed * (60 / 1000)
             }
-            else if (exists(this.bottom) && y > this.bottom)
+            else if (utils.exists(this.bottom) && y > this.bottom)
             {
                 this.vertical = -1 * this.reverse * this.speed * (60 / 1000)
             }

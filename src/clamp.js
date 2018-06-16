@@ -1,5 +1,5 @@
 const Plugin = require('./plugin')
-const exists = require('exists')
+const utils =  require('./utils')
 
 module.exports = class clamp extends Plugin
 {
@@ -19,10 +19,10 @@ module.exports = class clamp extends Plugin
         super(parent)
         if (typeof options.direction === 'undefined')
         {
-            this.left = exists(options.left) ? options.left : null
-            this.right = exists(options.right) ? options.right : null
-            this.top = exists(options.top) ? options.top : null
-            this.bottom = exists(options.bottom) ? options.bottom : null
+            this.left = utils.defaults(options.left, null)
+            this.right = utils.defaults(options.right, null)
+            this.top = utils.defaults(options.top, null)
+            this.bottom = utils.defaults(options.bottom, null)
         }
         else
         {

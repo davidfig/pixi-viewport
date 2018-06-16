@@ -1,6 +1,4 @@
-const Ease = require('pixi-ease')
-const exists = require('exists')
-
+const utils =  require('./utils')
 const Plugin = require('./plugin')
 
 module.exports = class Bounce extends Plugin
@@ -24,7 +22,7 @@ module.exports = class Bounce extends Plugin
         super(parent)
         options = options || {}
         this.time = options.time || 150
-        this.ease = options.ease || 'easeInOutSine'
+        this.ease = utils.ease(options.ease, 'easeInOutSine')
         this.friction = options.friction || 0.5
         options.sides = options.sides || 'all'
         if (options.sides)
@@ -88,19 +86,33 @@ module.exports = class Bounce extends Plugin
         this.bounce()
         if (this.toX)
         {
-            if (this.toX.update(elapsed))
+            const toX = this.toX
+            toX.time += elapsed
+            if (toX.time >= this.time)
             {
+                this.parent.x = toX.end
                 this.toX = null
                 this.parent.emit('bounce-x-end', this.parent)
+            }
+            else
+            {
+                this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.time)
             }
             this.parent.dirty = true
         }
         if (this.toY)
         {
-            if (this.toY.update(elapsed))
+            const toY = this.toY
+            toY.time += elapsed
+            if (toY.time >= this.time)
             {
+                this.parent.y = toY.end
                 this.toY = null
                 this.parent.emit('bounce-y-end', this.parent)
+            }
+            else
+            {
+                this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.time)
             }
             this.parent.dirty = true
         }
@@ -173,7 +185,7 @@ module.exports = class Bounce extends Plugin
             const point = oob.cornerPoint
             if (!this.toX && !decelerate.x)
             {
-                let x
+                let x = null
                 if (oob.left && this.left)
                 {
                     x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : 0
@@ -182,15 +194,15 @@ module.exports = class Bounce extends Plugin
                 {
                     x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
                 }
-                if (exists(x) && this.parent.x !== x)
+                if (x !== null && this.parent.x !== x)
                 {
-                    this.toX = new Ease.to(this.parent, { x }, this.time, { ease: this.ease })
+                    this.toX = { time: 0, start: this.parent.x, delta: x - this.parent.x, end: x }
                     this.parent.emit('bounce-x-start', this.parent)
                 }
             }
             if (!this.toY && !decelerate.y)
             {
-                let y
+                let y = null
                 if (oob.top && this.top)
                 {
                     y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : 0
@@ -199,9 +211,9 @@ module.exports = class Bounce extends Plugin
                 {
                     y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
                 }
-                if (exists(y) && this.parent.y !== y)
+                if (y !== null && this.parent.y !== y)
                 {
-                    this.toY = new Ease.to(this.parent, { y }, this.time, { ease: this.ease })
+                    this.toY = { time: 0, start: this.parent.y, delta: y - this.parent.y, end: y }
                     this.parent.emit('bounce-y-start', this.parent)
                 }
             }

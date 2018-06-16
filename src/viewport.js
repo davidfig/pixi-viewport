@@ -1,5 +1,4 @@
-const exists = require('exists')
-
+const utils =  require('./utils')
 const Drag = require('./drag')
 const Pinch = require('./pinch')
 const Clamp = require('./clamp')
@@ -66,9 +65,9 @@ class Viewport extends PIXI.Container
         this._screenHeight = options.screenHeight
         this._worldWidth = options.worldWidth
         this._worldHeight = options.worldHeight
-        this.hitAreaFullScreen = exists(options.hitAreaFullScreen) ? options.hitAreaFullScreen : true
+        this.hitAreaFullScreen = utils.defaults(options.hitAreaFullScreen, true)
         this.forceHitArea = options.forceHitArea
-        this.threshold = exists(options.threshold) ? options.threshold : 5
+        this.threshold = utils.defaults(options.threshold, 5)
         this.interaction = options.interaction || null
         this.listeners(options.divWheel || document.body)
 
@@ -81,16 +80,6 @@ class Viewport extends PIXI.Container
 
         this.ticker = options.ticker || PIXI.ticker.shared
         this.ticker.add(() => this.update())
-        this.on('moved', () =>
-        {
-            if (!this.forceHitArea)
-            {
-                this.hitArea.x = this.left
-                this.hitArea.y = this.top
-                this.hitArea.width = this.worldScreenWidth
-                this.hitArea.height = this.worldScreenHeight
-            }
-        })
     }
 
     /**
@@ -105,6 +94,13 @@ class Viewport extends PIXI.Container
             {
                 plugin.update(this.ticker.elapsedMS)
             }
+        }
+        if (!this.forceHitArea)
+        {
+            this.hitArea.x = this.left
+            this.hitArea.y = this.top
+            this.hitArea.width = this.worldScreenWidth
+            this.hitArea.height = this.worldScreenHeight
         }
     }
 

@@ -1,6 +1,5 @@
 const Plugin = require('./plugin')
-const Ease = require('pixi-ease')
-const exists = require('exists')
+const utils =  require('./utils')
 
 module.exports = class SnapZoom extends Plugin
 {
@@ -36,18 +35,18 @@ module.exports = class SnapZoom extends Plugin
         {
             this.y_scale = parent._screenHeight / this.height
         }
-        this.xIndependent = exists(this.x_scale)
-        this.yIndependent = exists(this.y_scale)
+        this.xIndependent = utils.exists(this.x_scale)
+        this.yIndependent = utils.exists(this.y_scale)
         this.x_scale = this.xIndependent ? this.x_scale : this.y_scale
         this.y_scale = this.yIndependent ? this.y_scale : this.x_scale
 
-        this.time = exists(options.time) ? options.time : 1000
-        this.ease = options.ease || 'easeInOutSine'
+        this.time = utils.defaults(options.time, 1000)
+        this.ease = utils.ease(options.ease, 'easeInOutSine')
         this.center = options.center
         this.stopOnResize = options.stopOnResize
         this.removeOnInterrupt = options.removeOnInterrupt
-        this.removeOnComplete = exists(options.removeOnComplete) ? options.removeOnComplete : true
-        this.interrupt = exists(options.interrupt) ? options.interrupt : true
+        this.removeOnComplete = utils.defaults(options.removeOnComplete, true)
+        this.interrupt = utils.defaults(options.interrupt, true)
         if (this.time === 0)
         {
             parent.container.scale.x = this.x_scale
@@ -59,9 +58,15 @@ module.exports = class SnapZoom extends Plugin
         }
         else if (options.forceStart)
         {
-            this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
-            this.parent.emit('snap-zoom-start', this.parent)
+            this.createSnapping()
         }
+    }
+
+    createSnapping()
+    {
+        const scale = this.parent.scale
+        this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.x_scale - scale.x, deltaY: this.y_scale - scale.y }
+        this.parent.emit('snap-zoom-start', this.parent)
     }
 
     resize()
@@ -125,20 +130,28 @@ module.exports = class SnapZoom extends Plugin
         {
             if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
             {
-                this.snapping = new Ease.to(this.parent.scale, { x: this.x_scale, y: this.y_scale }, this.time, { ease: this.ease })
-                this.parent.emit('snap-zoom-start', this.parent)
+                this.createSnapping()
             }
         }
         else if (this.snapping)
         {
-            if (this.snapping.update(elapsed))
+            const snapping = this.snapping
+            snapping.time += elapsed
+            if (snapping.time >= this.time)
             {
+                this.parent.scale.set(this.x_scale, this.y_scale)
                 if (this.removeOnComplete)
                 {
                     this.parent.removePlugin('snap-zoom')
                 }
                 this.parent.emit('snap-zoom-end', this.parent)
                 this.snapping = null
+            }
+            else
+            {
+                const snapping = this.snapping
+                this.parent.scale.x = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.time)
+                this.parent.scale.y = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.time)
             }
             const clamp = this.parent.plugins['clamp-zoom']
             if (clamp)

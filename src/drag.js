@@ -1,6 +1,6 @@
-const exists = require('exists')
-
+const utils =  require('./utils')
 const Plugin = require('./plugin')
+
 module.exports = class Drag extends Plugin
 {
     /**
@@ -20,7 +20,7 @@ module.exports = class Drag extends Plugin
         options = options || {}
         super(parent)
         this.moved = false
-        this.wheelActive = exists(options.wheel) ? options.wheel : true
+        this.wheelActive = utils.defaults(options.wheel, true)
         this.wheelScroll = options.wheelScroll || 1
         this.reverse = options.reverse ? 1 : -1
         this.clampWheel = options.clampWheel
