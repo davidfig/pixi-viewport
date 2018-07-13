@@ -64807,14 +64807,14 @@ module.exports = class Snap extends Plugin
             {
                 this.parent.moveCenter(x, y)
             }
-
+            this.parent.emit('moved', this.parent)
             if (finished)
             {
                 if (this.removeOnComplete)
                 {
                     this.parent.removePlugin('snap')
                 }
-                this.parent.emit('snap-end', this.parent )
+                this.parent.emit('snap-end', this.parent)
                 this.snapping = null
             }
         }

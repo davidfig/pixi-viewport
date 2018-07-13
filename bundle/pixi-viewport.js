@@ -1511,7 +1511,7 @@ module.exports = function (_Plugin) {
                 } else {
                     this.parent.moveCenter(x, y);
                 }
-
+                this.parent.emit('moved', this.parent);
                 if (finished) {
                     if (this.removeOnComplete) {
                         this.parent.removePlugin('snap');
