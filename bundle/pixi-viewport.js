@@ -2639,6 +2639,7 @@ var Viewport = function (_PIXI$Container) {
 
         /**
          * pause viewport (including animation updates such as decelerate)
+         * NOTE: when setting pause=true, all touches and mouse actions are cleared (i.e., if mousedown was active, it becomes inactive for purposes of the viewport)
          * @type {boolean}
          */
 
@@ -2860,6 +2861,10 @@ var Viewport = function (_PIXI$Container) {
         },
         set: function set(value) {
             this._pause = value;
+            if (value) {
+                this.touches = [];
+                this.leftDown = false;
+            }
         }
     }]);
 

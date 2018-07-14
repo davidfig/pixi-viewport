@@ -20106,7 +20106,7 @@ var Ease = function (_Events) {
         if (!options.noTicker) {
             var ticker = options.ticker || PIXI.ticker.shared;
             ticker.add(function () {
-                return _this.update(ticker.elapsedMS);
+                return _this.update(ticker.deltaTime * 16.66);
             });
         }
         _this.list = [];
@@ -62885,7 +62885,7 @@ var Random = function () {
      * @param {number} seed
      * @param {object} [options]
      * @param {string} [PRNG="alea"] - name of algorithm, see https://github.com/davidbau/seedrandom
-     * @param {boolean} [save=true]
+     * @param {(boolean|string)} [state] - can include the state returned from save()
      */
 
 
@@ -62899,7 +62899,7 @@ var Random = function () {
 
         /**
          * saves the state of the random generator
-         * can only be used after Random.seed() is called
+         * can only be used after Random.seed() is called with options.state = true
          * @returns {number} state
          */
 
@@ -65961,12 +65961,18 @@ class Viewport extends PIXI.Container
 
     /**
      * pause viewport (including animation updates such as decelerate)
+     * NOTE: when setting pause=true, all touches and mouse actions are cleared (i.e., if mousedown was active, it becomes inactive for purposes of the viewport)
      * @type {boolean}
      */
     get pause() { return this._pause }
     set pause(value)
     {
         this._pause = value
+        if (value)
+        {
+            this.touches = []
+            this.leftDown = false
+        }
     }
 }
 

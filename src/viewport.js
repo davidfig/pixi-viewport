@@ -1097,12 +1097,18 @@ class Viewport extends PIXI.Container
 
     /**
      * pause viewport (including animation updates such as decelerate)
+     * NOTE: when setting pause=true, all touches and mouse actions are cleared (i.e., if mousedown was active, it becomes inactive for purposes of the viewport)
      * @type {boolean}
      */
     get pause() { return this._pause }
     set pause(value)
     {
         this._pause = value
+        if (value)
+        {
+            this.touches = []
+            this.leftDown = false
+        }
     }
 }
 
