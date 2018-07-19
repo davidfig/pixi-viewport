@@ -16,6 +16,7 @@ module.exports = class SnapZoom extends Plugin
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
+     * @param {boolean} [options.noMove] zoom but do not move
      *
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
@@ -43,6 +44,7 @@ module.exports = class SnapZoom extends Plugin
         this.time = utils.defaults(options.time, 1000)
         this.ease = utils.ease(options.ease, 'easeInOutSine')
         this.center = options.center
+        this.noMove = options.noMove
         this.stopOnResize = options.stopOnResize
         this.removeOnInterrupt = options.removeOnInterrupt
         this.removeOnComplete = utils.defaults(options.removeOnComplete, true)
@@ -122,7 +124,7 @@ module.exports = class SnapZoom extends Plugin
         }
 
         let oldCenter
-        if (!this.center)
+        if (!this.center && !this.noMove)
         {
             oldCenter = this.parent.center
         }
@@ -158,13 +160,16 @@ module.exports = class SnapZoom extends Plugin
             {
                 clamp.clamp()
             }
-            if (!this.center)
+            if (!this.noMove)
             {
-                this.parent.moveCenter(oldCenter)
-            }
-            else
-            {
-                this.parent.moveCenter(this.center)
+                if (!this.center)
+                {
+                    this.parent.moveCenter(oldCenter)
+                }
+                else
+                {
+                    this.parent.moveCenter(this.center)
+                }
             }
         }
     }

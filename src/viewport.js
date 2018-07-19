@@ -1231,7 +1231,17 @@ class Viewport extends PIXI.Container
 /**
  * fires when viewport moves through UI interaction, deceleration, or follow
  * @event Viewport#moved
- * @type {Viewport}
+ * @type {object}
+ * @property {Viewport} viewport
+ * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel)
+ */
+
+/**
+ * fires when viewport moves through UI interaction, deceleration, or follow
+ * @event Viewport#zoomed
+ * @type {object}
+ * @property {Viewport} viewport
+ * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
  */
 
 PIXI.extras.Viewport = Viewport

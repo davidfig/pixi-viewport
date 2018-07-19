@@ -88,6 +88,7 @@ module.exports = class Bounce extends Plugin
         {
             const toX = this.toX
             toX.time += elapsed
+            this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' })
             if (toX.time >= this.time)
             {
                 this.parent.x = toX.end
@@ -104,6 +105,7 @@ module.exports = class Bounce extends Plugin
         {
             const toY = this.toY
             toY.time += elapsed
+            this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' })
             if (toY.time >= this.time)
             {
                 this.parent.y = toY.end

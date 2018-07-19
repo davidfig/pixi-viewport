@@ -100,7 +100,7 @@ module.exports = class Drag extends Plugin
                     }
                     this.moved = true
                     this.parent.dirty = true
-                    this.parent.emit('moved', this.parent)
+                    this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
                 }
             }
             else
@@ -168,8 +168,6 @@ module.exports = class Drag extends Plugin
 
     clamp()
     {
-        const oob = this.parent.OOB()
-        const point = oob.cornerPoint
         const decelerate = this.parent.plugins['decelerate'] || {}
         if (this.clampWheel !== 'y')
         {

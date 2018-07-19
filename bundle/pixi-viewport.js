@@ -91,6 +91,7 @@ module.exports = function (_Plugin) {
             if (this.toX) {
                 var toX = this.toX;
                 toX.time += elapsed;
+                this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' });
                 if (toX.time >= this.time) {
                     this.parent.x = toX.end;
                     this.toX = null;
@@ -103,6 +104,7 @@ module.exports = function (_Plugin) {
             if (this.toY) {
                 var toY = this.toY;
                 toY.time += elapsed;
+                this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' });
                 if (toY.time >= this.time) {
                     this.parent.y = toY.end;
                     this.toY = null;
@@ -261,19 +263,23 @@ module.exports = function (_Plugin) {
                 this.parent.fitWidth(this.minWidth);
                 width = this.parent.worldScreenWidth;
                 height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
             if (this.maxWidth && width > this.maxWidth) {
                 this.parent.fitWidth(this.maxWidth);
                 width = this.parent.worldScreenWidth;
                 height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
             if (this.minHeight && height < this.minHeight) {
                 this.parent.fitHeight(this.minHeight);
                 width = this.parent.worldScreenWidth;
                 height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
             if (this.maxHeight && height > this.maxHeight) {
                 this.parent.fitHeight(this.maxHeight);
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
         }
     }]);
@@ -382,6 +388,7 @@ module.exports = function (_Plugin) {
                         }
                     }
                 }
+                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-x' });
             }
             if (this.top !== null || this.bottom !== null) {
                 if (this.parent.screenWorldHeight < this.parent.screenHeight) {
@@ -409,6 +416,7 @@ module.exports = function (_Plugin) {
                         }
                     }
                 }
+                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-y' });
             }
         }
     }]);
@@ -559,7 +567,7 @@ module.exports = function (_Plugin) {
             }
             if (moved) {
                 this.parent.dirty = true;
-                this.parent.emit('moved', this.parent);
+                this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' });
             }
         }
     }, {
@@ -672,7 +680,7 @@ module.exports = function (_Plugin) {
                         }
                         this.moved = true;
                         this.parent.dirty = true;
-                        this.parent.emit('moved', this.parent);
+                        this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
                     }
                 } else {
                     this.moved = false;
@@ -729,8 +737,6 @@ module.exports = function (_Plugin) {
     }, {
         key: 'clamp',
         value: function clamp() {
-            var oob = this.parent.OOB();
-            var point = oob.cornerPoint;
             var decelerate = this.parent.plugins['decelerate'] || {};
             if (this.clampWheel !== 'y') {
                 if (this.parent.screenWorldWidth < this.parent.screenWidth) {
@@ -854,11 +860,11 @@ module.exports = function (_Plugin) {
                     var x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
                     var y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
                     this.parent.moveCenter(x, y);
-                    this.parent.emit('moved', this.parent);
+                    this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
                 }
             } else {
                 this.parent.moveCenter(toX, toY);
-                this.parent.emit('moved', this.parent);
+                this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
             }
         }
     }]);
@@ -1032,6 +1038,7 @@ module.exports = function (_Plugin) {
                     center.y += this.vertical * this.speed;
                 }
                 this.parent.moveCenter(center);
+                this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' });
             }
         }
     }]);
@@ -1112,6 +1119,7 @@ module.exports = function (_Plugin) {
                     var change = (dist - last) / this.parent.screenWidth * this.parent.scale.x * this.percent;
                     this.parent.scale.x += change;
                     this.parent.scale.y += change;
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch' });
                     var clamp = this.parent.plugins['clamp-zoom'];
                     if (clamp) {
                         clamp.clamp();
@@ -1122,12 +1130,12 @@ module.exports = function (_Plugin) {
                         var newPoint = this.parent.toGlobal(oldPoint);
                         this.parent.x += point.x - newPoint.x;
                         this.parent.y += point.y - newPoint.y;
-                        this.parent.emit('moved', this.parent);
+                        this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
                     }
                     if (!this.noDrag && this.lastCenter) {
                         this.parent.x += point.x - this.lastCenter.x;
                         this.parent.y += point.y - this.lastCenter.y;
-                        this.parent.emit('moved', this.parent);
+                        this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
                     }
                     this.lastCenter = point;
                     this.moved = true;
@@ -1241,6 +1249,7 @@ module.exports = function (_Plugin) {
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
+     * @param {boolean} [options.noMove] zoom but do not move
      *
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
@@ -1268,6 +1277,7 @@ module.exports = function (_Plugin) {
         _this.time = utils.defaults(options.time, 1000);
         _this.ease = utils.ease(options.ease, 'easeInOutSine');
         _this.center = options.center;
+        _this.noMove = options.noMove;
         _this.stopOnResize = options.stopOnResize;
         _this.removeOnInterrupt = options.removeOnInterrupt;
         _this.removeOnComplete = utils.defaults(options.removeOnComplete, true);
@@ -1337,7 +1347,7 @@ module.exports = function (_Plugin) {
             }
 
             var oldCenter = void 0;
-            if (!this.center) {
+            if (!this.center && !this.noMove) {
                 oldCenter = this.parent.center;
             }
             if (!this.snapping) {
@@ -1363,10 +1373,12 @@ module.exports = function (_Plugin) {
                 if (clamp) {
                     clamp.clamp();
                 }
-                if (!this.center) {
-                    this.parent.moveCenter(oldCenter);
-                } else {
-                    this.parent.moveCenter(this.center);
+                if (!this.noMove) {
+                    if (!this.center) {
+                        this.parent.moveCenter(oldCenter);
+                    } else {
+                        this.parent.moveCenter(this.center);
+                    }
                 }
             }
         }
@@ -1511,7 +1523,7 @@ module.exports = function (_Plugin) {
                 } else {
                     this.parent.moveCenter(x, y);
                 }
-                this.parent.emit('moved', this.parent);
+                this.parent.emit('moved', { viewport: this.parent, type: 'snap' });
                 if (finished) {
                     if (this.removeOnComplete) {
                         this.parent.removePlugin('snap');
@@ -2990,7 +3002,17 @@ var Viewport = function (_PIXI$Container) {
 /**
  * fires when viewport moves through UI interaction, deceleration, or follow
  * @event Viewport#moved
- * @type {Viewport}
+ * @type {object}
+ * @property {Viewport} viewport
+ * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel)
+ */
+
+/**
+ * fires when viewport moves through UI interaction, deceleration, or follow
+ * @event Viewport#zoomed
+ * @type {object}
+ * @property {Viewport} viewport
+ * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
  */
 
 PIXI.extras.Viewport = Viewport;
@@ -3068,6 +3090,7 @@ module.exports = function (_Plugin) {
             }
             this.parent.scale.x *= change;
             this.parent.scale.y *= change;
+            this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
             var clamp = this.parent.plugins['clamp-zoom'];
             if (clamp) {
                 clamp.clamp();
@@ -3080,8 +3103,9 @@ module.exports = function (_Plugin) {
                 this.parent.x += point.x - newPoint.x;
                 this.parent.y += point.y - newPoint.y;
             }
-            e.preventDefault();
+            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
             this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+            e.preventDefault();
         }
     }]);
 

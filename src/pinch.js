@@ -63,6 +63,7 @@ module.exports = class Pinch extends Plugin
                 const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.percent
                 this.parent.scale.x += change
                 this.parent.scale.y += change
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch' })
                 const clamp = this.parent.plugins['clamp-zoom']
                 if (clamp)
                 {
@@ -77,13 +78,13 @@ module.exports = class Pinch extends Plugin
                     const newPoint = this.parent.toGlobal(oldPoint)
                     this.parent.x += point.x - newPoint.x
                     this.parent.y += point.y - newPoint.y
-                    this.parent.emit('moved', this.parent)
+                    this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
                 }
                 if (!this.noDrag && this.lastCenter)
                 {
                     this.parent.x += point.x - this.lastCenter.x
                     this.parent.y += point.y - this.lastCenter.y
-                    this.parent.emit('moved', this.parent)
+                    this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
                 }
                 this.lastCenter = point
                 this.moved = true

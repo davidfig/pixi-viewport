@@ -129,7 +129,7 @@ module.exports = class Snap extends Plugin
             {
                 this.parent.moveCenter(x, y)
             }
-            this.parent.emit('moved', this.parent)
+            this.parent.emit('moved', { viewport: this.parent, type: 'snap' })
             if (finished)
             {
                 if (this.removeOnComplete)

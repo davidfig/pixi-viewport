@@ -98,6 +98,7 @@ module.exports = class clamp extends Plugin
                     }
                 }
             }
+            this.parent.emit('moved', { viewport: this.parent, type: 'clamp-x' })
         }
         if (this.top !== null || this.bottom !== null)
         {
@@ -134,6 +135,7 @@ module.exports = class clamp extends Plugin
                     }
                 }
             }
+            this.parent.emit('moved', { viewport: this.parent, type: 'clamp-y' })
         }
     }
 }

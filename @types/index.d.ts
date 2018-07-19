@@ -31,7 +31,8 @@ type ViewportEventType =
   | "wheel-scroll"
   | "mouse-edge-start"
   | "mouse-edge-end"
-  | "moved";
+  | "moved"
+  | "zoomed";
 
 type ViewportClickEventType = "clicked" | "drag-start" | "drag-end";
 

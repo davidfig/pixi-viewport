@@ -61,6 +61,7 @@ module.exports = class Wheel extends Plugin
         }
         this.parent.scale.x *= change
         this.parent.scale.y *= change
+        this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
         const clamp = this.parent.plugins['clamp-zoom']
         if (clamp)
         {
@@ -77,7 +78,8 @@ module.exports = class Wheel extends Plugin
             this.parent.x += point.x - newPoint.x
             this.parent.y += point.y - newPoint.y
         }
-        e.preventDefault()
+        this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
+        e.preventDefault()
     }
 }

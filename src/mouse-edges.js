@@ -181,6 +181,7 @@ module.exports = class MouseEdges extends Plugin
                 center.y += this.vertical * this.speed
             }
             this.parent.moveCenter(center)
+            this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' })
         }
     }
 }

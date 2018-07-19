@@ -38,22 +38,26 @@ module.exports = class ClampZoom extends Plugin
             this.parent.fitWidth(this.minWidth)
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
+            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
         if (this.maxWidth && width > this.maxWidth)
         {
             this.parent.fitWidth(this.maxWidth)
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
+            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
         if (this.minHeight && height < this.minHeight)
         {
             this.parent.fitHeight(this.minHeight)
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
+            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
         if (this.maxHeight && height > this.maxHeight)
         {
             this.parent.fitHeight(this.maxHeight)
+            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
     }
 }
