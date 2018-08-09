@@ -649,6 +649,7 @@ module.exports = function (_Plugin) {
             if ((count === 1 || count > 1 && !this.parent.plugins['pinch']) && this.parent.parent) {
                 var parent = this.parent.parent.toLocal(e.data.global);
                 this.last = { x: e.data.global.x, y: e.data.global.y, parent: parent };
+                this.current = e.data.pointerId;
             } else {
                 this.last = null;
             }
@@ -659,7 +660,7 @@ module.exports = function (_Plugin) {
             if (this.paused) {
                 return;
             }
-            if (this.last) {
+            if (this.last && this.current === e.data.pointerId) {
                 var x = e.data.global.x;
                 var y = e.data.global.y;
                 var count = this.parent.countDownPointers();
@@ -696,6 +697,7 @@ module.exports = function (_Plugin) {
                 if (pointer.last) {
                     var parent = this.parent.parent.toLocal(pointer.last);
                     this.last = { x: pointer.last.x, y: pointer.last.y, parent: parent };
+                    this.current = pointer.last.data.pointerId;
                 }
                 this.moved = false;
             } else if (this.last) {
@@ -1105,9 +1107,9 @@ module.exports = function (_Plugin) {
                 var second = pointers[1];
                 var last = first.last && second.last ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null;
                 if (first.pointerId === e.data.pointerId) {
-                    first.last = { x: x, y: y };
+                    first.last = { x: x, y: y, data: e.data };
                 } else if (second.pointerId === e.data.pointerId) {
-                    second.last = { x: x, y: y };
+                    second.last = { x: x, y: y, data: e.data };
                 }
                 if (last) {
                     var oldPoint = void 0;
@@ -1813,11 +1815,11 @@ var Viewport = function (_PIXI$Container) {
             if (this.pause) {
                 return;
             }
-            if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
-                this.leftDown = true;
-            }
-
-            if (e.data.pointerType !== 'mouse') {
+            if (e.data.pointerType === 'mouse') {
+                if (e.data.originalEvent.button == 0) {
+                    this.leftDown = true;
+                }
+            } else {
                 this.touches.push(e.data.pointerId);
             }
 
@@ -2343,6 +2345,23 @@ var Viewport = function (_PIXI$Container) {
                 if (this.touches.indexOf(pointer.pointerId) !== -1) {
                     results.push(pointer);
                 }
+            }
+            return results;
+        }
+
+        /**
+         * array of pointers that are down on the viewport
+         * @private
+         * @return {PIXI.InteractionTrackingData[]}
+         */
+
+    }, {
+        key: 'getPointers',
+        value: function getPointers() {
+            var results = [];
+            var pointers = this.trackedPointers;
+            for (var key in pointers) {
+                results.push(pointers[key]);
             }
             return results;
         }

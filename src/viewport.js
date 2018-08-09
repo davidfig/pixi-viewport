@@ -231,12 +231,14 @@ class Viewport extends PIXI.Container
         {
             return
         }
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        if (e.data.pointerType === 'mouse')
         {
-            this.leftDown = true
+            if (e.data.originalEvent.button == 0)
+            {
+                this.leftDown = true
+            }
         }
-
-        if (e.data.pointerType !== 'mouse')
+        else
         {
             this.touches.push(e.data.pointerId)
         }
@@ -830,6 +832,22 @@ class Viewport extends PIXI.Container
             {
                 results.push(pointer)
             }
+        }
+        return results
+    }
+
+    /**
+     * array of pointers that are down on the viewport
+     * @private
+     * @return {PIXI.InteractionTrackingData[]}
+     */
+    getPointers()
+    {
+        const results = []
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            results.push(pointers[key])
         }
         return results
     }

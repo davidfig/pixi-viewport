@@ -55,6 +55,7 @@ module.exports = class Drag extends Plugin
         {
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
+            this.current = e.data.pointerId
         }
         else
         {
@@ -73,7 +74,7 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        if (this.last)
+        if (this.last && this.current === e.data.pointerId)
         {
             const x = e.data.global.x
             const y = e.data.global.y
@@ -120,6 +121,7 @@ module.exports = class Drag extends Plugin
             {
                 const parent = this.parent.parent.toLocal(pointer.last)
                 this.last = { x: pointer.last.x, y: pointer.last.y, parent }
+                this.current = pointer.last.data.pointerId
             }
             this.moved = false
         }

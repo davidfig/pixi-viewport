@@ -20199,9 +20199,39 @@ var Ease = function (_Events) {
             if (this.inUpdate) {
                 this.removeWaiting.push(animate);
             } else {
-                var index = this.list.indexOf(animate);
-                if (index !== -1) {
-                    this.list.splice(index, 1);
+                if (Array.isArray(animate)) {
+                    var _iteratorNormalCompletion3 = true;
+                    var _didIteratorError3 = false;
+                    var _iteratorError3 = undefined;
+
+                    try {
+                        for (var _iterator3 = animate[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                            var each = _step3.value;
+
+                            var index = this.list.indexOf(each);
+                            if (index !== -1) {
+                                this.list.splice(index, 1);
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError3 = true;
+                        _iteratorError3 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                _iterator3.return();
+                            }
+                        } finally {
+                            if (_didIteratorError3) {
+                                throw _iteratorError3;
+                            }
+                        }
+                    }
+                } else {
+                    var _index = this.list.indexOf(animate);
+                    if (_index !== -1) {
+                        this.list.splice(_index, 1);
+                    }
                 }
             }
         }
@@ -20376,29 +20406,29 @@ var Ease = function (_Events) {
         key: 'countRunning',
         get: function get() {
             var count = 0;
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-                for (var _iterator3 = this.list[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var entry = _step3.value;
+                for (var _iterator4 = this.list[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    var entry = _step4.value;
 
                     if (!entry.pause) {
                         count++;
                     }
                 }
             } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
+                _didIteratorError4 = true;
+                _iteratorError4 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
+                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                        _iterator4.return();
                     }
                 } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
+                    if (_didIteratorError4) {
+                        throw _iteratorError4;
                     }
                 }
             }
@@ -63929,6 +63959,7 @@ module.exports = class Drag extends Plugin
         {
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
+            this.current = e.data.pointerId
         }
         else
         {
@@ -63947,7 +63978,7 @@ module.exports = class Drag extends Plugin
         {
             return
         }
-        if (this.last)
+        if (this.last && this.current === e.data.pointerId)
         {
             const x = e.data.global.x
             const y = e.data.global.y
@@ -63994,6 +64025,7 @@ module.exports = class Drag extends Plugin
             {
                 const parent = this.parent.parent.toLocal(pointer.last)
                 this.last = { x: pointer.last.x, y: pointer.last.y, parent }
+                this.current = pointer.last.data.pointerId
             }
             this.moved = false
         }
@@ -64408,11 +64440,11 @@ module.exports = class Pinch extends Plugin
             const last = (first.last && second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null
             if (first.pointerId === e.data.pointerId)
             {
-                first.last = { x, y }
+                first.last = { x, y, data: e.data }
             }
             else if (second.pointerId === e.data.pointerId)
             {
-                second.last = { x, y }
+                second.last = { x, y, data: e.data }
             }
             if (last)
             {
@@ -65109,12 +65141,14 @@ class Viewport extends PIXI.Container
         {
             return
         }
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        if (e.data.pointerType === 'mouse')
         {
-            this.leftDown = true
+            if (e.data.originalEvent.button == 0)
+            {
+                this.leftDown = true
+            }
         }
-
-        if (e.data.pointerType !== 'mouse')
+        else
         {
             this.touches.push(e.data.pointerId)
         }
@@ -65708,6 +65742,22 @@ class Viewport extends PIXI.Container
             {
                 results.push(pointer)
             }
+        }
+        return results
+    }
+
+    /**
+     * array of pointers that are down on the viewport
+     * @private
+     * @return {PIXI.InteractionTrackingData[]}
+     */
+    getPointers()
+    {
+        const results = []
+        const pointers = this.trackedPointers
+        for (let key in pointers)
+        {
+            results.push(pointers[key])
         }
         return results
     }

@@ -45,11 +45,11 @@ module.exports = class Pinch extends Plugin
             const last = (first.last && second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null
             if (first.pointerId === e.data.pointerId)
             {
-                first.last = { x, y }
+                first.last = { x, y, data: e.data }
             }
             else if (second.pointerId === e.data.pointerId)
             {
-                second.last = { x, y }
+                second.last = { x, y, data: e.data }
             }
             if (last)
             {
