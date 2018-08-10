@@ -202,6 +202,7 @@ declare class Viewport extends PIXI.Container {
   constructor(options?: ViewportOptions);
 
   // Public API
+  remove(): void;
   update(): void;
   pause(): void;
   resize(): void;

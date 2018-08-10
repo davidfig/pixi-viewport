@@ -1661,7 +1661,8 @@ var Viewport = function (_PIXI$Container) {
         _this.forceHitArea = options.forceHitArea;
         _this.threshold = utils.defaults(options.threshold, 5);
         _this.interaction = options.interaction || null;
-        _this.listeners(options.divWheel || document.body);
+        _this.div = options.divWheel || document.body;
+        _this.listeners(_this.div);
 
         /**
          * active touch point ids on the viewport
@@ -1671,19 +1672,32 @@ var Viewport = function (_PIXI$Container) {
         _this.touches = [];
 
         _this.ticker = options.ticker || PIXI.ticker.shared;
-        _this.ticker.add(function () {
+        _this.tickerFunction = function () {
             return _this.update();
-        });
+        };
+        _this.ticker.add(_this.tickerFunction);
         return _this;
     }
 
     /**
-     * update animations
-     * @private
+     * removes all event listeners from viewport
+     * (useful for cleanup of wheel and ticker events when removing viewport)
      */
 
 
     _createClass(Viewport, [{
+        key: 'removeListeners',
+        value: function removeListeners() {
+            this.ticker.remove(this.tickerFunction);
+            this.div.removeEventListener('wheel', this.wheelFunction);
+        }
+
+        /**
+         * update animations
+         * @private
+         */
+
+    }, {
         key: 'update',
         value: function update() {
             if (!this.pause) {
@@ -1798,9 +1812,10 @@ var Viewport = function (_PIXI$Container) {
             this.on('pointerupoutside', this.up);
             this.on('pointercancel', this.up);
             this.on('pointerout', this.up);
-            div.addEventListener('wheel', function (e) {
+            this.wheelFunction = function (e) {
                 return _this2.handleWheel(e);
-            });
+            };
+            div.addEventListener('wheel', this.wheelFunction);
             this.leftDown = false;
         }
 

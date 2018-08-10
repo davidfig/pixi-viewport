@@ -32,6 +32,9 @@ function viewport()
         .bounce()
         .on('clicked', click)
     resize()
+
+    // test for removeListeners()
+    // _viewport.removeListeners()
 }
 
 function resize()

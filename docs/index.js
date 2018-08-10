@@ -33,6 +33,9 @@ function viewport()
         .bounce()
         .on('clicked', click)
     resize()
+
+    // test for removeListeners()
+    // _viewport.removeListeners()
 }
 
 function resize()
@@ -64979,7 +64982,8 @@ class Viewport extends PIXI.Container
         this.forceHitArea = options.forceHitArea
         this.threshold = utils.defaults(options.threshold, 5)
         this.interaction = options.interaction || null
-        this.listeners(options.divWheel || document.body)
+        this.div = options.divWheel || document.body
+        this.listeners(this.div)
 
         /**
          * active touch point ids on the viewport
@@ -64989,7 +64993,18 @@ class Viewport extends PIXI.Container
         this.touches = []
 
         this.ticker = options.ticker || PIXI.ticker.shared
-        this.ticker.add(() => this.update())
+        this.tickerFunction = () => this.update()
+        this.ticker.add(this.tickerFunction)
+    }
+
+    /**
+     * removes all event listeners from viewport
+     * (useful for cleanup of wheel and ticker events when removing viewport)
+     */
+    removeListeners()
+    {
+        this.ticker.remove(this.tickerFunction)
+        this.div.removeEventListener('wheel', this.wheelFunction)
     }
 
     /**
@@ -65127,7 +65142,8 @@ class Viewport extends PIXI.Container
         this.on('pointerupoutside', this.up)
         this.on('pointercancel', this.up)
         this.on('pointerout', this.up)
-        div.addEventListener('wheel', (e) => this.handleWheel(e))
+        this.wheelFunction = (e) => this.handleWheel(e)
+        div.addEventListener('wheel', this.wheelFunction)
         this.leftDown = false
     }
 
