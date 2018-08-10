@@ -95,6 +95,15 @@ class Viewport extends PIXI.Container
     }
 
     /**
+     * overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners
+     */
+    destroy()
+    {
+        super.destroy()
+        this.removeListeners()
+    }
+
+    /**
      * update animations
      * @private
      */
