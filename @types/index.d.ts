@@ -31,7 +31,8 @@ type ViewportEventType =
   | "wheel-scroll"
   | "mouse-edge-start"
   | "mouse-edge-end"
-  | "moved";
+  | "moved"
+  | "zoomed";
 
 type ViewportClickEventType = "clicked" | "drag-start" | "drag-end";
 
@@ -201,6 +202,7 @@ declare class Viewport extends PIXI.Container {
   constructor(options?: ViewportOptions);
 
   // Public API
+  removeListeners(): void;
   update(): void;
   pause(): void;
   resize(): void;
@@ -218,7 +220,7 @@ declare class Viewport extends PIXI.Container {
   fitWidth(width?: number, center?: boolean): this;
   fitHeight(width?: number, center?: boolean): this;
   fitWorld(center?: boolean): this;
-  fit(center?: boolean): this;
+  fit(center?: boolean, width?: number, height?: number): this;
 
   zoomPercent(percent: number, center?: boolean): this;
   zoom(change: number, center?: boolean): this;
@@ -240,28 +242,42 @@ declare class Viewport extends PIXI.Container {
   mouseEdges(options?: MouseEdgesOptions): this;
 
   // Events
-  // @ts-ignore Needed because of incompatible override of Container.on()
+  on(
+    event: "added" | "removed",
+    fn: (container: PIXI.Container) => void,
+    context?: any
+  ): this;
+  // Events
+  on(
+    event: PIXI.interaction.InteractionEventTypes,
+    fn: (event: PIXI.interaction.InteractionEvent) => void,
+    context?: any
+  ): this;
   on(
     event: ViewportEventType,
     fn: (viewport: Viewport) => void,
     context?: any
   ): this;
-  // @ts-ignore Needed because of incompatible override of Container.on()
   on(
     event: ViewportClickEventType,
     fn: (data: ViewportClickEventData) => void,
     context?: any
   ): this;
-  // @ts-ignore Needed because of incompatible override of Container.on()
   on(
     event: ViewportWheelEventType,
     fn: (data: ViewportWheelEventData) => void,
     context?: any
   ): this;
 
+  listeners(event: string | symbol): Function[];
+  listeners(event: string | symbol, exists: boolean): boolean;
+
+  /**
+   * Do not use. This is in fact a protected method.
+   */
+  listeners(div: HTMLElement): void;
+
   // Protected/Private methods
-  // @ts-ignore Needed because of incompatible override of Container.listeners()
-  protected listeners(div: HTMLElement): void;
   protected resizePlugins(): void;
   protected down(e: UIEvent): void;
   protected checkThreshold(change: number): void;
