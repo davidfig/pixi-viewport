@@ -1700,8 +1700,8 @@ var Viewport = function (_PIXI$Container) {
 
     }, {
         key: 'destroy',
-        value: function destroy() {
-            _get(Viewport.prototype.__proto__ || Object.getPrototypeOf(Viewport.prototype), 'destroy', this).call(this);
+        value: function destroy(options) {
+            _get(Viewport.prototype.__proto__ || Object.getPrototypeOf(Viewport.prototype), 'destroy', this).call(this, options);
             this.removeListeners();
         }
 

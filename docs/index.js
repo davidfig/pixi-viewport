@@ -65010,9 +65010,9 @@ class Viewport extends PIXI.Container
     /**
      * overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners
      */
-    destroy()
+    destroy(options)
     {
-        super.destroy()
+        super.destroy(options)
         this.removeListeners()
     }
 
@@ -66200,6 +66200,7 @@ class Viewport extends PIXI.Container
 PIXI.extras.Viewport = Viewport
 
 module.exports = Viewport
+
 },{"./bounce":392,"./clamp":394,"./clamp-zoom":393,"./decelerate":395,"./drag":396,"./follow":397,"./mouse-edges":398,"./pinch":399,"./snap":402,"./snap-zoom":401,"./utils":403,"./wheel":405}],405:[function(require,module,exports){
 const Plugin = require('./plugin')
 
