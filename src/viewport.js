@@ -97,9 +97,9 @@ class Viewport extends PIXI.Container
     /**
      * overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners
      */
-    destroy()
+    destroy(options)
     {
-        super.destroy()
+        super.destroy(options)
         this.removeListeners()
     }
 
