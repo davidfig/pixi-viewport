@@ -363,60 +363,88 @@ module.exports = function (_Plugin) {
 
             var decelerate = this.parent.plugins['decelerate'] || {};
             if (this.left !== null || this.right !== null) {
+                var moved = void 0;
                 if (this.parent.screenWorldWidth < this.parent.screenWidth) {
                     switch (this.underflowX) {
                         case -1:
-                            this.parent.x = 0;
+                            if (this.parent.x !== 0) {
+                                this.parent.x = 0;
+                                moved = true;
+                            }
                             break;
                         case 1:
-                            this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
+                            if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth) {
+                                this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
+                                moved = true;
+                            }
                             break;
                         default:
-                            this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                            if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2) {
+                                this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                                moved = true;
+                            }
                     }
                 } else {
                     if (this.left !== null) {
                         if (this.parent.left < (this.left === true ? 0 : this.left)) {
                             this.parent.x = -(this.left === true ? 0 : this.left) * this.parent.scale.x;
                             decelerate.x = 0;
+                            moved = true;
                         }
                     }
                     if (this.right !== null) {
                         if (this.parent.right > (this.right === true ? this.parent.worldWidth : this.right)) {
                             this.parent.x = -(this.right === true ? this.parent.worldWidth : this.right) * this.parent.scale.x + this.parent.screenWidth;
                             decelerate.x = 0;
+                            moved = true;
                         }
                     }
                 }
-                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-x' });
+                if (moved) {
+                    this.parent.emit('moved', { viewport: this.parent, type: 'clamp-x' });
+                }
             }
             if (this.top !== null || this.bottom !== null) {
+                var _moved = void 0;
                 if (this.parent.screenWorldHeight < this.parent.screenHeight) {
                     switch (this.underflowY) {
                         case -1:
-                            this.parent.y = 0;
+                            if (this.parent.y !== 0) {
+                                this.parent.y = 0;
+                                _moved = true;
+                            }
                             break;
                         case 1:
-                            this.parent.y = this.parent.screenHeight - this.parent.screenWorldHeight;
+                            if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight) {
+                                this.parent.y = this.parent.screenHeight - this.parent.screenWorldHeight;
+                                _moved = true;
+                            }
                             break;
                         default:
-                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                            if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2) {
+                                this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                                _moved = true;
+                            }
                     }
                 } else {
                     if (this.top !== null) {
                         if (this.parent.top < (this.top === true ? 0 : this.top)) {
                             this.parent.y = -(this.top === true ? 0 : this.top) * this.parent.scale.y;
                             decelerate.y = 0;
+                            _moved = true;
                         }
                     }
                     if (this.bottom !== null) {
                         if (this.parent.bottom > (this.bottom === true ? this.parent.worldHeight : this.bottom)) {
                             this.parent.y = -(this.bottom === true ? this.parent.worldHeight : this.bottom) * this.parent.scale.y + this.parent.screenHeight;
                             decelerate.y = 0;
+                            _moved = true;
                         }
                     }
                 }
-                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-y' });
+                if (_moved) {
+                    this.parent.emit('moved', { viewport: this.parent, type: 'clamp-y' });
+                }
             }
         }
     }]);
