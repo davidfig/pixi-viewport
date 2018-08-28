@@ -1645,7 +1645,7 @@ var Viewport = function (_PIXI$Container) {
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
-     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, used to calculate pointer postion relative to
+     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @fires clicked
      * @fires drag-start
@@ -2036,6 +2036,25 @@ var Viewport = function (_PIXI$Container) {
         }
 
         /**
+         * gets pointer position if this.interaction is set
+         * @param {UIEvent} evt
+         * @private
+         */
+
+    }, {
+        key: 'getPointerPosition',
+        value: function getPointerPosition(evt) {
+            var point = new PIXI.Point();
+            if (this.interaction) {
+                this.interaction.mapPositionToPoint(point, evt.clientX, evt.clientY);
+            } else {
+                point.x = evt.clientX;
+                point.y = evt.clientY;
+            }
+            return point;
+        }
+
+        /**
          * handle wheel events
          * @private
          */
@@ -2048,7 +2067,7 @@ var Viewport = function (_PIXI$Container) {
             }
 
             // only handle wheel events where the mouse is over the viewport
-            var point = this.toLocal({ x: e.clientX, y: e.clientY });
+            var point = this.toLocal(this.getPointerPosition(e));
             if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom) {
                 var result = void 0;
                 var _iteratorNormalCompletion6 = true;
@@ -3133,18 +3152,6 @@ module.exports = function (_Plugin) {
     }
 
     _createClass(Wheel, [{
-        key: 'getPointerPosition',
-        value: function getPointerPosition(evt) {
-            var point = new PIXI.Point();
-            if (this.parent.interaction) {
-                this.parent.interaction.mapPositionToPoint(point, evt.clientX, evt.clientY);
-            } else {
-                point.x = evt.clientX;
-                point.y = evt.clientY;
-            }
-            return point;
-        }
-    }, {
         key: 'wheel',
         value: function wheel(e) {
             if (this.paused) {
@@ -3157,7 +3164,7 @@ module.exports = function (_Plugin) {
             } else {
                 change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent;
             }
-            var point = this.getPointerPosition(e);
+            var point = this.parent.getPointerPosition(e);
 
             var oldPoint = void 0;
             if (!this.center) {

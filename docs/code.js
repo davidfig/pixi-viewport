@@ -19,11 +19,13 @@ const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const FADE_TIME = 2000
 
-let _fps, _renderer, _viewport, _ease, _object, _stars = []
+let _fps, _application, _viewport, _ease, _object, _stars = []
 
 function viewport()
 {
-    _viewport = _renderer.stage.addChild(new Viewport())
+    _viewport = _application.stage.addChild(new Viewport({
+        interaction: _application.renderer.plugins.interaction
+    }))
     _viewport
         .drag({ clampWheel: true })
         .wheel()
@@ -39,7 +41,7 @@ function viewport()
 
 function resize()
 {
-    _renderer.renderer.resize(window.innerWidth, window.innerHeight)
+    _application.renderer.resize(window.innerWidth, window.innerHeight)
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
 }
 
@@ -170,11 +172,11 @@ function API()
 window.onload = function ()
 {
     _fps = new FPS({ side: 'bottom-left' })
-    _renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
-    document.body.appendChild(_renderer.view)
-    _renderer.view.style.position = 'fixed'
-    _renderer.view.style.width = '100vw'
-    _renderer.view.style.height = '100vh'
+    _application = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
+    document.body.appendChild(_application.view)
+    _application.view.style.position = 'fixed'
+    _application.view.style.width = '100vw'
+    _application.view.style.height = '100vh'
 
     viewport()
 

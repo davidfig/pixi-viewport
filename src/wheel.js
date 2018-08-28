@@ -21,21 +21,6 @@ module.exports = class Wheel extends Plugin
         this.reverse = options.reverse
     }
 
-    getPointerPosition(evt)
-    {
-        let point = new PIXI.Point()
-        if (this.parent.interaction)
-        {
-            this.parent.interaction.mapPositionToPoint(point, evt.clientX, evt.clientY)
-        }
-        else
-        {
-            point.x = evt.clientX
-            point.y = evt.clientY
-        }
-        return point
-    }
-
     wheel(e)
     {
         if (this.paused)
@@ -52,7 +37,7 @@ module.exports = class Wheel extends Plugin
         {
             change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
         }
-        let point = this.getPointerPosition(e)
+        let point = this.parent.getPointerPosition(e)
 
         let oldPoint
         if (!this.center)

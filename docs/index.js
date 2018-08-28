@@ -20,11 +20,13 @@ const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const FADE_TIME = 2000
 
-let _fps, _renderer, _viewport, _ease, _object, _stars = []
+let _fps, _application, _viewport, _ease, _object, _stars = []
 
 function viewport()
 {
-    _viewport = _renderer.stage.addChild(new Viewport())
+    _viewport = _application.stage.addChild(new Viewport({
+        interaction: _application.renderer.plugins.interaction
+    }))
     _viewport
         .drag({ clampWheel: true })
         .wheel()
@@ -40,7 +42,7 @@ function viewport()
 
 function resize()
 {
-    _renderer.renderer.resize(window.innerWidth, window.innerHeight)
+    _application.renderer.resize(window.innerWidth, window.innerHeight)
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
 }
 
@@ -171,11 +173,11 @@ function API()
 window.onload = function ()
 {
     _fps = new FPS({ side: 'bottom-left' })
-    _renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
-    document.body.appendChild(_renderer.view)
-    _renderer.view.style.position = 'fixed'
-    _renderer.view.style.width = '100vw'
-    _renderer.view.style.height = '100vh'
+    _application = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
+    document.body.appendChild(_application.view)
+    _application.view.style.position = 'fixed'
+    _application.view.style.width = '100vw'
+    _application.view.style.height = '100vh'
 
     viewport()
 
@@ -64975,7 +64977,7 @@ class Viewport extends PIXI.Container
      * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
-     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, used to calculate pointer postion relative to
+     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @fires clicked
      * @fires drag-start
@@ -65319,6 +65321,26 @@ class Viewport extends PIXI.Container
     }
 
     /**
+     * gets pointer position if this.interaction is set
+     * @param {UIEvent} evt
+     * @private
+     */
+    getPointerPosition(evt)
+    {
+        let point = new PIXI.Point()
+        if (this.interaction)
+        {
+            this.interaction.mapPositionToPoint(point, evt.clientX, evt.clientY)
+        }
+        else
+        {
+            point.x = evt.clientX
+            point.y = evt.clientY
+        }
+        return point
+    }
+
+    /**
      * handle wheel events
      * @private
      */
@@ -65330,7 +65352,7 @@ class Viewport extends PIXI.Container
         }
 
         // only handle wheel events where the mouse is over the viewport
-        const point = this.toLocal({ x: e.clientX, y: e.clientY })
+        const point = this.toLocal(this.getPointerPosition(e))
         if (this.left <= point.x && point.x <= this.right && this.top <= point.y && point.y <= this.bottom)
         {
             let result
@@ -66261,21 +66283,6 @@ module.exports = class Wheel extends Plugin
         this.reverse = options.reverse
     }
 
-    getPointerPosition(evt)
-    {
-        let point = new PIXI.Point()
-        if (this.parent.interaction)
-        {
-            this.parent.interaction.mapPositionToPoint(point, evt.clientX, evt.clientY)
-        }
-        else
-        {
-            point.x = evt.clientX
-            point.y = evt.clientY
-        }
-        return point
-    }
-
     wheel(e)
     {
         if (this.paused)
@@ -66292,7 +66299,7 @@ module.exports = class Wheel extends Plugin
         {
             change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
         }
-        let point = this.getPointerPosition(e)
+        let point = this.parent.getPointerPosition(e)
 
         let oldPoint
         if (!this.center)
