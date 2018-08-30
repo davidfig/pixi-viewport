@@ -18,7 +18,9 @@ var viewport = new Viewport({
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
     worldWidth: 1000,
-    worldHeight: 1000
+    worldHeight: 1000,
+
+    interaction: app.renderer.interaction // the interaction module is important for wheel() to work properly when renderer.view is placed or scaled
 });
 
 // add the viewport to the stage
@@ -30,6 +32,7 @@ app.stage.addChild(viewport);
 viewport
     .drag()
     .pinch()
+    .wheel()
     .decelerate();
 
 // add a red box
