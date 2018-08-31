@@ -205,7 +205,7 @@ declare class Viewport extends PIXI.Container {
   removeListeners(): void;
   update(): void;
   pause(): void;
-  resize(): void;
+  resize(screenWidth: number, screenHeight: number, worldWidth?: number, worldHeight?: number): void;
 
   toWorld(p: PIXI.Point): PIXI.Point;
   toWorld(x: number, y: number): PIXI.Point;
