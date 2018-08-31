@@ -7,6 +7,8 @@ module.exports = class Wheel extends Plugin
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {number} [options.smooth] smooth the zooming by providing the maximum percent/frame (which should be less than options.percent)
+     * @param {boolean} [options.interrupt=true] stop smoothing with any user input on the viewport
      * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      *
@@ -19,26 +21,30 @@ module.exports = class Wheel extends Plugin
         this.percent = options.percent || 0.1
         this.center = options.center
         this.reverse = options.reverse
+        this.smooth = options.smooth
+        this.interrupt = typeof options.interrupt === 'undefined' ? true : options.interrupt
     }
 
-    wheel(e)
+    down()
     {
-        if (this.paused)
+        if (this.interrupt)
         {
-            return
+            this.smoothing = false
         }
+    }
 
-        let change
-        if (this.reverse)
+    update()
+    {
+        if (this.smoothing)
         {
-            change = e.deltaY > 0 ? 1 + this.percent : 1 - this.percent
+            let smooth = Math.abs(this.smoothing) < this.smooth ? this.smoothing : Math.sign(this.smoothing) * this.smooth
+            this.smoothing -= smooth
+            this.zoom(1 + smooth, this.smoothingPoint)
         }
-        else
-        {
-            change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
-        }
-        let point = this.parent.getPointerPosition(e)
+    }
 
+    zoom(change, point)
+    {
         let oldPoint
         if (!this.center)
         {
@@ -51,8 +57,8 @@ module.exports = class Wheel extends Plugin
         if (clamp)
         {
             clamp.clamp()
+            this.smoothing = false
         }
-
         if (this.center)
         {
             this.parent.moveCenter(this.center)
@@ -62,6 +68,35 @@ module.exports = class Wheel extends Plugin
             const newPoint = this.parent.toGlobal(oldPoint)
             this.parent.x += point.x - newPoint.x
             this.parent.y += point.y - newPoint.y
+        }
+    }
+
+    wheel(e)
+    {
+        if (this.paused)
+        {
+            return
+        }
+
+        let point = this.parent.getPointerPosition(e)
+        let sign
+        if (this.reverse)
+        {
+            sign = e.deltaY > 0 ? 1 : -1
+        }
+        else
+        {
+            sign = e.deltaY < 0 ? 1 : -1
+        }
+        if (this.smooth)
+        {
+            this.smoothing = this.percent * sign
+            this.smoothingPoint = point
+        }
+        else
+        {
+            const change = 1 + this.percent * sign
+            this.zoom(change, point)
         }
         this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})

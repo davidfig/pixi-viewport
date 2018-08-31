@@ -28,7 +28,7 @@ function viewport()
     }))
     _viewport
         .drag({ clampWheel: true })
-        .wheel()
+        .wheel({ smooth: 0.075 })
         .pinch()
         .decelerate()
         .bounce()
