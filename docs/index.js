@@ -29,7 +29,7 @@ function viewport()
     }))
     _viewport
         .drag({ clampWheel: true })
-        .wheel()
+        .wheel({ smooth: 3 })
         .pinch()
         .decelerate()
         .bounce()
@@ -66269,6 +66269,8 @@ module.exports = class Wheel extends Plugin
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {number} [options.smooth] smooth the zooming by providing the number of frames to zoom between wheel spins
+     * @param {boolean} [options.interrupt=true] stop smoothing with any user input on the viewport
      * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      *
@@ -66281,6 +66283,54 @@ module.exports = class Wheel extends Plugin
         this.percent = options.percent || 0.1
         this.center = options.center
         this.reverse = options.reverse
+        this.smooth = options.smooth
+        this.interrupt = typeof options.interrupt === 'undefined' ? true : options.interrupt
+    }
+
+    down()
+    {
+        if (this.interrupt)
+        {
+            this.smoothing = false
+        }
+    }
+
+    update()
+    {
+        if (this.smoothing)
+        {
+            const point = this.smoothingCenter
+            const change = this.smoothing
+            let oldPoint
+            if (!this.center)
+            {
+                oldPoint = this.parent.toLocal(point)
+            }
+            this.parent.scale.x += change
+            this.parent.scale.y += change
+            this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
+            const clamp = this.parent.plugins['clamp-zoom']
+            if (clamp)
+            {
+                clamp.clamp()
+                this.smoothing = null
+            }
+            if (this.center)
+            {
+                this.parent.moveCenter(this.center)
+            }
+            else
+            {
+                const newPoint = this.parent.toGlobal(oldPoint)
+                this.parent.x += point.x - newPoint.x
+                this.parent.y += point.y - newPoint.y
+            }
+            this.smoothingCount++
+            if (this.smoothingCount >= this.smooth)
+            {
+                this.smoothing = null
+            }
+        }
     }
 
     wheel(e)
@@ -66290,40 +66340,50 @@ module.exports = class Wheel extends Plugin
             return
         }
 
-        let change
+        let point = this.parent.getPointerPosition(e)
+        let sign
         if (this.reverse)
         {
-            change = e.deltaY > 0 ? 1 + this.percent : 1 - this.percent
+            sign = e.deltaY > 0 ? 1 : -1
         }
         else
         {
-            change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent
+            sign = e.deltaY < 0 ? 1 : -1
         }
-        let point = this.parent.getPointerPosition(e)
-
-        let oldPoint
-        if (!this.center)
+        const change = 1 + this.percent * sign
+        if (this.smooth)
         {
-            oldPoint = this.parent.toLocal(point)
-        }
-        this.parent.scale.x *= change
-        this.parent.scale.y *= change
-        this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
-        const clamp = this.parent.plugins['clamp-zoom']
-        if (clamp)
-        {
-            clamp.clamp()
-        }
-
-        if (this.center)
-        {
-            this.parent.moveCenter(this.center)
+            const original = this.smoothing ? this.smoothing * (this.smooth - this.smoothingCount) : 0
+            this.smoothing = ((this.parent.scale.x + original) * change - this.parent.scale.x) / this.smooth
+            this.smoothingCount = 0
+            this.smoothingCenter = point
         }
         else
         {
-            const newPoint = this.parent.toGlobal(oldPoint)
-            this.parent.x += point.x - newPoint.x
-            this.parent.y += point.y - newPoint.y
+            let oldPoint
+            if (!this.center)
+            {
+                oldPoint = this.parent.toLocal(point)
+            }
+            this.parent.scale.x *= change
+            this.parent.scale.y *= change
+            this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
+            const clamp = this.parent.plugins['clamp-zoom']
+            if (clamp)
+            {
+                clamp.clamp()
+                this.smoothing = false
+            }
+            if (this.center)
+            {
+                this.parent.moveCenter(this.center)
+            }
+            else
+            {
+                const newPoint = this.parent.toGlobal(oldPoint)
+                this.parent.x += point.x - newPoint.x
+                this.parent.y += point.y - newPoint.y
+            }
         }
         this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})

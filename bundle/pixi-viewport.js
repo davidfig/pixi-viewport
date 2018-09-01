@@ -3134,6 +3134,8 @@ module.exports = function (_Plugin) {
      * @param {Viewport} parent
      * @param {object} [options]
      * @param {number} [options.percent=0.1] percent to scroll with each spin
+     * @param {number} [options.smooth] smooth the zooming by providing the number of frames to zoom between wheel spins
+     * @param {boolean} [options.interrupt=true] stop smoothing with any user input on the viewport
      * @param {boolean} [options.reverse] reverse the direction of the scroll
      * @param {PIXI.Point} [options.center] place this point at center during zoom instead of current mouse position
      *
@@ -3148,42 +3150,89 @@ module.exports = function (_Plugin) {
         _this.percent = options.percent || 0.1;
         _this.center = options.center;
         _this.reverse = options.reverse;
+        _this.smooth = options.smooth;
+        _this.interrupt = typeof options.interrupt === 'undefined' ? true : options.interrupt;
         return _this;
     }
 
     _createClass(Wheel, [{
+        key: 'down',
+        value: function down() {
+            if (this.interrupt) {
+                this.smoothing = false;
+            }
+        }
+    }, {
+        key: 'update',
+        value: function update() {
+            if (this.smoothing) {
+                var point = this.smoothingCenter;
+                var change = this.smoothing;
+                var oldPoint = void 0;
+                if (!this.center) {
+                    oldPoint = this.parent.toLocal(point);
+                }
+                this.parent.scale.x += change;
+                this.parent.scale.y += change;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+                var clamp = this.parent.plugins['clamp-zoom'];
+                if (clamp) {
+                    clamp.clamp();
+                    this.smoothing = null;
+                }
+                if (this.center) {
+                    this.parent.moveCenter(this.center);
+                } else {
+                    var newPoint = this.parent.toGlobal(oldPoint);
+                    this.parent.x += point.x - newPoint.x;
+                    this.parent.y += point.y - newPoint.y;
+                }
+                this.smoothingCount++;
+                if (this.smoothingCount >= this.smooth) {
+                    this.smoothing = null;
+                }
+            }
+        }
+    }, {
         key: 'wheel',
         value: function wheel(e) {
             if (this.paused) {
                 return;
             }
 
-            var change = void 0;
-            if (this.reverse) {
-                change = e.deltaY > 0 ? 1 + this.percent : 1 - this.percent;
-            } else {
-                change = e.deltaY > 0 ? 1 - this.percent : 1 + this.percent;
-            }
             var point = this.parent.getPointerPosition(e);
-
-            var oldPoint = void 0;
-            if (!this.center) {
-                oldPoint = this.parent.toLocal(point);
-            }
-            this.parent.scale.x *= change;
-            this.parent.scale.y *= change;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-            var clamp = this.parent.plugins['clamp-zoom'];
-            if (clamp) {
-                clamp.clamp();
-            }
-
-            if (this.center) {
-                this.parent.moveCenter(this.center);
+            var sign = void 0;
+            if (this.reverse) {
+                sign = e.deltaY > 0 ? 1 : -1;
             } else {
-                var newPoint = this.parent.toGlobal(oldPoint);
-                this.parent.x += point.x - newPoint.x;
-                this.parent.y += point.y - newPoint.y;
+                sign = e.deltaY < 0 ? 1 : -1;
+            }
+            var change = 1 + this.percent * sign;
+            if (this.smooth) {
+                var original = this.smoothing ? this.smoothing * (this.smooth - this.smoothingCount) : 0;
+                this.smoothing = ((this.parent.scale.x + original) * change - this.parent.scale.x) / this.smooth;
+                this.smoothingCount = 0;
+                this.smoothingCenter = point;
+            } else {
+                var oldPoint = void 0;
+                if (!this.center) {
+                    oldPoint = this.parent.toLocal(point);
+                }
+                this.parent.scale.x *= change;
+                this.parent.scale.y *= change;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+                var clamp = this.parent.plugins['clamp-zoom'];
+                if (clamp) {
+                    clamp.clamp();
+                    this.smoothing = false;
+                }
+                if (this.center) {
+                    this.parent.moveCenter(this.center);
+                } else {
+                    var newPoint = this.parent.toGlobal(oldPoint);
+                    this.parent.x += point.x - newPoint.x;
+                    this.parent.y += point.y - newPoint.y;
+                }
             }
             this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
             this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
