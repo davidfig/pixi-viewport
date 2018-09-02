@@ -573,7 +573,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [center] maintain the same center
      * @return {Viewport} this
      */
-    fitWidth(width, center)
+    fitWidth(width, center, scaleY=true)
     {
         let save
         if (center)
@@ -582,7 +582,12 @@ class Viewport extends PIXI.Container
         }
         width = width || this.worldWidth
         this.scale.x = this.screenWidth / width
-        this.scale.y = this.scale.x
+
+        if (scaleY)
+        {
+            this.scale.y = this.scale.x
+        }
+
         if (center)
         {
             this.moveCenter(save)
@@ -596,7 +601,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    fitHeight(height, center)
+    fitHeight(height, center, scaleX=true)
     {
         let save
         if (center)
@@ -605,7 +610,12 @@ class Viewport extends PIXI.Container
         }
         height = height || this.worldHeight
         this.scale.y = this.screenHeight / height
-        this.scale.x = this.scale.y
+
+        if (scaleX)
+        {
+            this.scale.x = this.scale.y
+        }
+
         if (center)
         {
             this.moveCenter(save)
