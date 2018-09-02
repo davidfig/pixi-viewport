@@ -2200,19 +2200,26 @@ var Viewport = function (_PIXI$Container) {
          * change zoom so the width fits in the viewport
          * @param {number} [width=this._worldWidth] in world coordinates
          * @param {boolean} [center] maintain the same center
+         * @param {boolean} [scaleY=true] whether to set scaleY=scaleX
          * @return {Viewport} this
          */
 
     }, {
         key: 'fitWidth',
         value: function fitWidth(width, center) {
+            var scaleY = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
             var save = void 0;
             if (center) {
                 save = this.center;
             }
             width = width || this.worldWidth;
             this.scale.x = this.screenWidth / width;
-            this.scale.y = this.scale.x;
+
+            if (scaleY) {
+                this.scale.y = this.scale.x;
+            }
+
             if (center) {
                 this.moveCenter(save);
             }
@@ -2223,19 +2230,26 @@ var Viewport = function (_PIXI$Container) {
          * change zoom so the height fits in the viewport
          * @param {number} [height=this._worldHeight] in world coordinates
          * @param {boolean} [center] maintain the same center of the screen after zoom
+         * @param { boolean } [scaleX=true] whether to set scaleX = scaleY
          * @return {Viewport} this
          */
 
     }, {
         key: 'fitHeight',
         value: function fitHeight(height, center) {
+            var scaleX = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
             var save = void 0;
             if (center) {
                 save = this.center;
             }
             height = height || this.worldHeight;
             this.scale.y = this.screenHeight / height;
-            this.scale.x = this.scale.y;
+
+            if (scaleX) {
+                this.scale.x = this.scale.y;
+            }
+
             if (center) {
                 this.moveCenter(save);
             }
