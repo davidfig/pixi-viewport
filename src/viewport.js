@@ -23,7 +23,7 @@ class Viewport extends PIXI.Container
      * @param {number} [options.screenHeight=window.innerHeight]
      * @param {number} [options.worldWidth=this.width]
      * @param {number} [options.worldHeight=this.height]
-     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
@@ -272,9 +272,13 @@ class Viewport extends PIXI.Container
             // clicked event does not fire if viewport is decelerating or bouncing
             const decelerate = this.plugins['decelerate']
             const bounce = this.plugins['bounce']
-            if ((!decelerate || (!decelerate.x && !decelerate.y)) && (!bounce || (!bounce.toX && !bounce.toY)))
+            if ((!decelerate || (Math.abs(decelerate.x) < this.threshold && Math.abs(decelerate.y) < this.threshold)) && (!bounce || (!bounce.toX && !bounce.toY)))
             {
                 this.clickedAvailable = true
+            }
+            else
+            {
+                this.clickedAvailable = false
             }
         }
         else
