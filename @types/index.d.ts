@@ -113,6 +113,7 @@ declare namespace Viewport {
     percent?: number;
     reverse?: boolean;
     center?: PIXI.Point;
+    smooth?: number;
   }
 
   interface ClampZoomOptions {
