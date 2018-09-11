@@ -187,7 +187,17 @@ window.onload = function ()
     drawWorld()
     events()
 
-    PIXI.ticker.shared.add(() => _fps.frame())
+    PIXI.ticker.shared.add(() =>
+    {
+        _fps.frame()
+
+        // test dirty
+        // if (_viewport.dirty)
+        // {
+        //     console.log('dirty')
+        // }
+        // _viewport.dirty = false
+    })
 
     gui.gui(_viewport, drawWorld, _object)
 
@@ -64223,11 +64233,11 @@ module.exports = class Follow extends Plugin
                 return
             }
         }
-        if (this.speed)
+        const deltaX = toX - center.x
+        const deltaY = toY - center.y
+        if (deltaX || deltaY)
         {
-            const deltaX = toX - center.x
-            const deltaY = toY - center.y
-            if (deltaX || deltaY)
+            if (this.speed)
             {
                 const angle = Math.atan2(toY - center.y, toX - center.x)
                 const changeX = Math.cos(angle) * this.speed
@@ -64237,11 +64247,11 @@ module.exports = class Follow extends Plugin
                 this.parent.moveCenter(x, y)
                 this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
             }
-        }
-        else
-        {
-            this.parent.moveCenter(toX, toY)
-            this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
+            else
+            {
+                this.parent.moveCenter(toX, toY)
+                this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
+            }
         }
     }
 }

@@ -880,10 +880,10 @@ module.exports = function (_Plugin) {
                     return;
                 }
             }
-            if (this.speed) {
-                var deltaX = toX - center.x;
-                var deltaY = toY - center.y;
-                if (deltaX || deltaY) {
+            var deltaX = toX - center.x;
+            var deltaY = toY - center.y;
+            if (deltaX || deltaY) {
+                if (this.speed) {
                     var _angle = Math.atan2(toY - center.y, toX - center.x);
                     var changeX = Math.cos(_angle) * this.speed;
                     var changeY = Math.sin(_angle) * this.speed;
@@ -891,10 +891,10 @@ module.exports = function (_Plugin) {
                     var y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
                     this.parent.moveCenter(x, y);
                     this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                } else {
+                    this.parent.moveCenter(toX, toY);
+                    this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
                 }
-            } else {
-                this.parent.moveCenter(toX, toY);
-                this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
             }
         }
     }]);

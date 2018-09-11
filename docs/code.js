@@ -186,7 +186,17 @@ window.onload = function ()
     drawWorld()
     events()
 
-    PIXI.ticker.shared.add(() => _fps.frame())
+    PIXI.ticker.shared.add(() =>
+    {
+        _fps.frame()
+
+        // test dirty
+        // if (_viewport.dirty)
+        // {
+        //     console.log('dirty')
+        // }
+        // _viewport.dirty = false
+    })
 
     gui.gui(_viewport, drawWorld, _object)
 
