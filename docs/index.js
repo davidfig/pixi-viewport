@@ -63452,7 +63452,6 @@ module.exports = class Bounce extends Plugin
             {
                 this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.time)
             }
-            this.parent.dirty = true
         }
         if (this.toY)
         {
@@ -63469,7 +63468,6 @@ module.exports = class Bounce extends Plugin
             {
                 this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.time)
             }
-            this.parent.dirty = true
         }
     }
 
@@ -63942,7 +63940,6 @@ module.exports = class Decelerate extends Plugin
         }
         if (moved)
         {
-            this.parent.dirty = true
             this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' })
         }
     }
@@ -64055,7 +64052,6 @@ module.exports = class Drag extends Plugin
                         this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
-                    this.parent.dirty = true
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
                 }
             }
@@ -64110,7 +64106,6 @@ module.exports = class Drag extends Plugin
                 }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.emit('moved', this.parent)
-                this.parent.dirty = true
                 e.preventDefault()
                 return true
             }
@@ -64543,7 +64538,6 @@ module.exports = class Pinch extends Plugin
                     this.pinching = true
                 }
             }
-            this.parent.dirty = true
         }
     }
 
@@ -65076,13 +65070,22 @@ class Viewport extends PIXI.Container
             {
                 plugin.update(this.ticker.elapsedMS)
             }
-        }
-        if (!this.forceHitArea)
-        {
-            this.hitArea.x = this.left
-            this.hitArea.y = this.top
-            this.hitArea.width = this.worldScreenWidth
-            this.hitArea.height = this.worldScreenHeight
+            if (!this.forceHitArea)
+            {
+                this.hitArea.x = this.left
+                this.hitArea.y = this.top
+                this.hitArea.width = this.worldScreenWidth
+                this.hitArea.height = this.worldScreenHeight
+            }
+            this._dirty = this._dirty || !this.lastViewport ||
+                this.lastViewport.x !== this.x || this.lastViewport.y !== this.y ||
+                this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y
+            this.lastViewport = {
+                x: this.x,
+                y: this.y,
+                scaleX: this.scale.x,
+                scaleY: this.scale.y
+            }
         }
     }
 
@@ -65898,7 +65901,6 @@ class Viewport extends PIXI.Container
         {
             this.plugins['clamp-zoom'].clamp()
         }
-        this.dirty = true
     }
 
     // PLUGINS

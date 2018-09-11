@@ -100,7 +100,6 @@ module.exports = class Drag extends Plugin
                         this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
-                    this.parent.dirty = true
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
                 }
             }
@@ -155,7 +154,6 @@ module.exports = class Drag extends Plugin
                 }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.emit('moved', this.parent)
-                this.parent.dirty = true
                 e.preventDefault()
                 return true
             }

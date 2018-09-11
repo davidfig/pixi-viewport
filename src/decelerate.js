@@ -116,7 +116,6 @@ module.exports = class Decelerate extends Plugin
         }
         if (moved)
         {
-            this.parent.dirty = true
             this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' })
         }
     }

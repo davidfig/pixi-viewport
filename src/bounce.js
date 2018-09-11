@@ -99,7 +99,6 @@ module.exports = class Bounce extends Plugin
             {
                 this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.time)
             }
-            this.parent.dirty = true
         }
         if (this.toY)
         {
@@ -116,7 +115,6 @@ module.exports = class Bounce extends Plugin
             {
                 this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.time)
             }
-            this.parent.dirty = true
         }
     }
 
