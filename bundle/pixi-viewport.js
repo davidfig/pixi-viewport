@@ -1636,7 +1636,8 @@ var Viewport = function (_PIXI$Container) {
      * @param {number} [options.screenHeight=window.innerHeight]
      * @param {number} [options.worldWidth=this.width]
      * @param {number} [options.worldHeight=this.height]
-     * @param {number} [options.threshold = 5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
+     * @param {number} [options.threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
+     * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
@@ -1683,6 +1684,7 @@ var Viewport = function (_PIXI$Container) {
         _this._worldHeight = options.worldHeight;
         _this.hitAreaFullScreen = utils.defaults(options.hitAreaFullScreen, true);
         _this.forceHitArea = options.forceHitArea;
+        _this.passiveWheel = utils.defaults(options.passiveWheel, true);
         _this.threshold = utils.defaults(options.threshold, 5);
         _this.interaction = options.interaction || null;
         _this.div = options.divWheel || document.body;
@@ -1858,7 +1860,7 @@ var Viewport = function (_PIXI$Container) {
             this.wheelFunction = function (e) {
                 return _this2.handleWheel(e);
             };
-            div.addEventListener('wheel', this.wheelFunction);
+            div.addEventListener('wheel', this.wheelFunction, { passive: this.passiveWheel });
             this.leftDown = false;
         }
 
