@@ -741,8 +741,12 @@ module.exports = function (_Plugin) {
             if (this.wheelActive) {
                 var wheel = this.parent.plugins['wheel'];
                 if (!wheel) {
-                    this.parent.x += e.deltaX * this.wheelScroll * this.reverse;
-                    this.parent.y += e.deltaY * this.wheelScroll * this.reverse;
+                    if (this.xDirection) {
+                        this.parent.x += e.deltaX * this.wheelScroll * this.reverse;
+                    }
+                    if (this.yDirection) {
+                        this.parent.y += e.deltaY * this.wheelScroll * this.reverse;
+                    }
                     if (this.clampWheel) {
                         this.clamp();
                     }
