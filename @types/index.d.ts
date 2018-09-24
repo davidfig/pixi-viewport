@@ -219,7 +219,7 @@ declare class Viewport extends PIXI.Container {
   moveCorner(x: number, y: number): this;
 
   fitWidth(width?: number, center?: boolean, scaleY?: boolean): this;
-  fitHeight(width?: number, center?: boolean, scaleX?: boolean): this;
+  fitHeight(height?: number, center?: boolean, scaleX?: boolean): this;
   fitWorld(center?: boolean): this;
   fit(center?: boolean, width?: number, height?: number): this;
 
