@@ -55,6 +55,7 @@ class Viewport extends PIXI.Container
      * @fires mouse-edge-end
      * @fires mouse-edge-remove
      * @fires moved
+     * @fires zoomed
      */
     constructor(options)
     {
