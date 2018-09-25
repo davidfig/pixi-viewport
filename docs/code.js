@@ -24,7 +24,8 @@ let _fps, _application, _viewport, _ease, _object, _stars = []
 function viewport()
 {
     _viewport = _application.stage.addChild(new Viewport({
-        interaction: _application.renderer.plugins.interaction
+        interaction: _application.renderer.plugins.interaction,
+        passiveWheel: false
     }))
     _viewport
         .drag({ clampWheel: true })
@@ -34,6 +35,9 @@ function viewport()
         .bounce()
         .on('clicked', click)
     resize()
+
+    // test for x/y independent scaling
+    // _viewport.scale.y = 1.5
 
     // test for removeListeners()
     // _viewport.removeListeners()

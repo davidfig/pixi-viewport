@@ -25,7 +25,8 @@ let _fps, _application, _viewport, _ease, _object, _stars = []
 function viewport()
 {
     _viewport = _application.stage.addChild(new Viewport({
-        interaction: _application.renderer.plugins.interaction
+        interaction: _application.renderer.plugins.interaction,
+        passiveWheel: false
     }))
     _viewport
         .drag({ clampWheel: true })
@@ -35,6 +36,9 @@ function viewport()
         .bounce()
         .on('clicked', click)
     resize()
+
+    // test for x/y independent scaling
+    // _viewport.scale.y = 1.5
 
     // test for removeListeners()
     // _viewport.removeListeners()
@@ -64112,7 +64116,10 @@ module.exports = class Drag extends Plugin
                 }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.emit('moved', this.parent)
-                e.preventDefault()
+                if (!this.parent.passiveWheel)
+                {
+                    e.preventDefault()
+                }
                 return true
             }
         }
@@ -65576,7 +65583,7 @@ class Viewport extends PIXI.Container
      * change zoom so the height fits in the viewport
      * @param {number} [height=this._worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @param { boolean } [scaleX=true] whether to set scaleX = scaleY
+     * @param {boolean} [scaleX=true] whether to set scaleX = scaleY
      * @return {Viewport} this
      */
     fitHeight(height, center, scaleX=true)
@@ -66065,7 +66072,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
- * @return {Viewport} this
+     * @return {Viewport} this
      */
     snap(x, y, options)
     {
@@ -66291,7 +66298,10 @@ class Viewport extends PIXI.Container
  * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
  */
 
-PIXI.extras.Viewport = Viewport
+if (typeof PIXI !== 'undefined')
+{
+    PIXI.extras.Viewport = Viewport
+}
 
 module.exports = Viewport
 
@@ -66327,7 +66337,7 @@ module.exports = class Wheel extends Plugin
     {
         if (this.interrupt)
         {
-            this.smoothing = false
+            this.smoothing = null
         }
     }
 
@@ -66342,8 +66352,8 @@ module.exports = class Wheel extends Plugin
             {
                 oldPoint = this.parent.toLocal(point)
             }
-            this.parent.scale.x += change
-            this.parent.scale.y += change
+            this.parent.scale.x += change.x
+            this.parent.scale.y += change.y
             this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
             const clamp = this.parent.plugins['clamp-zoom']
             if (clamp)
@@ -66389,8 +66399,14 @@ module.exports = class Wheel extends Plugin
         const change = 1 + this.percent * sign
         if (this.smooth)
         {
-            const original = this.smoothing ? this.smoothing * (this.smooth - this.smoothingCount) : 0
-            this.smoothing = ((this.parent.scale.x + original) * change - this.parent.scale.x) / this.smooth
+            const original = {
+                x: this.smoothing ? this.smoothing.x * (this.smooth - this.smoothingCount) : 0,
+                y: this.smoothing ? this.smoothing.y * (this.smooth - this.smoothingCount) : 0
+            }
+            this.smoothing = {
+                x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.smooth,
+                y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.smooth
+            }
             this.smoothingCount = 0
             this.smoothingCenter = point
         }
@@ -66408,7 +66424,7 @@ module.exports = class Wheel extends Plugin
             if (clamp)
             {
                 clamp.clamp()
-                this.smoothing = false
+                this.smoothing = null
             }
             if (this.center)
             {
@@ -66423,7 +66439,10 @@ module.exports = class Wheel extends Plugin
         }
         this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
-        e.preventDefault()
+        if (!this.parent.passiveWheel)
+        {
+            e.preventDefault()
+        }
     }
 }
 },{"./plugin":400}],406:[function(require,module,exports){

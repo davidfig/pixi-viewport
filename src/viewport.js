@@ -615,7 +615,7 @@ class Viewport extends PIXI.Container
      * change zoom so the height fits in the viewport
      * @param {number} [height=this._worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
-     * @param { boolean } [scaleX=true] whether to set scaleX = scaleY
+     * @param {boolean} [scaleX=true] whether to set scaleX = scaleY
      * @return {Viewport} this
      */
     fitHeight(height, center, scaleX=true)
@@ -1104,7 +1104,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
- * @return {Viewport} this
+     * @return {Viewport} this
      */
     snap(x, y, options)
     {
@@ -1330,6 +1330,9 @@ class Viewport extends PIXI.Container
  * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
  */
 
-PIXI.extras.Viewport = Viewport
+if (typeof PIXI !== 'undefined')
+{
+    PIXI.extras.Viewport = Viewport
+}
 
 module.exports = Viewport

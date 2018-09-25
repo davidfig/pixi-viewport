@@ -160,7 +160,10 @@ module.exports = class Drag extends Plugin
                 }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.emit('moved', this.parent)
-                e.preventDefault()
+                if (!this.parent.passiveWheel)
+                {
+                    e.preventDefault()
+                }
                 return true
             }
         }

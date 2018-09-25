@@ -29,7 +29,7 @@ module.exports = class Wheel extends Plugin
     {
         if (this.interrupt)
         {
-            this.smoothing = false
+            this.smoothing = null
         }
     }
 
@@ -44,8 +44,8 @@ module.exports = class Wheel extends Plugin
             {
                 oldPoint = this.parent.toLocal(point)
             }
-            this.parent.scale.x += change
-            this.parent.scale.y += change
+            this.parent.scale.x += change.x
+            this.parent.scale.y += change.y
             this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
             const clamp = this.parent.plugins['clamp-zoom']
             if (clamp)
@@ -91,8 +91,14 @@ module.exports = class Wheel extends Plugin
         const change = 1 + this.percent * sign
         if (this.smooth)
         {
-            const original = this.smoothing ? this.smoothing * (this.smooth - this.smoothingCount) : 0
-            this.smoothing = ((this.parent.scale.x + original) * change - this.parent.scale.x) / this.smooth
+            const original = {
+                x: this.smoothing ? this.smoothing.x * (this.smooth - this.smoothingCount) : 0,
+                y: this.smoothing ? this.smoothing.y * (this.smooth - this.smoothingCount) : 0
+            }
+            this.smoothing = {
+                x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.smooth,
+                y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.smooth
+            }
             this.smoothingCount = 0
             this.smoothingCenter = point
         }
@@ -110,7 +116,7 @@ module.exports = class Wheel extends Plugin
             if (clamp)
             {
                 clamp.clamp()
-                this.smoothing = false
+                this.smoothing = null
             }
             if (this.center)
             {
@@ -125,6 +131,9 @@ module.exports = class Wheel extends Plugin
         }
         this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
-        e.preventDefault()
+        if (!this.parent.passiveWheel)
+        {
+            e.preventDefault()
+        }
     }
 }
