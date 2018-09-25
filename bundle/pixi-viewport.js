@@ -1682,6 +1682,7 @@ var Viewport = function (_PIXI$Container) {
      * @fires mouse-edge-end
      * @fires mouse-edge-remove
      * @fires moved
+     * @fires zoomed
      */
     function Viewport(options) {
         _classCallCheck(this, Viewport);
