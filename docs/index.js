@@ -63620,28 +63620,36 @@ module.exports = class ClampZoom extends Plugin
         let height = this.parent.worldScreenHeight
         if (this.minWidth && width < this.minWidth)
         {
-            this.parent.fitWidth(this.minWidth)
+            const original = this.parent.scale.x
+            this.parent.fitWidth(this.minWidth, false, false)
+            this.parent.scale.y *= this.parent.scale.x / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
         if (this.maxWidth && width > this.maxWidth)
         {
-            this.parent.fitWidth(this.maxWidth)
+            const original = this.parent.scale.x
+            this.parent.fitWidth(this.maxWidth, false, false)
+            this.parent.scale.y *= this.parent.scale.x / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
         if (this.minHeight && height < this.minHeight)
         {
-            this.parent.fitHeight(this.minHeight)
+            const original = this.parent.scale.y
+            this.parent.fitHeight(this.minHeight, false, false)
+            this.parent.scale.x *= this.parent.scale.y / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
         if (this.maxHeight && height > this.maxHeight)
         {
-            this.parent.fitHeight(this.maxHeight)
+            const original = this.parent.scale.y
+            this.parent.fitHeight(this.maxHeight, false, false)
+            this.parent.scale.x *= this.parent.scale.y / original
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
     }
