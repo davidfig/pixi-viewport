@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "budo docs/code.js:index.js --dir docs --live",
+    "test5": "budo v5/code.js:index.js --dir v5 --live",
     "build-demo": "browserify docs/code.js -o docs/index.js",
     "docs": "jsdoc -c .jsdoc.json",
     "transpile": "babel src/ --out-dir dist --source-maps inline",
