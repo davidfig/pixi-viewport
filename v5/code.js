@@ -108,7 +108,6 @@ function stars()
 
 function createTarget()
 {
-
     const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
     const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
     const target = _ease.target(_object, { x, y }, OBJECT_SPEED)
@@ -140,8 +139,8 @@ function click(data)
     sprite.anchor.set(0.5)
     sprite.rotation = Random.range(-0.1, 0.1)
     sprite.position = data.world
-    const fade = _ease.to(sprite, { alpha: 0 }, FADE_TIME)
-    fade.on('done', () => _viewport.removeChild(sprite))
+    // const fade = _ease.to(sprite, { alpha: 0 }, FADE_TIME)
+    // fade.on('done', () => _viewport.removeChild(sprite))
 }
 
 function drawWorld()
