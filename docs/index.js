@@ -75,6 +75,8 @@ function events()
     _viewport.on('snap-zoom-end', () => addCounter('snap-zoom-end'))
     _viewport.on('mouse-edges-start', () => addCounter('mouse-edges-start'))
     _viewport.on('mouse-edges-end', () => addCounter('mouse-edges-end'))
+    _viewport.on('moved-end', () => addCounter('moved-end'))
+    _viewport.on('zoomed-end', () => addCounter('zoomed-end'))
     // _viewport.on('moved', (data) => addCounter('moved: ' + data.type))
 }
 
@@ -63834,7 +63836,6 @@ module.exports = class clamp extends Plugin
     }
 }
 },{"./plugin":400,"./utils":403}],395:[function(require,module,exports){
-const utils =  require('./utils')
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin
@@ -63961,7 +63962,7 @@ module.exports = class Decelerate extends Plugin
         this.x = this.y = null
     }
 }
-},{"./plugin":400,"./utils":403}],396:[function(require,module,exports){
+},{"./plugin":400}],396:[function(require,module,exports){
 const utils =  require('./utils')
 const Plugin = require('./plugin')
 
@@ -64020,6 +64021,7 @@ module.exports = class Drag extends Plugin
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
             this.current = e.data.pointerId
+            return true
         }
         else
         {
@@ -64065,6 +64067,7 @@ module.exports = class Drag extends Plugin
                     }
                     this.moved = true
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
+                    return true
                 }
             }
             else
@@ -64087,6 +64090,7 @@ module.exports = class Drag extends Plugin
                 this.current = pointer.last.data.pointerId
             }
             this.moved = false
+            return true
         }
         else if (this.last)
         {
@@ -64094,6 +64098,7 @@ module.exports = class Drag extends Plugin
             {
                 this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                 this.last = this.moved = false
+                return true
             }
         }
     }
@@ -64486,6 +64491,7 @@ module.exports = class Pinch extends Plugin
         if (this.parent.countDownPointers() >= 2)
         {
             this.active = true
+            return true
         }
     }
 
@@ -64559,6 +64565,7 @@ module.exports = class Pinch extends Plugin
                     this.pinching = true
                 }
             }
+            return true
         }
     }
 
@@ -64573,6 +64580,7 @@ module.exports = class Pinch extends Plugin
                 this.pinching = false
                 this.moved = false
                 this.parent.emit('pinch-end', this.parent)
+                return true
             }
         }
     }
@@ -65001,6 +65009,7 @@ class Viewport extends PIXI.Container
      * @param {number} [options.worldHeight=this.height]
      * @param {number} [options.threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
      * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive
+     * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
@@ -65031,7 +65040,9 @@ class Viewport extends PIXI.Container
      * @fires mouse-edge-end
      * @fires mouse-edge-remove
      * @fires moved
+     * @fires moved-end
      * @fires zoomed
+     * @fires zoomed-end
      */
     constructor(options)
     {
@@ -65046,6 +65057,7 @@ class Viewport extends PIXI.Container
         this.hitAreaFullScreen = utils.defaults(options.hitAreaFullScreen, true)
         this.forceHitArea = options.forceHitArea
         this.passiveWheel = utils.defaults(options.passiveWheel, true)
+        this.stopEvent = options.stopPropagation
         this.threshold = utils.defaults(options.threshold, 5)
         this.interaction = options.interaction || null
         this.div = options.divWheel || document.body
@@ -65094,6 +65106,38 @@ class Viewport extends PIXI.Container
             {
                 plugin.update(this.ticker.elapsedMS)
             }
+
+            if (this.lastViewport)
+            {
+                // check for moved-end event
+                if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y)
+                {
+                    this.moving = true
+                }
+                else
+                {
+                    if (this.moving)
+                    {
+                        this.emit('moved-end', this)
+                        this.moving = false
+                    }
+                }
+                // check for zoomed-end event
+                if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y)
+                {
+                    this.zooming = true
+                }
+                else
+                {
+                    if (this.zooming)
+                    {
+                        this.emit('zoomed-end', this)
+                        this.zooming = false
+                    }
+                }
+
+            }
+
             if (!this.forceHitArea)
             {
                 this.hitArea.x = this.left
@@ -65274,9 +65318,17 @@ class Viewport extends PIXI.Container
             this.clickedAvailable = false
         }
 
+        let stop
         for (let plugin of this.pluginsList)
         {
-            plugin.down(e)
+            if (plugin.down(e))
+            {
+                stop = true
+            }
+        }
+        if (stop && this.stopEvent)
+        {
+            e.stopPropagation()
         }
     }
 
@@ -65305,9 +65357,13 @@ class Viewport extends PIXI.Container
             return
         }
 
+        let stop
         for (let plugin of this.pluginsList)
         {
-            plugin.move(e)
+            if (plugin.move(e))
+            {
+                stop = true
+            }
         }
 
         if (this.clickedAvailable)
@@ -65319,6 +65375,12 @@ class Viewport extends PIXI.Container
                 this.clickedAvailable = false
             }
         }
+
+        if (stop && this.stopEvent)
+        {
+            e.stopPropagation()
+        }
+
     }
 
     /**
@@ -65349,15 +65411,24 @@ class Viewport extends PIXI.Container
             }
         }
 
+        let stop
         for (let plugin of this.pluginsList)
         {
-            plugin.up(e)
+            if (plugin.up(e))
+            {
+                stop = true
+            }
         }
 
         if (this.clickedAvailable && this.countDownPointers() === 0)
         {
             this.emit('clicked', { screen: this.last, world: this.toWorld(this.last), viewport: this })
             this.clickedAvailable = false
+        }
+
+        if (stop && this.stopEvent)
+        {
+            e.stopPropagation()
         }
     }
 
@@ -65831,7 +65902,7 @@ class Viewport extends PIXI.Container
 
     /**
      * permanently changes the Viewport's hitArea
-     * <p>NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)</p>
+     * NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)
      * @type {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)}
      */
     get forceHitArea()
@@ -66167,6 +66238,9 @@ class Viewport extends PIXI.Container
     set pause(value)
     {
         this._pause = value
+        this.lastViewport = null
+        this.moving = false
+        this.zooming = false
         if (value)
         {
             this.touches = []
@@ -66305,6 +66379,18 @@ class Viewport extends PIXI.Container
  * @type {object}
  * @property {Viewport} viewport
  * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
+ */
+
+/**
+ * fires when viewport stops moving for any reason
+ * @event Viewport#moved-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when viewport stops zooming for any rason
+ * @event Viewport#zoomed-end
+ * @type {Viewport}
  */
 
 if (typeof PIXI !== 'undefined')

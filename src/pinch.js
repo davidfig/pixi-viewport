@@ -24,6 +24,7 @@ module.exports = class Pinch extends Plugin
         if (this.parent.countDownPointers() >= 2)
         {
             this.active = true
+            return true
         }
     }
 
@@ -97,6 +98,7 @@ module.exports = class Pinch extends Plugin
                     this.pinching = true
                 }
             }
+            return true
         }
     }
 
@@ -111,6 +113,7 @@ module.exports = class Pinch extends Plugin
                 this.pinching = false
                 this.moved = false
                 this.parent.emit('pinch-end', this.parent)
+                return true
             }
         }
     }

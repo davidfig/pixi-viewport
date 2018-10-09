@@ -74,6 +74,8 @@ function events()
     _viewport.on('snap-zoom-end', () => addCounter('snap-zoom-end'))
     _viewport.on('mouse-edges-start', () => addCounter('mouse-edges-start'))
     _viewport.on('mouse-edges-end', () => addCounter('mouse-edges-end'))
+    _viewport.on('moved-end', () => addCounter('moved-end'))
+    _viewport.on('zoomed-end', () => addCounter('zoomed-end'))
     // _viewport.on('moved', (data) => addCounter('moved: ' + data.type))
 }
 

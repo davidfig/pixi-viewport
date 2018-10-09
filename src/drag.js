@@ -56,6 +56,7 @@ module.exports = class Drag extends Plugin
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
             this.current = e.data.pointerId
+            return true
         }
         else
         {
@@ -101,6 +102,7 @@ module.exports = class Drag extends Plugin
                     }
                     this.moved = true
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
+                    return true
                 }
             }
             else
@@ -123,6 +125,7 @@ module.exports = class Drag extends Plugin
                 this.current = pointer.last.data.pointerId
             }
             this.moved = false
+            return true
         }
         else if (this.last)
         {
@@ -130,6 +133,7 @@ module.exports = class Drag extends Plugin
             {
                 this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
                 this.last = this.moved = false
+                return true
             }
         }
     }

@@ -33,7 +33,9 @@ declare namespace Viewport {
     | "mouse-edge-start"
     | "mouse-edge-end"
     | "moved"
-    | "zoomed";
+    | "zoomed"
+    | "moved-end"
+    | "zoomed-end";
 
   type ClickEventType = "clicked" | "drag-start" | "drag-end";
 

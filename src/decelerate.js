@@ -1,4 +1,3 @@
-const utils =  require('./utils')
 const Plugin = require('./plugin')
 
 module.exports = class Decelerate extends Plugin

@@ -469,7 +469,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var utils = require('./utils');
 var Plugin = require('./plugin');
 
 module.exports = function (_Plugin) {
@@ -613,7 +612,7 @@ module.exports = function (_Plugin) {
     return Decelerate;
 }(Plugin);
 
-},{"./plugin":9,"./utils":12}],5:[function(require,module,exports){
+},{"./plugin":9}],5:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -683,6 +682,7 @@ module.exports = function (_Plugin) {
                 var parent = this.parent.parent.toLocal(e.data.global);
                 this.last = { x: e.data.global.x, y: e.data.global.y, parent: parent };
                 this.current = e.data.pointerId;
+                return true;
             } else {
                 this.last = null;
             }
@@ -714,6 +714,7 @@ module.exports = function (_Plugin) {
                         }
                         this.moved = true;
                         this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
+                        return true;
                     }
                 } else {
                     this.moved = false;
@@ -732,10 +733,12 @@ module.exports = function (_Plugin) {
                     this.current = pointer.last.data.pointerId;
                 }
                 this.moved = false;
+                return true;
             } else if (this.last) {
                 if (this.moved) {
                     this.parent.emit('drag-end', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent });
                     this.last = this.moved = false;
+                    return true;
                 }
             }
         }
@@ -1126,6 +1129,7 @@ module.exports = function (_Plugin) {
         value: function down() {
             if (this.parent.countDownPointers() >= 2) {
                 this.active = true;
+                return true;
             }
         }
     }, {
@@ -1184,6 +1188,7 @@ module.exports = function (_Plugin) {
                         this.pinching = true;
                     }
                 }
+                return true;
             }
         }
     }, {
@@ -1196,6 +1201,7 @@ module.exports = function (_Plugin) {
                     this.pinching = false;
                     this.moved = false;
                     this.parent.emit('pinch-end', this.parent);
+                    return true;
                 }
             }
         }
@@ -1652,6 +1658,7 @@ var Viewport = function (_PIXI$Container) {
      * @param {number} [options.worldHeight=this.height]
      * @param {number} [options.threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
      * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive
+     * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
@@ -1682,7 +1689,9 @@ var Viewport = function (_PIXI$Container) {
      * @fires mouse-edge-end
      * @fires mouse-edge-remove
      * @fires moved
+     * @fires moved-end
      * @fires zoomed
+     * @fires zoomed-end
      */
     function Viewport(options) {
         _classCallCheck(this, Viewport);
@@ -1700,6 +1709,7 @@ var Viewport = function (_PIXI$Container) {
         _this.hitAreaFullScreen = utils.defaults(options.hitAreaFullScreen, true);
         _this.forceHitArea = options.forceHitArea;
         _this.passiveWheel = utils.defaults(options.passiveWheel, true);
+        _this.stopEvent = options.stopPropagation;
         _this.threshold = utils.defaults(options.threshold, 5);
         _this.interaction = options.interaction || null;
         _this.div = options.divWheel || document.body;
@@ -1774,6 +1784,27 @@ var Viewport = function (_PIXI$Container) {
                     } finally {
                         if (_didIteratorError) {
                             throw _iteratorError;
+                        }
+                    }
+                }
+
+                if (this.lastViewport) {
+                    // check for moved-end event
+                    if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y) {
+                        this.moving = true;
+                    } else {
+                        if (this.moving) {
+                            this.emit('moved-end', this);
+                            this.moving = false;
+                        }
+                    }
+                    // check for zoomed-end event
+                    if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y) {
+                        this.zooming = true;
+                    } else {
+                        if (this.zooming) {
+                            this.emit('zoomed-end', this);
+                            this.zooming = false;
                         }
                     }
                 }
@@ -1913,6 +1944,7 @@ var Viewport = function (_PIXI$Container) {
                 this.clickedAvailable = false;
             }
 
+            var stop = void 0;
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
             var _iteratorError3 = undefined;
@@ -1921,7 +1953,9 @@ var Viewport = function (_PIXI$Container) {
                 for (var _iterator3 = this.pluginsList[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                     var plugin = _step3.value;
 
-                    plugin.down(e);
+                    if (plugin.down(e)) {
+                        stop = true;
+                    }
                 }
             } catch (err) {
                 _didIteratorError3 = true;
@@ -1936,6 +1970,10 @@ var Viewport = function (_PIXI$Container) {
                         throw _iteratorError3;
                     }
                 }
+            }
+
+            if (stop && this.stopEvent) {
+                e.stopPropagation();
             }
         }
 
@@ -1966,6 +2004,7 @@ var Viewport = function (_PIXI$Container) {
                 return;
             }
 
+            var stop = void 0;
             var _iteratorNormalCompletion4 = true;
             var _didIteratorError4 = false;
             var _iteratorError4 = undefined;
@@ -1974,7 +2013,9 @@ var Viewport = function (_PIXI$Container) {
                 for (var _iterator4 = this.pluginsList[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                     var plugin = _step4.value;
 
-                    plugin.move(e);
+                    if (plugin.move(e)) {
+                        stop = true;
+                    }
                 }
             } catch (err) {
                 _didIteratorError4 = true;
@@ -1997,6 +2038,10 @@ var Viewport = function (_PIXI$Container) {
                 if (this.checkThreshold(distX) || this.checkThreshold(distY)) {
                     this.clickedAvailable = false;
                 }
+            }
+
+            if (stop && this.stopEvent) {
+                e.stopPropagation();
             }
         }
 
@@ -2025,6 +2070,7 @@ var Viewport = function (_PIXI$Container) {
                 }
             }
 
+            var stop = void 0;
             var _iteratorNormalCompletion5 = true;
             var _didIteratorError5 = false;
             var _iteratorError5 = undefined;
@@ -2033,7 +2079,9 @@ var Viewport = function (_PIXI$Container) {
                 for (var _iterator5 = this.pluginsList[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
                     var plugin = _step5.value;
 
-                    plugin.up(e);
+                    if (plugin.up(e)) {
+                        stop = true;
+                    }
                 }
             } catch (err) {
                 _didIteratorError5 = true;
@@ -2053,6 +2101,10 @@ var Viewport = function (_PIXI$Container) {
             if (this.clickedAvailable && this.countDownPointers() === 0) {
                 this.emit('clicked', { screen: this.last, world: this.toWorld(this.last), viewport: this });
                 this.clickedAvailable = false;
+            }
+
+            if (stop && this.stopEvent) {
+                e.stopPropagation();
             }
         }
 
@@ -2976,7 +3028,7 @@ var Viewport = function (_PIXI$Container) {
 
         /**
          * permanently changes the Viewport's hitArea
-         * <p>NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)</p>
+         * NOTE: normally the hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)
          * @type {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)}
          */
 
@@ -3001,6 +3053,9 @@ var Viewport = function (_PIXI$Container) {
         },
         set: function set(value) {
             this._pause = value;
+            this.lastViewport = null;
+            this.moving = false;
+            this.zooming = false;
             if (value) {
                 this.touches = [];
                 this.leftDown = false;
@@ -3141,6 +3196,18 @@ var Viewport = function (_PIXI$Container) {
  * @type {object}
  * @property {Viewport} viewport
  * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
+ */
+
+/**
+ * fires when viewport stops moving for any reason
+ * @event Viewport#moved-end
+ * @type {Viewport}
+ */
+
+/**
+ * fires when viewport stops zooming for any rason
+ * @event Viewport#zoomed-end
+ * @type {Viewport}
  */
 
 if (typeof PIXI !== 'undefined') {
