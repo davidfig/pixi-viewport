@@ -240,6 +240,7 @@ module.exports = function (_Plugin) {
         _this.minHeight = options.minHeight;
         _this.maxWidth = options.maxWidth;
         _this.maxHeight = options.maxHeight;
+        _this.clamp();
         return _this;
     }
 
@@ -259,7 +260,7 @@ module.exports = function (_Plugin) {
             var height = this.parent.worldScreenHeight;
             if (this.minWidth && width < this.minWidth) {
                 var original = this.parent.scale.x;
-                this.parent.fitWidth(this.minWidth, false, false);
+                this.parent.fitWidth(this.minWidth, false, false, true);
                 this.parent.scale.y *= this.parent.scale.x / original;
                 width = this.parent.worldScreenWidth;
                 height = this.parent.worldScreenHeight;
@@ -267,7 +268,7 @@ module.exports = function (_Plugin) {
             }
             if (this.maxWidth && width > this.maxWidth) {
                 var _original = this.parent.scale.x;
-                this.parent.fitWidth(this.maxWidth, false, false);
+                this.parent.fitWidth(this.maxWidth, false, false, true);
                 this.parent.scale.y *= this.parent.scale.x / _original;
                 width = this.parent.worldScreenWidth;
                 height = this.parent.worldScreenHeight;
@@ -275,7 +276,7 @@ module.exports = function (_Plugin) {
             }
             if (this.minHeight && height < this.minHeight) {
                 var _original2 = this.parent.scale.y;
-                this.parent.fitHeight(this.minHeight, false, false);
+                this.parent.fitHeight(this.minHeight, false, false, true);
                 this.parent.scale.x *= this.parent.scale.y / _original2;
                 width = this.parent.worldScreenWidth;
                 height = this.parent.worldScreenHeight;
@@ -283,7 +284,7 @@ module.exports = function (_Plugin) {
             }
             if (this.maxHeight && height > this.maxHeight) {
                 var _original3 = this.parent.scale.y;
-                this.parent.fitHeight(this.maxHeight, false, false);
+                this.parent.fitHeight(this.maxHeight, false, false, true);
                 this.parent.scale.x *= this.parent.scale.y / _original3;
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
@@ -2274,6 +2275,7 @@ var Viewport = function (_PIXI$Container) {
          * @param {number} [width=this._worldWidth] in world coordinates
          * @param {boolean} [center] maintain the same center
          * @param {boolean} [scaleY=true] whether to set scaleY=scaleX
+         * @param {boolean} [noClamp=false] whether to disable clamp-zoom
          * @return {Viewport} this
          */
 
@@ -2281,6 +2283,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'fitWidth',
         value: function fitWidth(width, center) {
             var scaleY = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+            var noClamp = arguments[3];
 
             var save = void 0;
             if (center) {
@@ -2291,6 +2294,11 @@ var Viewport = function (_PIXI$Container) {
 
             if (scaleY) {
                 this.scale.y = this.scale.x;
+            }
+
+            var clampZoom = this.plugins['clamp-zoom'];
+            if (!noClamp && clampZoom) {
+                clampZoom.clamp();
             }
 
             if (center) {
@@ -2304,6 +2312,7 @@ var Viewport = function (_PIXI$Container) {
          * @param {number} [height=this._worldHeight] in world coordinates
          * @param {boolean} [center] maintain the same center of the screen after zoom
          * @param {boolean} [scaleX=true] whether to set scaleX = scaleY
+         * @param {boolean} [noClamp=false] whether to disable clamp-zoom
          * @return {Viewport} this
          */
 
@@ -2311,6 +2320,7 @@ var Viewport = function (_PIXI$Container) {
         key: 'fitHeight',
         value: function fitHeight(height, center) {
             var scaleX = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+            var noClamp = arguments[3];
 
             var save = void 0;
             if (center) {
@@ -2321,6 +2331,11 @@ var Viewport = function (_PIXI$Container) {
 
             if (scaleX) {
                 this.scale.x = this.scale.y;
+            }
+
+            var clampZoom = this.plugins['clamp-zoom'];
+            if (!noClamp && clampZoom) {
+                clampZoom.clamp();
             }
 
             if (center) {
@@ -2349,6 +2364,12 @@ var Viewport = function (_PIXI$Container) {
             } else {
                 this.scale.x = this.scale.y;
             }
+
+            var clampZoom = this.plugins['clamp-zoom'];
+            if (clampZoom) {
+                clampZoom.clamp();
+            }
+
             if (center) {
                 this.moveCenter(save);
             }
@@ -2379,6 +2400,10 @@ var Viewport = function (_PIXI$Container) {
             } else {
                 this.scale.x = this.scale.y;
             }
+            var clampZoom = this.plugins['clamp-zoom'];
+            if (clampZoom) {
+                clampZoom.clamp();
+            }
             if (center) {
                 this.moveCenter(save);
             }
@@ -2401,6 +2426,10 @@ var Viewport = function (_PIXI$Container) {
             }
             var scale = this.scale.x + this.scale.x * percent;
             this.scale.set(scale);
+            var clampZoom = this.plugins['clamp-zoom'];
+            if (clampZoom) {
+                clampZoom.clamp();
+            }
             if (center) {
                 this.moveCenter(save);
             }

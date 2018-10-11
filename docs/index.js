@@ -63604,6 +63604,7 @@ module.exports = class ClampZoom extends Plugin
         this.minHeight = options.minHeight
         this.maxWidth = options.maxWidth
         this.maxHeight = options.maxHeight
+        this.clamp()
     }
 
     resize()
@@ -63623,7 +63624,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.minWidth && width < this.minWidth)
         {
             const original = this.parent.scale.x
-            this.parent.fitWidth(this.minWidth, false, false)
+            this.parent.fitWidth(this.minWidth, false, false, true)
             this.parent.scale.y *= this.parent.scale.x / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
@@ -63632,7 +63633,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.maxWidth && width > this.maxWidth)
         {
             const original = this.parent.scale.x
-            this.parent.fitWidth(this.maxWidth, false, false)
+            this.parent.fitWidth(this.maxWidth, false, false, true)
             this.parent.scale.y *= this.parent.scale.x / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
@@ -63641,7 +63642,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.minHeight && height < this.minHeight)
         {
             const original = this.parent.scale.y
-            this.parent.fitHeight(this.minHeight, false, false)
+            this.parent.fitHeight(this.minHeight, false, false, true)
             this.parent.scale.x *= this.parent.scale.y / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
@@ -63650,7 +63651,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.maxHeight && height > this.maxHeight)
         {
             const original = this.parent.scale.y
-            this.parent.fitHeight(this.maxHeight, false, false)
+            this.parent.fitHeight(this.maxHeight, false, false, true)
             this.parent.scale.x *= this.parent.scale.y / original
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
@@ -65635,9 +65636,10 @@ class Viewport extends PIXI.Container
      * @param {number} [width=this._worldWidth] in world coordinates
      * @param {boolean} [center] maintain the same center
      * @param {boolean} [scaleY=true] whether to set scaleY=scaleX
+     * @param {boolean} [noClamp=false] whether to disable clamp-zoom
      * @return {Viewport} this
      */
-    fitWidth(width, center, scaleY=true)
+    fitWidth(width, center, scaleY=true, noClamp)
     {
         let save
         if (center)
@@ -65652,6 +65654,12 @@ class Viewport extends PIXI.Container
             this.scale.y = this.scale.x
         }
 
+        const clampZoom = this.plugins['clamp-zoom']
+        if (!noClamp && clampZoom)
+        {
+            clampZoom.clamp()
+        }
+
         if (center)
         {
             this.moveCenter(save)
@@ -65664,9 +65672,10 @@ class Viewport extends PIXI.Container
      * @param {number} [height=this._worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @param {boolean} [scaleX=true] whether to set scaleX = scaleY
+     * @param {boolean} [noClamp=false] whether to disable clamp-zoom
      * @return {Viewport} this
      */
-    fitHeight(height, center, scaleX=true)
+    fitHeight(height, center, scaleX=true, noClamp)
     {
         let save
         if (center)
@@ -65679,6 +65688,12 @@ class Viewport extends PIXI.Container
         if (scaleX)
         {
             this.scale.x = this.scale.y
+        }
+
+        const clampZoom = this.plugins['clamp-zoom']
+        if (!noClamp && clampZoom)
+        {
+            clampZoom.clamp()
         }
 
         if (center)
@@ -65710,6 +65725,13 @@ class Viewport extends PIXI.Container
         {
             this.scale.x = this.scale.y
         }
+
+        const clampZoom = this.plugins['clamp-zoom']
+        if (clampZoom)
+        {
+            clampZoom.clamp()
+        }
+
         if (center)
         {
             this.moveCenter(save)
@@ -65743,6 +65765,11 @@ class Viewport extends PIXI.Container
         {
             this.scale.x = this.scale.y
         }
+        const clampZoom = this.plugins['clamp-zoom']
+        if (clampZoom)
+        {
+            clampZoom.clamp()
+        }
         if (center)
         {
             this.moveCenter(save)
@@ -65765,6 +65792,11 @@ class Viewport extends PIXI.Container
         }
         const scale = this.scale.x + this.scale.x * percent
         this.scale.set(scale)
+        const clampZoom = this.plugins['clamp-zoom']
+        if (clampZoom)
+        {
+            clampZoom.clamp()
+        }
         if (center)
         {
             this.moveCenter(save)

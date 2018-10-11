@@ -651,9 +651,10 @@ class Viewport extends PIXI.Container
      * @param {number} [width=this._worldWidth] in world coordinates
      * @param {boolean} [center] maintain the same center
      * @param {boolean} [scaleY=true] whether to set scaleY=scaleX
+     * @param {boolean} [noClamp=false] whether to disable clamp-zoom
      * @return {Viewport} this
      */
-    fitWidth(width, center, scaleY=true)
+    fitWidth(width, center, scaleY=true, noClamp)
     {
         let save
         if (center)
@@ -668,6 +669,12 @@ class Viewport extends PIXI.Container
             this.scale.y = this.scale.x
         }
 
+        const clampZoom = this.plugins['clamp-zoom']
+        if (!noClamp && clampZoom)
+        {
+            clampZoom.clamp()
+        }
+
         if (center)
         {
             this.moveCenter(save)
@@ -680,9 +687,10 @@ class Viewport extends PIXI.Container
      * @param {number} [height=this._worldHeight] in world coordinates
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @param {boolean} [scaleX=true] whether to set scaleX = scaleY
+     * @param {boolean} [noClamp=false] whether to disable clamp-zoom
      * @return {Viewport} this
      */
-    fitHeight(height, center, scaleX=true)
+    fitHeight(height, center, scaleX=true, noClamp)
     {
         let save
         if (center)
@@ -695,6 +703,12 @@ class Viewport extends PIXI.Container
         if (scaleX)
         {
             this.scale.x = this.scale.y
+        }
+
+        const clampZoom = this.plugins['clamp-zoom']
+        if (!noClamp && clampZoom)
+        {
+            clampZoom.clamp()
         }
 
         if (center)
@@ -726,6 +740,13 @@ class Viewport extends PIXI.Container
         {
             this.scale.x = this.scale.y
         }
+
+        const clampZoom = this.plugins['clamp-zoom']
+        if (clampZoom)
+        {
+            clampZoom.clamp()
+        }
+
         if (center)
         {
             this.moveCenter(save)
@@ -759,6 +780,11 @@ class Viewport extends PIXI.Container
         {
             this.scale.x = this.scale.y
         }
+        const clampZoom = this.plugins['clamp-zoom']
+        if (clampZoom)
+        {
+            clampZoom.clamp()
+        }
         if (center)
         {
             this.moveCenter(save)
@@ -781,6 +807,11 @@ class Viewport extends PIXI.Container
         }
         const scale = this.scale.x + this.scale.x * percent
         this.scale.set(scale)
+        const clampZoom = this.plugins['clamp-zoom']
+        if (clampZoom)
+        {
+            clampZoom.clamp()
+        }
         if (center)
         {
             this.moveCenter(save)

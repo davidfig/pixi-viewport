@@ -17,6 +17,7 @@ module.exports = class ClampZoom extends Plugin
         this.minHeight = options.minHeight
         this.maxWidth = options.maxWidth
         this.maxHeight = options.maxHeight
+        this.clamp()
     }
 
     resize()
@@ -36,7 +37,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.minWidth && width < this.minWidth)
         {
             const original = this.parent.scale.x
-            this.parent.fitWidth(this.minWidth, false, false)
+            this.parent.fitWidth(this.minWidth, false, false, true)
             this.parent.scale.y *= this.parent.scale.x / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
@@ -45,7 +46,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.maxWidth && width > this.maxWidth)
         {
             const original = this.parent.scale.x
-            this.parent.fitWidth(this.maxWidth, false, false)
+            this.parent.fitWidth(this.maxWidth, false, false, true)
             this.parent.scale.y *= this.parent.scale.x / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
@@ -54,7 +55,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.minHeight && height < this.minHeight)
         {
             const original = this.parent.scale.y
-            this.parent.fitHeight(this.minHeight, false, false)
+            this.parent.fitHeight(this.minHeight, false, false, true)
             this.parent.scale.x *= this.parent.scale.y / original
             width = this.parent.worldScreenWidth
             height = this.parent.worldScreenHeight
@@ -63,7 +64,7 @@ module.exports = class ClampZoom extends Plugin
         if (this.maxHeight && height > this.maxHeight)
         {
             const original = this.parent.scale.y
-            this.parent.fitHeight(this.maxHeight, false, false)
+            this.parent.fitHeight(this.maxHeight, false, false, true)
             this.parent.scale.x *= this.parent.scale.y / original
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
