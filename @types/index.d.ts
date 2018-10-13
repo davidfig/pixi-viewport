@@ -54,7 +54,7 @@ declare namespace Viewport {
     screenWidth?: number;
     threshold?: number;
     passiveWheel?: boolean;
-    ticker?: PIXI.Ticker;
+    ticker?: PIXI.Ticker | PIXI.ticker.Ticker;
     worldHeight?: number;
     worldWidth?: number;
   }
