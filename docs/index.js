@@ -65827,6 +65827,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.removeOnComplete] removes this plugin after snapping is complete
      * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @param {boolean} [options.forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
+     * @param {boolean} [options.noMove] zoom but do not move
      */
     snapZoom(options)
     {
