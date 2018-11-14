@@ -41,6 +41,13 @@ declare namespace Viewport {
 
   type WheelEventType = "wheel";
 
+  interface Bounds {
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  }
+
   interface Options {
     divWheel?: HTMLElement;
     forceHitArea?:
@@ -54,6 +61,7 @@ declare namespace Viewport {
     screenWidth?: number;
     threshold?: number;
     passiveWheel?: boolean;
+    noTicker?: boolean;
     ticker?: PIXI.ticker.Ticker;
     worldHeight?: number;
     worldWidth?: number;
@@ -228,6 +236,8 @@ declare class Viewport extends PIXI.Container {
 
   zoomPercent(percent: number, center?: boolean): this;
   zoom(change: number, center?: boolean): this;
+
+  getVisibleBounds(): Viewport.Bounds;
 
   // Plugins
   removePlugin(type: Viewport.PluginType): void;
