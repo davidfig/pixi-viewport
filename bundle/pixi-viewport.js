@@ -1661,6 +1661,7 @@ var Viewport = function (_PIXI$Container) {
      * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive
      * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
+     * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
@@ -1723,11 +1724,13 @@ var Viewport = function (_PIXI$Container) {
          */
         _this.touches = [];
 
-        _this.ticker = options.ticker || PIXI.ticker.shared;
-        _this.tickerFunction = function () {
-            return _this.update();
-        };
-        _this.ticker.add(_this.tickerFunction);
+        if (!options.noTicker) {
+            _this.ticker = options.ticker || PIXI.ticker.shared;
+            _this.tickerFunction = function () {
+                return _this.update(_this.ticker.elapsedMS);
+            };
+            _this.ticker.add(_this.tickerFunction);
+        }
         return _this;
     }
 
@@ -1756,13 +1759,13 @@ var Viewport = function (_PIXI$Container) {
         }
 
         /**
-         * update animations
-         * @private
+         * update viewport on each frame
+         * by default, you do not need to call this unless you set options.noTicker=true
          */
 
     }, {
         key: 'update',
-        value: function update() {
+        value: function update(elapsed) {
             if (!this.pause) {
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
@@ -1772,7 +1775,7 @@ var Viewport = function (_PIXI$Container) {
                     for (var _iterator = this.pluginsList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var plugin = _step.value;
 
-                        plugin.update(this.ticker.elapsedMS);
+                        plugin.update(elapsed);
                     }
                 } catch (err) {
                     _didIteratorError = true;
@@ -1828,8 +1831,8 @@ var Viewport = function (_PIXI$Container) {
 
         /**
          * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
-         * @param {number} screenWidth
-         * @param {number} screenHeight
+         * @param {number} [screenWidth=window.innerWidth]
+         * @param {number} [screenHeight=window.innerHeight]
          * @param {number} [worldWidth]
          * @param {number} [worldHeight]
          */
@@ -1884,13 +1887,24 @@ var Viewport = function (_PIXI$Container) {
          */
 
     }, {
-        key: 'listeners',
+        key: 'getVisibleBounds',
 
+
+        /**
+         * get visible bounds of viewport
+         * @return {object} bounds { x, y, width, height }
+         */
+        value: function getVisibleBounds() {
+            return { x: this.left, y: this.top, width: this.worldScreenWidth, height: this.worldScreenHeight };
+        }
 
         /**
          * add input listeners
          * @private
          */
+
+    }, {
+        key: 'listeners',
         value: function listeners(div) {
             var _this2 = this;
 
@@ -2785,6 +2799,7 @@ var Viewport = function (_PIXI$Container) {
 
         /**
          * follow a target
+         * NOTE: uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
          * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
          * @param {object} [options]
          * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)

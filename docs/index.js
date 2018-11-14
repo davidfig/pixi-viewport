@@ -65012,6 +65012,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive
      * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
+     * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
      * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
@@ -65071,9 +65072,12 @@ class Viewport extends PIXI.Container
          */
         this.touches = []
 
-        this.ticker = options.ticker || PIXI.ticker.shared
-        this.tickerFunction = () => this.update()
-        this.ticker.add(this.tickerFunction)
+        if (!options.noTicker)
+        {
+            this.ticker = options.ticker || PIXI.ticker.shared
+            this.tickerFunction = () => this.update(this.ticker.elapsedMS)
+            this.ticker.add(this.tickerFunction)
+        }
     }
 
     /**
@@ -65096,16 +65100,16 @@ class Viewport extends PIXI.Container
     }
 
     /**
-     * update animations
-     * @private
+     * update viewport on each frame
+     * by default, you do not need to call this unless you set options.noTicker=true
      */
-    update()
+    update(elapsed)
     {
         if (!this.pause)
         {
             for (let plugin of this.pluginsList)
             {
-                plugin.update(this.ticker.elapsedMS)
+                plugin.update(elapsed)
             }
 
             if (this.lastViewport)
@@ -65160,8 +65164,8 @@ class Viewport extends PIXI.Container
 
     /**
      * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
-     * @param {number} screenWidth
-     * @param {number} screenHeight
+     * @param {number} [screenWidth=window.innerWidth]
+     * @param {number} [screenHeight=window.innerHeight]
      * @param {number} [worldWidth]
      * @param {number} [worldHeight]
      */
@@ -65252,6 +65256,15 @@ class Viewport extends PIXI.Container
     {
         this._worldHeight = value
         this.resizePlugins()
+    }
+
+    /**
+     * get visible bounds of viewport
+     * @return {object} bounds { x, y, width, height }
+     */
+    getVisibleBounds()
+    {
+        return { x: this.left, y: this.top, width: this.worldScreenWidth, height: this.worldScreenHeight }
     }
 
     /**
@@ -66196,6 +66209,7 @@ class Viewport extends PIXI.Container
 
     /**
      * follow a target
+     * NOTE: uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]
      * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
