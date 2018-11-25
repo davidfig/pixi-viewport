@@ -184,6 +184,20 @@ declare namespace Viewport {
   }
 }
 
+declare class Plugin
+{
+  constructor(viewport: Viewport.Viewport): void;
+  down(event: PIXI.interaction.InteractionEvent): void;
+  up(event: PIXI.interaction.InteractionEvent): void;
+  move(event: PIXI.interaction.InteractionEvent): void;
+  wheel(event: WheelEvent): void;
+  update(): void;
+  resize(): void;
+  reset(): void;
+  pause(): void;
+  resume(): void;
+}
+
 declare class Viewport extends PIXI.Container {
   screenHeight: number;
   screenWidth: number;
@@ -240,6 +254,7 @@ declare class Viewport extends PIXI.Container {
   getVisibleBounds(): Viewport.Bounds;
 
   // Plugins
+  userPlugin(type: string, plugin: Viewport.Plugin, index?: number): void;
   removePlugin(type: Viewport.PluginType): void;
   pausePlugin(type: Viewport.PluginType): void;
   resumePlugin(type: Viewport.PluginType): void;

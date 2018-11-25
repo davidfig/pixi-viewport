@@ -7,6 +7,7 @@ const clicked = require('clicked')
 
 // const Viewport = require('../dist/viewport')
 const Viewport = require('../src/viewport')
+const UserPlugin = require('./user-plugin')
 
 const gui = require('./gui')
 
@@ -41,6 +42,8 @@ function viewport()
 
     // test for removeListeners()
     // _viewport.removeListeners()
+
+    _viewport.userPlugin('test', new UserPlugin(_viewport))
 }
 
 function resize()

@@ -1062,6 +1062,24 @@ class Viewport extends PIXI.Container
     // PLUGINS
 
     /**
+     * Inserts a user plugin into the viewport
+     * @param {string} name of plugin
+     * @param {Plugin} plugin - instantiated Plugin class
+     * @param {number} [index=last element] plugin is called current order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
+     */
+    userPlugin(name, plugin, index=PLUGIN_ORDER.length)
+    {
+        this.plugins[name] = plugin
+        const current = PLUGIN_ORDER.indexOf(name)
+        if (current !== -1)
+        {
+            PLUGIN_ORDER.splice(current, 1)
+        }
+        PLUGIN_ORDER.splice(index, 0, name)
+        this.pluginsSort()
+    }
+
+    /**
      * removes installed plugin
      * @param {string} type of plugin (e.g., 'drag', 'pinch')
      */
