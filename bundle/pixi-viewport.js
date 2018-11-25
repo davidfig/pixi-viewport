@@ -1226,32 +1226,81 @@ module.exports = function () {
         this.paused = false;
     }
 
+    /**
+     * handler for pointerdown PIXI event
+     * @param {PIXI.interaction.InteractionEvent} event
+     */
+
+
     _createClass(Plugin, [{
         key: "down",
-        value: function down() {}
+        value: function down(event) {}
+
+        /**
+         * handler for pointermove PIXI event
+         * @param {PIXI.interaction.InteractionEvent} event
+         */
+
     }, {
         key: "move",
-        value: function move() {}
+        value: function move(event) {}
+
+        /**
+         * handler for pointerup PIXI event
+         * @param {PIXI.interaction.InteractionEvent} event
+         */
+
     }, {
         key: "up",
-        value: function up() {}
+        value: function up(event) {}
+
+        /**
+         * handler for wheel event on div
+         * @param {WheelEvent} event
+         */
+
     }, {
         key: "wheel",
-        value: function wheel() {}
+        value: function wheel(event) {}
+
+        /**
+         * called on each tick
+         */
+
     }, {
         key: "update",
         value: function update() {}
+
+        /**
+         * called when the viewport is resized
+         */
+
     }, {
         key: "resize",
         value: function resize() {}
+
+        /**
+         * called when the viewport is manually moved
+         */
+
     }, {
         key: "reset",
         value: function reset() {}
+
+        /**
+         * called when viewport is paused
+         */
+
     }, {
         key: "pause",
         value: function pause() {
             this.paused = true;
         }
+
+        /**
+         * called when viewport is resumed
+         */
+
     }, {
         key: "resume",
         value: function resume() {
@@ -2599,6 +2648,27 @@ var Viewport = function (_PIXI$Container) {
         }
 
         // PLUGINS
+
+        /**
+         * Inserts a user plugin into the viewport
+         * @param {string} name of plugin
+         * @param {Plugin} plugin - instantiated Plugin class
+         * @param {number} [index=last element] plugin is called current order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
+         */
+
+    }, {
+        key: 'userPlugin',
+        value: function userPlugin(name, plugin) {
+            var index = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : PLUGIN_ORDER.length;
+
+            this.plugins[name] = plugin;
+            var current = PLUGIN_ORDER.indexOf(name);
+            if (current !== -1) {
+                PLUGIN_ORDER.splice(current, 1);
+            }
+            PLUGIN_ORDER.splice(index, 0, name);
+            this.pluginsSort();
+        }
 
         /**
          * removes installed plugin
