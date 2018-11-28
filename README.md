@@ -13,6 +13,9 @@ I kept rewriting 2d cameras for the games I developed with pixi.js, so I decided
 var PIXI = require('pixi.js');
 var Viewport = require('pixi-viewport');
 
+var app = new PIXI.Application();
+document.body.appendChild(app.view);
+
 // create viewport
 var viewport = new Viewport({
     screenWidth: window.innerWidth,
@@ -24,8 +27,6 @@ var viewport = new Viewport({
 });
 
 // add the viewport to the stage
-var app = new PIXI.Application();
-document.body.appendChild(app.view);
 app.stage.addChild(viewport);
 
 // activate plugins
@@ -52,7 +53,7 @@ sprite.position.set(100, 100);
 
     npm i pixi-viewport
 
-or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/) and use it like:
+or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/) and use it:
 
 ```html
 <script src="/directory-to-file/pixi.js"></script>
