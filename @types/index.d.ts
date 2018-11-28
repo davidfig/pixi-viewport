@@ -1,4 +1,10 @@
-declare namespace Viewport {
+import * as PIXI from 'pixi.js';
+
+export = Viewport;
+export as namespace Viewport;
+
+declare namespace Viewport
+{
   type DirectionType = "all" | "x" | "y";
 
   type UnderflowType = "center" | "top" | "left" | "right" | "bottom" | string;
@@ -186,7 +192,7 @@ declare namespace Viewport {
 
 declare class Plugin
 {
-  constructor(viewport: Viewport.Viewport): void;
+  constructor(viewport: Viewport);
   down(event: PIXI.interaction.InteractionEvent): void;
   up(event: PIXI.interaction.InteractionEvent): void;
   move(event: PIXI.interaction.InteractionEvent): void;
@@ -254,7 +260,7 @@ declare class Viewport extends PIXI.Container {
   getVisibleBounds(): Viewport.Bounds;
 
   // Plugins
-  userPlugin(type: string, plugin: Viewport.Plugin, index?: number): void;
+  userPlugin(type: string, plugin: Plugin, index?: number): void;
   removePlugin(type: Viewport.PluginType): void;
   pausePlugin(type: Viewport.PluginType): void;
   resumePlugin(type: Viewport.PluginType): void;
@@ -318,6 +324,3 @@ declare class Viewport extends PIXI.Container {
   protected getTouchPointers(): number;
   protected _reset(): void;
 }
-
-export = Viewport;
-export as namespace Viewport;
