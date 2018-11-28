@@ -1,5 +1,3 @@
-import * as PIXI from 'pixi.js';
-
 export = Viewport;
 export as namespace Viewport;
 
