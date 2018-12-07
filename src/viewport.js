@@ -1327,6 +1327,33 @@ class Viewport extends PIXI.Container
             this.leftDown = false
         }
     }
+
+    /**
+     * move the viewport so the bounding box is visible
+     * @param {number} x
+     * @param {number} y
+     * @param {number} width
+     * @param {number} height
+     */
+    ensureVisible(x, y, width, height)
+    {
+        if (x < this.left)
+        {
+            this.left = x
+        }
+        else if (x + width > this.right)
+        {
+            this.right = x + width
+        }
+        if (y < this.top)
+        {
+            this.top = y
+        }
+        else if (y + height > this.bottom)
+        {
+            this.bottom = y + height
+        }
+    }
 }
 
 /**
