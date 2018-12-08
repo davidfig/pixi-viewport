@@ -334,10 +334,10 @@ module.exports = function (_Plugin) {
             _this.top = utils.defaults(options.top, null);
             _this.bottom = utils.defaults(options.bottom, null);
         } else {
-            _this.left = options.direction === 'x' || options.direction === 'all';
-            _this.right = options.direction === 'x' || options.direction === 'all';
-            _this.top = options.direction === 'y' || options.direction === 'all';
-            _this.bottom = options.direction === 'y' || options.direction === 'all';
+            _this.left = options.direction === 'x' || options.direction === 'all' ? true : null;
+            _this.right = options.direction === 'x' || options.direction === 'all' ? true : null;
+            _this.top = options.direction === 'y' || options.direction === 'all' ? true : null;
+            _this.bottom = options.direction === 'y' || options.direction === 'all' ? true : null;
         }
         _this.parseUnderflow(options.underflow || 'center');
         _this.move();

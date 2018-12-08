@@ -65662,10 +65662,10 @@ module.exports = class clamp extends Plugin
         }
         else
         {
-            this.left = options.direction === 'x' || options.direction === 'all'
-            this.right = options.direction === 'x' || options.direction === 'all'
-            this.top = options.direction === 'y' || options.direction === 'all'
-            this.bottom = options.direction === 'y' || options.direction === 'all'
+            this.left = options.direction === 'x' || options.direction === 'all' ? true : null
+            this.right = options.direction === 'x' || options.direction === 'all' ? true : null
+            this.top = options.direction === 'y' || options.direction === 'all' ? true : null
+            this.bottom = options.direction === 'y' || options.direction === 'all' ? true : null
         }
         this.parseUnderflow(options.underflow || 'center')
         this.move()
