@@ -556,7 +556,7 @@ class Viewport extends PIXI.Container
      */
     get worldScreenWidth()
     {
-        return this._screenWidth / this.scale.x
+        return this.screenWidth / this.scale.x
     }
 
     /**
@@ -566,7 +566,7 @@ class Viewport extends PIXI.Container
      */
     get worldScreenHeight()
     {
-        return this._screenHeight / this.scale.y
+        return this.screenHeight / this.scale.y
     }
 
     /**
@@ -576,7 +576,7 @@ class Viewport extends PIXI.Container
      */
     get screenWorldWidth()
     {
-        return this._worldWidth * this.scale.x
+        return this.worldWidth * this.scale.x
     }
 
     /**
@@ -586,7 +586,7 @@ class Viewport extends PIXI.Container
      */
     get screenWorldHeight()
     {
-        return this._worldHeight * this.scale.y
+        return this.worldHeight * this.scale.y
     }
 
     /**
@@ -1160,7 +1160,7 @@ class Viewport extends PIXI.Container
      * @param {(number|boolean)} [options.top] clamp top; true=0
      * @param {(number|boolean)} [options.bottom] clamp bottom; true=viewport.worldHeight
      * @param {string} [options.direction] (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight]; replaces left/right/top/bottom if set
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @param {string} [options.underflow=center] (none OR (top/bottom/center and left/right/center) OR center) where to place world if too small for screen (e.g., top-right, center, none, bottomleft)
      * @return {Viewport} this
      */
     clamp(options)
