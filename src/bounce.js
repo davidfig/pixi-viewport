@@ -49,6 +49,7 @@ module.exports = class Bounce extends Plugin
         }
         this.parseUnderflow(options.underflow || 'center')
         this.last = {}
+        this.reset()
     }
 
     parseUnderflow(clamp)
@@ -64,6 +65,11 @@ module.exports = class Bounce extends Plugin
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
         }
+    }
+
+    isActive()
+    {
+        return this.toX !== null || this.toY !== null
     }
 
     down()

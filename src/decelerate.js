@@ -18,13 +18,18 @@ module.exports = class Decelerate extends Plugin
         this.bounce = options.bounce || 0.5
         this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
         this.saved = []
+        this.reset()
     }
 
     down()
     {
         this.saved = []
         this.x = this.y = false
+    }
 
+    isActive()
+    {
+        return this.x || this.y
     }
 
     move()

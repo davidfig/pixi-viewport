@@ -333,7 +333,7 @@ class Viewport extends PIXI.Container
             // clicked event does not fire if viewport is decelerating or bouncing
             const decelerate = this.plugins['decelerate']
             const bounce = this.plugins['bounce']
-            if ((!decelerate || (Math.abs(decelerate.x) < this.threshold && Math.abs(decelerate.y) < this.threshold)) && (!bounce || (!bounce.toX && !bounce.toY)))
+            if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive()))
             {
                 this.clickedAvailable = true
             }

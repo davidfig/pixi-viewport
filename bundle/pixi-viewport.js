@@ -55,6 +55,7 @@ module.exports = function (_Plugin) {
         }
         _this.parseUnderflow(options.underflow || 'center');
         _this.last = {};
+        _this.reset();
         return _this;
     }
 
@@ -69,6 +70,11 @@ module.exports = function (_Plugin) {
                 this.underflowX = clamp.indexOf('left') !== -1 ? -1 : clamp.indexOf('right') !== -1 ? 1 : 0;
                 this.underflowY = clamp.indexOf('top') !== -1 ? -1 : clamp.indexOf('bottom') !== -1 ? 1 : 0;
             }
+        }
+    }, {
+        key: 'isActive',
+        value: function isActive() {
+            return this.toX !== null || this.toY !== null;
         }
     }, {
         key: 'down',
@@ -500,6 +506,7 @@ module.exports = function (_Plugin) {
         _this.bounce = options.bounce || 0.5;
         _this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01;
         _this.saved = [];
+        _this.reset();
         return _this;
     }
 
@@ -508,6 +515,11 @@ module.exports = function (_Plugin) {
         value: function down() {
             this.saved = [];
             this.x = this.y = false;
+        }
+    }, {
+        key: 'isActive',
+        value: function isActive() {
+            return this.x || this.y;
         }
     }, {
         key: 'move',
@@ -2006,7 +2018,7 @@ var Viewport = function (_PIXI$Container) {
                     // clicked event does not fire if viewport is decelerating or bouncing
                 };var decelerate = this.plugins['decelerate'];
                 var bounce = this.plugins['bounce'];
-                if ((!decelerate || Math.abs(decelerate.x) < this.threshold && Math.abs(decelerate.y) < this.threshold) && (!bounce || !bounce.toX && !bounce.toY)) {
+                if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive())) {
                     this.clickedAvailable = true;
                 } else {
                     this.clickedAvailable = false;

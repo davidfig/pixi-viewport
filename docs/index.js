@@ -65383,6 +65383,7 @@ module.exports = class Bounce extends Plugin
         }
         this.parseUnderflow(options.underflow || 'center')
         this.last = {}
+        this.reset()
     }
 
     parseUnderflow(clamp)
@@ -65398,6 +65399,11 @@ module.exports = class Bounce extends Plugin
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
         }
+    }
+
+    isActive()
+    {
+        return this.toX !== null || this.toY !== null
     }
 
     down()
@@ -65843,13 +65849,18 @@ module.exports = class Decelerate extends Plugin
         this.bounce = options.bounce || 0.5
         this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
         this.saved = []
+        this.reset()
     }
 
     down()
     {
         this.saved = []
         this.x = this.y = false
+    }
 
+    isActive()
+    {
+        return this.x || this.y
     }
 
     move()
@@ -67341,7 +67352,7 @@ class Viewport extends PIXI.Container
             // clicked event does not fire if viewport is decelerating or bouncing
             const decelerate = this.plugins['decelerate']
             const bounce = this.plugins['bounce']
-            if ((!decelerate || (Math.abs(decelerate.x) < this.threshold && Math.abs(decelerate.y) < this.threshold)) && (!bounce || (!bounce.toX && !bounce.toY)))
+            if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive()))
             {
                 this.clickedAvailable = true
             }
