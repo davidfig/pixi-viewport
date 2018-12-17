@@ -65708,7 +65708,7 @@ module.exports = class clamp extends Plugin
         {
             return
         }
-
+        const original = { x: this.parent.x, y: this.parent.y }
         const decelerate = this.parent.plugins['decelerate'] || {}
         if (this.left !== null || this.right !== null)
         {
@@ -65765,7 +65765,7 @@ module.exports = class clamp extends Plugin
             }
             if (moved)
             {
-                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-x' })
+                this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' })
             }
         }
         if (this.top !== null || this.bottom !== null)
@@ -65823,7 +65823,7 @@ module.exports = class clamp extends Plugin
             }
             if (moved)
             {
-                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-y' })
+                this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' })
             }
         }
     }
@@ -65850,6 +65850,7 @@ module.exports = class Decelerate extends Plugin
         this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
         this.saved = []
         this.reset()
+        this.parent.on('moved', data => this.moved(data))
     }
 
     down()
@@ -65877,6 +65878,28 @@ module.exports = class Decelerate extends Plugin
             if (this.saved.length > 60)
             {
                 this.saved.splice(0, 30)
+            }
+        }
+    }
+
+    moved(data)
+    {
+        if (this.saved.length)
+        {
+            const last = this.saved[this.saved.length - 1]
+            if (data.type === 'clamp-x')
+            {
+                if (last.x === data.original.x)
+                {
+                    last.x = this.parent.x
+                }
+            }
+            else if (data.type === 'clamp-y')
+            {
+                if (last.y === data.original.y)
+                {
+                    last.y = this.parent.y
+                }
             }
         }
     }

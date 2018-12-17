@@ -376,7 +376,7 @@ module.exports = function (_Plugin) {
             if (this.paused) {
                 return;
             }
-
+            var original = { x: this.parent.x, y: this.parent.y };
             var decelerate = this.parent.plugins['decelerate'] || {};
             if (this.left !== null || this.right !== null) {
                 var moved = void 0;
@@ -419,7 +419,7 @@ module.exports = function (_Plugin) {
                     }
                 }
                 if (moved) {
-                    this.parent.emit('moved', { viewport: this.parent, type: 'clamp-x' });
+                    this.parent.emit('moved', { viewport: this.parent, original: original, type: 'clamp-x' });
                 }
             }
             if (this.top !== null || this.bottom !== null) {
@@ -463,7 +463,7 @@ module.exports = function (_Plugin) {
                     }
                 }
                 if (_moved) {
-                    this.parent.emit('moved', { viewport: this.parent, type: 'clamp-y' });
+                    this.parent.emit('moved', { viewport: this.parent, original: original, type: 'clamp-y' });
                 }
             }
         }
@@ -507,6 +507,9 @@ module.exports = function (_Plugin) {
         _this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01;
         _this.saved = [];
         _this.reset();
+        _this.parent.on('moved', function (data) {
+            return _this.moved(data);
+        });
         return _this;
     }
 
@@ -533,6 +536,22 @@ module.exports = function (_Plugin) {
                 this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() });
                 if (this.saved.length > 60) {
                     this.saved.splice(0, 30);
+                }
+            }
+        }
+    }, {
+        key: 'moved',
+        value: function moved(data) {
+            if (this.saved.length) {
+                var last = this.saved[this.saved.length - 1];
+                if (data.type === 'clamp-x') {
+                    if (last.x === data.original.x) {
+                        last.x = this.parent.x;
+                    }
+                } else if (data.type === 'clamp-y') {
+                    if (last.y === data.original.y) {
+                        last.y = this.parent.y;
+                    }
                 }
             }
         }

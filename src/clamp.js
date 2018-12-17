@@ -66,7 +66,7 @@ module.exports = class clamp extends Plugin
         {
             return
         }
-
+        const original = { x: this.parent.x, y: this.parent.y }
         const decelerate = this.parent.plugins['decelerate'] || {}
         if (this.left !== null || this.right !== null)
         {
@@ -123,7 +123,7 @@ module.exports = class clamp extends Plugin
             }
             if (moved)
             {
-                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-x' })
+                this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' })
             }
         }
         if (this.top !== null || this.bottom !== null)
@@ -181,7 +181,7 @@ module.exports = class clamp extends Plugin
             }
             if (moved)
             {
-                this.parent.emit('moved', { viewport: this.parent, type: 'clamp-y' })
+                this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' })
             }
         }
     }

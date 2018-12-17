@@ -19,6 +19,7 @@ module.exports = class Decelerate extends Plugin
         this.minSpeed = typeof options.minSpeed !== 'undefined' ? options.minSpeed : 0.01
         this.saved = []
         this.reset()
+        this.parent.on('moved', data => this.moved(data))
     }
 
     down()
@@ -46,6 +47,28 @@ module.exports = class Decelerate extends Plugin
             if (this.saved.length > 60)
             {
                 this.saved.splice(0, 30)
+            }
+        }
+    }
+
+    moved(data)
+    {
+        if (this.saved.length)
+        {
+            const last = this.saved[this.saved.length - 1]
+            if (data.type === 'clamp-x')
+            {
+                if (last.x === data.original.x)
+                {
+                    last.x = this.parent.x
+                }
+            }
+            else if (data.type === 'clamp-y')
+            {
+                if (last.y === data.original.y)
+                {
+                    last.y = this.parent.y
+                }
             }
         }
     }
