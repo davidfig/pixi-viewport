@@ -188,8 +188,14 @@ class Viewport extends PIXI.Container
     {
         this._screenWidth = screenWidth || window.innerWidth
         this._screenHeight = screenHeight || window.innerHeight
-        this._worldWidth = worldWidth
-        this._worldHeight = worldHeight
+        if (worldWidth)
+        {
+            this._worldWidth = worldWidth
+        }
+        if (worldHeight)
+        {
+            this._worldHeight = worldHeight
+        }
         this.resizePlugins()
     }
 
@@ -743,8 +749,8 @@ class Viewport extends PIXI.Container
         {
             save = this.center
         }
-        this.scale.x = this._screenWidth / this._worldWidth
-        this.scale.y = this._screenHeight / this._worldHeight
+        this.scale.x = this.screenWidth / this.worldWidth
+        this.scale.y = this.screenHeight / this.worldHeight
         if (this.scale.x < this.scale.y)
         {
             this.scale.y = this.scale.x
