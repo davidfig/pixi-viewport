@@ -65715,7 +65715,7 @@ module.exports = class clamp extends Plugin
             let moved
             if (this.parent.screenWorldWidth < this.parent.screenWidth)
             {
-                if (!!this.noUnderflow)
+                if (!this.noUnderflow)
                 {
                     switch (this.underflowX)
                     {

@@ -381,7 +381,7 @@ module.exports = function (_Plugin) {
             if (this.left !== null || this.right !== null) {
                 var moved = void 0;
                 if (this.parent.screenWorldWidth < this.parent.screenWidth) {
-                    if (!!this.noUnderflow) {
+                    if (!this.noUnderflow) {
                         switch (this.underflowX) {
                             case -1:
                                 if (this.parent.x !== 0) {
