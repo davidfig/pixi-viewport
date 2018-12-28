@@ -68609,7 +68609,6 @@ module.exports = class Wheel extends Plugin
             if (clamp)
             {
                 clamp.clamp()
-                this.smoothing = null
             }
             if (this.center)
             {
@@ -68674,7 +68673,6 @@ module.exports = class Wheel extends Plugin
             if (clamp)
             {
                 clamp.clamp()
-                this.smoothing = null
             }
             if (this.center)
             {

@@ -3461,7 +3461,6 @@ module.exports = function (_Plugin) {
                 var clamp = this.parent.plugins['clamp-zoom'];
                 if (clamp) {
                     clamp.clamp();
-                    this.smoothing = null;
                 }
                 if (this.center) {
                     this.parent.moveCenter(this.center);
@@ -3513,7 +3512,6 @@ module.exports = function (_Plugin) {
                 var clamp = this.parent.plugins['clamp-zoom'];
                 if (clamp) {
                     clamp.clamp();
-                    this.smoothing = null;
                 }
                 if (this.center) {
                     this.parent.moveCenter(this.center);
