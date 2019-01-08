@@ -17,7 +17,7 @@ window.onload = function ()
         screenHeight: height,
         worldWidth: worldWidth,
         worldHeight: worldHeight,
-        interaction: app.renderer.interaction,
+        interaction: app.renderer.plugins.interaction,
     })
     viewport.left = worldMinX
     viewport.top = worldMinY
