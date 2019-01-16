@@ -66000,6 +66000,7 @@ module.exports = class Drag extends Plugin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
      * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
      */
     constructor(parent, options)
     {
@@ -66010,6 +66011,7 @@ module.exports = class Drag extends Plugin
         this.wheelScroll = options.wheelScroll || 1
         this.reverse = options.reverse ? 1 : -1
         this.clampWheel = options.clampWheel
+        this.factor = options.factor || 1
         this.xDirection = !options.direction || options.direction === 'all' || options.direction === 'x'
         this.yDirection = !options.direction || options.direction === 'all' || options.direction === 'y'
         this.parseUnderflow(options.underflow || 'center')
@@ -66075,11 +66077,11 @@ module.exports = class Drag extends Plugin
                     const newParent = this.parent.parent.toLocal(e.data.global)
                     if (this.xDirection)
                     {
-                        this.parent.x += newParent.x - this.last.parent.x
+                        this.parent.x += (newParent.x - this.last.parent.x) * this.factor
                     }
                     if (this.yDirection)
                     {
-                        this.parent.y += newParent.y - this.last.parent.y
+                        this.parent.y += (newParent.y - this.last.parent.y) * this.factor
                     }
                     this.last = { x, y, parent: newParent }
                     if (!this.moved)
@@ -68186,9 +68188,11 @@ class Viewport extends PIXI.Container
      * @param {object} [options]
      * @param {string} [options.direction=all] direction to drag (all, x, or y)
      * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
-     * @param {number} [options.wheelScroll=10] number of pixels to scroll with each wheel spin
+     * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
      * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+     * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
      */
     drag(options)
     {

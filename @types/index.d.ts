@@ -77,6 +77,8 @@ declare namespace Viewport
     wheelScroll?: number;
     reverse?: boolean;
     underflow?: UnderflowType;
+    clampWheel?: boolean | number;
+    factor?: number;
   }
 
   interface ClampOptions {
