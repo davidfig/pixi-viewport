@@ -82,21 +82,10 @@ function events()
     // _viewport.on('moved', (data) => addCounter('moved: ' + data.type))
 }
 
-function line(x, y, width, height)
-{
-    const line = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-    line.tint = 0xff0000
-    line.position.set(x, y)
-    line.width = width
-    line.height = height
-}
-
 function border()
 {
-    line(0, 0, _viewport.worldWidth, BORDER)
-    line(0, _viewport.worldHeight - BORDER, _viewport.worldWidth, BORDER)
-    line(0, 0, BORDER, _viewport.worldHeight)
-    line(_viewport.worldWidth - BORDER, 0, BORDER, _viewport.worldHeight)
+    const line = _viewport.addChild(new PIXI.Graphics())
+    line.lineStyle(1, 0xff0000).drawRect(0, _viewport.worldWidth, _viewport.worldHeight)
 }
 
 function stars()
