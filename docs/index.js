@@ -2045,21 +2045,10 @@ function events()
     // _viewport.on('moved', (data) => addCounter('moved: ' + data.type))
 }
 
-function line(x, y, width, height)
-{
-    const line = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-    line.tint = 0xff0000
-    line.position.set(x, y)
-    line.width = width
-    line.height = height
-}
-
 function border()
 {
-    line(0, 0, _viewport.worldWidth, BORDER)
-    line(0, _viewport.worldHeight - BORDER, _viewport.worldWidth, BORDER)
-    line(0, 0, BORDER, _viewport.worldHeight)
-    line(_viewport.worldWidth - BORDER, 0, BORDER, _viewport.worldHeight)
+    const line = _viewport.addChild(new PIXI.Graphics())
+    line.lineStyle(1, 0xff0000).drawRect(0, _viewport.worldWidth, _viewport.worldHeight)
 }
 
 function stars()
@@ -68346,9 +68335,9 @@ class Viewport extends PIXI.Container
      * @param {number} [options.radius] distance from center of screen in screen pixels
      * @param {number} [options.distance] distance from all sides in screen pixels
      * @param {number} [options.top] alternatively, set top distance (leave unset for no top scroll)
-     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no top scroll)
-     * @param {number} [options.left] alternatively, set left distance (leave unset for no top scroll)
-     * @param {number} [options.right] alternatively, set right distance (leave unset for no top scroll)
+     * @param {number} [options.bottom] alternatively, set bottom distance (leave unset for no bottom scroll)
+     * @param {number} [options.left] alternatively, set left distance (leave unset for no left scroll)
+     * @param {number} [options.right] alternatively, set right distance (leave unset for no right scroll)
      * @param {number} [options.speed=8] speed in pixels/frame to scroll viewport
      * @param {boolean} [options.reverse] reverse direction of scroll
      * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
