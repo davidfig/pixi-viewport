@@ -316,7 +316,7 @@ class Viewport extends PIXI.Container
      */
     down(e)
     {
-        if (this.pause)
+        if (this.pause || !this.worldVisible)
         {
             return
         }
@@ -387,7 +387,7 @@ class Viewport extends PIXI.Container
      */
     move(e)
     {
-        if (this.pause)
+        if (this.pause || !this.worldVisible)
         {
             return
         }
@@ -424,7 +424,7 @@ class Viewport extends PIXI.Container
      */
     up(e)
     {
-        if (this.pause)
+        if (this.pause || !this.worldVisible)
         {
             return
         }
@@ -493,7 +493,7 @@ class Viewport extends PIXI.Container
      */
     handleWheel(e)
     {
-        if (this.pause)
+        if (this.pause || !this.worldVisible)
         {
             return
         }

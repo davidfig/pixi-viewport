@@ -85,7 +85,7 @@ function events()
 function border()
 {
     const line = _viewport.addChild(new PIXI.Graphics())
-    line.lineStyle(1, 0xff0000).drawRect(0, _viewport.worldWidth, _viewport.worldHeight)
+    line.lineStyle(10, 0xff0000).drawRect(0, 0, _viewport.worldWidth, _viewport.worldHeight)
 }
 
 function stars()
