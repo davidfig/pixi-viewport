@@ -1032,7 +1032,7 @@ module.exports = function (_Plugin) {
     }, {
         key: 'move',
         value: function move(e) {
-            if (e.data.identifier !== 'MOUSE' || e.data.buttons !== 0) {
+            if (e.data.identifier !== 'MOUSE' && e.data.identifier !== 1 || e.data.buttons !== 0) {
                 return;
             }
             var x = e.data.global.x;
