@@ -28,7 +28,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
-     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.Ticker.shared||PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @fires clicked
@@ -89,7 +89,7 @@ class Viewport extends PIXI.Container
 
         if (!options.noTicker)
         {
-            this.ticker = options.ticker || PIXI.ticker.shared
+            this.ticker = options.ticker || PIXI.Ticker.shared || PIXI.ticker.shared
             this.tickerFunction = () => this.update(this.ticker.elapsedMS)
             this.ticker.add(this.tickerFunction)
         }

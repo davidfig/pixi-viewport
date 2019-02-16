@@ -18,6 +18,7 @@ module.exports = class MouseEdges extends Plugin
      * @param {boolean} [options.reverse] reverse direction of scroll
      * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
      * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     * @param {boolean} [options.allowButtons] allows plugin to continue working even when there's a mousedown event
      *
      * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
      * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
@@ -57,7 +58,10 @@ module.exports = class MouseEdges extends Plugin
 
     down()
     {
-        this.horizontal = this.vertical = null
+        if (!this.options.allowButtons)
+        {
+            this.horizontal = this.vertical = null
+        }
     }
 
     move(e)
