@@ -14,8 +14,8 @@
     "transpile": "babel src/ --out-dir dist --source-maps inline",
     "library": "cp bundle/pixi-viewport.min.js docs/pixi-viewport.min.js",
     "bundle": "browserify dist/viewport.js -o bundle/pixi-viewport.js && uglifyjs -mc -o bundle/pixi-viewport.min.js bundle/pixi-viewport.js",
-    "bundle-test": "budo src/viewport.js:docs/pixi-viewport.min.js --dir docs",
-    "prepublishOnly": "npm run transpile && npm run build-demo && npm run bundle && npm run library && npm run docs"
+    "bundle-test": "budo src/viewport.js:pixi-viewport.min.js --dir docs",
+    "prepublishOnly": "yarn run transpile && yarn run build-demo && yarn run bundle && yarn run library && yarn run docs"
   },
   "repository": {
     "type": "git",

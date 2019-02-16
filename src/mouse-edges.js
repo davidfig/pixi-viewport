@@ -66,7 +66,7 @@ module.exports = class MouseEdges extends Plugin
 
     move(e)
     {
-        if ((e.data.identifier !== 'MOUSE' && e.data.identifier !== 1) || e.data.buttons !== 0)
+        if ((e.data.identifier !== 'MOUSE' && e.data.identifier !== 1) || (!this.options.allowButtons && e.data.buttons !== 0))
         {
             return
         }
