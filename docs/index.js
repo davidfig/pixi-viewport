@@ -66309,6 +66309,7 @@ module.exports = class MouseEdges extends Plugin
      * @param {boolean} [options.reverse] reverse direction of scroll
      * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
      * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     * @param {boolean} [options.allowButtons] allows plugin to continue working even when there's a mousedown event
      *
      * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
      * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
@@ -66348,12 +66349,15 @@ module.exports = class MouseEdges extends Plugin
 
     down()
     {
-        this.horizontal = this.vertical = null
+        if (!this.options.allowButtons)
+        {
+            this.horizontal = this.vertical = null
+        }
     }
 
     move(e)
     {
-        if ((e.data.identifier !== 'MOUSE' && e.data.identifier !== 1) || e.data.buttons !== 0)
+        if ((e.data.identifier !== 'MOUSE' && e.data.identifier !== 1) || (!this.options.allowButtons && e.data.buttons !== 0))
         {
             return
         }
@@ -67061,7 +67065,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
      * @param {(PIXI.Rectangle|PIXI.Circle|PIXI.Ellipse|PIXI.Polygon|PIXI.RoundedRectangle)} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
-     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.ticker.shared] use this PIXI.ticker for updates
+     * @param {PIXI.ticker.Ticker} [options.ticker=PIXI.Ticker.shared||PIXI.ticker.shared] use this PIXI.ticker for updates
      * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @fires clicked
@@ -67122,7 +67126,7 @@ class Viewport extends PIXI.Container
 
         if (!options.noTicker)
         {
-            this.ticker = options.ticker || PIXI.ticker.shared
+            this.ticker = options.ticker || PIXI.Ticker.shared || PIXI.ticker.shared
             this.tickerFunction = () => this.update(this.ticker.elapsedMS)
             this.ticker.add(this.tickerFunction)
         }
@@ -68342,6 +68346,7 @@ class Viewport extends PIXI.Container
      * @param {boolean} [options.reverse] reverse direction of scroll
      * @param {boolean} [options.noDecelerate] don't use decelerate plugin even if it's installed
      * @param {boolean} [options.linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+     * @param {boolean} [options.allowButtons] allows plugin to continue working even when there's a mousedown event
      */
     mouseEdges(options)
     {
