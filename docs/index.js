@@ -67126,7 +67126,7 @@ class Viewport extends PIXI.Container
 
         if (!options.noTicker)
         {
-            this.ticker = options.ticker || PIXI.Ticker.shared || PIXI.ticker.shared
+            this.ticker = options.ticker || (PIXI.Ticker ? PIXI.Ticker.shared : PIXI.ticker.shared)
             this.tickerFunction = () => this.update(this.ticker.elapsedMS)
             this.ticker.add(this.tickerFunction)
         }

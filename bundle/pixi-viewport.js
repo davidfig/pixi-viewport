@@ -1817,7 +1817,7 @@ var Viewport = function (_PIXI$Container) {
         _this.touches = [];
 
         if (!options.noTicker) {
-            _this.ticker = options.ticker || PIXI.Ticker.shared || PIXI.ticker.shared;
+            _this.ticker = options.ticker || (PIXI.Ticker ? PIXI.Ticker.shared : PIXI.ticker.shared);
             _this.tickerFunction = function () {
                 return _this.update(_this.ticker.elapsedMS);
             };
