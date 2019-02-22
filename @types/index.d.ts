@@ -245,6 +245,7 @@ declare class Viewport extends PIXI.Container {
   toScreen(x: number, y: number): PIXI.Point;
 
   getPointerPosition(event: PIXI.interaction.InteractionEvent): PIXI.Point;
+  getPointerPosition(event: WheelEvent): PIXI.Point;
 
   moveCenter(p: PIXI.Point): this;
   moveCenter(x: number, y: number): this;
