@@ -244,6 +244,9 @@ declare class Viewport extends PIXI.Container {
   toScreen(p: PIXI.Point): PIXI.Point;
   toScreen(x: number, y: number): PIXI.Point;
 
+  getPointerPosition(event: PIXI.interaction.InteractionEvent): PIXI.Point;
+  getPointerPosition(event: WheelEvent): PIXI.Point;
+
   moveCenter(p: PIXI.Point): this;
   moveCenter(x: number, y: number): this;
   moveCorner(p: PIXI.Point): this;
@@ -260,6 +263,7 @@ declare class Viewport extends PIXI.Container {
   getVisibleBounds(): Viewport.Bounds;
 
   // Plugins
+  plugins: Record<string, Plugin>;
   userPlugin(type: string, plugin: Plugin, index?: number): void;
   removePlugin(type: Viewport.PluginType): void;
   pausePlugin(type: Viewport.PluginType): void;
