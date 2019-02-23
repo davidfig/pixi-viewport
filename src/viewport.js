@@ -1511,7 +1511,14 @@ class Viewport extends PIXI.Container
 
 if (typeof PIXI !== 'undefined')
 {
-    PIXI.extras.Viewport = Viewport
+    if (PIXI.extras)
+    {
+        PIXI.extras.Viewport = Viewport
+    }
+    else
+    {
+        PIXI.extras = { Viewport }
+    }
 }
 
 module.exports = Viewport

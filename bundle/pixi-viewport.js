@@ -3399,7 +3399,11 @@ var Viewport = function (_PIXI$Container) {
  */
 
 if (typeof PIXI !== 'undefined') {
-    PIXI.extras.Viewport = Viewport;
+    if (PIXI.extras) {
+        PIXI.extras.Viewport = Viewport;
+    } else {
+        PIXI.extras = { Viewport: Viewport };
+    }
 }
 
 module.exports = Viewport;

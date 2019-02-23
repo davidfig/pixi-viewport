@@ -68548,11 +68548,17 @@ class Viewport extends PIXI.Container
 
 if (typeof PIXI !== 'undefined')
 {
-    PIXI.extras.Viewport = Viewport
+    if (PIXI.extras)
+    {
+        PIXI.extras.Viewport = Viewport
+    }
+    else
+    {
+        PIXI.extras = { Viewport }
+    }
 }
 
 module.exports = Viewport
-
 },{"./bounce":402,"./clamp":404,"./clamp-zoom":403,"./decelerate":405,"./drag":406,"./follow":407,"./mouse-edges":408,"./pinch":409,"./snap":412,"./snap-zoom":411,"./utils":413,"./wheel":415}],415:[function(require,module,exports){
 const Plugin = require('./plugin')
 
