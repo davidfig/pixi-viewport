@@ -38,7 +38,7 @@ function gui(viewport, drawWorld, target)
             underflow: 'center'
         },
         bounce: {
-            bounce: true,
+            bounce: false,
             sides: 'all',
             friction: 0.5,
             time: 150,

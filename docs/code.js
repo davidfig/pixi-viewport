@@ -33,7 +33,6 @@ function viewport()
         .wheel({ smooth: 3 })
         .pinch()
         .decelerate()
-        .bounce()
         .on('clicked', click)
     resize()
 
