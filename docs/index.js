@@ -73112,7 +73112,9 @@ module.exports = {
 }
 
 },{"penner":210}],423:[function(require,module,exports){
-const utils =  require('./utils')
+const PIXI = require('pixi.js')
+
+const utils = require('./utils')
 const Drag = require('./drag')
 const Pinch = require('./pinch')
 const Clamp = require('./clamp')
@@ -74636,7 +74638,7 @@ if (typeof PIXI !== 'undefined')
 }
 
 module.exports = Viewport
-},{"./bounce":411,"./clamp":413,"./clamp-zoom":412,"./decelerate":414,"./drag":415,"./follow":416,"./mouse-edges":417,"./pinch":418,"./snap":421,"./snap-zoom":420,"./utils":422,"./wheel":424}],424:[function(require,module,exports){
+},{"./bounce":411,"./clamp":413,"./clamp-zoom":412,"./decelerate":414,"./drag":415,"./follow":416,"./mouse-edges":417,"./pinch":418,"./snap":421,"./snap-zoom":420,"./utils":422,"./wheel":424,"pixi.js":354}],424:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Wheel extends Plugin
