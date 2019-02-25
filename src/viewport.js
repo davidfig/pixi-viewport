@@ -1,4 +1,6 @@
-const utils =  require('./utils')
+const PIXI = require('pixi.js')
+
+const utils = require('./utils')
 const Drag = require('./drag')
 const Pinch = require('./pinch')
 const Clamp = require('./clamp')
