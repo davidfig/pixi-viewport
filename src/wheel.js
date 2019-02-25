@@ -78,16 +78,9 @@ module.exports = class Wheel extends Plugin
         }
 
         let point = this.parent.getPointerPosition(e)
-        let sign
-        if (this.reverse)
-        {
-            sign = e.deltaY > 0 ? 1 : -1
-        }
-        else
-        {
-            sign = e.deltaY < 0 ? 1 : -1
-        }
-        const change = 1 + this.percent * sign
+        const sign = this.reverse ? -1 : 1
+        const step = sign * -e.deltaY * (e.deltaMode ? 120 : 1) / 500
+        const change = Math.pow(2, (1 + this.percent) * step)
         if (this.smooth)
         {
             const original = {
