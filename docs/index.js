@@ -72152,7 +72152,7 @@ module.exports = class Drag extends Plugin
                     this.last = { x, y, parent: newParent }
                     if (!this.moved)
                     {
-                        this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
+                        this.parent.emit('drag-start', { screen: new PIXI.Point(this.last.x, this.last.y), world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
@@ -72185,7 +72185,7 @@ module.exports = class Drag extends Plugin
         {
             if (this.moved)
             {
-                this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
+                this.parent.emit('drag-end', {screen: new PIXI.Point(this.last.x, this.last.y), world: this.parent.toWorld(this.last), viewport: this.parent})
                 this.last = this.moved = false
                 return true
             }
@@ -73450,7 +73450,7 @@ class Viewport extends PIXI.Container
 
         if (this.countDownPointers() === 1)
         {
-            this.last = { x: e.data.global.x, y: e.data.global.y }
+            this.last = e.data.global.clone()
 
             // clicked event does not fire if viewport is decelerating or bouncing
             const decelerate = this.plugins['decelerate']
@@ -73713,11 +73713,11 @@ class Viewport extends PIXI.Container
 
     /**
      * get center of screen in world coordinates
-     * @type {PIXI.PointLike}
+     * @type {PIXI.Point}
      */
     get center()
     {
-        return { x: this.worldScreenWidth / 2 - this.x / this.scale.x, y: this.worldScreenHeight / 2 - this.y / this.scale.y }
+        return new PIXI.Point(this.worldScreenWidth / 2 - this.x / this.scale.x, this.worldScreenHeight / 2 - this.y / this.scale.y)
     }
     set center(value)
     {
@@ -73726,7 +73726,7 @@ class Viewport extends PIXI.Container
 
     /**
      * move center of viewport to point
-     * @param {(number|PIXI.PointLike)} x or point
+     * @param {(number|PIXI.Point)} x or point
      * @param {number} [y]
      * @return {Viewport} this
      */
@@ -73750,11 +73750,11 @@ class Viewport extends PIXI.Container
 
     /**
      * top-left corner
-     * @type {PIXI.PointLike}
+     * @type {PIXI.Point}
      */
     get corner()
     {
-        return { x: -this.x / this.scale.x, y: -this.y / this.scale.y }
+        return new PIXI.Point(-this.x / this.scale.x, -this.y / this.scale.y)
     }
     set corner(value)
     {
@@ -74485,8 +74485,8 @@ class Viewport extends PIXI.Container
  * fires after a mouse or touch click
  * @event Viewport#clicked
  * @type {object}
- * @property {PIXI.PointLike} screen
- * @property {PIXI.PointLike} world
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} world
  * @property {Viewport} viewport
  */
 
@@ -74494,8 +74494,8 @@ class Viewport extends PIXI.Container
  * fires when a drag starts
  * @event Viewport#drag-start
  * @type {object}
- * @property {PIXI.PointLike} screen
- * @property {PIXI.PointLike} world
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} world
  * @property {Viewport} viewport
  */
 
@@ -74503,8 +74503,8 @@ class Viewport extends PIXI.Container
  * fires when a drag ends
  * @event Viewport#drag-end
  * @type {object}
- * @property {PIXI.PointLike} screen
- * @property {PIXI.PointLike} world
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} world
  * @property {Viewport} viewport
  */
 

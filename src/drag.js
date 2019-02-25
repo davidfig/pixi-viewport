@@ -100,7 +100,7 @@ module.exports = class Drag extends Plugin
                     this.last = { x, y, parent: newParent }
                     if (!this.moved)
                     {
-                        this.parent.emit('drag-start', { screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
+                        this.parent.emit('drag-start', { screen: new PIXI.Point(this.last.x, this.last.y), world: this.parent.toWorld(this.last), viewport: this.parent})
                     }
                     this.moved = true
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
@@ -133,7 +133,7 @@ module.exports = class Drag extends Plugin
         {
             if (this.moved)
             {
-                this.parent.emit('drag-end', {screen: this.last, world: this.parent.toWorld(this.last), viewport: this.parent})
+                this.parent.emit('drag-end', {screen: new PIXI.Point(this.last.x, this.last.y), world: this.parent.toWorld(this.last), viewport: this.parent})
                 this.last = this.moved = false
                 return true
             }

@@ -175,9 +175,9 @@ declare namespace Viewport
   }
 
   interface ClickEventData {
-    screen: PIXI.PointLike;
+    screen: PIXI.Point;
     viewport: Viewport;
-    world: PIXI.PointLike;
+    world: PIXI.Point;
   }
 
   interface WheelData {
@@ -222,8 +222,8 @@ declare class Viewport extends PIXI.Container {
       | PIXI.Polygon
       | PIXI.RoundedRectangle;
 
-  center: PIXI.PointLike;
-  corner: PIXI.PointLike;
+  center: PIXI.Point;
+  corner: PIXI.Point;
 
   right: number;
   left: number;
