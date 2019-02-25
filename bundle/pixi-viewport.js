@@ -3495,13 +3495,9 @@ module.exports = function (_Plugin) {
             }
 
             var point = this.parent.getPointerPosition(e);
-            var sign = void 0;
-            if (this.reverse) {
-                sign = e.deltaY > 0 ? 1 : -1;
-            } else {
-                sign = e.deltaY < 0 ? 1 : -1;
-            }
-            var change = 1 + this.percent * sign;
+            var sign = this.reverse ? -1 : 1;
+            var step = sign * -e.deltaY * (e.deltaMode ? 120 : 1) / 500;
+            var change = Math.pow(2, (1 + this.percent) * step);
             if (this.smooth) {
                 var original = {
                     x: this.smoothing ? this.smoothing.x * (this.smooth - this.smoothingCount) : 0,
