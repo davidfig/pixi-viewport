@@ -72050,7 +72050,9 @@ module.exports = class Decelerate extends Plugin
     }
 }
 },{"./plugin":419}],415:[function(require,module,exports){
-const utils =  require('./utils')
+const PIXI = require('pixi.js')
+
+const utils = require('./utils')
 const Plugin = require('./plugin')
 
 module.exports = class Drag extends Plugin
@@ -72298,7 +72300,7 @@ module.exports = class Drag extends Plugin
         }
     }
 }
-},{"./plugin":419,"./utils":422}],416:[function(require,module,exports){
+},{"./plugin":419,"./utils":422,"pixi.js":354}],416:[function(require,module,exports){
 const Plugin = require('./plugin')
 
 module.exports = class Follow extends Plugin

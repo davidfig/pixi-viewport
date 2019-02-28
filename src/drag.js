@@ -1,4 +1,6 @@
-const utils =  require('./utils')
+const PIXI = require('pixi.js')
+
+const utils = require('./utils')
 const Plugin = require('./plugin')
 
 module.exports = class Drag extends Plugin
