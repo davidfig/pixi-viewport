@@ -73185,8 +73185,8 @@ class Viewport extends PIXI.Container
         super()
         this.plugins = {}
         this.pluginsList = []
-        this._screenWidth = options.screenWidth
-        this._screenHeight = options.screenHeight
+        this._screenWidth = options.screenWidth || window.innerWidth
+        this._screenHeight = options.screenHeight || window.innerHeight
         this._worldWidth = options.worldWidth
         this._worldHeight = options.worldHeight
         this.hitAreaFullScreen = utils.defaults(options.hitAreaFullScreen, true)

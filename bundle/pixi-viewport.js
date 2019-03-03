@@ -3760,8 +3760,8 @@ var Viewport = function (_PIXI$Container) {
 
         _this.plugins = {};
         _this.pluginsList = [];
-        _this._screenWidth = options.screenWidth;
-        _this._screenHeight = options.screenHeight;
+        _this._screenWidth = options.screenWidth || window.innerWidth;
+        _this._screenHeight = options.screenHeight || window.innerHeight;
         _this._worldWidth = options.worldWidth;
         _this._worldHeight = options.worldHeight;
         _this.hitAreaFullScreen = utils.defaults(options.hitAreaFullScreen, true);
