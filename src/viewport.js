@@ -81,6 +81,7 @@ class Viewport extends PIXI.Container
         this.interaction = options.interaction || null
         this.div = options.divWheel || document.body
         this.listeners(this.div)
+        this.div.oncontextmenu = e => e.preventDefault()
 
         /**
          * active touch point ids on the viewport
@@ -309,7 +310,7 @@ class Viewport extends PIXI.Container
         this.on('pointerout', this.up)
         this.wheelFunction = (e) => this.handleWheel(e)
         div.addEventListener('wheel', this.wheelFunction, { passive: this.passiveWheel })
-        this.leftDown = false
+        this.isMouseDown = false
     }
 
     /**
@@ -324,10 +325,7 @@ class Viewport extends PIXI.Container
         }
         if (e.data.pointerType === 'mouse')
         {
-            if (e.data.originalEvent.button == 0)
-            {
-                this.leftDown = true
-            }
+            this.isMouseDown = true
         }
         else
         {
@@ -430,12 +428,10 @@ class Viewport extends PIXI.Container
         {
             return
         }
-
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        if (e.data.pointerType === 'mouse')
         {
-            this.leftDown = false
+            this.isMouseDown = false
         }
-
         if (e.data.pointerType !== 'mouse')
         {
             for (let i = 0; i < this.touches.length; i++)
@@ -999,7 +995,7 @@ class Viewport extends PIXI.Container
      */
     countDownPointers()
     {
-        return (this.leftDown ? 1 : 0) + this.touches.length
+        return (this.isMouseDown ? 1 : 0) + this.touches.length
     }
 
     /**
@@ -1335,7 +1331,7 @@ class Viewport extends PIXI.Container
         if (value)
         {
             this.touches = []
-            this.leftDown = false
+            this.isMouseDown = false
         }
     }
 

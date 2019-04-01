@@ -29,7 +29,7 @@ function viewport()
         passiveWheel: false
     }))
     _viewport
-        .drag({ clampWheel: true })
+        .drag({ clampWheel: true, mouseButtons: 'right' })
         .wheel({ smooth: 3 })
         .pinch()
         .decelerate()

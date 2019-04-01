@@ -17,6 +17,7 @@ module.exports = class Drag extends Plugin
      * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
+     * @param {string} [options.mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'
      */
     constructor(parent, options)
     {
@@ -31,6 +32,23 @@ module.exports = class Drag extends Plugin
         this.xDirection = !options.direction || options.direction === 'all' || options.direction === 'x'
         this.yDirection = !options.direction || options.direction === 'all' || options.direction === 'y'
         this.parseUnderflow(options.underflow || 'center')
+        this.mouseButtons(options.mouseButtons)
+    }
+
+    mouseButtons(buttons)
+    {
+        if (!buttons || buttons === 'all')
+        {
+            this.mouse = [1, 1, 1]
+        }
+        else
+        {
+            this.mouse = [
+                buttons.indexOf('left') === -1 ? false : true,
+                buttons.indexOf('middle') === -1 ? false : true,
+                buttons.indexOf('right') === -1 ? false : true
+            ]
+        }
     }
 
     parseUnderflow(clamp)
@@ -48,14 +66,30 @@ module.exports = class Drag extends Plugin
         }
     }
 
+    checkButtons(e)
+    {
+        const isMouse = e.data.pointerType === 'mouse'
+        const count = this.parent.countDownPointers()
+        if (this.parent.parent)
+        {
+            if ((count === 1) || (count > 1 && !this.parent.plugins['pinch']))
+            {
+                if (!isMouse || this.mouse[e.data.button])
+                {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     down(e)
     {
         if (this.paused)
         {
             return
         }
-        const count = this.parent.countDownPointers()
-        if ((count === 1 || (count > 1 && !this.parent.plugins['pinch'])) && this.parent.parent)
+        if (this.checkButtons(e))
         {
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
