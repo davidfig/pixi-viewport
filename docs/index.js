@@ -3049,6 +3049,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @param {function} callback called after click: callback(event, options.args)
  * @param {object} [options]
  * @param {number} [options.thresshold=10] if touch moves threshhold-pixels then the touch-click is cancelled
+ * @param {boolean} [options.capture]  events will be dispatched to this registered listener before being dispatched to any EventTarget beneath it in the DOM tree
  * @param {*} [options.args] arguments for callback function
  * @returns {Clicked}
  */
@@ -3081,11 +3082,11 @@ var Clicked = function () {
                 return _this.touchend(e);
             }
         };
-        element.addEventListener('click', this.events.mouseclick);
-        element.addEventListener('touchstart', this.events.touchstart, { passive: true });
-        element.addEventListener('touchmove', this.events.touchmove, { passive: true });
-        element.addEventListener('touchcancel', this.events.touchcancel);
-        element.addEventListener('touchend', this.events.touchend);
+        element.addEventListener('click', this.events.mouseclick, { capture: this.options.capture });
+        element.addEventListener('touchstart', this.events.touchstart, { passive: true, capture: this.options.capture });
+        element.addEventListener('touchmove', this.events.touchmove, { passive: true, capture: this.options.capture });
+        element.addEventListener('touchcancel', this.events.touchcancel, { capture: this.options.capture });
+        element.addEventListener('touchend', this.events.touchend, { capture: this.options.capture });
         this.element = element;
         this.callback = callback;
     }
@@ -4364,6 +4365,10 @@ https://highlightjs.org/
       languagePrefixRe = /\blang(?:uage)?-([\w-]+)\b/i,
       fixMarkupRe      = /((^(<[^>]+>|\t|)+|(?:\n)))/gm;
 
+  // The object will be assigned by the build tool. It used to synchronize API 
+  // of external language files with minified version of the highlight.js library.
+  var API_REPLACES;
+
   var spanEndTag = '</span>';
 
   // Global options used when within external APIs. This is modified when
@@ -4548,6 +4553,15 @@ https://highlightjs.org/
     return mode.cached_variants || (mode.endsWithParent && [inherit(mode)]) || [mode];
   }
 
+  function restoreLanguageApi(obj) {
+    if(API_REPLACES && !obj.langApiRestored) {
+      obj.langApiRestored = true;
+      for(var key in API_REPLACES)
+        obj[key] && (obj[API_REPLACES[key]] = obj[key]);
+      (obj.contains || []).concat(obj.variants || []).forEach(restoreLanguageApi);
+    }
+  }
+
   function compileLanguage(language) {
 
     function reStr(re) {
@@ -4559,6 +4573,47 @@ https://highlightjs.org/
         reStr(value),
         'm' + (language.case_insensitive ? 'i' : '') + (global ? 'g' : '')
       );
+    }
+
+    // joinRe logically computes regexps.join(separator), but fixes the
+    // backreferences so they continue to match.
+    function joinRe(regexps, separator) {
+      // backreferenceRe matches an open parenthesis or backreference. To avoid
+      // an incorrect parse, it additionally matches the following:
+      // - [...] elements, where the meaning of parentheses and escapes change
+      // - other escape sequences, so we do not misparse escape sequences as
+      //   interesting elements
+      // - non-matching or lookahead parentheses, which do not capture. These
+      //   follow the '(' with a '?'.
+      var backreferenceRe = /\[(?:[^\\\]]|\\.)*\]|\(\??|\\([1-9][0-9]*)|\\./;
+      var numCaptures = 0;
+      var ret = '';
+      for (var i = 0; i < regexps.length; i++) {
+        var offset = numCaptures;
+        var re = reStr(regexps[i]);
+        if (i > 0) {
+          ret += separator;
+        }
+        while (re.length > 0) {
+          var match = backreferenceRe.exec(re);
+          if (match == null) {
+            ret += re;
+            break;
+          }
+          ret += re.substring(0, match.index);
+          re = re.substring(match.index + match[0].length);
+          if (match[0][0] == '\\' && match[1]) {
+            // Adjust the backreference.
+            ret += '\\' + String(Number(match[1]) + offset);
+          } else {
+            ret += match[0];
+            if (match[0] == '(') {
+              numCaptures++;
+            }
+          }
+        }
+      }
+      return ret;
     }
 
     function compileMode(mode, parent) {
@@ -4626,14 +4681,14 @@ https://highlightjs.org/
 
       var terminators =
         mode.contains.map(function(c) {
-          return c.beginKeywords ? '\\.?(' + c.begin + ')\\.?' : c.begin;
+          return c.beginKeywords ? '\\.?(?:' + c.begin + ')\\.?' : c.begin;
         })
         .concat([mode.terminator_end, mode.illegal])
         .map(reStr)
         .filter(Boolean);
-      mode.terminators = terminators.length ? langRe(terminators.join('|'), true) : {exec: function(/*s*/) {return null;}};
+      mode.terminators = terminators.length ? langRe(joinRe(terminators, '|'), true) : {exec: function(/*s*/) {return null;}};
     }
-
+    
     compileMode(language);
   }
 
@@ -5016,6 +5071,7 @@ https://highlightjs.org/
 
   function registerLanguage(name, language) {
     var lang = languages[name] = language(hljs);
+    restoreLanguageApi(lang);
     if (lang.aliases) {
       lang.aliases.forEach(function(alias) {aliases[alias] = name;});
     }
@@ -8386,13 +8442,7 @@ module.exports = function(hljs) {
         illegal: '\\n',
         contains: [hljs.BACKSLASH_ESCAPE]
       },
-      {
-        // TODO: This does not handle raw string literals with prefixes. Using
-        // a single regex with backreferences would work (note to use *?
-        // instead of * to make it non-greedy), but the mode.terminators
-        // computation in highlight.js breaks the counting.
-        begin: '(u8?|U|L)?R"\\(', end: '\\)"',
-      },
+      { begin: /(?:u8?|U|L)?R"([^()\\ ]{0,16})\((?:.|\n)*?\)\1"/ },
       {
         begin: '\'\\\\?.', end: '\'',
         illegal: '.'
@@ -13154,12 +13204,12 @@ module.exports = function(hljs) {
         begin: /^\s*\[+/, end: /\]+/
       },
       {
-        begin: /^[a-z0-9\[\]_-]+\s*=\s*/, end: '$',
+        begin: /^[a-z0-9\[\]_\.-]+\s*=\s*/, end: '$',
         returnBegin: true,
         contains: [
           {
             className: 'attr',
-            begin: /[a-z0-9\[\]_-]+/
+            begin: /[a-z0-9\[\]_\.-]+/
           },
           {
             begin: /=/, endsWithParent: true,
@@ -21114,9 +21164,9 @@ module.exports = function(hljs) {
 module.exports = function(hljs) {
   var KEYWORDS = {
     keyword:
-      'actor addressof and as be break class compile_error compile_intrinsic' +
-      'consume continue delegate digestof do else elseif embed end error' +
-      'for fun if ifdef in interface is isnt lambda let match new not object' +
+      'actor addressof and as be break class compile_error compile_intrinsic ' +
+      'consume continue delegate digestof do else elseif embed end error ' +
+      'for fun if ifdef in interface is isnt lambda let match new not object ' +
       'or primitive recover repeat return struct then trait try type until ' +
       'use var where while with xor',
     meta:
@@ -21154,47 +21204,20 @@ module.exports = function(hljs) {
     begin: hljs.IDENT_RE + '\'', relevance: 0
   };
 
-  var CLASS = {
-    className: 'class',
-    beginKeywords: 'class actor object primitive', end: '$',
-    contains: [
-      {
-        className: 'keyword',
-        begin: 'is'
-      },
-      TYPE_NAME,
-      hljs.TITLE_MODE,
-      hljs.C_LINE_COMMENT_MODE
-    ]
-  }
-
-  var FUNCTION = {
-    className: 'function',
-    beginKeywords: 'new fun be', end: '=>',
-    contains: [
-      hljs.TITLE_MODE,
-      {
-        begin: /\(/, end: /\)/,
-        contains: [
-          TYPE_NAME,
-          PRIMED_NAME,
-          hljs.C_NUMBER_MODE,
-          hljs.C_BLOCK_COMMENT_MODE
-        ]
-      },
-      {
-        begin: /:/, endsWithParent: true,
-        contains: [TYPE_NAME]
-      },
-      hljs.C_LINE_COMMENT_MODE
-    ]
-  }
+  /**
+   * The `FUNCTION` and `CLASS` modes were intentionally removed to simplify
+   * highlighting and fix cases like
+   * ```
+   * interface Iterator[A: A]
+   *   fun has_next(): Bool
+   *   fun next(): A?
+   * ```
+   * where it is valid to have a function head without a body
+   */
 
   return {
     keywords: KEYWORDS,
     contains: [
-      CLASS,
-      FUNCTION,
       TYPE_NAME,
       TRIPLE_QUOTE_STRING_MODE,
       QUOTE_STRING_MODE,
@@ -21738,9 +21761,10 @@ module.exports = function(hljs) {
     keyword:
       'and elif is global as in if from raise for except finally print import pass return ' +
       'exec else break not with class assert yield try while continue del or def lambda ' +
-      'async await nonlocal|10 None True False',
+      'async await nonlocal|10',
     built_in:
-      'Ellipsis NotImplemented'
+      'Ellipsis NotImplemented',
+    literal: 'False None True'
   };
   var PROMPT = {
     className: 'meta',  begin: /^(>>>|\.\.\.) /
@@ -27540,14 +27564,6 @@ var Ease = {
     load: require('./load')
 };
 
-if (PIXI) {
-    if (PIXI.extras) {
-        PIXI.extras.Ease = Ease;
-    } else {
-        PIXI.extras = { Ease: Ease };
-    }
-}
-
 module.exports = Ease;
 
 },{"./angle":211,"./face":212,"./list":214,"./load":215,"./movie":216,"./shake":217,"./target":218,"./tint":219,"./to":220,"./wait":221}],214:[function(require,module,exports){
@@ -27561,6 +27577,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var PIXI = require('pixi.js');
 var Events = require('eventemitter3');
 
 var Angle = require('./angle');
@@ -27930,7 +27947,7 @@ var Ease = function (_Events) {
 
 module.exports = Ease;
 
-},{"./angle":211,"./face":212,"./load":215,"./movie":216,"./shake":217,"./target":218,"./tint":219,"./to":220,"./wait":221,"eventemitter3":17}],215:[function(require,module,exports){
+},{"./angle":211,"./face":212,"./load":215,"./movie":216,"./shake":217,"./target":218,"./tint":219,"./to":220,"./wait":221,"eventemitter3":17,"pixi.js":354}],215:[function(require,module,exports){
 'use strict';
 
 var wait = require('./wait');
@@ -31502,7 +31519,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.8.6';
+var VERSION = exports.VERSION = '4.8.7';
 
 /**
  * Two Pi.
@@ -37952,11 +37969,6 @@ var Matrix = function () {
 
         if (delta < 0.00001 || Math.abs(_const.PI_2 - delta) < 0.00001) {
             transform.rotation = skewY;
-
-            if (a < 0 && d >= 0) {
-                transform.rotation += transform.rotation <= 0 ? Math.PI : -Math.PI;
-            }
-
             transform.skew.x = transform.skew.y = 0;
         } else {
             transform.rotation = 0;
@@ -46035,7 +46047,7 @@ var _path = require('path');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fragTemplate = ['varying vec2 vTextureCoord;', 'varying vec4 vColor;', 'varying float vTextureId;', 'uniform sampler2D uSamplers[%count%];', 'void main(void){', 'vec4 color;', 'float textureId = floor(vTextureId+0.5);', '%forloop%', 'gl_FragColor = color * vColor;', '}'].join('\n');
+var fragTemplate = ['varying vec2 vTextureCoord;', 'varying vec4 vColor;', 'varying float vTextureId;', 'uniform sampler2D uSamplers[%count%];', 'void main(void){', 'vec4 color;', '%forloop%', 'gl_FragColor = color * vColor;', '}'].join('\n');
 
 function generateMultiTextureShader(gl, maxTextures) {
     var vertexSrc = 'precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vColor = aColor;\n}\n';
@@ -46070,7 +46082,7 @@ function generateSampleSrc(maxTextures) {
         }
 
         if (i < maxTextures - 1) {
-            src += 'if(textureId == ' + i + '.0)';
+            src += 'if(vTextureId < ' + i + '.5)';
         }
 
         src += '\n{';
@@ -72069,6 +72081,7 @@ module.exports = class Drag extends Plugin
      * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
+     * @param {string} [options.mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'
      */
     constructor(parent, options)
     {
@@ -72083,6 +72096,23 @@ module.exports = class Drag extends Plugin
         this.xDirection = !options.direction || options.direction === 'all' || options.direction === 'x'
         this.yDirection = !options.direction || options.direction === 'all' || options.direction === 'y'
         this.parseUnderflow(options.underflow || 'center')
+        this.mouseButtons(options.mouseButtons)
+    }
+
+    mouseButtons(buttons)
+    {
+        if (!buttons || buttons === 'all')
+        {
+            this.mouse = [1, 1, 1]
+        }
+        else
+        {
+            this.mouse = [
+                buttons.indexOf('left') === -1 ? false : true,
+                buttons.indexOf('middle') === -1 ? false : true,
+                buttons.indexOf('right') === -1 ? false : true
+            ]
+        }
     }
 
     parseUnderflow(clamp)
@@ -72100,14 +72130,30 @@ module.exports = class Drag extends Plugin
         }
     }
 
+    checkButtons(e)
+    {
+        const isMouse = e.data.pointerType === 'mouse'
+        const count = this.parent.countDownPointers()
+        if (this.parent.parent)
+        {
+            if ((count === 1) || (count > 1 && !this.parent.plugins['pinch']))
+            {
+                if (!isMouse || this.mouse[e.data.button])
+                {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
     down(e)
     {
         if (this.paused)
         {
             return
         }
-        const count = this.parent.countDownPointers()
-        if ((count === 1 || (count > 1 && !this.parent.plugins['pinch'])) && this.parent.parent)
+        if (this.checkButtons(e))
         {
             const parent = this.parent.parent.toLocal(e.data.global)
             this.last = { x: e.data.global.x, y: e.data.global.y, parent }
@@ -73197,6 +73243,7 @@ class Viewport extends PIXI.Container
         this.interaction = options.interaction || null
         this.div = options.divWheel || document.body
         this.listeners(this.div)
+        this.div.oncontextmenu = e => e.preventDefault()
 
         /**
          * active touch point ids on the viewport
@@ -73425,7 +73472,7 @@ class Viewport extends PIXI.Container
         this.on('pointerout', this.up)
         this.wheelFunction = (e) => this.handleWheel(e)
         div.addEventListener('wheel', this.wheelFunction, { passive: this.passiveWheel })
-        this.leftDown = false
+        this.isMouseDown = false
     }
 
     /**
@@ -73440,10 +73487,7 @@ class Viewport extends PIXI.Container
         }
         if (e.data.pointerType === 'mouse')
         {
-            if (e.data.originalEvent.button == 0)
-            {
-                this.leftDown = true
-            }
+            this.isMouseDown = true
         }
         else
         {
@@ -73546,12 +73590,10 @@ class Viewport extends PIXI.Container
         {
             return
         }
-
-        if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0)
+        if (e.data.pointerType === 'mouse')
         {
-            this.leftDown = false
+            this.isMouseDown = false
         }
-
         if (e.data.pointerType !== 'mouse')
         {
             for (let i = 0; i < this.touches.length; i++)
@@ -74115,7 +74157,7 @@ class Viewport extends PIXI.Container
      */
     countDownPointers()
     {
-        return (this.leftDown ? 1 : 0) + this.touches.length
+        return (this.isMouseDown ? 1 : 0) + this.touches.length
     }
 
     /**
@@ -74451,7 +74493,7 @@ class Viewport extends PIXI.Container
         if (value)
         {
             this.touches = []
-            this.leftDown = false
+            this.isMouseDown = false
         }
     }
 

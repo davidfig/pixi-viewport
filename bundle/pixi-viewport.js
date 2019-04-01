@@ -2642,6 +2642,7 @@ module.exports = function (_Plugin) {
      * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
+     * @param {string} [options.mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'
      */
     function Drag(parent, options) {
         _classCallCheck(this, Drag);
@@ -2659,10 +2660,20 @@ module.exports = function (_Plugin) {
         _this.xDirection = !options.direction || options.direction === 'all' || options.direction === 'x';
         _this.yDirection = !options.direction || options.direction === 'all' || options.direction === 'y';
         _this.parseUnderflow(options.underflow || 'center');
+        _this.mouseButtons(options.mouseButtons);
         return _this;
     }
 
     _createClass(Drag, [{
+        key: 'mouseButtons',
+        value: function mouseButtons(buttons) {
+            if (!buttons || buttons === 'all') {
+                this.mouse = [1, 1, 1];
+            } else {
+                this.mouse = [buttons.indexOf('left') === -1 ? false : true, buttons.indexOf('middle') === -1 ? false : true, buttons.indexOf('right') === -1 ? false : true];
+            }
+        }
+    }, {
         key: 'parseUnderflow',
         value: function parseUnderflow(clamp) {
             clamp = clamp.toLowerCase();
@@ -2675,13 +2686,26 @@ module.exports = function (_Plugin) {
             }
         }
     }, {
+        key: 'checkButtons',
+        value: function checkButtons(e) {
+            var isMouse = e.data.pointerType === 'mouse';
+            var count = this.parent.countDownPointers();
+            if (this.parent.parent) {
+                if (count === 1 || count > 1 && !this.parent.plugins['pinch']) {
+                    if (!isMouse || this.mouse[e.data.button]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }, {
         key: 'down',
         value: function down(e) {
             if (this.paused) {
                 return;
             }
-            var count = this.parent.countDownPointers();
-            if ((count === 1 || count > 1 && !this.parent.plugins['pinch']) && this.parent.parent) {
+            if (this.checkButtons(e)) {
                 var parent = this.parent.parent.toLocal(e.data.global);
                 this.last = { x: e.data.global.x, y: e.data.global.y, parent: parent };
                 this.current = e.data.pointerId;
@@ -3772,6 +3796,9 @@ var Viewport = function (_PIXI$Container) {
         _this.interaction = options.interaction || null;
         _this.div = options.divWheel || document.body;
         _this.listeners(_this.div);
+        _this.div.oncontextmenu = function (e) {
+            return e.preventDefault();
+        };
 
         /**
          * active touch point ids on the viewport
@@ -3982,7 +4009,7 @@ var Viewport = function (_PIXI$Container) {
                 return _this2.handleWheel(e);
             };
             div.addEventListener('wheel', this.wheelFunction, { passive: this.passiveWheel });
-            this.leftDown = false;
+            this.isMouseDown = false;
         }
 
         /**
@@ -3997,9 +4024,7 @@ var Viewport = function (_PIXI$Container) {
                 return;
             }
             if (e.data.pointerType === 'mouse') {
-                if (e.data.originalEvent.button == 0) {
-                    this.leftDown = true;
-                }
+                this.isMouseDown = true;
             } else {
                 this.touches.push(e.data.pointerId);
             }
@@ -4131,11 +4156,9 @@ var Viewport = function (_PIXI$Container) {
             if (this.pause || !this.worldVisible) {
                 return;
             }
-
-            if (e.data.originalEvent instanceof MouseEvent && e.data.originalEvent.button == 0) {
-                this.leftDown = false;
+            if (e.data.pointerType === 'mouse') {
+                this.isMouseDown = false;
             }
-
             if (e.data.pointerType !== 'mouse') {
                 for (var i = 0; i < this.touches.length; i++) {
                     if (this.touches[i] === e.data.pointerId) {
@@ -4592,7 +4615,7 @@ var Viewport = function (_PIXI$Container) {
          * @return {number}
          */
         value: function countDownPointers() {
-            return (this.leftDown ? 1 : 0) + this.touches.length;
+            return (this.isMouseDown ? 1 : 0) + this.touches.length;
         }
 
         /**
@@ -5210,7 +5233,7 @@ var Viewport = function (_PIXI$Container) {
             this.zooming = false;
             if (value) {
                 this.touches = [];
-                this.leftDown = false;
+                this.isMouseDown = false;
             }
         }
     }]);
@@ -9558,7 +9581,7 @@ exports.__esModule = true;
  * @name VERSION
  * @type {string}
  */
-var VERSION = exports.VERSION = '4.8.6';
+var VERSION = exports.VERSION = '4.8.7';
 
 /**
  * Two Pi.
@@ -16008,11 +16031,6 @@ var Matrix = function () {
 
         if (delta < 0.00001 || Math.abs(_const.PI_2 - delta) < 0.00001) {
             transform.rotation = skewY;
-
-            if (a < 0 && d >= 0) {
-                transform.rotation += transform.rotation <= 0 ? Math.PI : -Math.PI;
-            }
-
             transform.skew.x = transform.skew.y = 0;
         } else {
             transform.rotation = 0;
@@ -24091,7 +24109,7 @@ var _path = require('path');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fragTemplate = ['varying vec2 vTextureCoord;', 'varying vec4 vColor;', 'varying float vTextureId;', 'uniform sampler2D uSamplers[%count%];', 'void main(void){', 'vec4 color;', 'float textureId = floor(vTextureId+0.5);', '%forloop%', 'gl_FragColor = color * vColor;', '}'].join('\n');
+var fragTemplate = ['varying vec2 vTextureCoord;', 'varying vec4 vColor;', 'varying float vTextureId;', 'uniform sampler2D uSamplers[%count%];', 'void main(void){', 'vec4 color;', '%forloop%', 'gl_FragColor = color * vColor;', '}'].join('\n');
 
 function generateMultiTextureShader(gl, maxTextures) {
     var vertexSrc = 'precision highp float;\nattribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\nattribute float aTextureId;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvarying float vTextureId;\n\nvoid main(void){\n    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vTextureId = aTextureId;\n    vColor = aColor;\n}\n';
@@ -24126,7 +24144,7 @@ function generateSampleSrc(maxTextures) {
         }
 
         if (i < maxTextures - 1) {
-            src += 'if(textureId == ' + i + '.0)';
+            src += 'if(vTextureId < ' + i + '.5)';
         }
 
         src += '\n{';

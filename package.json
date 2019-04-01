@@ -1,6 +1,6 @@
 {
   "name": "pixi-viewport",
-  "version": "3.21.2",
+  "version": "3.22.0",
   "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
   "main": "dist/viewport.js",
   "types": "@types/index.d.ts",
@@ -15,7 +15,8 @@
     "library": "cp bundle/pixi-viewport.min.js docs/pixi-viewport.min.js",
     "bundle": "browserify dist/viewport.js -o bundle/pixi-viewport.js && uglifyjs -mc -o bundle/pixi-viewport.min.js bundle/pixi-viewport.js",
     "bundle-test": "budo src/viewport.js:pixi-viewport.min.js --dir docs",
-    "prepublishOnly": "yarn run transpile && yarn run build-demo && yarn run bundle && yarn run library && yarn run docs"
+    "prepublishOnly": "yarn run transpile && yarn run build-demo && yarn run bundle && yarn run library && yarn run docs",
+    "upgrade": "yarn upgrade-interactive --latest"
   },
   "repository": {
     "type": "git",
@@ -47,11 +48,11 @@
   },
   "devDependencies": {
     "babel-preset-env": "^1.7.0",
-    "clicked": "^2.0.0",
+    "clicked": "^2.1.1",
     "fork-me-github": "^1.2.0",
-    "highlight.js": "^9.12.0",
-    "pixi-ease": "^1.1.2",
-    "pixi.js": "^4.8.1",
+    "highlight.js": "^9.15.6",
+    "pixi-ease": "^1.3.0",
+    "pixi.js": "^4.8.7",
     "settingspanel": "^2.0.0",
     "yy-counter": "^2.1.0",
     "yy-fps": "^1.0.0",
