@@ -63,7 +63,8 @@ function gui(viewport, drawWorld, target)
         follow: {
             follow: false,
             speed: 0,
-            radius: 0
+            radius: 0,
+            acceleration: 0
         },
         wheel: {
             wheel: true,
@@ -371,16 +372,17 @@ function guiFollow(target)
 {
     function change()
     {
-        _viewport.follow(target, { speed: _options.follow.speed, radius: _options.follow.radius })
+        _viewport.follow(target, { speed: _options.follow.speed, radius: _options.follow.radius, acceleration: _options.follow.acceleration })
     }
 
     function add()
     {
         speed = follow.add(_options.follow, 'speed').onChange(change)
         radius = follow.add(_options.follow, 'radius').onChange(change)
+        acceleration = follow.add(_options.follow, 'acceleration').onChange(change)
     }
 
-    let speed, radius
+    let speed, radius, acceleration
     const follow = _gui.addFolder('follow')
     follow.add(_options.follow, 'follow').onChange(
         function (value)
@@ -394,6 +396,7 @@ function guiFollow(target)
             {
                 follow.remove(speed)
                 follow.remove(radius)
+                follow.remove(acceleration)
                 _viewport.removePlugin('follow')
             }
         }

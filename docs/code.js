@@ -12,8 +12,8 @@ const UserPlugin = require('./user-plugin')
 const gui = require('./gui')
 
 const BORDER = 10
-const WIDTH = 5000
-const HEIGHT = 5000
+const WIDTH = 3000
+const HEIGHT = 3000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
@@ -104,11 +104,18 @@ function stars()
 
 function createTarget()
 {
-
-    const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
-    const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
-    const target = _ease.target(_object, { x, y }, OBJECT_SPEED)
-    target.once('done', createTarget)
+    if (Random.chance(0.75))
+    {
+        const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
+        const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
+        const target = _ease.target(_object, { x, y }, OBJECT_SPEED)
+        target.once('done', createTarget)
+    }
+    else
+    {
+        const target = _ease.wait(_object, { wait: Random.range(500, 3000) })
+        target.once('done', createTarget)
+    }
 }
 
 function object()
@@ -161,7 +168,6 @@ function API()
     button.style.left = '1em'
     button.style.top = '1em'
     button.style.backgroundImage = 'linear-gradient(to bottom, #3498db, #2980b9)'
-    // button.style.borderRadius = '20px'
     button.style.padding = '10px 20px 10px 20px'
     clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
 }

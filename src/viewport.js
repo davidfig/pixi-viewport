@@ -1248,10 +1248,14 @@ class Viewport extends PIXI.Container
 
     /**
      * follow a target
-     * NOTE: uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+     * NOTES:
+     *    - uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+     *    - options.acceleration is not perfect as it doesn't know the velocity of the target;
+     *      it does add acceleration to the start of movement and deceleration to the end of movement when the target is stopped
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]
      * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      * @return {Viewport} this
      */
