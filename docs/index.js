@@ -1975,8 +1975,8 @@ const UserPlugin = require('./user-plugin')
 const gui = require('./gui')
 
 const BORDER = 10
-const WIDTH = 5000
-const HEIGHT = 5000
+const WIDTH = 3000
+const HEIGHT = 3000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
@@ -2067,11 +2067,18 @@ function stars()
 
 function createTarget()
 {
-
-    const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
-    const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
-    const target = _ease.target(_object, { x, y }, OBJECT_SPEED)
-    target.once('done', createTarget)
+    if (Random.chance(0.75))
+    {
+        const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
+        const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
+        const target = _ease.target(_object, { x, y }, OBJECT_SPEED)
+        target.once('done', createTarget)
+    }
+    else
+    {
+        const target = _ease.wait(_object, { wait: Random.range(500, 3000) })
+        target.once('done', createTarget)
+    }
 }
 
 function object()
@@ -2124,7 +2131,6 @@ function API()
     button.style.left = '1em'
     button.style.top = '1em'
     button.style.backgroundImage = 'linear-gradient(to bottom, #3498db, #2980b9)'
-    // button.style.borderRadius = '20px'
     button.style.padding = '10px 20px 10px 20px'
     clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
 }
@@ -2230,7 +2236,8 @@ function gui(viewport, drawWorld, target)
         follow: {
             follow: false,
             speed: 0,
-            radius: 0
+            radius: 0,
+            acceleration: 0
         },
         wheel: {
             wheel: true,
@@ -2538,16 +2545,17 @@ function guiFollow(target)
 {
     function change()
     {
-        _viewport.follow(target, { speed: _options.follow.speed, radius: _options.follow.radius })
+        _viewport.follow(target, { speed: _options.follow.speed, radius: _options.follow.radius, acceleration: _options.follow.acceleration })
     }
 
     function add()
     {
         speed = follow.add(_options.follow, 'speed').onChange(change)
         radius = follow.add(_options.follow, 'radius').onChange(change)
+        acceleration = follow.add(_options.follow, 'acceleration').onChange(change)
     }
 
-    let speed, radius
+    let speed, radius, acceleration
     const follow = _gui.addFolder('follow')
     follow.add(_options.follow, 'follow').onChange(
         function (value)
@@ -2561,6 +2569,7 @@ function guiFollow(target)
             {
                 follow.remove(speed)
                 follow.remove(radius)
+                follow.remove(acceleration)
                 _viewport.removePlugin('follow')
             }
         }
@@ -72357,6 +72366,7 @@ module.exports = class Follow extends Plugin
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]
      * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      */
     constructor(parent, target, options)
@@ -72364,11 +72374,13 @@ module.exports = class Follow extends Plugin
         super(parent)
         options = options || {}
         this.speed = options.speed || 0
+        this.acceleration = options.acceleration || 0
+        this.velocity = { x: 0, y: 0 }
         this.target = target
         this.radius = options.radius
     }
 
-    update()
+    update(elapsed)
     {
         if (this.paused)
         {
@@ -72397,13 +72409,45 @@ module.exports = class Follow extends Plugin
         {
             if (this.speed)
             {
-                const angle = Math.atan2(toY - center.y, toX - center.x)
-                const changeX = Math.cos(angle) * this.speed
-                const changeY = Math.sin(angle) * this.speed
-                const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
-                const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
-                this.parent.moveCenter(x, y)
-                this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
+                if (this.acceleration)
+                {
+                    const angle = Math.atan2(toY - center.y, toX - center.x)
+                    const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+                    if (distance)
+                    {
+                        const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.acceleration)
+                        if (distance > decelerationDistance)
+                        {
+                            this.velocity = {
+                                x: Math.min(this.velocity.x + this.acceleration * elapsed, this.speed),
+                                y: Math.min(this.velocity.y + this.acceleration * elapsed, this.speed)
+                            }
+                        }
+                        else
+                        {
+                            this.velocity = {
+                                x: Math.max(this.velocity.x - this.acceleration * this.speed, 0),
+                                y: Math.max(this.velocity.y - this.acceleration * this.speed, 0)
+                            }
+                        }
+                        const changeX = Math.cos(angle) * this.velocity.x
+                        const changeY = Math.sin(angle) * this.velocity.y
+                        const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
+                        const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
+                        this.parent.moveCenter(x, y)
+                        this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
+                    }
+                }
+                else
+                {
+                    const angle = Math.atan2(toY - center.y, toX - center.x)
+                    const changeX = Math.cos(angle) * this.speed
+                    const changeY = Math.sin(angle) * this.speed
+                    const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
+                    const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
+                    this.parent.moveCenter(x, y)
+                    this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
+                }
             }
             else
             {
@@ -74410,10 +74454,14 @@ class Viewport extends PIXI.Container
 
     /**
      * follow a target
-     * NOTE: uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+     * NOTES:
+     *    - uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+     *    - options.acceleration is not perfect as it doesn't know the velocity of the target;
+     *      it does add acceleration to the start of movement and deceleration to the end of movement when the target is stopped
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]
      * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      * @return {Viewport} this
      */

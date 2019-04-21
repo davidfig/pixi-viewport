@@ -2885,6 +2885,7 @@ module.exports = function (_Plugin) {
      * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
      * @param {object} [options]
      * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
      * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
      */
     function Follow(parent, target, options) {
@@ -2894,6 +2895,8 @@ module.exports = function (_Plugin) {
 
         options = options || {};
         _this.speed = options.speed || 0;
+        _this.acceleration = options.acceleration || 0;
+        _this.velocity = { x: 0, y: 0 };
         _this.target = target;
         _this.radius = options.radius;
         return _this;
@@ -2901,7 +2904,7 @@ module.exports = function (_Plugin) {
 
     _createClass(Follow, [{
         key: 'update',
-        value: function update() {
+        value: function update(elapsed) {
             if (this.paused) {
                 return;
             }
@@ -2923,13 +2926,38 @@ module.exports = function (_Plugin) {
             var deltaY = toY - center.y;
             if (deltaX || deltaY) {
                 if (this.speed) {
-                    var _angle = Math.atan2(toY - center.y, toX - center.x);
-                    var changeX = Math.cos(_angle) * this.speed;
-                    var changeY = Math.sin(_angle) * this.speed;
-                    var x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
-                    var y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
-                    this.parent.moveCenter(x, y);
-                    this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                    if (this.acceleration) {
+                        var _angle = Math.atan2(toY - center.y, toX - center.x);
+                        var _distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+                        if (_distance) {
+                            var decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.acceleration);
+                            if (_distance > decelerationDistance) {
+                                this.velocity = {
+                                    x: Math.min(this.velocity.x + this.acceleration * elapsed, this.speed),
+                                    y: Math.min(this.velocity.y + this.acceleration * elapsed, this.speed)
+                                };
+                            } else {
+                                this.velocity = {
+                                    x: Math.max(this.velocity.x - this.acceleration * this.speed, 0),
+                                    y: Math.max(this.velocity.y - this.acceleration * this.speed, 0)
+                                };
+                            }
+                            var changeX = Math.cos(_angle) * this.velocity.x;
+                            var changeY = Math.sin(_angle) * this.velocity.y;
+                            var x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
+                            var y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
+                            this.parent.moveCenter(x, y);
+                            this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                        }
+                    } else {
+                        var _angle2 = Math.atan2(toY - center.y, toX - center.x);
+                        var _changeX = Math.cos(_angle2) * this.speed;
+                        var _changeY = Math.sin(_angle2) * this.speed;
+                        var _x = Math.abs(_changeX) > Math.abs(deltaX) ? toX : center.x + _changeX;
+                        var _y = Math.abs(_changeY) > Math.abs(deltaY) ? toY : center.y + _changeY;
+                        this.parent.moveCenter(_x, _y);
+                        this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                    }
                 } else {
                     this.parent.moveCenter(toX, toY);
                     this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
@@ -4905,10 +4933,14 @@ var Viewport = function (_PIXI$Container) {
 
         /**
          * follow a target
-         * NOTE: uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+         * NOTES:
+         *    - uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+         *    - options.acceleration is not perfect as it doesn't know the velocity of the target;
+         *      it does add acceleration to the start of movement and deceleration to the end of movement when the target is stopped
          * @param {PIXI.DisplayObject} target to follow (object must include {x: x-coordinate, y: y-coordinate})
          * @param {object} [options]
          * @param {number} [options.speed=0] to follow in pixels/frame (0=teleport to location)
+         * @param {number} [options.acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
          * @param {number} [options.radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
          * @return {Viewport} this
          */
