@@ -81,6 +81,7 @@ declare namespace Viewport
     underflow?: UnderflowType;
     clampWheel?: boolean | number;
     factor?: number;
+    mouseButtons?: string;
   }
 
   interface ClampOptions {
