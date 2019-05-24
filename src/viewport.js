@@ -1,21 +1,21 @@
-const PIXI = require('pixi.js')
+import PIXI from 'pixi.js'
 
-const utils = require('./utils')
-const Drag = require('./drag')
-const Pinch = require('./pinch')
-const Clamp = require('./clamp')
-const ClampZoom = require('./clamp-zoom')
-const Decelerate = require('./decelerate')
-const Bounce = require('./bounce')
-const Snap = require('./snap')
-const SnapZoom = require('./snap-zoom')
-const Follow = require('./follow')
-const Wheel = require('./wheel')
-const MouseEdges = require('./mouse-edges')
+import * as utils from './utils'
+import { Drag } from './drag'
+import { Pinch } from './pinch'
+import { Clamp } from './clamp'
+import { ClampZoom } from './clamp-zoom'
+import { Decelerate } from './decelerate'
+import { Bounce } from './bounce'
+import { Snap } from './snap'
+import { SnapZoom } from './snap-zoom'
+import { Follow } from './follow'
+import { Wheel } from './wheel'
+import { MouseEdges } from './mouse-edges'
 
 const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
-class Viewport extends PIXI.Container
+export class Viewport extends PIXI.Container
 {
     /**
      * @extends PIXI.Container
@@ -1511,17 +1511,3 @@ class Viewport extends PIXI.Container
  * @event Viewport#zoomed-end
  * @type {Viewport}
  */
-
-if (typeof PIXI !== 'undefined')
-{
-    if (PIXI.extras)
-    {
-        PIXI.extras.Viewport = Viewport
-    }
-    else
-    {
-        PIXI.extras = { Viewport }
-    }
-}
-
-module.exports = Viewport

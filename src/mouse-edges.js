@@ -1,7 +1,7 @@
-const utils =  require('./utils')
-const Plugin = require('./plugin')
+import * as utils from './utils'
+import { Plugin } from './plugin'
 
-module.exports = class MouseEdges extends Plugin
+export class MouseEdges extends Plugin
 {
     /**
      * Scroll viewport when mouse hovers near one of the edges.

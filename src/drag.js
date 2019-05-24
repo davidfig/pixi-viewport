@@ -1,9 +1,9 @@
-const PIXI = require('pixi.js')
+import * as PIXI from 'pixi.js'
 
-const utils = require('./utils')
-const Plugin = require('./plugin')
+import * as utils from './utils'
+import { Plugin } from './plugin'
 
-module.exports = class Drag extends Plugin
+export class Drag extends Plugin
 {
     /**
      * enable one-finger touch to drag

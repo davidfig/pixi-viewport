@@ -1,6 +1,6 @@
-const Plugin = require('./plugin')
+import { Plugin } from './plugin'
 
-module.exports = class Pinch extends Plugin
+export class Pinch extends Plugin
 {
     /**
      * @private

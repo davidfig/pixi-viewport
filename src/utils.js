@@ -1,11 +1,11 @@
-const Penner = require('penner')
+import * as Penner from 'penner'
 
-function exists(a)
+export function exists(a)
 {
     return a !== undefined && a !== null
 }
 
-function defaults(a, defaults)
+export function defaults(a, defaults)
 {
     return (a !== undefined && a !== null) ? a : defaults
 }
@@ -16,7 +16,7 @@ function defaults(a, defaults)
  * @private
  * @returns {function} correct penner equation
  */
-function ease(ease, defaults)
+export function ease(ease, defaults)
 {
     if (!exists(ease))
     {
@@ -30,10 +30,4 @@ function ease(ease, defaults)
     {
         return Penner[ease]
     }
-}
-
-module.exports = {
-    exists,
-    defaults,
-    ease
 }

@@ -1,6 +1,6 @@
-const Plugin = require('./plugin')
+import { Plugin } from './plugin'
 
-module.exports = class Decelerate extends Plugin
+export class Decelerate extends Plugin
 {
     /**
      * @private

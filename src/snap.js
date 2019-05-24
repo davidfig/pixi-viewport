@@ -1,7 +1,7 @@
-const Plugin = require('./plugin')
-const utils =  require('./utils')
+import * as utils from './utils'
+import { Plugin } from './plugin'
 
-module.exports = class Snap extends Plugin
+export class Snap extends Plugin
 {
     /**
      * @private

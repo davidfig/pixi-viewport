@@ -1,7 +1,7 @@
-const utils =  require('./utils')
-const Plugin = require('./plugin')
+import { ease } from './utils'
+import { Plugin } from './plugin'
 
-module.exports = class Bounce extends Plugin
+export class Bounce extends Plugin
 {
     /**
      * @private
@@ -22,7 +22,7 @@ module.exports = class Bounce extends Plugin
         super(parent)
         options = options || {}
         this.time = options.time || 150
-        this.ease = utils.ease(options.ease, 'easeInOutSine')
+        this.ease = ease(options.ease, 'easeInOutSine')
         this.friction = options.friction || 0.5
         options.sides = options.sides || 'all'
         if (options.sides)

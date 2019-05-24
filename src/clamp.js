@@ -1,7 +1,7 @@
-const Plugin = require('./plugin')
-const utils =  require('./utils')
+import * as utils from './utils'
+import { Plugin } from './plugin'
 
-module.exports = class clamp extends Plugin
+export class Clamp extends Plugin
 {
     /**
      * @private

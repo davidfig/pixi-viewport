@@ -1,6 +1,6 @@
-const Plugin = require('./plugin')
+import { Plugin } from './plugin'
 
-module.exports = class ClampZoom extends Plugin
+export class ClampZoom extends Plugin
 {
     /**
      * @private

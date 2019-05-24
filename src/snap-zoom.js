@@ -1,7 +1,7 @@
-const Plugin = require('./plugin')
-const utils =  require('./utils')
+import * as utils from './utils'
+import { Plugin } from './plugin'
 
-module.exports = class SnapZoom extends Plugin
+export class SnapZoom extends Plugin
 {
     /**
      * @private
