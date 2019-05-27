@@ -1,45 +1,88 @@
 import * as PIXI from 'pixi.js'
 
-import * as utils from './utils'
+import { Viewport } from '../viewport'
 import { Plugin } from './plugin'
+import { Wheel } from './wheel'
+import { Decelerate } from './decelerate'
+
+interface LastDrag
+{
+    x: number
+    y: number
+    parent: PIXI.Point
+}
+
+export interface DragOptions
+{
+    /** direction to drag */
+    direction?: string
+
+    /** use wheel to scroll in y direction (unless wheel plugin is active) */
+    wheel?: boolean
+
+    /** number of pixels to scroll with each wheel spin */
+    wheelScroll?: number
+
+    /** reverse the direction of the wheel scroll */
+    reverse?: boolean
+
+    /** clamp wheel(to avoid weird bounce with mouse wheel) */
+    clampWheel?: boolean | string
+
+    /** where to place world if too small for screen */
+    underflow?: string
+
+    /** factor to multiply drag to increase the speed of movement */
+    factor?: number
+
+    /** changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right' */
+    mouseButtons?: string
+}
+
+const DragOptionsDefaults: DragOptions =
+{
+    direction: 'all',
+    wheel: true,
+    wheelScroll: 1,
+    reverse: false,
+    clampWheel: false,
+    underflow: 'center',
+    factor: 1,
+    mouseButtons: 'all'
+}
 
 export class Drag extends Plugin
 {
-    /**
-     * enable one-finger touch to drag
-     * @private
-     * @param {Viewport} parent
-     * @param {object} [options]
-     * @param {string} [options.direction=all] direction to drag (all, x, or y)
-     * @param {boolean} [options.wheel=true] use wheel to scroll in y direction (unless wheel plugin is active)
-     * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
-     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
-     * @param {boolean|string} [options.clampWheel] (true, x, or y) clamp wheel (to avoid weird bounce with mouse wheel)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-     * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
-     * @param {string} [options.mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'
-     */
-    constructor(parent, options)
+    private options: DragOptions
+    private moved: boolean = false
+    private reverse: number
+    private xDirection: boolean
+    private yDirection: boolean
+    private mouse: Array<boolean>
+    private underflowX: number
+    private underflowY: number
+    private last?: LastDrag
+    private current: number
+
+    constructor(parent: Viewport, options: DragOptions)
     {
-        options = options || {}
         super(parent)
-        this.moved = false
-        this.wheelActive = utils.defaults(options.wheel, true)
-        this.wheelScroll = options.wheelScroll || 1
-        this.reverse = options.reverse ? 1 : -1
-        this.clampWheel = options.clampWheel
-        this.factor = options.factor || 1
-        this.xDirection = !options.direction || options.direction === 'all' || options.direction === 'x'
-        this.yDirection = !options.direction || options.direction === 'all' || options.direction === 'y'
-        this.parseUnderflow(options.underflow || 'center')
-        this.mouseButtons(options.mouseButtons)
+        this.options = { ...DragOptionsDefaults, ...options }
+
+        this.reverse = this.options.reverse ? 1 : -1
+        this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x'
+        this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y'
+
+        this.parseUnderflow()
+        this.mouseButtons(this.options.mouseButtons)
     }
 
-    mouseButtons(buttons)
+    /** initialize mousebuttons array */
+    private mouseButtons(buttons: string)
     {
         if (!buttons || buttons === 'all')
         {
-            this.mouse = [1, 1, 1]
+            this.mouse = [true, true, true]
         }
         else
         {
@@ -51,9 +94,9 @@ export class Drag extends Plugin
         }
     }
 
-    parseUnderflow(clamp)
+    private parseUnderflow()
     {
-        clamp = clamp.toLowerCase()
+        const clamp: string = this.options.underflow.toLowerCase()
         if (clamp === 'center')
         {
             this.underflowX = 0
@@ -66,10 +109,10 @@ export class Drag extends Plugin
         }
     }
 
-    checkButtons(e)
+    private checkButtons(e: PIXI.interaction.InteractionEvent): boolean
     {
-        const isMouse = e.data.pointerType === 'mouse'
-        const count = this.parent.countDownPointers()
+        const isMouse: boolean = e.data.pointerType === 'mouse'
+        const count: number = this.parent.countDownPointers()
         if (this.parent.parent)
         {
             if ((count === 1) || (count > 1 && !this.parent.plugins['pinch']))
@@ -83,7 +126,7 @@ export class Drag extends Plugin
         return false
     }
 
-    down(e)
+    down(e: PIXI.interaction.InteractionEvent)
     {
         if (this.paused)
         {
@@ -102,12 +145,12 @@ export class Drag extends Plugin
         }
     }
 
-    get active()
+    get active(): boolean
     {
         return this.moved
     }
 
-    move(e)
+    move(e: PIXI.interaction.InteractionEvent): boolean
     {
         if (this.paused)
         {
@@ -115,23 +158,23 @@ export class Drag extends Plugin
         }
         if (this.last && this.current === e.data.pointerId)
         {
-            const x = e.data.global.x
-            const y = e.data.global.y
-            const count = this.parent.countDownPointers()
+            const x: number = e.data.global.x
+            const y: number = e.data.global.y
+            const count: number = this.parent.countDownPointers()
             if (count === 1 || (count > 1 && !this.parent.plugins['pinch']))
             {
-                const distX = x - this.last.x
-                const distY = y - this.last.y
+                const distX: number = x - this.last.x
+                const distY: number = y - this.last.y
                 if (this.moved || ((this.xDirection && this.parent.checkThreshold(distX)) || (this.yDirection && this.parent.checkThreshold(distY))))
                 {
-                    const newParent = this.parent.parent.toLocal(e.data.global)
+                    const newParent: PIXI.Point = this.parent.parent.toLocal(e.data.global)
                     if (this.xDirection)
                     {
-                        this.parent.x += (newParent.x - this.last.parent.x) * this.factor
+                        this.parent.x += (newParent.x - this.last.parent.x) * this.options.factor
                     }
                     if (this.yDirection)
                     {
-                        this.parent.y += (newParent.y - this.last.parent.y) * this.factor
+                        this.parent.y += (newParent.y - this.last.parent.y) * this.options.factor
                     }
                     this.last = { x, y, parent: newParent }
                     if (!this.moved)
@@ -150,7 +193,7 @@ export class Drag extends Plugin
         }
     }
 
-    up()
+    up(): boolean
     {
         const touches = this.parent.getTouchPointers()
         if (touches.length === 1)
@@ -170,39 +213,40 @@ export class Drag extends Plugin
             if (this.moved)
             {
                 this.parent.emit('drag-end', {screen: new PIXI.Point(this.last.x, this.last.y), world: this.parent.toWorld(this.last), viewport: this.parent})
-                this.last = this.moved = false
+                this.last = null
+                this.moved = false
                 return true
             }
         }
     }
 
-    wheel(e)
+    wheel(e: WheelEvent): boolean
     {
         if (this.paused)
         {
             return
         }
 
-        if (this.wheelActive)
+        if (this.options.wheel)
         {
-            const wheel = this.parent.plugins['wheel']
+            const wheel: Wheel = this.parent.plugins['wheel']
             if (!wheel)
             {
                 if (this.xDirection)
                 {
-                    this.parent.x += e.deltaX * this.wheelScroll * this.reverse
+                    this.parent.x += e.deltaX * this.options.wheelScroll * this.reverse
                 }
                 if (this.yDirection)
                 {
-                    this.parent.y += e.deltaY * this.wheelScroll * this.reverse
+                    this.parent.y += e.deltaY * this.options.wheelScroll * this.reverse
                 }
-                if (this.clampWheel)
+                if (this.options.clampWheel)
                 {
                     this.clamp()
                 }
                 this.parent.emit('wheel-scroll', this.parent)
                 this.parent.emit('moved', this.parent)
-                if (!this.parent.passiveWheel)
+                if (!this.parent.options.passiveWheel)
                 {
                     e.preventDefault()
                 }
@@ -219,8 +263,8 @@ export class Drag extends Plugin
 
     clamp()
     {
-        const decelerate = this.parent.plugins['decelerate'] || {}
-        if (this.clampWheel !== 'y')
+        const decelerate: Decelerate = this.parent.plugins['decelerate'] || {}
+        if (this.options.clampWheel !== 'y')
         {
             if (this.parent.screenWorldWidth < this.parent.screenWidth)
             {
@@ -250,7 +294,7 @@ export class Drag extends Plugin
                 }
             }
         }
-        if (this.clampWheel !== 'x')
+        if (this.options.clampWheel !== 'x')
         {
             if (this.parent.screenWorldHeight < this.parent.screenHeight)
             {

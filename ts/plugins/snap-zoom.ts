@@ -51,7 +51,6 @@ const SnapZoomOptionsDefaults: SnapZoomOptions =
 
 export class SnapZoom extends Plugin
 {
-    parent: Viewport
     options: SnapZoomOptions
     width: number
     height: number

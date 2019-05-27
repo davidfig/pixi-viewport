@@ -36,7 +36,7 @@ export abstract class Plugin {
     /**
      * handler for wheel event on div
      */
-    wheel(event: PIXI.interaction.InteractionEvent): boolean
+    wheel(event: WheelEvent): boolean
     {
         return false
     }
