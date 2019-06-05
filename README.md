@@ -63,6 +63,11 @@ or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/
 </script>
 ```
 
+## Builds
+
+I've included a bunch of build examples in the docs/builds directory, including: browserify, rollup, standalone cdn, standalone cdn (pixi.js v4), and typescript. You can access running these live demos at [https://davidfig.github.io/pixi-viewport/builds/].
+  
+
 ## Other Libraries
 If you liked pixi-viewport, please try my other open source libraries:
 * [pixi-scrollbox](https://github.com/davidfig/pixi-scrollbox) - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)
