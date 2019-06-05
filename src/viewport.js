@@ -97,7 +97,7 @@ export class Viewport extends PIXI.Container
             // from here: https://github.com/pixijs/pixi.js/issues/5757
             let ticker
             const pixiNS = PIXI
-            if (parseInt(/^(\d+)\./.exec(PIXI.VERSION)[ 1 ]) < 5)
+            if (parseInt(/^(\d+)\./.exec(PIXI.VERSION)[1]) < 5)
             {
                 ticker = pixiNS.ticker.shared;
             }
@@ -106,10 +106,6 @@ export class Viewport extends PIXI.Container
                 ticker = pixiNS.Ticker.shared;
             }
             this.options.ticker = options.ticker || ticker
-        }
-        for (let key in options)
-        {
-            this.options[key] = options[key]
         }
 
         /** @type {number} */

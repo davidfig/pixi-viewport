@@ -25,23 +25,10 @@
 
     
     <script>
-    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"pixi-viewport","footer":"by YOPEY YOPEY LLC (yopeyopey.com)","copyright":"Copyright © 2018 YOPEY YOPEY LLC.","meta":{"title":"pixi-viewport API Documentation","description":"Documentation for pixi-viewport library","keyword":"docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"},"matomo":{"url":"https://analytics.yopeyopey.com/piwik/","id":13}};
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"pixi-viewport","footer":"by YOPEY YOPEY LLC (yopeyopey.com)","copyright":"Copyright © 2019 YOPEY YOPEY LLC.","meta":{"title":"pixi-viewport API Documentation","description":"Documentation for pixi-viewport library","keyword":"docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"}};
     </script>
     
 
-    
-    <script type="text/javascript">
-    var _paq = _paq || [];
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-        var u="https://analytics.yopeyopey.com/piwik/";
-        _paq.push(['setTrackerUrl', u+'piwik.php']);
-        _paq.push(['setSiteId', '13']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-    })();
-    </script>
     
 </head>
 <body>
@@ -119,10 +106,12 @@
         </li>
     
         
-        <li class="item" data-name="Clamp#Clamp">
+    
+        
+        <li class="item" data-name="Plugin">
             <span class="title  ">
                 
-                <a href="Clamp_Clamp.html">Clamp#Clamp</a>
+                <a href="Plugin.html">Plugin</a>
             </span>
             <ul class="members itemMembers">
             
@@ -135,53 +124,27 @@
             </ul>
             <ul class="methods itemMembers">
             
-            </ul>
-            <ul class="events itemMembers">
+            <span class="subtitle">Methods</span>
             
-            </ul>
-        </li>
-    
-        
-        <li class="item" data-name="Drag#Drag">
-            <span class="title  ">
-                
-                <a href="Drag_Drag.html">Drag#Drag</a>
-            </span>
-            <ul class="members itemMembers">
+                <li class="parent  " data-name="Plugin#destroy"><a href="Plugin.html#destroy">destroy</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#down"><a href="Plugin.html#down">down</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#move"><a href="Plugin.html#move">move</a></li>
             
-            </ul>
-            <ul class="methods itemMembers">
+                <li class="parent  " data-name="Plugin#pause"><a href="Plugin.html#pause">pause</a></li>
             
-            </ul>
-            <ul class="events itemMembers">
+                <li class="parent  " data-name="Plugin#reset"><a href="Plugin.html#reset">reset</a></li>
             
-            </ul>
-        </li>
-    
-        
-    
-        
-        <li class="item" data-name="Plugin#Plugin">
-            <span class="title  ">
-                
-                <a href="Plugin_Plugin.html">Plugin#Plugin</a>
-            </span>
-            <ul class="members itemMembers">
+                <li class="parent  " data-name="Plugin#resize"><a href="Plugin.html#resize">resize</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#resume"><a href="Plugin.html#resume">resume</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#up"><a href="Plugin.html#up">up</a></li>
             
-            </ul>
-            <ul class="methods itemMembers">
+                <li class="parent  " data-name="Plugin#update"><a href="Plugin.html#update">update</a></li>
+            
+                <li class="parent  " data-name="Plugin#wheel"><a href="Plugin.html#wheel">wheel</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -379,7 +342,7 @@
  */
 
 const wheelOptions = {
-    percet: 0.1,
+    percent: 0.1,
     smooth: false,
     interrupt: true,
     reverse: false,
@@ -404,16 +367,16 @@ export class Wheel extends Plugin
     {
         if (this.options.interrupt)
         {
-            this.options.smoothing = null
+            this.smoothing = null
         }
     }
 
     update()
     {
-        if (this.options.smoothing)
+        if (this.smoothing)
         {
-            const point = this.options.smoothingCenter
-            const change = this.options.smoothing
+            const point = this.smoothingCenter
+            const change = this.smoothing
             let oldPoint
             if (!this.options.center)
             {
@@ -437,10 +400,10 @@ export class Wheel extends Plugin
                 this.parent.x += point.x - newPoint.x
                 this.parent.y += point.y - newPoint.y
             }
-            this.options.smoothingCount++
-            if (this.options.smoothingCount >= this.options.smooth)
+            this.smoothingCount++
+            if (this.smoothingCount >= this.options.smooth)
             {
-                this.options.smoothing = null
+                this.smoothing = null
             }
         }
     }
@@ -459,15 +422,15 @@ export class Wheel extends Plugin
         if (this.options.smooth)
         {
             const original = {
-                x: this.options.smoothing ? this.options.smoothing.x * (this.options.smooth - this.options.smoothingCount) : 0,
-                y: this.options.smoothing ? this.options.smoothing.y * (this.options.smooth - this.options.smoothingCount) : 0
+                x: this.smoothing ? this.smoothing.x * (this.options.smooth - this.smoothingCount) : 0,
+                y: this.smoothing ? this.smoothing.y * (this.options.smooth - this.smoothingCount) : 0
             }
-            this.options.smoothing = {
+            this.smoothing = {
                 x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
                 y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth
             }
-            this.options.smoothingCount = 0
-            this.options.smoothingCenter = point
+            this.smoothingCount = 0
+            this.smoothingCenter = point
         }
         else
         {
@@ -515,7 +478,7 @@ export class Wheel extends Plugin
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 22:29:44 GMT+0800 (GMT+08:00)
             </div>
         </footer>
     </div>

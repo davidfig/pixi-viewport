@@ -25,11 +25,7 @@ export class Follow extends Plugin
     {
         super(parent)
         this.target = target
-        this.options = followOptions
-        for (let key in options)
-        {
-            this.options[key] = options[key]
-        }
+        this.options = Object.assign({}, followOptions, options)
         this.velocity = { x: 0, y: 0 }
     }
 

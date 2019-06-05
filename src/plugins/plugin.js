@@ -1,3 +1,6 @@
+/**
+ * derive this class to create user-defined plugins
+ */
 export class Plugin
 {
     /**

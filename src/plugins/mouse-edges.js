@@ -15,7 +15,7 @@ import { Plugin } from './plugin'
  * @property {boolean} [allowButtons] allows plugin to continue working even when there's a mousedown event
  */
 
-const mouseEdgeOptions = {
+const mouseEdgesOptions = {
     radius: null,
     distance: null,
     top: null,
@@ -42,20 +42,15 @@ export class MouseEdges extends Plugin
     constructor(parent, options={})
     {
         super(parent)
-        this.options = Object.assign({}, mouseEdgeOptions)
-        for (let key in options)
-        {
-            this.options[key] = options[key]
-        }
-        this.reverse = options.reverse ? 1 : -1
+        this.options = Object.assign({}, mouseEdgesOptions, options)
+        this.reverse = this.options.reverse ? 1 : -1
         this.radiusSquared = Math.pow(this.options.radius, 2)
         this.resize()
     }
 
     resize()
     {
-        const options = this.options
-        const distance = options.distance
+        const distance = this.options.distance
         if (distance !== null)
         {
             this.left = distance
@@ -67,8 +62,8 @@ export class MouseEdges extends Plugin
         {
             this.left = this.options.left
             this.top = this.options.top
-            this.right = this.options.right === null ? null : window.innerWidth - options.right
-            this.bottom = this.options.bottom === null ? null : window.innerHeight - options.bottom
+            this.right = this.options.right === null ? null : window.innerWidth - this.options.right
+            this.bottom = this.options.bottom === null ? null : window.innerHeight - this.options.bottom
         }
     }
 
@@ -80,14 +75,14 @@ export class MouseEdges extends Plugin
         }
     }
 
-    move(e)
+    move(event)
     {
-        if ((e.data.identifier !== 'MOUSE' && e.data.identifier !== 1) || (!this.options.allowButtons && e.data.buttons !== 0))
+        if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1) || (!this.options.allowButtons && event.data.buttons !== 0))
         {
             return
         }
-        const x = e.data.global.x
-        const y = e.data.global.y
+        const x = event.data.global.x
+        const y = event.data.global.y
 
         if (this.radiusSquared)
         {

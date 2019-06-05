@@ -39,11 +39,7 @@ export class SnapZoom extends Plugin
     constructor(parent, options={})
     {
         super(parent)
-        this.options = Object.assign({}, snapZoomOptions)
-        for (let key in options)
-        {
-            this.options[key] = options[key]
-        }
+        this.options = Object.assign({}, snapZoomOptions, options)
         if (this.options.width > 0)
         {
             this.x_scale = parent.screenWidth / this.options.width

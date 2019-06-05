@@ -317,174 +317,1275 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Source: src/plugins/snap.js</h1>
+        <h1 class="page-title" data-filename="Viewport">Class: Plugin</h1>
         
         
+
+
+
+<section>
+
+<header>
+    <div class="header content-size">
+        <h2>Plugin
+        </h2>
+        
+            <div class="class-description"><p>derive this class to create user-defined plugins</p></div>
+        
+    </div>
+</header>
+
+<article class="content-size">
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Plugin">
+            <a class="share-icon" href="#Plugin"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                new Plugin
+            </span>
+            <span class="signature">(parent)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line4">plugin.js:4</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>parent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Viewport.html">Viewport</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
     
-    <section>
-        <header>
-            <div class="header content-size">
-                <h2>src/plugins/snap.js</h2>
-            </div>
-        </header>
-        <article>
-            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './plugin'
-import ease from '../ease'
 
-/**
- * @typedef SnapOptions
- * @property {boolean} [topLeft] snap to the top-left of viewport instead of center
- * @property {number} [friction=0.8] friction/frame to apply if decelerate is active
- * @property {number} [time=1000]
- * @property {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
- * @property {boolean} [interrupt=true] pause snapping with any user input on the viewport
- * @property {boolean} [removeOnComplete] removes this plugin after snapping is complete
- * @property {boolean} [removeOnInterrupt] removes this plugin if interrupted by any user input
- * @property {boolean} [forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
- */
+    
 
-const snapOptions = {
-    topLeft: false,
-    friction: 0.8,
-    time: 1000,
-    ease: 'easeInOutSine',
-    interrupt: true,
-    removeOnComplete: false,
-    removeOnInterrupt: false,
-    forceStart: false
-}
+    
 
-export class Snap extends Plugin
-{
-    /**
-     * @private
-     * @param {Viewport} parent
-     * @param {number} x
-     * @param {number} y
-     * @param {SnapOptions} [options]
-     * @event snap-start(Viewport) emitted each time a snap animation starts
-     * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
-     * @event snap-end(Viewport) emitted each time snap reaches its target
-     * @event snap-remove(Viewport) emitted if snap plugin is removed
-     */
-    constructor(parent, x, y, options={})
-    {
-        super(parent)
-        this.options = Object.assign({}, snapOptions, options)
-        this.ease = ease(options.ease, 'easeInOutSine')
-        this.x = x
-        this.y = y
-        if (this.options.forceStart)
-        {
-            this.startEase()
-        }
-    }
+    
 
-    snapStart()
-    {
-        this.percent = 0
-        this.snapping = { time: 0 }
-        const current = this.options.topLeft ? this.parent.corner : this.parent.center
-        this.deltaX = this.x - current.x
-        this.deltaY = this.y - current.y
-        this.startX = current.x
-        this.startY = current.y
-        this.parent.emit('snap-start', this.parent)
-    }
+    
 
-    wheel()
-    {
-        if (this.options.removeOnInterrupt)
-        {
-            this.parent.plugins.remove('snap')
-        }
-    }
+    
+</dd>
 
-    down()
-    {
-        if (this.options.removeOnInterrupt)
-        {
-            this.parent.plugins.remove('snap')
-        }
-        else if (this.options.interrupt)
-        {
-            this.snapping = null
-        }
-    }
+    
+    </div>
 
-    up()
-    {
-        if (this.parent.input.count() === 0)
-        {
-            const decelerate = this.parent.plugins.get('decelerate')
-            if (decelerate &amp;&amp; (decelerate.x || decelerate.y))
-            {
-                decelerate.percentChangeX = decelerate.percentChangeY = this.options.friction
-            }
-        }
-    }
+    
 
-    update(elapsed)
-    {
-        if (this.paused)
-        {
-            return
-        }
-        if (this.options.interrupt &amp;&amp; this.parent.input.count() !== 0)
-        {
-            return
-        }
-        if (!this.snapping)
-        {
-            const current = this.options.topLeft ? this.parent.corner : this.parent.center
-            if (current.x !== this.x || current.y !== this.y)
-            {
-                this.snapStart()
-            }
-        }
-        else
-        {
-            const snapping = this.snapping
-            snapping.time += elapsed
-            let finished, x, y
-            if (snapping.time > this.options.time)
-            {
-                finished = true
-                x = this.startX + this.deltaX
-                y = this.startY + this.deltaY
-            }
-            else
-            {
-                const percent = this.ease(snapping.time, 0, 1, this.options.time)
-                x = this.startX + this.deltaX * percent
-                y = this.startY + this.deltaY * percent
-            }
-            if (this.options.topLeft)
-            {
-                this.parent.moveCorner(x, y)
-            }
-            else
-            {
-                this.parent.moveCenter(x, y)
-            }
-            this.parent.emit('moved', { viewport: this.parent, type: 'snap' })
-            if (finished)
-            {
-                if (this.options.removeOnComplete)
-                {
-                    this.parent.plugins.remove('snap')
-                }
-                this.parent.emit('snap-end', this.parent)
-                this.snapping = null
-            }
-        }
-    }
-}</code></pre>
-        </article>
-    </section>
+    
 
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl class="list-methods">
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="destroy">
+            <a class="share-icon" href="#destroy"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                destroy
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line16">plugin.js:16</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>called when plugin is removed</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="down">
+            <a class="share-icon" href="#down"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                down
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line23">plugin.js:23</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handler for pointerdown PIXI event</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="move">
+            <a class="share-icon" href="#move"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                move
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line33">plugin.js:33</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handler for pointermove PIXI event</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pause">
+            <a class="share-icon" href="#pause"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                pause
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line71">plugin.js:71</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>pause the plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="reset">
+            <a class="share-icon" href="#reset"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                reset
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line68">plugin.js:68</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>called when the viewport is manually moved</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resize">
+            <a class="share-icon" href="#resize"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                resize
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line65">plugin.js:65</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>called when the viewport is resized</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resume">
+            <a class="share-icon" href="#resume"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                resume
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line77">plugin.js:77</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>un-pause the plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="up">
+            <a class="share-icon" href="#up"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                up
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line43">plugin.js:43</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handler for pointerup PIXI event</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            <a class="share-icon" href="#update"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                update
+            </span>
+            <span class="signature">(elapsed)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line62">plugin.js:62</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>called on each tick</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>elapsed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>time in millisecond since last update</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="wheel">
+            <a class="share-icon" href="#wheel"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                wheel
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugins_plugin.js.html#line53">plugin.js:53</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handler for wheel event on div</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">WheelEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
@@ -494,7 +1595,7 @@ export class Snap extends Plugin
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 22:29:44 GMT+0800 (GMT+08:00)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 22:29:45 GMT+0800 (GMT+08:00)
             </div>
         </footer>
     </div>

@@ -25,23 +25,10 @@
 
     
     <script>
-    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"pixi-viewport","footer":"by YOPEY YOPEY LLC (yopeyopey.com)","copyright":"Copyright © 2018 YOPEY YOPEY LLC.","meta":{"title":"pixi-viewport API Documentation","description":"Documentation for pixi-viewport library","keyword":"docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"},"matomo":{"url":"https://analytics.yopeyopey.com/piwik/","id":13}};
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"pixi-viewport","footer":"by YOPEY YOPEY LLC (yopeyopey.com)","copyright":"Copyright © 2019 YOPEY YOPEY LLC.","meta":{"title":"pixi-viewport API Documentation","description":"Documentation for pixi-viewport library","keyword":"docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"}};
     </script>
     
 
-    
-    <script type="text/javascript">
-    var _paq = _paq || [];
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-        var u="https://analytics.yopeyopey.com/piwik/";
-        _paq.push(['setTrackerUrl', u+'piwik.php']);
-        _paq.push(['setSiteId', '13']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-    })();
-    </script>
     
 </head>
 <body>
@@ -119,10 +106,12 @@
         </li>
     
         
-        <li class="item" data-name="Clamp#Clamp">
+    
+        
+        <li class="item" data-name="Plugin">
             <span class="title  ">
                 
-                <a href="Clamp_Clamp.html">Clamp#Clamp</a>
+                <a href="Plugin.html">Plugin</a>
             </span>
             <ul class="members itemMembers">
             
@@ -135,53 +124,27 @@
             </ul>
             <ul class="methods itemMembers">
             
-            </ul>
-            <ul class="events itemMembers">
+            <span class="subtitle">Methods</span>
             
-            </ul>
-        </li>
-    
-        
-        <li class="item" data-name="Drag#Drag">
-            <span class="title  ">
-                
-                <a href="Drag_Drag.html">Drag#Drag</a>
-            </span>
-            <ul class="members itemMembers">
+                <li class="parent  " data-name="Plugin#destroy"><a href="Plugin.html#destroy">destroy</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#down"><a href="Plugin.html#down">down</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#move"><a href="Plugin.html#move">move</a></li>
             
-            </ul>
-            <ul class="methods itemMembers">
+                <li class="parent  " data-name="Plugin#pause"><a href="Plugin.html#pause">pause</a></li>
             
-            </ul>
-            <ul class="events itemMembers">
+                <li class="parent  " data-name="Plugin#reset"><a href="Plugin.html#reset">reset</a></li>
             
-            </ul>
-        </li>
-    
-        
-    
-        
-        <li class="item" data-name="Plugin#Plugin">
-            <span class="title  ">
-                
-                <a href="Plugin_Plugin.html">Plugin#Plugin</a>
-            </span>
-            <ul class="members itemMembers">
+                <li class="parent  " data-name="Plugin#resize"><a href="Plugin.html#resize">resize</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#resume"><a href="Plugin.html#resume">resume</a></li>
             
-            </ul>
-            <ul class="typedefs itemMembers">
+                <li class="parent  " data-name="Plugin#up"><a href="Plugin.html#up">up</a></li>
             
-            </ul>
-            <ul class="methods itemMembers">
+                <li class="parent  " data-name="Plugin#update"><a href="Plugin.html#update">update</a></li>
+            
+                <li class="parent  " data-name="Plugin#wheel"><a href="Plugin.html#wheel">wheel</a></li>
             
             </ul>
             <ul class="events itemMembers">
@@ -384,7 +347,7 @@
  * @property {boolean} [allowButtons] allows plugin to continue working even when there's a mousedown event
  */
 
-const mouseEdgeOptions = {
+const mouseEdgesOptions = {
     radius: null,
     distance: null,
     top: null,
@@ -411,20 +374,15 @@ export class MouseEdges extends Plugin
     constructor(parent, options={})
     {
         super(parent)
-        this.options = Object.assign({}, mouseEdgeOptions)
-        for (let key in options)
-        {
-            this.options[key] = options[key]
-        }
-        this.reverse = options.reverse ? 1 : -1
+        this.options = Object.assign({}, mouseEdgesOptions, options)
+        this.reverse = this.options.reverse ? 1 : -1
         this.radiusSquared = Math.pow(this.options.radius, 2)
         this.resize()
     }
 
     resize()
     {
-        const options = this.options
-        const distance = options.distance
+        const distance = this.options.distance
         if (distance !== null)
         {
             this.left = distance
@@ -436,8 +394,8 @@ export class MouseEdges extends Plugin
         {
             this.left = this.options.left
             this.top = this.options.top
-            this.right = this.options.right === null ? null : window.innerWidth - options.right
-            this.bottom = this.options.bottom === null ? null : window.innerHeight - options.bottom
+            this.right = this.options.right === null ? null : window.innerWidth - this.options.right
+            this.bottom = this.options.bottom === null ? null : window.innerHeight - this.options.bottom
         }
     }
 
@@ -449,14 +407,14 @@ export class MouseEdges extends Plugin
         }
     }
 
-    move(e)
+    move(event)
     {
-        if ((e.data.identifier !== 'MOUSE' &amp;&amp; e.data.identifier !== 1) || (!this.options.allowButtons &amp;&amp; e.data.buttons !== 0))
+        if ((event.data.pointerType !== 'mouse' &amp;&amp; event.data.identifier !== 1) || (!this.options.allowButtons &amp;&amp; event.data.buttons !== 0))
         {
             return
         }
-        const x = e.data.global.x
-        const y = e.data.global.y
+        const x = event.data.global.x
+        const y = event.data.global.y
 
         if (this.radiusSquared)
         {
@@ -586,7 +544,7 @@ export class MouseEdges extends Plugin
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 22:29:44 GMT+0800 (GMT+08:00)
             </div>
         </footer>
     </div>

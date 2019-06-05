@@ -32,6 +32,9 @@ const dragOptions = {
     mouseButtons: 'all'
 }
 
+/**
+ * @private
+ */
 export class Drag extends Plugin
 {
     /**

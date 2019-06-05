@@ -24,8 +24,8 @@ export class ClampZoom extends Plugin
      */
     constructor(parent, options={})
     {
-        this.options = Object.assign({}, clampZoomOptions, options)
         super(parent)
+        this.options = Object.assign({}, clampZoomOptions, options)
         this.clamp()
     }
 

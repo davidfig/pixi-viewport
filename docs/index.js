@@ -598,7 +598,6 @@
             {
                 window.Int32Array = Array;
             }
-            //# sourceMappingURL=polyfill.es.js.map
 
             var isMobile_min = createCommonjsModule(function (module) {
             !function(e){var n=/iPhone/i,t=/iPod/i,r=/iPad/i,a=/\bAndroid(?:.+)Mobile\b/i,p=/Android/i,l=/\bAndroid(?:.+)SD4930UR\b/i,b=/\bAndroid(?:.+)(?:KF[A-Z]{2,4})\b/i,f=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,c=/BlackBerry/i,s=/BB10/i,v=/Opera Mini/i,h=/\b(CriOS|Chrome)(?:.+)Mobile/i,w=/\Mobile(?:.+)Firefox\b/i;function m(e,i){return e.test(i)}function i(e){var i=e||("undefined"!=typeof navigator?navigator.userAgent:""),o=i.split("[FBAN");void 0!==o[1]&&(i=o[0]),void 0!==(o=i.split("Twitter"))[1]&&(i=o[0]);var d={apple:{phone:m(n,i)&&!m(f,i),ipod:m(t,i),tablet:!m(n,i)&&m(r,i)&&!m(f,i),device:(m(n,i)||m(t,i)||m(r,i))&&!m(f,i)},amazon:{phone:m(l,i),tablet:!m(l,i)&&m(b,i),device:m(l,i)||m(b,i)},android:{phone:!m(f,i)&&m(l,i)||!m(f,i)&&m(a,i),tablet:!m(f,i)&&!m(l,i)&&!m(a,i)&&(m(b,i)||m(p,i)),device:!m(f,i)&&(m(l,i)||m(b,i)||m(a,i)||m(p,i))},windows:{phone:m(f,i),tablet:m(u,i),device:m(f,i)||m(u,i)},other:{blackberry:m(c,i),blackberry10:m(s,i),opera:m(v,i),firefox:m(w,i),chrome:m(h,i),device:m(c,i)||m(s,i)||m(v,i)||m(w,i)||m(h,i)}};return d.any=d.apple.device||d.android.device||d.windows.device||d.other.device,d.phone=d.apple.phone||d.android.phone||d.windows.phone,d.tablet=d.apple.tablet||d.android.tablet||d.windows.tablet,d}module.exports&&"undefined"==typeof window?module.exports=i:module.exports&&"undefined"!=typeof window?module.exports=i():e.isMobile=i();}(commonjsGlobal);
@@ -903,7 +902,6 @@
                  */
                 ROUND_PIXELS: false,
             };
-            //# sourceMappingURL=settings.es.js.map
 
             var eventemitter3 = createCommonjsModule(function (module) {
 
@@ -3840,7 +3838,7 @@
 
             function writeFloat (buf, value, offset, littleEndian, noAssert) {
               if (!noAssert) {
-                checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38);
+                checkIEEE754(buf, value, offset, 4);
               }
               write(buf, value, offset, littleEndian, 23, 4);
               return offset + 4
@@ -3856,7 +3854,7 @@
 
             function writeDouble (buf, value, offset, littleEndian, noAssert) {
               if (!noAssert) {
-                checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308);
+                checkIEEE754(buf, value, offset, 8);
               }
               write(buf, value, offset, littleEndian, 52, 8);
               return offset + 8
@@ -5363,7 +5361,6 @@
                 MEDIUM: 'mediump',
                 HIGH: 'highp',
             };
-            //# sourceMappingURL=constants.es.js.map
 
             /*!
              * @pixi/utils - v5.0.3
@@ -6296,7 +6293,6 @@
 
                 warnings[message] = true;
             }
-            //# sourceMappingURL=utils.es.js.map
 
             var utils_es = /*#__PURE__*/Object.freeze({
                         BaseTextureCache: BaseTextureCache,
@@ -8147,7 +8143,6 @@
 
                 return false;
             };
-            //# sourceMappingURL=math.es.js.map
 
             /*!
              * @pixi/display - v5.0.3
@@ -9936,7 +9931,6 @@
 
             // performance increase to avoid using call.. (10x faster)
             Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
-            //# sourceMappingURL=display.es.js.map
 
             /*!
              * @pixi/accessibility - v5.0.3
@@ -10567,7 +10561,6 @@
                 this.children = null;
                 this.renderer = null;
             };
-            //# sourceMappingURL=accessibility.es.js.map
 
             var accessibility_es = /*#__PURE__*/Object.freeze({
                         AccessibilityManager: AccessibilityManager,
@@ -10765,7 +10758,6 @@
              * @see PIXI.Runner#emit
              */
             Runner.prototype.run = Runner.prototype.emit;
-            //# sourceMappingURL=runner.es.js.map
 
             /*!
              * @pixi/ticker - v5.0.3
@@ -11705,7 +11697,6 @@
                     oldTicker.destroy();
                 }
             };
-            //# sourceMappingURL=ticker.es.js.map
 
             /*!
              * @pixi/core - v5.0.3
@@ -23367,7 +23358,6 @@
 
                 return BatchRenderer;
             }(ObjectRenderer));
-            //# sourceMappingURL=core.es.js.map
 
             /*!
              * @pixi/extract - v5.0.3
@@ -23609,7 +23599,6 @@
                 this.renderer.extract = null;
                 this.renderer = null;
             };
-            //# sourceMappingURL=extract.es.js.map
 
             var extract_es = /*#__PURE__*/Object.freeze({
                         Extract: Extract
@@ -25972,7 +25961,6 @@
 
                 return InteractionManager;
             }(eventemitter3));
-            //# sourceMappingURL=interaction.es.js.map
 
             var interaction_es = /*#__PURE__*/Object.freeze({
                         InteractionData: InteractionData,
@@ -29376,7 +29364,6 @@
              * @member {PIXI.Point}
              */
             Graphics._TEMP_POINT = new Point();
-            //# sourceMappingURL=graphics.es.js.map
 
             /*!
              * @pixi/sprite - v5.0.3
@@ -30028,7 +30015,6 @@
 
                 return Sprite;
             }(Container));
-            //# sourceMappingURL=sprite.es.js.map
 
             /*!
              * @pixi/text - v5.0.3
@@ -32271,7 +32257,6 @@
 
                 return Text;
             }(Sprite));
-            //# sourceMappingURL=text.es.js.map
 
             /*!
              * @pixi/prepare - v5.0.3
@@ -32956,7 +32941,6 @@
             {
                 return Date.now() - this.frameStart < this.maxMilliseconds;
             };
-            //# sourceMappingURL=prepare.es.js.map
 
             var prepare_es = /*#__PURE__*/Object.freeze({
                         BasePrepare: BasePrepare,
@@ -33189,7 +33173,6 @@
             };
 
             Application.registerPlugin(ResizePlugin);
-            //# sourceMappingURL=app.es.js.map
 
             var miniSignals = createCommonjsModule(function (module, exports) {
 
@@ -33609,7 +33592,7 @@
 
                 return q;
             }
-            //# sourceMappingURL=async.js.map
+
             });
 
             unwrapExports(async);
@@ -34863,7 +34846,7 @@
             {
                 module.exports.default = Resource; // eslint-disable-line no-undef
             }
-            //# sourceMappingURL=Resource.js.map
+
             });
 
             unwrapExports(Resource_1);
@@ -35628,7 +35611,7 @@
 
                 return Loader;
             };
-            //# sourceMappingURL=Loader.js.map
+
             });
 
             unwrapExports(Loader_1);
@@ -35711,7 +35694,7 @@
             {
                 module.exports.default = encodeBinary; // eslint-disable-line no-undef
             }
-            //# sourceMappingURL=b64.js.map
+
             });
 
             unwrapExports(b64);
@@ -37695,7 +37678,6 @@
              * @memberof PIXI
              */
             var LoaderResource = lib_1;
-            //# sourceMappingURL=loaders.es.js.map
 
             /*!
              * @pixi/particles - v5.0.3
@@ -38673,7 +38655,6 @@
 
                 return ParticleRenderer;
             }(ObjectRenderer));
-            //# sourceMappingURL=particles.es.js.map
 
             /*!
              * @pixi/spritesheet - v5.0.3
@@ -39082,7 +39063,6 @@
 
                 return url.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
             };
-            //# sourceMappingURL=spritesheet.es.js.map
 
             /*!
              * @pixi/sprite-tiling - v5.0.3
@@ -39579,7 +39559,6 @@
 
                 return TilingSpriteRenderer;
             }(ObjectRenderer));
-            //# sourceMappingURL=sprite-tiling.es.js.map
 
             /*!
              * @pixi/text-bitmap - v5.0.3
@@ -40405,7 +40384,6 @@
                     }
                 }
             };
-            //# sourceMappingURL=text-bitmap.es.js.map
 
             /*!
              * @pixi/filter-alpha - v5.0.3
@@ -40470,7 +40448,6 @@
 
                 return AlphaFilter;
             }(Filter));
-            //# sourceMappingURL=filter-alpha.es.js.map
 
             /*!
              * @pixi/filter-blur - v5.0.3
@@ -40896,7 +40873,6 @@
 
                 return BlurFilter;
             }(Filter));
-            //# sourceMappingURL=filter-blur.es.js.map
 
             /*!
              * @pixi/filter-color-matrix - v5.0.3
@@ -41495,7 +41471,6 @@
 
             // Americanized alias
             ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
-            //# sourceMappingURL=filter-color-matrix.es.js.map
 
             /*!
              * @pixi/filter-displacement - v5.0.3
@@ -41613,7 +41588,6 @@
 
                 return DisplacementFilter;
             }(Filter));
-            //# sourceMappingURL=filter-displacement.es.js.map
 
             /*!
              * @pixi/filter-fxaa - v5.0.3
@@ -41651,7 +41625,6 @@
 
                 return FXAAFilter;
             }(Filter));
-            //# sourceMappingURL=filter-fxaa.es.js.map
 
             /*!
              * @pixi/filter-noise - v5.0.3
@@ -41731,7 +41704,6 @@
 
                 return NoiseFilter;
             }(Filter));
-            //# sourceMappingURL=filter-noise.es.js.map
 
             /*!
              * @pixi/mixin-cache-as-bitmap - v5.0.3
@@ -42153,7 +42125,6 @@
                 this.cacheAsBitmap = false;
                 this.destroy(options);
             };
-            //# sourceMappingURL=mixin-cache-as-bitmap.es.js.map
 
             /*!
              * @pixi/mixin-get-child-by-name - v5.0.3
@@ -42191,7 +42162,6 @@
 
                 return null;
             };
-            //# sourceMappingURL=mixin-get-child-by-name.es.js.map
 
             /*!
              * @pixi/mixin-get-global-position - v5.0.3
@@ -42229,7 +42199,6 @@
 
                 return point;
             };
-            //# sourceMappingURL=mixin-get-global-position.es.js.map
 
             /*!
              * @pixi/mesh - v5.0.3
@@ -43007,7 +42976,6 @@
 
                 return MeshGeometry;
             }(Geometry));
-            //# sourceMappingURL=mesh.es.js.map
 
             /*!
              * @pixi/mesh-extras - v5.0.3
@@ -43763,7 +43731,6 @@
 
                 return NineSlicePlane;
             }(SimplePlane));
-            //# sourceMappingURL=mesh-extras.es.js.map
 
             /*!
              * @pixi/sprite-animated - v5.0.3
@@ -44206,7 +44173,6 @@
 
                 return AnimatedSprite;
             }(Sprite));
-            //# sourceMappingURL=sprite-animated.es.js.map
 
             /*!
              * pixi.js - v5.0.3
@@ -45388,9 +45354,8 @@
                 FXAAFilter: FXAAFilter,
                 NoiseFilter: NoiseFilter,
             };
-            //# sourceMappingURL=pixi.es.js.map
 
-            var pixi_es = /*#__PURE__*/Object.freeze({
+            var PIXI = /*#__PURE__*/Object.freeze({
                         accessibility: accessibility_es,
                         extract: extract_es,
                         interaction: interaction_es,
@@ -48862,7 +48827,7 @@
                     var _this = _possibleConstructorReturn$8(this, (Ease.__proto__ || Object.getPrototypeOf(Ease)).call(this));
 
                     if (!options.noTicker) {
-                        var ticker = options.ticker || (pixi_es.Ticker ? pixi_es.Ticker.shared : pixi_es.ticker.shared);
+                        var ticker = options.ticker || (PIXI.Ticker ? PIXI.Ticker.shared : PIXI.ticker.shared);
                         ticker.add(function () {
                             return _this.update(ticker.deltaTime * 16.66);
                         });
@@ -52305,7 +52270,10 @@
                 {
                     this.viewport = viewport;
 
-                    /** @type {ViewportTouch[]} list of active touches on viewport */
+                    /**
+                     * list of active touches on viewport
+                     * @type {ViewportTouch[]}
+                     */
                     this.touches = [];
                     this.addListeners();
                 }
@@ -52764,6 +52732,9 @@
                 }
             }
 
+            /**
+             * derive this class to create user-defined plugins
+             */
             class Plugin
             {
                 /**
@@ -52873,6 +52844,9 @@
                 mouseButtons: 'all'
             };
 
+            /**
+             * @private
+             */
             class Drag extends Plugin
             {
                 /**
@@ -52935,14 +52909,11 @@
                 {
                     const isMouse = event.data.pointerType === 'mouse';
                     const count = this.parent.input.count();
-                    if (this.parent.parent)
+                    if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch')))
                     {
-                        if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch')))
+                        if (!isMouse || this.mouse[event.data.button])
                         {
-                            if (!isMouse || this.mouse[event.data.button])
-                            {
-                                return true
-                            }
+                            return true
                         }
                     }
                     return false
@@ -52959,8 +52930,7 @@
                     }
                     if (this.checkButtons(event))
                     {
-                        const parent = this.parent.parent.toLocal(event.data.global);
-                        this.last = { x: event.data.global.x, y: event.data.global.y, parent };
+                        this.last = { x: event.data.global.x, y: event.data.global.y };
                         this.current = event.data.pointerId;
                         return true
                     }
@@ -52995,16 +52965,16 @@
                             const distY = y - this.last.y;
                             if (this.moved || ((this.xDirection && this.parent.input.checkThreshold(distX)) || (this.yDirection && this.parent.input.checkThreshold(distY))))
                             {
-                                const newParent = this.parent.parent.toLocal(event.data.global);
+                                const newPoint = { x, y };
                                 if (this.xDirection)
                                 {
-                                    this.parent.x += (newParent.x - this.last.parent.x) * this.options.factor;
+                                    this.parent.x += (newPoint.x - this.last.x) * this.options.factor;
                                 }
                                 if (this.yDirection)
                                 {
-                                    this.parent.y += (newParent.y - this.last.parent.y) * this.options.factor;
+                                    this.parent.y += (newPoint.y - this.last.y) * this.options.factor;
                                 }
-                                this.last = { x, y, parent: newParent };
+                                this.last = newPoint;
                                 if (!this.moved)
                                 {
                                     this.parent.emit('drag-start', { screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent});
@@ -53033,8 +53003,7 @@
                         const pointer = touches[0];
                         if (pointer.last)
                         {
-                            const parent = this.parent.parent.toLocal(pointer.last);
-                            this.last = { x: pointer.last.x, y: pointer.last.y, parent };
+                            this.last = { x: pointer.last.x, y: pointer.last.y };
                             this.current = pointer.id;
                         }
                         this.moved = false;
@@ -53313,6 +53282,7 @@
             class Clamp extends Plugin
             {
                 /**
+                 * @private
                  * @param {Viewport} parent
                  * @param {ClampOptions} [options]
                  */
@@ -53513,8 +53483,8 @@
                  */
                 constructor(parent, options={})
                 {
-                    this.options = Object.assign({}, clampZoomOptions, options);
                     super(parent);
+                    this.options = Object.assign({}, clampZoomOptions, options);
                     this.clamp();
                 }
 
@@ -54183,11 +54153,7 @@
                 constructor(parent, options={})
                 {
                     super(parent);
-                    this.options = Object.assign({}, snapZoomOptions);
-                    for (let key in options)
-                    {
-                        this.options[key] = options[key];
-                    }
+                    this.options = Object.assign({}, snapZoomOptions, options);
                     if (this.options.width > 0)
                     {
                         this.x_scale = parent.screenWidth / this.options.width;
@@ -54358,11 +54324,7 @@
                 {
                     super(parent);
                     this.target = target;
-                    this.options = followOptions;
-                    for (let key in options)
-                    {
-                        this.options[key] = options[key];
-                    }
+                    this.options = Object.assign({}, followOptions, options);
                     this.velocity = { x: 0, y: 0 };
                 }
 
@@ -54454,7 +54416,7 @@
              */
 
             const wheelOptions = {
-                percet: 0.1,
+                percent: 0.1,
                 smooth: false,
                 interrupt: true,
                 reverse: false,
@@ -54479,16 +54441,16 @@
                 {
                     if (this.options.interrupt)
                     {
-                        this.options.smoothing = null;
+                        this.smoothing = null;
                     }
                 }
 
                 update()
                 {
-                    if (this.options.smoothing)
+                    if (this.smoothing)
                     {
-                        const point = this.options.smoothingCenter;
-                        const change = this.options.smoothing;
+                        const point = this.smoothingCenter;
+                        const change = this.smoothing;
                         let oldPoint;
                         if (!this.options.center)
                         {
@@ -54512,10 +54474,10 @@
                             this.parent.x += point.x - newPoint.x;
                             this.parent.y += point.y - newPoint.y;
                         }
-                        this.options.smoothingCount++;
-                        if (this.options.smoothingCount >= this.options.smooth)
+                        this.smoothingCount++;
+                        if (this.smoothingCount >= this.options.smooth)
                         {
-                            this.options.smoothing = null;
+                            this.smoothing = null;
                         }
                     }
                 }
@@ -54534,15 +54496,15 @@
                     if (this.options.smooth)
                     {
                         const original = {
-                            x: this.options.smoothing ? this.options.smoothing.x * (this.options.smooth - this.options.smoothingCount) : 0,
-                            y: this.options.smoothing ? this.options.smoothing.y * (this.options.smooth - this.options.smoothingCount) : 0
+                            x: this.smoothing ? this.smoothing.x * (this.options.smooth - this.smoothingCount) : 0,
+                            y: this.smoothing ? this.smoothing.y * (this.options.smooth - this.smoothingCount) : 0
                         };
-                        this.options.smoothing = {
+                        this.smoothing = {
                             x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
                             y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth
                         };
-                        this.options.smoothingCount = 0;
-                        this.options.smoothingCenter = point;
+                        this.smoothingCount = 0;
+                        this.smoothingCenter = point;
                     }
                     else
                     {
@@ -54594,7 +54556,7 @@
              * @property {boolean} [allowButtons] allows plugin to continue working even when there's a mousedown event
              */
 
-            const mouseEdgeOptions = {
+            const mouseEdgesOptions = {
                 radius: null,
                 distance: null,
                 top: null,
@@ -54621,20 +54583,15 @@
                 constructor(parent, options={})
                 {
                     super(parent);
-                    this.options = Object.assign({}, mouseEdgeOptions);
-                    for (let key in options)
-                    {
-                        this.options[key] = options[key];
-                    }
-                    this.reverse = options.reverse ? 1 : -1;
+                    this.options = Object.assign({}, mouseEdgesOptions, options);
+                    this.reverse = this.options.reverse ? 1 : -1;
                     this.radiusSquared = Math.pow(this.options.radius, 2);
                     this.resize();
                 }
 
                 resize()
                 {
-                    const options = this.options;
-                    const distance = options.distance;
+                    const distance = this.options.distance;
                     if (distance !== null)
                     {
                         this.left = distance;
@@ -54646,8 +54603,8 @@
                     {
                         this.left = this.options.left;
                         this.top = this.options.top;
-                        this.right = this.options.right === null ? null : window.innerWidth - options.right;
-                        this.bottom = this.options.bottom === null ? null : window.innerHeight - options.bottom;
+                        this.right = this.options.right === null ? null : window.innerWidth - this.options.right;
+                        this.bottom = this.options.bottom === null ? null : window.innerHeight - this.options.bottom;
                     }
                 }
 
@@ -54659,14 +54616,14 @@
                     }
                 }
 
-                move(e)
+                move(event)
                 {
-                    if ((e.data.identifier !== 'MOUSE' && e.data.identifier !== 1) || (!this.options.allowButtons && e.data.buttons !== 0))
+                    if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1) || (!this.options.allowButtons && event.data.buttons !== 0))
                     {
                         return
                     }
-                    const x = e.data.global.x;
-                    const y = e.data.global.y;
+                    const x = event.data.global.x;
+                    const y = event.data.global.y;
 
                     if (this.radiusSquared)
                     {
@@ -54796,7 +54753,7 @@
              * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport
              * @property {HitArea} [forceHitArea] change the default hitArea from world size to a new value
              * @property {boolean} [noTicker] set this if you want to manually call update() function on each frame
-             * @property {PIXI.ticker.Ticker} [ticker=PIXI.Ticker.shared||PIXI.ticker.shared] use this PIXI.ticker for updates
+             * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
              * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
              * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
              */
@@ -54811,10 +54768,12 @@
                 stopPropagation: false,
                 forceHitArea: null,
                 noTicker: false,
-                ticker: Ticker.shared,
                 interaction: null
             };
 
+            /**
+             * Main class to use when creating a Viewport
+             */
             class Viewport extends Container
             {
                 /**
@@ -54852,10 +54811,28 @@
                 constructor(options={})
                 {
                     super();
-                    this.options = Object.assign({}, viewportOptions);
-                    for (let key in options)
+                    this.options = Object.assign({}, viewportOptions, options);
+
+                    // needed to pull this out of viewportOptions because of pixi.js v4 support (which changed from PIXI.ticker.shared to PIXI.Ticker.shared...sigh)
+                    if (options.ticker)
                     {
-                        this.options[key] = options[key];
+                        this.options.ticker = options.ticker;
+                    }
+                    else
+                    {
+                        // to avoid Rollup transforming our import, save pixi namespace in a variable
+                        // from here: https://github.com/pixijs/pixi.js/issues/5757
+                        let ticker;
+                        const pixiNS = PIXI;
+                        if (parseInt(/^(\d+)\./.exec(VERSION$1)[1]) < 5)
+                        {
+                            ticker = pixiNS.ticker.shared;
+                        }
+                        else
+                        {
+                            ticker = pixiNS.Ticker.shared;
+                        }
+                        this.options.ticker = options.ticker || ticker;
                     }
 
                     /** @type {number} */
@@ -54868,7 +54845,10 @@
                     this._worldHeight = this.options.worldHeight;
                     this.forceHitArea = this.options.forceHitArea;
 
-                    /** @type {number} number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event */
+                    /**
+                     * number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
+                     * @type {number}
+                     */
                     this.threshold = this.options.threshold;
 
                     this.options.divWheel = this.options.divWheel || document.body;
@@ -55061,8 +55041,8 @@
                 }
 
                 /**
-                 * @type {number}
                  * screen width in world coordinates
+                 * @type {number}
                  */
                 get worldScreenWidth()
                 {
@@ -55070,8 +55050,8 @@
                 }
 
                 /**
-                 * @type {number}
                  * screen height in world coordinates
+                 * @type {number}
                  */
                 get worldScreenHeight()
                 {
@@ -55079,8 +55059,8 @@
                 }
 
                 /**
-                 * @type {number}
                  * world width in screen coordinates
+                 * @type {number}
                  */
                 get screenWorldWidth()
                 {
@@ -55088,8 +55068,8 @@
                 }
 
                 /**
-                 * @type {number}
                  * world height in screen coordinates
+                 * @type {number}
                  */
                 get screenWorldHeight()
                 {
@@ -55097,8 +55077,8 @@
                 }
 
                 /**
-                 * @type {PIXI.Point}
                  * center of screen in world coordinates
+                 * @type {PIXI.Point}
                  */
                 get center()
                 {
@@ -55130,12 +55110,13 @@
                     }
                     this.position.set((this.worldScreenWidth / 2 - x) * this.scale.x, (this.worldScreenHeight / 2 - y) * this.scale.y);
                     this.plugins.reset();
+                    this.dirty = true;
                     return this
                 }
 
                 /**
-                 * @type {PIXI.Point}
                  * top-left corner of Viewport
+                 * @type {PIXI.Point}
                  */
                 get corner()
                 {
@@ -55374,7 +55355,10 @@
                     }
                 }
 
-                /** @type {number} world coordinates of the right edge of the screen */
+                /**
+                 * world coordinates of the right edge of the screen
+                 * @type {number}
+                 */
                 get right()
                 {
                     return -this.x / this.scale.x + this.worldScreenWidth
@@ -55385,7 +55369,10 @@
                     this.plugins.reset();
                 }
 
-                /** @type {number} world coordinates of the left edge of the screen */
+                /**
+                 * world coordinates of the left edge of the screen
+                 * @type { number }
+                 */
                 get left()
                 {
                     return -this.x / this.scale.x
@@ -55396,7 +55383,10 @@
                     this.plugins.reset();
                 }
 
-                /** @type {number} world coordinates of the top edge of the screen */
+                /**
+                 * world coordinates of the top edge of the screen
+                 * @type {number}
+                 */
                 get top()
                 {
                     return -this.y / this.scale.y
@@ -55407,7 +55397,10 @@
                     this.plugins.reset();
                 }
 
-                /** @type {number} world coordinates of the bottom edge of the screen */
+                /**
+                 * world coordinates of the bottom edge of the screen
+                 * @type {number}
+                 */
                 get bottom()
                 {
                     return -this.y / this.scale.y + this.worldScreenHeight
@@ -55418,7 +55411,10 @@
                     this.plugins.reset();
                 }
 
-                /** @type {boolean} determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change) */
+                /**
+                 * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
+                 * @type {boolean}
+                 */
                 get dirty()
                 {
                     return this._dirty
@@ -55576,7 +55572,10 @@
                     return this
                 }
 
-                /** @type {boolean} pause viewport (including animation updates such as decelerate) */
+                /**
+                 * pause viewport (including animation updates such as decelerate)
+                 * @type {boolean}
+                 */
                 get pause()
                 {
                     return this._pause
@@ -55786,6 +55785,9 @@
               * @property {number} scaleY
               */
 
+            /**
+             * derive this class to create user-defined plugins
+             */
             class Plugin$1
             {
                 /**
@@ -56128,7 +56130,7 @@
              * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport
              * @property {HitArea} [forceHitArea] change the default hitArea from world size to a new value
              * @property {boolean} [noTicker] set this if you want to manually call update() function on each frame
-             * @property {PIXI.ticker.Ticker} [ticker=PIXI.Ticker.shared||PIXI.ticker.shared] use this PIXI.ticker for updates
+             * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
              * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
              * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
              */
@@ -56143,7 +56145,6 @@
                 stopPropagation: false,
                 forceHitArea: null,
                 noTicker: false,
-                ticker: Ticker.shared,
                 interaction: null
             };
 
@@ -56712,8 +56713,7 @@
                 function change()
                 {
                     const me = options.mouseEdges;
-                    const options = { radius: me.radius !== 0 ? me.radius : null, distance: me.distance !== 0 ? me.distance : null, top: me.top !== 0 ? me.top : null, bottom: me.bottom !== 0 ? me.bottom : null, left: me.left !== 0 ? me.left : null, right: me.right !== 0 ? me.right : null, speed: me.speed, reverse: me.reverse, noDecelerate: me.noDecelerate, linear: me.linear };
-                    _viewport.mouseEdges(options);
+                    _viewport.mouseEdges({ radius: me.radius !== 0 ? me.radius : null, distance: me.distance !== 0 ? me.distance : null, top: me.top !== 0 ? me.top : null, bottom: me.bottom !== 0 ? me.bottom : null, left: me.left !== 0 ? me.left : null, right: me.right !== 0 ? me.right : null, speed: me.speed, reverse: me.reverse, noDecelerate: me.noDecelerate, linear: me.linear });
                 }
 
                 function add()
@@ -56965,3 +56965,4 @@
             };
 
 }());
+//# sourceMappingURL=index.js.map

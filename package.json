@@ -21,7 +21,8 @@
     "builds-browserify": "browserify docs/builds/browserify/code.js -o docs/builds/browserify/index.js",
     "builds-standalone": "cp dist/viewport.js* docs/",
     "builds-typescript": "rollup -c docs/builds/typescript/rollup.config.js",
-    "builds": "yarn builds-rollup && yarn builds-browserify && yarn builds-standalone && yarn builds-typescript"
+    "builds-demo": "rollup -c docs/rollup.config.js",
+    "builds": "yarn builds-rollup && yarn builds-browserify && yarn builds-standalone && yarn builds-typescript && yarn builds-demo"
   },
   "repository": {
     "type": "git",

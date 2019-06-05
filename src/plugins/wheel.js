@@ -10,7 +10,7 @@ import { Plugin } from './plugin'
  */
 
 const wheelOptions = {
-    percet: 0.1,
+    percent: 0.1,
     smooth: false,
     interrupt: true,
     reverse: false,
@@ -35,16 +35,16 @@ export class Wheel extends Plugin
     {
         if (this.options.interrupt)
         {
-            this.options.smoothing = null
+            this.smoothing = null
         }
     }
 
     update()
     {
-        if (this.options.smoothing)
+        if (this.smoothing)
         {
-            const point = this.options.smoothingCenter
-            const change = this.options.smoothing
+            const point = this.smoothingCenter
+            const change = this.smoothing
             let oldPoint
             if (!this.options.center)
             {
@@ -68,10 +68,10 @@ export class Wheel extends Plugin
                 this.parent.x += point.x - newPoint.x
                 this.parent.y += point.y - newPoint.y
             }
-            this.options.smoothingCount++
-            if (this.options.smoothingCount >= this.options.smooth)
+            this.smoothingCount++
+            if (this.smoothingCount >= this.options.smooth)
             {
-                this.options.smoothing = null
+                this.smoothing = null
             }
         }
     }
@@ -90,15 +90,15 @@ export class Wheel extends Plugin
         if (this.options.smooth)
         {
             const original = {
-                x: this.options.smoothing ? this.options.smoothing.x * (this.options.smooth - this.options.smoothingCount) : 0,
-                y: this.options.smoothing ? this.options.smoothing.y * (this.options.smooth - this.options.smoothingCount) : 0
+                x: this.smoothing ? this.smoothing.x * (this.options.smooth - this.smoothingCount) : 0,
+                y: this.smoothing ? this.smoothing.y * (this.options.smooth - this.smoothingCount) : 0
             }
-            this.options.smoothing = {
+            this.smoothing = {
                 x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
                 y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth
             }
-            this.options.smoothingCount = 0
-            this.options.smoothingCenter = point
+            this.smoothingCount = 0
+            this.smoothingCenter = point
         }
         else
         {

@@ -479,6 +479,9 @@ class PluginManager
     }
 }
 
+/**
+ * derive this class to create user-defined plugins
+ */
 class Plugin
 {
     /**
@@ -588,6 +591,9 @@ const dragOptions = {
     mouseButtons: 'all'
 };
 
+/**
+ * @private
+ */
 class Drag extends Plugin
 {
     /**
@@ -1023,6 +1029,7 @@ const clampOptions =
 class Clamp extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {ClampOptions} [options]
      */
@@ -1223,8 +1230,8 @@ class ClampZoom extends Plugin
      */
     constructor(parent, options={})
     {
-        this.options = Object.assign({}, clampZoomOptions, options);
         super(parent);
+        this.options = Object.assign({}, clampZoomOptions, options);
         this.clamp();
     }
 
@@ -2145,11 +2152,7 @@ class SnapZoom extends Plugin
     constructor(parent, options={})
     {
         super(parent);
-        this.options = Object.assign({}, snapZoomOptions);
-        for (let key in options)
-        {
-            this.options[key] = options[key];
-        }
+        this.options = Object.assign({}, snapZoomOptions, options);
         if (this.options.width > 0)
         {
             this.x_scale = parent.screenWidth / this.options.width;
@@ -2320,11 +2323,7 @@ class Follow extends Plugin
     {
         super(parent);
         this.target = target;
-        this.options = followOptions;
-        for (let key in options)
-        {
-            this.options[key] = options[key];
-        }
+        this.options = Object.assign({}, followOptions, options);
         this.velocity = { x: 0, y: 0 };
     }
 
@@ -2416,7 +2415,7 @@ class Follow extends Plugin
  */
 
 const wheelOptions = {
-    percet: 0.1,
+    percent: 0.1,
     smooth: false,
     interrupt: true,
     reverse: false,
@@ -2441,16 +2440,16 @@ class Wheel extends Plugin
     {
         if (this.options.interrupt)
         {
-            this.options.smoothing = null;
+            this.smoothing = null;
         }
     }
 
     update()
     {
-        if (this.options.smoothing)
+        if (this.smoothing)
         {
-            const point = this.options.smoothingCenter;
-            const change = this.options.smoothing;
+            const point = this.smoothingCenter;
+            const change = this.smoothing;
             let oldPoint;
             if (!this.options.center)
             {
@@ -2474,10 +2473,10 @@ class Wheel extends Plugin
                 this.parent.x += point.x - newPoint.x;
                 this.parent.y += point.y - newPoint.y;
             }
-            this.options.smoothingCount++;
-            if (this.options.smoothingCount >= this.options.smooth)
+            this.smoothingCount++;
+            if (this.smoothingCount >= this.options.smooth)
             {
-                this.options.smoothing = null;
+                this.smoothing = null;
             }
         }
     }
@@ -2496,15 +2495,15 @@ class Wheel extends Plugin
         if (this.options.smooth)
         {
             const original = {
-                x: this.options.smoothing ? this.options.smoothing.x * (this.options.smooth - this.options.smoothingCount) : 0,
-                y: this.options.smoothing ? this.options.smoothing.y * (this.options.smooth - this.options.smoothingCount) : 0
+                x: this.smoothing ? this.smoothing.x * (this.options.smooth - this.smoothingCount) : 0,
+                y: this.smoothing ? this.smoothing.y * (this.options.smooth - this.smoothingCount) : 0
             };
-            this.options.smoothing = {
+            this.smoothing = {
                 x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
                 y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth
             };
-            this.options.smoothingCount = 0;
-            this.options.smoothingCenter = point;
+            this.smoothingCount = 0;
+            this.smoothingCenter = point;
         }
         else
         {
@@ -2556,7 +2555,7 @@ class Wheel extends Plugin
  * @property {boolean} [allowButtons] allows plugin to continue working even when there's a mousedown event
  */
 
-const mouseEdgeOptions = {
+const mouseEdgesOptions = {
     radius: null,
     distance: null,
     top: null,
@@ -2583,20 +2582,15 @@ class MouseEdges extends Plugin
     constructor(parent, options={})
     {
         super(parent);
-        this.options = Object.assign({}, mouseEdgeOptions);
-        for (let key in options)
-        {
-            this.options[key] = options[key];
-        }
-        this.reverse = options.reverse ? 1 : -1;
+        this.options = Object.assign({}, mouseEdgesOptions, options);
+        this.reverse = this.options.reverse ? 1 : -1;
         this.radiusSquared = Math.pow(this.options.radius, 2);
         this.resize();
     }
 
     resize()
     {
-        const options = this.options;
-        const distance = options.distance;
+        const distance = this.options.distance;
         if (distance !== null)
         {
             this.left = distance;
@@ -2608,8 +2602,8 @@ class MouseEdges extends Plugin
         {
             this.left = this.options.left;
             this.top = this.options.top;
-            this.right = this.options.right === null ? null : window.innerWidth - options.right;
-            this.bottom = this.options.bottom === null ? null : window.innerHeight - options.bottom;
+            this.right = this.options.right === null ? null : window.innerWidth - this.options.right;
+            this.bottom = this.options.bottom === null ? null : window.innerHeight - this.options.bottom;
         }
     }
 
@@ -2621,14 +2615,14 @@ class MouseEdges extends Plugin
         }
     }
 
-    move(e)
+    move(event)
     {
-        if ((e.data.identifier !== 'MOUSE' && e.data.identifier !== 1) || (!this.options.allowButtons && e.data.buttons !== 0))
+        if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1) || (!this.options.allowButtons && event.data.buttons !== 0))
         {
             return
         }
-        const x = e.data.global.x;
-        const y = e.data.global.y;
+        const x = event.data.global.x;
+        const y = event.data.global.y;
 
         if (this.radiusSquared)
         {
@@ -2829,7 +2823,7 @@ class Viewport extends Container
             // from here: https://github.com/pixijs/pixi.js/issues/5757
             let ticker;
             const pixiNS = PIXI;
-            if (parseInt(/^(\d+)\./.exec(VERSION)[ 1 ]) < 5)
+            if (parseInt(/^(\d+)\./.exec(VERSION)[1]) < 5)
             {
                 ticker = pixiNS.ticker.shared;
             }
@@ -2838,10 +2832,6 @@ class Viewport extends Container
                 ticker = pixiNS.Ticker.shared;
             }
             this.options.ticker = options.ticker || ticker;
-        }
-        for (let key in options)
-        {
-            this.options[key] = options[key];
         }
 
         /** @type {number} */

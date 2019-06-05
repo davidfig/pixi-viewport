@@ -23,6 +23,7 @@ const clampOptions =
 export class Clamp extends Plugin
 {
     /**
+     * @private
      * @param {Viewport} parent
      * @param {ClampOptions} [options]
      */
