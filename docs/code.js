@@ -1,15 +1,15 @@
-const PIXI = require('pixi.js')
-const Ease = require('pixi-ease')
-const Random = require('yy-random')
-const Counter = require('yy-counter')
-const FPS = require('yy-fps')
-const clicked = require('clicked')
+import * as PIXI from 'pixi.js'
+import Ease from 'pixi-ease'
+import Random from 'yy-random'
+import Counter from 'yy-counter'
+import FPS from 'yy-fps'
+import clicked from 'clicked'
+// import highlight from 'highlight.js'
 
-// const Viewport = require('../dist/viewport')
-const Viewport = require('../src/viewport')
-const UserPlugin = require('./user-plugin')
+import { Viewport } from '../src/viewport'
+import { UserPlugin } from './user-plugin'
 
-const gui = require('./gui')
+import { gui } from './gui'
 
 const BORDER = 10
 const WIDTH = 3000
@@ -42,7 +42,7 @@ function viewport()
     // test for removeListeners()
     // _viewport.removeListeners()
 
-    _viewport.userPlugin('test', new UserPlugin(_viewport))
+    _viewport.plugins.add('test', new UserPlugin(_viewport))
 }
 
 function resize()
@@ -189,7 +189,7 @@ window.onload = function ()
     drawWorld()
     events()
 
-    PIXI.ticker.shared.add(() =>
+    PIXI.Ticker.shared.add(() =>
     {
         _fps.frame()
 
@@ -201,9 +201,9 @@ window.onload = function ()
         // _viewport.dirty = false
     })
 
-    gui.gui(_viewport, drawWorld, _object)
+    gui(_viewport, drawWorld, _object)
 
     API()
 
-    require('./highlight')('https://github.com/davidfig/pixi-viewport')
+    // highlight()
 }
