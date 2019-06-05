@@ -4176,26 +4176,6 @@
             }
 
             // Copyright Joyent, Inc. and other Node contributors.
-            //
-            // Permission is hereby granted, free of charge, to any person obtaining a
-            // copy of this software and associated documentation files (the
-            // "Software"), to deal in the Software without restriction, including
-            // without limitation the rights to use, copy, modify, merge, publish,
-            // distribute, sublicense, and/or sell copies of the Software, and to permit
-            // persons to whom the Software is furnished to do so, subject to the
-            // following conditions:
-            //
-            // The above copyright notice and this permission notice shall be included
-            // in all copies or substantial portions of the Software.
-            //
-            // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-            // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-            // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-            // NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-            // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-            // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-            // USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
             // If obj.hasOwnProperty has been overridden, then calling
             // obj.hasOwnProperty(prop) will break.
@@ -4203,68 +4183,8 @@
             function hasOwnProperty$1(obj, prop) {
               return Object.prototype.hasOwnProperty.call(obj, prop);
             }
-            var isArray$1 = Array.isArray || function (xs) {
-              return Object.prototype.toString.call(xs) === '[object Array]';
-            };
-            function stringifyPrimitive(v) {
-              switch (typeof v) {
-                case 'string':
-                  return v;
 
-                case 'boolean':
-                  return v ? 'true' : 'false';
-
-                case 'number':
-                  return isFinite(v) ? v : '';
-
-                default:
-                  return '';
-              }
-            }
-
-            function stringify (obj, sep, eq, name) {
-              sep = sep || '&';
-              eq = eq || '=';
-              if (obj === null) {
-                obj = undefined;
-              }
-
-              if (typeof obj === 'object') {
-                return map$1(objectKeys(obj), function(k) {
-                  var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-                  if (isArray$1(obj[k])) {
-                    return map$1(obj[k], function(v) {
-                      return ks + encodeURIComponent(stringifyPrimitive(v));
-                    }).join(sep);
-                  } else {
-                    return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-                  }
-                }).join(sep);
-
-              }
-
-              if (!name) return '';
-              return encodeURIComponent(stringifyPrimitive(name)) + eq +
-                     encodeURIComponent(stringifyPrimitive(obj));
-            }
-            function map$1 (xs, f) {
-              if (xs.map) return xs.map(f);
-              var res = [];
-              for (var i = 0; i < xs.length; i++) {
-                res.push(f(xs[i], i));
-              }
-              return res;
-            }
-
-            var objectKeys = Object.keys || function (obj) {
-              var res = [];
-              for (var key in obj) {
-                if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-              }
-              return res;
-            };
-
-            function parse(qs, sep, eq, options) {
+            var decode = function(qs, sep, eq, options) {
               sep = sep || '&';
               eq = eq || '=';
               var obj = {};
@@ -4305,7 +4225,7 @@
 
                 if (!hasOwnProperty$1(obj, k)) {
                   obj[k] = v;
-                } else if (isArray$1(obj[k])) {
+                } else if (Array.isArray(obj[k])) {
                   obj[k].push(v);
                 } else {
                   obj[k] = [obj[k], v];
@@ -4313,7 +4233,61 @@
               }
 
               return obj;
-            }
+            };
+
+            // Copyright Joyent, Inc. and other Node contributors.
+
+            var stringifyPrimitive = function(v) {
+              switch (typeof v) {
+                case 'string':
+                  return v;
+
+                case 'boolean':
+                  return v ? 'true' : 'false';
+
+                case 'number':
+                  return isFinite(v) ? v : '';
+
+                default:
+                  return '';
+              }
+            };
+
+            var encode$1 = function(obj, sep, eq, name) {
+              sep = sep || '&';
+              eq = eq || '=';
+              if (obj === null) {
+                obj = undefined;
+              }
+
+              if (typeof obj === 'object') {
+                return Object.keys(obj).map(function(k) {
+                  var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+                  if (Array.isArray(obj[k])) {
+                    return obj[k].map(function(v) {
+                      return ks + encodeURIComponent(stringifyPrimitive(v));
+                    }).join(sep);
+                  } else {
+                    return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+                  }
+                }).join(sep);
+
+              }
+
+              if (!name) return '';
+              return encodeURIComponent(stringifyPrimitive(name)) + eq +
+                     encodeURIComponent(stringifyPrimitive(obj));
+            };
+
+            var querystring = createCommonjsModule(function (module, exports) {
+
+            exports.decode = exports.parse = decode;
+            exports.encode = exports.stringify = encode$1;
+            });
+            var querystring_1 = querystring.decode;
+            var querystring_2 = querystring.parse;
+            var querystring_3 = querystring.encode;
+            var querystring_4 = querystring.stringify;
 
             // Copyright Joyent, Inc. and other Node contributors.
             var url = {
@@ -4398,10 +4372,10 @@
               return u;
             }
             Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
-              return parse$1(this, url, parseQueryString, slashesDenoteHost);
+              return parse(this, url, parseQueryString, slashesDenoteHost);
             };
 
-            function parse$1(self, url, parseQueryString, slashesDenoteHost) {
+            function parse(self, url, parseQueryString, slashesDenoteHost) {
               if (!isString(url)) {
                 throw new TypeError('Parameter \'url\' must be a string, not ' + typeof url);
               }
@@ -4433,7 +4407,7 @@
                   if (simplePath[2]) {
                     self.search = simplePath[2];
                     if (parseQueryString) {
-                      self.query = parse(self.search.substr(1));
+                      self.query = querystring_2(self.search.substr(1));
                     } else {
                       self.query = self.search.substr(1);
                     }
@@ -4636,7 +4610,7 @@
                 self.search = rest.substr(qm);
                 self.query = rest.substr(qm + 1);
                 if (parseQueryString) {
-                  self.query = parse(self.query);
+                  self.query = querystring_2(self.query);
                 }
                 rest = rest.slice(0, qm);
               } else if (parseQueryString) {
@@ -4668,7 +4642,7 @@
               // If it's an obj, this is a no-op.
               // this way, you can call url_format() on strings
               // to clean up potentially wonky urls.
-              if (isString(obj)) obj = parse$1({}, obj);
+              if (isString(obj)) obj = parse({}, obj);
               return format(obj);
             }
 
@@ -4700,7 +4674,7 @@
               if (self.query &&
                 isObject(self.query) &&
                 Object.keys(self.query).length) {
-                query = stringify(self.query);
+                query = querystring_4(self.query);
               }
 
               var search = self.search || (query && ('?' + query)) || '';
@@ -15673,7 +15647,7 @@
             }
 
             /* eslint-disable object-shorthand */
-            var map$2 = {
+            var map$1 = {
                 Float32Array: Float32Array,
                 Uint32Array: Uint32Array,
                 Int32Array: Int32Array,
@@ -15706,7 +15680,7 @@
 
                     if (!views[type])
                     {
-                        views[type] = new map$2[type](buffer);
+                        views[type] = new map$1[type](buffer);
                     }
 
                     out = views[type];
@@ -33343,6 +33317,9 @@
 
             unwrapExports(miniSignals);
 
+            // main entry point for commonjs, exports MiniSignal
+            var miniSignals$1 = miniSignals;
+
             var parseUri = function parseURI (str, opts) {
               opts = opts || {};
 
@@ -33612,7 +33589,7 @@
 
 
 
-            var _miniSignals2 = _interopRequireDefault(miniSignals);
+            var _miniSignals2 = _interopRequireDefault(miniSignals$1);
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34863,7 +34840,7 @@
 
 
 
-            var _miniSignals2 = _interopRequireDefault(miniSignals);
+            var _miniSignals2 = _interopRequireDefault(miniSignals$1);
 
 
 
@@ -35802,7 +35779,7 @@
               return uri
             };
 
-            var miniSignals$1 = createCommonjsModule$1(function (module, exports) {
+            var miniSignals$2 = createCommonjsModule$1(function (module, exports) {
 
             Object.defineProperty(exports, '__esModule', {
               value: true
@@ -35971,7 +35948,7 @@
             module.exports = exports['default'];
             });
 
-            unwrapExports$1(miniSignals$1);
+            unwrapExports$1(miniSignals$2);
 
             var Resource_1$1 = createCommonjsModule$1(function (module, exports) {
 
@@ -35986,7 +35963,7 @@
 
 
 
-            var _miniSignals2 = _interopRequireDefault(miniSignals$1);
+            var _miniSignals2 = _interopRequireDefault(miniSignals$2);
 
             function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49099,24 +49076,21 @@
                 }
             }
 
-            window.onload = () =>
-            {
-                function rand(n)
-                {
-                    return Math.round(Math.random() * n)
+            window.onload = function () {
+                function rand(n) {
+                    return Math.round(Math.random() * n);
                 }
-
-                const app = new Application({ autoresize: true });
+                var app = new Application();
                 app.view.style.textAlign = 'center';
                 document.body.appendChild(app.view);
-                const div = document.createElement('div');
-                div.innerHTML = '<div>Rollup <a href="https://https://github.com/davidfig/pixi-viewport">pixi-viewport</a>: viewport.drag().pinch().decelerate()</div>';
+                var div = document.createElement('div');
+                div.innerHTML = '<div>Rollup + typescript <a href="https://https://github.com/davidfig/pixi-viewport">pixi-viewport</a>: viewport.drag().pinch().decelerate()</div>';
                 document.body.appendChild(div);
-
-                const viewport = app.stage.addChild(new Viewport({ screenWidth: app.view.offsetWidth, screenHeight: app.view.offsetHeight }));
-                for (let i = 0; i < 10000; i++)
-                {
-                    const sprite = viewport.addChild(new Sprite(Texture.WHITE));
+                var viewport = new Viewport({ screenWidth: app.view.offsetWidth, screenHeight: app.view.offsetHeight });
+                app.stage.addChild(viewport);
+                for (var i = 0; i < 10000; i++) {
+                    var sprite = new Sprite(Texture.WHITE);
+                    viewport.addChild(sprite);
                     sprite.tint = rand(0xffffff);
                     sprite.position.set(rand(10000), rand(10000));
                 }

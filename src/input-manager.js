@@ -16,7 +16,10 @@ export class InputManager
     {
         this.viewport = viewport
 
-        /** @type {ViewportTouch[]} list of active touches on viewport */
+        /**
+         * list of active touches on viewport
+         * @type {ViewportTouch[]}
+         */
         this.touches = []
         this.addListeners()
     }

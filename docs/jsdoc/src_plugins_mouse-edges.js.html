@@ -354,128 +354,229 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Class: EventEmitter</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: src/plugins/mouse-edges.js</h1>
         
         
 
 
-
-<section>
-
-<header>
-    <div class="header content-size">
-        <h2>EventEmitter
-        </h2>
-        
-    </div>
-</header>
-
-<article class="content-size">
-    <div class="container-overview">
     
+    <section>
+        <header>
+            <div class="header content-size">
+                <h2>src/plugins/mouse-edges.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './plugin'
 
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="EventEmitter">
-            <a class="share-icon" href="#EventEmitter"><span class="glyphicon glyphicon-link"></span></a>
-            <span class="">
-                new EventEmitter
-            </span>
-            <span class="signature">()</span>
-            
-            
-            
-            
-        </h4>
+/**
+ * @typedef MouseEdgesOptions
+ * @property {number} [radius] distance from center of screen in screen pixels
+ * @property {number} [distance] distance from all sides in screen pixels
+ * @property {number} [top] alternatively, set top distance (leave unset for no top scroll)
+ * @property {number} [bottom] alternatively, set bottom distance (leave unset for no top scroll)
+ * @property {number} [left] alternatively, set left distance (leave unset for no top scroll)
+ * @property {number} [right] alternatively, set right distance (leave unset for no top scroll)
+ * @property {number} [speed=8] speed in pixels/frame to scroll viewport
+ * @property {boolean} [reverse] reverse direction of scroll
+ * @property {boolean} [noDecelerate] don't use decelerate plugin even if it's installed
+ * @property {boolean} [linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+ * @property {boolean} [allowButtons] allows plugin to continue working even when there's a mousedown event
+ */
 
-        
-        <div class="tag-source">
-            <a href="node_modules_eventemitter3_index.js.html#line92">index.js:92</a>
-        </div>
-        
-    </div>
+const mouseEdgeOptions = {
+    radius: null,
+    distance: null,
+    top: null,
+    bottom: null,
+    left: null,
+    right: null,
+    speed: 8,
+    reverse: false,
+    noDecelerate: false,
+    linear: false,
+    allowButtons: false
+}
 
-    
-</dt>
-<dd>
+export class MouseEdges extends Plugin
+{
+    /**
+     * Scroll viewport when mouse hovers near one of the edges.
+     * @private
+     * @param {Viewport} parent
+     * @param {MouseEdgeOptions} [options]
+     * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
+     * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
+     */
+    constructor(parent, options={})
+    {
+        super(parent)
+        this.options = Object.assign({}, mouseEdgeOptions)
+        for (let key in options)
+        {
+            this.options[key] = options[key]
+        }
+        this.reverse = options.reverse ? 1 : -1
+        this.radiusSquared = Math.pow(this.options.radius, 2)
+        this.resize()
+    }
 
-    
-    <div class="description">
-        <p>Minimal <code>EventEmitter</code> interface that is molded against the Node.js
-<code>EventEmitter</code> interface.</p>
-    </div>
-    
+    resize()
+    {
+        const options = this.options
+        const distance = options.distance
+        if (distance !== null)
+        {
+            this.left = distance
+            this.top = distance
+            this.right = window.innerWidth - distance
+            this.bottom = window.innerHeight - distance
+        }
+        else if (!this.radius)
+        {
+            this.left = this.options.left
+            this.top = this.options.top
+            this.right = this.options.right === null ? null : window.innerWidth - options.right
+            this.bottom = this.options.bottom === null ? null : window.innerHeight - options.bottom
+        }
+    }
 
-    
+    down()
+    {
+        if (!this.options.allowButtons)
+        {
+            this.horizontal = this.vertical = null
+        }
+    }
 
-    
+    move(e)
+    {
+        if ((e.data.identifier !== 'MOUSE' &amp;&amp; e.data.identifier !== 1) || (!this.options.allowButtons &amp;&amp; e.data.buttons !== 0))
+        {
+            return
+        }
+        const x = e.data.global.x
+        const y = e.data.global.y
 
-    
+        if (this.radiusSquared)
+        {
+            const center = this.parent.toScreen(this.parent.center)
+            const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2)
+            if (distance >= this.radiusSquared)
+            {
+                const angle = Math.atan2(center.y - y, center.x - x)
+                if (this.options.linear)
+                {
+                    this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000)
+                }
+                else
+                {
+                    this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000)
+                    this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000)
+                }
+            }
+            else
+            {
+                if (this.horizontal)
+                {
+                    this.decelerateHorizontal()
+                }
+                if (this.vertical)
+                {
+                    this.decelerateVertical()
+                }
+                this.horizontal = this.vertical = 0
+            }
+        }
+        else
+        {
+            if (this.left !== null &amp;&amp; x &lt; this.left)
+            {
+                this.horizontal = 1 * this.reverse * this.options.speed * (60 / 1000)
+            }
+            else if (this.right !== null &amp;&amp; x > this.right)
+            {
+                this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateHorizontal()
+                this.horizontal = 0
+            }
+            if (this.top !== null &amp;&amp; y &lt; this.top)
+            {
+                this.vertical = 1 * this.reverse * this.options.speed * (60 / 1000)
+            }
+            else if (this.bottom !== null &amp;&amp; y > this.bottom)
+            {
+                this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000)
+            }
+            else
+            {
+                this.decelerateVertical()
+                this.vertical = 0
+            }
+        }
+    }
 
-    
-<dl class="details">
-    
+    decelerateHorizontal()
+    {
+        const decelerate = this.parent.plugins.get('decelerate')
+        if (this.horizontal &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate)
+        {
+            decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) })
+        }
+    }
 
-    
+    decelerateVertical()
+    {
+        const decelerate = this.parent.plugins.get('decelerate')
+        if (this.vertical &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate)
+        {
+            decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60)})
+        }
+    }
 
-    
+    up()
+    {
+        if (this.horizontal)
+        {
+            this.decelerateHorizontal()
+        }
+        if (this.vertical)
+        {
+            this.decelerateVertical()
+        }
+        this.horizontal = this.vertical = null
+    }
 
-    
+    update()
+    {
+        if (this.paused)
+        {
+            return
+        }
 
-    
+        if (this.horizontal || this.vertical)
+        {
+            const center = this.parent.center
+            if (this.horizontal)
+            {
+                center.x += this.horizontal * this.options.speed
+            }
+            if (this.vertical)
+            {
+                center.y += this.vertical * this.options.speed
+            }
+            this.parent.moveCenter(center)
+            this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' })
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
 
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -485,7 +586,7 @@
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
             </div>
         </footer>
     </div>

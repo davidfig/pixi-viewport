@@ -2,14 +2,14 @@
     "applicationName": "pixi-viewport",
     "disqus": "",
     "openGraph": {
-        "title": "",
+        "title": "pixi-viewport",
         "type": "website",
         "image": "",
         "site_name": "",
         "url": ""
     },
     "meta": {
-        "title": "DomEase",
+        "title": "pixi-viewport",
         "description": "",
         "keyword": ""
     },
@@ -42,15 +42,11 @@
         },
         "applicationName": "pixi-viewport",
         "footer"        : "by YOPEY YOPEY LLC (yopeyopey.com)",
-        "copyright"     : "Copyright © 2018 YOPEY YOPEY LLC.",
+        "copyright"     : "Copyright © 2019 YOPEY YOPEY LLC.",
         "meta": {
             "title": "pixi-viewport API Documentation",
             "description": "Documentation for pixi-viewport library",
             "keyword": "docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"
-        },
-        "matomo": {
-            "url": "https://analytics.yopeyopey.com/piwik/",
-            "id": 13
         }
     }
 }

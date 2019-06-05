@@ -41,10 +41,12 @@ const viewportOptions = {
     stopPropagation: false,
     forceHitArea: null,
     noTicker: false,
-    ticker: PIXI.Ticker.shared,
     interaction: null
 }
 
+/**
+ * Main class to use when creating a Viewport
+ */
 export class Viewport extends PIXI.Container
 {
     /**
@@ -82,7 +84,29 @@ export class Viewport extends PIXI.Container
     constructor(options={})
     {
         super()
-        this.options = Object.assign({}, viewportOptions)
+        this.options = Object.assign({}, viewportOptions, options)
+
+        // needed to pull this out of viewportOptions because of pixi.js v4 support (which changed from PIXI.ticker.shared to PIXI.Ticker.shared...sigh)
+        if (options.ticker)
+        {
+            this.options.ticker = options.ticker
+        }
+        else
+        {
+            // to avoid Rollup transforming our import, save pixi namespace in a variable
+            // from here: https://github.com/pixijs/pixi.js/issues/5757
+            let ticker
+            const pixiNS = PIXI
+            if (parseInt(/^(\d+)\./.exec(PIXI.VERSION)[ 1 ]) < 5)
+            {
+                ticker = pixiNS.ticker.shared;
+            }
+            else
+            {
+                ticker = pixiNS.Ticker.shared;
+            }
+            this.options.ticker = options.ticker || ticker
+        }
         for (let key in options)
         {
             this.options[key] = options[key]
@@ -98,7 +122,10 @@ export class Viewport extends PIXI.Container
         this._worldHeight = this.options.worldHeight
         this.forceHitArea = this.options.forceHitArea
 
-        /** @type {number} number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event */
+        /**
+         * number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
+         * @type {number}
+         */
         this.threshold = this.options.threshold
 
         this.options.divWheel = this.options.divWheel || document.body
@@ -291,8 +318,8 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number}
      * screen width in world coordinates
+     * @type {number}
      */
     get worldScreenWidth()
     {
@@ -300,8 +327,8 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number}
      * screen height in world coordinates
+     * @type {number}
      */
     get worldScreenHeight()
     {
@@ -309,8 +336,8 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number}
      * world width in screen coordinates
+     * @type {number}
      */
     get screenWorldWidth()
     {
@@ -318,8 +345,8 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {number}
      * world height in screen coordinates
+     * @type {number}
      */
     get screenWorldHeight()
     {
@@ -327,8 +354,8 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {PIXI.Point}
      * center of screen in world coordinates
+     * @type {PIXI.Point}
      */
     get center()
     {
@@ -365,8 +392,8 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * @type {PIXI.Point}
      * top-left corner of Viewport
+     * @type {PIXI.Point}
      */
     get corner()
     {
@@ -605,7 +632,10 @@ export class Viewport extends PIXI.Container
         }
     }
 
-    /** @type {number} world coordinates of the right edge of the screen */
+    /**
+     * world coordinates of the right edge of the screen
+     * @type {number}
+     */
     get right()
     {
         return -this.x / this.scale.x + this.worldScreenWidth
@@ -616,7 +646,10 @@ export class Viewport extends PIXI.Container
         this.plugins.reset()
     }
 
-    /** @type {number} world coordinates of the left edge of the screen */
+    /**
+     * world coordinates of the left edge of the screen
+     * @type { number }
+     */
     get left()
     {
         return -this.x / this.scale.x
@@ -627,7 +660,10 @@ export class Viewport extends PIXI.Container
         this.plugins.reset()
     }
 
-    /** @type {number} world coordinates of the top edge of the screen */
+    /**
+     * world coordinates of the top edge of the screen
+     * @type {number}
+     */
     get top()
     {
         return -this.y / this.scale.y
@@ -638,7 +674,10 @@ export class Viewport extends PIXI.Container
         this.plugins.reset()
     }
 
-    /** @type {number} world coordinates of the bottom edge of the screen */
+    /**
+     * world coordinates of the bottom edge of the screen
+     * @type {number}
+     */
     get bottom()
     {
         return -this.y / this.scale.y + this.worldScreenHeight
@@ -649,7 +688,10 @@ export class Viewport extends PIXI.Container
         this.plugins.reset()
     }
 
-    /** @type {boolean} determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change) */
+    /**
+     * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
+     * @type {boolean}
+     */
     get dirty()
     {
         return this._dirty
@@ -807,7 +849,10 @@ export class Viewport extends PIXI.Container
         return this
     }
 
-    /** @type {boolean} pause viewport (including animation updates such as decelerate) */
+    /**
+     * pause viewport (including animation updates such as decelerate)
+     * @type {boolean}
+     */
     get pause()
     {
         return this._pause

@@ -354,128 +354,188 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Class: EventEmitter</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: src/plugins/decelerate.js</h1>
         
         
 
 
-
-<section>
-
-<header>
-    <div class="header content-size">
-        <h2>EventEmitter
-        </h2>
-        
-    </div>
-</header>
-
-<article class="content-size">
-    <div class="container-overview">
     
+    <section>
+        <header>
+            <div class="header content-size">
+                <h2>src/plugins/decelerate.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './plugin'
 
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="EventEmitter">
-            <a class="share-icon" href="#EventEmitter"><span class="glyphicon glyphicon-link"></span></a>
-            <span class="">
-                new EventEmitter
-            </span>
-            <span class="signature">()</span>
-            
-            
-            
-            
-        </h4>
+/**
+ * @typedef {object} DecelerateOptions
+ * @property {number} [friction=0.95] percent to decelerate after movement
+ * @property {number} [bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
+ * @property {number} [minSpeed=0.01] minimum velocity before stopping/reversing acceleration
+ */
 
-        
-        <div class="tag-source">
-            <a href="node_modules_eventemitter3_index.js.html#line92">index.js:92</a>
-        </div>
-        
-    </div>
+const decelerateOptions = {
+    friction: 0.95,
+    bounce: 0.8,
+    minSpeed: 0.01
+}
 
-    
-</dt>
-<dd>
+export class Decelerate extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {DecelerateOptions} [options]
+     */
+    constructor(parent, options={})
+    {
+        super(parent)
+        this.options = Object.assign({}, decelerateOptions, options)
+        this.saved = []
+        this.reset()
+        this.parent.on('moved', data => this.moved(data))
+    }
 
-    
-    <div class="description">
-        <p>Minimal <code>EventEmitter</code> interface that is molded against the Node.js
-<code>EventEmitter</code> interface.</p>
-    </div>
-    
+    destroy()
+    {
+        this.parent
+    }
 
-    
+    down()
+    {
+        this.saved = []
+        this.x = this.y = false
+    }
 
-    
+    isActive()
+    {
+        return this.x || this.y
+    }
 
-    
+    move()
+    {
+        if (this.paused)
+        {
+            return
+        }
 
-    
-<dl class="details">
-    
+        const count = this.parent.input.count()
+        if (count === 1 || (count > 1 &amp;&amp; !this.parent.plugins.get('pinch')))
+        {
+            this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() })
+            if (this.saved.length > 60)
+            {
+                this.saved.splice(0, 30)
+            }
+        }
+    }
 
-    
+    moved(data)
+    {
+        if (this.saved.length)
+        {
+            const last = this.saved[this.saved.length - 1]
+            if (data.type === 'clamp-x')
+            {
+                if (last.x === data.original.x)
+                {
+                    last.x = this.parent.x
+                }
+            }
+            else if (data.type === 'clamp-y')
+            {
+                if (last.y === data.original.y)
+                {
+                    last.y = this.parent.y
+                }
+            }
+        }
+    }
 
-    
+    up()
+    {
+        if (this.parent.input.count() === 0 &amp;&amp; this.saved.length)
+        {
+            const now = performance.now()
+            for (let save of this.saved)
+            {
+                if (save.time >= now - 100)
+                {
+                    const time = now - save.time
+                    this.x = (this.parent.x - save.x) / time
+                    this.y = (this.parent.y - save.y) / time
+                    this.percentChangeX = this.percentChangeY = this.options.friction
+                    break
+                }
+            }
+        }
+    }
 
-    
+    /**
+     * manually activate plugin
+     * @param {object} options
+     * @param {number} [options.x]
+     * @param {number} [options.y]
+     */
+    activate(options)
+    {
+        options = options || {}
+        if (typeof options.x !== 'undefined')
+        {
+            this.x = options.x
+            this.percentChangeX = this.options.friction
+        }
+        if (typeof options.y !== 'undefined')
+        {
+            this.y = options.y
+            this.percentChangeY = this.options.friction
+        }
+    }
 
-    
+    update(elapsed)
+    {
+        if (this.paused)
+        {
+            return
+        }
 
-    
+        let moved
+        if (this.x)
+        {
+            this.parent.x += this.x * elapsed
+            this.x *= this.percentChangeX
+            if (Math.abs(this.x) &lt; this.minSpeed)
+            {
+                this.x = 0
+            }
+            moved = true
+        }
+        if (this.y)
+        {
+            this.parent.y += this.y * elapsed
+            this.y *= this.percentChangeY
+            if (Math.abs(this.y) &lt; this.minSpeed)
+            {
+                this.y = 0
+            }
+            moved = true
+        }
+        if (moved)
+        {
+            this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' })
+        }
+    }
 
-    
+    reset()
+    {
+        this.x = this.y = null
+    }
+}</code></pre>
+        </article>
+    </section>
 
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -485,7 +545,7 @@
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
             </div>
         </footer>
     </div>

@@ -354,128 +354,149 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Class: EventEmitter</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: src/plugins/pinch.js</h1>
         
         
 
 
-
-<section>
-
-<header>
-    <div class="header content-size">
-        <h2>EventEmitter
-        </h2>
-        
-    </div>
-</header>
-
-<article class="content-size">
-    <div class="container-overview">
     
+    <section>
+        <header>
+            <div class="header content-size">
+                <h2>src/plugins/pinch.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './plugin'
 
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="EventEmitter">
-            <a class="share-icon" href="#EventEmitter"><span class="glyphicon glyphicon-link"></span></a>
-            <span class="">
-                new EventEmitter
-            </span>
-            <span class="signature">()</span>
-            
-            
-            
-            
-        </h4>
+/**
+ * @typedef {object} PinchOptions
+ * @property {boolean} [noDrag] disable two-finger dragging
+ * @property {number} [percent=1.0] percent to modify pinch speed
+ * @property {PIXI.Point} [center] place this point at center during zoom instead of center of two fingers
+ */
 
-        
-        <div class="tag-source">
-            <a href="node_modules_eventemitter3_index.js.html#line92">index.js:92</a>
-        </div>
-        
-    </div>
+const pinchOptions = {
+    noDrag: false,
+    percent: 1.0,
+    center: null
+}
 
-    
-</dt>
-<dd>
+export class Pinch extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {PinchOptions} [options]
+     */
+    constructor(parent, options={})
+    {
+        super(parent)
+        this.options = Object.assign({}, pinchOptions, options)
+    }
 
-    
-    <div class="description">
-        <p>Minimal <code>EventEmitter</code> interface that is molded against the Node.js
-<code>EventEmitter</code> interface.</p>
-    </div>
-    
+    down()
+    {
+        if (this.parent.input.count() >= 2)
+        {
+            this.active = true
+            return true
+        }
+    }
 
-    
+    move(e)
+    {
+        if (this.paused || !this.active)
+        {
+            return
+        }
 
-    
+        const x = e.data.global.x
+        const y = e.data.global.y
 
-    
+        const pointers = this.parent.input.touches
+        if (pointers.length >= 2)
+        {
+            const first = pointers[0]
+            const second = pointers[1]
+            const last = (first.last &amp;&amp; second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null
+            if (first.id === e.data.pointerId)
+            {
+                first.last = { x, y, data: e.data }
+            }
+            else if (second.id === e.data.pointerId)
+            {
+                second.last = { x, y, data: e.data }
+            }
+            if (last)
+            {
+                let oldPoint
+                const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 }
+                if (!this.options.center)
+                {
+                    oldPoint = this.parent.toLocal(point)
+                }
+                const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+                const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.options.percent
+                this.parent.scale.x += change
+                this.parent.scale.y += change
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch' })
+                const clamp = this.parent.plugins.get('clamp-zoom')
+                if (clamp)
+                {
+                    clamp.clamp()
+                }
+                if (this.options.center)
+                {
+                    this.parent.moveCenter(this.options.center)
+                }
+                else
+                {
+                    const newPoint = this.parent.toGlobal(oldPoint)
+                    this.parent.x += point.x - newPoint.x
+                    this.parent.y += point.y - newPoint.y
+                    this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
+                }
+                if (!this.options.noDrag &amp;&amp; this.lastCenter)
+                {
+                    this.parent.x += point.x - this.lastCenter.x
+                    this.parent.y += point.y - this.lastCenter.y
+                    this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
+                }
+                this.lastCenter = point
+                this.moved = true
+            }
+            else
+            {
+                if (!this.pinching)
+                {
+                    this.parent.emit('pinch-start', this.parent)
+                    this.pinching = true
+                }
+            }
+            return true
+        }
+    }
 
-    
-<dl class="details">
-    
+    up()
+    {
+        if (this.pinching)
+        {
+            if (this.parent.input.touches.length &lt;= 1)
+            {
+                this.active = false
+                this.lastCenter = null
+                this.pinching = false
+                this.moved = false
+                this.parent.emit('pinch-end', this.parent)
+                return true
+            }
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -485,7 +506,7 @@
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
             </div>
         </footer>
     </div>

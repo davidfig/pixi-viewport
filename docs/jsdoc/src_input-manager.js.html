@@ -354,128 +354,288 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Class: EventEmitter</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: src/input-manager.js</h1>
         
         
 
 
-
-<section>
-
-<header>
-    <div class="header content-size">
-        <h2>EventEmitter
-        </h2>
-        
-    </div>
-</header>
-
-<article class="content-size">
-    <div class="container-overview">
     
+    <section>
+        <header>
+            <div class="header content-size">
+                <h2>src/input-manager.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import * as PIXI from 'pixi.js'
 
-    
-        
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="EventEmitter">
-            <a class="share-icon" href="#EventEmitter"><span class="glyphicon glyphicon-link"></span></a>
-            <span class="">
-                new EventEmitter
-            </span>
-            <span class="signature">()</span>
-            
-            
-            
-            
-        </h4>
+/**
+ * @typedef ViewportTouch
+ * @property {number} id
+ * @property {PIXI.Point} last
+*/
 
-        
-        <div class="tag-source">
-            <a href="node_modules_eventemitter3_index.js.html#line92">index.js:92</a>
-        </div>
-        
-    </div>
+/**
+ * handles all input for Viewport
+ * @private
+ */
+export class InputManager
+{
+    constructor(viewport)
+    {
+        this.viewport = viewport
 
-    
-</dt>
-<dd>
+        /**
+         * list of active touches on viewport
+         * @type {ViewportTouch[]}
+         */
+        this.touches = []
+        this.addListeners()
+    }
 
-    
-    <div class="description">
-        <p>Minimal <code>EventEmitter</code> interface that is molded against the Node.js
-<code>EventEmitter</code> interface.</p>
-    </div>
-    
+    /**
+     * add input listeners
+     * @private
+     */
+    addListeners()
+    {
+        this.viewport.interactive = true
+        if (!this.viewport.forceHitArea)
+        {
+            this.viewport.hitArea = new PIXI.Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight)
+        }
+        this.viewport.on('pointerdown', this.down, this)
+        this.viewport.on('pointermove', this.move, this)
+        this.viewport.on('pointerup', this.up, this)
+        this.viewport.on('pointerupoutside', this.up, this)
+        this.viewport.on('pointercancel', this.up, this)
+        this.viewport.on('pointerout', this.up, this)
+        this.wheelFunction = (e) => this.handleWheel(e)
+        this.viewport.options.divWheel.addEventListener('wheel', this.wheelFunction, { passive: this.viewport.options.passiveWheel })
+        this.isMouseDown = false
+    }
 
-    
+    /**
+     * removes all event listeners from viewport
+     * (useful for cleanup of wheel when removing viewport)
+     */
+    destroy()
+    {
+        this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction)
+    }
 
-    
+    /**
+     * handle down events for viewport
+     * @param {PIXI.interaction.InteractionEvent} event
+     */
+    down(event)
+    {
+        if (this.viewport.pause || !this.viewport.worldVisible)
+        {
+            return
+        }
+        if (event.data.pointerType === 'mouse')
+        {
+            this.isMouseDown = true
+        }
+        else if (!this.get(event.data.pointerId))
+        {
+            this.touches.push({ id: event.data.pointerId, last: null })
+        }
+        if (this.count() === 1)
+        {
+            this.last = event.data.global.clone()
 
-    
+            // clicked event does not fire if viewport is decelerating or bouncing
+            const decelerate = this.viewport.plugins.get('decelerate')
+            const bounce = this.viewport.plugins.get('bounce')
+            if ((!decelerate || !decelerate.isActive()) &amp;&amp; (!bounce || !bounce.isActive()))
+            {
+                this.clickedAvailable = true
+            }
+            else
+            {
+                this.clickedAvailable = false
+            }
+        }
+        else
+        {
+            this.clickedAvailable = false
+        }
 
-    
-<dl class="details">
-    
+        const stop = this.viewport.plugins.down(event)
+        if (stop &amp;&amp; this.viewport.options.stopPropagation)
+        {
+            event.stopPropagation()
+        }
+    }
 
-    
+    /**
+     * @param {number} change
+     * @returns whether change exceeds threshold
+     */
+    checkThreshold(change)
+    {
+        if (Math.abs(change) >= this.viewport.threshold)
+        {
+            return true
+        }
+        return false
+    }
 
-    
+    /**
+     * handle move events for viewport
+     * @param {PIXI.interaction.InteractionEvent} event
+     */
+    move(event)
+    {
+        if (this.viewport.pause || !this.viewport.worldVisible)
+        {
+            return
+        }
 
-    
+        const stop = this.viewport.plugins.move(event)
 
-    
+        if (this.clickedAvailable)
+        {
+            const distX = event.data.global.x - this.last.x
+            const distY = event.data.global.y - this.last.y
+            if (this.checkThreshold(distX) || this.checkThreshold(distY))
+            {
+                this.clickedAvailable = false
+            }
+        }
 
-    
+        if (stop &amp;&amp; this.viewport.options.stopPropagation)
+        {
+            event.stopPropagation()
+        }
+    }
 
-    
+    /**
+     * handle up events for viewport
+     * @param {PIXI.interaction.InteractionEvent} event
+     */
+    up(event)
+    {
+        if (this.viewport.pause || !this.viewport.worldVisible)
+        {
+            return
+        }
 
-    
+        if (event.data.pointerType === 'mouse')
+        {
+            this.isMouseDown = false
+        }
 
-    
+        if (event.data.pointerType !== 'mouse')
+        {
+            this.remove(event.data.pointerId)
+        }
 
-    
-</dl>
+        const stop = this.viewport.plugins.up(event)
 
+        if (this.clickedAvailable &amp;&amp; this.count() === 0)
+        {
+            this.viewport.emit('clicked', { screen: this.last, world: this.viewport.toWorld(this.last), viewport: this })
+            this.clickedAvailable = false
+        }
 
-    
+        if (stop &amp;&amp; this.viewport.options.stopPropagation)
+        {
+            event.stopPropagation()
+        }
+    }
 
-    
+    /**
+     * gets pointer position if this.interaction is set
+     * @param {WheelEvent} event
+     * @return {PIXI.Point}
+     */
+    getPointerPosition(event)
+    {
+        let point = new PIXI.Point()
+        if (this.viewport.options.interaction)
+        {
+            this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY)
+        }
+        else
+        {
+            point.x = event.clientX
+            point.y = event.clientY
+        }
+        return point
+    }
 
-    
+    /**
+     * handle wheel events
+     * @param {WheelEvent} event
+     */
+    handleWheel(event)
+    {
+        if (this.viewport.pause || !this.viewport.worldVisible)
+        {
+            return
+        }
 
-    
+        // only handle wheel events where the mouse is over the viewport
+        const point = this.viewport.toLocal(this.getPointerPosition(event))
+        if (this.viewport.left &lt;= point.x &amp;&amp; point.x &lt;= this.viewport.right &amp;&amp; this.viewport.top &lt;= point.y &amp;&amp; point.y &lt;= this.viewport.bottom)
+        {
+            return this.viewport.plugins.wheel(event)
+        }
+    }
 
-    
+    pause()
+    {
+        this.touches = []
+        this.isMouseDown = false
+    }
 
-    
-</dd>
+    /**
+     * get touch by id
+     * @param {number} id
+     * @return {ViewportTouch}
+     */
+    get(id)
+    {
+        for (let touch of this.touches)
+        {
+            if (touch.id === id)
+            {
+                return touch
+            }
+        }
+        return null
+    }
 
-    
-    </div>
+    /**
+     * remove touch by number
+     * @param {number} id
+     */
+    remove(id)
+    {
+        for (let i = 0; i &lt; this.touches.length; i++)
+        {
+            if (this.touches[i].id === id)
+            {
+                this.touches.splice(i, 1)
+                return
+            }
+        }
+    }
 
-    
+    /**
+     * @returns {number} count of mouse/touch pointers that are down on the viewport
+     */
+    count()
+    {
+        return (this.isMouseDown ? 1 : 0) + this.touches.length
+    }
+}</code></pre>
+        </article>
+    </section>
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -485,7 +645,7 @@
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 05 2019 16:27:28 GMT+0800 (GMT+08:00)
             </div>
         </footer>
     </div>
