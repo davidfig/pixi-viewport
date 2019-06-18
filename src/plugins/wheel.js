@@ -25,7 +25,7 @@ export class Wheel extends Plugin
      * @param {WheelOptions} [options]
      * @event wheel({wheel: {dx, dy, dz}, event, viewport})
      */
-    constructor(parent, options={})
+    constructor(parent, options = {})
     {
         super(parent)
         this.options = Object.assign({}, wheelOptions, options)
@@ -127,8 +127,8 @@ export class Wheel extends Plugin
             }
         }
         this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
-        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent})
-        if (!this.parent.passiveWheel)
+        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent })
+        if (!this.parent.options.passiveWheel)
         {
             e.preventDefault()
         }

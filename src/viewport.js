@@ -81,7 +81,7 @@ export class Viewport extends PIXI.Container
      * @fires zoomed
      * @fires zoomed-end
      */
-    constructor(options={})
+    constructor(options = {})
     {
         super()
         this.options = Object.assign({}, viewportOptions, options)
@@ -217,7 +217,7 @@ export class Viewport extends PIXI.Container
      * @param {number} [worldWidth=this.width]
      * @param {number} [worldHeight=this.height]
      */
-    resize(screenWidth=window.innerWidth, screenHeight=window.innerHeight, worldWidth, worldHeight)
+    resize(screenWidth = window.innerWidth, screenHeight = window.innerHeight, worldWidth, worldHeight)
     {
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
@@ -238,7 +238,7 @@ export class Viewport extends PIXI.Container
         }
         else
         {
-            return this.width
+            return this.width / this.scale.x
         }
     }
     set worldWidth(value)
@@ -259,7 +259,7 @@ export class Viewport extends PIXI.Container
         }
         else
         {
-            return this.height
+            return this.height / this.scale.y
         }
     }
     set worldHeight(value)
@@ -428,7 +428,7 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [noClamp] whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitWidth(width, center, scaleY=true, noClamp)
+    fitWidth(width, center, scaleY = true, noClamp)
     {
         let save
         if (center)
@@ -463,7 +463,7 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [noClamp] whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitHeight(height, center, scaleX=true, noClamp)
+    fitHeight(height, center, scaleX = true, noClamp)
     {
         let save
         if (center)
@@ -533,7 +533,7 @@ export class Viewport extends PIXI.Container
      * @param {number} [height=this.worldHeight] desired height
      * @returns {Viewport} this
      */
-    fit(center, width=this.worldWidth, height=this.worldHeight)
+    fit(center, width = this.worldWidth, height = this.worldHeight)
     {
         let save
         if (center)
@@ -1049,11 +1049,11 @@ export class Viewport extends PIXI.Container
  * @property {PIXI.Point} cornerPoint
  */
 
- /**
-  * @typedef {Object} LastViewport
-  * @private
-  * @property {number} x
-  * @property {number} y
-  * @property {number} scaleX
-  * @property {number} scaleY
-  */
+/**
+ * @typedef {Object} LastViewport
+ * @private
+ * @property {number} x
+ * @property {number} y
+ * @property {number} scaleX
+ * @property {number} scaleY
+ */

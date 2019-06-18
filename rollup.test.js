@@ -3,12 +3,14 @@ import commonjs from 'rollup-plugin-commonjs'
 import serve from 'rollup-plugin-serve'
 import builtins from 'rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
+import json from 'rollup-plugin-json'
 
 export default
 {
-    input: 'docs/code.js',
+    input: 'test/viewport.test.js',
     plugins: [
         builtins(),
+        json(),
         resolve(
         {
             browser: true,
@@ -24,14 +26,15 @@ export default
         globals(),
         serve(
         {
-            contentBase: 'docs',
+            contentBase: 'test',
             verbose: true
         })
     ],
     output:
     {
-        file: 'docs/index.js',
+        file: 'test/index.js',
         format: 'iife',
-        sourcemap: true
+        name: 'test',
+        sourcemap: true,
     }
 }

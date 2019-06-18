@@ -4,41 +4,43 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 
 export default [
-    {
-        input: 'src/viewport.js',
-        plugins: [
-            peerDepsExternal(),
-            resolve({
-                preferBuiltins: false
-            }),
-            commonjs(),
-            terser()
-        ],
-        output:
+{
+    input: 'src/viewport.js',
+    plugins: [
+        peerDepsExternal(),
+        resolve(
         {
-            file: 'dist/viewport.js',
-            globals: {
-                'pixi.js': 'PIXI'
-            },
-            format: 'umd',
-            name: 'Viewport',
-            sourcemap: true
-        }
-    },
+            preferBuiltins: false
+        }),
+        commonjs(),
+        terser()
+    ],
+    output:
     {
-        input: 'src/viewport.js',
-        plugins: [
-            peerDepsExternal(),
-            resolve({
-                preferBuiltins: false
-            }),
-            commonjs()
-        ],
-        output:
+        file: 'dist/viewport.js',
+        globals:
         {
-            file: 'dist/viewport.es.js',
-            format: 'esm',
-            sourcemap: true
-        }
+            'pixi.js': 'PIXI'
+        },
+        format: 'umd',
+        name: 'Viewport',
+        sourcemap: true
     }
-]
+},
+{
+    input: 'src/viewport.js',
+    plugins: [
+        peerDepsExternal(),
+        resolve(
+        {
+            preferBuiltins: false
+        }),
+        commonjs()
+    ],
+    output:
+    {
+        file: 'dist/viewport.es.js',
+        format: 'esm',
+        sourcemap: true
+    }
+}]
