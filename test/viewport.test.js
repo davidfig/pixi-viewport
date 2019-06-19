@@ -1,3 +1,7 @@
+require('./node-shim')
+const chai = require('chai')
+const Viewport = require('../dist/viewport.js')
+
 describe('pixi-viewport', () =>
 {
     it('contructor with default options', () =>
@@ -18,9 +22,11 @@ describe('pixi-viewport', () =>
 
     it('contructor with passed options', () =>
     {
-        const ticker = new PIXI.Ticker()
-        const divWheel = document.createElement('div')
-        const forceHitArea = new PIXI.Rectangle(0, 0, 100, 100)
+        const ticker = {}
+        const divWheel = {
+            addEventListener: () => {}
+        }
+        const forceHitArea = {}
         const interaction = {}
         const viewport = new Viewport.Viewport(
         {
