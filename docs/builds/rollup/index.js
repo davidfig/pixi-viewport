@@ -604,8 +604,8 @@
             });
 
             /*!
-             * @pixi/settings - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/settings - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/settings is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -2289,11 +2289,6 @@
 
               return parts.join('')
             }
-
-            var base64 = /*#__PURE__*/Object.freeze({
-                        toByteArray: toByteArray,
-                        fromByteArray: fromByteArray
-            });
 
             function read (buffer, offset, isLE, mLen, nBytes) {
               var e, m;
@@ -5032,8 +5027,8 @@
             }
 
             /*!
-             * @pixi/constants - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/constants - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/constants is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -5363,8 +5358,8 @@
             };
 
             /*!
-             * @pixi/utils - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/utils - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/utils is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -5383,7 +5378,7 @@
             settings.RETINA_PREFIX = /@([0-9\.]+)x/;
 
             var saidHello = false;
-            var VERSION = '5.0.3';
+            var VERSION = '5.0.4';
 
             /**
              * Skips the hello message of renderers that are created after this is run.
@@ -6333,8 +6328,8 @@
             });
 
             /*!
-             * @pixi/math - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/math - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/math is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -8145,8 +8140,8 @@
             };
 
             /*!
-             * @pixi/display - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/display - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/display is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -9933,8 +9928,8 @@
             Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
             /*!
-             * @pixi/accessibility - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/accessibility - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/accessibility is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -10568,8 +10563,8 @@
             });
 
             /*!
-             * @pixi/runner - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/runner - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/runner is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -10760,8 +10755,8 @@
             Runner.prototype.run = Runner.prototype.emit;
 
             /*!
-             * @pixi/ticker - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/ticker - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/ticker is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -11699,8 +11694,8 @@
             };
 
             /*!
-             * @pixi/core - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/core - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/core is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -13575,6 +13570,13 @@
                     this._resolve = null;
 
                     /**
+                     * Cross origin value to use
+                     * @private
+                     * @member {boolean|string}
+                     */
+                    this._crossorigin = options.crossorigin;
+
+                    /**
                      * Promise when loading
                      * @member {Promise<void>}
                      * @private
@@ -13611,113 +13613,36 @@
                         // Convert SVG inline string to data-uri
                         if ((/^\<svg/).test(this$1.svg.trim()))
                         {
-                            this$1.svg = "data:image/svg+xml;utf8," + (this$1.svg);
+                            if (!btoa)
+                            {
+                                throw new Error('Your browser doesn\'t support base64 conversions.');
+                            }
+                            this$1.svg = "data:image/svg+xml;base64," + (btoa(unescape(encodeURIComponent(this$1.svg))));
                         }
 
-                        // Checks if `source` is an SVG image and whether it's
-                        // loaded via a URL or a data URI. Then calls
-                        // `_loadDataUri` or `_loadXhr`.
-                        var dataUri = decomposeDataUri(this$1.svg);
-
-                        if (dataUri)
-                        {
-                            this$1._loadDataUri(dataUri);
-                        }
-                        else
-                        {
-                            // We got an URL, so we need to do an XHR to check the svg size
-                            this$1._loadXhr();
-                        }
+                        this$1._loadSvg();
                     });
 
                     return this._load;
                 };
 
                 /**
-                 * Reads an SVG string from data URI and then calls `_loadString`.
-                 *
-                 * @param {string} dataUri - The data uri to load from.
-                 */
-                SVGResource.prototype._loadDataUri = function _loadDataUri (dataUri)
-                {
-                    var svgString;
-
-                    if (dataUri.encoding === 'base64')
-                    {
-                        if (!atob)
-                        {
-                            throw new Error('Your browser doesn\'t support base64 conversions.');
-                        }
-                        svgString = atob(dataUri.data);
-                    }
-                    else
-                    {
-                        svgString = dataUri.data;
-                    }
-
-                    this._loadString(svgString);
-                };
-
-                /**
-                 * Loads an SVG string from `imageUrl` using XHR and then calls `_loadString`.
+                 * Loads an SVG image from `imageUrl` or `data URL`.
                  *
                  * @private
                  */
-                SVGResource.prototype._loadXhr = function _loadXhr ()
+                SVGResource.prototype._loadSvg = function _loadSvg ()
                 {
                     var this$1 = this;
-
-                    var svgXhr = new XMLHttpRequest();
-
-                    // This throws error on IE, so SVG Document can't be used
-                    // svgXhr.responseType = 'document';
-
-                    // This is not needed since we load the svg as string (breaks IE too)
-                    // but overrideMimeType() can be used to force the response to be parsed as XML
-                    // svgXhr.overrideMimeType('image/svg+xml');
-
-                    svgXhr.onload = function () {
-                        if (svgXhr.readyState !== svgXhr.DONE || svgXhr.status !== 200)
-                        {
-                            throw new Error('Failed to load SVG using XHR.');
-                        }
-
-                        this$1._loadString(svgXhr.response);
-                    };
-
-                    // svgXhr.onerror = () => this.emit('error', this);
-
-                    svgXhr.open('GET', this.svg, true);
-                    svgXhr.send();
-                };
-
-                /**
-                 * Loads texture using an SVG string. The original SVG Image is stored as `origSource` and the
-                 * created canvas is the new `source`. The SVG is scaled using `sourceScale`. Called by
-                 * `_loadXhr` or `_loadDataUri`.
-                 *
-                 * @private
-                 * @param  {string} svgString SVG source as string
-                 *
-                 * @fires loaded
-                 */
-                SVGResource.prototype._loadString = function _loadString (svgString)
-                {
-                    var this$1 = this;
-
-                    var svgSize = SVGResource.getSize(svgString);
 
                     var tempImage = new Image();
 
-                    tempImage.src = "data:image/svg+xml," + svgString;
-
-                    tempImage.onerror = function () {
-                        throw new Error(("Unable to load image from: " + (tempImage.src)));
-                    };
+                    BaseImageResource.crossOrigin(tempImage, this.svg, this._crossorigin);
+                    tempImage.src = this.svg;
 
                     tempImage.onload = function () {
-                        var svgWidth = svgSize.width;
-                        var svgHeight = svgSize.height;
+                        var svgWidth = tempImage.width;
+                        var svgHeight = tempImage.height;
 
                         if (!svgWidth || !svgHeight)
                         {
@@ -13783,6 +13708,7 @@
                 {
                     BaseImageResource.prototype.dispose.call(this);
                     this._resolve = null;
+                    this._crossorigin = null;
                 };
 
                 /**
@@ -13797,7 +13723,9 @@
                     // url file extension is SVG
                     return extension === 'svg'
                         // source is SVG data-uri
-                        || (typeof source === 'string' && source.indexOf('data:image/svg+xml') === 0);
+                        || (typeof source === 'string' && source.indexOf('data:image/svg+xml;base64') === 0)
+                        // source is SVG inline
+                        || (typeof source === 'string' && source.indexOf('<svg') === 0);
                 };
 
                 return SVGResource;
@@ -15328,6 +15256,9 @@
              * __Hint__: All DisplayObjects (i.e. Sprites) that render to a RenderTexture should be preloaded
              * otherwise black rectangles will be drawn instead.
              *
+             * __Hint-2__: The actual memory allocation will happen on first render.
+             * You shouldn't create renderTextures each frame just to delete them after, try to reuse them.
+             *
              * A RenderTexture takes a snapshot of any Display Object given to its render method. For example:
              *
              * ```js
@@ -16789,12 +16720,9 @@
 
                     if (!renderTexture)
                     {
-                        // temporary bypass cache..
-                        // internally - this will cause a texture to be bound..
                         renderTexture = RenderTexture.create({
-                            width: minWidth / resolution,
-                            height: minHeight / resolution,
-                            resolution: resolution,
+                            width: minWidth,
+                            height: minHeight,
                         });
                     }
 
@@ -17179,6 +17107,7 @@
                             vertexArrayObject: gl.getExtension('OES_vertex_array_object')
                                 || gl.getExtension('MOZ_OES_vertex_array_object')
                                 || gl.getExtension('WEBKIT_OES_vertex_array_object'),
+                            uint32ElementIndex: gl.getExtension('OES_element_index_uint'),
                         });
                     }
 
@@ -17744,6 +17673,13 @@
                     this.hasInstance = true;
 
                     /**
+                     * `true` if support `gl.UNSIGNED_INT` in `gl.drawElements` or `gl.drawElementsInstanced`
+                     * @member {boolean}
+                     * @readonly
+                     */
+                    this.canUseUInt32ElementIndex = false;
+
+                    /**
                      * A cache of currently bound buffer,
                      * contains only two members with keys ARRAY_BUFFER and ELEMENT_ARRAY_BUFFER
                      * @member {Object.<number, PIXI.Buffer>}
@@ -17778,6 +17714,7 @@
                     this.disposeAll(true);
 
                     var gl = this.gl = this.renderer.gl;
+                    var context = this.renderer.context;
 
                     this.CONTEXT_UID = this.renderer.CONTEXT_UID;
 
@@ -17834,6 +17771,8 @@
                             this.hasInstance = false;
                         }
                     }
+
+                    this.canUseUInt32ElementIndex = context.webGLVersion === 2 || !!context.extensions.uint32ElementIndex;
                 };
 
                 /**
@@ -18296,15 +18235,27 @@
 
                     if (geometry.indexBuffer)
                     {
-                        if (geometry.instanced)
+                        var byteSize = geometry.indexBuffer.data.BYTES_PER_ELEMENT;
+                        var glType = byteSize === 2 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT;
+
+                        if (byteSize === 2 || (byteSize === 4 && this.canUseUInt32ElementIndex))
                         {
-                            /* eslint-disable max-len */
-                            gl.drawElementsInstanced(type, size || geometry.indexBuffer.data.length, gl.UNSIGNED_SHORT, (start || 0) * 2, instanceCount || 1);
-                            /* eslint-enable max-len */
+                            if (geometry.instanced)
+                            {
+                                /* eslint-disable max-len */
+                                gl.drawElementsInstanced(type, size || geometry.indexBuffer.data.length, glType, (start || 0) * byteSize, instanceCount || 1);
+                                /* eslint-enable max-len */
+                            }
+                            else
+                            {
+                                /* eslint-disable max-len */
+                                gl.drawElements(type, size || geometry.indexBuffer.data.length, glType, (start || 0) * byteSize);
+                                /* eslint-enable max-len */
+                            }
                         }
                         else
                         {
-                            gl.drawElements(type, size || geometry.indexBuffer.data.length, gl.UNSIGNED_SHORT, (start || 0) * 2);
+                            console.warn('unsupported index buffer type: uint32');
                         }
                     }
                     else if (geometry.instanced)
@@ -19377,7 +19328,7 @@
              * The blend mode to be applied when this state is set. Apply a value of `PIXI.BLEND_MODES.NORMAL` to reset the blend mode.
              * Setting this mode to anything other than NO_BLEND will automatically switch blending on.
              *
-             * @member {boolean}
+             * @member {number}
              * @default PIXI.BLEND_MODES.NORMAL
              * @see PIXI.BLEND_MODES
              */
@@ -20514,9 +20465,9 @@
 
                 /**
                  * Bind the current render texture
-                 * @param {PIXI.RenderTexture} renderTexture
-                 * @param {PIXI.Rectangle} sourceFrame
-                 * @param {PIXI.Rectangle} destinationFrame
+                 * @param {PIXI.RenderTexture} [renderTexture] - RenderTexture to bind, by default its `null`, the screen
+                 * @param {PIXI.Rectangle} [sourceFrame] - part of screen that is mapped to the renderTexture
+                 * @param {PIXI.Rectangle} [destinationFrame] - part of renderTexture, by default it has the same size as sourceFrame
                  */
                 RenderTextureSystem.prototype.bind = function bind (renderTexture, sourceFrame, destinationFrame)
                 {
@@ -20934,7 +20885,7 @@
                 // TODO - premultiply alpha would be different.
                 // add a boolean for that!
                 array[BLEND_MODES.NORMAL] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-                array[BLEND_MODES.ADD] = [gl.ONE, gl.DST_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+                array[BLEND_MODES.ADD] = [gl.ONE, gl.ONE];
                 array[BLEND_MODES.MULTIPLY] = [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
                 array[BLEND_MODES.SCREEN] = [gl.ONE, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
                 array[BLEND_MODES.OVERLAY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
@@ -20954,7 +20905,7 @@
 
                 // not-premultiplied blend modes
                 array[BLEND_MODES.NORMAL_NPM] = [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-                array[BLEND_MODES.ADD_NPM] = [gl.SRC_ALPHA, gl.DST_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+                array[BLEND_MODES.ADD_NPM] = [gl.SRC_ALPHA, gl.ONE, gl.ONE, gl.ONE];
                 array[BLEND_MODES.SCREEN_NPM] = [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 
                 // composite operations
@@ -21151,6 +21102,8 @@
                  */
                 StateSystem.prototype.setOffset = function setOffset (value)
                 {
+                    this.updateCheck(StateSystem.checkPolygonOffset, value);
+
                     this.gl[value ? 'enable' : 'disable'](this.gl.POLYGON_OFFSET_FILL);
                 };
 
@@ -21281,6 +21234,19 @@
                 StateSystem.checkBlendMode = function checkBlendMode (system, state)
                 {
                     system.setBlendMode(state.blendMode);
+                };
+
+                /**
+                 * A private little wrapper function that we call to check the polygon offset.
+                 *
+                 * @static
+                 * @private
+                 * @param {PIXI.StateSystem} System  the System to perform the state check on
+                 * @param {PIXI.State} state  the state that the blendMode will pulled from
+                 */
+                StateSystem.checkPolygonOffset = function checkPolygonOffset (system, state)
+                {
+                    system.setPolygonOffset(state.polygonOffset, 0);
                 };
 
                 return StateSystem;
@@ -23360,8 +23326,8 @@
             }(ObjectRenderer));
 
             /*!
-             * @pixi/extract - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/extract - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/extract is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -23605,8 +23571,8 @@
             });
 
             /*!
-             * @pixi/interaction - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/interaction - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/interaction is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -25971,8 +25937,8 @@
             });
 
             /*!
-             * @pixi/graphics - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/graphics - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/graphics is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -29366,8 +29332,8 @@
             Graphics._TEMP_POINT = new Point();
 
             /*!
-             * @pixi/sprite - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/sprite - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/sprite is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -29382,7 +29348,7 @@
              * A sprite can be created directly from an image like this:
              *
              * ```js
-             * let sprite = new PIXI.Sprite.from('assets/image.png');
+             * let sprite = PIXI.Sprite.from('assets/image.png');
              * ```
              *
              * The more efficient way to create sprites is using a {@link PIXI.Spritesheet},
@@ -29478,13 +29444,14 @@
                     this.shader = null;
 
                     /**
-                     * An internal cached value of the tint.
+                     * Cached tint value so we can tell when the tint is changed.
+                     * Value is used for 2d CanvasRenderer.
                      *
-                     * @private
+                     * @protected
                      * @member {number}
                      * @default 0xFFFFFF
                      */
-                    this.cachedTint = 0xFFFFFF;
+                    this._cachedTint = 0xFFFFFF;
 
                     this.uvs = null;
 
@@ -29558,7 +29525,7 @@
                 {
                     this._textureID = -1;
                     this._textureTrimmedID = -1;
-                    this.cachedTint = 0xFFFFFF;
+                    this._cachedTint = 0xFFFFFF;
 
                     this.uvs = this._texture._uvs.uvsFloat32;
                     // so if _width is 0 then width was not set..
@@ -29864,7 +29831,7 @@
                 {
                     var texture = (source instanceof Texture)
                         ? source
-                        : new Texture.from(source, options);
+                        : Texture.from(source, options);
 
                     return new Sprite(texture);
                 };
@@ -29992,7 +29959,7 @@
                     }
 
                     this._texture = value || Texture.EMPTY;
-                    this.cachedTint = 0xFFFFFF;
+                    this._cachedTint = 0xFFFFFF;
 
                     this._textureID = -1;
                     this._textureTrimmedID = -1;
@@ -30017,8 +29984,8 @@
             }(Container));
 
             /*!
-             * @pixi/text - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/text - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/text is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -32259,8 +32226,8 @@
             }(Sprite));
 
             /*!
-             * @pixi/prepare - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/prepare - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/prepare is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -32326,7 +32293,7 @@
              *
              * @example
              * // Create a sprite
-             * const sprite = new PIXI.Sprite.from('something.png');
+             * const sprite = PIXI.Sprite.from('something.png');
              *
              * // Load object into GPU
              * app.renderer.plugins.prepare.upload(sprite, () => {
@@ -32950,8 +32917,8 @@
             });
 
             /*!
-             * @pixi/app - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/app - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/app is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -35758,8 +35725,8 @@
             lib.default = default_1$1;
 
             /*!
-             * @pixi/loaders - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/loaders - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/loaders is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37680,8 +37647,8 @@
             var LoaderResource = lib_1;
 
             /*!
-             * @pixi/particles - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/particles - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/particles is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37703,7 +37670,7 @@
              *
              * for (let i = 0; i < 100; ++i)
              * {
-             *     let sprite = new PIXI.Sprite.from("myImage.png");
+             *     let sprite = PIXI.Sprite.from("myImage.png");
              *     container.addChild(sprite);
              * }
              * ```
@@ -37731,11 +37698,6 @@
                     if (batchSize > maxBatchSize)
                     {
                         batchSize = maxBatchSize;
-                    }
-
-                    if (batchSize > maxSize)
-                    {
-                        batchSize = maxSize;
                     }
 
                     /**
@@ -38326,7 +38288,7 @@
                     {
                         return;
                     }
-                    else if (totalChildren > maxSize)
+                    else if (totalChildren > maxSize && !container.autoResize)
                     {
                         totalChildren = maxSize;
                     }
@@ -38372,10 +38334,6 @@
 
                         if (j >= buffers.length)
                         {
-                            if (!container.autoResize)
-                            {
-                                break;
-                            }
                             buffers.push(this._generateOneMoreBuffer(container));
                         }
 
@@ -38657,8 +38615,8 @@
             }(ObjectRenderer));
 
             /*!
-             * @pixi/spritesheet - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/spritesheet - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/spritesheet is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39065,8 +39023,8 @@
             };
 
             /*!
-             * @pixi/sprite-tiling - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/sprite-tiling - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/sprite-tiling is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39209,7 +39167,7 @@
                     {
                         this.uvMatrix.texture = this._texture;
                     }
-                    this.cachedTint = 0xFFFFFF;
+                    this._cachedTint = 0xFFFFFF;
                 };
 
                 /**
@@ -39561,8 +39519,8 @@
             }(ObjectRenderer));
 
             /*!
-             * @pixi/text-bitmap - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/text-bitmap - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/text-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40386,8 +40344,8 @@
             };
 
             /*!
-             * @pixi/filter-alpha - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/filter-alpha - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/filter-alpha is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40450,8 +40408,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-blur - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/filter-blur - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/filter-blur is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40875,8 +40833,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-color-matrix - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/filter-color-matrix - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/filter-color-matrix is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41473,8 +41431,8 @@
             ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
             /*!
-             * @pixi/filter-displacement - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/filter-displacement - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/filter-displacement is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41590,8 +41548,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-fxaa - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/filter-fxaa - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/filter-fxaa is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41627,8 +41585,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-noise - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/filter-noise - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/filter-noise is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41706,8 +41664,8 @@
             }(Filter));
 
             /*!
-             * @pixi/mixin-cache-as-bitmap - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/mixin-cache-as-bitmap - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42127,8 +42085,8 @@
             };
 
             /*!
-             * @pixi/mixin-get-child-by-name - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/mixin-get-child-by-name - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/mixin-get-child-by-name is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42164,8 +42122,8 @@
             };
 
             /*!
-             * @pixi/mixin-get-global-position - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/mixin-get-global-position - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/mixin-get-global-position is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42201,8 +42159,8 @@
             };
 
             /*!
-             * @pixi/mesh - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/mesh - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/mesh is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42978,8 +42936,8 @@
             }(Geometry));
 
             /*!
-             * @pixi/mesh-extras - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/mesh-extras - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/mesh-extras is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -43733,8 +43691,8 @@
             }(SimplePlane));
 
             /*!
-             * @pixi/sprite-animated - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * @pixi/sprite-animated - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * @pixi/sprite-animated is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -44034,7 +43992,7 @@
                     this._texture = this._textures[this.currentFrame];
                     this._textureID = -1;
                     this._textureTrimmedID = -1;
-                    this.cachedTint = 0xFFFFFF;
+                    this._cachedTint = 0xFFFFFF;
                     this.uvs = this._texture._uvs.uvsFloat32;
 
                     if (this.updateAnchor)
@@ -44175,8 +44133,8 @@
             }(Sprite));
 
             /*!
-             * pixi.js - v5.0.3
-             * Compiled Sun, 19 May 2019 19:03:31 UTC
+             * pixi.js - v5.0.4
+             * Compiled Fri, 07 Jun 2019 17:17:49 UTC
              *
              * pixi.js is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -45312,7 +45270,7 @@
              * @name VERSION
              * @type {string}
              */
-            var VERSION$1 = '5.0.3';
+            var VERSION$1 = '5.0.4';
 
             /**
              * @namespace PIXI
@@ -45364,7 +45322,37 @@
                         VERSION: VERSION$1,
                         filters: filters,
                         useDeprecated: useDeprecated,
+                        Bounds: Bounds,
+                        Container: Container,
+                        DisplayObject: DisplayObject,
                         Application: Application,
+                        AppLoaderPlugin: AppLoaderPlugin,
+                        Loader: Loader$1,
+                        LoaderResource: LoaderResource,
+                        TextureLoader: TextureLoader,
+                        ParticleContainer: ParticleContainer,
+                        ParticleRenderer: ParticleRenderer,
+                        Spritesheet: Spritesheet,
+                        SpritesheetLoader: SpritesheetLoader,
+                        TilingSprite: TilingSprite,
+                        TilingSpriteRenderer: TilingSpriteRenderer,
+                        BitmapFontLoader: BitmapFontLoader,
+                        BitmapText: BitmapText,
+                        Ticker: Ticker,
+                        TickerPlugin: TickerPlugin,
+                        UPDATE_PRIORITY: UPDATE_PRIORITY,
+                        BLEND_MODES: BLEND_MODES,
+                        DRAW_MODES: DRAW_MODES,
+                        ENV: ENV,
+                        FORMATS: FORMATS,
+                        GC_MODES: GC_MODES,
+                        MIPMAP_MODES: MIPMAP_MODES,
+                        PRECISION: PRECISION,
+                        RENDERER_TYPE: RENDERER_TYPE,
+                        SCALE_MODES: SCALE_MODES,
+                        TARGETS: TARGETS,
+                        TYPES: TYPES,
+                        WRAP_MODES: WRAP_MODES,
                         AbstractRenderer: AbstractRenderer,
                         Attribute: Attribute,
                         BaseRenderTexture: BaseRenderTexture,
@@ -45400,36 +45388,6 @@
                         generateMultiTextureShader: generateMultiTextureShader,
                         resources: index,
                         systems: systems,
-                        AppLoaderPlugin: AppLoaderPlugin,
-                        Loader: Loader$1,
-                        LoaderResource: LoaderResource,
-                        TextureLoader: TextureLoader,
-                        ParticleContainer: ParticleContainer,
-                        ParticleRenderer: ParticleRenderer,
-                        Spritesheet: Spritesheet,
-                        SpritesheetLoader: SpritesheetLoader,
-                        TilingSprite: TilingSprite,
-                        TilingSpriteRenderer: TilingSpriteRenderer,
-                        BitmapFontLoader: BitmapFontLoader,
-                        BitmapText: BitmapText,
-                        Ticker: Ticker,
-                        TickerPlugin: TickerPlugin,
-                        UPDATE_PRIORITY: UPDATE_PRIORITY,
-                        BLEND_MODES: BLEND_MODES,
-                        DRAW_MODES: DRAW_MODES,
-                        ENV: ENV,
-                        FORMATS: FORMATS,
-                        GC_MODES: GC_MODES,
-                        MIPMAP_MODES: MIPMAP_MODES,
-                        PRECISION: PRECISION,
-                        RENDERER_TYPE: RENDERER_TYPE,
-                        SCALE_MODES: SCALE_MODES,
-                        TARGETS: TARGETS,
-                        TYPES: TYPES,
-                        WRAP_MODES: WRAP_MODES,
-                        Bounds: Bounds,
-                        Container: Container,
-                        DisplayObject: DisplayObject,
                         FillStyle: FillStyle,
                         GRAPHICS_CURVES: GRAPHICS_CURVES,
                         Graphics: Graphics,
@@ -47900,7 +47858,7 @@
                  * @param {WheelOptions} [options]
                  * @event wheel({wheel: {dx, dy, dz}, event, viewport})
                  */
-                constructor(parent, options={})
+                constructor(parent, options = {})
                 {
                     super(parent);
                     this.options = Object.assign({}, wheelOptions, options);
@@ -48002,8 +47960,8 @@
                         }
                     }
                     this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-                    this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent});
-                    if (!this.parent.passiveWheel)
+                    this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+                    if (!this.parent.options.passiveWheel)
                     {
                         e.preventDefault();
                     }
@@ -48277,7 +48235,7 @@
                  * @fires zoomed
                  * @fires zoomed-end
                  */
-                constructor(options={})
+                constructor(options = {})
                 {
                     super();
                     this.options = Object.assign({}, viewportOptions, options);
@@ -48410,15 +48368,21 @@
                  * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
                  * @param {number} [screenWidth=window.innerWidth]
                  * @param {number} [screenHeight=window.innerHeight]
-                 * @param {number} [worldWidth=this.width]
-                 * @param {number} [worldHeight=this.height]
+                 * @param {number} [worldWidth]
+                 * @param {number} [worldHeight]
                  */
-                resize(screenWidth=window.innerWidth, screenHeight=window.innerHeight, worldWidth, worldHeight)
+                resize(screenWidth = window.innerWidth, screenHeight = window.innerHeight, worldWidth, worldHeight)
                 {
                     this.screenWidth = screenWidth;
                     this.screenHeight = screenHeight;
-                    this._worldWidth = worldWidth;
-                    this._worldHeight = worldHeight;
+                    if (typeof worldWidth !== 'undefined')
+                    {
+                        this._worldWidth = worldWidth;
+                    }
+                    if (typeof worldHeight !== 'undefined')
+                    {
+                        this._worldHeight = worldHeight;
+                    }
                     this.plugins.resize();
                 }
 
@@ -48434,7 +48398,7 @@
                     }
                     else
                     {
-                        return this.width
+                        return this.width / this.scale.x
                     }
                 }
                 set worldWidth(value)
@@ -48455,7 +48419,7 @@
                     }
                     else
                     {
-                        return this.height
+                        return this.height / this.scale.y
                     }
                 }
                 set worldHeight(value)
@@ -48624,7 +48588,7 @@
                  * @param {boolean} [noClamp] whether to disable clamp-zoom
                  * @returns {Viewport} this
                  */
-                fitWidth(width, center, scaleY=true, noClamp)
+                fitWidth(width, center, scaleY = true, noClamp)
                 {
                     let save;
                     if (center)
@@ -48659,7 +48623,7 @@
                  * @param {boolean} [noClamp] whether to disable clamp-zoom
                  * @returns {Viewport} this
                  */
-                fitHeight(height, center, scaleX=true, noClamp)
+                fitHeight(height, center, scaleX = true, noClamp)
                 {
                     let save;
                     if (center)
@@ -48729,7 +48693,7 @@
                  * @param {number} [height=this.worldHeight] desired height
                  * @returns {Viewport} this
                  */
-                fit(center, width=this.worldWidth, height=this.worldHeight)
+                fit(center, width = this.worldWidth, height = this.worldHeight)
                 {
                     let save;
                     if (center)
