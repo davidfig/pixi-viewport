@@ -66,6 +66,14 @@ or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/
 ## Build Examples
 I've included a bunch of build examples in the docs/builds directory, including: browserify, rollup, standalone (e.g., cdn), standalone (pixi.js v4), and typescript. You can see the live demos at [https://davidfig.github.io/pixi-viewport/builds/].
   
+## Tests
+
+```
+yarn test
+```
+
+Open browser to http://localhost:5000
+
 
 ## Other Libraries
 If you liked pixi-viewport, please try my other open source libraries:
