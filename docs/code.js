@@ -24,7 +24,8 @@ let _fps, _application, _viewport, _ease, _object, _stars = []
 
 function viewport()
 {
-    _viewport = _application.stage.addChild(new Viewport({
+    _viewport = _application.stage.addChild(new Viewport(
+    {
         interaction: _application.renderer.plugins.interaction,
         passiveWheel: false
     }))
@@ -172,7 +173,7 @@ function API()
     clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
 }
 
-window.onload = function ()
+window.onload = function()
 {
     _fps = new FPS({ side: 'bottom-left' })
     _application = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
@@ -192,7 +193,6 @@ window.onload = function ()
     PIXI.Ticker.shared.add(() =>
     {
         _fps.frame()
-
         // test dirty
         // if (_viewport.dirty)
         // {

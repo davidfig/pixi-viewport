@@ -3,23 +3,27 @@
 <head>
     <meta charset="utf-8">
     <title>pixi-viewport Mocha Tests</title>
-    <link href="https://unpkg.com/mocha@4.0.1/mocha.css" rel="stylesheet" />
+    <link href="https://unpkg.com/mocha/mocha.css" rel="stylesheet" />
 </head>
 
 <body>
     <div id="mocha"></div>
 
-    <script src="https://unpkg.com/chai@4.1.2/chai.js"></script>
-    <script src="https://unpkg.com/mocha@4.0.1/mocha.js"></script>
+    <script src="https://unpkg.com/chai/chai.js"></script>
+    <script src="https://unpkg.com/mocha/mocha.js"></script>
 
-    <script>
-        mocha.setup('bdd')
+    <script class="mocha-init">
+        mocha.setup('bdd');
+        mocha.checkLeaks();
     </script>
-    <script src="index.js"></script>
 
-    <script>
-        mocha.checkLeaks()
-        mocha.run()
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.0.4/pixi.js"></script>
+
+    <script src="viewport.js"></script>
+    <script src="viewport.test.js"></script>
+
+    <script class="mocha-exec">
+        mocha.run();
     </script>
 </body>
 

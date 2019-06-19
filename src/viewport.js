@@ -214,15 +214,21 @@ export class Viewport extends PIXI.Container
      * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
      * @param {number} [screenWidth=window.innerWidth]
      * @param {number} [screenHeight=window.innerHeight]
-     * @param {number} [worldWidth=this.width]
-     * @param {number} [worldHeight=this.height]
+     * @param {number} [worldWidth]
+     * @param {number} [worldHeight]
      */
     resize(screenWidth = window.innerWidth, screenHeight = window.innerHeight, worldWidth, worldHeight)
     {
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
-        this._worldWidth = worldWidth
-        this._worldHeight = worldHeight
+        if (typeof worldWidth !== 'undefined')
+        {
+            this._worldWidth = worldWidth
+        }
+        if (typeof worldHeight !== 'undefined')
+        {
+            this._worldHeight = worldHeight
+        }
         this.plugins.resize()
     }
 

@@ -2430,7 +2430,7 @@ class Wheel extends Plugin
      * @param {WheelOptions} [options]
      * @event wheel({wheel: {dx, dy, dz}, event, viewport})
      */
-    constructor(parent, options={})
+    constructor(parent, options = {})
     {
         super(parent);
         this.options = Object.assign({}, wheelOptions, options);
@@ -2532,8 +2532,8 @@ class Wheel extends Plugin
             }
         }
         this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent});
-        if (!this.parent.passiveWheel)
+        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+        if (!this.parent.options.passiveWheel)
         {
             e.preventDefault();
         }
@@ -2807,7 +2807,7 @@ class Viewport extends Container
      * @fires zoomed
      * @fires zoomed-end
      */
-    constructor(options={})
+    constructor(options = {})
     {
         super();
         this.options = Object.assign({}, viewportOptions, options);
@@ -2940,15 +2940,21 @@ class Viewport extends Container
      * use this to set screen and world sizes--needed for pinch/wheel/clamp/bounce
      * @param {number} [screenWidth=window.innerWidth]
      * @param {number} [screenHeight=window.innerHeight]
-     * @param {number} [worldWidth=this.width]
-     * @param {number} [worldHeight=this.height]
+     * @param {number} [worldWidth]
+     * @param {number} [worldHeight]
      */
-    resize(screenWidth=window.innerWidth, screenHeight=window.innerHeight, worldWidth, worldHeight)
+    resize(screenWidth = window.innerWidth, screenHeight = window.innerHeight, worldWidth, worldHeight)
     {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        this._worldWidth = worldWidth;
-        this._worldHeight = worldHeight;
+        if (typeof worldWidth !== 'undefined')
+        {
+            this._worldWidth = worldWidth;
+        }
+        if (typeof worldHeight !== 'undefined')
+        {
+            this._worldHeight = worldHeight;
+        }
         this.plugins.resize();
     }
 
@@ -2964,7 +2970,7 @@ class Viewport extends Container
         }
         else
         {
-            return this.width
+            return this.width / this.scale.x
         }
     }
     set worldWidth(value)
@@ -2985,7 +2991,7 @@ class Viewport extends Container
         }
         else
         {
-            return this.height
+            return this.height / this.scale.y
         }
     }
     set worldHeight(value)
@@ -3154,7 +3160,7 @@ class Viewport extends Container
      * @param {boolean} [noClamp] whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitWidth(width, center, scaleY=true, noClamp)
+    fitWidth(width, center, scaleY = true, noClamp)
     {
         let save;
         if (center)
@@ -3189,7 +3195,7 @@ class Viewport extends Container
      * @param {boolean} [noClamp] whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitHeight(height, center, scaleX=true, noClamp)
+    fitHeight(height, center, scaleX = true, noClamp)
     {
         let save;
         if (center)
@@ -3259,7 +3265,7 @@ class Viewport extends Container
      * @param {number} [height=this.worldHeight] desired height
      * @returns {Viewport} this
      */
-    fit(center, width=this.worldWidth, height=this.worldHeight)
+    fit(center, width = this.worldWidth, height = this.worldHeight)
     {
         let save;
         if (center)
@@ -3775,14 +3781,14 @@ class Viewport extends Container
  * @property {PIXI.Point} cornerPoint
  */
 
- /**
-  * @typedef {Object} LastViewport
-  * @private
-  * @property {number} x
-  * @property {number} y
-  * @property {number} scaleX
-  * @property {number} scaleY
-  */
+/**
+ * @typedef {Object} LastViewport
+ * @private
+ * @property {number} x
+ * @property {number} y
+ * @property {number} scaleX
+ * @property {number} scaleY
+ */
 
 export { Plugin, Viewport };
 //# sourceMappingURL=viewport.es.js.map
