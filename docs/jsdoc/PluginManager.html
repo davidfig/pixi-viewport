@@ -368,7 +368,7 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Class: EventEmitter</h1>
+        <h1 class="page-title" data-filename="Viewport">Class: PluginManager</h1>
         
         
 
@@ -378,8 +378,10 @@
 
 <header>
     <div class="header content-size">
-        <h2>EventEmitter
+        <h2>PluginManager
         </h2>
+        
+            <div class="class-description"><p>Use this to access current plugins or add user-defined plugins</p></div>
         
     </div>
 </header>
@@ -392,12 +394,12 @@
         
 <dt>
     <div class="nameContainer">
-        <h4 class="name" id="EventEmitter">
-            <a class="share-icon" href="#EventEmitter"><span class="glyphicon glyphicon-link"></span></a>
+        <h4 class="name" id="PluginManager">
+            <a class="share-icon" href="#PluginManager"><span class="glyphicon glyphicon-link"></span></a>
             <span class="">
-                new EventEmitter
+                new PluginManager
             </span>
-            <span class="signature">()</span>
+            <span class="signature">(viewport)</span>
             
             
             
@@ -406,7 +408,7 @@
 
         
         <div class="tag-source">
-            <a href="node_modules_eventemitter3_index.js.html#line92">index.js:92</a>
+            <a href="src_plugin-manager.js.html#line6">plugin-manager.js:6</a>
         </div>
         
     </div>
@@ -416,16 +418,56 @@
 <dd>
 
     
-    <div class="description">
-        <p>Minimal <code>EventEmitter</code> interface that is molded against the Node.js
-<code>EventEmitter</code> interface.</p>
-    </div>
-    
 
     
 
     
 
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>viewport</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Viewport.html">Viewport</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
 
     
@@ -480,6 +522,1535 @@
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl class="list-methods">
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="add">
+            <a class="share-icon" href="#add"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                add
+            </span>
+            <span class="signature">(name, plugin, index)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line25">plugin-manager.js:25</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Inserts a named plugin or a user plugin into the viewport
+default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>plugin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Plugin.html">Plugin</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>instantiated Plugin class</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>to insert userPlugin (otherwise inserts it at the end)</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="down">
+            <a class="share-icon" href="#down"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                down
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line148">plugin-manager.js:148</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle down for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="get">
+            <a class="share-icon" href="#get"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                get
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line41">plugin-manager.js:41</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>get plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="move">
+            <a class="share-icon" href="#move"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                move
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line166">plugin-manager.js:166</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle move for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pause">
+            <a class="share-icon" href="#pause"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                pause
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line111">plugin-manager.js:111</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>pause plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin (e.g., 'drag', 'pinch')</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="remove">
+            <a class="share-icon" href="#remove"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                remove
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line97">plugin-manager.js:97</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>removes installed plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin (e.g., 'drag', 'pinch')</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="reset">
+            <a class="share-icon" href="#reset"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                reset
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line68">plugin-manager.js:68</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>clamps and resets bounce and decelerate (as needed) after manually moving viewport</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resize">
+            <a class="share-icon" href="#resize"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                resize
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line59">plugin-manager.js:59</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>resize all active plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resume">
+            <a class="share-icon" href="#resume"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                resume
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line123">plugin-manager.js:123</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>resume plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin (e.g., 'drag', 'pinch')</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="up">
+            <a class="share-icon" href="#up"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                up
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line184">plugin-manager.js:184</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle up for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            <a class="share-icon" href="#update"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                update
+            </span>
+            <span class="signature">(elapsed)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line50">plugin-manager.js:50</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>update all active plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>elapsed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>type in milliseconds since last update</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="wheel">
+            <a class="share-icon" href="#wheel"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                wheel
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line202">plugin-manager.js:202</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle wheel event for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">WheelEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        </dl>
     
 
     

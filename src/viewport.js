@@ -134,6 +134,10 @@ export class Viewport extends PIXI.Container
         }
 
         this.input = new InputManager(this)
+        /**
+         * Use this to add user plugins or access existing plugins (e.g., to pause, resume, or remove them)
+         * @type {PluginManager}
+         */
         this.plugins = new PluginManager(this)
     }
 

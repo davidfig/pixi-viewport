@@ -1,9 +1,12 @@
 const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
+/**
+ * Use this to access current plugins or add user-defined plugins
+ */
 export class PluginManager
 {
     /**
-     * @private
+     * instantiated by Viewport
      * @param {Viewport} viewport
      */
     constructor(viewport)
@@ -20,7 +23,7 @@ export class PluginManager
      * @param {Plugin} plugin - instantiated Plugin class
      * @param {number} index to insert userPlugin (otherwise inserts it at the end)
      */
-    add(name, plugin, index=PLUGIN_ORDER.length)
+    add(name, plugin, index = PLUGIN_ORDER.length)
     {
         this.plugins[name] = plugin
         const current = PLUGIN_ORDER.indexOf(name)
