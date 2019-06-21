@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>pixi-viewport API Documentation</title>
+    
+    <meta name="description" content="Documentation for pixi-viewport library" />
+    
+        <meta name="keywords" content="docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d" />
+        <meta name="keyword" content="docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d" />
+    
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,700" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"pixi-viewport","footer":"by YOPEY YOPEY LLC (yopeyopey.com)","copyright":"Copyright © 2019 YOPEY YOPEY LLC.","meta":{"title":"pixi-viewport API Documentation","description":"Documentation for pixi-viewport library","keyword":"docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">pixi-viewport</a></h3>
+    <button id="menuToggle" class="btn btn-link btn-lg menu-toggle">
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+    </button>
+    <div class="search">
+        <input id="search" type="text" class="form-control input-md" placeholder="Search...">
+    </div>
+    <ul class="list">
+    
+        
+        <li class="item" data-name="global">
+            <span class="title namespace ">
+                
+                <span class="namespaceTag">
+                    <span class="glyphicon glyphicon-globe"></span>
+                </span>
+                
+                <a href="global.html">Global</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="followOptions"><a href="global.html#followOptions">followOptions</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            <span class="subtitle">Typedefs</span>
+            
+                <li class="parent" data-name="BounceOptions"><a href="global.html#BounceOptions">BounceOptions</a></li>
+            
+                <li class="parent" data-name="ClampOptions"><a href="global.html#ClampOptions">ClampOptions</a></li>
+            
+                <li class="parent" data-name="ClampZoomOptions"><a href="global.html#ClampZoomOptions">ClampZoomOptions</a></li>
+            
+                <li class="parent" data-name="DecelerateOptions"><a href="global.html#DecelerateOptions">DecelerateOptions</a></li>
+            
+                <li class="parent" data-name="DragOptions"><a href="global.html#DragOptions">DragOptions</a></li>
+            
+                <li class="parent" data-name="HitArea"><a href="global.html#HitArea">HitArea</a></li>
+            
+                <li class="parent" data-name="LastDrag"><a href="global.html#LastDrag">LastDrag</a></li>
+            
+                <li class="parent" data-name="MouseEdgesOptions"><a href="global.html#MouseEdgesOptions">MouseEdgesOptions</a></li>
+            
+                <li class="parent" data-name="PinchOptions"><a href="global.html#PinchOptions">PinchOptions</a></li>
+            
+                <li class="parent" data-name="SnapOptions"><a href="global.html#SnapOptions">SnapOptions</a></li>
+            
+                <li class="parent" data-name="SnapZoomOptions"><a href="global.html#SnapZoomOptions">SnapZoomOptions</a></li>
+            
+                <li class="parent" data-name="ViewportOptions"><a href="global.html#ViewportOptions">ViewportOptions</a></li>
+            
+                <li class="parent" data-name="ViewportTouch"><a href="global.html#ViewportTouch">ViewportTouch</a></li>
+            
+                <li class="parent" data-name="WheelOptions"><a href="global.html#WheelOptions">WheelOptions</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+    
+        
+        <li class="item" data-name="Plugin">
+            <span class="title  ">
+                
+                <a href="Plugin.html">Plugin</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Plugin#destroy"><a href="Plugin.html#destroy">destroy</a></li>
+            
+                <li class="parent  " data-name="Plugin#down"><a href="Plugin.html#down">down</a></li>
+            
+                <li class="parent  " data-name="Plugin#move"><a href="Plugin.html#move">move</a></li>
+            
+                <li class="parent  " data-name="Plugin#pause"><a href="Plugin.html#pause">pause</a></li>
+            
+                <li class="parent  " data-name="Plugin#reset"><a href="Plugin.html#reset">reset</a></li>
+            
+                <li class="parent  " data-name="Plugin#resize"><a href="Plugin.html#resize">resize</a></li>
+            
+                <li class="parent  " data-name="Plugin#resume"><a href="Plugin.html#resume">resume</a></li>
+            
+                <li class="parent  " data-name="Plugin#up"><a href="Plugin.html#up">up</a></li>
+            
+                <li class="parent  " data-name="Plugin#update"><a href="Plugin.html#update">update</a></li>
+            
+                <li class="parent  " data-name="Plugin#wheel"><a href="Plugin.html#wheel">wheel</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="PluginManager">
+            <span class="title  ">
+                
+                <a href="PluginManager.html">PluginManager</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="PluginManager#add"><a href="PluginManager.html#add">add</a></li>
+            
+                <li class="parent  " data-name="PluginManager#down"><a href="PluginManager.html#down">down</a></li>
+            
+                <li class="parent  " data-name="PluginManager#get"><a href="PluginManager.html#get">get</a></li>
+            
+                <li class="parent  " data-name="PluginManager#move"><a href="PluginManager.html#move">move</a></li>
+            
+                <li class="parent  " data-name="PluginManager#pause"><a href="PluginManager.html#pause">pause</a></li>
+            
+                <li class="parent  " data-name="PluginManager#remove"><a href="PluginManager.html#remove">remove</a></li>
+            
+                <li class="parent  " data-name="PluginManager#reset"><a href="PluginManager.html#reset">reset</a></li>
+            
+                <li class="parent  " data-name="PluginManager#resize"><a href="PluginManager.html#resize">resize</a></li>
+            
+                <li class="parent  " data-name="PluginManager#resume"><a href="PluginManager.html#resume">resume</a></li>
+            
+                <li class="parent  " data-name="PluginManager#up"><a href="PluginManager.html#up">up</a></li>
+            
+                <li class="parent  " data-name="PluginManager#update"><a href="PluginManager.html#update">update</a></li>
+            
+                <li class="parent  " data-name="PluginManager#wheel"><a href="PluginManager.html#wheel">wheel</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Viewport">
+            <span class="title  ">
+                
+                <a href="Viewport.html">Viewport</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="Viewport#bottom"><a href="Viewport.html#bottom">bottom</a></li>
+            
+                <li class="parent " data-name="Viewport#center"><a href="Viewport.html#center">center</a></li>
+            
+                <li class="parent " data-name="Viewport#corner"><a href="Viewport.html#corner">corner</a></li>
+            
+                <li class="parent " data-name="Viewport#dirty"><a href="Viewport.html#dirty">dirty</a></li>
+            
+                <li class="parent " data-name="Viewport#forceHitArea"><a href="Viewport.html#forceHitArea">forceHitArea</a></li>
+            
+                <li class="parent " data-name="Viewport#left"><a href="Viewport.html#left">left</a></li>
+            
+                <li class="parent " data-name="Viewport#pause"><a href="Viewport.html#pause">pause</a></li>
+            
+                <li class="parent " data-name="Viewport#plugins"><a href="Viewport.html#plugins">plugins</a></li>
+            
+                <li class="parent " data-name="Viewport#right"><a href="Viewport.html#right">right</a></li>
+            
+                <li class="parent " data-name="Viewport#screenHeight"><a href="Viewport.html#screenHeight">screenHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWidth"><a href="Viewport.html#screenWidth">screenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWorldHeight"><a href="Viewport.html#screenWorldHeight">screenWorldHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWorldWidth"><a href="Viewport.html#screenWorldWidth">screenWorldWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#threshold"><a href="Viewport.html#threshold">threshold</a></li>
+            
+                <li class="parent " data-name="Viewport#top"><a href="Viewport.html#top">top</a></li>
+            
+                <li class="parent " data-name="Viewport#worldHeight"><a href="Viewport.html#worldHeight">worldHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#worldScreenHeight"><a href="Viewport.html#worldScreenHeight">worldScreenHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#worldScreenWidth"><a href="Viewport.html#worldScreenWidth">worldScreenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#worldWidth"><a href="Viewport.html#worldWidth">worldWidth</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Viewport#bounce"><a href="Viewport.html#bounce">bounce</a></li>
+            
+                <li class="parent  " data-name="Viewport#clamp"><a href="Viewport.html#clamp">clamp</a></li>
+            
+                <li class="parent  " data-name="Viewport#clampZoom"><a href="Viewport.html#clampZoom">clampZoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#decelerate"><a href="Viewport.html#decelerate">decelerate</a></li>
+            
+                <li class="parent  " data-name="Viewport#destroy"><a href="Viewport.html#destroy">destroy</a></li>
+            
+                <li class="parent  " data-name="Viewport#drag"><a href="Viewport.html#drag">drag</a></li>
+            
+                <li class="parent  " data-name="Viewport#ensureVisible"><a href="Viewport.html#ensureVisible">ensureVisible</a></li>
+            
+                <li class="parent  " data-name="Viewport#fit"><a href="Viewport.html#fit">fit</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitHeight"><a href="Viewport.html#fitHeight">fitHeight</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitWidth"><a href="Viewport.html#fitWidth">fitWidth</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitWorld"><a href="Viewport.html#fitWorld">fitWorld</a></li>
+            
+                <li class="parent  " data-name="Viewport#follow"><a href="Viewport.html#follow">follow</a></li>
+            
+                <li class="parent  " data-name="Viewport#getVisibleBounds"><a href="Viewport.html#getVisibleBounds">getVisibleBounds</a></li>
+            
+                <li class="parent  " data-name="Viewport#mouseEdges"><a href="Viewport.html#mouseEdges">mouseEdges</a></li>
+            
+                <li class="parent  " data-name="Viewport#moveCenter"><a href="Viewport.html#moveCenter">moveCenter</a></li>
+            
+                <li class="parent  " data-name="Viewport#moveCorner"><a href="Viewport.html#moveCorner">moveCorner</a></li>
+            
+                <li class="parent  " data-name="Viewport#OOB"><a href="Viewport.html#OOB">OOB</a></li>
+            
+                <li class="parent  " data-name="Viewport#pinch"><a href="Viewport.html#pinch">pinch</a></li>
+            
+                <li class="parent  " data-name="Viewport#resize"><a href="Viewport.html#resize">resize</a></li>
+            
+                <li class="parent  " data-name="Viewport#snap"><a href="Viewport.html#snap">snap</a></li>
+            
+                <li class="parent  " data-name="Viewport#snapZoom"><a href="Viewport.html#snapZoom">snapZoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#toScreen"><a href="Viewport.html#toScreen">toScreen</a></li>
+            
+                <li class="parent  " data-name="Viewport#toWorld"><a href="Viewport.html#toWorld">toWorld</a></li>
+            
+                <li class="parent  " data-name="Viewport#update"><a href="Viewport.html#update">update</a></li>
+            
+                <li class="parent  " data-name="Viewport#wheel"><a href="Viewport.html#wheel">wheel</a></li>
+            
+                <li class="parent  " data-name="Viewport#zoom"><a href="Viewport.html#zoom">zoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#zoomPercent"><a href="Viewport.html#zoomPercent">zoomPercent</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li class="parent" data-name="Viewport#event:bounce-x-end"><a href="Viewport.html#event:bounce-x-end">bounce-x-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-x-start"><a href="Viewport.html#event:bounce-x-start">bounce-x-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-y-end"><a href="Viewport.html#event:bounce-y-end">bounce-y-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-y-start"><a href="Viewport.html#event:bounce-y-start">bounce-y-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:clicked"><a href="Viewport.html#event:clicked">clicked</a></li>
+            
+                <li class="parent" data-name="Viewport#event:drag-end"><a href="Viewport.html#event:drag-end">drag-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:drag-start"><a href="Viewport.html#event:drag-start">drag-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:mouse-edge-end"><a href="Viewport.html#event:mouse-edge-end">mouse-edge-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:mouse-edge-start"><a href="Viewport.html#event:mouse-edge-start">mouse-edge-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:moved"><a href="Viewport.html#event:moved">moved</a></li>
+            
+                <li class="parent" data-name="Viewport#event:moved-end"><a href="Viewport.html#event:moved-end">moved-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:pinch-end"><a href="Viewport.html#event:pinch-end">pinch-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:pinch-start"><a href="Viewport.html#event:pinch-start">pinch-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-end"><a href="Viewport.html#event:snap-end">snap-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-start"><a href="Viewport.html#event:snap-start">snap-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-zoom-end"><a href="Viewport.html#event:snap-zoom-end">snap-zoom-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-zoom-start"><a href="Viewport.html#event:snap-zoom-start">snap-zoom-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:wheel"><a href="Viewport.html#event:wheel">wheel</a></li>
+            
+                <li class="parent" data-name="Viewport#event:wheel-scroll"><a href="Viewport.html#event:wheel-scroll">wheel-scroll</a></li>
+            
+                <li class="parent" data-name="Viewport#event:zoomed"><a href="Viewport.html#event:zoomed">zoomed</a></li>
+            
+                <li class="parent" data-name="Viewport#event:zoomed-end"><a href="Viewport.html#event:zoomed-end">zoomed-end</a></li>
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        
+        <h1 class="page-title" data-filename="Viewport">Class: PluginManager</h1>
+        
+        
+
+
+
+<section>
+
+<header>
+    <div class="header content-size">
+        <h2>PluginManager
+        </h2>
+        
+            <div class="class-description"><p>Use this to access current plugins or add user-defined plugins</p></div>
+        
+    </div>
+</header>
+
+<article class="content-size">
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="PluginManager">
+            <a class="share-icon" href="#PluginManager"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                new PluginManager
+            </span>
+            <span class="signature">(viewport)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line6">plugin-manager.js:6</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>viewport</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Viewport.html">Viewport</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl class="list-methods">
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="add">
+            <a class="share-icon" href="#add"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                add
+            </span>
+            <span class="signature">(name, plugin, index)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line25">plugin-manager.js:25</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Inserts a named plugin or a user plugin into the viewport
+default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>plugin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Plugin.html">Plugin</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>instantiated Plugin class</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>to insert userPlugin (otherwise inserts it at the end)</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="down">
+            <a class="share-icon" href="#down"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                down
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line148">plugin-manager.js:148</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle down for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="get">
+            <a class="share-icon" href="#get"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                get
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line41">plugin-manager.js:41</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>get plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="move">
+            <a class="share-icon" href="#move"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                move
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line166">plugin-manager.js:166</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle move for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pause">
+            <a class="share-icon" href="#pause"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                pause
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line111">plugin-manager.js:111</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>pause plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin (e.g., 'drag', 'pinch')</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="remove">
+            <a class="share-icon" href="#remove"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                remove
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line97">plugin-manager.js:97</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>removes installed plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin (e.g., 'drag', 'pinch')</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="reset">
+            <a class="share-icon" href="#reset"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                reset
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line68">plugin-manager.js:68</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>clamps and resets bounce and decelerate (as needed) after manually moving viewport</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resize">
+            <a class="share-icon" href="#resize"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                resize
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line59">plugin-manager.js:59</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>resize all active plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="resume">
+            <a class="share-icon" href="#resume"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                resume
+            </span>
+            <span class="signature">(name)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line123">plugin-manager.js:123</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>resume plugin</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>of plugin (e.g., 'drag', 'pinch')</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="up">
+            <a class="share-icon" href="#up"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                up
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line184">plugin-manager.js:184</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle up for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.interaction.InteractionEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            <a class="share-icon" href="#update"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                update
+            </span>
+            <span class="signature">(elapsed)</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line50">plugin-manager.js:50</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>update all active plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>elapsed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>type in milliseconds since last update</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="wheel">
+            <a class="share-icon" href="#wheel"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                wheel
+            </span>
+            <span class="signature">(event)</span><span class="type-signature">boolean</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_plugin-manager.js.html#line202">plugin-manager.js:202</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>handle wheel event for all plugins</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">WheelEvent</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        boolean
+                        
+                    
+            </td>
+            <td class="description last"></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+        
+
+        <footer class="content-size">
+            <div class="footer">
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 21 2019 06:33:43 GMT+0000 (GMT)
+            </div>
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

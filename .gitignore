@@ -1,3 +1,5 @@
 node_modules
 *.log
+test/viewport.js
+test/viewport.js.map
 .nyc_output

@@ -1,6 +1,6 @@
-const Plugin = require('../src/plugin')
+import { Plugin } from '../dist/viewport.es'
 
-module.exports = class TestPlugin extends Plugin
+export class UserPlugin extends Plugin
 {
     constructor(parent)
     {
