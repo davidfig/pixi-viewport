@@ -7,7 +7,7 @@ type PluginType = 'bounce' | 'clamp-zoom' | 'clamp' | 'decelerate' | 'drag' | 'f
 type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved' | 'zoomed' | 'moved-end' | 'zoomed-end'
 type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
 type WheelEventType = 'wheel'
-type MousebuttonsType = 'all' | 'left' | 'middle' | 'right' | string
+type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | string
 
 interface ViewportOptions
 {
@@ -33,7 +33,7 @@ interface DragOptions
     clampWheel?: boolean | string
     underflow?: string
     factor?: number
-    mouseButtons?: MousebuttonsType
+    mouseButtons?: MouseButtonsType
 }
 
 interface PinchOptions
@@ -61,7 +61,7 @@ interface DragOptions
     underflow?: UnderflowType
     clampWheel?: boolean | string
     factor?: number
-    mouseButtons?: MousebuttonsType
+    mouseButtons?: MouseButtonsType
 }
 
 interface ClampOptions
@@ -233,50 +233,49 @@ export declare class Viewport extends PIXI.Container
     // getVisibleBounds(): Viewport.Bounds
 
     // Plugins
-    plugins: Record<string, Plugin>
-    add(type: string, plugin: Plugin, index?: number): void
+    plugins: PluginManager
     // removePlugin(type: Viewport.PluginType): void
     // pausePlugin(type: Viewport.PluginType): void
     // resumePlugin(type: Viewport.PluginType): void
     drag(options?: DragOptions): this
-    // clamp(options?: Viewport.ClampOptions): this
+    clamp(options?: ClampOptions): this
     decelerate(options?: DecelerateOptions): this
-    // bounce(options?: Viewport.BounceOptions): this
+    bounce(options?: BounceOptions): this
     pinch(options?: PinchOptions): this
-    // snap(x: number, y: number, options?: Viewport.SnapOptions): this
-    // snapZoom(options?: Viewport.SnapZoomOptions): this
-    // follow(target: PIXI.DisplayObject, options?: Viewport.FollowOptions): this
-    // wheel(options?: Viewport.WheelOptions): this
-    // clampZoom(options?: Viewport.ClampZoomOptions): this
-    // mouseEdges(options?: Viewport.MouseEdgesOptions): this
+    snap(x: number, y: number, options?: SnapOptions): this
+    snapZoom(options?: SnapZoomOptions): this
+    follow(target: PIXI.DisplayObject, options?: FollowOptions): this
+    wheel(options?: WheelOptions): this
+    clampZoom(options?: ClampZoomOptions): this
+    mouseEdges(options?: MouseEdgesOptions): this
 
     // Events
-    // on(
-    //     event: 'added' | 'removed',
-    //     fn: (container: PIXI.Container) => void,
-    //     context?: any
-    // ): this
-    // // Events
-    // on(
-    //     event: PIXI.interaction.InteractionEventTypes,
-    //     fn: (event: PIXI.interaction.InteractionEvent) => void,
-    //     context?: any
-    // ): this
-    // on(
-    //     event: Viewport.EventType,
-    //     fn: (viewport: Viewport) => void,
-    //     context?: any
-    // ): this
-    // on(
-    //     event: Viewport.ClickEventType,
-    //     fn: (data: Viewport.ClickEventData) => void,
-    //     context?: any
-    // ): this
-    // on(
-    //     event: Viewport.WheelEventType,
-    //     fn: (data: Viewport.WheelEventData) => void,
-    //     context?: any
-    // ): this
+    on(
+        event: 'added' | 'removed',
+        fn: (container: PIXI.Container) => void,
+        context?: any
+    ): this
+    // Events
+    on(
+        event: PIXI.interaction.InteractionEventTypes,
+        fn: (event: PIXI.interaction.InteractionEvent) => void,
+        context?: any
+    ): this
+    on(
+        event: EventType,
+        fn: (viewport: Viewport) => void,
+        context?: any
+    ): this
+    on(
+        event: ClickEventType,
+        fn: (data: ClickEventData) => void,
+        context?: any
+    ): this
+    on(
+        event: WheelEventType,
+        fn: (data: WheelEventData) => void,
+        context?: any
+    ): this
 
     listeners(event: string | symbol): Function[]
     listeners(event: string | symbol, exists: boolean): boolean
@@ -311,4 +310,14 @@ export declare class Plugin
     reset(): void
     pause(): void
     resume(): void
+}
+
+declare class PluginManager
+{
+    constructor(viewport: Viewport)
+    add(type: string, plugin: Plugin, index?: number): void
+    get(name: string): Plugin
+    remove(name: string): void
+    pause(name: string): void
+    resume(name: string): void
 }

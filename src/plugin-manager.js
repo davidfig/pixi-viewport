@@ -38,6 +38,7 @@ export class PluginManager
     /**
      * get plugin
      * @param {string} name of plugin
+     * @return {Plugin}
      */
     get(name)
     {
@@ -46,6 +47,7 @@ export class PluginManager
 
     /**
      * update all active plugins
+     * @private
      * @param {number} elapsed type in milliseconds since last update
      */
     update(elapsed)
@@ -56,7 +58,10 @@ export class PluginManager
         }
     }
 
-    /** resize all active plugins */
+    /**
+     * resize all active plugins
+     * @private
+     */
     resize()
     {
         for (let plugin of this.list)
@@ -65,7 +70,9 @@ export class PluginManager
         }
     }
 
-    /** clamps and resets bounce and decelerate (as needed) after manually moving viewport */
+    /**
+     * clamps and resets bounce and decelerate (as needed) after manually moving viewport
+     */
     reset()
     {
         if (this.plugins['bounce'])
@@ -129,6 +136,10 @@ export class PluginManager
         }
     }
 
+    /**
+     * sort plugins according to PLUGIN_ORDER
+     * @private
+     */
     sort()
     {
         this.list = []
@@ -143,6 +154,7 @@ export class PluginManager
 
     /**
      * handle down for all plugins
+     * @private
      * @param {PIXI.interaction.InteractionEvent} event
      * @returns {boolean}
      */
@@ -161,6 +173,7 @@ export class PluginManager
 
     /**
      * handle move for all plugins
+     * @private
      * @param {PIXI.interaction.InteractionEvent} event
      * @returns {boolean}
      */
@@ -179,6 +192,7 @@ export class PluginManager
 
     /**
      * handle up for all plugins
+     * @private
      * @param {PIXI.interaction.InteractionEvent} event
      * @returns {boolean}
      */
@@ -197,6 +211,7 @@ export class PluginManager
 
     /**
      * handle wheel event for all plugins
+     * @private
      * @param {WheelEvent} event
      * @returns {boolean}
      */
