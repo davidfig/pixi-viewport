@@ -1,5 +1,5 @@
 const PIXI = require('pixi.js')
-const Viewport = require('../../../@types').Viewport
+const Viewport = require('../../../').Viewport
 
 window.onload = () =>
 {
