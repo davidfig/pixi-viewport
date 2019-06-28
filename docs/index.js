@@ -44,7 +44,7 @@
             // export if necessary
             //
 
-            if (exports)
+            if ( exports)
             {
               // node.js
               exports.Promise = nativePromiseSupported ? NativePromise : Promise;
@@ -46639,8 +46639,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -46721,8 +46721,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -46808,8 +46808,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -46907,8 +46907,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -47055,8 +47055,8 @@
 
             })(
               commonjsGlobal,                                     // window object or global
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -47158,8 +47158,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -47400,7 +47400,7 @@
             // Nodejs and AMD support: export the implementation as a module using
             // either convention.
             //
-            if (module.exports) {
+            if ( module.exports) {
               module.exports = seedrandom;
               // When in node.js, try using crypto package for autoseeding.
               try {
@@ -49247,8 +49247,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -49329,8 +49329,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -49416,8 +49416,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -49515,8 +49515,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -49663,8 +49663,8 @@
 
             })(
               commonjsGlobal,                                     // window object or global
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -49766,8 +49766,8 @@
 
             })(
               commonjsGlobal,
-              module,    // present in node.js
-              (typeof undefined) == 'function'   // present with an AMD loader
+               module,    // present in node.js
+              (typeof undefined) == 'function'    // present with an AMD loader
             );
             });
 
@@ -50005,7 +50005,7 @@
             // Nodejs and AMD support: export the implementation as a module using
             // either convention.
             //
-            if (module.exports) {
+            if ( module.exports) {
               module.exports = seedrandom;
               // When in node.js, try using crypto package for autoseeding.
               try {
@@ -51829,7 +51829,7 @@
             }
 
             // Node: Export function
-            if (module.exports) {
+            if ( module.exports) {
                 module.exports = tinycolor;
             }
             // AMD/requirejs: Define the module
@@ -54732,6 +54732,7 @@
              * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
              * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
              * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
+             * @property {boolean} [noOnContextMenu] remove oncontextmenu=() => {} from the divWheel element (this is enabled to allow for right-click dragging)
              */
 
             const viewportOptions = {
@@ -54744,7 +54745,8 @@
                 stopPropagation: false,
                 forceHitArea: null,
                 noTicker: false,
-                interaction: null
+                interaction: null,
+                noOnContextMenu: false
             };
 
             /**
@@ -54828,7 +54830,11 @@
                     this.threshold = this.options.threshold;
 
                     this.options.divWheel = this.options.divWheel || document.body;
-                    this.options.divWheel.oncontextmenu = e => e.preventDefault();
+
+                    if (!this.options.noOnContextMenu)
+                    {
+                        this.options.divWheel.oncontextmenu = e => e.preventDefault();
+                    }
 
                     if (!this.options.noTicker)
                     {
@@ -54837,6 +54843,7 @@
                     }
 
                     this.input = new InputManager(this);
+
                     /**
                      * Use this to add user plugins or access existing plugins (e.g., to pause, resume, or remove them)
                      * @type {PluginManager}
@@ -55276,19 +55283,18 @@
                 }
 
                 /**
-                 * zoom viewport by a certain percent (in both x and y direction)
-                 * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+                 * zoom viewport to specific value
+                 * @param {number} scale value (e.g., 1 would be 100%, 0.25 would be 25%)
                  * @param {boolean} [center] maintain the same center of the screen after zoom
                  * @return {Viewport} this
                  */
-                zoomPercent(percent, center)
+                setZoom(scale, center)
                 {
                     let save;
                     if (center)
                     {
                         save = this.center;
                     }
-                    const scale = this.scale.x + this.scale.x * percent;
                     this.scale.set(scale);
                     const clampZoom = this.plugins.get('clamp-zoom');
                     if (clampZoom)
@@ -55300,6 +55306,17 @@
                         this.moveCenter(save);
                     }
                     return this
+                }
+
+                /**
+                 * zoom viewport by a certain percent (in both x and y direction)
+                 * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+                 * @param {boolean} [center] maintain the same center of the screen after zoom
+                 * @return {Viewport} this
+                 */
+                zoomPercent(percent, center)
+                {
+                    return this.setZoom(this.scale.x + this.scale.x * percent, center)
                 }
 
                 /**
@@ -56119,6 +56136,7 @@
              * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
              * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
              * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
+             * @property {boolean} [noOnContextMenu] remove oncontextmenu=() => {} from the divWheel element (this is enabled to allow for right-click dragging)
              */
 
             const viewportOptions$1 = {
@@ -56131,7 +56149,8 @@
                 stopPropagation: false,
                 forceHitArea: null,
                 noTicker: false,
-                interaction: null
+                interaction: null,
+                noOnContextMenu: false
             };
 
             class UserPlugin extends Plugin$1
