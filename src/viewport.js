@@ -573,19 +573,18 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * zoom viewport by a certain percent (in both x and y direction)
-     * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+     * zoom viewport to specific value
+     * @param {number} scale value (e.g., 1 would be 100%, 0.25 would be 25%)
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    zoomPercent(percent, center)
+    setZoom(scale, center)
     {
         let save
         if (center)
         {
             save = this.center
         }
-        const scale = this.scale.x + this.scale.x * percent
         this.scale.set(scale)
         const clampZoom = this.plugins.get('clamp-zoom')
         if (clampZoom)
@@ -597,6 +596,17 @@ export class Viewport extends PIXI.Container
             this.moveCenter(save)
         }
         return this
+    }
+
+    /**
+     * zoom viewport by a certain percent (in both x and y direction)
+     * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+     * @param {boolean} [center] maintain the same center of the screen after zoom
+     * @return {Viewport} this
+     */
+    zoomPercent(percent, center)
+    {
+        return this.setZoom(this.scale.x + this.scale.x * percent, center)
     }
 
     /**

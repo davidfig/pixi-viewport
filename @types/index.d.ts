@@ -227,6 +227,7 @@ export declare class Viewport extends PIXI.Container
     fitWorld(center?: boolean): this
     fit(center?: boolean, width?: number, height?: number): this
 
+    setZoom(scale: number, center?: boolean): this
     zoomPercent(percent: number, center?: boolean): this
     zoom(change: number, center?: boolean): this
 
