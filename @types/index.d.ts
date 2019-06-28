@@ -4,9 +4,11 @@ type DirectionType = 'all' | 'x' | 'y'
 type UnderflowType = 'center' | 'top' | 'left' | 'right' | 'bottom' | string
 type SidesType = 'all' | 'horizontal' | 'vertical' | string
 type PluginType = 'bounce' | 'clamp-zoom' | 'clamp' | 'decelerate' | 'drag' | 'follow' | 'mouse-edges' | 'pinch' | 'snap' | 'snap-zoom' | 'wheel'
-type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved' | 'zoomed' | 'moved-end' | 'zoomed-end'
+type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved' | 'moved-end' | 'zoomed-end'
 type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
 type WheelEventType = 'wheel'
+type ZoomedEventType = 'zoomed'
+type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel'
 type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | string
 
 interface ViewportOptions
@@ -180,6 +182,12 @@ interface WheelEventData
     wheel: WheelData
 }
 
+interface ZoomedEventData
+{
+    type: ZoomedEventSourceType
+    viewport: Viewport
+}
+
 export declare class Viewport extends PIXI.Container
 {
     screenWidth: number
@@ -275,6 +283,11 @@ export declare class Viewport extends PIXI.Container
     on(
         event: WheelEventType,
         fn: (data: WheelEventData) => void,
+        context?: any
+    ): this
+    on(
+        event: ZoomedEventType,
+        fn: (data: ZoomedEventData) => void,
         context?: any
     ): this
 
