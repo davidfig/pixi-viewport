@@ -2773,6 +2773,7 @@ class MouseEdges extends Plugin
  * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
  * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
  * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
+ * @property {boolean} [noOnContextMenu] remove oncontextmenu=() => {} from the divWheel element (this is enabled to allow for right-click dragging)
  */
 
 const viewportOptions = {
@@ -2785,7 +2786,8 @@ const viewportOptions = {
     stopPropagation: false,
     forceHitArea: null,
     noTicker: false,
-    interaction: null
+    interaction: null,
+    noOnContextMenu: false
 };
 
 /**
@@ -2869,7 +2871,11 @@ class Viewport extends Container
         this.threshold = this.options.threshold;
 
         this.options.divWheel = this.options.divWheel || document.body;
-        this.options.divWheel.oncontextmenu = e => e.preventDefault();
+
+        if (!this.options.noOnContextMenu)
+        {
+            this.options.divWheel.oncontextmenu = e => e.preventDefault();
+        }
 
         if (!this.options.noTicker)
         {
@@ -2878,6 +2884,7 @@ class Viewport extends Container
         }
 
         this.input = new InputManager(this);
+
         /**
          * Use this to add user plugins or access existing plugins (e.g., to pause, resume, or remove them)
          * @type {PluginManager}

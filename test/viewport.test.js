@@ -18,6 +18,7 @@ describe('pixi-viewport', () =>
         chai.assert.isTrue(viewport.options.passiveWheel)
         chai.assert.isFunction(viewport.tickerFunction)
         chai.assert.isUndefined(viewport.interaction)
+        chai.assert.isDefined(document.body.oncontextmenu)
     })
 
     it('contructor with passed options', () =>
@@ -41,7 +42,8 @@ describe('pixi-viewport', () =>
             noTicker: true,
             ticker,
             interaction,
-            divWheel
+            divWheel,
+            noOnContextMenu: true
         })
         chai.assert.equal(viewport.screenWidth, 100)
         chai.assert.equal(viewport.screenHeight, 101)
@@ -55,6 +57,7 @@ describe('pixi-viewport', () =>
         chai.assert.equal(viewport.options.ticker, ticker)
         chai.assert.equal(viewport.options.interaction, interaction)
         chai.assert.equal(viewport.options.divWheel, divWheel)
+        chai.assert.isUndefined(divWheel.oncontextmenu)
     })
 
     it('resize() should change screen and world sizes', () =>

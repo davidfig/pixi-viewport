@@ -24,6 +24,7 @@ interface ViewportOptions
     ticker?: PIXI.Ticker
     worldHeight?: number
     worldWidth?: number
+    noOnContextMenu?: boolean
 }
 
 interface DragOptions
