@@ -571,7 +571,7 @@ export class Viewport extends PIXI.Container
         }
         return this
     }
-    
+
     /**
      * zoom viewport to specific value
      * @param {number} scale value (e.g., 1 would be 100%, 0.25 would be 25%)
@@ -606,7 +606,7 @@ export class Viewport extends PIXI.Container
      */
     zoomPercent(percent, center)
     {
-        return this.setZoom(this.scale.x + this.scale.x * percent)
+        return this.setZoom(this.scale.x + this.scale.x * percent, center)
     }
 
     /**

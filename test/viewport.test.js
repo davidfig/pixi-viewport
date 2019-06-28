@@ -1,12 +1,12 @@
 require('./node-shim')
 const chai = require('chai')
-const Viewport = require('../dist/viewport.js')
+const Viewport = require('../dist/viewport.js').Viewport
 
 describe('pixi-viewport', () =>
 {
     it('contructor with default options', () =>
     {
-        let viewport = new Viewport.Viewport()
+        let viewport = new Viewport()
         chai.assert.equal(viewport.screenWidth, window.innerWidth)
         chai.assert.equal(viewport.screenHeight, window.innerHeight)
         chai.assert.isNull(viewport._worldWidth)
@@ -28,7 +28,7 @@ describe('pixi-viewport', () =>
         }
         const forceHitArea = {}
         const interaction = {}
-        const viewport = new Viewport.Viewport(
+        const viewport = new Viewport(
         {
             screenWidth: 100,
             screenHeight: 101,
@@ -59,7 +59,7 @@ describe('pixi-viewport', () =>
 
     it('resize() should change screen and world sizes', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(101, 102, 10000, 10001)
         chai.assert.equal(viewport.screenWidth, 101)
         chai.assert.equal(viewport.screenHeight, 102)
@@ -69,7 +69,7 @@ describe('pixi-viewport', () =>
 
     it('getVisibleBounds() and moveCorner()', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(101, 102)
         viewport.moveCorner(10, 11)
         const bounds = viewport.getVisibleBounds()
@@ -81,7 +81,7 @@ describe('pixi-viewport', () =>
 
     it('zoom() and center', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(100, 200)
         viewport.zoom(100, true)
         chai.assert.equal(viewport.center.x, 50)
@@ -90,7 +90,7 @@ describe('pixi-viewport', () =>
 
     it('worldScreenWidth and worldScreenHeight', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         chai.assert.equal(viewport.worldScreenWidth, 200)
         chai.assert.equal(viewport.worldScreenHeight, 300)
@@ -101,7 +101,7 @@ describe('pixi-viewport', () =>
 
     it('toWorld()', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.fit()
         const world = viewport.toWorld(50, 60)
@@ -111,7 +111,7 @@ describe('pixi-viewport', () =>
 
     it('toScreen()', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.fit()
         const screen = viewport.toScreen(100, 200)
@@ -121,7 +121,7 @@ describe('pixi-viewport', () =>
 
     it('worldWidth and worldHeight', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 500, 1000)
         chai.assert.equal(viewport.worldWidth, 500)
         chai.assert.equal(viewport.worldHeight, 1000)
@@ -129,7 +129,7 @@ describe('pixi-viewport', () =>
 
     it('screenWorldWidth and screenWorldHeight', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.fit()
         chai.assert.equal(viewport.screenWorldWidth, 200)
@@ -138,7 +138,7 @@ describe('pixi-viewport', () =>
 
     it('moveCenter(), top, bottom, left, and right', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.moveCenter(500, 500)
         chai.assert.equal(viewport.top, 350)
@@ -149,7 +149,7 @@ describe('pixi-viewport', () =>
 
     it('moveCorner() and corner', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.moveCorner(11, 12)
         chai.assert.equal(viewport.corner.x, 11)
@@ -158,7 +158,7 @@ describe('pixi-viewport', () =>
 
     it('fitWidth()', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.fitWidth(1000, true)
         chai.assert.equal(viewport.screenWorldWidth, 200)
@@ -174,7 +174,7 @@ describe('pixi-viewport', () =>
 
     it('fitHeight()', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.fitHeight(400, true)
         chai.assert.equal(viewport.screenWorldWidth, 750)
@@ -191,7 +191,7 @@ describe('pixi-viewport', () =>
 
     it('fitWorld()', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.resize(200, 300, 1000, 1000)
         viewport.fitWorld()
         viewport.moveCorner(0, 0)
@@ -203,10 +203,18 @@ describe('pixi-viewport', () =>
 
     it('pause', () =>
     {
-        const viewport = new Viewport.Viewport()
+        const viewport = new Viewport()
         viewport.pause = true
         chai.assert.equal(viewport.pause, true)
         viewport.pause = false
         chai.assert.equal(viewport.pause, false)
+    })
+
+    it('setZoom', () =>
+    {
+        const viewport = new Viewport()
+        viewport.setZoom(5)
+        chai.assert.equal(viewport.scale.x, 5)
+        chai.assert.equal(viewport.scale.y, 5)
     })
 })
