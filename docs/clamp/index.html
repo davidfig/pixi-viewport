@@ -12,11 +12,12 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.0/pixi.min.js"></script>
     <script src="/settingspanel.js"></script>
-    <script src="/pixi-viewport.min.js"></script>
+    <script src="/viewport.js"></script>
     <script>
         function createViewport()
         {
-            viewport = renderer.stage.addChild(new Viewport({
+            viewport = renderer.stage.addChild(new Viewport.Viewport(
+            {
                 screenWidth: window.innerWidth,
                 screenHeight: window.innerHeight,
                 worldWidth: width,
@@ -50,8 +51,9 @@
         function createGUI()
         {
             var panel = new SettingsPanel()
-            panel.button('clamp.options', () =>{} )
-            panel.input('direction', (value) => {
+            panel.button('clamp.options', () => {})
+            panel.input('direction', (value) =>
+            {
                 if (value === '')
                 {
                     delete options.direction
@@ -61,30 +63,37 @@
                     options.direction = value
                 }
                 clamp()
-            }, { original: options.direction === null  ? '' : options.direction })
-            panel.input('left', (value) => {
+            }, { original: options.direction === null ? '' : options.direction })
+            panel.input('left', (value) =>
+            {
                 options.left = value === '' ? null : parseFloat(value)
                 clamp()
-            }, { original: options.left === null  ? '' : options.left })
-            panel.input('top', (value) => {
+            }, { original: options.left === null ? '' : options.left })
+            panel.input('top', (value) =>
+            {
                 options.top = value === '' ? null : parseFloat(value)
                 clamp()
-            }, { original: options.top === null  ? '' : options.top })
-            panel.input('right', (value) => {
+            }, { original: options.top === null ? '' : options.top })
+            panel.input('right', (value) =>
+            {
                 options.right = value === '' ? null : parseFloat(value)
                 clamp()
-            }, { original: options.right === null  ? '' : options.right })
-            panel.input('bottom', (value) => {
+            }, { original: options.right === null ? '' : options.right })
+            panel.input('bottom', (value) =>
+            {
                 options.bottom = value === '' ? null : parseFloat(value)
                 clamp()
-            }, { original: options.bottom === null  ? '' : options.bottom })
-            panel.input('underflow', (value) => {
+            }, { original: options.bottom === null ? '' : options.bottom })
+            panel.input('underflow', (value) =>
+            {
                 options.underflow = value
                 clamp()
             }, { original: options.underflow })
         }
 
-        var renderer, viewport, width = window.innerWidth * 1.5, height = window.innerHeight * 1.5, stars = (width + height) / 10
+        var renderer, viewport, width = window.innerWidth * 1.5,
+            height = window.innerHeight * 1.5,
+            stars = (width + height) / 10
         var options = {
             left: null,
             right: null,
@@ -93,12 +102,12 @@
             direction: 'all',
             underflow: 'center'
         }
-        window.onresize = function ()
+        window.onresize = function()
         {
             renderer.renderer.resize(window.innerWidth, window.innerHeight)
             viewport.resize(window.innerWidth, window.innerHeight)
         }
-        window.onload = function ()
+        window.onload = function()
         {
             renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
             document.body.appendChild(renderer.view)
@@ -112,7 +121,7 @@
             createWorld()
             createGUI()
 
-            PIXI.ticker.shared.add(function () { renderer.render() })
+            PIXI.ticker.shared.add(function() { renderer.render() })
         }
     </script>
 </head>

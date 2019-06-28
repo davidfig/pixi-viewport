@@ -1,0 +1,76 @@
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .title {
+            font-size: 1.75em;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.0/pixi.min.js"></script>
+    <script src="/settingspanel.js"></script>
+    <script src="/viewport.js"></script>
+    <script>
+        function createViewport()
+        {
+            viewport = renderer.stage.addChild(new Viewport.Viewport(
+            {
+                screenWidth: window.innerWidth,
+                screenHeight: window.innerHeight,
+                worldWidth: width,
+                worldHeight: height
+            }))
+            viewport
+                .drag()
+                .pinch()
+                .decelerate()
+        }
+
+        function createWorld()
+        {
+            const g = viewport.addChild(new PIXI.Graphics())
+            g.lineStyle(5, 0xff0000).drawRect(0, 0, width - 5, height - 5).lineStyle(0)
+            for (var i = 0; i < stars; i++)
+            {
+                var box = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+                box.tint = Math.floor(Math.random() * 0xffffff)
+                box.width = box.height = 20
+                box.position.set(Math.floor(Math.random() * (width - 20)), Math.floor(Math.random() * (height - 20)))
+            }
+        }
+
+
+        var renderer, viewport, width = window.innerWidth * 1.5,
+            height = window.innerHeight * 1.5,
+            stars = (width + height) / 10
+        window.onresize = function()
+        {
+            renderer.renderer.resize(window.innerWidth, window.innerHeight)
+            viewport.resize(window.innerWidth, window.innerHeight)
+        }
+        window.onload = function()
+        {
+            renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
+            document.body.appendChild(renderer.view)
+            renderer.view.style.position = 'fixed'
+            renderer.view.style.width = '100vw'
+            renderer.view.style.height = '100vh'
+            renderer.view.style.top = 0
+            renderer.view.style.left = 0
+            renderer.view.style.background = 'rgba(0,0,0,.1)'
+            createViewport()
+            createWorld()
+            console.log('world width/height:', width, height)
+            console.log('viewport.width/height:', viewport.width, viewport.height)
+            console.log('viewport.worldWidth/worldHeight (zoom: 1):', viewport.worldWidth, viewport.worldHeight)
+            viewport.zoomPercent(-0.5)
+            console.log('viewport.worldWidth/worldHeight (zoom: 0.5):', viewport.worldWidth, viewport.worldHeight)
+        }
+    </script>
+</head>
+
+<body>
+</body>
