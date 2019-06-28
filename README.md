@@ -100,7 +100,8 @@ I've included a bunch of build examples in the docs/builds directory, including:
 
 1. Clone repository
 2. yarn install
-3. yarn test
+3. yarn test (for Mocha test code)
+4. yarn coverage (for Instanbul coverage)
 
 ## Other Libraries
 If you liked pixi-viewport, please try my other open source libraries:
@@ -110,4 +111,4 @@ If you liked pixi-viewport, please try my other open source libraries:
 
 ## license  
 MIT License  
-(c) 2018 [YOPEY YOPEY LLC](https://yopeyopey.com/) by [David Figatner](https://twitter.com/yopey_yopey/)
+(c) 2019 [YOPEY YOPEY LLC](https://yopeyopey.com/) by [David Figatner](https://twitter.com/yopey_yopey/)
