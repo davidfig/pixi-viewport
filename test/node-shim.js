@@ -1,12 +1,15 @@
+const raf = require('raf')
+raf.polyfill()
+
 if (typeof global !== 'undefined')
 {
     global.window = {}
     global.performance = require('perf_hooks').performance
-    global.requestAnimationFrame = () => {}
     global.document = {
         body:
         {
-            addEventListener: () => {}
+            addEventListener: () => {},
+            removeEventListener: () => {}
         },
         createElement: () =>
         {
@@ -18,6 +21,7 @@ if (typeof global !== 'undefined')
                     }
                 }
             }
-        }
+        },
+        removeElement: () => {}
     }
 }

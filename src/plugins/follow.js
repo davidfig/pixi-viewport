@@ -21,7 +21,7 @@ export class Follow extends Plugin
      * @param {PIXI.DisplayObject} target to follow
      * @param {FollowOptions} [options]
      */
-    constructor(parent, target, options={})
+    constructor(parent, target, options = {})
     {
         super(parent)
         this.target = target
@@ -37,7 +37,8 @@ export class Follow extends Plugin
         }
 
         const center = this.parent.center
-        let toX = this.target.x, toY = this.target.y
+        let toX = this.target.x,
+            toY = this.target.y
         if (this.options.radius)
         {
             const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2))

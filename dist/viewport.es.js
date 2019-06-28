@@ -2900,7 +2900,10 @@ class Viewport extends Container
      * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true. Should it destroy the base texture of the child sprite     */
     destroy(options)
     {
-        this.options.ticker.remove(this.tickerFunction);
+        if (!this.options.noTicker)
+        {
+            this.options.ticker.remove(this.tickerFunction);
+        }
         this.input.destroy();
         super.destroy(options);
     }
