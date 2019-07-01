@@ -59,6 +59,7 @@
         "clicked": "^2.2.1",
         "fork-me-github": "^1.2.0",
         "highlight.js": "^9.15.8",
+        "jsdoc": "^3.6.2",
         "mocha": "^6.1.4",
         "nyc": "^14.1.1",
         "pixi-ease": "^1.3.0",
