@@ -12,13 +12,14 @@ import { Plugin } from './plugin'
 /**
  * @typedef DragOptions
  * @property {string} [direction=all] direction to drag
- * @property {boolean} [wheel=true] use wheel to scroll in y direction(unless wheel plugin is active)
+ * @property {boolean} [wheel=true] use wheel to scroll (unless wheel plugin is active)
  * @property {number} [wheelScroll=1] number of pixels to scroll with each wheel spin
  * @property {boolean} [reverse] reverse the direction of the wheel scroll
  * @property {(boolean|string)} [clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
  * @property {string} [underflow=center] where to place world if too small for screen
  * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
  * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'
+ * @property {string} [trackpadDrag] allow two-finger trackpad drag
  */
 
 const dragOptions = {
