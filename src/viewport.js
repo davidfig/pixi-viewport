@@ -632,7 +632,7 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * @param {SnapZoomOptionsoptions} options
+     * @param {SnapZoomOptions} options
      */
     snapZoom(options)
     {
