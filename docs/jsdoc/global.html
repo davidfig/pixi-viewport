@@ -56,10 +56,6 @@
             </span>
             <ul class="members itemMembers">
             
-            <span class="subtitle">Members</span>
-            
-                <li class="parent " data-name="followOptions"><a href="global.html#followOptions">followOptions</a></li>
-            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -74,6 +70,8 @@
                 <li class="parent" data-name="DecelerateOptions"><a href="global.html#DecelerateOptions">DecelerateOptions</a></li>
             
                 <li class="parent" data-name="DragOptions"><a href="global.html#DragOptions">DragOptions</a></li>
+            
+                <li class="parent" data-name="FollowOptions"><a href="global.html#FollowOptions">FollowOptions</a></li>
             
                 <li class="parent" data-name="HitArea"><a href="global.html#HitArea">HitArea</a></li>
             
@@ -419,196 +417,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        <dl class="list-members">
-            
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="followOptions">
-            <a class="share-icon" href="#followOptions"><span class="glyphicon glyphicon-link"></span></a>
-            <span class="">followOptions</span>
-            
-            
-            <span class="access-signature">constant</span>
-            
-            
-        </h4>
-    </div>
-    
-    
-</dt>
-<dd>
-    
-    
-    
-<dl class="details">
-    
-
-        <h5 class="subsection-title">Properties:</h5>
-
-        <dl>
-
-<table class="props">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		<th>Argument</th>
-		
-		
-		
-		<th>Default</th>
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>speed</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                    0
-                
-                </td>
-            
-            
-            <td class="description last"><p>to follow in pixels/frame (0=teleport to location)</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>acceleration</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last"><p>set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>radius</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-                <td class="default">
-                
-                </td>
-            
-            
-            <td class="description last"><p>radius (in world coordinates) of center circle where movement is allowed without moving the viewport</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table></dl>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-        </dl>
     
 
     
@@ -1930,6 +1738,192 @@
             
             
             <td class="description last"><p>changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+            
+                
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="FollowOptions">
+            <a class="share-icon" href="#FollowOptions"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">FollowOptions</span>
+            <span class="type-signature type">object</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    
+    
+<dl class="details">
+    
+
+        <h5 class="subsection-title">Properties:</h5>
+
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>speed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+            
+            <td class="description last"><p>to follow in pixels/frame (0=teleport to location)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>acceleration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>radius</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>radius (in world coordinates) of center circle where movement is allowed without moving the viewport</p></td>
         </tr>
 	
 	
@@ -4711,7 +4705,7 @@
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 28 2019 04:25:51 GMT-0500 (GMT-05:00)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Mon Jul 01 2019 09:05:01 GMT-0400 (Eastern Daylight Time)
             </div>
         </footer>
     </div>

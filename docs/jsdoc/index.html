@@ -56,10 +56,6 @@
             </span>
             <ul class="members itemMembers">
             
-            <span class="subtitle">Members</span>
-            
-                <li class="parent " data-name="followOptions"><a href="global.html#followOptions">followOptions</a></li>
-            
             </ul>
             <ul class="typedefs itemMembers">
             
@@ -74,6 +70,8 @@
                 <li class="parent" data-name="DecelerateOptions"><a href="global.html#DecelerateOptions">DecelerateOptions</a></li>
             
                 <li class="parent" data-name="DragOptions"><a href="global.html#DragOptions">DragOptions</a></li>
+            
+                <li class="parent" data-name="FollowOptions"><a href="global.html#FollowOptions">FollowOptions</a></li>
             
                 <li class="parent" data-name="HitArea"><a href="global.html#HitArea">HitArea</a></li>
             
@@ -381,15 +379,19 @@
 
 
     <section>
-        <article class="readme content-size"><h1>pixi-viewport</h1><p>A highly configurable viewport/2D camera designed to work with pixi.js.</p>
+        <article class="readme content-size"><h1>pixi-viewport</h1>
+<p>A highly configurable viewport/2D camera designed to work with pixi.js.</p>
 <p>Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.</p>
 <p>All features are configurable and removable, so set up the viewport to be exactly what you need.</p>
-<h2>Migration from pixi-viewport v3 to v4</h2><p>Viewport needs to be imported or required as follows:</p>
+<h2>Migration from pixi-viewport v3 to v4</h2>
+<p>Viewport needs to be imported or required as follows:</p>
 <pre class="prettyprint source lang-js"><code>import { Viewport } from 'pixi-viewport'
 
 // or 
 
-const Viewport = require('pixi-viewport').Viewport</code></pre><p>Plugins have been moved to their own object:</p>
+const Viewport = require('pixi-viewport').Viewport
+</code></pre>
+<p>Plugins have been moved to their own object:</p>
 <pre class="prettyprint source lang-js"><code>// viewport.pausePlugin('drag')
 viewport.plugins.pause('drag')
 
@@ -400,7 +402,10 @@ viewport.plugins.resume('drag')
 viewport.plugins.remove('drag')
 
 // viewport.userPlugin('name', plugin, index)
-viewport.plugins.add('name', plugin, index)</code></pre><h2>Simple Example</h2><pre class="prettyprint source lang-js"><code>import * as PIXI from 'pixi.js'
+viewport.plugins.add('name', plugin, index)
+</code></pre>
+<h2>Simple Example</h2>
+<pre class="prettyprint source lang-js"><code>import * as PIXI from 'pixi.js'
 import { Viewport } from 'pixi-viewport'
 
 const app = new PIXI.Application()
@@ -430,31 +435,48 @@ viewport
 const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
 sprite.tint = 0xff0000
 sprite.width = sprite.height = 100
-sprite.position.set(100, 100)</code></pre><p>Using commonjs:</p>
+sprite.position.set(100, 100)
+</code></pre>
+<p>Using commonjs:</p>
 <pre class="prettyprint source lang-js"><code>const PIXI = require('pixi.js')
 const Viewport = require('pixi-viewport').Viewport
 
-// same code as above...</code></pre><h2>Live Example</h2><p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">https://davidfig.github.io/pixi-viewport/</a></p>
-<h2>API Documentation</h2><p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/jsdoc/">https://davidfig.github.io/pixi-viewport/jsdoc/</a></p>
-<h2>Installation</h2><pre class="prettyprint source"><code>yarn add pixi-viewport</code></pre><p>or <a target="_blank" href="https://github.com/davidfig/pixi-viewport/releases/">grab the latest release</a> and use it:</p>
+// same code as above...
+</code></pre>
+<h2>Live Example</h2>
+<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">https://davidfig.github.io/pixi-viewport/</a></p>
+<h2>API Documentation</h2>
+<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/jsdoc/">https://davidfig.github.io/pixi-viewport/jsdoc/</a></p>
+<h2>Installation</h2>
+<pre><code>yarn add pixi-viewport
+</code></pre>
+<p>or <a target="_blank" href="https://github.com/davidfig/pixi-viewport/releases/">grab the latest release</a> and use it:</p>
 <pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/directory-to-file/pixi.js&quot;>&lt;/script>
 &lt;script src=&quot;/directory-to-file/pixi-viewport.js&quot;>&lt;/script>
 &lt;!-- or &lt;script type=&quot;module&quot; src=&quot;/directory-to-file/pixi-viewport.es.js&quot;>&lt;/script> -->
 &lt;script>
     const Viewport = new Viewport.Viewport(options)
-&lt;/script></code></pre><h2>Build Examples</h2><p>I've included a bunch of build examples in the docs/builds directory, including: <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify">browserify</a>, <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup">rollup</a>, <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone">standalone (e.g., cdn)</a>, <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4">standalone (pixi.js v4)</a>, and <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts">typescript</a>. You can see the live demos at <a target="_blank" href="https://davidfig.github.io/pixi-viewport/builds/">https://davidfig.github.io/pixi-viewport/builds/</a>.</p>
-<h2>Tests</h2><ol>
+&lt;/script>
+</code></pre>
+<h2>Build Examples</h2>
+<p>I've included a bunch of build examples in the docs/builds directory, including: <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify">browserify</a>, <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup">rollup</a>, <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone">standalone (e.g., cdn)</a>, <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4">standalone (pixi.js v4)</a>, and <a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts">typescript</a>. You can see the live demos at <a target="_blank" href="https://davidfig.github.io/pixi-viewport/builds/">https://davidfig.github.io/pixi-viewport/builds/</a>.</p>
+<h2>Tests</h2>
+<ol>
 <li>Clone repository</li>
 <li>yarn install</li>
-<li>yarn test</li>
+<li>yarn test (for Mocha test code)</li>
+<li>yarn coverage (for Instanbul coverage)</li>
 </ol>
-<h2>Other Libraries</h2><p>If you liked pixi-viewport, please try my other open source libraries:</p>
+<h2>Other Libraries</h2>
+<p>If you liked pixi-viewport, please try my other open source libraries:</p>
 <ul>
 <li><a target="_blank" href="https://github.com/davidfig/pixi-scrollbox">pixi-scrollbox</a> - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)</li>
 <li><a target="_blank" href="https://github.com/davidfig/pixi-ease">pixi-ease</a> - pixi.js animation library using easing functions</li>
 <li><a target="_blank" href="https://github.com/davidfig/intersects">intersects</a> - a simple collection of 2d collision/intersects functions. Supports points, circles, lines, axis-aligned boxes, and polygons</li>
 </ul>
-<h2>license</h2><p>MIT License<br>(c) 2018 <a target="_blank" href="https://yopeyopey.com/">YOPEY YOPEY LLC</a> by <a target="_blank" href="https://twitter.com/yopey_yopey/">David Figatner</a></p></article>
+<h2>license</h2>
+<p>MIT License<br>
+(c) 2019 <a target="_blank" href="https://yopeyopey.com/">YOPEY YOPEY LLC</a> by <a target="_blank" href="https://twitter.com/yopey_yopey/">David Figatner</a></p></article>
     </section>
 
 
@@ -466,7 +488,7 @@ const Viewport = require('pixi-viewport').Viewport
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 28 2019 04:25:51 GMT-0500 (GMT-05:00)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.2</a> on Mon Jul 01 2019 09:05:01 GMT-0400 (Eastern Daylight Time)
             </div>
         </footer>
     </div>
