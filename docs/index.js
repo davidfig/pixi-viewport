@@ -52289,7 +52289,6 @@
                     this.viewport.on('pointercancel', this.up, this);
                     this.viewport.on('pointerout', this.up, this);
                     this.wheelFunction = (e) => this.handleWheel(e);
-            console.log(this.viewport.options.passiveWheel);
                     this.viewport.options.divWheel.addEventListener('wheel', this.wheelFunction, { passive: this.viewport.options.passiveWheel });
                     this.isMouseDown = false;
                 }
@@ -54313,7 +54312,7 @@
             }
 
             /**
-             * @typdef {object} FollowOptions
+             * @typedef {object} FollowOptions
              * @property {number} [speed=0] to follow in pixels/frame (0=teleport to location)
              * @property {number} [acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
              * @property {number} [radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport

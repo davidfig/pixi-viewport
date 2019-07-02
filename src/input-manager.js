@@ -42,7 +42,6 @@ export class InputManager
         this.viewport.on('pointercancel', this.up, this)
         this.viewport.on('pointerout', this.up, this)
         this.wheelFunction = (e) => this.handleWheel(e)
-console.log(this.viewport.options.passiveWheel)
         this.viewport.options.divWheel.addEventListener('wheel', this.wheelFunction, { passive: this.viewport.options.passiveWheel })
         this.isMouseDown = false
     }
