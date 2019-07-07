@@ -53,6 +53,7 @@ export class Follow extends Plugin
                 return
             }
         }
+
         const deltaX = toX - center.x
         const deltaY = toY - center.y
         if (deltaX || deltaY)

@@ -82,6 +82,7 @@ export class Viewport extends PIXI.Container
      * @fires moved-end
      * @fires zoomed
      * @fires zoomed-end
+     * @fires frame-end
      */
     constructor(options = {})
     {
@@ -221,6 +222,7 @@ export class Viewport extends PIXI.Container
                 scaleX: this.scale.x,
                 scaleY: this.scale.y
             }
+            this.emit('frame-end', this)
         }
     }
 
@@ -1056,14 +1058,20 @@ export class Viewport extends PIXI.Container
  */
 
 /**
- * fires when viewport stops moving for any reason
+ * fires when viewport stops moving
  * @event Viewport#moved-end
  * @type {Viewport}
  */
 
 /**
- * fires when viewport stops zooming for any rason
+ * fires when viewport stops zooming
  * @event Viewport#zoomed-end
+ * @type {Viewport}
+ */
+
+ /**
+ * fires at the end of an update frame
+ * @event Viewport#frame-end
  * @type {Viewport}
  */
 
