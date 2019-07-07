@@ -266,7 +266,7 @@ class InputManager
     }
 }
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
+const PLUGIN_ORDER = ['drag', 'paint', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
 
 /**
  * Use this to access current plugins or add user-defined plugins
@@ -286,7 +286,7 @@ class PluginManager
 
     /**
      * Inserts a named plugin or a user plugin into the viewport
-     * default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
+     * default plugin order: 'drag', 'paint', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
      * @param {string} name of plugin
      * @param {Plugin} plugin - instantiated Plugin class
      * @param {number} index to insert userPlugin (otherwise inserts it at the end)
@@ -896,6 +896,206 @@ class Drag extends Plugin
             }
         }
     }
+}
+
+/**
+ * @typedef PaintOptions
+ * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'
+ */
+
+const paintOptions = {
+	mouseButtons: 'all'
+};
+
+/**
+ * @private
+ */
+class Paint extends Plugin
+{
+	/**
+	 * @param {Viewport} parent
+	 * @param {PaintOptions} options
+	 */
+	constructor(parent, options={})
+	{
+		super(parent);
+		this.options = Object.assign({}, paintOptions, options);
+		this.painted = false;
+		
+		this.mouseButtons(this.options.mouseButtons);
+	}
+	
+	/**
+	 * initialize mousebuttons array
+	 * @param {string} buttons
+	 */
+	mouseButtons(buttons)
+	{
+		if (!buttons || buttons === 'all')
+		{
+			this.mouse = [true, true, true];
+		}
+		else
+		{
+			this.mouse = [
+				buttons.indexOf('left') === -1 ? false : true,
+				buttons.indexOf('middle') === -1 ? false : true,
+				buttons.indexOf('right') === -1 ? false : true
+			];
+		}
+	}
+	
+	/**
+	 * @param {PIXI.interaction.InteractionEvent} event
+	 * @returns {boolean}
+	 */
+	checkButtons(event)
+	{
+		const isMouse = event.data.pointerType === 'mouse';
+		const count = this.parent.input.count();
+		if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch')))
+		{
+			if (!isMouse || this.mouse[event.data.button])
+			{
+				return true
+			}
+		}
+		return false
+	}
+	
+	/**
+	 * @param {PIXI.interaction.InteractionEvent} event
+	 */
+	down(event)
+	{
+		if (this.paused)
+		{
+			return
+		}
+		if (this.checkButtons(event))
+		{
+			this.last = { x: event.data.global.x, y: event.data.global.y };
+			this.current = event.data.pointerId;
+			return true
+		}
+		else
+		{
+			this.last = null;
+		}
+	}
+	
+	get active()
+	{
+		return this.painted
+	}
+	
+	/**
+	 * @param {PIXI.interaction.InteractionEvent} event
+	 */
+	move(event)
+	{
+		if (this.paused)
+		{
+			return
+		}
+		if (this.last && this.current === event.data.pointerId)
+		{
+			const x = event.data.global.x;
+			const y = event.data.global.y;
+			const count = this.parent.input.count();
+			if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch')))
+			{
+				const distX = x - this.last.x;
+				const distY = y - this.last.y;
+				if (this.painted || ((this.parent.input.checkThreshold(distX) || this.parent.input.checkThreshold(distY)) && (!this.parent.plugins.get('drag') || !this.parent.plugins.get('drag').active)))
+				{
+					this.last = { x, y };
+					if (!this.painted)
+					{
+						const screen = new Point(this.last.x, this.last.y);
+						const world = this.parent.toWorld(screen);
+						this.paintStart = screen;
+						this.paintStartWorld = this.parent.toWorld(this.paintStart);
+						
+						this.parent.emit('paint-start', {
+							interactionEvent: event,
+							screen,
+							screenStart: screen,
+							viewport: this.parent,
+							world,
+							worldStart: world,
+						});
+					}
+					
+					this.painted = true;
+					
+					const screen = event.data.global.clone();
+					this.parent.emit('painted', {
+						interactionEvent: event,
+						screen,
+						screenStart: this.paintStart,
+						viewport: this.parent,
+						world: this.parent.toWorld(screen),
+						worldStart: this.paintStartWorld,
+					});
+					
+					return true
+				}
+			}
+			else
+			{
+				this.painted = false;
+			}
+		}
+	}
+	
+	/**
+	 * @param {PIXI.interaction.InteractionEvent} event
+	 * @returns {boolean}
+	 */
+	up(event)
+	{
+		const touches = this.parent.input.touches;
+		if (touches.length === 1)
+		{
+			const pointer = touches[0];
+			if (pointer.last)
+			{
+				this.last = { x: pointer.last.x, y: pointer.last.y };
+				this.current = pointer.id;
+			}
+			this.painted = false;
+			return true
+		}
+		else if (this.last)
+		{
+			if (this.painted)
+			{
+				const screen = event.data.global.clone();
+				
+				this.parent.emit('paint-end', {
+					interactionEvent: event,
+					screen,
+					screenStart: this.paintStart,
+					viewport: this.parent,
+					world: this.parent.toWorld(screen),
+					worldStart: this.paintStartWorld
+				});
+				
+				this.last = null;
+				this.painted = false;
+				this.paintStart = null;
+				return true
+			}
+		}
+	}
+	
+	resume()
+	{
+		this.last = null;
+		this.paused = false;
+	}
+	
 }
 
 /**
@@ -2317,7 +2517,7 @@ class SnapZoom extends Plugin
 }
 
 /**
- * @typdef {object} FollowOptions
+ * @typedef {object} FollowOptions
  * @property {number} [speed=0] to follow in pixels/frame (0=teleport to location)
  * @property {number} [acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
  * @property {number} [radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
@@ -2337,7 +2537,7 @@ class Follow extends Plugin
      * @param {PIXI.DisplayObject} target to follow
      * @param {FollowOptions} [options]
      */
-    constructor(parent, target, options={})
+    constructor(parent, target, options = {})
     {
         super(parent);
         this.target = target;
@@ -2353,7 +2553,8 @@ class Follow extends Plugin
         }
 
         const center = this.parent.center;
-        let toX = this.target.x, toY = this.target.y;
+        let toX = this.target.x,
+            toY = this.target.y;
         if (this.options.radius)
         {
             const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
@@ -2801,6 +3002,8 @@ class Viewport extends Container
      * @fires drag-start
      * @fires drag-end
      * @fires drag-remove
+     * @fires paint-start
+     * @fires paint-end
      * @fires pinch-start
      * @fires pinch-end
      * @fires pinch-remove
@@ -3376,7 +3579,7 @@ class Viewport extends Container
     }
 
     /**
-     * @param {SnapZoomOptionsoptions} options
+     * @param {SnapZoomOptions} options
      */
     snapZoom(options)
     {
@@ -3502,6 +3705,17 @@ class Viewport extends Container
     drag(options)
     {
         this.plugins.add('drag', new Drag(this, options));
+        return this
+    }
+    
+    /**
+     * enable click-and-drag painting
+     * @param {PaintOptions} [options]
+     * @returns {Viewport} this
+     */
+    paint(options)
+    {
+        this.plugins.add('paint', new Paint(this, options));
         return this
     }
 
@@ -3695,6 +3909,42 @@ class Viewport extends Container
  */
 
 /**
+ * fires when painting starts
+ * @event Viewport#paint-start
+ * @type {object}
+ * @property {PIXI.interaction.InteractionEvent} interactionEvent
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} screenStart
+ * @property {PIXI.Point} world
+ * @property {PIXI.Point} worldStart
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when painting is in progress
+ * @event Viewport#painted
+ * @type {object}
+ * @property {PIXI.interaction.InteractionEvent} interactionEvent
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} screenStart
+ * @property {PIXI.Point} world
+ * @property {PIXI.Point} worldStart
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when painting ends
+ * @event Viewport#paint-end
+ * @type {object}
+ * @property {PIXI.interaction.InteractionEvent} interactionEvent
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} screenStart
+ * @property {PIXI.Point} world
+ * @property {PIXI.Point} worldStart
+ * @property {Viewport} viewport
+ */
+
+/**
  * fires when a pinch starts
  * @event Viewport#pinch-start
  * @type {Viewport}
@@ -3806,7 +4056,7 @@ class Viewport extends Container
  */
 
 /**
- * fires when viewport stops zooming for any rason
+ * fires when viewport stops zooming for any reason
  * @event Viewport#zoomed-end
  * @type {Viewport}
  */
