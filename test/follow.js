@@ -63,18 +63,22 @@ describe('follow', () =>
         const viewport = new Viewport({ screenWidth: 100, screenHeight: 200 })
         const target = { x: 10, y: 11 }
         viewport.follow(target, { radius: 10, speed: 5 })
-        setTimeout(() =>
-        {
-            assert.equal(Math.floor(viewport.center.x), 29)
-            assert.equal(Math.floor(viewport.center.y), 54)
-            viewport.moveCenter(15, 15)
-            setTimeout(() =>
+        let count = 0
+        viewport.on('frame-end', () => {
+            count++
+            if (count === 10)
             {
-                assert.equal(viewport.center.x, 15)
-                assert.equal(viewport.center.y, 15)
-                viewport.destroy()
-            }, 1000)
-        }, 1000 / 60 * 10)
+                assert.equal(Math.floor(viewport.center.x), 29)
+                assert.equal(Math.floor(viewport.center.y), 54)
+                viewport.moveCenter(15, 15)
+                setTimeout(() =>
+                {
+                    assert.equal(viewport.center.x, 15)
+                    assert.equal(viewport.center.y, 15)
+                    viewport.destroy()
+                }, 1000)
+            }
+        })
     })
 
     it('speed and acceleration', () =>
@@ -85,7 +89,7 @@ describe('follow', () =>
         viewport.once('frame-end', () =>
         {
             assert.equal(Math.floor(viewport.center.x), 49)
-            assert.equal(Math.floor(viewport.center.y), 98)
+            assert.equal(Math.floor(viewport.center.y), 99)
         })
         setTimeout(() =>
         {
