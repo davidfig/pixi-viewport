@@ -4141,18 +4141,8 @@
               return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isFastBuffer(obj.slice(0, 0))
             }
 
-            if (typeof global$1.setTimeout === 'function') ;
-            if (typeof global$1.clearTimeout === 'function') ;
-
-            // from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
-            var performance$1 = global$1.performance || {};
-            var performanceNow =
-              performance$1.now        ||
-              performance$1.mozNow     ||
-              performance$1.msNow      ||
-              performance$1.oNow       ||
-              performance$1.webkitNow  ||
-              function(){ return (new Date()).getTime() };
+            // for now just expose the builtin process global from node.js
+            var process_1 = commonjsGlobal.process;
 
             function isNull(arg) {
               return arg === null;
@@ -47722,7 +47712,7 @@
             }
 
             /**
-             * @typdef {object} FollowOptions
+             * @typedef {object} FollowOptions
              * @property {number} [speed=0] to follow in pixels/frame (0=teleport to location)
              * @property {number} [acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
              * @property {number} [radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
@@ -47742,7 +47732,7 @@
                  * @param {PIXI.DisplayObject} target to follow
                  * @param {FollowOptions} [options]
                  */
-                constructor(parent, target, options={})
+                constructor(parent, target, options = {})
                 {
                     super(parent);
                     this.target = target;
@@ -47758,7 +47748,8 @@
                     }
 
                     const center = this.parent.center;
-                    let toX = this.target.x, toY = this.target.y;
+                    let toX = this.target.x,
+                        toY = this.target.y;
                     if (this.options.radius)
                     {
                         const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
@@ -47773,6 +47764,7 @@
                             return
                         }
                     }
+
                     const deltaX = toX - center.x;
                     const deltaY = toY - center.y;
                     if (deltaX || deltaY)
@@ -48231,6 +48223,7 @@
                  * @fires moved-end
                  * @fires zoomed
                  * @fires zoomed-end
+                 * @fires frame-end
                  */
                 constructor(options = {})
                 {
@@ -48305,7 +48298,10 @@
                  * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true. Should it destroy the base texture of the child sprite     */
                 destroy(options)
                 {
-                    this.options.ticker.remove(this.tickerFunction);
+                    if (!this.options.noTicker)
+                    {
+                        this.options.ticker.remove(this.tickerFunction);
+                    }
                     this.input.destroy();
                     super.destroy(options);
                 }
@@ -48367,6 +48363,7 @@
                             scaleX: this.scale.x,
                             scaleY: this.scale.y
                         };
+                        this.emit('frame-end', this);
                     }
                 }
 
@@ -48778,7 +48775,7 @@
                 }
 
                 /**
-                 * @param {SnapZoomOptionsoptions} options
+                 * @param {SnapZoomOptions} options
                  */
                 snapZoom(options)
                 {

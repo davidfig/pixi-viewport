@@ -1,1743 +1,10 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],2:[function(require,module,exports){
 (function (global){
-/*! https://mths.be/punycode v1.4.1 by @mathias */
-;(function(root) {
-
-	/** Detect free variables */
-	var freeExports = typeof exports == 'object' && exports &&
-		!exports.nodeType && exports;
-	var freeModule = typeof module == 'object' && module &&
-		!module.nodeType && module;
-	var freeGlobal = typeof global == 'object' && global;
-	if (
-		freeGlobal.global === freeGlobal ||
-		freeGlobal.window === freeGlobal ||
-		freeGlobal.self === freeGlobal
-	) {
-		root = freeGlobal;
-	}
-
-	/**
-	 * The `punycode` object.
-	 * @name punycode
-	 * @type Object
-	 */
-	var punycode,
-
-	/** Highest positive signed 32-bit float value */
-	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
-
-	/** Bootstring parameters */
-	base = 36,
-	tMin = 1,
-	tMax = 26,
-	skew = 38,
-	damp = 700,
-	initialBias = 72,
-	initialN = 128, // 0x80
-	delimiter = '-', // '\x2D'
-
-	/** Regular expressions */
-	regexPunycode = /^xn--/,
-	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
-	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
-
-	/** Error messages */
-	errors = {
-		'overflow': 'Overflow: input needs wider integers to process',
-		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-		'invalid-input': 'Invalid input'
-	},
-
-	/** Convenience shortcuts */
-	baseMinusTMin = base - tMin,
-	floor = Math.floor,
-	stringFromCharCode = String.fromCharCode,
-
-	/** Temporary variable */
-	key;
-
-	/*--------------------------------------------------------------------------*/
-
-	/**
-	 * A generic error utility function.
-	 * @private
-	 * @param {String} type The error type.
-	 * @returns {Error} Throws a `RangeError` with the applicable error message.
-	 */
-	function error(type) {
-		throw new RangeError(errors[type]);
-	}
-
-	/**
-	 * A generic `Array#map` utility function.
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} callback The function that gets called for every array
-	 * item.
-	 * @returns {Array} A new array of values returned by the callback function.
-	 */
-	function map(array, fn) {
-		var length = array.length;
-		var result = [];
-		while (length--) {
-			result[length] = fn(array[length]);
-		}
-		return result;
-	}
-
-	/**
-	 * A simple `Array#map`-like wrapper to work with domain name strings or email
-	 * addresses.
-	 * @private
-	 * @param {String} domain The domain name or email address.
-	 * @param {Function} callback The function that gets called for every
-	 * character.
-	 * @returns {Array} A new string of characters returned by the callback
-	 * function.
-	 */
-	function mapDomain(string, fn) {
-		var parts = string.split('@');
-		var result = '';
-		if (parts.length > 1) {
-			// In email addresses, only the domain name should be punycoded. Leave
-			// the local part (i.e. everything up to `@`) intact.
-			result = parts[0] + '@';
-			string = parts[1];
-		}
-		// Avoid `split(regex)` for IE8 compatibility. See #17.
-		string = string.replace(regexSeparators, '\x2E');
-		var labels = string.split('.');
-		var encoded = map(labels, fn).join('.');
-		return result + encoded;
-	}
-
-	/**
-	 * Creates an array containing the numeric code points of each Unicode
-	 * character in the string. While JavaScript uses UCS-2 internally,
-	 * this function will convert a pair of surrogate halves (each of which
-	 * UCS-2 exposes as separate characters) into a single code point,
-	 * matching UTF-16.
-	 * @see `punycode.ucs2.encode`
-	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-	 * @memberOf punycode.ucs2
-	 * @name decode
-	 * @param {String} string The Unicode input string (UCS-2).
-	 * @returns {Array} The new array of code points.
-	 */
-	function ucs2decode(string) {
-		var output = [],
-		    counter = 0,
-		    length = string.length,
-		    value,
-		    extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
-
-	/**
-	 * Creates a string based on an array of numeric code points.
-	 * @see `punycode.ucs2.decode`
-	 * @memberOf punycode.ucs2
-	 * @name encode
-	 * @param {Array} codePoints The array of numeric code points.
-	 * @returns {String} The new Unicode string (UCS-2).
-	 */
-	function ucs2encode(array) {
-		return map(array, function(value) {
-			var output = '';
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-			return output;
-		}).join('');
-	}
-
-	/**
-	 * Converts a basic code point into a digit/integer.
-	 * @see `digitToBasic()`
-	 * @private
-	 * @param {Number} codePoint The basic numeric code point value.
-	 * @returns {Number} The numeric value of a basic code point (for use in
-	 * representing integers) in the range `0` to `base - 1`, or `base` if
-	 * the code point does not represent a value.
-	 */
-	function basicToDigit(codePoint) {
-		if (codePoint - 48 < 10) {
-			return codePoint - 22;
-		}
-		if (codePoint - 65 < 26) {
-			return codePoint - 65;
-		}
-		if (codePoint - 97 < 26) {
-			return codePoint - 97;
-		}
-		return base;
-	}
-
-	/**
-	 * Converts a digit/integer into a basic code point.
-	 * @see `basicToDigit()`
-	 * @private
-	 * @param {Number} digit The numeric value of a basic code point.
-	 * @returns {Number} The basic code point whose value (when used for
-	 * representing integers) is `digit`, which needs to be in the range
-	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-	 * used; else, the lowercase form is used. The behavior is undefined
-	 * if `flag` is non-zero and `digit` has no uppercase form.
-	 */
-	function digitToBasic(digit, flag) {
-		//  0..25 map to ASCII a..z or A..Z
-		// 26..35 map to ASCII 0..9
-		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
-	}
-
-	/**
-	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * https://tools.ietf.org/html/rfc3492#section-3.4
-	 * @private
-	 */
-	function adapt(delta, numPoints, firstTime) {
-		var k = 0;
-		delta = firstTime ? floor(delta / damp) : delta >> 1;
-		delta += floor(delta / numPoints);
-		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
-			delta = floor(delta / baseMinusTMin);
-		}
-		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-	}
-
-	/**
-	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-	 * symbols.
-	 * @memberOf punycode
-	 * @param {String} input The Punycode string of ASCII-only symbols.
-	 * @returns {String} The resulting string of Unicode symbols.
-	 */
-	function decode(input) {
-		// Don't use UCS-2
-		var output = [],
-		    inputLength = input.length,
-		    out,
-		    i = 0,
-		    n = initialN,
-		    bias = initialBias,
-		    basic,
-		    j,
-		    index,
-		    oldi,
-		    w,
-		    k,
-		    digit,
-		    t,
-		    /** Cached calculation results */
-		    baseMinusT;
-
-		// Handle the basic code points: let `basic` be the number of input code
-		// points before the last delimiter, or `0` if there is none, then copy
-		// the first basic code points to the output.
-
-		basic = input.lastIndexOf(delimiter);
-		if (basic < 0) {
-			basic = 0;
-		}
-
-		for (j = 0; j < basic; ++j) {
-			// if it's not a basic code point
-			if (input.charCodeAt(j) >= 0x80) {
-				error('not-basic');
-			}
-			output.push(input.charCodeAt(j));
-		}
-
-		// Main decoding loop: start just after the last delimiter if any basic code
-		// points were copied; start at the beginning otherwise.
-
-		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
-
-			// `index` is the index of the next character to be consumed.
-			// Decode a generalized variable-length integer into `delta`,
-			// which gets added to `i`. The overflow checking is easier
-			// if we increase `i` as we go, then subtract off its starting
-			// value at the end to obtain `delta`.
-			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
-
-				if (index >= inputLength) {
-					error('invalid-input');
-				}
-
-				digit = basicToDigit(input.charCodeAt(index++));
-
-				if (digit >= base || digit > floor((maxInt - i) / w)) {
-					error('overflow');
-				}
-
-				i += digit * w;
-				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-
-				if (digit < t) {
-					break;
-				}
-
-				baseMinusT = base - t;
-				if (w > floor(maxInt / baseMinusT)) {
-					error('overflow');
-				}
-
-				w *= baseMinusT;
-
-			}
-
-			out = output.length + 1;
-			bias = adapt(i - oldi, out, oldi == 0);
-
-			// `i` was supposed to wrap around from `out` to `0`,
-			// incrementing `n` each time, so we'll fix that now:
-			if (floor(i / out) > maxInt - n) {
-				error('overflow');
-			}
-
-			n += floor(i / out);
-			i %= out;
-
-			// Insert `n` at position `i` of the output
-			output.splice(i++, 0, n);
-
-		}
-
-		return ucs2encode(output);
-	}
-
-	/**
-	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
-	 * Punycode string of ASCII-only symbols.
-	 * @memberOf punycode
-	 * @param {String} input The string of Unicode symbols.
-	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-	 */
-	function encode(input) {
-		var n,
-		    delta,
-		    handledCPCount,
-		    basicLength,
-		    bias,
-		    j,
-		    m,
-		    q,
-		    k,
-		    t,
-		    currentValue,
-		    output = [],
-		    /** `inputLength` will hold the number of code points in `input`. */
-		    inputLength,
-		    /** Cached calculation results */
-		    handledCPCountPlusOne,
-		    baseMinusT,
-		    qMinusT;
-
-		// Convert the input in UCS-2 to Unicode
-		input = ucs2decode(input);
-
-		// Cache the length
-		inputLength = input.length;
-
-		// Initialize the state
-		n = initialN;
-		delta = 0;
-		bias = initialBias;
-
-		// Handle the basic code points
-		for (j = 0; j < inputLength; ++j) {
-			currentValue = input[j];
-			if (currentValue < 0x80) {
-				output.push(stringFromCharCode(currentValue));
-			}
-		}
-
-		handledCPCount = basicLength = output.length;
-
-		// `handledCPCount` is the number of code points that have been handled;
-		// `basicLength` is the number of basic code points.
-
-		// Finish the basic string - if it is not empty - with a delimiter
-		if (basicLength) {
-			output.push(delimiter);
-		}
-
-		// Main encoding loop:
-		while (handledCPCount < inputLength) {
-
-			// All non-basic code points < n have been handled already. Find the next
-			// larger one:
-			for (m = maxInt, j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-				if (currentValue >= n && currentValue < m) {
-					m = currentValue;
-				}
-			}
-
-			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-			// but guard against overflow
-			handledCPCountPlusOne = handledCPCount + 1;
-			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-				error('overflow');
-			}
-
-			delta += (m - n) * handledCPCountPlusOne;
-			n = m;
-
-			for (j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-
-				if (currentValue < n && ++delta > maxInt) {
-					error('overflow');
-				}
-
-				if (currentValue == n) {
-					// Represent delta as a generalized variable-length integer
-					for (q = delta, k = base; /* no condition */; k += base) {
-						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-						if (q < t) {
-							break;
-						}
-						qMinusT = q - t;
-						baseMinusT = base - t;
-						output.push(
-							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
-						);
-						q = floor(qMinusT / baseMinusT);
-					}
-
-					output.push(stringFromCharCode(digitToBasic(q, 0)));
-					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-					delta = 0;
-					++handledCPCount;
-				}
-			}
-
-			++delta;
-			++n;
-
-		}
-		return output.join('');
-	}
-
-	/**
-	 * Converts a Punycode string representing a domain name or an email address
-	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
-	 * it doesn't matter if you call it on a string that has already been
-	 * converted to Unicode.
-	 * @memberOf punycode
-	 * @param {String} input The Punycoded domain name or email address to
-	 * convert to Unicode.
-	 * @returns {String} The Unicode representation of the given Punycode
-	 * string.
-	 */
-	function toUnicode(input) {
-		return mapDomain(input, function(string) {
-			return regexPunycode.test(string)
-				? decode(string.slice(4).toLowerCase())
-				: string;
-		});
-	}
-
-	/**
-	 * Converts a Unicode string representing a domain name or an email address to
-	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
-	 * i.e. it doesn't matter if you call it with a domain that's already in
-	 * ASCII.
-	 * @memberOf punycode
-	 * @param {String} input The domain name or email address to convert, as a
-	 * Unicode string.
-	 * @returns {String} The Punycode representation of the given domain name or
-	 * email address.
-	 */
-	function toASCII(input) {
-		return mapDomain(input, function(string) {
-			return regexNonASCII.test(string)
-				? 'xn--' + encode(string)
-				: string;
-		});
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	/** Define the public API */
-	punycode = {
-		/**
-		 * A string representing the current Punycode.js version number.
-		 * @memberOf punycode
-		 * @type String
-		 */
-		'version': '1.4.1',
-		/**
-		 * An object of methods to convert from JavaScript's internal character
-		 * representation (UCS-2) to Unicode code points, and back.
-		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-		 * @memberOf punycode
-		 * @type Object
-		 */
-		'ucs2': {
-			'decode': ucs2decode,
-			'encode': ucs2encode
-		},
-		'decode': decode,
-		'encode': encode,
-		'toASCII': toASCII,
-		'toUnicode': toUnicode
-	};
-
-	/** Expose `punycode` */
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		typeof define == 'function' &&
-		typeof define.amd == 'object' &&
-		define.amd
-	) {
-		define('punycode', function() {
-			return punycode;
-		});
-	} else if (freeExports && freeModule) {
-		if (module.exports == freeExports) {
-			// in Node.js, io.js, or RingoJS v0.8.0+
-			freeModule.exports = punycode;
-		} else {
-			// in Narwhal or RingoJS v0.7.0-
-			for (key in punycode) {
-				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
-			}
-		}
-	} else {
-		// in Rhino or a web browser
-		root.punycode = punycode;
-	}
-
-}(this));
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],3:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-module.exports = function(qs, sep, eq, options) {
-  sep = sep || '&';
-  eq = eq || '=';
-  var obj = {};
-
-  if (typeof qs !== 'string' || qs.length === 0) {
-    return obj;
-  }
-
-  var regexp = /\+/g;
-  qs = qs.split(sep);
-
-  var maxKeys = 1000;
-  if (options && typeof options.maxKeys === 'number') {
-    maxKeys = options.maxKeys;
-  }
-
-  var len = qs.length;
-  // maxKeys <= 0 means that we should not limit keys count
-  if (maxKeys > 0 && len > maxKeys) {
-    len = maxKeys;
-  }
-
-  for (var i = 0; i < len; ++i) {
-    var x = qs[i].replace(regexp, '%20'),
-        idx = x.indexOf(eq),
-        kstr, vstr, k, v;
-
-    if (idx >= 0) {
-      kstr = x.substr(0, idx);
-      vstr = x.substr(idx + 1);
-    } else {
-      kstr = x;
-      vstr = '';
-    }
-
-    k = decodeURIComponent(kstr);
-    v = decodeURIComponent(vstr);
-
-    if (!hasOwnProperty(obj, k)) {
-      obj[k] = v;
-    } else if (isArray(obj[k])) {
-      obj[k].push(v);
-    } else {
-      obj[k] = [obj[k], v];
-    }
-  }
-
-  return obj;
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-},{}],4:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-var stringifyPrimitive = function(v) {
-  switch (typeof v) {
-    case 'string':
-      return v;
-
-    case 'boolean':
-      return v ? 'true' : 'false';
-
-    case 'number':
-      return isFinite(v) ? v : '';
-
-    default:
-      return '';
-  }
-};
-
-module.exports = function(obj, sep, eq, name) {
-  sep = sep || '&';
-  eq = eq || '=';
-  if (obj === null) {
-    obj = undefined;
-  }
-
-  if (typeof obj === 'object') {
-    return map(objectKeys(obj), function(k) {
-      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-      if (isArray(obj[k])) {
-        return map(obj[k], function(v) {
-          return ks + encodeURIComponent(stringifyPrimitive(v));
-        }).join(sep);
-      } else {
-        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-      }
-    }).join(sep);
-
-  }
-
-  if (!name) return '';
-  return encodeURIComponent(stringifyPrimitive(name)) + eq +
-         encodeURIComponent(stringifyPrimitive(obj));
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-function map (xs, f) {
-  if (xs.map) return xs.map(f);
-  var res = [];
-  for (var i = 0; i < xs.length; i++) {
-    res.push(f(xs[i], i));
-  }
-  return res;
-}
-
-var objectKeys = Object.keys || function (obj) {
-  var res = [];
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-  }
-  return res;
-};
-
-},{}],5:[function(require,module,exports){
-'use strict';
-
-exports.decode = exports.parse = require('./decode');
-exports.encode = exports.stringify = require('./encode');
-
-},{"./decode":3,"./encode":4}],6:[function(require,module,exports){
-(function (setImmediate,clearImmediate){
-var nextTick = require('process/browser.js').nextTick;
-var apply = Function.prototype.apply;
-var slice = Array.prototype.slice;
-var immediateIds = {};
-var nextImmediateId = 0;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) { timeout.close(); };
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(window, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// That's not how node.js implements it but the exposed api is the same.
-exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
-  var id = nextImmediateId++;
-  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
-
-  immediateIds[id] = true;
-
-  nextTick(function onNextTick() {
-    if (immediateIds[id]) {
-      // fn.call() is faster so we optimize for the common use-case
-      // @see http://jsperf.com/call-apply-segu
-      if (args) {
-        fn.apply(null, args);
-      } else {
-        fn.call(null);
-      }
-      // Prevent ids from leaking
-      exports.clearImmediate(id);
-    }
-  });
-
-  return id;
-};
-
-exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
-  delete immediateIds[id];
-};
-}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":1,"timers":6}],7:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-var punycode = require('punycode');
-var util = require('./util');
-
-exports.parse = urlParse;
-exports.resolve = urlResolve;
-exports.resolveObject = urlResolveObject;
-exports.format = urlFormat;
-
-exports.Url = Url;
-
-function Url() {
-  this.protocol = null;
-  this.slashes = null;
-  this.auth = null;
-  this.host = null;
-  this.port = null;
-  this.hostname = null;
-  this.hash = null;
-  this.search = null;
-  this.query = null;
-  this.pathname = null;
-  this.path = null;
-  this.href = null;
-}
-
-// Reference: RFC 3986, RFC 1808, RFC 2396
-
-// define these here so at least they only have to be
-// compiled once on the first module load.
-var protocolPattern = /^([a-z0-9.+-]+:)/i,
-    portPattern = /:[0-9]*$/,
-
-    // Special case for a simple path URL
-    simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
-
-    // RFC 2396: characters reserved for delimiting URLs.
-    // We actually just auto-escape these.
-    delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
-
-    // RFC 2396: characters not allowed for various reasons.
-    unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
-
-    // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
-    autoEscape = ['\''].concat(unwise),
-    // Characters that are never ever allowed in a hostname.
-    // Note that any invalid chars are also handled, but these
-    // are the ones that are *expected* to be seen, so we fast-path
-    // them.
-    nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
-    hostEndingChars = ['/', '?', '#'],
-    hostnameMaxLen = 255,
-    hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
-    hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
-    // protocols that can allow "unsafe" and "unwise" chars.
-    unsafeProtocol = {
-      'javascript': true,
-      'javascript:': true
-    },
-    // protocols that never have a hostname.
-    hostlessProtocol = {
-      'javascript': true,
-      'javascript:': true
-    },
-    // protocols that always contain a // bit.
-    slashedProtocol = {
-      'http': true,
-      'https': true,
-      'ftp': true,
-      'gopher': true,
-      'file': true,
-      'http:': true,
-      'https:': true,
-      'ftp:': true,
-      'gopher:': true,
-      'file:': true
-    },
-    querystring = require('querystring');
-
-function urlParse(url, parseQueryString, slashesDenoteHost) {
-  if (url && util.isObject(url) && url instanceof Url) return url;
-
-  var u = new Url;
-  u.parse(url, parseQueryString, slashesDenoteHost);
-  return u;
-}
-
-Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
-  if (!util.isString(url)) {
-    throw new TypeError("Parameter 'url' must be a string, not " + typeof url);
-  }
-
-  // Copy chrome, IE, opera backslash-handling behavior.
-  // Back slashes before the query string get converted to forward slashes
-  // See: https://code.google.com/p/chromium/issues/detail?id=25916
-  var queryIndex = url.indexOf('?'),
-      splitter =
-          (queryIndex !== -1 && queryIndex < url.indexOf('#')) ? '?' : '#',
-      uSplit = url.split(splitter),
-      slashRegex = /\\/g;
-  uSplit[0] = uSplit[0].replace(slashRegex, '/');
-  url = uSplit.join(splitter);
-
-  var rest = url;
-
-  // trim before proceeding.
-  // This is to support parse stuff like "  http://foo.com  \n"
-  rest = rest.trim();
-
-  if (!slashesDenoteHost && url.split('#').length === 1) {
-    // Try fast path regexp
-    var simplePath = simplePathPattern.exec(rest);
-    if (simplePath) {
-      this.path = rest;
-      this.href = rest;
-      this.pathname = simplePath[1];
-      if (simplePath[2]) {
-        this.search = simplePath[2];
-        if (parseQueryString) {
-          this.query = querystring.parse(this.search.substr(1));
-        } else {
-          this.query = this.search.substr(1);
-        }
-      } else if (parseQueryString) {
-        this.search = '';
-        this.query = {};
-      }
-      return this;
-    }
-  }
-
-  var proto = protocolPattern.exec(rest);
-  if (proto) {
-    proto = proto[0];
-    var lowerProto = proto.toLowerCase();
-    this.protocol = lowerProto;
-    rest = rest.substr(proto.length);
-  }
-
-  // figure out if it's got a host
-  // user@server is *always* interpreted as a hostname, and url
-  // resolution will treat //foo/bar as host=foo,path=bar because that's
-  // how the browser resolves relative URLs.
-  if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
-    var slashes = rest.substr(0, 2) === '//';
-    if (slashes && !(proto && hostlessProtocol[proto])) {
-      rest = rest.substr(2);
-      this.slashes = true;
-    }
-  }
-
-  if (!hostlessProtocol[proto] &&
-      (slashes || (proto && !slashedProtocol[proto]))) {
-
-    // there's a hostname.
-    // the first instance of /, ?, ;, or # ends the host.
-    //
-    // If there is an @ in the hostname, then non-host chars *are* allowed
-    // to the left of the last @ sign, unless some host-ending character
-    // comes *before* the @-sign.
-    // URLs are obnoxious.
-    //
-    // ex:
-    // http://a@b@c/ => user:a@b host:c
-    // http://a@b?@c => user:a host:c path:/?@c
-
-    // v0.12 TODO(isaacs): This is not quite how Chrome does things.
-    // Review our test case against browsers more comprehensively.
-
-    // find the first instance of any hostEndingChars
-    var hostEnd = -1;
-    for (var i = 0; i < hostEndingChars.length; i++) {
-      var hec = rest.indexOf(hostEndingChars[i]);
-      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
-        hostEnd = hec;
-    }
-
-    // at this point, either we have an explicit point where the
-    // auth portion cannot go past, or the last @ char is the decider.
-    var auth, atSign;
-    if (hostEnd === -1) {
-      // atSign can be anywhere.
-      atSign = rest.lastIndexOf('@');
-    } else {
-      // atSign must be in auth portion.
-      // http://a@b/c@d => host:b auth:a path:/c@d
-      atSign = rest.lastIndexOf('@', hostEnd);
-    }
-
-    // Now we have a portion which is definitely the auth.
-    // Pull that off.
-    if (atSign !== -1) {
-      auth = rest.slice(0, atSign);
-      rest = rest.slice(atSign + 1);
-      this.auth = decodeURIComponent(auth);
-    }
-
-    // the host is the remaining to the left of the first non-host char
-    hostEnd = -1;
-    for (var i = 0; i < nonHostChars.length; i++) {
-      var hec = rest.indexOf(nonHostChars[i]);
-      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
-        hostEnd = hec;
-    }
-    // if we still have not hit it, then the entire thing is a host.
-    if (hostEnd === -1)
-      hostEnd = rest.length;
-
-    this.host = rest.slice(0, hostEnd);
-    rest = rest.slice(hostEnd);
-
-    // pull out port.
-    this.parseHost();
-
-    // we've indicated that there is a hostname,
-    // so even if it's empty, it has to be present.
-    this.hostname = this.hostname || '';
-
-    // if hostname begins with [ and ends with ]
-    // assume that it's an IPv6 address.
-    var ipv6Hostname = this.hostname[0] === '[' &&
-        this.hostname[this.hostname.length - 1] === ']';
-
-    // validate a little.
-    if (!ipv6Hostname) {
-      var hostparts = this.hostname.split(/\./);
-      for (var i = 0, l = hostparts.length; i < l; i++) {
-        var part = hostparts[i];
-        if (!part) continue;
-        if (!part.match(hostnamePartPattern)) {
-          var newpart = '';
-          for (var j = 0, k = part.length; j < k; j++) {
-            if (part.charCodeAt(j) > 127) {
-              // we replace non-ASCII char with a temporary placeholder
-              // we need this to make sure size of hostname is not
-              // broken by replacing non-ASCII by nothing
-              newpart += 'x';
-            } else {
-              newpart += part[j];
-            }
-          }
-          // we test again with ASCII char only
-          if (!newpart.match(hostnamePartPattern)) {
-            var validParts = hostparts.slice(0, i);
-            var notHost = hostparts.slice(i + 1);
-            var bit = part.match(hostnamePartStart);
-            if (bit) {
-              validParts.push(bit[1]);
-              notHost.unshift(bit[2]);
-            }
-            if (notHost.length) {
-              rest = '/' + notHost.join('.') + rest;
-            }
-            this.hostname = validParts.join('.');
-            break;
-          }
-        }
-      }
-    }
-
-    if (this.hostname.length > hostnameMaxLen) {
-      this.hostname = '';
-    } else {
-      // hostnames are always lower case.
-      this.hostname = this.hostname.toLowerCase();
-    }
-
-    if (!ipv6Hostname) {
-      // IDNA Support: Returns a punycoded representation of "domain".
-      // It only converts parts of the domain name that
-      // have non-ASCII characters, i.e. it doesn't matter if
-      // you call it with a domain that already is ASCII-only.
-      this.hostname = punycode.toASCII(this.hostname);
-    }
-
-    var p = this.port ? ':' + this.port : '';
-    var h = this.hostname || '';
-    this.host = h + p;
-    this.href += this.host;
-
-    // strip [ and ] from the hostname
-    // the host field still retains them, though
-    if (ipv6Hostname) {
-      this.hostname = this.hostname.substr(1, this.hostname.length - 2);
-      if (rest[0] !== '/') {
-        rest = '/' + rest;
-      }
-    }
-  }
-
-  // now rest is set to the post-host stuff.
-  // chop off any delim chars.
-  if (!unsafeProtocol[lowerProto]) {
-
-    // First, make 100% sure that any "autoEscape" chars get
-    // escaped, even if encodeURIComponent doesn't think they
-    // need to be.
-    for (var i = 0, l = autoEscape.length; i < l; i++) {
-      var ae = autoEscape[i];
-      if (rest.indexOf(ae) === -1)
-        continue;
-      var esc = encodeURIComponent(ae);
-      if (esc === ae) {
-        esc = escape(ae);
-      }
-      rest = rest.split(ae).join(esc);
-    }
-  }
-
-
-  // chop off from the tail first.
-  var hash = rest.indexOf('#');
-  if (hash !== -1) {
-    // got a fragment string.
-    this.hash = rest.substr(hash);
-    rest = rest.slice(0, hash);
-  }
-  var qm = rest.indexOf('?');
-  if (qm !== -1) {
-    this.search = rest.substr(qm);
-    this.query = rest.substr(qm + 1);
-    if (parseQueryString) {
-      this.query = querystring.parse(this.query);
-    }
-    rest = rest.slice(0, qm);
-  } else if (parseQueryString) {
-    // no query string, but parseQueryString still requested
-    this.search = '';
-    this.query = {};
-  }
-  if (rest) this.pathname = rest;
-  if (slashedProtocol[lowerProto] &&
-      this.hostname && !this.pathname) {
-    this.pathname = '/';
-  }
-
-  //to support http.request
-  if (this.pathname || this.search) {
-    var p = this.pathname || '';
-    var s = this.search || '';
-    this.path = p + s;
-  }
-
-  // finally, reconstruct the href based on what has been validated.
-  this.href = this.format();
-  return this;
-};
-
-// format a parsed object into a url string
-function urlFormat(obj) {
-  // ensure it's an object, and not a string url.
-  // If it's an obj, this is a no-op.
-  // this way, you can call url_format() on strings
-  // to clean up potentially wonky urls.
-  if (util.isString(obj)) obj = urlParse(obj);
-  if (!(obj instanceof Url)) return Url.prototype.format.call(obj);
-  return obj.format();
-}
-
-Url.prototype.format = function() {
-  var auth = this.auth || '';
-  if (auth) {
-    auth = encodeURIComponent(auth);
-    auth = auth.replace(/%3A/i, ':');
-    auth += '@';
-  }
-
-  var protocol = this.protocol || '',
-      pathname = this.pathname || '',
-      hash = this.hash || '',
-      host = false,
-      query = '';
-
-  if (this.host) {
-    host = auth + this.host;
-  } else if (this.hostname) {
-    host = auth + (this.hostname.indexOf(':') === -1 ?
-        this.hostname :
-        '[' + this.hostname + ']');
-    if (this.port) {
-      host += ':' + this.port;
-    }
-  }
-
-  if (this.query &&
-      util.isObject(this.query) &&
-      Object.keys(this.query).length) {
-    query = querystring.stringify(this.query);
-  }
-
-  var search = this.search || (query && ('?' + query)) || '';
-
-  if (protocol && protocol.substr(-1) !== ':') protocol += ':';
-
-  // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
-  // unless they had them to begin with.
-  if (this.slashes ||
-      (!protocol || slashedProtocol[protocol]) && host !== false) {
-    host = '//' + (host || '');
-    if (pathname && pathname.charAt(0) !== '/') pathname = '/' + pathname;
-  } else if (!host) {
-    host = '';
-  }
-
-  if (hash && hash.charAt(0) !== '#') hash = '#' + hash;
-  if (search && search.charAt(0) !== '?') search = '?' + search;
-
-  pathname = pathname.replace(/[?#]/g, function(match) {
-    return encodeURIComponent(match);
-  });
-  search = search.replace('#', '%23');
-
-  return protocol + host + pathname + search + hash;
-};
-
-function urlResolve(source, relative) {
-  return urlParse(source, false, true).resolve(relative);
-}
-
-Url.prototype.resolve = function(relative) {
-  return this.resolveObject(urlParse(relative, false, true)).format();
-};
-
-function urlResolveObject(source, relative) {
-  if (!source) return relative;
-  return urlParse(source, false, true).resolveObject(relative);
-}
-
-Url.prototype.resolveObject = function(relative) {
-  if (util.isString(relative)) {
-    var rel = new Url();
-    rel.parse(relative, false, true);
-    relative = rel;
-  }
-
-  var result = new Url();
-  var tkeys = Object.keys(this);
-  for (var tk = 0; tk < tkeys.length; tk++) {
-    var tkey = tkeys[tk];
-    result[tkey] = this[tkey];
-  }
-
-  // hash is always overridden, no matter what.
-  // even href="" will remove it.
-  result.hash = relative.hash;
-
-  // if the relative url is empty, then there's nothing left to do here.
-  if (relative.href === '') {
-    result.href = result.format();
-    return result;
-  }
-
-  // hrefs like //foo/bar always cut to the protocol.
-  if (relative.slashes && !relative.protocol) {
-    // take everything except the protocol from relative
-    var rkeys = Object.keys(relative);
-    for (var rk = 0; rk < rkeys.length; rk++) {
-      var rkey = rkeys[rk];
-      if (rkey !== 'protocol')
-        result[rkey] = relative[rkey];
-    }
-
-    //urlParse appends trailing / to urls like http://www.example.com
-    if (slashedProtocol[result.protocol] &&
-        result.hostname && !result.pathname) {
-      result.path = result.pathname = '/';
-    }
-
-    result.href = result.format();
-    return result;
-  }
-
-  if (relative.protocol && relative.protocol !== result.protocol) {
-    // if it's a known url protocol, then changing
-    // the protocol does weird things
-    // first, if it's not file:, then we MUST have a host,
-    // and if there was a path
-    // to begin with, then we MUST have a path.
-    // if it is file:, then the host is dropped,
-    // because that's known to be hostless.
-    // anything else is assumed to be absolute.
-    if (!slashedProtocol[relative.protocol]) {
-      var keys = Object.keys(relative);
-      for (var v = 0; v < keys.length; v++) {
-        var k = keys[v];
-        result[k] = relative[k];
-      }
-      result.href = result.format();
-      return result;
-    }
-
-    result.protocol = relative.protocol;
-    if (!relative.host && !hostlessProtocol[relative.protocol]) {
-      var relPath = (relative.pathname || '').split('/');
-      while (relPath.length && !(relative.host = relPath.shift()));
-      if (!relative.host) relative.host = '';
-      if (!relative.hostname) relative.hostname = '';
-      if (relPath[0] !== '') relPath.unshift('');
-      if (relPath.length < 2) relPath.unshift('');
-      result.pathname = relPath.join('/');
-    } else {
-      result.pathname = relative.pathname;
-    }
-    result.search = relative.search;
-    result.query = relative.query;
-    result.host = relative.host || '';
-    result.auth = relative.auth;
-    result.hostname = relative.hostname || relative.host;
-    result.port = relative.port;
-    // to support http.request
-    if (result.pathname || result.search) {
-      var p = result.pathname || '';
-      var s = result.search || '';
-      result.path = p + s;
-    }
-    result.slashes = result.slashes || relative.slashes;
-    result.href = result.format();
-    return result;
-  }
-
-  var isSourceAbs = (result.pathname && result.pathname.charAt(0) === '/'),
-      isRelAbs = (
-          relative.host ||
-          relative.pathname && relative.pathname.charAt(0) === '/'
-      ),
-      mustEndAbs = (isRelAbs || isSourceAbs ||
-                    (result.host && relative.pathname)),
-      removeAllDots = mustEndAbs,
-      srcPath = result.pathname && result.pathname.split('/') || [],
-      relPath = relative.pathname && relative.pathname.split('/') || [],
-      psychotic = result.protocol && !slashedProtocol[result.protocol];
-
-  // if the url is a non-slashed url, then relative
-  // links like ../.. should be able
-  // to crawl up to the hostname, as well.  This is strange.
-  // result.protocol has already been set by now.
-  // Later on, put the first path part into the host field.
-  if (psychotic) {
-    result.hostname = '';
-    result.port = null;
-    if (result.host) {
-      if (srcPath[0] === '') srcPath[0] = result.host;
-      else srcPath.unshift(result.host);
-    }
-    result.host = '';
-    if (relative.protocol) {
-      relative.hostname = null;
-      relative.port = null;
-      if (relative.host) {
-        if (relPath[0] === '') relPath[0] = relative.host;
-        else relPath.unshift(relative.host);
-      }
-      relative.host = null;
-    }
-    mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '');
-  }
-
-  if (isRelAbs) {
-    // it's absolute.
-    result.host = (relative.host || relative.host === '') ?
-                  relative.host : result.host;
-    result.hostname = (relative.hostname || relative.hostname === '') ?
-                      relative.hostname : result.hostname;
-    result.search = relative.search;
-    result.query = relative.query;
-    srcPath = relPath;
-    // fall through to the dot-handling below.
-  } else if (relPath.length) {
-    // it's relative
-    // throw away the existing file, and take the new path instead.
-    if (!srcPath) srcPath = [];
-    srcPath.pop();
-    srcPath = srcPath.concat(relPath);
-    result.search = relative.search;
-    result.query = relative.query;
-  } else if (!util.isNullOrUndefined(relative.search)) {
-    // just pull out the search.
-    // like href='?foo'.
-    // Put this after the other two cases because it simplifies the booleans
-    if (psychotic) {
-      result.hostname = result.host = srcPath.shift();
-      //occationaly the auth can get stuck only in host
-      //this especially happens in cases like
-      //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-      var authInHost = result.host && result.host.indexOf('@') > 0 ?
-                       result.host.split('@') : false;
-      if (authInHost) {
-        result.auth = authInHost.shift();
-        result.host = result.hostname = authInHost.shift();
-      }
-    }
-    result.search = relative.search;
-    result.query = relative.query;
-    //to support http.request
-    if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
-      result.path = (result.pathname ? result.pathname : '') +
-                    (result.search ? result.search : '');
-    }
-    result.href = result.format();
-    return result;
-  }
-
-  if (!srcPath.length) {
-    // no path at all.  easy.
-    // we've already handled the other stuff above.
-    result.pathname = null;
-    //to support http.request
-    if (result.search) {
-      result.path = '/' + result.search;
-    } else {
-      result.path = null;
-    }
-    result.href = result.format();
-    return result;
-  }
-
-  // if a url ENDs in . or .., then it must get a trailing slash.
-  // however, if it ends in anything else non-slashy,
-  // then it must NOT get a trailing slash.
-  var last = srcPath.slice(-1)[0];
-  var hasTrailingSlash = (
-      (result.host || relative.host || srcPath.length > 1) &&
-      (last === '.' || last === '..') || last === '');
-
-  // strip single dots, resolve double dots to parent dir
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = srcPath.length; i >= 0; i--) {
-    last = srcPath[i];
-    if (last === '.') {
-      srcPath.splice(i, 1);
-    } else if (last === '..') {
-      srcPath.splice(i, 1);
-      up++;
-    } else if (up) {
-      srcPath.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (!mustEndAbs && !removeAllDots) {
-    for (; up--; up) {
-      srcPath.unshift('..');
-    }
-  }
-
-  if (mustEndAbs && srcPath[0] !== '' &&
-      (!srcPath[0] || srcPath[0].charAt(0) !== '/')) {
-    srcPath.unshift('');
-  }
-
-  if (hasTrailingSlash && (srcPath.join('/').substr(-1) !== '/')) {
-    srcPath.push('');
-  }
-
-  var isAbsolute = srcPath[0] === '' ||
-      (srcPath[0] && srcPath[0].charAt(0) === '/');
-
-  // put the host back
-  if (psychotic) {
-    result.hostname = result.host = isAbsolute ? '' :
-                                    srcPath.length ? srcPath.shift() : '';
-    //occationaly the auth can get stuck only in host
-    //this especially happens in cases like
-    //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-    var authInHost = result.host && result.host.indexOf('@') > 0 ?
-                     result.host.split('@') : false;
-    if (authInHost) {
-      result.auth = authInHost.shift();
-      result.host = result.hostname = authInHost.shift();
-    }
-  }
-
-  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
-
-  if (mustEndAbs && !isAbsolute) {
-    srcPath.unshift('');
-  }
-
-  if (!srcPath.length) {
-    result.pathname = null;
-    result.path = null;
-  } else {
-    result.pathname = srcPath.join('/');
-  }
-
-  //to support request.http
-  if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
-    result.path = (result.pathname ? result.pathname : '') +
-                  (result.search ? result.search : '');
-  }
-  result.auth = relative.auth || result.auth;
-  result.slashes = result.slashes || relative.slashes;
-  result.href = result.format();
-  return result;
-};
-
-Url.prototype.parseHost = function() {
-  var host = this.host;
-  var port = portPattern.exec(host);
-  if (port) {
-    port = port[0];
-    if (port !== ':') {
-      this.port = port.substr(1);
-    }
-    host = host.substr(0, host.length - port.length);
-  }
-  if (host) this.hostname = host;
-};
-
-},{"./util":8,"punycode":2,"querystring":5}],8:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-  isString: function(arg) {
-    return typeof(arg) === 'string';
-  },
-  isObject: function(arg) {
-    return typeof(arg) === 'object' && arg !== null;
-  },
-  isNull: function(arg) {
-    return arg === null;
-  },
-  isNullOrUndefined: function(arg) {
-    return arg == null;
-  }
-};
-
-},{}],9:[function(require,module,exports){
-(function (global){
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("pixi.js")):"function"==typeof define&&define.amd?define(["exports","pixi.js"],e):e((t=t||self).Viewport={},t.PIXI)}(this,function(t,e){"use strict";class i{constructor(t){this.viewport=t,this.touches=[],this.addListeners()}addListeners(){this.viewport.interactive=!0,this.viewport.forceHitArea||(this.viewport.hitArea=new e.Rectangle(0,0,this.viewport.worldWidth,this.viewport.worldHeight)),this.viewport.on("pointerdown",this.down,this),this.viewport.on("pointermove",this.move,this),this.viewport.on("pointerup",this.up,this),this.viewport.on("pointerupoutside",this.up,this),this.viewport.on("pointercancel",this.up,this),this.viewport.on("pointerout",this.up,this),this.wheelFunction=t=>this.handleWheel(t),this.viewport.options.divWheel.addEventListener("wheel",this.wheelFunction,{passive:this.viewport.options.passiveWheel}),this.isMouseDown=!1}destroy(){this.viewport.options.divWheel.removeEventListener("wheel",this.wheelFunction)}down(t){if(this.viewport.pause||!this.viewport.worldVisible)return;if("mouse"===t.data.pointerType?this.isMouseDown=!0:this.get(t.data.pointerId)||this.touches.push({id:t.data.pointerId,last:null}),1===this.count()){this.last=t.data.global.clone();const e=this.viewport.plugins.get("decelerate"),i=this.viewport.plugins.get("bounce");e&&e.isActive()||i&&i.isActive()?this.clickedAvailable=!1:this.clickedAvailable=!0}else this.clickedAvailable=!1;this.viewport.plugins.down(t)&&this.viewport.options.stopPropagation&&t.stopPropagation()}checkThreshold(t){return Math.abs(t)>=this.viewport.threshold}move(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.plugins.move(t);if(this.clickedAvailable){const e=t.data.global.x-this.last.x,i=t.data.global.y-this.last.y;(this.checkThreshold(e)||this.checkThreshold(i))&&(this.clickedAvailable=!1)}e&&this.viewport.options.stopPropagation&&t.stopPropagation()}up(t){if(this.viewport.pause||!this.viewport.worldVisible)return;"mouse"===t.data.pointerType&&(this.isMouseDown=!1),"mouse"!==t.data.pointerType&&this.remove(t.data.pointerId);const e=this.viewport.plugins.up(t);this.clickedAvailable&&0===this.count()&&(this.viewport.emit("clicked",{screen:this.last,world:this.viewport.toWorld(this.last),viewport:this}),this.clickedAvailable=!1),e&&this.viewport.options.stopPropagation&&t.stopPropagation()}getPointerPosition(t){let i=new e.Point;return this.viewport.options.interaction?this.viewport.options.interaction.mapPositionToPoint(i,t.clientX,t.clientY):(i.x=t.clientX,i.y=t.clientY),i}handleWheel(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.toLocal(this.getPointerPosition(t));return this.viewport.left<=e.x&&e.x<=this.viewport.right&&this.viewport.top<=e.y&&e.y<=this.viewport.bottom?this.viewport.plugins.wheel(t):void 0}pause(){this.touches=[],this.isMouseDown=!1}get(t){for(let e of this.touches)if(e.id===t)return e;return null}remove(t){for(let e=0;e<this.touches.length;e++)if(this.touches[e].id===t)return void this.touches.splice(e,1)}count(){return(this.isMouseDown?1:0)+this.touches.length}}const s=["drag","pinch","wheel","follow","mouse-edges","decelerate","bounce","snap-zoom","clamp-zoom","snap","clamp"];class n{constructor(t){this.viewport=t,this.list=[],this.plugins={}}add(t,e,i=s.length){this.plugins[t]=e;const n=s.indexOf(t);-1!==n&&s.splice(n,1),s.splice(i,0,t),this.sort()}get(t){return this.plugins[t]}update(t){for(let e of this.list)e.update(t)}resize(){for(let t of this.list)t.resize()}reset(){this.plugins.bounce&&(this.plugins.bounce.reset(),this.plugins.bounce.bounce()),this.plugins.decelerate&&this.plugins.decelerate.reset(),this.plugins.snap&&this.plugins.snap.reset(),this.plugins.clamp&&this.plugins.clamp.update(),this.plugins["clamp-zoom"]&&this.plugins["clamp-zoom"].clamp()}remove(t){this.plugins[t]&&(this.plugins[t]=null,this.viewport.emit(t+"-remove"),this.sort())}pause(t){this.plugins[t]&&this.plugins[t].pause()}resume(t){this.plugins[t]&&this.plugins[t].resume()}sort(){this.list=[];for(let t of s)this.plugins[t]&&this.list.push(this.plugins[t])}down(t){let e=!1;for(let i of this.list)i.down(t)&&(e=!0);return e}move(t){let e=!1;for(let i of this.viewport.plugins.list)i.move(t)&&(e=!0);return e}up(t){let e=!1;for(let i of this.list)i.up(t)&&(e=!0);return e}wheel(t){let e=!1;for(let i of this.list)i.wheel(t)&&(e=!0);return e}}class h{constructor(t){this.parent=t,this.paused=!1}destroy(){}down(){return!1}move(){return!1}up(){return!1}wheel(){return!1}update(){}resize(){}reset(){}pause(){this.paused=!0}resume(){this.paused=!1}}const o={direction:"all",wheel:!0,wheelScroll:1,reverse:!1,clampWheel:!1,underflow:"center",factor:1,mouseButtons:"all"};class r extends h{constructor(t,e={}){super(t),this.options=Object.assign({},o,e),this.moved=!1,this.reverse=this.options.reverse?1:-1,this.xDirection=!this.options.direction||"all"===this.options.direction||"x"===this.options.direction,this.yDirection=!this.options.direction||"all"===this.options.direction||"y"===this.options.direction,this.parseUnderflow(),this.mouseButtons(this.options.mouseButtons)}mouseButtons(t){this.mouse=t&&"all"!==t?[-1!==t.indexOf("left"),-1!==t.indexOf("middle"),-1!==t.indexOf("right")]:[!0,!0,!0]}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}checkButtons(t){const e="mouse"===t.data.pointerType,i=this.parent.input.count();return!(!(1===i||i>1&&!this.parent.plugins.get("pinch"))||e&&!this.mouse[t.data.button])}down(t){if(!this.paused)return this.checkButtons(t)?(this.last={x:t.data.global.x,y:t.data.global.y},this.current=t.data.pointerId,!0):void(this.last=null)}get active(){return this.moved}move(t){if(!this.paused&&this.last&&this.current===t.data.pointerId){const i=t.data.global.x,s=t.data.global.y,n=this.parent.input.count();if(1===n||n>1&&!this.parent.plugins.get("pinch")){const t=i-this.last.x,n=s-this.last.y;if(this.moved||this.xDirection&&this.parent.input.checkThreshold(t)||this.yDirection&&this.parent.input.checkThreshold(n)){const t={x:i,y:s};return this.xDirection&&(this.parent.x+=(t.x-this.last.x)*this.options.factor),this.yDirection&&(this.parent.y+=(t.y-this.last.y)*this.options.factor),this.last=t,this.moved||this.parent.emit("drag-start",{screen:new e.Point(this.last.x,this.last.y),world:this.parent.toWorld(new e.Point(this.last.x,this.last.y)),viewport:this.parent}),this.moved=!0,this.parent.emit("moved",{viewport:this.parent,type:"drag"}),!0}}else this.moved=!1}}up(){const t=this.parent.input.touches;if(1===t.length){const e=t[0];return e.last&&(this.last={x:e.last.x,y:e.last.y},this.current=e.id),this.moved=!1,!0}if(this.last&&this.moved){const t=new e.Point(this.last.x,this.last.y);return this.parent.emit("drag-end",{screen:t,world:this.parent.toWorld(t),viewport:this.parent}),this.last=null,this.moved=!1,!0}}wheel(t){if(!this.paused&&this.options.wheel){if(!this.parent.plugins.get("wheel"))return this.xDirection&&(this.parent.x+=t.deltaX*this.options.wheelScroll*this.reverse),this.yDirection&&(this.parent.y+=t.deltaY*this.options.wheelScroll*this.reverse),this.options.clampWheel&&this.clamp(),this.parent.emit("wheel-scroll",this.parent),this.parent.emit("moved",this.parent),this.parent.options.passiveWheel||t.preventDefault(),!0}}resume(){this.last=null,this.paused=!1}clamp(){const t=this.parent.plugins.get("decelerate")||{};if("y"!==this.options.clampWheel)if(this.parent.screenWorldWidth<this.parent.screenWidth)switch(this.underflowX){case-1:this.parent.x=0;break;case 1:this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}else this.parent.left<0?(this.parent.x=0,t.x=0):this.parent.right>this.parent.worldWidth&&(this.parent.x=-this.parent.worldWidth*this.parent.scale.x+this.parent.screenWidth,t.x=0);if("x"!==this.options.clampWheel)if(this.parent.screenWorldHeight<this.parent.screenHeight)switch(this.underflowY){case-1:this.parent.y=0;break;case 1:this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}else this.parent.top<0&&(this.parent.y=0,t.y=0),this.parent.bottom>this.parent.worldHeight&&(this.parent.y=-this.parent.worldHeight*this.parent.scale.y+this.parent.screenHeight,t.y=0)}}const a={noDrag:!1,percent:1,center:null};class p extends h{constructor(t,e={}){super(t),this.options=Object.assign({},a,e)}down(){if(this.parent.input.count()>=2)return this.active=!0,!0}move(t){if(this.paused||!this.active)return;const e=t.data.global.x,i=t.data.global.y,s=this.parent.input.touches;if(s.length>=2){const n=s[0],h=s[1],o=n.last&&h.last?Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2)):null;if(n.id===t.data.pointerId?n.last={x:e,y:i,data:t.data}:h.id===t.data.pointerId&&(h.last={x:e,y:i,data:t.data}),o){let t;const e={x:n.last.x+(h.last.x-n.last.x)/2,y:n.last.y+(h.last.y-n.last.y)/2};this.options.center||(t=this.parent.toLocal(e));const i=(Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2))-o)/this.parent.screenWidth*this.parent.scale.x*this.options.percent;this.parent.scale.x+=i,this.parent.scale.y+=i,this.parent.emit("zoomed",{viewport:this.parent,type:"pinch"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})}!this.options.noDrag&&this.lastCenter&&(this.parent.x+=e.x-this.lastCenter.x,this.parent.y+=e.y-this.lastCenter.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})),this.lastCenter=e,this.moved=!0}else this.pinching||(this.parent.emit("pinch-start",this.parent),this.pinching=!0);return!0}}up(){if(this.pinching&&this.parent.input.touches.length<=1)return this.active=!1,this.lastCenter=null,this.pinching=!1,this.moved=!1,this.parent.emit("pinch-end",this.parent),!0}}const l={left:!1,right:!1,top:!1,bottom:!1,direction:null,underflow:"center"};class c extends h{constructor(t,e={}){super(t),this.options=Object.assign({},l,e),this.options.direction&&(this.options.left="x"===this.options.direction||"all"===this.options.direction||null,this.options.right="x"===this.options.direction||"all"===this.options.direction||null,this.options.top="y"===this.options.direction||"all"===this.options.direction||null,this.options.bottom="y"===this.options.direction||"all"===this.options.direction||null),this.parseUnderflow(),this.update()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"none"===t?this.noUnderflow=!0:"center"===t?(this.underflowX=this.underflowY=0,this.noUnderflow=!1):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0,this.noUnderflow=!1)}move(){return this.update(),!1}update(){if(this.paused)return;const t={x:this.parent.x,y:this.parent.y},e=this.parent.plugins.decelerate||{};if(null!==this.options.left||null!==this.options.right){let i=!1;if(this.parent.screenWorldWidth<this.parent.screenWidth){if(!this.noUnderflow)switch(this.underflowX){case-1:0!==this.parent.x&&(this.parent.x=0,i=!0);break;case 1:this.parent.x!==this.parent.screenWidth-this.parent.screenWorldWidth&&(this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth,i=!0);break;default:this.parent.x!==(this.parent.screenWidth-this.parent.screenWorldWidth)/2&&(this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2,i=!0)}}else null!==this.options.left&&this.parent.left<(!0===this.options.left?0:this.options.left)&&(this.parent.x=-(!0===this.options.left?0:this.options.left)*this.parent.scale.x,e.x=0,i=!0),null!==this.options.right&&this.parent.right>(!0===this.options.right?this.parent.worldWidth:this.options.right)&&(this.parent.x=-(!0===this.options.right?this.parent.worldWidth:this.options.right)*this.parent.scale.x+this.parent.screenWidth,e.x=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-x"})}if(null!==this.options.top||null!==this.options.bottom){let i=!1;if(this.parent.screenWorldHeight<this.parent.screenHeight){if(!this.noUnderflow)switch(this.underflowY){case-1:0!==this.parent.y&&(this.parent.y=0,i=!0);break;case 1:this.parent.y!==this.parent.screenHeight-this.parent.screenWorldHeight&&(this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight,i=!0);break;default:this.parent.y!==(this.parent.screenHeight-this.parent.screenWorldHeight)/2&&(this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2,i=!0)}}else null!==this.options.top&&this.parent.top<(!0===this.options.top?0:this.options.top)&&(this.parent.y=-(!0===this.options.top?0:this.options.top)*this.parent.scale.y,e.y=0,i=!0),null!==this.options.bottom&&this.parent.bottom>(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)&&(this.parent.y=-(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)*this.parent.scale.y+this.parent.screenHeight,e.y=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-y"})}}}const d={minWidth:null,minHeight:null,maxWidth:null,maxHeight:null};class u extends h{constructor(t,e={}){super(t),this.options=Object.assign({},d,e),this.clamp()}resize(){this.clamp()}clamp(){if(this.paused)return;let t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight;if(null!==this.options.minWidth&&t<this.options.minWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.minWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxWidth&&t>this.options.maxWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.maxWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.minHeight&&e<this.options.minHeight){const i=this.parent.scale.y;this.parent.fitHeight(this.options.minHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxHeight&&e>this.options.maxHeight){const t=this.parent.scale.y;this.parent.fitHeight(this.options.maxHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/t,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}}}const g={friction:.95,bounce:.8,minSpeed:.01};class m extends h{constructor(t,e={}){super(t),this.options=Object.assign({},g,e),this.saved=[],this.reset(),this.parent.on("moved",t=>this.moved(t))}destroy(){this.parent}down(){this.saved=[],this.x=this.y=!1}isActive(){return this.x||this.y}move(){if(this.paused)return;const t=this.parent.input.count();(1===t||t>1&&!this.parent.plugins.get("pinch"))&&(this.saved.push({x:this.parent.x,y:this.parent.y,time:performance.now()}),this.saved.length>60&&this.saved.splice(0,30))}moved(t){if(this.saved.length){const e=this.saved[this.saved.length-1];"clamp-x"===t.type?e.x===t.original.x&&(e.x=this.parent.x):"clamp-y"===t.type&&e.y===t.original.y&&(e.y=this.parent.y)}}up(){if(0===this.parent.input.count()&&this.saved.length){const t=performance.now();for(let e of this.saved)if(e.time>=t-100){const i=t-e.time;this.x=(this.parent.x-e.x)/i,this.y=(this.parent.y-e.y)/i,this.percentChangeX=this.percentChangeY=this.options.friction;break}}}activate(t){void 0!==(t=t||{}).x&&(this.x=t.x,this.percentChangeX=this.options.friction),void 0!==t.y&&(this.y=t.y,this.percentChangeY=this.options.friction)}update(t){if(this.paused)return;let e;this.x&&(this.parent.x+=this.x*t,this.x*=this.percentChangeX,Math.abs(this.x)<this.minSpeed&&(this.x=0),e=!0),this.y&&(this.parent.y+=this.y*t,this.y*=this.percentChangeY,Math.abs(this.y)<this.minSpeed&&(this.y=0),e=!0),e&&this.parent.emit("moved",{viewport:this.parent,type:"decelerate"})}reset(){this.x=this.y=null}}var w="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f=function(t,e){return t(e={exports:{}},e.exports),e.exports}(function(t,e){(function(){var e;(function(e){t.exports=e})(e={linear:function(t,e,i,s){return i*t/s+e},easeInQuad:function(t,e,i,s){return i*(t/=s)*t+e},easeOutQuad:function(t,e,i,s){return-i*(t/=s)*(t-2)+e},easeInOutQuad:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t+e:-i/2*(--t*(t-2)-1)+e},easeInCubic:function(t,e,i,s){return i*(t/=s)*t*t+e},easeOutCubic:function(t,e,i,s){return i*((t=t/s-1)*t*t+1)+e},easeInOutCubic:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t+e:i/2*((t-=2)*t*t+2)+e},easeInQuart:function(t,e,i,s){return i*(t/=s)*t*t*t+e},easeOutQuart:function(t,e,i,s){return-i*((t=t/s-1)*t*t*t-1)+e},easeInOutQuart:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t+e:-i/2*((t-=2)*t*t*t-2)+e},easeInQuint:function(t,e,i,s){return i*(t/=s)*t*t*t*t+e},easeOutQuint:function(t,e,i,s){return i*((t=t/s-1)*t*t*t*t+1)+e},easeInOutQuint:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t*t+e:i/2*((t-=2)*t*t*t*t+2)+e},easeInSine:function(t,e,i,s){return-i*Math.cos(t/s*(Math.PI/2))+i+e},easeOutSine:function(t,e,i,s){return i*Math.sin(t/s*(Math.PI/2))+e},easeInOutSine:function(t,e,i,s){return-i/2*(Math.cos(Math.PI*t/s)-1)+e},easeInExpo:function(t,e,i,s){return 0===t?e:i*Math.pow(2,10*(t/s-1))+e},easeOutExpo:function(t,e,i,s){return t===s?e+i:i*(1-Math.pow(2,-10*t/s))+e},easeInOutExpo:function(t,e,i,s){return(t/=s/2)<1?i/2*Math.pow(2,10*(t-1))+e:i/2*(2-Math.pow(2,-10*--t))+e},easeInCirc:function(t,e,i,s){return-i*(Math.sqrt(1-(t/=s)*t)-1)+e},easeOutCirc:function(t,e,i,s){return i*Math.sqrt(1-(t=t/s-1)*t)+e},easeInOutCirc:function(t,e,i,s){return(t/=s/2)<1?-i/2*(Math.sqrt(1-t*t)-1)+e:i/2*(Math.sqrt(1-(t-=2)*t)+1)+e},easeInElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),-n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)+e},easeOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),n*Math.pow(2,-10*t)*Math.sin((t*s-o)*(2*Math.PI)/h)+i+e},easeInOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s/2),(h=0)||(h=s*(.3*1.5)),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),t<1?n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*-.5+e:n*Math.pow(2,-10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*.5+i+e},easeInBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*(t/=s)*t*((n+1)*t-n)+e},easeOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*((t=t/s-1)*t*((n+1)*t+n)+1)+e},easeInOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),(t/=s/2)<1?i/2*(t*t*((1+(n*=1.525))*t-n))+e:i/2*((t-=2)*t*((1+(n*=1.525))*t+n)+2)+e},easeInBounce:function(t,i,s,n){return s-e.easeOutBounce(n-t,0,s,n)+i},easeOutBounce:function(t,e,i,s){return(t/=s)<1/2.75?i*(7.5625*t*t)+e:t<2/2.75?i*(7.5625*(t-=1.5/2.75)*t+.75)+e:t<2.5/2.75?i*(7.5625*(t-=2.25/2.75)*t+.9375)+e:i*(7.5625*(t-=2.625/2.75)*t+.984375)+e},easeInOutBounce:function(t,i,s,n){return t<n/2?.5*e.easeInBounce(2*t,0,s,n)+i:.5*e.easeOutBounce(2*t-n,0,s,n)+.5*s+i}})}).call(w)});function y(t,e){return t?"function"==typeof t?t:"string"==typeof t?f[t]:void 0:f[e]}const x={sides:"all",friction:.5,time:150,ease:"easeInOutSine",underflow:"center"};class v extends h{constructor(t,e={}){super(t),this.options=Object.assign({},x,e),this.ease=y(this.options.ease,"easeInOutSine"),this.options.sides&&("all"===this.options.sides?this.top=this.bottom=this.left=this.right=!0:"horizontal"===this.options.sides?this.right=this.left=!0:"vertical"===this.options.sides?this.top=this.bottom=!0:(this.top=-1!==this.options.sides.indexOf("top"),this.bottom=-1!==this.options.sides.indexOf("bottom"),this.left=-1!==this.options.sides.indexOf("left"),this.right=-1!==this.options.sides.indexOf("right"))),this.parseUnderflow(),this.last={},this.reset()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}isActive(){return null!==this.toX||null!==this.toY}down(){this.toX=this.toY=null}up(){this.bounce()}update(t){if(!this.paused){if(this.bounce(),this.toX){const e=this.toX;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-x"}),e.time>=this.options.time?(this.parent.x=e.end,this.toX=null,this.parent.emit("bounce-x-end",this.parent)):this.parent.x=this.ease(e.time,e.start,e.delta,this.options.time)}if(this.toY){const e=this.toY;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-y"}),e.time>=this.options.time?(this.parent.y=e.end,this.toY=null,this.parent.emit("bounce-y-end",this.parent)):this.parent.y=this.ease(e.time,e.start,e.delta,this.options.time)}}}calcUnderflowX(){let t;switch(this.underflowX){case-1:t=0;break;case 1:t=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:t=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}return t}calcUnderflowY(){let t;switch(this.underflowY){case-1:t=0;break;case 1:t=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:t=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}return t}bounce(){if(this.paused)return;let t,e=this.parent.plugins.get("decelerate");e&&(e.x||e.y)&&(e.x&&e.percentChangeX===e.options.friction||e.y&&e.percentChangeY===e.options.friction)&&(((t=this.parent.OOB()).left&&this.left||t.right&&this.right)&&(e.percentChangeX=this.options.friction),(t.top&&this.top||t.bottom&&this.bottom)&&(e.percentChangeY=this.options.friction));const i=this.parent.plugins.get("drag")||{},s=this.parent.plugins.get("pinch")||{};if(e=e||{},!(i.active||s.active||this.toX&&this.toY||e.x&&e.y)){const i=(t=t||this.parent.OOB()).cornerPoint;if(!this.toX&&!e.x){let e=null;t.left&&this.left?e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():0:t.right&&this.right&&(e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-i.x),null!==e&&this.parent.x!==e&&(this.toX={time:0,start:this.parent.x,delta:e-this.parent.x,end:e},this.parent.emit("bounce-x-start",this.parent))}if(!this.toY&&!e.y){let e=null;t.top&&this.top?e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():0:t.bottom&&this.bottom&&(e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-i.y),null!==e&&this.parent.y!==e&&(this.toY={time:0,start:this.parent.y,delta:e-this.parent.y,end:e},this.parent.emit("bounce-y-start",this.parent))}}}reset(){this.toX=this.toY=null}}const b={topLeft:!1,friction:.8,time:1e3,ease:"easeInOutSine",interrupt:!0,removeOnComplete:!1,removeOnInterrupt:!1,forceStart:!1};class W extends h{constructor(t,e,i,s={}){super(t),this.options=Object.assign({},b,s),this.ease=y(s.ease,"easeInOutSine"),this.x=e,this.y=i,this.options.forceStart&&this.startEase()}snapStart(){this.percent=0,this.snapping={time:0};const t=this.options.topLeft?this.parent.corner:this.parent.center;this.deltaX=this.x-t.x,this.deltaY=this.y-t.y,this.startX=t.x,this.startY=t.y,this.parent.emit("snap-start",this.parent)}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap"):this.options.interrupt&&(this.snapping=null)}up(){if(0===this.parent.input.count()){const t=this.parent.plugins.get("decelerate");t&&(t.x||t.y)&&(t.percentChangeX=t.percentChangeY=this.options.friction)}}update(t){if(!(this.paused||this.options.interrupt&&0!==this.parent.input.count()))if(this.snapping){const e=this.snapping;let i,s,n;if(e.time+=t,e.time>this.options.time)i=!0,s=this.startX+this.deltaX,n=this.startY+this.deltaY;else{const t=this.ease(e.time,0,1,this.options.time);s=this.startX+this.deltaX*t,n=this.startY+this.deltaY*t}this.options.topLeft?this.parent.moveCorner(s,n):this.parent.moveCenter(s,n),this.parent.emit("moved",{viewport:this.parent,type:"snap"}),i&&(this.options.removeOnComplete&&this.parent.plugins.remove("snap"),this.parent.emit("snap-end",this.parent),this.snapping=null)}else{const t=this.options.topLeft?this.parent.corner:this.parent.center;t.x===this.x&&t.y===this.y||this.snapStart()}}}const H={width:0,height:0,time:1e3,ease:"easeInOutSine",center:null,interrupt:!0,removeOnComplete:!1,removeOnInterrupts:!1,forceStart:!1,noMove:!1};class M extends h{constructor(t,e={}){super(t),this.options=Object.assign({},H,e),this.options.width>0&&(this.x_scale=t.screenWidth/this.options.width),this.options.height>0&&(this.y_scale=t.screenHeight/this.options.height),this.xIndependent=!!this.x_scale,this.yIndependent=!!this.y_scale,this.x_scale=this.xIndependent?this.x_scale:this.y_scale,this.y_scale=this.yIndependent?this.y_scale:this.x_scale,0===this.options.time?(t.container.scale.x=this.x_scale,t.container.scale.y=this.y_scale,this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom")):e.forceStart&&this.createSnapping()}createSnapping(){const t=this.parent.scale;this.snapping={time:0,startX:t.x,startY:t.y,deltaX:this.x_scale-t.x,deltaY:this.y_scale-t.y},this.parent.emit("snap-zoom-start",this.parent)}resize(){this.snapping=null,this.options.width>0&&(this.x_scale=this.parent._screenWidth/this.options.width),this.options.height>0&&(this.y_scale=this.parent._screenHeight/this.options.height),this.x_scale=this.xIndependent?this.x_scale:this.y_scale,this.y_scale=this.yIndependent?this.y_scale:this.x_scale}reset(){this.snapping=null}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap-zoom")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap-zoom"):this.options.interrupt&&(this.snapping=null)}update(t){if(this.paused)return;if(this.options.interrupt&&0!==this.parent.input.count())return;let e;if(this.options.center||this.options.noMove||(e=this.parent.center),this.snapping){if(this.snapping){const i=this.snapping;if(i.time+=t,i.time>=this.options.time)this.parent.scale.set(this.x_scale,this.y_scale),this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom"),this.parent.emit("snap-zoom-end",this.parent),this.snapping=null;else{const t=this.snapping;this.parent.scale.x=y(t.time,t.startX,t.deltaX,this.options.time),this.parent.scale.y=y(t.time,t.startY,t.deltaY,this.options.time)}const s=this.parent.plugins.get("clamp-zoom");s&&s.clamp(),this.options.noMove||(this.options.center?this.parent.moveCenter(this.options.center):this.parent.moveCenter(e))}}else this.parent.scale.x===this.x_scale&&this.parent.scale.y===this.y_scale||this.createSnapping()}resume(){this.snapping=null,super.resume()}}const O={speed:0,acceleration:null,radius:null};class z extends h{constructor(t,e,i={}){super(t),this.target=e,this.options=Object.assign({},O,i),this.velocity={x:0,y:0}}update(t){if(this.paused)return;const e=this.parent.center;let i=this.target.x,s=this.target.y;if(this.options.radius){if(!(Math.sqrt(Math.pow(this.target.y-e.y,2)+Math.pow(this.target.x-e.x,2))>this.options.radius))return;{const t=Math.atan2(this.target.y-e.y,this.target.x-e.x);i=this.target.x-Math.cos(t)*this.options.radius,s=this.target.y-Math.sin(t)*this.options.radius}}const n=i-e.x,h=s-e.y;if(n||h)if(this.options.speed)if(this.options.acceleration){const o=Math.atan2(s-e.y,i-e.x),r=Math.sqrt(Math.pow(n,2)+Math.pow(h,2));if(r){const a=(Math.pow(this.velocity.x,2)+Math.pow(this.velocity.y,2))/(2*this.options.acceleration);this.velocity=r>a?{x:Math.min(this.velocity.x+this.options.acceleration*t,this.options.speed),y:Math.min(this.velocity.y+this.options.acceleration*t,this.options.speed)}:{x:Math.max(this.velocity.x-this.options.acceleration*this.options.speed,0),y:Math.max(this.velocity.y-this.options.acceleration*this.options.speed,0)};const p=Math.cos(o)*this.velocity.x,l=Math.sin(o)*this.velocity.y,c=Math.abs(p)>Math.abs(n)?i:e.x+p,d=Math.abs(l)>Math.abs(h)?s:e.y+l;this.parent.moveCenter(c,d),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}else{const t=Math.atan2(s-e.y,i-e.x),o=Math.cos(t)*this.options.speed,r=Math.sin(t)*this.options.speed,a=Math.abs(o)>Math.abs(n)?i:e.x+o,p=Math.abs(r)>Math.abs(h)?s:e.y+r;this.parent.moveCenter(a,p),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}else this.parent.moveCenter(i,s),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}const C={percent:.1,smooth:!1,interrupt:!0,reverse:!1,center:null};class I extends h{constructor(t,e={}){super(t),this.options=Object.assign({},C,e)}down(){this.options.interrupt&&(this.smoothing=null)}update(){if(this.smoothing){const t=this.smoothingCenter,e=this.smoothing;let i;this.options.center||(i=this.parent.toLocal(t)),this.parent.scale.x+=e.x,this.parent.scale.y+=e.y,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const e=this.parent.toGlobal(i);this.parent.x+=t.x-e.x,this.parent.y+=t.y-e.y}this.smoothingCount++,this.smoothingCount>=this.options.smooth&&(this.smoothing=null)}}wheel(t){if(this.paused)return;let e=this.parent.input.getPointerPosition(t);const i=(this.options.reverse?-1:1)*-t.deltaY*(t.deltaMode?120:1)/500,s=Math.pow(2,(1+this.options.percent)*i);if(this.options.smooth){const t={x:this.smoothing?this.smoothing.x*(this.options.smooth-this.smoothingCount):0,y:this.smoothing?this.smoothing.y*(this.options.smooth-this.smoothingCount):0};this.smoothing={x:((this.parent.scale.x+t.x)*s-this.parent.scale.x)/this.options.smooth,y:((this.parent.scale.y+t.y)*s-this.parent.scale.y)/this.options.smooth},this.smoothingCount=0,this.smoothingCenter=e}else{let t;this.options.center||(t=this.parent.toLocal(e)),this.parent.scale.x*=s,this.parent.scale.y*=s,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const i=this.parent.plugins.get("clamp-zoom");if(i&&i.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y}}this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.emit("wheel",{wheel:{dx:t.deltaX,dy:t.deltaY,dz:t.deltaZ},event:t,viewport:this.parent}),this.parent.options.passiveWheel||t.preventDefault()}}const _={radius:null,distance:null,top:null,bottom:null,left:null,right:null,speed:8,reverse:!1,noDecelerate:!1,linear:!1,allowButtons:!1};class S extends h{constructor(t,e={}){super(t),this.options=Object.assign({},_,e),this.reverse=this.options.reverse?1:-1,this.radiusSquared=Math.pow(this.options.radius,2),this.resize()}resize(){const t=this.options.distance;null!==t?(this.left=t,this.top=t,this.right=window.innerWidth-t,this.bottom=window.innerHeight-t):this.radius||(this.left=this.options.left,this.top=this.options.top,this.right=null===this.options.right?null:window.innerWidth-this.options.right,this.bottom=null===this.options.bottom?null:window.innerHeight-this.options.bottom)}down(){this.options.allowButtons||(this.horizontal=this.vertical=null)}move(t){if("mouse"!==t.data.pointerType&&1!==t.data.identifier||!this.options.allowButtons&&0!==t.data.buttons)return;const e=t.data.global.x,i=t.data.global.y;if(this.radiusSquared){const t=this.parent.toScreen(this.parent.center);if(Math.pow(t.x-e,2)+Math.pow(t.y-i,2)>=this.radiusSquared){const s=Math.atan2(t.y-i,t.x-e);this.options.linear?(this.horizontal=Math.round(Math.cos(s))*this.options.speed*this.reverse*.06,this.vertical=Math.round(Math.sin(s))*this.options.speed*this.reverse*.06):(this.horizontal=Math.cos(s)*this.options.speed*this.reverse*.06,this.vertical=Math.sin(s)*this.options.speed*this.reverse*.06)}else this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=0}else null!==this.left&&e<this.left?this.horizontal=1*this.reverse*this.options.speed*.06:null!==this.right&&e>this.right?this.horizontal=-1*this.reverse*this.options.speed*.06:(this.decelerateHorizontal(),this.horizontal=0),null!==this.top&&i<this.top?this.vertical=1*this.reverse*this.options.speed*.06:null!==this.bottom&&i>this.bottom?this.vertical=-1*this.reverse*this.options.speed*.06:(this.decelerateVertical(),this.vertical=0)}decelerateHorizontal(){const t=this.parent.plugins.get("decelerate");this.horizontal&&t&&!this.options.noDecelerate&&t.activate({x:this.horizontal*this.options.speed*this.reverse/(1e3/60)})}decelerateVertical(){const t=this.parent.plugins.get("decelerate");this.vertical&&t&&!this.options.noDecelerate&&t.activate({y:this.vertical*this.options.speed*this.reverse/(1e3/60)})}up(){this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=null}update(){if(!this.paused&&(this.horizontal||this.vertical)){const t=this.parent.center;this.horizontal&&(t.x+=this.horizontal*this.options.speed),this.vertical&&(t.y+=this.vertical*this.options.speed),this.parent.moveCenter(t),this.parent.emit("moved",{viewport:this.parent,type:"mouse-edges"})}}}const k={screenWidth:window.innerWidth,screenHeight:window.innerHeight,worldWidth:null,worldHeight:null,threshold:5,passiveWheel:!0,stopPropagation:!1,forceHitArea:null,noTicker:!1,interaction:null,noOnContextMenu:!1};t.Plugin=h,t.Viewport=class extends e.Container{constructor(t={}){if(super(),this.options=Object.assign({},k,t),t.ticker)this.options.ticker=t.ticker;else{let i;const s=e;i=parseInt(/^(\d+)\./.exec(e.VERSION)[1])<5?s.ticker.shared:s.Ticker.shared,this.options.ticker=t.ticker||i}this.screenWidth=this.options.screenWidth,this.screenHeight=this.options.screenHeight,this._worldWidth=this.options.worldWidth,this._worldHeight=this.options.worldHeight,this.forceHitArea=this.options.forceHitArea,this.threshold=this.options.threshold,this.options.divWheel=this.options.divWheel||document.body,this.options.noOnContextMenu||(this.options.divWheel.oncontextmenu=t=>t.preventDefault()),this.options.noTicker||(this.tickerFunction=()=>this.update(this.options.ticker.elapsedMS),this.options.ticker.add(this.tickerFunction)),this.input=new i(this),this.plugins=new n(this)}destroy(t){this.options.ticker.remove(this.tickerFunction),this.input.destroy(),super.destroy(t)}update(t){this.pause||(this.plugins.update(t),this.lastViewport&&(this.lastViewport.x!==this.x||this.lastViewport.y!==this.y?this.moving=!0:this.moving&&(this.emit("moved-end",this),this.moving=!1),this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y?this.zooming=!0:this.zooming&&(this.emit("zoomed-end",this),this.zooming=!1)),this.forceHitArea||(this._hitAreaDefault=new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight),this.hitArea=this._hitAreaDefault),this._dirty=this._dirty||!this.lastViewport||this.lastViewport.x!==this.x||this.lastViewport.y!==this.y||this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y,this.lastViewport={x:this.x,y:this.y,scaleX:this.scale.x,scaleY:this.scale.y})}resize(t=window.innerWidth,e=window.innerHeight,i,s){this.screenWidth=t,this.screenHeight=e,void 0!==i&&(this._worldWidth=i),void 0!==s&&(this._worldHeight=s),this.plugins.resize()}get worldWidth(){return this._worldWidth?this._worldWidth:this.width/this.scale.x}set worldWidth(t){this._worldWidth=t,this.plugins.resize()}get worldHeight(){return this._worldHeight?this._worldHeight:this.height/this.scale.y}set worldHeight(t){this._worldHeight=t,this.plugins.resize()}getVisibleBounds(){return new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight)}toWorld(t,i){return 2===arguments.length?this.toLocal(new e.Point(t,i)):this.toLocal(t)}toScreen(t,i){return 2===arguments.length?this.toGlobal(new e.Point(t,i)):this.toGlobal(t)}get worldScreenWidth(){return this.screenWidth/this.scale.x}get worldScreenHeight(){return this.screenHeight/this.scale.y}get screenWorldWidth(){return this.worldWidth*this.scale.x}get screenWorldHeight(){return this.worldHeight*this.scale.y}get center(){return new e.Point(this.worldScreenWidth/2-this.x/this.scale.x,this.worldScreenHeight/2-this.y/this.scale.y)}set center(t){this.moveCenter(t)}moveCenter(){let t,e;return isNaN(arguments[0])?(t=arguments[0].x,e=arguments[0].y):(t=arguments[0],e=arguments[1]),this.position.set((this.worldScreenWidth/2-t)*this.scale.x,(this.worldScreenHeight/2-e)*this.scale.y),this.plugins.reset(),this.dirty=!0,this}get corner(){return new e.Point(-this.x/this.scale.x,-this.y/this.scale.y)}set corner(t){this.moveCorner(t)}moveCorner(t,e){return 1===arguments.length?this.position.set(-t.x*this.scale.x,-t.y*this.scale.y):this.position.set(-t*this.scale.x,-e*this.scale.y),this.plugins.reset(),this}fitWidth(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.x=this.screenWidth/t,i&&(this.scale.y=this.scale.x);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitHeight(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.y=this.screenHeight/t,i&&(this.scale.x=this.scale.y);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitWorld(t){let e;t&&(e=this.center),this.scale.x=this.screenWidth/this.worldWidth,this.scale.y=this.screenHeight/this.worldHeight,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const i=this.plugins.get("clamp-zoom");return i&&i.clamp(),t&&this.moveCenter(e),this}fit(t,e=this.worldWidth,i=this.worldHeight){let s;t&&(s=this.center),this.scale.x=this.screenWidth/e,this.scale.y=this.screenHeight/i,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const n=this.plugins.get("clamp-zoom");return n&&n.clamp(),t&&this.moveCenter(s),this}setZoom(t,e){let i;e&&(i=this.center),this.scale.set(t);const s=this.plugins.get("clamp-zoom");return s&&s.clamp(),e&&this.moveCenter(i),this}zoomPercent(t,e){return this.setZoom(this.scale.x+this.scale.x*t,e)}zoom(t,e){return this.fitWidth(t+this.worldScreenWidth,e),this}snapZoom(t){return this.plugins.add("snap-zoom",new M(this,t)),this}OOB(){return{left:this.left<0,right:this.right>this._worldWidth,top:this.top<0,bottom:this.bottom>this._worldHeight,cornerPoint:new e.Point(this._worldWidth*this.scale.x-this.screenWidth,this._worldHeight*this.scale.y-this.screenHeight)}}get right(){return-this.x/this.scale.x+this.worldScreenWidth}set right(t){this.x=-t*this.scale.x+this.screenWidth,this.plugins.reset()}get left(){return-this.x/this.scale.x}set left(t){this.x=-t*this.scale.x,this.plugins.reset()}get top(){return-this.y/this.scale.y}set top(t){this.y=-t*this.scale.y,this.plugins.reset()}get bottom(){return-this.y/this.scale.y+this.worldScreenHeight}set bottom(t){this.y=-t*this.scale.y+this.screenHeight,this.plugins.reset()}get dirty(){return this._dirty}set dirty(t){this._dirty=t}get forceHitArea(){return this._forceHitArea}set forceHitArea(t){t?(this._forceHitArea=t,this.hitArea=t):(this._forceHitArea=null,this.hitArea=new e.Rectangle(0,0,this.worldWidth,this.worldHeight))}drag(t){return this.plugins.add("drag",new r(this,t)),this}clamp(t){return this.plugins.add("clamp",new c(this,t)),this}decelerate(t){return this.plugins.add("decelerate",new m(this,t)),this}bounce(t){return this.plugins.add("bounce",new v(this,t)),this}pinch(t){return this.plugins.add("pinch",new p(this,t)),this}snap(t,e,i){return this.plugins.add("snap",new W(this,t,e,i)),this}follow(t,e){return this.plugins.add("follow",new z(this,t,e)),this}wheel(t){return this.plugins.add("wheel",new I(this,t)),this}clampZoom(t){return this.plugins.add("clamp-zoom",new u(this,t)),this}mouseEdges(t){return this.plugins.add("mouse-edges",new S(this,t)),this}get pause(){return this._pause}set pause(t){this._pause=t,this.lastViewport=null,this.moving=!1,this.zooming=!1,t&&this.input.pause()}ensureVisible(t,e,i,s){t<this.left?this.left=t:t+i>this.right&&(this.right=t+i),e<this.top?this.top=e:e+s>this.bottom&&(this.bottom=e+s)}},Object.defineProperty(t,"__esModule",{value:!0})});
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("pixi.js")):"function"==typeof define&&define.amd?define(["exports","pixi.js"],e):e((t=t||self).Viewport={},t.PIXI)}(this,function(t,e){"use strict";class i{constructor(t){this.viewport=t,this.touches=[],this.addListeners()}addListeners(){this.viewport.interactive=!0,this.viewport.forceHitArea||(this.viewport.hitArea=new e.Rectangle(0,0,this.viewport.worldWidth,this.viewport.worldHeight)),this.viewport.on("pointerdown",this.down,this),this.viewport.on("pointermove",this.move,this),this.viewport.on("pointerup",this.up,this),this.viewport.on("pointerupoutside",this.up,this),this.viewport.on("pointercancel",this.up,this),this.viewport.on("pointerout",this.up,this),this.wheelFunction=t=>this.handleWheel(t),this.viewport.options.divWheel.addEventListener("wheel",this.wheelFunction,{passive:this.viewport.options.passiveWheel}),this.isMouseDown=!1}destroy(){this.viewport.options.divWheel.removeEventListener("wheel",this.wheelFunction)}down(t){if(this.viewport.pause||!this.viewport.worldVisible)return;if("mouse"===t.data.pointerType?this.isMouseDown=!0:this.get(t.data.pointerId)||this.touches.push({id:t.data.pointerId,last:null}),1===this.count()){this.last=t.data.global.clone();const e=this.viewport.plugins.get("decelerate"),i=this.viewport.plugins.get("bounce");e&&e.isActive()||i&&i.isActive()?this.clickedAvailable=!1:this.clickedAvailable=!0}else this.clickedAvailable=!1;this.viewport.plugins.down(t)&&this.viewport.options.stopPropagation&&t.stopPropagation()}checkThreshold(t){return Math.abs(t)>=this.viewport.threshold}move(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.plugins.move(t);if(this.clickedAvailable){const e=t.data.global.x-this.last.x,i=t.data.global.y-this.last.y;(this.checkThreshold(e)||this.checkThreshold(i))&&(this.clickedAvailable=!1)}e&&this.viewport.options.stopPropagation&&t.stopPropagation()}up(t){if(this.viewport.pause||!this.viewport.worldVisible)return;"mouse"===t.data.pointerType&&(this.isMouseDown=!1),"mouse"!==t.data.pointerType&&this.remove(t.data.pointerId);const e=this.viewport.plugins.up(t);this.clickedAvailable&&0===this.count()&&(this.viewport.emit("clicked",{screen:this.last,world:this.viewport.toWorld(this.last),viewport:this}),this.clickedAvailable=!1),e&&this.viewport.options.stopPropagation&&t.stopPropagation()}getPointerPosition(t){let i=new e.Point;return this.viewport.options.interaction?this.viewport.options.interaction.mapPositionToPoint(i,t.clientX,t.clientY):(i.x=t.clientX,i.y=t.clientY),i}handleWheel(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.toLocal(this.getPointerPosition(t));return this.viewport.left<=e.x&&e.x<=this.viewport.right&&this.viewport.top<=e.y&&e.y<=this.viewport.bottom?this.viewport.plugins.wheel(t):void 0}pause(){this.touches=[],this.isMouseDown=!1}get(t){for(let e of this.touches)if(e.id===t)return e;return null}remove(t){for(let e=0;e<this.touches.length;e++)if(this.touches[e].id===t)return void this.touches.splice(e,1)}count(){return(this.isMouseDown?1:0)+this.touches.length}}const s=["drag","pinch","wheel","follow","mouse-edges","decelerate","bounce","snap-zoom","clamp-zoom","snap","clamp"];class n{constructor(t){this.viewport=t,this.list=[],this.plugins={}}add(t,e,i=s.length){this.plugins[t]=e;const n=s.indexOf(t);-1!==n&&s.splice(n,1),s.splice(i,0,t),this.sort()}get(t){return this.plugins[t]}update(t){for(let e of this.list)e.update(t)}resize(){for(let t of this.list)t.resize()}reset(){this.plugins.bounce&&(this.plugins.bounce.reset(),this.plugins.bounce.bounce()),this.plugins.decelerate&&this.plugins.decelerate.reset(),this.plugins.snap&&this.plugins.snap.reset(),this.plugins.clamp&&this.plugins.clamp.update(),this.plugins["clamp-zoom"]&&this.plugins["clamp-zoom"].clamp()}remove(t){this.plugins[t]&&(this.plugins[t]=null,this.viewport.emit(t+"-remove"),this.sort())}pause(t){this.plugins[t]&&this.plugins[t].pause()}resume(t){this.plugins[t]&&this.plugins[t].resume()}sort(){this.list=[];for(let t of s)this.plugins[t]&&this.list.push(this.plugins[t])}down(t){let e=!1;for(let i of this.list)i.down(t)&&(e=!0);return e}move(t){let e=!1;for(let i of this.viewport.plugins.list)i.move(t)&&(e=!0);return e}up(t){let e=!1;for(let i of this.list)i.up(t)&&(e=!0);return e}wheel(t){let e=!1;for(let i of this.list)i.wheel(t)&&(e=!0);return e}}class h{constructor(t){this.parent=t,this.paused=!1}destroy(){}down(){return!1}move(){return!1}up(){return!1}wheel(){return!1}update(){}resize(){}reset(){}pause(){this.paused=!0}resume(){this.paused=!1}}const o={direction:"all",wheel:!0,wheelScroll:1,reverse:!1,clampWheel:!1,underflow:"center",factor:1,mouseButtons:"all"};class r extends h{constructor(t,e={}){super(t),this.options=Object.assign({},o,e),this.moved=!1,this.reverse=this.options.reverse?1:-1,this.xDirection=!this.options.direction||"all"===this.options.direction||"x"===this.options.direction,this.yDirection=!this.options.direction||"all"===this.options.direction||"y"===this.options.direction,this.parseUnderflow(),this.mouseButtons(this.options.mouseButtons)}mouseButtons(t){this.mouse=t&&"all"!==t?[-1!==t.indexOf("left"),-1!==t.indexOf("middle"),-1!==t.indexOf("right")]:[!0,!0,!0]}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}checkButtons(t){const e="mouse"===t.data.pointerType,i=this.parent.input.count();return!(!(1===i||i>1&&!this.parent.plugins.get("pinch"))||e&&!this.mouse[t.data.button])}down(t){if(!this.paused)return this.checkButtons(t)?(this.last={x:t.data.global.x,y:t.data.global.y},this.current=t.data.pointerId,!0):void(this.last=null)}get active(){return this.moved}move(t){if(!this.paused&&this.last&&this.current===t.data.pointerId){const i=t.data.global.x,s=t.data.global.y,n=this.parent.input.count();if(1===n||n>1&&!this.parent.plugins.get("pinch")){const t=i-this.last.x,n=s-this.last.y;if(this.moved||this.xDirection&&this.parent.input.checkThreshold(t)||this.yDirection&&this.parent.input.checkThreshold(n)){const t={x:i,y:s};return this.xDirection&&(this.parent.x+=(t.x-this.last.x)*this.options.factor),this.yDirection&&(this.parent.y+=(t.y-this.last.y)*this.options.factor),this.last=t,this.moved||this.parent.emit("drag-start",{screen:new e.Point(this.last.x,this.last.y),world:this.parent.toWorld(new e.Point(this.last.x,this.last.y)),viewport:this.parent}),this.moved=!0,this.parent.emit("moved",{viewport:this.parent,type:"drag"}),!0}}else this.moved=!1}}up(){const t=this.parent.input.touches;if(1===t.length){const e=t[0];return e.last&&(this.last={x:e.last.x,y:e.last.y},this.current=e.id),this.moved=!1,!0}if(this.last&&this.moved){const t=new e.Point(this.last.x,this.last.y);return this.parent.emit("drag-end",{screen:t,world:this.parent.toWorld(t),viewport:this.parent}),this.last=null,this.moved=!1,!0}}wheel(t){if(!this.paused&&this.options.wheel){if(!this.parent.plugins.get("wheel"))return this.xDirection&&(this.parent.x+=t.deltaX*this.options.wheelScroll*this.reverse),this.yDirection&&(this.parent.y+=t.deltaY*this.options.wheelScroll*this.reverse),this.options.clampWheel&&this.clamp(),this.parent.emit("wheel-scroll",this.parent),this.parent.emit("moved",this.parent),this.parent.options.passiveWheel||t.preventDefault(),!0}}resume(){this.last=null,this.paused=!1}clamp(){const t=this.parent.plugins.get("decelerate")||{};if("y"!==this.options.clampWheel)if(this.parent.screenWorldWidth<this.parent.screenWidth)switch(this.underflowX){case-1:this.parent.x=0;break;case 1:this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}else this.parent.left<0?(this.parent.x=0,t.x=0):this.parent.right>this.parent.worldWidth&&(this.parent.x=-this.parent.worldWidth*this.parent.scale.x+this.parent.screenWidth,t.x=0);if("x"!==this.options.clampWheel)if(this.parent.screenWorldHeight<this.parent.screenHeight)switch(this.underflowY){case-1:this.parent.y=0;break;case 1:this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}else this.parent.top<0&&(this.parent.y=0,t.y=0),this.parent.bottom>this.parent.worldHeight&&(this.parent.y=-this.parent.worldHeight*this.parent.scale.y+this.parent.screenHeight,t.y=0)}}const a={noDrag:!1,percent:1,center:null};class p extends h{constructor(t,e={}){super(t),this.options=Object.assign({},a,e)}down(){if(this.parent.input.count()>=2)return this.active=!0,!0}move(t){if(this.paused||!this.active)return;const e=t.data.global.x,i=t.data.global.y,s=this.parent.input.touches;if(s.length>=2){const n=s[0],h=s[1],o=n.last&&h.last?Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2)):null;if(n.id===t.data.pointerId?n.last={x:e,y:i,data:t.data}:h.id===t.data.pointerId&&(h.last={x:e,y:i,data:t.data}),o){let t;const e={x:n.last.x+(h.last.x-n.last.x)/2,y:n.last.y+(h.last.y-n.last.y)/2};this.options.center||(t=this.parent.toLocal(e));const i=(Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2))-o)/this.parent.screenWidth*this.parent.scale.x*this.options.percent;this.parent.scale.x+=i,this.parent.scale.y+=i,this.parent.emit("zoomed",{viewport:this.parent,type:"pinch"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})}!this.options.noDrag&&this.lastCenter&&(this.parent.x+=e.x-this.lastCenter.x,this.parent.y+=e.y-this.lastCenter.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})),this.lastCenter=e,this.moved=!0}else this.pinching||(this.parent.emit("pinch-start",this.parent),this.pinching=!0);return!0}}up(){if(this.pinching&&this.parent.input.touches.length<=1)return this.active=!1,this.lastCenter=null,this.pinching=!1,this.moved=!1,this.parent.emit("pinch-end",this.parent),!0}}const l={left:!1,right:!1,top:!1,bottom:!1,direction:null,underflow:"center"};class c extends h{constructor(t,e={}){super(t),this.options=Object.assign({},l,e),this.options.direction&&(this.options.left="x"===this.options.direction||"all"===this.options.direction||null,this.options.right="x"===this.options.direction||"all"===this.options.direction||null,this.options.top="y"===this.options.direction||"all"===this.options.direction||null,this.options.bottom="y"===this.options.direction||"all"===this.options.direction||null),this.parseUnderflow(),this.update()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"none"===t?this.noUnderflow=!0:"center"===t?(this.underflowX=this.underflowY=0,this.noUnderflow=!1):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0,this.noUnderflow=!1)}move(){return this.update(),!1}update(){if(this.paused)return;const t={x:this.parent.x,y:this.parent.y},e=this.parent.plugins.decelerate||{};if(null!==this.options.left||null!==this.options.right){let i=!1;if(this.parent.screenWorldWidth<this.parent.screenWidth){if(!this.noUnderflow)switch(this.underflowX){case-1:0!==this.parent.x&&(this.parent.x=0,i=!0);break;case 1:this.parent.x!==this.parent.screenWidth-this.parent.screenWorldWidth&&(this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth,i=!0);break;default:this.parent.x!==(this.parent.screenWidth-this.parent.screenWorldWidth)/2&&(this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2,i=!0)}}else null!==this.options.left&&this.parent.left<(!0===this.options.left?0:this.options.left)&&(this.parent.x=-(!0===this.options.left?0:this.options.left)*this.parent.scale.x,e.x=0,i=!0),null!==this.options.right&&this.parent.right>(!0===this.options.right?this.parent.worldWidth:this.options.right)&&(this.parent.x=-(!0===this.options.right?this.parent.worldWidth:this.options.right)*this.parent.scale.x+this.parent.screenWidth,e.x=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-x"})}if(null!==this.options.top||null!==this.options.bottom){let i=!1;if(this.parent.screenWorldHeight<this.parent.screenHeight){if(!this.noUnderflow)switch(this.underflowY){case-1:0!==this.parent.y&&(this.parent.y=0,i=!0);break;case 1:this.parent.y!==this.parent.screenHeight-this.parent.screenWorldHeight&&(this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight,i=!0);break;default:this.parent.y!==(this.parent.screenHeight-this.parent.screenWorldHeight)/2&&(this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2,i=!0)}}else null!==this.options.top&&this.parent.top<(!0===this.options.top?0:this.options.top)&&(this.parent.y=-(!0===this.options.top?0:this.options.top)*this.parent.scale.y,e.y=0,i=!0),null!==this.options.bottom&&this.parent.bottom>(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)&&(this.parent.y=-(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)*this.parent.scale.y+this.parent.screenHeight,e.y=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-y"})}}}const d={minWidth:null,minHeight:null,maxWidth:null,maxHeight:null};class u extends h{constructor(t,e={}){super(t),this.options=Object.assign({},d,e),this.clamp()}resize(){this.clamp()}clamp(){if(this.paused)return;let t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight;if(null!==this.options.minWidth&&t<this.options.minWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.minWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxWidth&&t>this.options.maxWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.maxWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.minHeight&&e<this.options.minHeight){const i=this.parent.scale.y;this.parent.fitHeight(this.options.minHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxHeight&&e>this.options.maxHeight){const t=this.parent.scale.y;this.parent.fitHeight(this.options.maxHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/t,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}}}const g={friction:.95,bounce:.8,minSpeed:.01};class m extends h{constructor(t,e={}){super(t),this.options=Object.assign({},g,e),this.saved=[],this.reset(),this.parent.on("moved",t=>this.moved(t))}destroy(){this.parent}down(){this.saved=[],this.x=this.y=!1}isActive(){return this.x||this.y}move(){if(this.paused)return;const t=this.parent.input.count();(1===t||t>1&&!this.parent.plugins.get("pinch"))&&(this.saved.push({x:this.parent.x,y:this.parent.y,time:performance.now()}),this.saved.length>60&&this.saved.splice(0,30))}moved(t){if(this.saved.length){const e=this.saved[this.saved.length-1];"clamp-x"===t.type?e.x===t.original.x&&(e.x=this.parent.x):"clamp-y"===t.type&&e.y===t.original.y&&(e.y=this.parent.y)}}up(){if(0===this.parent.input.count()&&this.saved.length){const t=performance.now();for(let e of this.saved)if(e.time>=t-100){const i=t-e.time;this.x=(this.parent.x-e.x)/i,this.y=(this.parent.y-e.y)/i,this.percentChangeX=this.percentChangeY=this.options.friction;break}}}activate(t){void 0!==(t=t||{}).x&&(this.x=t.x,this.percentChangeX=this.options.friction),void 0!==t.y&&(this.y=t.y,this.percentChangeY=this.options.friction)}update(t){if(this.paused)return;let e;this.x&&(this.parent.x+=this.x*t,this.x*=this.percentChangeX,Math.abs(this.x)<this.minSpeed&&(this.x=0),e=!0),this.y&&(this.parent.y+=this.y*t,this.y*=this.percentChangeY,Math.abs(this.y)<this.minSpeed&&(this.y=0),e=!0),e&&this.parent.emit("moved",{viewport:this.parent,type:"decelerate"})}reset(){this.x=this.y=null}}var w="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f=function(t,e){return t(e={exports:{}},e.exports),e.exports}(function(t,e){(function(){var e;(function(e){t.exports=e})(e={linear:function(t,e,i,s){return i*t/s+e},easeInQuad:function(t,e,i,s){return i*(t/=s)*t+e},easeOutQuad:function(t,e,i,s){return-i*(t/=s)*(t-2)+e},easeInOutQuad:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t+e:-i/2*(--t*(t-2)-1)+e},easeInCubic:function(t,e,i,s){return i*(t/=s)*t*t+e},easeOutCubic:function(t,e,i,s){return i*((t=t/s-1)*t*t+1)+e},easeInOutCubic:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t+e:i/2*((t-=2)*t*t+2)+e},easeInQuart:function(t,e,i,s){return i*(t/=s)*t*t*t+e},easeOutQuart:function(t,e,i,s){return-i*((t=t/s-1)*t*t*t-1)+e},easeInOutQuart:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t+e:-i/2*((t-=2)*t*t*t-2)+e},easeInQuint:function(t,e,i,s){return i*(t/=s)*t*t*t*t+e},easeOutQuint:function(t,e,i,s){return i*((t=t/s-1)*t*t*t*t+1)+e},easeInOutQuint:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t*t+e:i/2*((t-=2)*t*t*t*t+2)+e},easeInSine:function(t,e,i,s){return-i*Math.cos(t/s*(Math.PI/2))+i+e},easeOutSine:function(t,e,i,s){return i*Math.sin(t/s*(Math.PI/2))+e},easeInOutSine:function(t,e,i,s){return-i/2*(Math.cos(Math.PI*t/s)-1)+e},easeInExpo:function(t,e,i,s){return 0===t?e:i*Math.pow(2,10*(t/s-1))+e},easeOutExpo:function(t,e,i,s){return t===s?e+i:i*(1-Math.pow(2,-10*t/s))+e},easeInOutExpo:function(t,e,i,s){return(t/=s/2)<1?i/2*Math.pow(2,10*(t-1))+e:i/2*(2-Math.pow(2,-10*--t))+e},easeInCirc:function(t,e,i,s){return-i*(Math.sqrt(1-(t/=s)*t)-1)+e},easeOutCirc:function(t,e,i,s){return i*Math.sqrt(1-(t=t/s-1)*t)+e},easeInOutCirc:function(t,e,i,s){return(t/=s/2)<1?-i/2*(Math.sqrt(1-t*t)-1)+e:i/2*(Math.sqrt(1-(t-=2)*t)+1)+e},easeInElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),-n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)+e},easeOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),n*Math.pow(2,-10*t)*Math.sin((t*s-o)*(2*Math.PI)/h)+i+e},easeInOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s/2),(h=0)||(h=s*(.3*1.5)),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),t<1?n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*-.5+e:n*Math.pow(2,-10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*.5+i+e},easeInBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*(t/=s)*t*((n+1)*t-n)+e},easeOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*((t=t/s-1)*t*((n+1)*t+n)+1)+e},easeInOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),(t/=s/2)<1?i/2*(t*t*((1+(n*=1.525))*t-n))+e:i/2*((t-=2)*t*((1+(n*=1.525))*t+n)+2)+e},easeInBounce:function(t,i,s,n){return s-e.easeOutBounce(n-t,0,s,n)+i},easeOutBounce:function(t,e,i,s){return(t/=s)<1/2.75?i*(7.5625*t*t)+e:t<2/2.75?i*(7.5625*(t-=1.5/2.75)*t+.75)+e:t<2.5/2.75?i*(7.5625*(t-=2.25/2.75)*t+.9375)+e:i*(7.5625*(t-=2.625/2.75)*t+.984375)+e},easeInOutBounce:function(t,i,s,n){return t<n/2?.5*e.easeInBounce(2*t,0,s,n)+i:.5*e.easeOutBounce(2*t-n,0,s,n)+.5*s+i}})}).call(w)});function y(t,e){return t?"function"==typeof t?t:"string"==typeof t?f[t]:void 0:f[e]}const x={sides:"all",friction:.5,time:150,ease:"easeInOutSine",underflow:"center"};class v extends h{constructor(t,e={}){super(t),this.options=Object.assign({},x,e),this.ease=y(this.options.ease,"easeInOutSine"),this.options.sides&&("all"===this.options.sides?this.top=this.bottom=this.left=this.right=!0:"horizontal"===this.options.sides?this.right=this.left=!0:"vertical"===this.options.sides?this.top=this.bottom=!0:(this.top=-1!==this.options.sides.indexOf("top"),this.bottom=-1!==this.options.sides.indexOf("bottom"),this.left=-1!==this.options.sides.indexOf("left"),this.right=-1!==this.options.sides.indexOf("right"))),this.parseUnderflow(),this.last={},this.reset()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}isActive(){return null!==this.toX||null!==this.toY}down(){this.toX=this.toY=null}up(){this.bounce()}update(t){if(!this.paused){if(this.bounce(),this.toX){const e=this.toX;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-x"}),e.time>=this.options.time?(this.parent.x=e.end,this.toX=null,this.parent.emit("bounce-x-end",this.parent)):this.parent.x=this.ease(e.time,e.start,e.delta,this.options.time)}if(this.toY){const e=this.toY;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-y"}),e.time>=this.options.time?(this.parent.y=e.end,this.toY=null,this.parent.emit("bounce-y-end",this.parent)):this.parent.y=this.ease(e.time,e.start,e.delta,this.options.time)}}}calcUnderflowX(){let t;switch(this.underflowX){case-1:t=0;break;case 1:t=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:t=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}return t}calcUnderflowY(){let t;switch(this.underflowY){case-1:t=0;break;case 1:t=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:t=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}return t}bounce(){if(this.paused)return;let t,e=this.parent.plugins.get("decelerate");e&&(e.x||e.y)&&(e.x&&e.percentChangeX===e.options.friction||e.y&&e.percentChangeY===e.options.friction)&&(((t=this.parent.OOB()).left&&this.left||t.right&&this.right)&&(e.percentChangeX=this.options.friction),(t.top&&this.top||t.bottom&&this.bottom)&&(e.percentChangeY=this.options.friction));const i=this.parent.plugins.get("drag")||{},s=this.parent.plugins.get("pinch")||{};if(e=e||{},!(i.active||s.active||this.toX&&this.toY||e.x&&e.y)){const i=(t=t||this.parent.OOB()).cornerPoint;if(!this.toX&&!e.x){let e=null;t.left&&this.left?e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():0:t.right&&this.right&&(e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-i.x),null!==e&&this.parent.x!==e&&(this.toX={time:0,start:this.parent.x,delta:e-this.parent.x,end:e},this.parent.emit("bounce-x-start",this.parent))}if(!this.toY&&!e.y){let e=null;t.top&&this.top?e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():0:t.bottom&&this.bottom&&(e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-i.y),null!==e&&this.parent.y!==e&&(this.toY={time:0,start:this.parent.y,delta:e-this.parent.y,end:e},this.parent.emit("bounce-y-start",this.parent))}}}reset(){this.toX=this.toY=null}}const b={topLeft:!1,friction:.8,time:1e3,ease:"easeInOutSine",interrupt:!0,removeOnComplete:!1,removeOnInterrupt:!1,forceStart:!1};class W extends h{constructor(t,e,i,s={}){super(t),this.options=Object.assign({},b,s),this.ease=y(s.ease,"easeInOutSine"),this.x=e,this.y=i,this.options.forceStart&&this.startEase()}snapStart(){this.percent=0,this.snapping={time:0};const t=this.options.topLeft?this.parent.corner:this.parent.center;this.deltaX=this.x-t.x,this.deltaY=this.y-t.y,this.startX=t.x,this.startY=t.y,this.parent.emit("snap-start",this.parent)}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap"):this.options.interrupt&&(this.snapping=null)}up(){if(0===this.parent.input.count()){const t=this.parent.plugins.get("decelerate");t&&(t.x||t.y)&&(t.percentChangeX=t.percentChangeY=this.options.friction)}}update(t){if(!(this.paused||this.options.interrupt&&0!==this.parent.input.count()))if(this.snapping){const e=this.snapping;let i,s,n;if(e.time+=t,e.time>this.options.time)i=!0,s=this.startX+this.deltaX,n=this.startY+this.deltaY;else{const t=this.ease(e.time,0,1,this.options.time);s=this.startX+this.deltaX*t,n=this.startY+this.deltaY*t}this.options.topLeft?this.parent.moveCorner(s,n):this.parent.moveCenter(s,n),this.parent.emit("moved",{viewport:this.parent,type:"snap"}),i&&(this.options.removeOnComplete&&this.parent.plugins.remove("snap"),this.parent.emit("snap-end",this.parent),this.snapping=null)}else{const t=this.options.topLeft?this.parent.corner:this.parent.center;t.x===this.x&&t.y===this.y||this.snapStart()}}}const H={width:0,height:0,time:1e3,ease:"easeInOutSine",center:null,interrupt:!0,removeOnComplete:!1,removeOnInterrupts:!1,forceStart:!1,noMove:!1};class M extends h{constructor(t,e={}){super(t),this.options=Object.assign({},H,e),this.options.width>0&&(this.x_scale=t.screenWidth/this.options.width),this.options.height>0&&(this.y_scale=t.screenHeight/this.options.height),this.xIndependent=!!this.x_scale,this.yIndependent=!!this.y_scale,this.x_scale=this.xIndependent?this.x_scale:this.y_scale,this.y_scale=this.yIndependent?this.y_scale:this.x_scale,0===this.options.time?(t.container.scale.x=this.x_scale,t.container.scale.y=this.y_scale,this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom")):e.forceStart&&this.createSnapping()}createSnapping(){const t=this.parent.scale;this.snapping={time:0,startX:t.x,startY:t.y,deltaX:this.x_scale-t.x,deltaY:this.y_scale-t.y},this.parent.emit("snap-zoom-start",this.parent)}resize(){this.snapping=null,this.options.width>0&&(this.x_scale=this.parent._screenWidth/this.options.width),this.options.height>0&&(this.y_scale=this.parent._screenHeight/this.options.height),this.x_scale=this.xIndependent?this.x_scale:this.y_scale,this.y_scale=this.yIndependent?this.y_scale:this.x_scale}reset(){this.snapping=null}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap-zoom")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap-zoom"):this.options.interrupt&&(this.snapping=null)}update(t){if(this.paused)return;if(this.options.interrupt&&0!==this.parent.input.count())return;let e;if(this.options.center||this.options.noMove||(e=this.parent.center),this.snapping){if(this.snapping){const i=this.snapping;if(i.time+=t,i.time>=this.options.time)this.parent.scale.set(this.x_scale,this.y_scale),this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom"),this.parent.emit("snap-zoom-end",this.parent),this.snapping=null;else{const t=this.snapping;this.parent.scale.x=y(t.time,t.startX,t.deltaX,this.options.time),this.parent.scale.y=y(t.time,t.startY,t.deltaY,this.options.time)}const s=this.parent.plugins.get("clamp-zoom");s&&s.clamp(),this.options.noMove||(this.options.center?this.parent.moveCenter(this.options.center):this.parent.moveCenter(e))}}else this.parent.scale.x===this.x_scale&&this.parent.scale.y===this.y_scale||this.createSnapping()}resume(){this.snapping=null,super.resume()}}const O={speed:0,acceleration:null,radius:null};class z extends h{constructor(t,e,i={}){super(t),this.target=e,this.options=Object.assign({},O,i),this.velocity={x:0,y:0}}update(t){if(this.paused)return;const e=this.parent.center;let i=this.target.x,s=this.target.y;if(this.options.radius){if(!(Math.sqrt(Math.pow(this.target.y-e.y,2)+Math.pow(this.target.x-e.x,2))>this.options.radius))return;{const t=Math.atan2(this.target.y-e.y,this.target.x-e.x);i=this.target.x-Math.cos(t)*this.options.radius,s=this.target.y-Math.sin(t)*this.options.radius}}const n=i-e.x,h=s-e.y;if(n||h)if(this.options.speed)if(this.options.acceleration){const o=Math.atan2(s-e.y,i-e.x),r=Math.sqrt(Math.pow(n,2)+Math.pow(h,2));if(r){const a=(Math.pow(this.velocity.x,2)+Math.pow(this.velocity.y,2))/(2*this.options.acceleration);this.velocity=r>a?{x:Math.min(this.velocity.x+this.options.acceleration*t,this.options.speed),y:Math.min(this.velocity.y+this.options.acceleration*t,this.options.speed)}:{x:Math.max(this.velocity.x-this.options.acceleration*this.options.speed,0),y:Math.max(this.velocity.y-this.options.acceleration*this.options.speed,0)};const p=Math.cos(o)*this.velocity.x,l=Math.sin(o)*this.velocity.y,c=Math.abs(p)>Math.abs(n)?i:e.x+p,d=Math.abs(l)>Math.abs(h)?s:e.y+l;this.parent.moveCenter(c,d),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}else{const t=Math.atan2(s-e.y,i-e.x),o=Math.cos(t)*this.options.speed,r=Math.sin(t)*this.options.speed,a=Math.abs(o)>Math.abs(n)?i:e.x+o,p=Math.abs(r)>Math.abs(h)?s:e.y+r;this.parent.moveCenter(a,p),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}else this.parent.moveCenter(i,s),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}const C={percent:.1,smooth:!1,interrupt:!0,reverse:!1,center:null};class I extends h{constructor(t,e={}){super(t),this.options=Object.assign({},C,e)}down(){this.options.interrupt&&(this.smoothing=null)}update(){if(this.smoothing){const t=this.smoothingCenter,e=this.smoothing;let i;this.options.center||(i=this.parent.toLocal(t)),this.parent.scale.x+=e.x,this.parent.scale.y+=e.y,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const e=this.parent.toGlobal(i);this.parent.x+=t.x-e.x,this.parent.y+=t.y-e.y}this.smoothingCount++,this.smoothingCount>=this.options.smooth&&(this.smoothing=null)}}wheel(t){if(this.paused)return;let e=this.parent.input.getPointerPosition(t);const i=(this.options.reverse?-1:1)*-t.deltaY*(t.deltaMode?120:1)/500,s=Math.pow(2,(1+this.options.percent)*i);if(this.options.smooth){const t={x:this.smoothing?this.smoothing.x*(this.options.smooth-this.smoothingCount):0,y:this.smoothing?this.smoothing.y*(this.options.smooth-this.smoothingCount):0};this.smoothing={x:((this.parent.scale.x+t.x)*s-this.parent.scale.x)/this.options.smooth,y:((this.parent.scale.y+t.y)*s-this.parent.scale.y)/this.options.smooth},this.smoothingCount=0,this.smoothingCenter=e}else{let t;this.options.center||(t=this.parent.toLocal(e)),this.parent.scale.x*=s,this.parent.scale.y*=s,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const i=this.parent.plugins.get("clamp-zoom");if(i&&i.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y}}this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.emit("wheel",{wheel:{dx:t.deltaX,dy:t.deltaY,dz:t.deltaZ},event:t,viewport:this.parent}),this.parent.options.passiveWheel||t.preventDefault()}}const _={radius:null,distance:null,top:null,bottom:null,left:null,right:null,speed:8,reverse:!1,noDecelerate:!1,linear:!1,allowButtons:!1};class S extends h{constructor(t,e={}){super(t),this.options=Object.assign({},_,e),this.reverse=this.options.reverse?1:-1,this.radiusSquared=Math.pow(this.options.radius,2),this.resize()}resize(){const t=this.options.distance;null!==t?(this.left=t,this.top=t,this.right=window.innerWidth-t,this.bottom=window.innerHeight-t):this.radius||(this.left=this.options.left,this.top=this.options.top,this.right=null===this.options.right?null:window.innerWidth-this.options.right,this.bottom=null===this.options.bottom?null:window.innerHeight-this.options.bottom)}down(){this.options.allowButtons||(this.horizontal=this.vertical=null)}move(t){if("mouse"!==t.data.pointerType&&1!==t.data.identifier||!this.options.allowButtons&&0!==t.data.buttons)return;const e=t.data.global.x,i=t.data.global.y;if(this.radiusSquared){const t=this.parent.toScreen(this.parent.center);if(Math.pow(t.x-e,2)+Math.pow(t.y-i,2)>=this.radiusSquared){const s=Math.atan2(t.y-i,t.x-e);this.options.linear?(this.horizontal=Math.round(Math.cos(s))*this.options.speed*this.reverse*.06,this.vertical=Math.round(Math.sin(s))*this.options.speed*this.reverse*.06):(this.horizontal=Math.cos(s)*this.options.speed*this.reverse*.06,this.vertical=Math.sin(s)*this.options.speed*this.reverse*.06)}else this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=0}else null!==this.left&&e<this.left?this.horizontal=1*this.reverse*this.options.speed*.06:null!==this.right&&e>this.right?this.horizontal=-1*this.reverse*this.options.speed*.06:(this.decelerateHorizontal(),this.horizontal=0),null!==this.top&&i<this.top?this.vertical=1*this.reverse*this.options.speed*.06:null!==this.bottom&&i>this.bottom?this.vertical=-1*this.reverse*this.options.speed*.06:(this.decelerateVertical(),this.vertical=0)}decelerateHorizontal(){const t=this.parent.plugins.get("decelerate");this.horizontal&&t&&!this.options.noDecelerate&&t.activate({x:this.horizontal*this.options.speed*this.reverse/(1e3/60)})}decelerateVertical(){const t=this.parent.plugins.get("decelerate");this.vertical&&t&&!this.options.noDecelerate&&t.activate({y:this.vertical*this.options.speed*this.reverse/(1e3/60)})}up(){this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=null}update(){if(!this.paused&&(this.horizontal||this.vertical)){const t=this.parent.center;this.horizontal&&(t.x+=this.horizontal*this.options.speed),this.vertical&&(t.y+=this.vertical*this.options.speed),this.parent.moveCenter(t),this.parent.emit("moved",{viewport:this.parent,type:"mouse-edges"})}}}const k={screenWidth:window.innerWidth,screenHeight:window.innerHeight,worldWidth:null,worldHeight:null,threshold:5,passiveWheel:!0,stopPropagation:!1,forceHitArea:null,noTicker:!1,interaction:null,noOnContextMenu:!1};t.Plugin=h,t.Viewport=class extends e.Container{constructor(t={}){if(super(),this.options=Object.assign({},k,t),t.ticker)this.options.ticker=t.ticker;else{let i;const s=e;i=parseInt(/^(\d+)\./.exec(e.VERSION)[1])<5?s.ticker.shared:s.Ticker.shared,this.options.ticker=t.ticker||i}this.screenWidth=this.options.screenWidth,this.screenHeight=this.options.screenHeight,this._worldWidth=this.options.worldWidth,this._worldHeight=this.options.worldHeight,this.forceHitArea=this.options.forceHitArea,this.threshold=this.options.threshold,this.options.divWheel=this.options.divWheel||document.body,this.options.noOnContextMenu||(this.options.divWheel.oncontextmenu=t=>t.preventDefault()),this.options.noTicker||(this.tickerFunction=()=>this.update(this.options.ticker.elapsedMS),this.options.ticker.add(this.tickerFunction)),this.input=new i(this),this.plugins=new n(this)}destroy(t){this.options.noTicker||this.options.ticker.remove(this.tickerFunction),this.input.destroy(),super.destroy(t)}update(t){this.pause||(this.plugins.update(t),this.lastViewport&&(this.lastViewport.x!==this.x||this.lastViewport.y!==this.y?this.moving=!0:this.moving&&(this.emit("moved-end",this),this.moving=!1),this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y?this.zooming=!0:this.zooming&&(this.emit("zoomed-end",this),this.zooming=!1)),this.forceHitArea||(this._hitAreaDefault=new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight),this.hitArea=this._hitAreaDefault),this._dirty=this._dirty||!this.lastViewport||this.lastViewport.x!==this.x||this.lastViewport.y!==this.y||this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y,this.lastViewport={x:this.x,y:this.y,scaleX:this.scale.x,scaleY:this.scale.y},this.emit("frame-end",this))}resize(t=window.innerWidth,e=window.innerHeight,i,s){this.screenWidth=t,this.screenHeight=e,void 0!==i&&(this._worldWidth=i),void 0!==s&&(this._worldHeight=s),this.plugins.resize()}get worldWidth(){return this._worldWidth?this._worldWidth:this.width/this.scale.x}set worldWidth(t){this._worldWidth=t,this.plugins.resize()}get worldHeight(){return this._worldHeight?this._worldHeight:this.height/this.scale.y}set worldHeight(t){this._worldHeight=t,this.plugins.resize()}getVisibleBounds(){return new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight)}toWorld(t,i){return 2===arguments.length?this.toLocal(new e.Point(t,i)):this.toLocal(t)}toScreen(t,i){return 2===arguments.length?this.toGlobal(new e.Point(t,i)):this.toGlobal(t)}get worldScreenWidth(){return this.screenWidth/this.scale.x}get worldScreenHeight(){return this.screenHeight/this.scale.y}get screenWorldWidth(){return this.worldWidth*this.scale.x}get screenWorldHeight(){return this.worldHeight*this.scale.y}get center(){return new e.Point(this.worldScreenWidth/2-this.x/this.scale.x,this.worldScreenHeight/2-this.y/this.scale.y)}set center(t){this.moveCenter(t)}moveCenter(){let t,e;return isNaN(arguments[0])?(t=arguments[0].x,e=arguments[0].y):(t=arguments[0],e=arguments[1]),this.position.set((this.worldScreenWidth/2-t)*this.scale.x,(this.worldScreenHeight/2-e)*this.scale.y),this.plugins.reset(),this.dirty=!0,this}get corner(){return new e.Point(-this.x/this.scale.x,-this.y/this.scale.y)}set corner(t){this.moveCorner(t)}moveCorner(t,e){return 1===arguments.length?this.position.set(-t.x*this.scale.x,-t.y*this.scale.y):this.position.set(-t*this.scale.x,-e*this.scale.y),this.plugins.reset(),this}fitWidth(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.x=this.screenWidth/t,i&&(this.scale.y=this.scale.x);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitHeight(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.y=this.screenHeight/t,i&&(this.scale.x=this.scale.y);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitWorld(t){let e;t&&(e=this.center),this.scale.x=this.screenWidth/this.worldWidth,this.scale.y=this.screenHeight/this.worldHeight,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const i=this.plugins.get("clamp-zoom");return i&&i.clamp(),t&&this.moveCenter(e),this}fit(t,e=this.worldWidth,i=this.worldHeight){let s;t&&(s=this.center),this.scale.x=this.screenWidth/e,this.scale.y=this.screenHeight/i,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const n=this.plugins.get("clamp-zoom");return n&&n.clamp(),t&&this.moveCenter(s),this}setZoom(t,e){let i;e&&(i=this.center),this.scale.set(t);const s=this.plugins.get("clamp-zoom");return s&&s.clamp(),e&&this.moveCenter(i),this}zoomPercent(t,e){return this.setZoom(this.scale.x+this.scale.x*t,e)}zoom(t,e){return this.fitWidth(t+this.worldScreenWidth,e),this}snapZoom(t){return this.plugins.add("snap-zoom",new M(this,t)),this}OOB(){return{left:this.left<0,right:this.right>this._worldWidth,top:this.top<0,bottom:this.bottom>this._worldHeight,cornerPoint:new e.Point(this._worldWidth*this.scale.x-this.screenWidth,this._worldHeight*this.scale.y-this.screenHeight)}}get right(){return-this.x/this.scale.x+this.worldScreenWidth}set right(t){this.x=-t*this.scale.x+this.screenWidth,this.plugins.reset()}get left(){return-this.x/this.scale.x}set left(t){this.x=-t*this.scale.x,this.plugins.reset()}get top(){return-this.y/this.scale.y}set top(t){this.y=-t*this.scale.y,this.plugins.reset()}get bottom(){return-this.y/this.scale.y+this.worldScreenHeight}set bottom(t){this.y=-t*this.scale.y+this.screenHeight,this.plugins.reset()}get dirty(){return this._dirty}set dirty(t){this._dirty=t}get forceHitArea(){return this._forceHitArea}set forceHitArea(t){t?(this._forceHitArea=t,this.hitArea=t):(this._forceHitArea=null,this.hitArea=new e.Rectangle(0,0,this.worldWidth,this.worldHeight))}drag(t){return this.plugins.add("drag",new r(this,t)),this}clamp(t){return this.plugins.add("clamp",new c(this,t)),this}decelerate(t){return this.plugins.add("decelerate",new m(this,t)),this}bounce(t){return this.plugins.add("bounce",new v(this,t)),this}pinch(t){return this.plugins.add("pinch",new p(this,t)),this}snap(t,e,i){return this.plugins.add("snap",new W(this,t,e,i)),this}follow(t,e){return this.plugins.add("follow",new z(this,t,e)),this}wheel(t){return this.plugins.add("wheel",new I(this,t)),this}clampZoom(t){return this.plugins.add("clamp-zoom",new u(this,t)),this}mouseEdges(t){return this.plugins.add("mouse-edges",new S(this,t)),this}get pause(){return this._pause}set pause(t){this._pause=t,this.lastViewport=null,this.moving=!1,this.zooming=!1,t&&this.input.pause()}ensureVisible(t,e,i,s){t<this.left?this.left=t:t+i>this.right&&(this.right=t+i),e<this.top?this.top=e:e+s>this.bottom&&(this.bottom=e+s)}},Object.defineProperty(t,"__esModule",{value:!0})});
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"pixi.js":52}],10:[function(require,module,exports){
+},{"pixi.js":44}],2:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const Viewport = require('../../../').Viewport
 
@@ -1768,7 +35,7 @@ window.onload = () =>
         .pinch()
         .decelerate()
 }
-},{"../../../":9,"pixi.js":52}],11:[function(require,module,exports){
+},{"../../../":1,"pixi.js":44}],3:[function(require,module,exports){
 /*!
  * @pixi/accessibility - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -2417,7 +684,7 @@ exports.AccessibilityManager = AccessibilityManager;
 exports.accessibleTarget = accessibleTarget;
 
 
-},{"@pixi/display":15,"@pixi/utils":44}],12:[function(require,module,exports){
+},{"@pixi/display":7,"@pixi/utils":36}],4:[function(require,module,exports){
 /*!
  * @pixi/app - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -2652,7 +919,7 @@ Application.registerPlugin(ResizePlugin);
 exports.Application = Application;
 
 
-},{"@pixi/core":14,"@pixi/display":15}],13:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/display":7}],5:[function(require,module,exports){
 /*!
  * @pixi/constants - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -3002,7 +1269,7 @@ exports.TYPES = TYPES;
 exports.WRAP_MODES = WRAP_MODES;
 
 
-},{}],14:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*!
  * @pixi/core - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -14683,7 +12950,7 @@ exports.resources = index;
 exports.systems = systems;
 
 
-},{"@pixi/constants":13,"@pixi/display":15,"@pixi/math":26,"@pixi/runner":35,"@pixi/settings":36,"@pixi/ticker":43,"@pixi/utils":44}],15:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/display":7,"@pixi/math":18,"@pixi/runner":27,"@pixi/settings":28,"@pixi/ticker":35,"@pixi/utils":36}],7:[function(require,module,exports){
 /*!
  * @pixi/display - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -16484,7 +14751,7 @@ exports.Container = Container;
 exports.DisplayObject = DisplayObject;
 
 
-},{"@pixi/math":26,"@pixi/settings":36,"@pixi/utils":44}],16:[function(require,module,exports){
+},{"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],8:[function(require,module,exports){
 /*!
  * @pixi/extract - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -16757,7 +15024,7 @@ Extract.prototype.destroy = function destroy ()
 exports.Extract = Extract;
 
 
-},{"@pixi/core":14,"@pixi/math":26,"@pixi/utils":44}],17:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/math":18,"@pixi/utils":36}],9:[function(require,module,exports){
 /*!
  * @pixi/filter-alpha - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -16830,7 +15097,7 @@ var AlphaFilter = /*@__PURE__*/(function (Filter) {
 exports.AlphaFilter = AlphaFilter;
 
 
-},{"@pixi/core":14}],18:[function(require,module,exports){
+},{"@pixi/core":6}],10:[function(require,module,exports){
 /*!
  * @pixi/filter-blur - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -17266,7 +15533,7 @@ exports.BlurFilter = BlurFilter;
 exports.BlurFilterPass = BlurFilterPass;
 
 
-},{"@pixi/core":14,"@pixi/settings":36}],19:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/settings":28}],11:[function(require,module,exports){
 /*!
  * @pixi/filter-color-matrix - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -17873,7 +16140,7 @@ ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 exports.ColorMatrixFilter = ColorMatrixFilter;
 
 
-},{"@pixi/core":14}],20:[function(require,module,exports){
+},{"@pixi/core":6}],12:[function(require,module,exports){
 /*!
  * @pixi/filter-displacement - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -18000,7 +16267,7 @@ var DisplacementFilter = /*@__PURE__*/(function (Filter) {
 exports.DisplacementFilter = DisplacementFilter;
 
 
-},{"@pixi/core":14,"@pixi/math":26}],21:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/math":18}],13:[function(require,module,exports){
 /*!
  * @pixi/filter-fxaa - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -18046,7 +16313,7 @@ var FXAAFilter = /*@__PURE__*/(function (Filter) {
 exports.FXAAFilter = FXAAFilter;
 
 
-},{"@pixi/core":14}],22:[function(require,module,exports){
+},{"@pixi/core":6}],14:[function(require,module,exports){
 /*!
  * @pixi/filter-noise - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -18134,7 +16401,7 @@ var NoiseFilter = /*@__PURE__*/(function (Filter) {
 exports.NoiseFilter = NoiseFilter;
 
 
-},{"@pixi/core":14}],23:[function(require,module,exports){
+},{"@pixi/core":6}],15:[function(require,module,exports){
 /*!
  * @pixi/graphics - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -21547,7 +19814,7 @@ exports.GraphicsGeometry = GraphicsGeometry;
 exports.LineStyle = LineStyle;
 
 
-},{"@pixi/constants":13,"@pixi/core":14,"@pixi/display":15,"@pixi/math":26,"@pixi/utils":44}],24:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/utils":36}],16:[function(require,module,exports){
 /*!
  * @pixi/interaction - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -23929,7 +22196,7 @@ exports.InteractionTrackingData = InteractionTrackingData;
 exports.interactiveTarget = interactiveTarget;
 
 
-},{"@pixi/display":15,"@pixi/math":26,"@pixi/ticker":43,"@pixi/utils":44}],25:[function(require,module,exports){
+},{"@pixi/display":7,"@pixi/math":18,"@pixi/ticker":35,"@pixi/utils":36}],17:[function(require,module,exports){
 /*!
  * @pixi/loaders - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -25868,7 +24135,7 @@ exports.LoaderResource = LoaderResource;
 exports.TextureLoader = TextureLoader;
 
 
-},{"@pixi/core":14,"@pixi/utils":44,"resource-loader":57}],26:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/utils":36,"resource-loader":54}],18:[function(require,module,exports){
 /*!
  * @pixi/math - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -27707,7 +25974,7 @@ exports.SHAPES = SHAPES;
 exports.Transform = Transform;
 
 
-},{}],27:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /*!
  * @pixi/mesh-extras - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -28477,7 +26744,7 @@ exports.SimplePlane = SimplePlane;
 exports.SimpleRope = SimpleRope;
 
 
-},{"@pixi/core":14,"@pixi/mesh":28}],28:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/mesh":20}],20:[function(require,module,exports){
 /*!
  * @pixi/mesh - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -29271,7 +27538,7 @@ exports.MeshGeometry = MeshGeometry;
 exports.MeshMaterial = MeshMaterial;
 
 
-},{"@pixi/constants":13,"@pixi/core":14,"@pixi/display":15,"@pixi/math":26,"@pixi/settings":36,"@pixi/utils":44}],29:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],21:[function(require,module,exports){
 /*!
  * @pixi/mixin-cache-as-bitmap - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -29702,7 +27969,7 @@ display.DisplayObject.prototype._cacheAsBitmapDestroy = function _cacheAsBitmapD
 };
 
 
-},{"@pixi/core":14,"@pixi/display":15,"@pixi/math":26,"@pixi/settings":36,"@pixi/sprite":39,"@pixi/utils":44}],30:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],22:[function(require,module,exports){
 /*!
  * @pixi/mixin-get-child-by-name - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -29744,7 +28011,7 @@ display.Container.prototype.getChildByName = function getChildByName(name)
 };
 
 
-},{"@pixi/display":15}],31:[function(require,module,exports){
+},{"@pixi/display":7}],23:[function(require,module,exports){
 /*!
  * @pixi/mixin-get-global-position - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -29787,7 +28054,7 @@ display.DisplayObject.prototype.getGlobalPosition = function getGlobalPosition(p
 };
 
 
-},{"@pixi/display":15,"@pixi/math":26}],32:[function(require,module,exports){
+},{"@pixi/display":7,"@pixi/math":18}],24:[function(require,module,exports){
 /*!
  * @pixi/particles - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -30769,7 +29036,7 @@ exports.ParticleContainer = ParticleContainer;
 exports.ParticleRenderer = ParticleRenderer;
 
 
-},{"@pixi/constants":13,"@pixi/core":14,"@pixi/display":15,"@pixi/math":26,"@pixi/utils":44}],33:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/utils":36}],25:[function(require,module,exports){
 (function (global){
 /*!
  * @pixi/polyfill - v5.0.4
@@ -30938,7 +29205,7 @@ if (!window.Int32Array)
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"es6-promise-polyfill":46,"object-assign":50}],34:[function(require,module,exports){
+},{"es6-promise-polyfill":38,"object-assign":42}],26:[function(require,module,exports){
 /*!
  * @pixi/prepare - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -31668,7 +29935,7 @@ exports.Prepare = Prepare;
 exports.TimeLimiter = TimeLimiter;
 
 
-},{"@pixi/core":14,"@pixi/display":15,"@pixi/graphics":23,"@pixi/settings":36,"@pixi/text":42,"@pixi/ticker":43}],35:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/display":7,"@pixi/graphics":15,"@pixi/settings":28,"@pixi/text":34,"@pixi/ticker":35}],27:[function(require,module,exports){
 /*!
  * @pixi/runner - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -31868,7 +30135,7 @@ Runner.prototype.run = Runner.prototype.emit;
 exports.Runner = Runner;
 
 
-},{}],36:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*!
  * @pixi/settings - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -32180,7 +30447,7 @@ exports.isMobile = isMobile;
 exports.settings = settings;
 
 
-},{"ismobilejs":48}],37:[function(require,module,exports){
+},{"ismobilejs":40}],29:[function(require,module,exports){
 /*!
  * @pixi/sprite-animated - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -32641,7 +30908,7 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
 exports.AnimatedSprite = AnimatedSprite;
 
 
-},{"@pixi/core":14,"@pixi/sprite":39,"@pixi/ticker":43}],38:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/sprite":31,"@pixi/ticker":35}],30:[function(require,module,exports){
 /*!
  * @pixi/sprite-tiling - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -33151,7 +31418,7 @@ exports.TilingSprite = TilingSprite;
 exports.TilingSpriteRenderer = TilingSpriteRenderer;
 
 
-},{"@pixi/constants":13,"@pixi/core":14,"@pixi/math":26,"@pixi/sprite":39,"@pixi/utils":44}],39:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/core":6,"@pixi/math":18,"@pixi/sprite":31,"@pixi/utils":36}],31:[function(require,module,exports){
 /*!
  * @pixi/sprite - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -33817,7 +32084,7 @@ var Sprite = /*@__PURE__*/(function (Container) {
 exports.Sprite = Sprite;
 
 
-},{"@pixi/constants":13,"@pixi/core":14,"@pixi/display":15,"@pixi/math":26,"@pixi/settings":36,"@pixi/utils":44}],40:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],32:[function(require,module,exports){
 /*!
  * @pixi/spritesheet - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -34238,7 +32505,7 @@ exports.Spritesheet = Spritesheet;
 exports.SpritesheetLoader = SpritesheetLoader;
 
 
-},{"@pixi/core":14,"@pixi/loaders":25,"@pixi/math":26,"@pixi/utils":44}],41:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/loaders":17,"@pixi/math":18,"@pixi/utils":36}],33:[function(require,module,exports){
 /*!
  * @pixi/text-bitmap - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -35079,7 +33346,7 @@ exports.BitmapFontLoader = BitmapFontLoader;
 exports.BitmapText = BitmapText;
 
 
-},{"@pixi/core":14,"@pixi/display":15,"@pixi/loaders":25,"@pixi/math":26,"@pixi/settings":36,"@pixi/sprite":39,"@pixi/utils":44}],42:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/display":7,"@pixi/loaders":17,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],34:[function(require,module,exports){
 /*!
  * @pixi/text - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -37337,7 +35604,7 @@ exports.TextMetrics = TextMetrics;
 exports.TextStyle = TextStyle;
 
 
-},{"@pixi/core":14,"@pixi/math":26,"@pixi/settings":36,"@pixi/sprite":39,"@pixi/utils":44}],43:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],35:[function(require,module,exports){
 /*!
  * @pixi/ticker - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -38287,7 +36554,7 @@ exports.TickerPlugin = TickerPlugin;
 exports.UPDATE_PRIORITY = UPDATE_PRIORITY;
 
 
-},{"@pixi/settings":36}],44:[function(require,module,exports){
+},{"@pixi/settings":28}],36:[function(require,module,exports){
 /*!
  * @pixi/utils - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -39292,7 +37559,7 @@ exports.trimCanvas = trimCanvas;
 exports.uid = uid;
 
 
-},{"@pixi/constants":13,"@pixi/settings":36,"earcut":45,"eventemitter3":47,"url":7}],45:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/settings":28,"earcut":37,"eventemitter3":39,"url":56}],37:[function(require,module,exports){
 'use strict';
 
 module.exports = earcut;
@@ -39944,7 +38211,7 @@ earcut.flatten = function (data) {
     return result;
 };
 
-},{}],46:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 (function (global,setImmediate){
 (function(global){
 
@@ -40294,7 +38561,7 @@ Promise.reject = function(reason){
 })(typeof window != 'undefined' ? window : typeof global != 'undefined' ? global : typeof self != 'undefined' ? self : this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
-},{"timers":6}],47:[function(require,module,exports){
+},{"timers":55}],39:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -40632,9 +38899,9 @@ if ('undefined' !== typeof module) {
   module.exports = EventEmitter;
 }
 
-},{}],48:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 !function(e){var n=/iPhone/i,t=/iPod/i,r=/iPad/i,a=/\bAndroid(?:.+)Mobile\b/i,p=/Android/i,l=/\bAndroid(?:.+)SD4930UR\b/i,b=/\bAndroid(?:.+)(?:KF[A-Z]{2,4})\b/i,f=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,c=/BlackBerry/i,s=/BB10/i,v=/Opera Mini/i,h=/\b(CriOS|Chrome)(?:.+)Mobile/i,w=/\Mobile(?:.+)Firefox\b/i;function m(e,i){return e.test(i)}function i(e){var i=e||("undefined"!=typeof navigator?navigator.userAgent:""),o=i.split("[FBAN");void 0!==o[1]&&(i=o[0]),void 0!==(o=i.split("Twitter"))[1]&&(i=o[0]);var d={apple:{phone:m(n,i)&&!m(f,i),ipod:m(t,i),tablet:!m(n,i)&&m(r,i)&&!m(f,i),device:(m(n,i)||m(t,i)||m(r,i))&&!m(f,i)},amazon:{phone:m(l,i),tablet:!m(l,i)&&m(b,i),device:m(l,i)||m(b,i)},android:{phone:!m(f,i)&&m(l,i)||!m(f,i)&&m(a,i),tablet:!m(f,i)&&!m(l,i)&&!m(a,i)&&(m(b,i)||m(p,i)),device:!m(f,i)&&(m(l,i)||m(b,i)||m(a,i)||m(p,i))},windows:{phone:m(f,i),tablet:m(u,i),device:m(f,i)||m(u,i)},other:{blackberry:m(c,i),blackberry10:m(s,i),opera:m(v,i),firefox:m(w,i),chrome:m(h,i),device:m(c,i)||m(s,i)||m(v,i)||m(w,i)||m(h,i)}};return d.any=d.apple.device||d.android.device||d.windows.device||d.other.device,d.phone=d.apple.phone||d.android.phone||d.windows.phone,d.tablet=d.apple.tablet||d.android.tablet||d.windows.tablet,d}"undefined"!=typeof module&&module.exports&&"undefined"==typeof window?module.exports=i:"undefined"!=typeof module&&module.exports&&"undefined"!=typeof window?module.exports=i():"function"==typeof define&&define.amd?define([],e.isMobile=i()):e.isMobile=i()}(this);
-},{}],49:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -40801,7 +39068,7 @@ MiniSignal.MiniSignalBinding = MiniSignalBinding;
 exports['default'] = MiniSignal;
 module.exports = exports['default'];
 
-},{}],50:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -40893,7 +39160,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],51:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 'use strict'
 
 module.exports = function parseURI (str, opts) {
@@ -40925,7 +39192,7 @@ module.exports = function parseURI (str, opts) {
   return uri
 }
 
-},{}],52:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 /*!
  * pixi.js - v5.0.4
  * Compiled Fri, 07 Jun 2019 17:17:49 UTC
@@ -42307,7 +40574,909 @@ exports.filters = filters;
 exports.useDeprecated = useDeprecated;
 
 
-},{"@pixi/accessibility":11,"@pixi/app":12,"@pixi/constants":13,"@pixi/core":14,"@pixi/display":15,"@pixi/extract":16,"@pixi/filter-alpha":17,"@pixi/filter-blur":18,"@pixi/filter-color-matrix":19,"@pixi/filter-displacement":20,"@pixi/filter-fxaa":21,"@pixi/filter-noise":22,"@pixi/graphics":23,"@pixi/interaction":24,"@pixi/loaders":25,"@pixi/math":26,"@pixi/mesh":28,"@pixi/mesh-extras":27,"@pixi/mixin-cache-as-bitmap":29,"@pixi/mixin-get-child-by-name":30,"@pixi/mixin-get-global-position":31,"@pixi/particles":32,"@pixi/polyfill":33,"@pixi/prepare":34,"@pixi/runner":35,"@pixi/settings":36,"@pixi/sprite":39,"@pixi/sprite-animated":37,"@pixi/sprite-tiling":38,"@pixi/spritesheet":40,"@pixi/text":42,"@pixi/text-bitmap":41,"@pixi/ticker":43,"@pixi/utils":44}],53:[function(require,module,exports){
+},{"@pixi/accessibility":3,"@pixi/app":4,"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/extract":8,"@pixi/filter-alpha":9,"@pixi/filter-blur":10,"@pixi/filter-color-matrix":11,"@pixi/filter-displacement":12,"@pixi/filter-fxaa":13,"@pixi/filter-noise":14,"@pixi/graphics":15,"@pixi/interaction":16,"@pixi/loaders":17,"@pixi/math":18,"@pixi/mesh":20,"@pixi/mesh-extras":19,"@pixi/mixin-cache-as-bitmap":21,"@pixi/mixin-get-child-by-name":22,"@pixi/mixin-get-global-position":23,"@pixi/particles":24,"@pixi/polyfill":25,"@pixi/prepare":26,"@pixi/runner":27,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/sprite-animated":29,"@pixi/sprite-tiling":30,"@pixi/spritesheet":32,"@pixi/text":34,"@pixi/text-bitmap":33,"@pixi/ticker":35,"@pixi/utils":36}],45:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],46:[function(require,module,exports){
+(function (global){
+/*! https://mths.be/punycode v1.4.1 by @mathias */
+;(function(root) {
+
+	/** Detect free variables */
+	var freeExports = typeof exports == 'object' && exports &&
+		!exports.nodeType && exports;
+	var freeModule = typeof module == 'object' && module &&
+		!module.nodeType && module;
+	var freeGlobal = typeof global == 'object' && global;
+	if (
+		freeGlobal.global === freeGlobal ||
+		freeGlobal.window === freeGlobal ||
+		freeGlobal.self === freeGlobal
+	) {
+		root = freeGlobal;
+	}
+
+	/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */
+	var punycode,
+
+	/** Highest positive signed 32-bit float value */
+	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
+
+	/** Bootstring parameters */
+	base = 36,
+	tMin = 1,
+	tMax = 26,
+	skew = 38,
+	damp = 700,
+	initialBias = 72,
+	initialN = 128, // 0x80
+	delimiter = '-', // '\x2D'
+
+	/** Regular expressions */
+	regexPunycode = /^xn--/,
+	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
+	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
+
+	/** Error messages */
+	errors = {
+		'overflow': 'Overflow: input needs wider integers to process',
+		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+		'invalid-input': 'Invalid input'
+	},
+
+	/** Convenience shortcuts */
+	baseMinusTMin = base - tMin,
+	floor = Math.floor,
+	stringFromCharCode = String.fromCharCode,
+
+	/** Temporary variable */
+	key;
+
+	/*--------------------------------------------------------------------------*/
+
+	/**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */
+	function error(type) {
+		throw new RangeError(errors[type]);
+	}
+
+	/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */
+	function map(array, fn) {
+		var length = array.length;
+		var result = [];
+		while (length--) {
+			result[length] = fn(array[length]);
+		}
+		return result;
+	}
+
+	/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings or email
+	 * addresses.
+	 * @private
+	 * @param {String} domain The domain name or email address.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */
+	function mapDomain(string, fn) {
+		var parts = string.split('@');
+		var result = '';
+		if (parts.length > 1) {
+			// In email addresses, only the domain name should be punycoded. Leave
+			// the local part (i.e. everything up to `@`) intact.
+			result = parts[0] + '@';
+			string = parts[1];
+		}
+		// Avoid `split(regex)` for IE8 compatibility. See #17.
+		string = string.replace(regexSeparators, '\x2E');
+		var labels = string.split('.');
+		var encoded = map(labels, fn).join('.');
+		return result + encoded;
+	}
+
+	/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */
+	function ucs2decode(string) {
+		var output = [],
+		    counter = 0,
+		    length = string.length,
+		    value,
+		    extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */
+	function ucs2encode(array) {
+		return map(array, function(value) {
+			var output = '';
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+			return output;
+		}).join('');
+	}
+
+	/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */
+	function basicToDigit(codePoint) {
+		if (codePoint - 48 < 10) {
+			return codePoint - 22;
+		}
+		if (codePoint - 65 < 26) {
+			return codePoint - 65;
+		}
+		if (codePoint - 97 < 26) {
+			return codePoint - 97;
+		}
+		return base;
+	}
+
+	/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */
+	function digitToBasic(digit, flag) {
+		//  0..25 map to ASCII a..z or A..Z
+		// 26..35 map to ASCII 0..9
+		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+	}
+
+	/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */
+	function adapt(delta, numPoints, firstTime) {
+		var k = 0;
+		delta = firstTime ? floor(delta / damp) : delta >> 1;
+		delta += floor(delta / numPoints);
+		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+			delta = floor(delta / baseMinusTMin);
+		}
+		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+	}
+
+	/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */
+	function decode(input) {
+		// Don't use UCS-2
+		var output = [],
+		    inputLength = input.length,
+		    out,
+		    i = 0,
+		    n = initialN,
+		    bias = initialBias,
+		    basic,
+		    j,
+		    index,
+		    oldi,
+		    w,
+		    k,
+		    digit,
+		    t,
+		    /** Cached calculation results */
+		    baseMinusT;
+
+		// Handle the basic code points: let `basic` be the number of input code
+		// points before the last delimiter, or `0` if there is none, then copy
+		// the first basic code points to the output.
+
+		basic = input.lastIndexOf(delimiter);
+		if (basic < 0) {
+			basic = 0;
+		}
+
+		for (j = 0; j < basic; ++j) {
+			// if it's not a basic code point
+			if (input.charCodeAt(j) >= 0x80) {
+				error('not-basic');
+			}
+			output.push(input.charCodeAt(j));
+		}
+
+		// Main decoding loop: start just after the last delimiter if any basic code
+		// points were copied; start at the beginning otherwise.
+
+		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+			// `index` is the index of the next character to be consumed.
+			// Decode a generalized variable-length integer into `delta`,
+			// which gets added to `i`. The overflow checking is easier
+			// if we increase `i` as we go, then subtract off its starting
+			// value at the end to obtain `delta`.
+			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+
+				if (index >= inputLength) {
+					error('invalid-input');
+				}
+
+				digit = basicToDigit(input.charCodeAt(index++));
+
+				if (digit >= base || digit > floor((maxInt - i) / w)) {
+					error('overflow');
+				}
+
+				i += digit * w;
+				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+				if (digit < t) {
+					break;
+				}
+
+				baseMinusT = base - t;
+				if (w > floor(maxInt / baseMinusT)) {
+					error('overflow');
+				}
+
+				w *= baseMinusT;
+
+			}
+
+			out = output.length + 1;
+			bias = adapt(i - oldi, out, oldi == 0);
+
+			// `i` was supposed to wrap around from `out` to `0`,
+			// incrementing `n` each time, so we'll fix that now:
+			if (floor(i / out) > maxInt - n) {
+				error('overflow');
+			}
+
+			n += floor(i / out);
+			i %= out;
+
+			// Insert `n` at position `i` of the output
+			output.splice(i++, 0, n);
+
+		}
+
+		return ucs2encode(output);
+	}
+
+	/**
+	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
+	 * Punycode string of ASCII-only symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */
+	function encode(input) {
+		var n,
+		    delta,
+		    handledCPCount,
+		    basicLength,
+		    bias,
+		    j,
+		    m,
+		    q,
+		    k,
+		    t,
+		    currentValue,
+		    output = [],
+		    /** `inputLength` will hold the number of code points in `input`. */
+		    inputLength,
+		    /** Cached calculation results */
+		    handledCPCountPlusOne,
+		    baseMinusT,
+		    qMinusT;
+
+		// Convert the input in UCS-2 to Unicode
+		input = ucs2decode(input);
+
+		// Cache the length
+		inputLength = input.length;
+
+		// Initialize the state
+		n = initialN;
+		delta = 0;
+		bias = initialBias;
+
+		// Handle the basic code points
+		for (j = 0; j < inputLength; ++j) {
+			currentValue = input[j];
+			if (currentValue < 0x80) {
+				output.push(stringFromCharCode(currentValue));
+			}
+		}
+
+		handledCPCount = basicLength = output.length;
+
+		// `handledCPCount` is the number of code points that have been handled;
+		// `basicLength` is the number of basic code points.
+
+		// Finish the basic string - if it is not empty - with a delimiter
+		if (basicLength) {
+			output.push(delimiter);
+		}
+
+		// Main encoding loop:
+		while (handledCPCount < inputLength) {
+
+			// All non-basic code points < n have been handled already. Find the next
+			// larger one:
+			for (m = maxInt, j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
+
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow
+			handledCPCountPlusOne = handledCPCount + 1;
+			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+				error('overflow');
+			}
+
+			delta += (m - n) * handledCPCountPlusOne;
+			n = m;
+
+			for (j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+
+				if (currentValue < n && ++delta > maxInt) {
+					error('overflow');
+				}
+
+				if (currentValue == n) {
+					// Represent delta as a generalized variable-length integer
+					for (q = delta, k = base; /* no condition */; k += base) {
+						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+						if (q < t) {
+							break;
+						}
+						qMinusT = q - t;
+						baseMinusT = base - t;
+						output.push(
+							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+						);
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+
+			++delta;
+			++n;
+
+		}
+		return output.join('');
+	}
+
+	/**
+	 * Converts a Punycode string representing a domain name or an email address
+	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+	 * it doesn't matter if you call it on a string that has already been
+	 * converted to Unicode.
+	 * @memberOf punycode
+	 * @param {String} input The Punycoded domain name or email address to
+	 * convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 */
+	function toUnicode(input) {
+		return mapDomain(input, function(string) {
+			return regexPunycode.test(string)
+				? decode(string.slice(4).toLowerCase())
+				: string;
+		});
+	}
+
+	/**
+	 * Converts a Unicode string representing a domain name or an email address to
+	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
+	 * i.e. it doesn't matter if you call it with a domain that's already in
+	 * ASCII.
+	 * @memberOf punycode
+	 * @param {String} input The domain name or email address to convert, as a
+	 * Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name or
+	 * email address.
+	 */
+	function toASCII(input) {
+		return mapDomain(input, function(string) {
+			return regexNonASCII.test(string)
+				? 'xn--' + encode(string)
+				: string;
+		});
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	/** Define the public API */
+	punycode = {
+		/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */
+		'version': '1.4.1',
+		/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */
+		'ucs2': {
+			'decode': ucs2decode,
+			'encode': ucs2encode
+		},
+		'decode': decode,
+		'encode': encode,
+		'toASCII': toASCII,
+		'toUnicode': toUnicode
+	};
+
+	/** Expose `punycode` */
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		typeof define == 'function' &&
+		typeof define.amd == 'object' &&
+		define.amd
+	) {
+		define('punycode', function() {
+			return punycode;
+		});
+	} else if (freeExports && freeModule) {
+		if (module.exports == freeExports) {
+			// in Node.js, io.js, or RingoJS v0.8.0+
+			freeModule.exports = punycode;
+		} else {
+			// in Narwhal or RingoJS v0.7.0-
+			for (key in punycode) {
+				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+			}
+		}
+	} else {
+		// in Rhino or a web browser
+		root.punycode = punycode;
+	}
+
+}(this));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],47:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+},{}],48:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+},{}],49:[function(require,module,exports){
+'use strict';
+
+exports.decode = exports.parse = require('./decode');
+exports.encode = exports.stringify = require('./encode');
+
+},{"./decode":47,"./encode":48}],50:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -43068,7 +42237,7 @@ Loader.use = function LoaderUseStatic(fn) {
     return Loader;
 };
 
-},{"./Resource":54,"./async":55,"mini-signals":49,"parse-uri":51}],54:[function(require,module,exports){
+},{"./Resource":51,"./async":52,"mini-signals":41,"parse-uri":43}],51:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44317,7 +43486,7 @@ if (typeof module !== 'undefined') {
     module.exports.default = Resource; // eslint-disable-line no-undef
 }
 
-},{"mini-signals":49,"parse-uri":51}],55:[function(require,module,exports){
+},{"mini-signals":41,"parse-uri":43}],52:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44539,7 +43708,7 @@ function queue(worker, concurrency) {
     return q;
 }
 
-},{}],56:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -44618,7 +43787,7 @@ if (typeof module !== 'undefined') {
     module.exports.default = encodeBinary; // eslint-disable-line no-undef
 }
 
-},{}],57:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 'use strict';
 
 // import Loader from './Loader';
@@ -44675,4 +43844,835 @@ module.exports = Loader;
 module.exports.Loader = Loader;
 module.exports.default = Loader;
 
-},{"./Loader":53,"./Resource":54,"./async":55,"./b64":56}]},{},[10]);
+},{"./Loader":50,"./Resource":51,"./async":52,"./b64":53}],55:[function(require,module,exports){
+(function (setImmediate,clearImmediate){
+var nextTick = require('process/browser.js').nextTick;
+var apply = Function.prototype.apply;
+var slice = Array.prototype.slice;
+var immediateIds = {};
+var nextImmediateId = 0;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) { timeout.close(); };
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(window, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// That's not how node.js implements it but the exposed api is the same.
+exports.setImmediate = typeof setImmediate === "function" ? setImmediate : function(fn) {
+  var id = nextImmediateId++;
+  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
+
+  immediateIds[id] = true;
+
+  nextTick(function onNextTick() {
+    if (immediateIds[id]) {
+      // fn.call() is faster so we optimize for the common use-case
+      // @see http://jsperf.com/call-apply-segu
+      if (args) {
+        fn.apply(null, args);
+      } else {
+        fn.call(null);
+      }
+      // Prevent ids from leaking
+      exports.clearImmediate(id);
+    }
+  });
+
+  return id;
+};
+
+exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
+  delete immediateIds[id];
+};
+}).call(this,require("timers").setImmediate,require("timers").clearImmediate)
+},{"process/browser.js":45,"timers":55}],56:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+'use strict';
+
+var punycode = require('punycode');
+var util = require('./util');
+
+exports.parse = urlParse;
+exports.resolve = urlResolve;
+exports.resolveObject = urlResolveObject;
+exports.format = urlFormat;
+
+exports.Url = Url;
+
+function Url() {
+  this.protocol = null;
+  this.slashes = null;
+  this.auth = null;
+  this.host = null;
+  this.port = null;
+  this.hostname = null;
+  this.hash = null;
+  this.search = null;
+  this.query = null;
+  this.pathname = null;
+  this.path = null;
+  this.href = null;
+}
+
+// Reference: RFC 3986, RFC 1808, RFC 2396
+
+// define these here so at least they only have to be
+// compiled once on the first module load.
+var protocolPattern = /^([a-z0-9.+-]+:)/i,
+    portPattern = /:[0-9]*$/,
+
+    // Special case for a simple path URL
+    simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
+
+    // RFC 2396: characters reserved for delimiting URLs.
+    // We actually just auto-escape these.
+    delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
+
+    // RFC 2396: characters not allowed for various reasons.
+    unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
+
+    // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
+    autoEscape = ['\''].concat(unwise),
+    // Characters that are never ever allowed in a hostname.
+    // Note that any invalid chars are also handled, but these
+    // are the ones that are *expected* to be seen, so we fast-path
+    // them.
+    nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
+    hostEndingChars = ['/', '?', '#'],
+    hostnameMaxLen = 255,
+    hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
+    hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
+    // protocols that can allow "unsafe" and "unwise" chars.
+    unsafeProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that never have a hostname.
+    hostlessProtocol = {
+      'javascript': true,
+      'javascript:': true
+    },
+    // protocols that always contain a // bit.
+    slashedProtocol = {
+      'http': true,
+      'https': true,
+      'ftp': true,
+      'gopher': true,
+      'file': true,
+      'http:': true,
+      'https:': true,
+      'ftp:': true,
+      'gopher:': true,
+      'file:': true
+    },
+    querystring = require('querystring');
+
+function urlParse(url, parseQueryString, slashesDenoteHost) {
+  if (url && util.isObject(url) && url instanceof Url) return url;
+
+  var u = new Url;
+  u.parse(url, parseQueryString, slashesDenoteHost);
+  return u;
+}
+
+Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+  if (!util.isString(url)) {
+    throw new TypeError("Parameter 'url' must be a string, not " + typeof url);
+  }
+
+  // Copy chrome, IE, opera backslash-handling behavior.
+  // Back slashes before the query string get converted to forward slashes
+  // See: https://code.google.com/p/chromium/issues/detail?id=25916
+  var queryIndex = url.indexOf('?'),
+      splitter =
+          (queryIndex !== -1 && queryIndex < url.indexOf('#')) ? '?' : '#',
+      uSplit = url.split(splitter),
+      slashRegex = /\\/g;
+  uSplit[0] = uSplit[0].replace(slashRegex, '/');
+  url = uSplit.join(splitter);
+
+  var rest = url;
+
+  // trim before proceeding.
+  // This is to support parse stuff like "  http://foo.com  \n"
+  rest = rest.trim();
+
+  if (!slashesDenoteHost && url.split('#').length === 1) {
+    // Try fast path regexp
+    var simplePath = simplePathPattern.exec(rest);
+    if (simplePath) {
+      this.path = rest;
+      this.href = rest;
+      this.pathname = simplePath[1];
+      if (simplePath[2]) {
+        this.search = simplePath[2];
+        if (parseQueryString) {
+          this.query = querystring.parse(this.search.substr(1));
+        } else {
+          this.query = this.search.substr(1);
+        }
+      } else if (parseQueryString) {
+        this.search = '';
+        this.query = {};
+      }
+      return this;
+    }
+  }
+
+  var proto = protocolPattern.exec(rest);
+  if (proto) {
+    proto = proto[0];
+    var lowerProto = proto.toLowerCase();
+    this.protocol = lowerProto;
+    rest = rest.substr(proto.length);
+  }
+
+  // figure out if it's got a host
+  // user@server is *always* interpreted as a hostname, and url
+  // resolution will treat //foo/bar as host=foo,path=bar because that's
+  // how the browser resolves relative URLs.
+  if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
+    var slashes = rest.substr(0, 2) === '//';
+    if (slashes && !(proto && hostlessProtocol[proto])) {
+      rest = rest.substr(2);
+      this.slashes = true;
+    }
+  }
+
+  if (!hostlessProtocol[proto] &&
+      (slashes || (proto && !slashedProtocol[proto]))) {
+
+    // there's a hostname.
+    // the first instance of /, ?, ;, or # ends the host.
+    //
+    // If there is an @ in the hostname, then non-host chars *are* allowed
+    // to the left of the last @ sign, unless some host-ending character
+    // comes *before* the @-sign.
+    // URLs are obnoxious.
+    //
+    // ex:
+    // http://a@b@c/ => user:a@b host:c
+    // http://a@b?@c => user:a host:c path:/?@c
+
+    // v0.12 TODO(isaacs): This is not quite how Chrome does things.
+    // Review our test case against browsers more comprehensively.
+
+    // find the first instance of any hostEndingChars
+    var hostEnd = -1;
+    for (var i = 0; i < hostEndingChars.length; i++) {
+      var hec = rest.indexOf(hostEndingChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
+
+    // at this point, either we have an explicit point where the
+    // auth portion cannot go past, or the last @ char is the decider.
+    var auth, atSign;
+    if (hostEnd === -1) {
+      // atSign can be anywhere.
+      atSign = rest.lastIndexOf('@');
+    } else {
+      // atSign must be in auth portion.
+      // http://a@b/c@d => host:b auth:a path:/c@d
+      atSign = rest.lastIndexOf('@', hostEnd);
+    }
+
+    // Now we have a portion which is definitely the auth.
+    // Pull that off.
+    if (atSign !== -1) {
+      auth = rest.slice(0, atSign);
+      rest = rest.slice(atSign + 1);
+      this.auth = decodeURIComponent(auth);
+    }
+
+    // the host is the remaining to the left of the first non-host char
+    hostEnd = -1;
+    for (var i = 0; i < nonHostChars.length; i++) {
+      var hec = rest.indexOf(nonHostChars[i]);
+      if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+        hostEnd = hec;
+    }
+    // if we still have not hit it, then the entire thing is a host.
+    if (hostEnd === -1)
+      hostEnd = rest.length;
+
+    this.host = rest.slice(0, hostEnd);
+    rest = rest.slice(hostEnd);
+
+    // pull out port.
+    this.parseHost();
+
+    // we've indicated that there is a hostname,
+    // so even if it's empty, it has to be present.
+    this.hostname = this.hostname || '';
+
+    // if hostname begins with [ and ends with ]
+    // assume that it's an IPv6 address.
+    var ipv6Hostname = this.hostname[0] === '[' &&
+        this.hostname[this.hostname.length - 1] === ']';
+
+    // validate a little.
+    if (!ipv6Hostname) {
+      var hostparts = this.hostname.split(/\./);
+      for (var i = 0, l = hostparts.length; i < l; i++) {
+        var part = hostparts[i];
+        if (!part) continue;
+        if (!part.match(hostnamePartPattern)) {
+          var newpart = '';
+          for (var j = 0, k = part.length; j < k; j++) {
+            if (part.charCodeAt(j) > 127) {
+              // we replace non-ASCII char with a temporary placeholder
+              // we need this to make sure size of hostname is not
+              // broken by replacing non-ASCII by nothing
+              newpart += 'x';
+            } else {
+              newpart += part[j];
+            }
+          }
+          // we test again with ASCII char only
+          if (!newpart.match(hostnamePartPattern)) {
+            var validParts = hostparts.slice(0, i);
+            var notHost = hostparts.slice(i + 1);
+            var bit = part.match(hostnamePartStart);
+            if (bit) {
+              validParts.push(bit[1]);
+              notHost.unshift(bit[2]);
+            }
+            if (notHost.length) {
+              rest = '/' + notHost.join('.') + rest;
+            }
+            this.hostname = validParts.join('.');
+            break;
+          }
+        }
+      }
+    }
+
+    if (this.hostname.length > hostnameMaxLen) {
+      this.hostname = '';
+    } else {
+      // hostnames are always lower case.
+      this.hostname = this.hostname.toLowerCase();
+    }
+
+    if (!ipv6Hostname) {
+      // IDNA Support: Returns a punycoded representation of "domain".
+      // It only converts parts of the domain name that
+      // have non-ASCII characters, i.e. it doesn't matter if
+      // you call it with a domain that already is ASCII-only.
+      this.hostname = punycode.toASCII(this.hostname);
+    }
+
+    var p = this.port ? ':' + this.port : '';
+    var h = this.hostname || '';
+    this.host = h + p;
+    this.href += this.host;
+
+    // strip [ and ] from the hostname
+    // the host field still retains them, though
+    if (ipv6Hostname) {
+      this.hostname = this.hostname.substr(1, this.hostname.length - 2);
+      if (rest[0] !== '/') {
+        rest = '/' + rest;
+      }
+    }
+  }
+
+  // now rest is set to the post-host stuff.
+  // chop off any delim chars.
+  if (!unsafeProtocol[lowerProto]) {
+
+    // First, make 100% sure that any "autoEscape" chars get
+    // escaped, even if encodeURIComponent doesn't think they
+    // need to be.
+    for (var i = 0, l = autoEscape.length; i < l; i++) {
+      var ae = autoEscape[i];
+      if (rest.indexOf(ae) === -1)
+        continue;
+      var esc = encodeURIComponent(ae);
+      if (esc === ae) {
+        esc = escape(ae);
+      }
+      rest = rest.split(ae).join(esc);
+    }
+  }
+
+
+  // chop off from the tail first.
+  var hash = rest.indexOf('#');
+  if (hash !== -1) {
+    // got a fragment string.
+    this.hash = rest.substr(hash);
+    rest = rest.slice(0, hash);
+  }
+  var qm = rest.indexOf('?');
+  if (qm !== -1) {
+    this.search = rest.substr(qm);
+    this.query = rest.substr(qm + 1);
+    if (parseQueryString) {
+      this.query = querystring.parse(this.query);
+    }
+    rest = rest.slice(0, qm);
+  } else if (parseQueryString) {
+    // no query string, but parseQueryString still requested
+    this.search = '';
+    this.query = {};
+  }
+  if (rest) this.pathname = rest;
+  if (slashedProtocol[lowerProto] &&
+      this.hostname && !this.pathname) {
+    this.pathname = '/';
+  }
+
+  //to support http.request
+  if (this.pathname || this.search) {
+    var p = this.pathname || '';
+    var s = this.search || '';
+    this.path = p + s;
+  }
+
+  // finally, reconstruct the href based on what has been validated.
+  this.href = this.format();
+  return this;
+};
+
+// format a parsed object into a url string
+function urlFormat(obj) {
+  // ensure it's an object, and not a string url.
+  // If it's an obj, this is a no-op.
+  // this way, you can call url_format() on strings
+  // to clean up potentially wonky urls.
+  if (util.isString(obj)) obj = urlParse(obj);
+  if (!(obj instanceof Url)) return Url.prototype.format.call(obj);
+  return obj.format();
+}
+
+Url.prototype.format = function() {
+  var auth = this.auth || '';
+  if (auth) {
+    auth = encodeURIComponent(auth);
+    auth = auth.replace(/%3A/i, ':');
+    auth += '@';
+  }
+
+  var protocol = this.protocol || '',
+      pathname = this.pathname || '',
+      hash = this.hash || '',
+      host = false,
+      query = '';
+
+  if (this.host) {
+    host = auth + this.host;
+  } else if (this.hostname) {
+    host = auth + (this.hostname.indexOf(':') === -1 ?
+        this.hostname :
+        '[' + this.hostname + ']');
+    if (this.port) {
+      host += ':' + this.port;
+    }
+  }
+
+  if (this.query &&
+      util.isObject(this.query) &&
+      Object.keys(this.query).length) {
+    query = querystring.stringify(this.query);
+  }
+
+  var search = this.search || (query && ('?' + query)) || '';
+
+  if (protocol && protocol.substr(-1) !== ':') protocol += ':';
+
+  // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
+  // unless they had them to begin with.
+  if (this.slashes ||
+      (!protocol || slashedProtocol[protocol]) && host !== false) {
+    host = '//' + (host || '');
+    if (pathname && pathname.charAt(0) !== '/') pathname = '/' + pathname;
+  } else if (!host) {
+    host = '';
+  }
+
+  if (hash && hash.charAt(0) !== '#') hash = '#' + hash;
+  if (search && search.charAt(0) !== '?') search = '?' + search;
+
+  pathname = pathname.replace(/[?#]/g, function(match) {
+    return encodeURIComponent(match);
+  });
+  search = search.replace('#', '%23');
+
+  return protocol + host + pathname + search + hash;
+};
+
+function urlResolve(source, relative) {
+  return urlParse(source, false, true).resolve(relative);
+}
+
+Url.prototype.resolve = function(relative) {
+  return this.resolveObject(urlParse(relative, false, true)).format();
+};
+
+function urlResolveObject(source, relative) {
+  if (!source) return relative;
+  return urlParse(source, false, true).resolveObject(relative);
+}
+
+Url.prototype.resolveObject = function(relative) {
+  if (util.isString(relative)) {
+    var rel = new Url();
+    rel.parse(relative, false, true);
+    relative = rel;
+  }
+
+  var result = new Url();
+  var tkeys = Object.keys(this);
+  for (var tk = 0; tk < tkeys.length; tk++) {
+    var tkey = tkeys[tk];
+    result[tkey] = this[tkey];
+  }
+
+  // hash is always overridden, no matter what.
+  // even href="" will remove it.
+  result.hash = relative.hash;
+
+  // if the relative url is empty, then there's nothing left to do here.
+  if (relative.href === '') {
+    result.href = result.format();
+    return result;
+  }
+
+  // hrefs like //foo/bar always cut to the protocol.
+  if (relative.slashes && !relative.protocol) {
+    // take everything except the protocol from relative
+    var rkeys = Object.keys(relative);
+    for (var rk = 0; rk < rkeys.length; rk++) {
+      var rkey = rkeys[rk];
+      if (rkey !== 'protocol')
+        result[rkey] = relative[rkey];
+    }
+
+    //urlParse appends trailing / to urls like http://www.example.com
+    if (slashedProtocol[result.protocol] &&
+        result.hostname && !result.pathname) {
+      result.path = result.pathname = '/';
+    }
+
+    result.href = result.format();
+    return result;
+  }
+
+  if (relative.protocol && relative.protocol !== result.protocol) {
+    // if it's a known url protocol, then changing
+    // the protocol does weird things
+    // first, if it's not file:, then we MUST have a host,
+    // and if there was a path
+    // to begin with, then we MUST have a path.
+    // if it is file:, then the host is dropped,
+    // because that's known to be hostless.
+    // anything else is assumed to be absolute.
+    if (!slashedProtocol[relative.protocol]) {
+      var keys = Object.keys(relative);
+      for (var v = 0; v < keys.length; v++) {
+        var k = keys[v];
+        result[k] = relative[k];
+      }
+      result.href = result.format();
+      return result;
+    }
+
+    result.protocol = relative.protocol;
+    if (!relative.host && !hostlessProtocol[relative.protocol]) {
+      var relPath = (relative.pathname || '').split('/');
+      while (relPath.length && !(relative.host = relPath.shift()));
+      if (!relative.host) relative.host = '';
+      if (!relative.hostname) relative.hostname = '';
+      if (relPath[0] !== '') relPath.unshift('');
+      if (relPath.length < 2) relPath.unshift('');
+      result.pathname = relPath.join('/');
+    } else {
+      result.pathname = relative.pathname;
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    result.host = relative.host || '';
+    result.auth = relative.auth;
+    result.hostname = relative.hostname || relative.host;
+    result.port = relative.port;
+    // to support http.request
+    if (result.pathname || result.search) {
+      var p = result.pathname || '';
+      var s = result.search || '';
+      result.path = p + s;
+    }
+    result.slashes = result.slashes || relative.slashes;
+    result.href = result.format();
+    return result;
+  }
+
+  var isSourceAbs = (result.pathname && result.pathname.charAt(0) === '/'),
+      isRelAbs = (
+          relative.host ||
+          relative.pathname && relative.pathname.charAt(0) === '/'
+      ),
+      mustEndAbs = (isRelAbs || isSourceAbs ||
+                    (result.host && relative.pathname)),
+      removeAllDots = mustEndAbs,
+      srcPath = result.pathname && result.pathname.split('/') || [],
+      relPath = relative.pathname && relative.pathname.split('/') || [],
+      psychotic = result.protocol && !slashedProtocol[result.protocol];
+
+  // if the url is a non-slashed url, then relative
+  // links like ../.. should be able
+  // to crawl up to the hostname, as well.  This is strange.
+  // result.protocol has already been set by now.
+  // Later on, put the first path part into the host field.
+  if (psychotic) {
+    result.hostname = '';
+    result.port = null;
+    if (result.host) {
+      if (srcPath[0] === '') srcPath[0] = result.host;
+      else srcPath.unshift(result.host);
+    }
+    result.host = '';
+    if (relative.protocol) {
+      relative.hostname = null;
+      relative.port = null;
+      if (relative.host) {
+        if (relPath[0] === '') relPath[0] = relative.host;
+        else relPath.unshift(relative.host);
+      }
+      relative.host = null;
+    }
+    mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '');
+  }
+
+  if (isRelAbs) {
+    // it's absolute.
+    result.host = (relative.host || relative.host === '') ?
+                  relative.host : result.host;
+    result.hostname = (relative.hostname || relative.hostname === '') ?
+                      relative.hostname : result.hostname;
+    result.search = relative.search;
+    result.query = relative.query;
+    srcPath = relPath;
+    // fall through to the dot-handling below.
+  } else if (relPath.length) {
+    // it's relative
+    // throw away the existing file, and take the new path instead.
+    if (!srcPath) srcPath = [];
+    srcPath.pop();
+    srcPath = srcPath.concat(relPath);
+    result.search = relative.search;
+    result.query = relative.query;
+  } else if (!util.isNullOrUndefined(relative.search)) {
+    // just pull out the search.
+    // like href='?foo'.
+    // Put this after the other two cases because it simplifies the booleans
+    if (psychotic) {
+      result.hostname = result.host = srcPath.shift();
+      //occationaly the auth can get stuck only in host
+      //this especially happens in cases like
+      //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+      var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                       result.host.split('@') : false;
+      if (authInHost) {
+        result.auth = authInHost.shift();
+        result.host = result.hostname = authInHost.shift();
+      }
+    }
+    result.search = relative.search;
+    result.query = relative.query;
+    //to support http.request
+    if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
+      result.path = (result.pathname ? result.pathname : '') +
+                    (result.search ? result.search : '');
+    }
+    result.href = result.format();
+    return result;
+  }
+
+  if (!srcPath.length) {
+    // no path at all.  easy.
+    // we've already handled the other stuff above.
+    result.pathname = null;
+    //to support http.request
+    if (result.search) {
+      result.path = '/' + result.search;
+    } else {
+      result.path = null;
+    }
+    result.href = result.format();
+    return result;
+  }
+
+  // if a url ENDs in . or .., then it must get a trailing slash.
+  // however, if it ends in anything else non-slashy,
+  // then it must NOT get a trailing slash.
+  var last = srcPath.slice(-1)[0];
+  var hasTrailingSlash = (
+      (result.host || relative.host || srcPath.length > 1) &&
+      (last === '.' || last === '..') || last === '');
+
+  // strip single dots, resolve double dots to parent dir
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = srcPath.length; i >= 0; i--) {
+    last = srcPath[i];
+    if (last === '.') {
+      srcPath.splice(i, 1);
+    } else if (last === '..') {
+      srcPath.splice(i, 1);
+      up++;
+    } else if (up) {
+      srcPath.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (!mustEndAbs && !removeAllDots) {
+    for (; up--; up) {
+      srcPath.unshift('..');
+    }
+  }
+
+  if (mustEndAbs && srcPath[0] !== '' &&
+      (!srcPath[0] || srcPath[0].charAt(0) !== '/')) {
+    srcPath.unshift('');
+  }
+
+  if (hasTrailingSlash && (srcPath.join('/').substr(-1) !== '/')) {
+    srcPath.push('');
+  }
+
+  var isAbsolute = srcPath[0] === '' ||
+      (srcPath[0] && srcPath[0].charAt(0) === '/');
+
+  // put the host back
+  if (psychotic) {
+    result.hostname = result.host = isAbsolute ? '' :
+                                    srcPath.length ? srcPath.shift() : '';
+    //occationaly the auth can get stuck only in host
+    //this especially happens in cases like
+    //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+    var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                     result.host.split('@') : false;
+    if (authInHost) {
+      result.auth = authInHost.shift();
+      result.host = result.hostname = authInHost.shift();
+    }
+  }
+
+  mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+  if (mustEndAbs && !isAbsolute) {
+    srcPath.unshift('');
+  }
+
+  if (!srcPath.length) {
+    result.pathname = null;
+    result.path = null;
+  } else {
+    result.pathname = srcPath.join('/');
+  }
+
+  //to support request.http
+  if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
+    result.path = (result.pathname ? result.pathname : '') +
+                  (result.search ? result.search : '');
+  }
+  result.auth = relative.auth || result.auth;
+  result.slashes = result.slashes || relative.slashes;
+  result.href = result.format();
+  return result;
+};
+
+Url.prototype.parseHost = function() {
+  var host = this.host;
+  var port = portPattern.exec(host);
+  if (port) {
+    port = port[0];
+    if (port !== ':') {
+      this.port = port.substr(1);
+    }
+    host = host.substr(0, host.length - port.length);
+  }
+  if (host) this.hostname = host;
+};
+
+},{"./util":57,"punycode":46,"querystring":49}],57:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  isString: function(arg) {
+    return typeof(arg) === 'string';
+  },
+  isObject: function(arg) {
+    return typeof(arg) === 'object' && arg !== null;
+  },
+  isNull: function(arg) {
+    return arg === null;
+  },
+  isNullOrUndefined: function(arg) {
+    return arg == null;
+  }
+};
+
+},{}]},{},[2]);

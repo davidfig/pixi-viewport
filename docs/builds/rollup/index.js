@@ -47745,7 +47745,7 @@
             }
 
             /**
-             * @typdef {object} FollowOptions
+             * @typedef {object} FollowOptions
              * @property {number} [speed=0] to follow in pixels/frame (0=teleport to location)
              * @property {number} [acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
              * @property {number} [radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
@@ -47765,7 +47765,7 @@
                  * @param {PIXI.DisplayObject} target to follow
                  * @param {FollowOptions} [options]
                  */
-                constructor(parent, target, options={})
+                constructor(parent, target, options = {})
                 {
                     super(parent);
                     this.target = target;
@@ -47781,7 +47781,8 @@
                     }
 
                     const center = this.parent.center;
-                    let toX = this.target.x, toY = this.target.y;
+                    let toX = this.target.x,
+                        toY = this.target.y;
                     if (this.options.radius)
                     {
                         const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
@@ -47796,6 +47797,7 @@
                             return
                         }
                     }
+
                     const deltaX = toX - center.x;
                     const deltaY = toY - center.y;
                     if (deltaX || deltaY)
@@ -48254,6 +48256,7 @@
                  * @fires moved-end
                  * @fires zoomed
                  * @fires zoomed-end
+                 * @fires frame-end
                  */
                 constructor(options = {})
                 {
@@ -48328,7 +48331,10 @@
                  * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true. Should it destroy the base texture of the child sprite     */
                 destroy(options)
                 {
-                    this.options.ticker.remove(this.tickerFunction);
+                    if (!this.options.noTicker)
+                    {
+                        this.options.ticker.remove(this.tickerFunction);
+                    }
                     this.input.destroy();
                     super.destroy(options);
                 }
@@ -48390,6 +48396,7 @@
                             scaleX: this.scale.x,
                             scaleY: this.scale.y
                         };
+                        this.emit('frame-end', this);
                     }
                 }
 
@@ -48801,7 +48808,7 @@
                 }
 
                 /**
-                 * @param {SnapZoomOptionsoptions} options
+                 * @param {SnapZoomOptions} options
                  */
                 snapZoom(options)
                 {

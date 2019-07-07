@@ -2317,7 +2317,7 @@ class SnapZoom extends Plugin
 }
 
 /**
- * @typdef {object} FollowOptions
+ * @typedef {object} FollowOptions
  * @property {number} [speed=0] to follow in pixels/frame (0=teleport to location)
  * @property {number} [acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
  * @property {number} [radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
@@ -2337,7 +2337,7 @@ class Follow extends Plugin
      * @param {PIXI.DisplayObject} target to follow
      * @param {FollowOptions} [options]
      */
-    constructor(parent, target, options={})
+    constructor(parent, target, options = {})
     {
         super(parent);
         this.target = target;
@@ -2353,7 +2353,8 @@ class Follow extends Plugin
         }
 
         const center = this.parent.center;
-        let toX = this.target.x, toY = this.target.y;
+        let toX = this.target.x,
+            toY = this.target.y;
         if (this.options.radius)
         {
             const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
@@ -2368,6 +2369,7 @@ class Follow extends Plugin
                 return
             }
         }
+
         const deltaX = toX - center.x;
         const deltaY = toY - center.y;
         if (deltaX || deltaY)
@@ -2826,6 +2828,7 @@ class Viewport extends Container
      * @fires moved-end
      * @fires zoomed
      * @fires zoomed-end
+     * @fires frame-end
      */
     constructor(options = {})
     {
@@ -2965,6 +2968,7 @@ class Viewport extends Container
                 scaleX: this.scale.x,
                 scaleY: this.scale.y
             };
+            this.emit('frame-end', this);
         }
     }
 
@@ -3376,7 +3380,7 @@ class Viewport extends Container
     }
 
     /**
-     * @param {SnapZoomOptionsoptions} options
+     * @param {SnapZoomOptions} options
      */
     snapZoom(options)
     {
@@ -3800,14 +3804,20 @@ class Viewport extends Container
  */
 
 /**
- * fires when viewport stops moving for any reason
+ * fires when viewport stops moving
  * @event Viewport#moved-end
  * @type {Viewport}
  */
 
 /**
- * fires when viewport stops zooming for any rason
+ * fires when viewport stops zooming
  * @event Viewport#zoomed-end
+ * @type {Viewport}
+ */
+
+ /**
+ * fires at the end of an update frame
+ * @event Viewport#frame-end
  * @type {Viewport}
  */
 
