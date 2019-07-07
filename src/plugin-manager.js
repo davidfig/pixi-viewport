@@ -1,4 +1,4 @@
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
+const PLUGIN_ORDER = ['drag', 'paint', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
 /**
  * Use this to access current plugins or add user-defined plugins
@@ -18,7 +18,7 @@ export class PluginManager
 
     /**
      * Inserts a named plugin or a user plugin into the viewport
-     * default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
+     * default plugin order: 'drag', 'paint', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
      * @param {string} name of plugin
      * @param {Plugin} plugin - instantiated Plugin class
      * @param {number} index to insert userPlugin (otherwise inserts it at the end)

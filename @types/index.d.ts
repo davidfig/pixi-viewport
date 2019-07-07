@@ -6,6 +6,7 @@ type SidesType = 'all' | 'horizontal' | 'vertical' | string
 type PluginType = 'bounce' | 'clamp-zoom' | 'clamp' | 'decelerate' | 'drag' | 'follow' | 'mouse-edges' | 'pinch' | 'snap' | 'snap-zoom' | 'wheel'
 type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved' | 'moved-end' | 'zoomed-end'
 type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
+type PaintEventType = 'paint-start' | 'painted' | 'paint-end'
 type WheelEventType = 'wheel'
 type ZoomedEventType = 'zoomed'
 type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel'
@@ -64,6 +65,11 @@ interface DragOptions
     underflow?: UnderflowType
     clampWheel?: boolean | string
     factor?: number
+    mouseButtons?: MouseButtonsType
+}
+
+interface PaintOptions
+{
     mouseButtons?: MouseButtonsType
 }
 
@@ -170,6 +176,13 @@ interface ClickEventData
     world: PIXI.Point
 }
 
+interface PaintEventData extends ClickEventData
+{
+    interactionEvent: PIXI.interaction.InteractionEvent
+    screenStart: PIXI.Point
+    worldStart: PIXI.Point
+}
+
 interface WheelData
 {
     dx: number
@@ -248,6 +261,7 @@ export declare class Viewport extends PIXI.Container
     // pausePlugin(type: Viewport.PluginType): void
     // resumePlugin(type: Viewport.PluginType): void
     drag(options?: DragOptions): this
+    paint(options?: PaintOptions): this
     clamp(options?: ClampOptions): this
     decelerate(options?: DecelerateOptions): this
     bounce(options?: BounceOptions): this
@@ -279,6 +293,11 @@ export declare class Viewport extends PIXI.Container
     on(
         event: ClickEventType,
         fn: (data: ClickEventData) => void,
+        context?: any
+    ): this
+    on(
+        event: PaintEventType,
+        fn: (data: PaintEventData) => void,
         context?: any
     ): this
     on(

@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js'
 import { InputManager } from './input-manager'
 import { PluginManager } from './plugin-manager'
 import { Drag } from './plugins/drag'
+import { Paint } from './plugins/paint'
 import { Pinch } from './plugins/pinch'
 import { Clamp } from './plugins/clamp'
 import { ClampZoom } from './plugins/clamp-zoom'
@@ -57,6 +58,9 @@ export class Viewport extends PIXI.Container
      * @fires drag-start
      * @fires drag-end
      * @fires drag-remove
+     * @fires paint-start
+     * @fires painted
+     * @fires paint-end
      * @fires pinch-start
      * @fires pinch-end
      * @fires pinch-remove
@@ -760,6 +764,17 @@ export class Viewport extends PIXI.Container
         this.plugins.add('drag', new Drag(this, options))
         return this
     }
+    
+    /**
+     * enable click-and-drag painting
+     * @param {PaintOptions} [options]
+     * @returns {Viewport} this
+     */
+    paint(options)
+    {
+        this.plugins.add('paint', new Paint(this, options))
+        return this
+    }
 
     /**
      * clamp to world boundaries or other provided boundaries
@@ -951,6 +966,42 @@ export class Viewport extends PIXI.Container
  */
 
 /**
+ * fires when painting starts
+ * @event Viewport#paint-start
+ * @type {object}
+ * @property {PIXI.interaction.InteractionEvent} interactionEvent
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} screenStart
+ * @property {PIXI.Point} world
+ * @property {PIXI.Point} worldStart
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when painting is in progress
+ * @event Viewport#painted
+ * @type {object}
+ * @property {PIXI.interaction.InteractionEvent} interactionEvent
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} screenStart
+ * @property {PIXI.Point} world
+ * @property {PIXI.Point} worldStart
+ * @property {Viewport} viewport
+ */
+
+/**
+ * fires when painting ends
+ * @event Viewport#paint-end
+ * @type {object}
+ * @property {PIXI.interaction.InteractionEvent} interactionEvent
+ * @property {PIXI.Point} screen
+ * @property {PIXI.Point} screenStart
+ * @property {PIXI.Point} world
+ * @property {PIXI.Point} worldStart
+ * @property {Viewport} viewport
+ */
+
+/**
  * fires when a pinch starts
  * @event Viewport#pinch-start
  * @type {Viewport}
@@ -1062,7 +1113,7 @@ export class Viewport extends PIXI.Container
  */
 
 /**
- * fires when viewport stops zooming for any rason
+ * fires when viewport stops zooming for any reason
  * @event Viewport#zoomed-end
  * @type {Viewport}
  */
