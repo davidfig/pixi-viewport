@@ -1,10 +1,12 @@
 import * as PIXI from 'pixi.js'
-import Ease from 'pixi-ease'
+import { ease } from 'pixi-ease'
+// import { ease } from '../../pixi-ease'
 import Random from 'yy-random'
 import Counter from 'yy-counter'
 import FPS from 'yy-fps'
 import clicked from 'clicked'
 // import highlight from 'highlight.js'
+import DomEase from 'dom-ease'
 
 import { Viewport } from '../src/viewport'
 import { UserPlugin } from './user-plugin'
@@ -20,7 +22,7 @@ const OBJECT_ROTATION_TIME = 1000
 const OBJECT_SPEED = 0.25
 const FADE_TIME = 2000
 
-let _fps, _application, _viewport, _ease, _object, _stars = []
+let _fps, _application, _viewport, _object, _stars = [], domEase
 
 function viewport()
 {
@@ -36,6 +38,9 @@ function viewport()
         .decelerate()
         .on('clicked', click)
     resize()
+
+    domEase = new DomEase({ duration: FADE_TIME })
+    ease.duration = FADE_TIME
 
     // test for x/y independent scaling
     // _viewport.scale.y = 1.5
@@ -56,8 +61,8 @@ function addCounter(name)
 {
     const counter = new Counter({ side: 'top-left' })
     counter.log(name)
-    const ease = _ease.to(counter.div.style, { opacity: 0 }, FADE_TIME, { ease: 'easeInOutSine' })
-    ease.once('done', () => counter.div.remove())
+    const e = domEase.add(counter.div, { opacity: 0 })
+    e.once('complete', () => counter.div.remove())
 }
 
 function events()
@@ -105,18 +110,10 @@ function stars()
 
 function createTarget()
 {
-    if (Random.chance(0.75))
-    {
-        const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
-        const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
-        const target = _ease.target(_object, { x, y }, OBJECT_SPEED)
-        target.once('done', createTarget)
-    }
-    else
-    {
-        const target = _ease.wait(_object, { wait: Random.range(500, 3000) })
-        target.once('done', createTarget)
-    }
+    const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
+    const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
+    const target = ease.target(_object, { x, y }, OBJECT_SPEED, { wait: Random.chance(0.75) ? Random.range(500, 3000) : null })
+    target.once('complete', createTarget)
 }
 
 function object()
@@ -126,7 +123,7 @@ function object()
     _object.tint = 0
     _object.width = _object.height = OBJECT_SIZE
     _object.position.set(100, 100)
-    _ease.to(_object, { rotation: Math.PI * 2 }, OBJECT_ROTATION_TIME, { repeat: true })
+    ease.add(_object, { rotation: Math.PI * 2 }, { duration: OBJECT_ROTATION_TIME, repeat: true, ease: 'linear' })
     createTarget()
 }
 
@@ -136,7 +133,7 @@ function click(data)
     {
         if (star.containsPoint(data.screen))
         {
-            _ease.to(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, FADE_TIME, { reverse: true, ease: 'easeInOutSine' })
+            ease.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true })
             return
         }
     }
@@ -144,13 +141,13 @@ function click(data)
     sprite.anchor.set(0.5)
     sprite.rotation = Random.range(-0.1, 0.1)
     sprite.position = data.world
-    const fade = _ease.to(sprite, { alpha: 0 }, FADE_TIME)
+    const fade = ease.add(sprite, { alpha: 0 })
     fade.on('done', () => _viewport.removeChild(sprite))
 }
 
 function drawWorld()
 {
-    _ease.removeAll()
+    ease.removeAll()
     _viewport.removeChildren()
     stars()
     object()
@@ -186,7 +183,6 @@ window.onload = function()
 
     window.addEventListener('resize', resize)
 
-    _ease = new Ease.list()
     drawWorld()
     events()
 
