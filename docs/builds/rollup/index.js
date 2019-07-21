@@ -48043,15 +48043,15 @@
                     {
                         this.left = distance;
                         this.top = distance;
-                        this.right = window.innerWidth - distance;
-                        this.bottom = window.innerHeight - distance;
+                        this.right = this.parent.worldScreenWidth - distance;
+                        this.bottom = this.parent.worldScreenHeight - distance;
                     }
                     else if (!this.radius)
                     {
                         this.left = this.options.left;
                         this.top = this.options.top;
-                        this.right = this.options.right === null ? null : window.innerWidth - this.options.right;
-                        this.bottom = this.options.bottom === null ? null : window.innerHeight - this.options.bottom;
+                        this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right;
+                        this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom;
                     }
                 }
 
@@ -48953,6 +48953,7 @@
 
                 /**
                  * decelerate after a move
+                 * NOTE: this fires 'moved' event during deceleration
                  * @param {DecelerateOptions} [options]
                  * @return {Viewport} this
                  */
@@ -48964,7 +48965,9 @@
 
                 /**
                  * bounce on borders
-                 * NOTE: screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+                 * NOTES:
+                 *    screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+                 *    fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y-end' events
                  * @param {object} [options]
                  * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
                  * @param {number} [options.friction=0.5] friction to apply to decelerate if active
@@ -49006,9 +49009,10 @@
                 /**
                  * follow a target
                  * NOTES:
-                 *    - uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
-                 *    - options.acceleration is not perfect as it doesn't know the velocity of the target
-                 *    - it adds acceleration to the start of movement and deceleration to the end of movement when the target is stopped
+                 *    uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+                 *    options.acceleration is not perfect as it doesn't know the velocity of the target
+                 *    it adds acceleration to the start of movement and deceleration to the end of movement when the target is stopped
+                 *    fires 'moved' event
                  * @param {PIXI.DisplayObject} target to follow
                  * @param {FollowOptions} [options]
                  * @returns {Viewport} this
@@ -49043,6 +49047,7 @@
 
                 /**
                  * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
+                 * NOTE: fires 'moved' event
                  * @param {MouseEdgesOptions} [options]
                  */
                 mouseEdges(options)

@@ -55,15 +55,15 @@ export class MouseEdges extends Plugin
         {
             this.left = distance
             this.top = distance
-            this.right = window.innerWidth - distance
-            this.bottom = window.innerHeight - distance
+            this.right = this.parent.worldScreenWidth - distance
+            this.bottom = this.parent.worldScreenHeight - distance
         }
         else if (!this.radius)
         {
             this.left = this.options.left
             this.top = this.options.top
-            this.right = this.options.right === null ? null : window.innerWidth - this.options.right
-            this.bottom = this.options.bottom === null ? null : window.innerHeight - this.options.bottom
+            this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right
+            this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom
         }
     }
 

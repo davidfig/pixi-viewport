@@ -89,7 +89,7 @@ describe('follow', () =>
         viewport.once('frame-end', () =>
         {
             assert.equal(Math.floor(viewport.center.x), 49)
-            assert.equal(Math.floor(viewport.center.y), 99)
+            assert.closeTo(Math.floor(viewport.center.y), 99, 2)
         })
         setTimeout(() =>
         {
