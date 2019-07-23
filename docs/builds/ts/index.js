@@ -46995,6 +46995,7 @@
                 {
                     super(parent);
                     this.options = Object.assign({}, snapZoomOptions, options);
+                    this.ease = ease(this.options.ease);
                     if (this.options.width > 0)
                     {
                         this.x_scale = parent.screenWidth / this.options.width;
@@ -47111,8 +47112,8 @@
                         else
                         {
                             const snapping = this.snapping;
-                            this.parent.scale.x = ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
-                            this.parent.scale.y = ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
+                            this.parent.scale.x = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
+                            this.parent.scale.y = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
                         }
                         const clamp = this.parent.plugins.get('clamp-zoom');
                         if (clamp)
