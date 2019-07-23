@@ -3380,6 +3380,19 @@ class Viewport extends Container
     }
 
     /**
+     * changes scale of viewport and maintains center of viewport--same as calling setScale(scale, true)
+     * @type {number}
+     */
+    set scaled(scale)
+    {
+        this.setZoom(scale, true);
+    }
+    get scaled()
+    {
+        return this.scale.x
+    }
+
+    /**
      * @param {SnapZoomOptions} options
      */
     snapZoom(options)

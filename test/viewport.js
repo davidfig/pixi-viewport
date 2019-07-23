@@ -238,4 +238,17 @@ describe('pixi-viewport', () =>
         assert.equal(viewport.scale.y, 5)
         viewport.destroy()
     })
+
+    it('scaled', () => {
+        const viewport = new Viewport({ screenWidth: 100, screenHeight: 100, worldWidth: 1000, worldHeight: 1000 })
+        const center = { x: viewport.center.x, y: viewport.center.y }
+        assert.equal(viewport.scaled, 1)
+        viewport.scaled = 5
+        assert.equal(viewport.scale.x, 5)
+        assert.equal(viewport.scale.y, 5)
+        assert.equal(viewport.center.x, center.x)
+        assert.equal(viewport.center.y, center.y)
+        assert.equal(viewport.scaled, 5)
+        viewport.destroy()
+    })
 })
