@@ -81,6 +81,9 @@ const Viewport = require('pixi-viewport').Viewport
 ## Installation
 
     yarn add pixi-viewport
+or
+
+    npm i pixi-viewport
 
 or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/) and use it:
 
