@@ -137,7 +137,7 @@ export class Decelerate extends Plugin
         {
             this.parent.x += this.x * elapsed
             this.x *= this.percentChangeX
-            if (Math.abs(this.x) < this.minSpeed)
+            if (Math.abs(this.x) < this.options.minSpeed)
             {
                 this.x = 0
             }
@@ -147,7 +147,7 @@ export class Decelerate extends Plugin
         {
             this.parent.y += this.y * elapsed
             this.y *= this.percentChangeY
-            if (Math.abs(this.y) < this.minSpeed)
+            if (Math.abs(this.y) < this.options.minSpeed)
             {
                 this.y = 0
             }
