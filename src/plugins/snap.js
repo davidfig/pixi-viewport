@@ -46,7 +46,7 @@ export class Snap extends Plugin
         this.y = y
         if (this.options.forceStart)
         {
-            this.startEase()
+            this.snapStart()
         }
     }
 
