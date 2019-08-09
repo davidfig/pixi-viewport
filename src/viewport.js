@@ -29,7 +29,7 @@ export { Plugin } from './plugins/plugin'
  * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
  * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
  * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
- * @property {boolean} [noOnContextMenu] remove oncontextmenu=() => {} from the divWheel element (this is enabled to allow for right-click dragging)
+ * @property {boolean} [disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
  */
 
 const viewportOptions = {
@@ -43,7 +43,7 @@ const viewportOptions = {
     forceHitArea: null,
     noTicker: false,
     interaction: null,
-    noOnContextMenu: false
+    disableOnContextMenu: false
 }
 
 /**
@@ -129,7 +129,7 @@ export class Viewport extends PIXI.Container
 
         this.options.divWheel = this.options.divWheel || document.body
 
-        if (!this.options.noOnContextMenu)
+        if (this.options.disableOnContextMenu)
         {
             this.options.divWheel.oncontextmenu = e => e.preventDefault()
         }
@@ -767,6 +767,7 @@ export class Viewport extends PIXI.Container
 
     /**
      * enable one-finger touch to drag
+     * NOTE: if you expect users to use right-click dragging, you should enable viewport.options.disableOnContextMenu to avoid the context menu popping up on each right-click drag
      * @param {DragOptions} [options]
      * @returns {Viewport} this
      */
