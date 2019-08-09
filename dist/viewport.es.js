@@ -595,7 +595,7 @@ class Plugin
  * @property {(boolean|string)} [clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
  * @property {string} [underflow=center] where to place world if too small for screen
  * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
- * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'
+ * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
  */
 
 const dragOptions = {
@@ -2027,7 +2027,7 @@ class Snap extends Plugin
         this.y = y;
         if (this.options.forceStart)
         {
-            this.startEase();
+            this.snapStart();
         }
     }
 
@@ -2776,7 +2776,7 @@ class MouseEdges extends Plugin
  * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
  * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
  * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
- * @property {boolean} [noOnContextMenu] remove oncontextmenu=() => {} from the divWheel element (this is enabled to allow for right-click dragging)
+ * @property {boolean} [disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
  */
 
 const viewportOptions = {
@@ -2790,7 +2790,7 @@ const viewportOptions = {
     forceHitArea: null,
     noTicker: false,
     interaction: null,
-    noOnContextMenu: false
+    disableOnContextMenu: false
 };
 
 /**
@@ -2876,7 +2876,7 @@ class Viewport extends Container
 
         this.options.divWheel = this.options.divWheel || document.body;
 
-        if (!this.options.noOnContextMenu)
+        if (this.options.disableOnContextMenu)
         {
             this.options.divWheel.oncontextmenu = e => e.preventDefault();
         }
@@ -3514,6 +3514,7 @@ class Viewport extends Container
 
     /**
      * enable one-finger touch to drag
+     * NOTE: if you expect users to use right-click dragging, you should enable viewport.options.disableOnContextMenu to avoid the context menu popping up on each right-click drag
      * @param {DragOptions} [options]
      * @returns {Viewport} this
      */

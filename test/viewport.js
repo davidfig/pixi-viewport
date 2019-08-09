@@ -18,7 +18,7 @@ describe('pixi-viewport', () =>
         assert.isTrue(viewport.options.passiveWheel)
         assert.isFunction(viewport.tickerFunction)
         assert.isUndefined(viewport.interaction)
-        assert.isDefined(document.body.oncontextmenu)
+        assert.isUndefined(document.body.oncontextmenu)
         viewport.destroy()
     })
 
@@ -45,7 +45,7 @@ describe('pixi-viewport', () =>
             ticker,
             interaction,
             divWheel,
-            noOnContextMenu: true
+            disableOnContextMenu: true
         })
         assert.equal(viewport.screenWidth, 100)
         assert.equal(viewport.screenHeight, 101)
@@ -59,7 +59,7 @@ describe('pixi-viewport', () =>
         assert.equal(viewport.options.ticker, ticker)
         assert.equal(viewport.options.interaction, interaction)
         assert.equal(viewport.options.divWheel, divWheel)
-        assert.isUndefined(divWheel.oncontextmenu)
+        assert.isDefined(divWheel.oncontextmenu)
         viewport.destroy()
     })
 
