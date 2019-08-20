@@ -192,6 +192,7 @@ interface ZoomedEventData
 export declare class Viewport extends PIXI.Container
 {
     screenWidth: number
+    screenHeight: number
 
     worldHeight: number
     worldWidth: number
