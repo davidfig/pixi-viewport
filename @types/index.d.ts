@@ -241,7 +241,7 @@ export declare class Viewport extends PIXI.Container
     zoomPercent(percent: number, center?: boolean): this
     zoom(change: number, center?: boolean): this
 
-    // getVisibleBounds(): Viewport.Bounds
+    getVisibleBounds(): Bounds
 
     // Plugins
     plugins: PluginManager
