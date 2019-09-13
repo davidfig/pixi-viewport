@@ -1,6 +1,6 @@
 {
     "name": "pixi-viewport",
-    "version": "4.2.2",
+    "version": "4.2.3",
     "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
     "main": "dist/viewport.js",
     "module": "dist/viewport.es.js",
@@ -19,7 +19,7 @@
         "build": "rollup -c",
         "docs": "jsdoc -c .jsdoc.json",
         "upgrade": "yarn upgrade-interactive --latest",
-        "prepublishOnly": "yarn test && yarn run build && yarn run builds && yarn run docs",
+        "prepublishOnly": "yarn run build && yarn run builds && yarn run docs",
         "builds-rollup": "rollup -c docs/builds/rollup/rollup.config.js",
         "builds-browserify": "browserify docs/builds/browserify/code.js -o docs/builds/browserify/index.js",
         "builds-standalone": "cp dist/viewport.js* docs/",
