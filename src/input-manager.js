@@ -213,7 +213,11 @@ export class InputManager
         const point = this.viewport.toLocal(this.getPointerPosition(event))
         if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
         {
-            return this.viewport.plugins.wheel(event)
+            const stop = this.viewport.plugins.wheel(event)
+            if (stop)
+            {
+                event.preventDefault()
+            }
         }
     }
 

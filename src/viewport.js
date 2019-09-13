@@ -22,8 +22,8 @@ export { Plugin } from './plugins/plugin'
  * @property {number} [worldWidth=this.width]
  * @property {number} [worldHeight=this.height]
  * @property {number} [threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
- * @property {boolean} [passiveWheel=true] whether the 'wheel' event is set to passive
- * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport
+ * @property {boolean} [passiveWheel=true] whether the 'wheel' event is set to passive (note: if false, e.preventDefault() will be called when wheel is used over the viewport)
+ * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport (except wheel events, see options.passiveWheel)
  * @property {HitArea} [forceHitArea] change the default hitArea from world size to a new value
  * @property {boolean} [noTicker] set this if you want to manually call update() function on each frame
  * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates

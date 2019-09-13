@@ -598,14 +598,15 @@
             {
                 window.Int32Array = Array;
             }
+            //# sourceMappingURL=polyfill.es.js.map
 
             var isMobile_min = createCommonjsModule(function (module) {
             !function(e){var n=/iPhone/i,t=/iPod/i,r=/iPad/i,a=/\bAndroid(?:.+)Mobile\b/i,p=/Android/i,l=/\bAndroid(?:.+)SD4930UR\b/i,b=/\bAndroid(?:.+)(?:KF[A-Z]{2,4})\b/i,f=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,c=/BlackBerry/i,s=/BB10/i,v=/Opera Mini/i,h=/\b(CriOS|Chrome)(?:.+)Mobile/i,w=/\Mobile(?:.+)Firefox\b/i;function m(e,i){return e.test(i)}function i(e){var i=e||("undefined"!=typeof navigator?navigator.userAgent:""),o=i.split("[FBAN");void 0!==o[1]&&(i=o[0]),void 0!==(o=i.split("Twitter"))[1]&&(i=o[0]);var d={apple:{phone:m(n,i)&&!m(f,i),ipod:m(t,i),tablet:!m(n,i)&&m(r,i)&&!m(f,i),device:(m(n,i)||m(t,i)||m(r,i))&&!m(f,i)},amazon:{phone:m(l,i),tablet:!m(l,i)&&m(b,i),device:m(l,i)||m(b,i)},android:{phone:!m(f,i)&&m(l,i)||!m(f,i)&&m(a,i),tablet:!m(f,i)&&!m(l,i)&&!m(a,i)&&(m(b,i)||m(p,i)),device:!m(f,i)&&(m(l,i)||m(b,i)||m(a,i)||m(p,i))},windows:{phone:m(f,i),tablet:m(u,i),device:m(f,i)||m(u,i)},other:{blackberry:m(c,i),blackberry10:m(s,i),opera:m(v,i),firefox:m(w,i),chrome:m(h,i),device:m(c,i)||m(s,i)||m(v,i)||m(w,i)||m(h,i)}};return d.any=d.apple.device||d.android.device||d.windows.device||d.other.device,d.phone=d.apple.phone||d.android.phone||d.windows.phone,d.tablet=d.apple.tablet||d.android.tablet||d.windows.tablet,d}module.exports&&"undefined"==typeof window?module.exports=i:module.exports&&"undefined"!=typeof window?module.exports=i():e.isMobile=i();}(commonjsGlobal);
             });
 
             /*!
-             * @pixi/settings - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/settings - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/settings is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -686,7 +687,7 @@
              * @example
              * // Use the native window resolution as the default resolution
              * // will support high-density displays when rendering
-             * PIXI.settings.RESOLUTION = window.devicePixelRatio.
+             * PIXI.settings.RESOLUTION = window.devicePixelRatio;
              *
              * // Disable interpolation when scaling, will make texture be pixelated
              * PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -714,7 +715,7 @@
                  * @name ANISOTROPIC_LEVEL
                  * @memberof PIXI.settings
                  * @type {number}
-                 * @default 16
+                 * @default 0
                  */
                 ANISOTROPIC_LEVEL: 0,
 
@@ -914,6 +915,7 @@
                  */
                 ROUND_PIXELS: false,
             };
+            //# sourceMappingURL=settings.es.js.map
 
             var eventemitter3 = createCommonjsModule(function (module) {
 
@@ -2192,1970 +2194,6 @@
               });
             }
 
-            var lookup = [];
-            var revLookup = [];
-            var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
-            var inited = false;
-            function init () {
-              inited = true;
-              var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-              for (var i = 0, len = code.length; i < len; ++i) {
-                lookup[i] = code[i];
-                revLookup[code.charCodeAt(i)] = i;
-              }
-
-              revLookup['-'.charCodeAt(0)] = 62;
-              revLookup['_'.charCodeAt(0)] = 63;
-            }
-
-            function toByteArray (b64) {
-              if (!inited) {
-                init();
-              }
-              var i, j, l, tmp, placeHolders, arr;
-              var len = b64.length;
-
-              if (len % 4 > 0) {
-                throw new Error('Invalid string. Length must be a multiple of 4')
-              }
-
-              // the number of equal signs (place holders)
-              // if there are two placeholders, than the two characters before it
-              // represent one byte
-              // if there is only one, then the three characters before it represent 2 bytes
-              // this is just a cheap hack to not do indexOf twice
-              placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0;
-
-              // base64 is 4/3 + up to two characters of the original data
-              arr = new Arr(len * 3 / 4 - placeHolders);
-
-              // if there are placeholders, only get up to the last complete 4 chars
-              l = placeHolders > 0 ? len - 4 : len;
-
-              var L = 0;
-
-              for (i = 0, j = 0; i < l; i += 4, j += 3) {
-                tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)];
-                arr[L++] = (tmp >> 16) & 0xFF;
-                arr[L++] = (tmp >> 8) & 0xFF;
-                arr[L++] = tmp & 0xFF;
-              }
-
-              if (placeHolders === 2) {
-                tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4);
-                arr[L++] = tmp & 0xFF;
-              } else if (placeHolders === 1) {
-                tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2);
-                arr[L++] = (tmp >> 8) & 0xFF;
-                arr[L++] = tmp & 0xFF;
-              }
-
-              return arr
-            }
-
-            function tripletToBase64 (num) {
-              return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-            }
-
-            function encodeChunk (uint8, start, end) {
-              var tmp;
-              var output = [];
-              for (var i = start; i < end; i += 3) {
-                tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
-                output.push(tripletToBase64(tmp));
-              }
-              return output.join('')
-            }
-
-            function fromByteArray (uint8) {
-              if (!inited) {
-                init();
-              }
-              var tmp;
-              var len = uint8.length;
-              var extraBytes = len % 3; // if we have 1 byte left, pad 2 bytes
-              var output = '';
-              var parts = [];
-              var maxChunkLength = 16383; // must be multiple of 3
-
-              // go through the array every three bytes, we'll deal with trailing stuff later
-              for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-                parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)));
-              }
-
-              // pad the end with zeros, but make sure to not forget the extra bytes
-              if (extraBytes === 1) {
-                tmp = uint8[len - 1];
-                output += lookup[tmp >> 2];
-                output += lookup[(tmp << 4) & 0x3F];
-                output += '==';
-              } else if (extraBytes === 2) {
-                tmp = (uint8[len - 2] << 8) + (uint8[len - 1]);
-                output += lookup[tmp >> 10];
-                output += lookup[(tmp >> 4) & 0x3F];
-                output += lookup[(tmp << 2) & 0x3F];
-                output += '=';
-              }
-
-              parts.push(output);
-
-              return parts.join('')
-            }
-
-            function read (buffer, offset, isLE, mLen, nBytes) {
-              var e, m;
-              var eLen = nBytes * 8 - mLen - 1;
-              var eMax = (1 << eLen) - 1;
-              var eBias = eMax >> 1;
-              var nBits = -7;
-              var i = isLE ? (nBytes - 1) : 0;
-              var d = isLE ? -1 : 1;
-              var s = buffer[offset + i];
-
-              i += d;
-
-              e = s & ((1 << (-nBits)) - 1);
-              s >>= (-nBits);
-              nBits += eLen;
-              for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-              m = e & ((1 << (-nBits)) - 1);
-              e >>= (-nBits);
-              nBits += mLen;
-              for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-              if (e === 0) {
-                e = 1 - eBias;
-              } else if (e === eMax) {
-                return m ? NaN : ((s ? -1 : 1) * Infinity)
-              } else {
-                m = m + Math.pow(2, mLen);
-                e = e - eBias;
-              }
-              return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-            }
-
-            function write (buffer, value, offset, isLE, mLen, nBytes) {
-              var e, m, c;
-              var eLen = nBytes * 8 - mLen - 1;
-              var eMax = (1 << eLen) - 1;
-              var eBias = eMax >> 1;
-              var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0);
-              var i = isLE ? 0 : (nBytes - 1);
-              var d = isLE ? 1 : -1;
-              var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
-
-              value = Math.abs(value);
-
-              if (isNaN(value) || value === Infinity) {
-                m = isNaN(value) ? 1 : 0;
-                e = eMax;
-              } else {
-                e = Math.floor(Math.log(value) / Math.LN2);
-                if (value * (c = Math.pow(2, -e)) < 1) {
-                  e--;
-                  c *= 2;
-                }
-                if (e + eBias >= 1) {
-                  value += rt / c;
-                } else {
-                  value += rt * Math.pow(2, 1 - eBias);
-                }
-                if (value * c >= 2) {
-                  e++;
-                  c /= 2;
-                }
-
-                if (e + eBias >= eMax) {
-                  m = 0;
-                  e = eMax;
-                } else if (e + eBias >= 1) {
-                  m = (value * c - 1) * Math.pow(2, mLen);
-                  e = e + eBias;
-                } else {
-                  m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-                  e = 0;
-                }
-              }
-
-              for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-              e = (e << mLen) | m;
-              eLen += mLen;
-              for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-              buffer[offset + i - d] |= s * 128;
-            }
-
-            var toString = {}.toString;
-
-            var isArray = Array.isArray || function (arr) {
-              return toString.call(arr) == '[object Array]';
-            };
-
-            var INSPECT_MAX_BYTES = 50;
-
-            /**
-             * If `Buffer.TYPED_ARRAY_SUPPORT`:
-             *   === true    Use Uint8Array implementation (fastest)
-             *   === false   Use Object implementation (most compatible, even IE6)
-             *
-             * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
-             * Opera 11.6+, iOS 4.2+.
-             *
-             * Due to various browser bugs, sometimes the Object implementation will be used even
-             * when the browser supports typed arrays.
-             *
-             * Note:
-             *
-             *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
-             *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
-             *
-             *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
-             *
-             *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
-             *     incorrect length in some situations.
-
-             * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
-             * get the Object implementation, which is slower but behaves correctly.
-             */
-            Buffer.TYPED_ARRAY_SUPPORT = global$1.TYPED_ARRAY_SUPPORT !== undefined
-              ? global$1.TYPED_ARRAY_SUPPORT
-              : true;
-
-            function kMaxLength () {
-              return Buffer.TYPED_ARRAY_SUPPORT
-                ? 0x7fffffff
-                : 0x3fffffff
-            }
-
-            function createBuffer (that, length) {
-              if (kMaxLength() < length) {
-                throw new RangeError('Invalid typed array length')
-              }
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                // Return an augmented `Uint8Array` instance, for best performance
-                that = new Uint8Array(length);
-                that.__proto__ = Buffer.prototype;
-              } else {
-                // Fallback: Return an object instance of the Buffer class
-                if (that === null) {
-                  that = new Buffer(length);
-                }
-                that.length = length;
-              }
-
-              return that
-            }
-
-            /**
-             * The Buffer constructor returns instances of `Uint8Array` that have their
-             * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
-             * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
-             * and the `Uint8Array` methods. Square bracket notation works as expected -- it
-             * returns a single octet.
-             *
-             * The `Uint8Array` prototype remains unmodified.
-             */
-
-            function Buffer (arg, encodingOrOffset, length) {
-              if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
-                return new Buffer(arg, encodingOrOffset, length)
-              }
-
-              // Common case.
-              if (typeof arg === 'number') {
-                if (typeof encodingOrOffset === 'string') {
-                  throw new Error(
-                    'If encoding is specified then the first argument must be a string'
-                  )
-                }
-                return allocUnsafe(this, arg)
-              }
-              return from(this, arg, encodingOrOffset, length)
-            }
-
-            Buffer.poolSize = 8192; // not used by this implementation
-
-            // TODO: Legacy, not needed anymore. Remove in next major version.
-            Buffer._augment = function (arr) {
-              arr.__proto__ = Buffer.prototype;
-              return arr
-            };
-
-            function from (that, value, encodingOrOffset, length) {
-              if (typeof value === 'number') {
-                throw new TypeError('"value" argument must not be a number')
-              }
-
-              if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
-                return fromArrayBuffer(that, value, encodingOrOffset, length)
-              }
-
-              if (typeof value === 'string') {
-                return fromString(that, value, encodingOrOffset)
-              }
-
-              return fromObject(that, value)
-            }
-
-            /**
-             * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
-             * if value is a number.
-             * Buffer.from(str[, encoding])
-             * Buffer.from(array)
-             * Buffer.from(buffer)
-             * Buffer.from(arrayBuffer[, byteOffset[, length]])
-             **/
-            Buffer.from = function (value, encodingOrOffset, length) {
-              return from(null, value, encodingOrOffset, length)
-            };
-
-            if (Buffer.TYPED_ARRAY_SUPPORT) {
-              Buffer.prototype.__proto__ = Uint8Array.prototype;
-              Buffer.__proto__ = Uint8Array;
-            }
-
-            function assertSize (size) {
-              if (typeof size !== 'number') {
-                throw new TypeError('"size" argument must be a number')
-              } else if (size < 0) {
-                throw new RangeError('"size" argument must not be negative')
-              }
-            }
-
-            function alloc (that, size, fill, encoding) {
-              assertSize(size);
-              if (size <= 0) {
-                return createBuffer(that, size)
-              }
-              if (fill !== undefined) {
-                // Only pay attention to encoding if it's a string. This
-                // prevents accidentally sending in a number that would
-                // be interpretted as a start offset.
-                return typeof encoding === 'string'
-                  ? createBuffer(that, size).fill(fill, encoding)
-                  : createBuffer(that, size).fill(fill)
-              }
-              return createBuffer(that, size)
-            }
-
-            /**
-             * Creates a new filled Buffer instance.
-             * alloc(size[, fill[, encoding]])
-             **/
-            Buffer.alloc = function (size, fill, encoding) {
-              return alloc(null, size, fill, encoding)
-            };
-
-            function allocUnsafe (that, size) {
-              assertSize(size);
-              that = createBuffer(that, size < 0 ? 0 : checked(size) | 0);
-              if (!Buffer.TYPED_ARRAY_SUPPORT) {
-                for (var i = 0; i < size; ++i) {
-                  that[i] = 0;
-                }
-              }
-              return that
-            }
-
-            /**
-             * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
-             * */
-            Buffer.allocUnsafe = function (size) {
-              return allocUnsafe(null, size)
-            };
-            /**
-             * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
-             */
-            Buffer.allocUnsafeSlow = function (size) {
-              return allocUnsafe(null, size)
-            };
-
-            function fromString (that, string, encoding) {
-              if (typeof encoding !== 'string' || encoding === '') {
-                encoding = 'utf8';
-              }
-
-              if (!Buffer.isEncoding(encoding)) {
-                throw new TypeError('"encoding" must be a valid string encoding')
-              }
-
-              var length = byteLength(string, encoding) | 0;
-              that = createBuffer(that, length);
-
-              var actual = that.write(string, encoding);
-
-              if (actual !== length) {
-                // Writing a hex string, for example, that contains invalid characters will
-                // cause everything after the first invalid character to be ignored. (e.g.
-                // 'abxxcd' will be treated as 'ab')
-                that = that.slice(0, actual);
-              }
-
-              return that
-            }
-
-            function fromArrayLike (that, array) {
-              var length = array.length < 0 ? 0 : checked(array.length) | 0;
-              that = createBuffer(that, length);
-              for (var i = 0; i < length; i += 1) {
-                that[i] = array[i] & 255;
-              }
-              return that
-            }
-
-            function fromArrayBuffer (that, array, byteOffset, length) {
-              array.byteLength; // this throws if `array` is not a valid ArrayBuffer
-
-              if (byteOffset < 0 || array.byteLength < byteOffset) {
-                throw new RangeError('\'offset\' is out of bounds')
-              }
-
-              if (array.byteLength < byteOffset + (length || 0)) {
-                throw new RangeError('\'length\' is out of bounds')
-              }
-
-              if (byteOffset === undefined && length === undefined) {
-                array = new Uint8Array(array);
-              } else if (length === undefined) {
-                array = new Uint8Array(array, byteOffset);
-              } else {
-                array = new Uint8Array(array, byteOffset, length);
-              }
-
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                // Return an augmented `Uint8Array` instance, for best performance
-                that = array;
-                that.__proto__ = Buffer.prototype;
-              } else {
-                // Fallback: Return an object instance of the Buffer class
-                that = fromArrayLike(that, array);
-              }
-              return that
-            }
-
-            function fromObject (that, obj) {
-              if (internalIsBuffer(obj)) {
-                var len = checked(obj.length) | 0;
-                that = createBuffer(that, len);
-
-                if (that.length === 0) {
-                  return that
-                }
-
-                obj.copy(that, 0, 0, len);
-                return that
-              }
-
-              if (obj) {
-                if ((typeof ArrayBuffer !== 'undefined' &&
-                    obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
-                  if (typeof obj.length !== 'number' || isnan(obj.length)) {
-                    return createBuffer(that, 0)
-                  }
-                  return fromArrayLike(that, obj)
-                }
-
-                if (obj.type === 'Buffer' && isArray(obj.data)) {
-                  return fromArrayLike(that, obj.data)
-                }
-              }
-
-              throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
-            }
-
-            function checked (length) {
-              // Note: cannot use `length < kMaxLength()` here because that fails when
-              // length is NaN (which is otherwise coerced to zero.)
-              if (length >= kMaxLength()) {
-                throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
-                                     'size: 0x' + kMaxLength().toString(16) + ' bytes')
-              }
-              return length | 0
-            }
-            Buffer.isBuffer = isBuffer;
-            function internalIsBuffer (b) {
-              return !!(b != null && b._isBuffer)
-            }
-
-            Buffer.compare = function compare (a, b) {
-              if (!internalIsBuffer(a) || !internalIsBuffer(b)) {
-                throw new TypeError('Arguments must be Buffers')
-              }
-
-              if (a === b) return 0
-
-              var x = a.length;
-              var y = b.length;
-
-              for (var i = 0, len = Math.min(x, y); i < len; ++i) {
-                if (a[i] !== b[i]) {
-                  x = a[i];
-                  y = b[i];
-                  break
-                }
-              }
-
-              if (x < y) return -1
-              if (y < x) return 1
-              return 0
-            };
-
-            Buffer.isEncoding = function isEncoding (encoding) {
-              switch (String(encoding).toLowerCase()) {
-                case 'hex':
-                case 'utf8':
-                case 'utf-8':
-                case 'ascii':
-                case 'latin1':
-                case 'binary':
-                case 'base64':
-                case 'ucs2':
-                case 'ucs-2':
-                case 'utf16le':
-                case 'utf-16le':
-                  return true
-                default:
-                  return false
-              }
-            };
-
-            Buffer.concat = function concat (list, length) {
-              if (!isArray(list)) {
-                throw new TypeError('"list" argument must be an Array of Buffers')
-              }
-
-              if (list.length === 0) {
-                return Buffer.alloc(0)
-              }
-
-              var i;
-              if (length === undefined) {
-                length = 0;
-                for (i = 0; i < list.length; ++i) {
-                  length += list[i].length;
-                }
-              }
-
-              var buffer = Buffer.allocUnsafe(length);
-              var pos = 0;
-              for (i = 0; i < list.length; ++i) {
-                var buf = list[i];
-                if (!internalIsBuffer(buf)) {
-                  throw new TypeError('"list" argument must be an Array of Buffers')
-                }
-                buf.copy(buffer, pos);
-                pos += buf.length;
-              }
-              return buffer
-            };
-
-            function byteLength (string, encoding) {
-              if (internalIsBuffer(string)) {
-                return string.length
-              }
-              if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
-                  (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
-                return string.byteLength
-              }
-              if (typeof string !== 'string') {
-                string = '' + string;
-              }
-
-              var len = string.length;
-              if (len === 0) return 0
-
-              // Use a for loop to avoid recursion
-              var loweredCase = false;
-              for (;;) {
-                switch (encoding) {
-                  case 'ascii':
-                  case 'latin1':
-                  case 'binary':
-                    return len
-                  case 'utf8':
-                  case 'utf-8':
-                  case undefined:
-                    return utf8ToBytes(string).length
-                  case 'ucs2':
-                  case 'ucs-2':
-                  case 'utf16le':
-                  case 'utf-16le':
-                    return len * 2
-                  case 'hex':
-                    return len >>> 1
-                  case 'base64':
-                    return base64ToBytes(string).length
-                  default:
-                    if (loweredCase) return utf8ToBytes(string).length // assume utf8
-                    encoding = ('' + encoding).toLowerCase();
-                    loweredCase = true;
-                }
-              }
-            }
-            Buffer.byteLength = byteLength;
-
-            function slowToString (encoding, start, end) {
-              var loweredCase = false;
-
-              // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
-              // property of a typed array.
-
-              // This behaves neither like String nor Uint8Array in that we set start/end
-              // to their upper/lower bounds if the value passed is out of range.
-              // undefined is handled specially as per ECMA-262 6th Edition,
-              // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
-              if (start === undefined || start < 0) {
-                start = 0;
-              }
-              // Return early if start > this.length. Done here to prevent potential uint32
-              // coercion fail below.
-              if (start > this.length) {
-                return ''
-              }
-
-              if (end === undefined || end > this.length) {
-                end = this.length;
-              }
-
-              if (end <= 0) {
-                return ''
-              }
-
-              // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
-              end >>>= 0;
-              start >>>= 0;
-
-              if (end <= start) {
-                return ''
-              }
-
-              if (!encoding) encoding = 'utf8';
-
-              while (true) {
-                switch (encoding) {
-                  case 'hex':
-                    return hexSlice(this, start, end)
-
-                  case 'utf8':
-                  case 'utf-8':
-                    return utf8Slice(this, start, end)
-
-                  case 'ascii':
-                    return asciiSlice(this, start, end)
-
-                  case 'latin1':
-                  case 'binary':
-                    return latin1Slice(this, start, end)
-
-                  case 'base64':
-                    return base64Slice(this, start, end)
-
-                  case 'ucs2':
-                  case 'ucs-2':
-                  case 'utf16le':
-                  case 'utf-16le':
-                    return utf16leSlice(this, start, end)
-
-                  default:
-                    if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-                    encoding = (encoding + '').toLowerCase();
-                    loweredCase = true;
-                }
-              }
-            }
-
-            // The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
-            // Buffer instances.
-            Buffer.prototype._isBuffer = true;
-
-            function swap (b, n, m) {
-              var i = b[n];
-              b[n] = b[m];
-              b[m] = i;
-            }
-
-            Buffer.prototype.swap16 = function swap16 () {
-              var len = this.length;
-              if (len % 2 !== 0) {
-                throw new RangeError('Buffer size must be a multiple of 16-bits')
-              }
-              for (var i = 0; i < len; i += 2) {
-                swap(this, i, i + 1);
-              }
-              return this
-            };
-
-            Buffer.prototype.swap32 = function swap32 () {
-              var len = this.length;
-              if (len % 4 !== 0) {
-                throw new RangeError('Buffer size must be a multiple of 32-bits')
-              }
-              for (var i = 0; i < len; i += 4) {
-                swap(this, i, i + 3);
-                swap(this, i + 1, i + 2);
-              }
-              return this
-            };
-
-            Buffer.prototype.swap64 = function swap64 () {
-              var len = this.length;
-              if (len % 8 !== 0) {
-                throw new RangeError('Buffer size must be a multiple of 64-bits')
-              }
-              for (var i = 0; i < len; i += 8) {
-                swap(this, i, i + 7);
-                swap(this, i + 1, i + 6);
-                swap(this, i + 2, i + 5);
-                swap(this, i + 3, i + 4);
-              }
-              return this
-            };
-
-            Buffer.prototype.toString = function toString () {
-              var length = this.length | 0;
-              if (length === 0) return ''
-              if (arguments.length === 0) return utf8Slice(this, 0, length)
-              return slowToString.apply(this, arguments)
-            };
-
-            Buffer.prototype.equals = function equals (b) {
-              if (!internalIsBuffer(b)) throw new TypeError('Argument must be a Buffer')
-              if (this === b) return true
-              return Buffer.compare(this, b) === 0
-            };
-
-            Buffer.prototype.inspect = function inspect () {
-              var str = '';
-              var max = INSPECT_MAX_BYTES;
-              if (this.length > 0) {
-                str = this.toString('hex', 0, max).match(/.{2}/g).join(' ');
-                if (this.length > max) str += ' ... ';
-              }
-              return '<Buffer ' + str + '>'
-            };
-
-            Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
-              if (!internalIsBuffer(target)) {
-                throw new TypeError('Argument must be a Buffer')
-              }
-
-              if (start === undefined) {
-                start = 0;
-              }
-              if (end === undefined) {
-                end = target ? target.length : 0;
-              }
-              if (thisStart === undefined) {
-                thisStart = 0;
-              }
-              if (thisEnd === undefined) {
-                thisEnd = this.length;
-              }
-
-              if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
-                throw new RangeError('out of range index')
-              }
-
-              if (thisStart >= thisEnd && start >= end) {
-                return 0
-              }
-              if (thisStart >= thisEnd) {
-                return -1
-              }
-              if (start >= end) {
-                return 1
-              }
-
-              start >>>= 0;
-              end >>>= 0;
-              thisStart >>>= 0;
-              thisEnd >>>= 0;
-
-              if (this === target) return 0
-
-              var x = thisEnd - thisStart;
-              var y = end - start;
-              var len = Math.min(x, y);
-
-              var thisCopy = this.slice(thisStart, thisEnd);
-              var targetCopy = target.slice(start, end);
-
-              for (var i = 0; i < len; ++i) {
-                if (thisCopy[i] !== targetCopy[i]) {
-                  x = thisCopy[i];
-                  y = targetCopy[i];
-                  break
-                }
-              }
-
-              if (x < y) return -1
-              if (y < x) return 1
-              return 0
-            };
-
-            // Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
-            // OR the last index of `val` in `buffer` at offset <= `byteOffset`.
-            //
-            // Arguments:
-            // - buffer - a Buffer to search
-            // - val - a string, Buffer, or number
-            // - byteOffset - an index into `buffer`; will be clamped to an int32
-            // - encoding - an optional encoding, relevant is val is a string
-            // - dir - true for indexOf, false for lastIndexOf
-            function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
-              // Empty buffer means no match
-              if (buffer.length === 0) return -1
-
-              // Normalize byteOffset
-              if (typeof byteOffset === 'string') {
-                encoding = byteOffset;
-                byteOffset = 0;
-              } else if (byteOffset > 0x7fffffff) {
-                byteOffset = 0x7fffffff;
-              } else if (byteOffset < -0x80000000) {
-                byteOffset = -0x80000000;
-              }
-              byteOffset = +byteOffset;  // Coerce to Number.
-              if (isNaN(byteOffset)) {
-                // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
-                byteOffset = dir ? 0 : (buffer.length - 1);
-              }
-
-              // Normalize byteOffset: negative offsets start from the end of the buffer
-              if (byteOffset < 0) byteOffset = buffer.length + byteOffset;
-              if (byteOffset >= buffer.length) {
-                if (dir) return -1
-                else byteOffset = buffer.length - 1;
-              } else if (byteOffset < 0) {
-                if (dir) byteOffset = 0;
-                else return -1
-              }
-
-              // Normalize val
-              if (typeof val === 'string') {
-                val = Buffer.from(val, encoding);
-              }
-
-              // Finally, search either indexOf (if dir is true) or lastIndexOf
-              if (internalIsBuffer(val)) {
-                // Special case: looking for empty string/buffer always fails
-                if (val.length === 0) {
-                  return -1
-                }
-                return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
-              } else if (typeof val === 'number') {
-                val = val & 0xFF; // Search for a byte value [0-255]
-                if (Buffer.TYPED_ARRAY_SUPPORT &&
-                    typeof Uint8Array.prototype.indexOf === 'function') {
-                  if (dir) {
-                    return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
-                  } else {
-                    return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
-                  }
-                }
-                return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
-              }
-
-              throw new TypeError('val must be string, number or Buffer')
-            }
-
-            function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
-              var indexSize = 1;
-              var arrLength = arr.length;
-              var valLength = val.length;
-
-              if (encoding !== undefined) {
-                encoding = String(encoding).toLowerCase();
-                if (encoding === 'ucs2' || encoding === 'ucs-2' ||
-                    encoding === 'utf16le' || encoding === 'utf-16le') {
-                  if (arr.length < 2 || val.length < 2) {
-                    return -1
-                  }
-                  indexSize = 2;
-                  arrLength /= 2;
-                  valLength /= 2;
-                  byteOffset /= 2;
-                }
-              }
-
-              function read (buf, i) {
-                if (indexSize === 1) {
-                  return buf[i]
-                } else {
-                  return buf.readUInt16BE(i * indexSize)
-                }
-              }
-
-              var i;
-              if (dir) {
-                var foundIndex = -1;
-                for (i = byteOffset; i < arrLength; i++) {
-                  if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-                    if (foundIndex === -1) foundIndex = i;
-                    if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
-                  } else {
-                    if (foundIndex !== -1) i -= i - foundIndex;
-                    foundIndex = -1;
-                  }
-                }
-              } else {
-                if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength;
-                for (i = byteOffset; i >= 0; i--) {
-                  var found = true;
-                  for (var j = 0; j < valLength; j++) {
-                    if (read(arr, i + j) !== read(val, j)) {
-                      found = false;
-                      break
-                    }
-                  }
-                  if (found) return i
-                }
-              }
-
-              return -1
-            }
-
-            Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
-              return this.indexOf(val, byteOffset, encoding) !== -1
-            };
-
-            Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
-              return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
-            };
-
-            Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
-              return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
-            };
-
-            function hexWrite (buf, string, offset, length) {
-              offset = Number(offset) || 0;
-              var remaining = buf.length - offset;
-              if (!length) {
-                length = remaining;
-              } else {
-                length = Number(length);
-                if (length > remaining) {
-                  length = remaining;
-                }
-              }
-
-              // must be an even number of digits
-              var strLen = string.length;
-              if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
-
-              if (length > strLen / 2) {
-                length = strLen / 2;
-              }
-              for (var i = 0; i < length; ++i) {
-                var parsed = parseInt(string.substr(i * 2, 2), 16);
-                if (isNaN(parsed)) return i
-                buf[offset + i] = parsed;
-              }
-              return i
-            }
-
-            function utf8Write (buf, string, offset, length) {
-              return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
-            }
-
-            function asciiWrite (buf, string, offset, length) {
-              return blitBuffer(asciiToBytes(string), buf, offset, length)
-            }
-
-            function latin1Write (buf, string, offset, length) {
-              return asciiWrite(buf, string, offset, length)
-            }
-
-            function base64Write (buf, string, offset, length) {
-              return blitBuffer(base64ToBytes(string), buf, offset, length)
-            }
-
-            function ucs2Write (buf, string, offset, length) {
-              return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
-            }
-
-            Buffer.prototype.write = function write (string, offset, length, encoding) {
-              // Buffer#write(string)
-              if (offset === undefined) {
-                encoding = 'utf8';
-                length = this.length;
-                offset = 0;
-              // Buffer#write(string, encoding)
-              } else if (length === undefined && typeof offset === 'string') {
-                encoding = offset;
-                length = this.length;
-                offset = 0;
-              // Buffer#write(string, offset[, length][, encoding])
-              } else if (isFinite(offset)) {
-                offset = offset | 0;
-                if (isFinite(length)) {
-                  length = length | 0;
-                  if (encoding === undefined) encoding = 'utf8';
-                } else {
-                  encoding = length;
-                  length = undefined;
-                }
-              // legacy write(string, encoding, offset, length) - remove in v0.13
-              } else {
-                throw new Error(
-                  'Buffer.write(string, encoding, offset[, length]) is no longer supported'
-                )
-              }
-
-              var remaining = this.length - offset;
-              if (length === undefined || length > remaining) length = remaining;
-
-              if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
-                throw new RangeError('Attempt to write outside buffer bounds')
-              }
-
-              if (!encoding) encoding = 'utf8';
-
-              var loweredCase = false;
-              for (;;) {
-                switch (encoding) {
-                  case 'hex':
-                    return hexWrite(this, string, offset, length)
-
-                  case 'utf8':
-                  case 'utf-8':
-                    return utf8Write(this, string, offset, length)
-
-                  case 'ascii':
-                    return asciiWrite(this, string, offset, length)
-
-                  case 'latin1':
-                  case 'binary':
-                    return latin1Write(this, string, offset, length)
-
-                  case 'base64':
-                    // Warning: maxLength not taken into account in base64Write
-                    return base64Write(this, string, offset, length)
-
-                  case 'ucs2':
-                  case 'ucs-2':
-                  case 'utf16le':
-                  case 'utf-16le':
-                    return ucs2Write(this, string, offset, length)
-
-                  default:
-                    if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-                    encoding = ('' + encoding).toLowerCase();
-                    loweredCase = true;
-                }
-              }
-            };
-
-            Buffer.prototype.toJSON = function toJSON () {
-              return {
-                type: 'Buffer',
-                data: Array.prototype.slice.call(this._arr || this, 0)
-              }
-            };
-
-            function base64Slice (buf, start, end) {
-              if (start === 0 && end === buf.length) {
-                return fromByteArray(buf)
-              } else {
-                return fromByteArray(buf.slice(start, end))
-              }
-            }
-
-            function utf8Slice (buf, start, end) {
-              end = Math.min(buf.length, end);
-              var res = [];
-
-              var i = start;
-              while (i < end) {
-                var firstByte = buf[i];
-                var codePoint = null;
-                var bytesPerSequence = (firstByte > 0xEF) ? 4
-                  : (firstByte > 0xDF) ? 3
-                  : (firstByte > 0xBF) ? 2
-                  : 1;
-
-                if (i + bytesPerSequence <= end) {
-                  var secondByte, thirdByte, fourthByte, tempCodePoint;
-
-                  switch (bytesPerSequence) {
-                    case 1:
-                      if (firstByte < 0x80) {
-                        codePoint = firstByte;
-                      }
-                      break
-                    case 2:
-                      secondByte = buf[i + 1];
-                      if ((secondByte & 0xC0) === 0x80) {
-                        tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F);
-                        if (tempCodePoint > 0x7F) {
-                          codePoint = tempCodePoint;
-                        }
-                      }
-                      break
-                    case 3:
-                      secondByte = buf[i + 1];
-                      thirdByte = buf[i + 2];
-                      if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
-                        tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F);
-                        if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
-                          codePoint = tempCodePoint;
-                        }
-                      }
-                      break
-                    case 4:
-                      secondByte = buf[i + 1];
-                      thirdByte = buf[i + 2];
-                      fourthByte = buf[i + 3];
-                      if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
-                        tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F);
-                        if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
-                          codePoint = tempCodePoint;
-                        }
-                      }
-                  }
-                }
-
-                if (codePoint === null) {
-                  // we did not generate a valid codePoint so insert a
-                  // replacement char (U+FFFD) and advance only 1 byte
-                  codePoint = 0xFFFD;
-                  bytesPerSequence = 1;
-                } else if (codePoint > 0xFFFF) {
-                  // encode to utf16 (surrogate pair dance)
-                  codePoint -= 0x10000;
-                  res.push(codePoint >>> 10 & 0x3FF | 0xD800);
-                  codePoint = 0xDC00 | codePoint & 0x3FF;
-                }
-
-                res.push(codePoint);
-                i += bytesPerSequence;
-              }
-
-              return decodeCodePointsArray(res)
-            }
-
-            // Based on http://stackoverflow.com/a/22747272/680742, the browser with
-            // the lowest limit is Chrome, with 0x10000 args.
-            // We go 1 magnitude less, for safety
-            var MAX_ARGUMENTS_LENGTH = 0x1000;
-
-            function decodeCodePointsArray (codePoints) {
-              var len = codePoints.length;
-              if (len <= MAX_ARGUMENTS_LENGTH) {
-                return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
-              }
-
-              // Decode in chunks to avoid "call stack size exceeded".
-              var res = '';
-              var i = 0;
-              while (i < len) {
-                res += String.fromCharCode.apply(
-                  String,
-                  codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
-                );
-              }
-              return res
-            }
-
-            function asciiSlice (buf, start, end) {
-              var ret = '';
-              end = Math.min(buf.length, end);
-
-              for (var i = start; i < end; ++i) {
-                ret += String.fromCharCode(buf[i] & 0x7F);
-              }
-              return ret
-            }
-
-            function latin1Slice (buf, start, end) {
-              var ret = '';
-              end = Math.min(buf.length, end);
-
-              for (var i = start; i < end; ++i) {
-                ret += String.fromCharCode(buf[i]);
-              }
-              return ret
-            }
-
-            function hexSlice (buf, start, end) {
-              var len = buf.length;
-
-              if (!start || start < 0) start = 0;
-              if (!end || end < 0 || end > len) end = len;
-
-              var out = '';
-              for (var i = start; i < end; ++i) {
-                out += toHex(buf[i]);
-              }
-              return out
-            }
-
-            function utf16leSlice (buf, start, end) {
-              var bytes = buf.slice(start, end);
-              var res = '';
-              for (var i = 0; i < bytes.length; i += 2) {
-                res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256);
-              }
-              return res
-            }
-
-            Buffer.prototype.slice = function slice (start, end) {
-              var len = this.length;
-              start = ~~start;
-              end = end === undefined ? len : ~~end;
-
-              if (start < 0) {
-                start += len;
-                if (start < 0) start = 0;
-              } else if (start > len) {
-                start = len;
-              }
-
-              if (end < 0) {
-                end += len;
-                if (end < 0) end = 0;
-              } else if (end > len) {
-                end = len;
-              }
-
-              if (end < start) end = start;
-
-              var newBuf;
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                newBuf = this.subarray(start, end);
-                newBuf.__proto__ = Buffer.prototype;
-              } else {
-                var sliceLen = end - start;
-                newBuf = new Buffer(sliceLen, undefined);
-                for (var i = 0; i < sliceLen; ++i) {
-                  newBuf[i] = this[i + start];
-                }
-              }
-
-              return newBuf
-            };
-
-            /*
-             * Need to make sure that buffer isn't trying to write out of bounds.
-             */
-            function checkOffset (offset, ext, length) {
-              if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
-              if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
-            }
-
-            Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
-              offset = offset | 0;
-              byteLength = byteLength | 0;
-              if (!noAssert) checkOffset(offset, byteLength, this.length);
-
-              var val = this[offset];
-              var mul = 1;
-              var i = 0;
-              while (++i < byteLength && (mul *= 0x100)) {
-                val += this[offset + i] * mul;
-              }
-
-              return val
-            };
-
-            Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
-              offset = offset | 0;
-              byteLength = byteLength | 0;
-              if (!noAssert) {
-                checkOffset(offset, byteLength, this.length);
-              }
-
-              var val = this[offset + --byteLength];
-              var mul = 1;
-              while (byteLength > 0 && (mul *= 0x100)) {
-                val += this[offset + --byteLength] * mul;
-              }
-
-              return val
-            };
-
-            Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 1, this.length);
-              return this[offset]
-            };
-
-            Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 2, this.length);
-              return this[offset] | (this[offset + 1] << 8)
-            };
-
-            Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 2, this.length);
-              return (this[offset] << 8) | this[offset + 1]
-            };
-
-            Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 4, this.length);
-
-              return ((this[offset]) |
-                  (this[offset + 1] << 8) |
-                  (this[offset + 2] << 16)) +
-                  (this[offset + 3] * 0x1000000)
-            };
-
-            Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 4, this.length);
-
-              return (this[offset] * 0x1000000) +
-                ((this[offset + 1] << 16) |
-                (this[offset + 2] << 8) |
-                this[offset + 3])
-            };
-
-            Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
-              offset = offset | 0;
-              byteLength = byteLength | 0;
-              if (!noAssert) checkOffset(offset, byteLength, this.length);
-
-              var val = this[offset];
-              var mul = 1;
-              var i = 0;
-              while (++i < byteLength && (mul *= 0x100)) {
-                val += this[offset + i] * mul;
-              }
-              mul *= 0x80;
-
-              if (val >= mul) val -= Math.pow(2, 8 * byteLength);
-
-              return val
-            };
-
-            Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
-              offset = offset | 0;
-              byteLength = byteLength | 0;
-              if (!noAssert) checkOffset(offset, byteLength, this.length);
-
-              var i = byteLength;
-              var mul = 1;
-              var val = this[offset + --i];
-              while (i > 0 && (mul *= 0x100)) {
-                val += this[offset + --i] * mul;
-              }
-              mul *= 0x80;
-
-              if (val >= mul) val -= Math.pow(2, 8 * byteLength);
-
-              return val
-            };
-
-            Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 1, this.length);
-              if (!(this[offset] & 0x80)) return (this[offset])
-              return ((0xff - this[offset] + 1) * -1)
-            };
-
-            Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 2, this.length);
-              var val = this[offset] | (this[offset + 1] << 8);
-              return (val & 0x8000) ? val | 0xFFFF0000 : val
-            };
-
-            Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 2, this.length);
-              var val = this[offset + 1] | (this[offset] << 8);
-              return (val & 0x8000) ? val | 0xFFFF0000 : val
-            };
-
-            Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 4, this.length);
-
-              return (this[offset]) |
-                (this[offset + 1] << 8) |
-                (this[offset + 2] << 16) |
-                (this[offset + 3] << 24)
-            };
-
-            Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 4, this.length);
-
-              return (this[offset] << 24) |
-                (this[offset + 1] << 16) |
-                (this[offset + 2] << 8) |
-                (this[offset + 3])
-            };
-
-            Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 4, this.length);
-              return read(this, offset, true, 23, 4)
-            };
-
-            Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 4, this.length);
-              return read(this, offset, false, 23, 4)
-            };
-
-            Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 8, this.length);
-              return read(this, offset, true, 52, 8)
-            };
-
-            Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
-              if (!noAssert) checkOffset(offset, 8, this.length);
-              return read(this, offset, false, 52, 8)
-            };
-
-            function checkInt (buf, value, offset, ext, max, min) {
-              if (!internalIsBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
-              if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
-              if (offset + ext > buf.length) throw new RangeError('Index out of range')
-            }
-
-            Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              byteLength = byteLength | 0;
-              if (!noAssert) {
-                var maxBytes = Math.pow(2, 8 * byteLength) - 1;
-                checkInt(this, value, offset, byteLength, maxBytes, 0);
-              }
-
-              var mul = 1;
-              var i = 0;
-              this[offset] = value & 0xFF;
-              while (++i < byteLength && (mul *= 0x100)) {
-                this[offset + i] = (value / mul) & 0xFF;
-              }
-
-              return offset + byteLength
-            };
-
-            Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              byteLength = byteLength | 0;
-              if (!noAssert) {
-                var maxBytes = Math.pow(2, 8 * byteLength) - 1;
-                checkInt(this, value, offset, byteLength, maxBytes, 0);
-              }
-
-              var i = byteLength - 1;
-              var mul = 1;
-              this[offset + i] = value & 0xFF;
-              while (--i >= 0 && (mul *= 0x100)) {
-                this[offset + i] = (value / mul) & 0xFF;
-              }
-
-              return offset + byteLength
-            };
-
-            Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0);
-              if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
-              this[offset] = (value & 0xff);
-              return offset + 1
-            };
-
-            function objectWriteUInt16 (buf, value, offset, littleEndian) {
-              if (value < 0) value = 0xffff + value + 1;
-              for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
-                buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
-                  (littleEndian ? i : 1 - i) * 8;
-              }
-            }
-
-            Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset] = (value & 0xff);
-                this[offset + 1] = (value >>> 8);
-              } else {
-                objectWriteUInt16(this, value, offset, true);
-              }
-              return offset + 2
-            };
-
-            Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset] = (value >>> 8);
-                this[offset + 1] = (value & 0xff);
-              } else {
-                objectWriteUInt16(this, value, offset, false);
-              }
-              return offset + 2
-            };
-
-            function objectWriteUInt32 (buf, value, offset, littleEndian) {
-              if (value < 0) value = 0xffffffff + value + 1;
-              for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
-                buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff;
-              }
-            }
-
-            Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset + 3] = (value >>> 24);
-                this[offset + 2] = (value >>> 16);
-                this[offset + 1] = (value >>> 8);
-                this[offset] = (value & 0xff);
-              } else {
-                objectWriteUInt32(this, value, offset, true);
-              }
-              return offset + 4
-            };
-
-            Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset] = (value >>> 24);
-                this[offset + 1] = (value >>> 16);
-                this[offset + 2] = (value >>> 8);
-                this[offset + 3] = (value & 0xff);
-              } else {
-                objectWriteUInt32(this, value, offset, false);
-              }
-              return offset + 4
-            };
-
-            Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) {
-                var limit = Math.pow(2, 8 * byteLength - 1);
-
-                checkInt(this, value, offset, byteLength, limit - 1, -limit);
-              }
-
-              var i = 0;
-              var mul = 1;
-              var sub = 0;
-              this[offset] = value & 0xFF;
-              while (++i < byteLength && (mul *= 0x100)) {
-                if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
-                  sub = 1;
-                }
-                this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
-              }
-
-              return offset + byteLength
-            };
-
-            Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) {
-                var limit = Math.pow(2, 8 * byteLength - 1);
-
-                checkInt(this, value, offset, byteLength, limit - 1, -limit);
-              }
-
-              var i = byteLength - 1;
-              var mul = 1;
-              var sub = 0;
-              this[offset + i] = value & 0xFF;
-              while (--i >= 0 && (mul *= 0x100)) {
-                if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
-                  sub = 1;
-                }
-                this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
-              }
-
-              return offset + byteLength
-            };
-
-            Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80);
-              if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
-              if (value < 0) value = 0xff + value + 1;
-              this[offset] = (value & 0xff);
-              return offset + 1
-            };
-
-            Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset] = (value & 0xff);
-                this[offset + 1] = (value >>> 8);
-              } else {
-                objectWriteUInt16(this, value, offset, true);
-              }
-              return offset + 2
-            };
-
-            Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset] = (value >>> 8);
-                this[offset + 1] = (value & 0xff);
-              } else {
-                objectWriteUInt16(this, value, offset, false);
-              }
-              return offset + 2
-            };
-
-            Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset] = (value & 0xff);
-                this[offset + 1] = (value >>> 8);
-                this[offset + 2] = (value >>> 16);
-                this[offset + 3] = (value >>> 24);
-              } else {
-                objectWriteUInt32(this, value, offset, true);
-              }
-              return offset + 4
-            };
-
-            Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
-              value = +value;
-              offset = offset | 0;
-              if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
-              if (value < 0) value = 0xffffffff + value + 1;
-              if (Buffer.TYPED_ARRAY_SUPPORT) {
-                this[offset] = (value >>> 24);
-                this[offset + 1] = (value >>> 16);
-                this[offset + 2] = (value >>> 8);
-                this[offset + 3] = (value & 0xff);
-              } else {
-                objectWriteUInt32(this, value, offset, false);
-              }
-              return offset + 4
-            };
-
-            function checkIEEE754 (buf, value, offset, ext, max, min) {
-              if (offset + ext > buf.length) throw new RangeError('Index out of range')
-              if (offset < 0) throw new RangeError('Index out of range')
-            }
-
-            function writeFloat (buf, value, offset, littleEndian, noAssert) {
-              if (!noAssert) {
-                checkIEEE754(buf, value, offset, 4);
-              }
-              write(buf, value, offset, littleEndian, 23, 4);
-              return offset + 4
-            }
-
-            Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
-              return writeFloat(this, value, offset, true, noAssert)
-            };
-
-            Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
-              return writeFloat(this, value, offset, false, noAssert)
-            };
-
-            function writeDouble (buf, value, offset, littleEndian, noAssert) {
-              if (!noAssert) {
-                checkIEEE754(buf, value, offset, 8);
-              }
-              write(buf, value, offset, littleEndian, 52, 8);
-              return offset + 8
-            }
-
-            Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
-              return writeDouble(this, value, offset, true, noAssert)
-            };
-
-            Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
-              return writeDouble(this, value, offset, false, noAssert)
-            };
-
-            // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-            Buffer.prototype.copy = function copy (target, targetStart, start, end) {
-              if (!start) start = 0;
-              if (!end && end !== 0) end = this.length;
-              if (targetStart >= target.length) targetStart = target.length;
-              if (!targetStart) targetStart = 0;
-              if (end > 0 && end < start) end = start;
-
-              // Copy 0 bytes; we're done
-              if (end === start) return 0
-              if (target.length === 0 || this.length === 0) return 0
-
-              // Fatal error conditions
-              if (targetStart < 0) {
-                throw new RangeError('targetStart out of bounds')
-              }
-              if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
-              if (end < 0) throw new RangeError('sourceEnd out of bounds')
-
-              // Are we oob?
-              if (end > this.length) end = this.length;
-              if (target.length - targetStart < end - start) {
-                end = target.length - targetStart + start;
-              }
-
-              var len = end - start;
-              var i;
-
-              if (this === target && start < targetStart && targetStart < end) {
-                // descending copy from end
-                for (i = len - 1; i >= 0; --i) {
-                  target[i + targetStart] = this[i + start];
-                }
-              } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
-                // ascending copy from start
-                for (i = 0; i < len; ++i) {
-                  target[i + targetStart] = this[i + start];
-                }
-              } else {
-                Uint8Array.prototype.set.call(
-                  target,
-                  this.subarray(start, start + len),
-                  targetStart
-                );
-              }
-
-              return len
-            };
-
-            // Usage:
-            //    buffer.fill(number[, offset[, end]])
-            //    buffer.fill(buffer[, offset[, end]])
-            //    buffer.fill(string[, offset[, end]][, encoding])
-            Buffer.prototype.fill = function fill (val, start, end, encoding) {
-              // Handle string cases:
-              if (typeof val === 'string') {
-                if (typeof start === 'string') {
-                  encoding = start;
-                  start = 0;
-                  end = this.length;
-                } else if (typeof end === 'string') {
-                  encoding = end;
-                  end = this.length;
-                }
-                if (val.length === 1) {
-                  var code = val.charCodeAt(0);
-                  if (code < 256) {
-                    val = code;
-                  }
-                }
-                if (encoding !== undefined && typeof encoding !== 'string') {
-                  throw new TypeError('encoding must be a string')
-                }
-                if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
-                  throw new TypeError('Unknown encoding: ' + encoding)
-                }
-              } else if (typeof val === 'number') {
-                val = val & 255;
-              }
-
-              // Invalid ranges are not set to a default, so can range check early.
-              if (start < 0 || this.length < start || this.length < end) {
-                throw new RangeError('Out of range index')
-              }
-
-              if (end <= start) {
-                return this
-              }
-
-              start = start >>> 0;
-              end = end === undefined ? this.length : end >>> 0;
-
-              if (!val) val = 0;
-
-              var i;
-              if (typeof val === 'number') {
-                for (i = start; i < end; ++i) {
-                  this[i] = val;
-                }
-              } else {
-                var bytes = internalIsBuffer(val)
-                  ? val
-                  : utf8ToBytes(new Buffer(val, encoding).toString());
-                var len = bytes.length;
-                for (i = 0; i < end - start; ++i) {
-                  this[i + start] = bytes[i % len];
-                }
-              }
-
-              return this
-            };
-
-            // HELPER FUNCTIONS
-            // ================
-
-            var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g;
-
-            function base64clean (str) {
-              // Node strips out invalid characters like \n and \t from the string, base64-js does not
-              str = stringtrim(str).replace(INVALID_BASE64_RE, '');
-              // Node converts strings with length < 2 to ''
-              if (str.length < 2) return ''
-              // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
-              while (str.length % 4 !== 0) {
-                str = str + '=';
-              }
-              return str
-            }
-
-            function stringtrim (str) {
-              if (str.trim) return str.trim()
-              return str.replace(/^\s+|\s+$/g, '')
-            }
-
-            function toHex (n) {
-              if (n < 16) return '0' + n.toString(16)
-              return n.toString(16)
-            }
-
-            function utf8ToBytes (string, units) {
-              units = units || Infinity;
-              var codePoint;
-              var length = string.length;
-              var leadSurrogate = null;
-              var bytes = [];
-
-              for (var i = 0; i < length; ++i) {
-                codePoint = string.charCodeAt(i);
-
-                // is surrogate component
-                if (codePoint > 0xD7FF && codePoint < 0xE000) {
-                  // last char was a lead
-                  if (!leadSurrogate) {
-                    // no lead yet
-                    if (codePoint > 0xDBFF) {
-                      // unexpected trail
-                      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-                      continue
-                    } else if (i + 1 === length) {
-                      // unpaired lead
-                      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-                      continue
-                    }
-
-                    // valid lead
-                    leadSurrogate = codePoint;
-
-                    continue
-                  }
-
-                  // 2 leads in a row
-                  if (codePoint < 0xDC00) {
-                    if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-                    leadSurrogate = codePoint;
-                    continue
-                  }
-
-                  // valid surrogate pair
-                  codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000;
-                } else if (leadSurrogate) {
-                  // valid bmp char, but last char was a lead
-                  if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-                }
-
-                leadSurrogate = null;
-
-                // encode utf8
-                if (codePoint < 0x80) {
-                  if ((units -= 1) < 0) break
-                  bytes.push(codePoint);
-                } else if (codePoint < 0x800) {
-                  if ((units -= 2) < 0) break
-                  bytes.push(
-                    codePoint >> 0x6 | 0xC0,
-                    codePoint & 0x3F | 0x80
-                  );
-                } else if (codePoint < 0x10000) {
-                  if ((units -= 3) < 0) break
-                  bytes.push(
-                    codePoint >> 0xC | 0xE0,
-                    codePoint >> 0x6 & 0x3F | 0x80,
-                    codePoint & 0x3F | 0x80
-                  );
-                } else if (codePoint < 0x110000) {
-                  if ((units -= 4) < 0) break
-                  bytes.push(
-                    codePoint >> 0x12 | 0xF0,
-                    codePoint >> 0xC & 0x3F | 0x80,
-                    codePoint >> 0x6 & 0x3F | 0x80,
-                    codePoint & 0x3F | 0x80
-                  );
-                } else {
-                  throw new Error('Invalid code point')
-                }
-              }
-
-              return bytes
-            }
-
-            function asciiToBytes (str) {
-              var byteArray = [];
-              for (var i = 0; i < str.length; ++i) {
-                // Node's code seems to be doing this and not & 0x7F..
-                byteArray.push(str.charCodeAt(i) & 0xFF);
-              }
-              return byteArray
-            }
-
-            function utf16leToBytes (str, units) {
-              var c, hi, lo;
-              var byteArray = [];
-              for (var i = 0; i < str.length; ++i) {
-                if ((units -= 2) < 0) break
-
-                c = str.charCodeAt(i);
-                hi = c >> 8;
-                lo = c % 256;
-                byteArray.push(lo);
-                byteArray.push(hi);
-              }
-
-              return byteArray
-            }
-
-
-            function base64ToBytes (str) {
-              return toByteArray(base64clean(str))
-            }
-
-            function blitBuffer (src, dst, offset, length) {
-              for (var i = 0; i < length; ++i) {
-                if ((i + offset >= dst.length) || (i >= src.length)) break
-                dst[i + offset] = src[i];
-              }
-              return i
-            }
-
-            function isnan (val) {
-              return val !== val // eslint-disable-line no-self-compare
-            }
-
-
-            // the following is from is-buffer, also by Feross Aboukhadijeh and with same lisence
-            // The _isBuffer check is for Safari 5-7 support, because it's missing
-            // Object.prototype.constructor. Remove this eventually
-            function isBuffer(obj) {
-              return obj != null && (!!obj._isBuffer || isFastBuffer(obj) || isSlowBuffer(obj))
-            }
-
-            function isFastBuffer (obj) {
-              return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-            }
-
-            // For Node v0.10 support. Remove this eventually.
-            function isSlowBuffer (obj) {
-              return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isFastBuffer(obj.slice(0, 0))
-            }
-
-            if (typeof global$1.setTimeout === 'function') ;
-            if (typeof global$1.clearTimeout === 'function') ;
-
             // from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
             var performance$1 = global$1.performance || {};
             var performanceNow =
@@ -4210,7 +2248,7 @@
             function hasOwnProperty$1(obj, prop) {
               return Object.prototype.hasOwnProperty.call(obj, prop);
             }
-            var isArray$1 = Array.isArray || function (xs) {
+            var isArray = Array.isArray || function (xs) {
               return Object.prototype.toString.call(xs) === '[object Array]';
             };
             function stringifyPrimitive(v) {
@@ -4239,7 +2277,7 @@
               if (typeof obj === 'object') {
                 return map$1(objectKeys(obj), function(k) {
                   var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-                  if (isArray$1(obj[k])) {
+                  if (isArray(obj[k])) {
                     return map$1(obj[k], function(v) {
                       return ks + encodeURIComponent(stringifyPrimitive(v));
                     }).join(sep);
@@ -4312,7 +2350,7 @@
 
                 if (!hasOwnProperty$1(obj, k)) {
                   obj[k] = v;
-                } else if (isArray$1(obj[k])) {
+                } else if (isArray(obj[k])) {
                   obj[k].push(v);
                 } else {
                   obj[k] = [obj[k], v];
@@ -5368,10 +3406,11 @@
                 MEDIUM: 'mediump',
                 HIGH: 'highp',
             };
+            //# sourceMappingURL=constants.es.js.map
 
             /*!
-             * @pixi/utils - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/utils - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/utils is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -5403,7 +3442,7 @@
             settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
 
             var saidHello = false;
-            var VERSION = '5.1.0';
+            var VERSION = '5.1.3';
 
             /**
              * Skips the hello message of renderers that are created after this is run.
@@ -5838,7 +3877,7 @@
             /**
              * Rounds to next power of two.
              *
-             * @function isPow2
+             * @function nextPow2
              * @memberof PIXI.utils
              * @param {number} v input value
              * @return {number}
@@ -6322,6 +4361,7 @@
 
                 warnings[message] = true;
             }
+            //# sourceMappingURL=utils.es.js.map
 
             var utils_es = /*#__PURE__*/Object.freeze({
                         BaseTextureCache: BaseTextureCache,
@@ -7190,7 +5230,7 @@
              * Initializes `rotationCayley` and `rotationMatrices`. It is called
              * only once below.
              */
-            function init$1()
+            function init()
             {
                 for (var i = 0; i < 16; i++)
                 {
@@ -7228,7 +5268,7 @@
                 }
             }
 
-            init$1();
+            init();
 
             /**
              * @memberof PIXI
@@ -8455,10 +6495,11 @@
 
                 return false;
             };
+            //# sourceMappingURL=math.es.js.map
 
             /*!
-             * @pixi/display - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/display - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/display is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -9094,6 +7135,7 @@
                     if (this._boundsID !== this._lastBoundsID)
                     {
                         this.calculateBounds();
+                        this._lastBoundsID = this._boundsID;
                     }
 
                     if (!rect)
@@ -10067,7 +8109,7 @@
                     }
 
                     // do a quick check to see if this element has a mask or a filter.
-                    if (this._mask || this.filters)
+                    if (this._mask || (this.filters && this.filters.length))
                     {
                         this.renderAdvanced(renderer);
                     }
@@ -10249,10 +8291,11 @@
 
             // performance increase to avoid using call.. (10x faster)
             Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
+            //# sourceMappingURL=display.es.js.map
 
             /*!
-             * @pixi/accessibility - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/accessibility - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/accessibility is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -10881,6 +8924,7 @@
                 this.children = null;
                 this.renderer = null;
             };
+            //# sourceMappingURL=accessibility.es.js.map
 
             var accessibility_es = /*#__PURE__*/Object.freeze({
                         AccessibilityManager: AccessibilityManager,
@@ -10888,8 +8932,8 @@
             });
 
             /*!
-             * @pixi/runner - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/runner - v5.1.1
+             * Compiled Fri, 02 Aug 2019 23:20:23 UTC
              *
              * @pixi/runner is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -10939,6 +8983,7 @@
             {
                 this.items = [];
                 this._name = name;
+                this._aliasCount = 0;
             };
 
             var prototypeAccessors$3 = { empty: { configurable: true },name: { configurable: true } };
@@ -10958,12 +9003,28 @@
                     var name = ref.name;
                     var items = ref.items;
 
+                this._aliasCount++;
+
                 for (var i = 0, len = items.length; i < len; i++)
                 {
                     items[i][name](a0, a1, a2, a3, a4, a5, a6, a7);
                 }
 
+                if (items === this.items)
+                {
+                    this._aliasCount--;
+                }
+
                 return this;
+            };
+
+            Runner.prototype.ensureNonAliasedItems = function ensureNonAliasedItems ()
+            {
+                if (this._aliasCount > 0 && this.items.length > 1)
+                {
+                    this._aliasCount = 0;
+                    this.items = this.items.slice(0);
+                }
             };
 
             /**
@@ -10987,6 +9048,7 @@
             {
                 if (item[this._name])
                 {
+                    this.ensureNonAliasedItems();
                     this.remove(item);
                     this.items.push(item);
                 }
@@ -11004,6 +9066,7 @@
 
                 if (index !== -1)
                 {
+                    this.ensureNonAliasedItems();
                     this.items.splice(index, 1);
                 }
 
@@ -11024,6 +9087,7 @@
              */
             Runner.prototype.removeAll = function removeAll ()
             {
+                this.ensureNonAliasedItems();
                 this.items.length = 0;
 
                 return this;
@@ -11078,10 +9142,11 @@
              * @see PIXI.Runner#emit
              */
             Runner.prototype.run = Runner.prototype.emit;
+            //# sourceMappingURL=runner.es.js.map
 
             /*!
-             * @pixi/ticker - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/ticker - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/ticker is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -11424,6 +9489,15 @@
                 this._protected = false;
 
                 /**
+                 * The last time keyframe was executed.
+                 * Maintains a relatively fixed interval with the previous value.
+                 * @member {number}
+                 * @default -1
+                 * @private
+                 */
+                this._lastFrame = -1;
+
+                /**
                  * Internal tick method bound to ticker instance.
                  * This is because in early 2015, Function.bind
                  * is still 60% slower in high performance scenarios.
@@ -11466,6 +9540,7 @@
                 {
                     // ensure callbacks get correct delta
                     this.lastTime = performance.now();
+                    this._lastFrame = this.lastTime;
                     this._requestId = requestAnimationFrame(this._tick);
                 }
             };
@@ -11713,18 +9788,19 @@
 
                     elapsedMS *= this.speed;
 
-                    // if not enough time has passed, exit the function.
-                    // We give a padding (5% of minElapsedMS) to elapsedMS for this check, because the
-                    // nature of request animation frame means that not all browsers will return precise values.
-                    // However, because rAF works based on v-sync, it's won't change the effective FPS.
+                    // If not enough time has passed, exit the function.
+                    // Get ready for next frame by setting _lastFrame, but based on _minElapsedMS
+                    // adjustment to ensure a relatively stable interval.
                     if (this._minElapsedMS)
                     {
-                        var elapsedMSPadding = this._minElapsedMS * 0.05;
+                        var delta = currentTime - this._lastFrame | 0;
 
-                        if (elapsedMS + elapsedMSPadding < this._minElapsedMS)
+                        if (delta < this._minElapsedMS)
                         {
                             return;
                         }
+
+                        this._lastFrame = currentTime - (delta % this._minElapsedMS);
                     }
 
                     this.deltaMS = elapsedMS;
@@ -12019,10 +10095,11 @@
                     oldTicker.destroy();
                 }
             };
+            //# sourceMappingURL=ticker.es.js.map
 
             /*!
-             * @pixi/core - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/core - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/core is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -12088,6 +10165,14 @@
                  * @private
                  */
                 this.onUpdate = new Runner('update');
+
+                /**
+                 * Handle internal errors, such as loading errors
+                 *
+                 * @member {Runner}
+                 * @private
+                 */
+                this.onError = new Runner('onError', 1);
             };
 
             var prototypeAccessors$5 = { valid: { configurable: true },width: { configurable: true },height: { configurable: true } };
@@ -12101,6 +10186,7 @@
             {
                 this.onResize.add(baseTexture);
                 this.onUpdate.add(baseTexture);
+                this.onError.add(baseTexture);
 
                 // Call a resize immediate if we already
                 // have the width and height of the resource
@@ -12119,10 +10205,13 @@
             {
                 this.onResize.remove(baseTexture);
                 this.onUpdate.remove(baseTexture);
+                this.onError.remove(baseTexture);
             };
 
             /**
              * Trigger a resize event
+             * @param {number} width X dimension
+             * @param {number} height Y dimension
              */
             Resource.prototype.resize = function resize (width, height)
             {
@@ -12233,12 +10322,14 @@
             {
                 if (!this.destroyed)
                 {
+                    this.destroyed = true;
+                    this.dispose();
+                    this.onError.removeAll();
+                    this.onError = null;
                     this.onResize.removeAll();
                     this.onResize = null;
                     this.onUpdate.removeAll();
                     this.onUpdate = null;
-                    this.destroyed = true;
-                    this.dispose();
                 }
             };
 
@@ -12378,6 +10469,16 @@
 
                     BaseImageResource.call(this, source);
 
+                    // FireFox 68, and possibly other versions, seems like setting the HTMLImageElement#width and #height
+                    // to non-zero values before its loading completes if images are in a cache.
+                    // Because of this, need to set the `_width` and the `_height` to zero to avoid uploading incomplete images.
+                    // Please refer to the issue #5968 (https://github.com/pixijs/pixi.js/issues/5968).
+                    if (!source.complete && !!this._width && !!this._height)
+                    {
+                        this._width = 0;
+                        this._height = 0;
+                    }
+
                     /**
                      * URL of the image source
                      * @member {string}
@@ -12492,6 +10593,7 @@
                         else
                         {
                             source.onload = completed;
+                            source.onerror = function (event) { return this$1.onError.run(event); };
                         }
                     });
 
@@ -12602,6 +10704,9 @@
                  */
                 ImageResource.prototype.dispose = function dispose ()
                 {
+                    this.source.onload = null;
+                    this.source.onerror = null;
+
                     BaseImageResource.prototype.dispose.call(this);
 
                     if (this.bitmap)
@@ -13081,6 +11186,7 @@
                      * @protected
                      * @event PIXI.BaseTexture#error
                      * @param {PIXI.BaseTexture} baseTexture - Resource errored.
+                     * @param {ErrorEvent} event - Load error event.
                      */
 
                     /**
@@ -13089,14 +11195,6 @@
                      * @protected
                      * @event PIXI.BaseTexture#loaded
                      * @param {PIXI.BaseTexture} baseTexture - Resource loaded.
-                     */
-
-                    /**
-                     * Fired when BaseTexture is destroyed.
-                     *
-                     * @protected
-                     * @event PIXI.BaseTexture#error
-                     * @param {PIXI.BaseTexture} baseTexture - Resource errored.
                      */
 
                     /**
@@ -13133,7 +11231,7 @@
                  */
                 prototypeAccessors.realWidth.get = function ()
                 {
-                    return Math.ceil(this.width * this.resolution);
+                    return Math.ceil((this.width * this.resolution) - 1e-4);
                 };
 
                 /**
@@ -13144,7 +11242,7 @@
                  */
                 prototypeAccessors.realHeight.get = function ()
                 {
-                    return Math.ceil(this.height * this.resolution);
+                    return Math.ceil((this.height * this.resolution) - 1e-4);
                 };
 
                 /**
@@ -13208,8 +11306,8 @@
                 BaseTexture.prototype.setRealSize = function setRealSize (realWidth, realHeight, resolution)
                 {
                     this.resolution = resolution || this.resolution;
-                    this.width = Math.ceil(realWidth / this.resolution);
-                    this.height = Math.ceil(realHeight / this.resolution);
+                    this.width = realWidth / this.resolution;
+                    this.height = realHeight / this.resolution;
                     this._refreshPOT();
                     this.update();
 
@@ -13245,8 +11343,8 @@
 
                     if (this.valid)
                     {
-                        this.width = Math.ceil(this.width * oldResolution / resolution);
-                        this.height = Math.ceil(this.height * oldResolution / resolution);
+                        this.width = this.width * oldResolution / resolution;
+                        this.height = this.height * oldResolution / resolution;
                         this.emit('update', this);
                     }
 
@@ -13300,6 +11398,16 @@
                         this.dirtyStyleId++;
                         this.emit('update', this);
                     }
+                };
+
+                /**
+                 * Handle errors with resources.
+                 * @private
+                 * @param {ErrorEvent} event - Error event emitted.
+                 */
+                BaseTexture.prototype.onError = function onError (event)
+                {
+                    this.emit('error', this, event);
                 };
 
                 /**
@@ -13998,6 +12106,11 @@
                     BaseImageResource.crossOrigin(tempImage, this.svg, this._crossorigin);
                     tempImage.src = this.svg;
 
+                    tempImage.onerror = function (event) {
+                        tempImage.onerror = null;
+                        this$1.onError.run(event);
+                    };
+
                     tempImage.onload = function () {
                         var svgWidth = tempImage.width;
                         var svgHeight = tempImage.height;
@@ -14120,6 +12233,8 @@
                     {
                         var videoElement = document.createElement('video');
 
+                        // workaround for https://github.com/pixijs/pixi.js/issues/5996
+                        videoElement.setAttribute('preload', 'auto');
                         videoElement.setAttribute('webkit-playsinline', '');
                         videoElement.setAttribute('playsinline', '');
 
@@ -14189,6 +12304,7 @@
 
                     // Bind for listeners
                     this._onCanPlay = this._onCanPlay.bind(this);
+                    this._onError = this._onError.bind(this);
 
                     if (options.autoLoad !== false)
                     {
@@ -14255,6 +12371,7 @@
                     {
                         source.addEventListener('canplay', this._onCanPlay);
                         source.addEventListener('canplaythrough', this._onCanPlay);
+                        source.addEventListener('error', this._onError, true);
                     }
                     else
                     {
@@ -14275,6 +12392,17 @@
                     });
 
                     return this._load;
+                };
+
+                /**
+                 * Handle video error events.
+                 *
+                 * @private
+                 */
+                VideoResource.prototype._onError = function _onError ()
+                {
+                    this.source.removeEventListener('error', this._onError, true);
+                    this.onError.run(event);
                 };
 
                 /**
@@ -14382,6 +12510,7 @@
 
                     if (this.source)
                     {
+                        this.source.removeEventListener('error', this._onError, true);
                         this.source.pause();
                         this.source.src = '';
                         this.source.load();
@@ -15234,7 +13363,7 @@
                 Texture.prototype = Object.create( EventEmitter && EventEmitter.prototype );
                 Texture.prototype.constructor = Texture;
 
-                var prototypeAccessors = { frame: { configurable: true },rotate: { configurable: true },width: { configurable: true },height: { configurable: true } };
+                var prototypeAccessors = { resolution: { configurable: true },frame: { configurable: true },rotate: { configurable: true },width: { configurable: true },height: { configurable: true } };
 
                 /**
                  * Updates this texture on the gpu.
@@ -15530,6 +13659,17 @@
                 };
 
                 /**
+                 * Returns resolution of baseTexture
+                 *
+                 * @member {number}
+                 * @readonly
+                 */
+                prototypeAccessors.resolution.get = function ()
+                {
+                    return this.baseTexture.resolution;
+                };
+
+                /**
                  * The frame specifies the region of the base texture that this texture uses.
                  * Please call `updateUvs()` after you change coordinates of `frame` manually.
                  *
@@ -15660,7 +13800,7 @@
             removeAllHandlers(Texture.EMPTY.baseTexture);
 
             /**
-             * A white texture of 10x10 size, used for graphics and other things
+             * A white texture of 16x16 size, used for graphics and other things
              * Can not be destroyed.
              *
              * @static
@@ -15756,8 +13896,10 @@
                     this.valid = true;
 
                     /**
-                     * FilterSystem temporary storage
-                     * @protected
+                     * Stores `sourceFrame` when this texture is inside current filter stack.
+                     * You can read it inside filters.
+                     *
+                     * @readonly
                      * @member {PIXI.Rectangle}
                      */
                     this.filterFrame = null;
@@ -15860,6 +14002,9 @@
              * Texture pool, used by FilterSystem and plugins
              * Stores collection of temporary pow2 or screen-sized renderTextures
              *
+             * If you use custom RenderTexturePool for your filters, you can use methods
+             * `getFilterTexture` and `returnFilterTexture` same as in
+             *
              * @class
              * @memberof PIXI
              */
@@ -15893,6 +14038,7 @@
                 var baseRenderTexture = new BaseRenderTexture(Object.assign({
                     width: realWidth,
                     height: realHeight,
+                    resolution: 1,
                 }, this.textureOptions));
 
                 return new RenderTexture(baseRenderTexture);
@@ -15942,18 +14088,20 @@
             };
 
             /**
-             * Gets extra texture of the same size as current renderTexture
+             * Gets extra texture of the same size as input renderTexture
              *
-             * @param {number} [resolution] resolution, by default its the same as in current renderTexture
+             * `getFilterTexture(input, 0.5)` or `getFilterTexture(0.5, input)`
+             *
+             * @param {PIXI.RenderTexture} input renderTexture from which size and resolution will be copied
+             * @param {number} [resolution] override resolution of the renderTexture
+             *  It overrides, it does not multiply
              * @returns {PIXI.RenderTexture}
              */
-            RenderTexturePool.prototype.getFilterTexture = function getFilterTexture (resolution)
+            RenderTexturePool.prototype.getFilterTexture = function getFilterTexture (input, resolution)
             {
-                var rt = this.renderer.renderTexture.current;
+                var filterTexture = this.getOptimalTexture(input.width, input.height, resolution || input.resolution);
 
-                var filterTexture = this.getOptimalTexture(rt.width, rt.height, resolution || rt.baseTexture.resolution);
-
-                filterTexture.filterFrame = rt.filterFrame;
+                filterTexture.filterFrame = input.filterFrame;
 
                 return filterTexture;
             };
@@ -16010,7 +14158,7 @@
              * If screen size was changed, drops all screen-sized textures,
              * sets new screen size, sets `enableFullScreen` to true
              *
-             * Size is measured in pixels, `renderer.view` can be passed here.
+             * Size is measured in pixels, `renderer.view` can be passed here, not `renderer.screen`
              *
              * @param {PIXI.ISize} size - Initial size of screen
              */
@@ -16107,7 +14255,7 @@
              * @class
              * @memberof PIXI
              */
-            var Buffer$1 = function Buffer(data, _static, index)
+            var Buffer = function Buffer(data, _static, index)
             {
                 if ( _static === void 0 ) _static = true;
                 if ( index === void 0 ) index = false;
@@ -16143,7 +14291,7 @@
              * flags this buffer as requiring an upload to the GPU
              * @param {ArrayBuffer|SharedArrayBuffer|ArrayBufferView} [data] the data to update in the buffer.
              */
-            Buffer$1.prototype.update = function update (data)
+            Buffer.prototype.update = function update (data)
             {
                 this.data = data || this.data;
                 this._updateID++;
@@ -16152,7 +14300,7 @@
             /**
              * disposes WebGL resources that are connected to this geometry
              */
-            Buffer$1.prototype.dispose = function dispose ()
+            Buffer.prototype.dispose = function dispose ()
             {
                 this.disposeRunner.run(this, false);
             };
@@ -16160,7 +14308,7 @@
             /**
              * Destroys the buffer
              */
-            Buffer$1.prototype.destroy = function destroy ()
+            Buffer.prototype.destroy = function destroy ()
             {
                 this.dispose();
 
@@ -16174,14 +14322,14 @@
              * @param {ArrayBufferView | number[]} data the TypedArray that the buffer will store. If this is a regular Array it will be converted to a Float32Array.
              * @return {PIXI.Buffer} A new Buffer based on the data provided.
              */
-            Buffer$1.from = function from (data)
+            Buffer.from = function from (data)
             {
                 if (data instanceof Array)
                 {
                     data = new Float32Array(data);
                 }
 
-                return new Buffer$1(data);
+                return new Buffer(data);
             };
 
             function getBufferType(array)
@@ -16334,8 +14482,6 @@
                  */
                 this.instanceCount = 1;
 
-                this._size = null;
-
                 this.disposeRunner = new Runner('disposeGeometry', 2);
 
                 /**
@@ -16378,7 +14524,7 @@
                         buffer = new Float32Array(buffer);
                     }
 
-                    buffer = new Buffer$1(buffer);
+                    buffer = new Buffer(buffer);
                 }
 
                 var ids = id.split('|');
@@ -16449,7 +14595,7 @@
                         buffer = new Uint16Array(buffer);
                     }
 
-                    buffer = new Buffer$1(buffer);
+                    buffer = new Buffer(buffer);
                 }
 
                 buffer.index = true;
@@ -16487,7 +14633,7 @@
                 // assume already that no buffers are interleaved
                 var arrays = [];
                 var sizes = [];
-                var interleavedBuffer = new Buffer$1();
+                var interleavedBuffer = new Buffer();
                 var i;
 
                 for (i in this.attributes)
@@ -16568,7 +14714,7 @@
 
                 for (var i = 0; i < this.buffers.length; i++)
                 {
-                    geometry.buffers[i] = new Buffer$1(this.buffers[i].data.slice());
+                    geometry.buffers[i] = new Buffer(this.buffers[i].data.slice());
                 }
 
                 for (var i$1 in this.attributes)
@@ -16633,7 +14779,7 @@
                 {
                     // TODO types!
                     arrays[i$1] = new map$1$1[getBufferType(geometry.buffers[i$1].data)](sizes[i$1]);
-                    geometryOut.buffers[i$1] = new Buffer$1(arrays[i$1]);
+                    geometryOut.buffers[i$1] = new Buffer(arrays[i$1]);
                 }
 
                 // pass to set data..
@@ -16759,8 +14905,8 @@
                         1, 1,
                         0, 1 ]);
 
-                    this.vertexBuffer = new Buffer$1(this.vertices);
-                    this.uvBuffer = new Buffer$1(this.uvs);
+                    this.vertexBuffer = new Buffer(this.vertices);
+                    this.uvBuffer = new Buffer(this.uvs);
 
                     this.addAttribute('aVertexPosition', this.vertexBuffer)
                         .addAttribute('aTextureCoord', this.uvBuffer)
@@ -17312,16 +15458,27 @@
 
                 /**
                  * Gets extra render texture to use inside current filter
+                 * To be compliant with older filters, you can use params in any order
                  *
-                 * @param {number} resolution resolution of the renderTexture
+                 * @param {PIXI.RenderTexture} [input] renderTexture from which size and resolution will be copied
+                 * @param {number} [resolution] override resolution of the renderTexture
                  * @returns {PIXI.RenderTexture}
                  */
-                FilterSystem.prototype.getFilterTexture = function getFilterTexture (resolution)
+                FilterSystem.prototype.getFilterTexture = function getFilterTexture (input, resolution)
                 {
-                    var rt = this.activeState.renderTexture;
-                    var filterTexture = this.texturePool.getOptimalTexture(rt.width, rt.height, resolution || rt.resolution);
+                    if (typeof input === 'number')
+                    {
+                        var swap = input;
 
-                    filterTexture.filterFrame = rt.filterFrame;
+                        input = resolution;
+                        resolution = swap;
+                    }
+
+                    input = input || this.activeState.renderTexture;
+
+                    var filterTexture = this.texturePool.getOptimalTexture(input.width, input.height, resolution || input.resolution);
+
+                    filterTexture.filterFrame = input.filterFrame;
 
                     return filterTexture;
                 };
@@ -18136,12 +16293,12 @@
 
                         gl.bindRenderbuffer(gl.RENDERBUFFER, fbo.stencil);
 
+                        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, framebuffer.width, framebuffer.height);
                         // TODO.. this is depth AND stencil?
                         if (!framebuffer.depthTexture)
                         { // you can't have both, so one should take priority if enabled
                             gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, fbo.stencil);
                         }
-                        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_STENCIL, framebuffer.width, framebuffer.height);
                         // fbo.enableStencil();
                     }
                 };
@@ -19027,7 +17184,8 @@
                 return array;
             }
 
-            var context = null;
+            var unknownContext = {};
+            var context = unknownContext;
 
             /**
              * returns a little WebGL context to use for program inspection.
@@ -19038,7 +17196,7 @@
              */
             function getTestContext()
             {
-                if (!context)
+                if (context === unknownContext)
                 {
                     var canvas = document.createElement('canvas');
 
@@ -19057,7 +17215,7 @@
                         if (!gl)
                         {
                             // fail, not able to get a context
-                            throw new Error('This browser does not support WebGL. Try using the canvas renderer');
+                            gl = null;
                         }
                         else
                         {
@@ -19067,8 +17225,6 @@
                     }
 
                     context = gl;
-
-                    return gl;
                 }
 
                 return context;
@@ -20763,8 +18919,10 @@
                 StencilSystem.prototype.setMaskStack = function setMaskStack (stencilMaskStack)
                 {
                     var gl = this.renderer.gl;
+                    var curStackLen = this.stencilMaskStack.length;
 
-                    if (stencilMaskStack.length !== this.stencilMaskStack.length)
+                    this.stencilMaskStack = stencilMaskStack;
+                    if (stencilMaskStack.length !== curStackLen)
                     {
                         if (stencilMaskStack.length === 0)
                         {
@@ -20773,10 +18931,9 @@
                         else
                         {
                             gl.enable(gl.STENCIL_TEST);
+                            this._useCurrent();
                         }
                     }
-
-                    this.stencilMaskStack = stencilMaskStack;
                 };
 
                 /**
@@ -22855,8 +21012,14 @@
                      */
                     this.type = RENDERER_TYPE.WEBGL;
 
-                    // this will be set by the contextSystem (this.context)
+                    /**
+                     * WebGL context, set by the contextSystem (this.context)
+                     *
+                     * @readonly
+                     * @member {WebGLRenderingContext}
+                     */
                     this.gl = null;
+
                     this.CONTEXT_UID = 0;
 
                     // TODO legacy!
@@ -24213,7 +22376,7 @@
                      * @member {PIXI.Buffer}
                      * @protected
                      */
-                    this._buffer = new Buffer$1(null, _static, false);
+                    this._buffer = new Buffer(null, _static, false);
 
                     /**
                      * Index buffer data
@@ -24221,7 +22384,7 @@
                      * @member {PIXI.Buffer}
                      * @protected
                      */
-                    this._indexBuffer = new Buffer$1(null, _static, true);
+                    this._indexBuffer = new Buffer(null, _static, true);
 
                     this.addAttribute('aVertexPosition', this._buffer, 2, false, TYPES.FLOAT)
                         .addAttribute('aTextureCoord', this._buffer, 2, false, TYPES.FLOAT)
@@ -24310,10 +22473,11 @@
             // Setup the default BatchRenderer plugin, this is what
             // we'll actually export at the root level
             var BatchRenderer = BatchPluginFactory.create();
+            //# sourceMappingURL=core.es.js.map
 
             /*!
-             * @pixi/extract - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/extract - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/extract is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -24581,14 +22745,15 @@
                     }
                 }
             };
+            //# sourceMappingURL=extract.es.js.map
 
             var extract_es = /*#__PURE__*/Object.freeze({
                         Extract: Extract
             });
 
             /*!
-             * @pixi/interaction - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/interaction - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/interaction is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -24801,11 +22966,32 @@
             var InteractionEvent = function InteractionEvent()
             {
                 /**
-                 * Whether this event will continue propagating in the tree
+                 * Whether this event will continue propagating in the tree.
+                 *
+                 * Remaining events for the {@link stopsPropagatingAt} object
+                 * will still be dispatched.
                  *
                  * @member {boolean}
                  */
                 this.stopped = false;
+
+                /**
+                 * At which object this event stops propagating.
+                 *
+                 * @private
+                 * @member {PIXI.DisplayObject}
+                 */
+                this.stopsPropagatingAt = null;
+
+                /**
+                 * Whether we already reached the element we want to
+                 * stop propagating at. This is important for delayed events,
+                 * where we start over deeper in the tree again.
+                 *
+                 * @private
+                 * @member {boolean}
+                 */
+                this.stopPropagationHint = false;
 
                 /**
                  * The object which caused this event to be dispatched.
@@ -24844,6 +23030,8 @@
             InteractionEvent.prototype.stopPropagation = function stopPropagation ()
             {
                 this.stopped = true;
+                this.stopPropagationHint = true;
+                this.stopsPropagatingAt = this.currentTarget;
             };
 
             /**
@@ -24852,6 +23040,8 @@
             InteractionEvent.prototype.reset = function reset ()
             {
                 this.stopped = false;
+                this.stopsPropagatingAt = null;
+                this.stopPropagationHint = false;
                 this.currentTarget = null;
                 this.target = null;
             };
@@ -25366,6 +23556,14 @@
                      * @default 1
                      */
                     this.resolution = 1;
+
+                    /**
+                     * Delayed pointer events. Used to guarantee correct ordering of over/out events.
+                     *
+                     * @private
+                     * @member {Array}
+                     */
+                    this.delayedEvents = [];
 
                     /**
                      * Fired when a pointer device button (usually a mouse left-button) is pressed on the display
@@ -26052,7 +24250,9 @@
                  */
                 InteractionManager.prototype.dispatchEvent = function dispatchEvent (displayObject, eventString, eventData)
                 {
-                    if (!eventData.stopped)
+                    // Even if the event was stopped, at least dispatch any remaining events
+                    // for the same display object.
+                    if (!eventData.stopPropagationHint || displayObject === eventData.stopsPropagatingAt)
                     {
                         eventData.currentTarget = displayObject;
                         eventData.type = eventString;
@@ -26064,6 +24264,20 @@
                             displayObject[eventString](eventData);
                         }
                     }
+                };
+
+                /**
+                 * Puts a event on a queue to be dispatched later. This is used to guarantee correct
+                 * ordering of over/out events.
+                 *
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the display object in question
+                 * @param {string} eventString - the name of the event (e.g, mousedown)
+                 * @param {object} eventData - the event data object
+                 * @private
+                 */
+                InteractionManager.prototype.delayDispatchEvent = function delayDispatchEvent (displayObject, eventString, eventData)
+                {
+                    this.delayedEvents.push({ displayObject: displayObject, eventString: eventString, eventData: eventData });
                 };
 
                 /**
@@ -26109,9 +24323,11 @@
                  *  interactionEvent, displayObject and hit will be passed to the function
                  * @param {boolean} [hitTest] - this indicates if the objects inside should be hit test against the point
                  * @param {boolean} [interactive] - Whether the displayObject is interactive
+                 * @param {boolean} [skipDelayed] - Whether to process delayed events before returning. This is
+                 *  used to avoid processing them too early during recursive calls.
                  * @return {boolean} returns true if the displayObject hit the point
                  */
-                InteractionManager.prototype.processInteractive = function processInteractive (interactionEvent, displayObject, func, hitTest, interactive)
+                InteractionManager.prototype.processInteractive = function processInteractive (interactionEvent, displayObject, func, hitTest, interactive, skipDelayed)
                 {
                     if (!displayObject || !displayObject.visible)
                     {
@@ -26186,7 +24402,7 @@
                             var child = children[i];
 
                             // time to get recursive.. if this function will return if something is hit..
-                            var childHit = this.processInteractive(interactionEvent, child, func, hitTest, interactiveParent);
+                            var childHit = this.processInteractive(interactionEvent, child, func, hitTest, interactiveParent, true);
 
                             if (childHit)
                             {
@@ -26248,6 +24464,35 @@
                             {
                                 func(interactionEvent, displayObject, !!hit);
                             }
+                        }
+                    }
+
+                    var delayedEvents = this.delayedEvents;
+
+                    if (delayedEvents.length && !skipDelayed)
+                    {
+                        // Reset the propagation hint, because we start deeper in the tree again.
+                        interactionEvent.stopPropagationHint = false;
+
+                        var delayedLen = delayedEvents.length;
+
+                        this.delayedEvents = [];
+
+                        for (var i$1 = 0; i$1 < delayedLen; i$1++)
+                        {
+                            var ref = delayedEvents[i$1];
+                            var displayObject$1 = ref.displayObject;
+                            var eventString = ref.eventString;
+                            var eventData = ref.eventData;
+
+                            // When we reach the object we wanted to stop propagating at,
+                            // set the propagation hint.
+                            if (eventData.stopsPropagatingAt === displayObject$1)
+                            {
+                                eventData.stopPropagationHint = true;
+                            }
+
+                            this.dispatchEvent(displayObject$1, eventString, eventData);
                         }
                     }
 
@@ -26704,10 +24949,10 @@
                         if (!trackingData.over)
                         {
                             trackingData.over = true;
-                            this.dispatchEvent(displayObject, 'pointerover', interactionEvent);
+                            this.delayDispatchEvent(displayObject, 'pointerover', interactionEvent);
                             if (isMouse)
                             {
-                                this.dispatchEvent(displayObject, 'mouseover', interactionEvent);
+                                this.delayDispatchEvent(displayObject, 'mouseover', interactionEvent);
                             }
                         }
 
@@ -26959,6 +25204,7 @@
 
                 return InteractionManager;
             }(eventemitter3));
+            //# sourceMappingURL=interaction.es.js.map
 
             var interaction_es = /*#__PURE__*/Object.freeze({
                         InteractionData: InteractionData,
@@ -26969,8 +25215,8 @@
             });
 
             /*!
-             * @pixi/graphics - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/graphics - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/graphics is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -27308,6 +25554,7 @@
             {
                 var shape = graphicsData.shape;
                 var points = graphicsData.points || shape.points.slice();
+                var eps = graphicsGeometry.closePointEps;
 
                 if (points.length === 0)
                 {
@@ -27329,7 +25576,8 @@
                 var firstPoint = new Point(points[0], points[1]);
                 var lastPoint = new Point(points[points.length - 2], points[points.length - 1]);
                 var closedShape = shape.type !== SHAPES.POLY || shape.closeStroke;
-                var closedPath = firstPoint.x === lastPoint.x && firstPoint.y === lastPoint.y;
+                var closedPath = Math.abs(firstPoint.x - lastPoint.x) < eps
+                    && Math.abs(firstPoint.y - lastPoint.y) < eps;
 
                 // if the first point is the last point - gonna have issues :)
                 if (closedShape)
@@ -27812,6 +26060,7 @@
 
             var BATCH_POOL = [];
             var DRAW_CALL_POOL = [];
+            var tmpPoint = new Point();
 
             /**
              * Map of fill commands for each shape type.
@@ -27906,8 +26155,7 @@
                     this.graphicsData = [];
 
                     /**
-                     * Used to detect if the graphics object has changed. If this is set to true then the graphics
-                     * object will be recalculated.
+                     * Used to detect if the graphics object has changed.
                      *
                      * @member {number}
                      * @protected
@@ -27931,7 +26179,7 @@
                     this.cacheDirty = -1;
 
                     /**
-                     * Used to detect if we clear the graphics WebGL data.
+                     * Used to detect if we cleared the graphicsData.
                      *
                      * @member {number}
                      * @default 0
@@ -27957,7 +26205,7 @@
                     this.batches = [];
 
                     /**
-                     * Index of the current last shape in the stack of calls.
+                     * Index of the last batched shape in the stack of calls.
                      *
                      * @member {number}
                      * @protected
@@ -27993,6 +26241,14 @@
                     this.indicesUint16 = null;
 
                     this.uvsFloat32 = null;
+
+                    /**
+                     * Minimal distance between points that are considered different.
+                     * Affects line tesselation.
+                     *
+                     * @member {number}
+                     */
+                    this.closePointEps = 1e-4;
                 }
 
                 if ( BatchGeometry ) GraphicsGeometry.__proto__ = BatchGeometry;
@@ -28019,6 +26275,44 @@
                 };
 
                 /**
+                 * Call if you changed graphicsData manually.
+                 * Empties all batch buffers.
+                 */
+                GraphicsGeometry.prototype.invalidate = function invalidate ()
+                {
+                    this.boundsDirty = -1;
+                    this.dirty++;
+                    this.batchDirty++;
+                    this.shapeIndex = 0;
+
+                    this.points.length = 0;
+                    this.colors.length = 0;
+                    this.uvs.length = 0;
+                    this.indices.length = 0;
+                    this.textureIds.length = 0;
+
+                    for (var i = 0; i < this.drawCalls.length; i++)
+                    {
+                        this.drawCalls[i].textures.length = 0;
+                        DRAW_CALL_POOL.push(this.drawCalls[i]);
+                    }
+
+                    this.drawCalls.length = 0;
+
+                    for (var i$1 = 0; i$1 < this.batches.length; i$1++)
+                    {
+                        var batch =  this.batches[i$1];
+
+                        batch.start = 0;
+                        batch.attribStart = 0;
+                        batch.style = null;
+                        BATCH_POOL.push(batch);
+                    }
+
+                    this.batches.length = 0;
+                };
+
+                /**
                  * Clears the graphics that were drawn to this Graphics object, and resets fill and line style settings.
                  *
                  * @return {PIXI.GraphicsGeometry} This GraphicsGeometry object. Good for chaining method calls
@@ -28027,38 +26321,9 @@
                 {
                     if (this.graphicsData.length > 0)
                     {
-                        this.boundsDirty = -1;
-                        this.dirty++;
+                        this.invalidate();
                         this.clearDirty++;
-                        this.batchDirty++;
                         this.graphicsData.length = 0;
-                        this.shapeIndex = 0;
-
-                        this.points.length = 0;
-                        this.colors.length = 0;
-                        this.uvs.length = 0;
-                        this.indices.length = 0;
-                        this.textureIds.length = 0;
-
-                        for (var i = 0; i < this.drawCalls.length; i++)
-                        {
-                            this.drawCalls[i].textures.length = 0;
-                            DRAW_CALL_POOL.push(this.drawCalls[i]);
-                        }
-
-                        this.drawCalls.length = 0;
-
-                        for (var i$1 = 0; i$1 < this.batches.length; i$1++)
-                        {
-                            var batch =  this.batches[i$1];
-
-                            batch.start = 0;
-                            batch.attribStart = 0;
-                            batch.style = null;
-                            BATCH_POOL.push(batch);
-                        }
-
-                        this.batches.length = 0;
                     }
 
                     return this;
@@ -28107,7 +26372,7 @@
 
                     this.dirty++;
 
-                    return data;
+                    return this;
                 };
 
                 /**
@@ -28173,7 +26438,16 @@
                         // only deal with fills..
                         if (data.shape)
                         {
-                            if (data.shape.contains(point.x, point.y))
+                            if (data.matrix)
+                            {
+                                data.matrix.applyInverse(point, tmpPoint);
+                            }
+                            else
+                            {
+                                tmpPoint.copyFrom(point);
+                            }
+
+                            if (data.shape.contains(tmpPoint.x, tmpPoint.y))
                             {
                                 if (data.holes)
                                 {
@@ -28181,7 +26455,7 @@
                                     {
                                         var hole = data.holes[i$1];
 
-                                        if (hole.shape.contains(point.x, point.y))
+                                        if (hole.shape.contains(tmpPoint.x, tmpPoint.y))
                                         {
                                             return false;
                                         }
@@ -28199,7 +26473,6 @@
                 /**
                  * Generates intermediate batch data. Either gets converted to drawCalls
                  * or used to convert to batch objects directly by the Graphics object.
-                 * @protected
                  */
                 GraphicsGeometry.prototype.updateBatches = function updateBatches ()
                 {
@@ -28239,7 +26512,7 @@
 
                         currentTexture = style.texture.baseTexture;
                         currentColor = style.color + style.alpha;
-                        currentNative = style.native;
+                        currentNative = !!style.native;
                     }
 
                     for (var i$1 = this.shapeIndex; i$1 < this.graphicsData.length; i$1++)
@@ -28275,7 +26548,7 @@
                             if (batchPart
                                 && (currentTexture !== nextTexture
                                 || currentColor !== (style$1.color + style$1.alpha)
-                                || currentNative !== style$1.native))
+                                || currentNative !== !!style$1.native))
                             {
                                 batchPart.size = index$1 - batchPart.start;
                                 batchPart.attribSize = attribIndex - batchPart.attribStart;
@@ -28444,7 +26717,7 @@
 
                         var nextTexture = style.texture.baseTexture;
 
-                        if (native !== style.native)
+                        if (native !== !!style.native)
                         {
                             native = style.native;
                             drawMode = native ? DRAW_MODES.LINES : DRAW_MODES.TRIANGLES;
@@ -28784,7 +27057,7 @@
                 /**
                  * Modify uvs array according to position of texture region
                  * Does not work with rotated or trimmed textures
-                 * @param {number} uvs array
+                 * @param {number[]} uvs array
                  * @param {PIXI.Texture} texture region
                  * @param {number} start starting index for uvs
                  * @param {number} size how many points to adjust
@@ -29213,8 +27486,8 @@
 
             var temp = new Float32Array(3);
 
-            // a default shader used by graphics..
-            var defaultShader = null;
+            // a default shaders map used by graphics..
+            var DEFAULT_SHADERS = {};
 
             /**
              * The Graphics class contains methods used to draw primitive shapes such as lines, circles and
@@ -29677,8 +27950,8 @@
                  *
                  * "borrowed" from https://code.google.com/p/fxcanvas/ - thanks google!
                  *
-                 * @param {number} x1 - The x-coordinate of the beginning of the arc
-                 * @param {number} y1 - The y-coordinate of the beginning of the arc
+                 * @param {number} x1 - The x-coordinate of the first tangent point of the arc
+                 * @param {number} y1 - The y-coordinate of the first tangent point of the arc
                  * @param {number} x2 - The x-coordinate of the end of the arc
                  * @param {number} y2 - The y-coordinate of the end of the arc
                  * @param {number} radius - The radius of the arc
@@ -29748,6 +28021,7 @@
 
                     var startX = cx + (Math.cos(startAngle) * radius);
                     var startY = cy + (Math.sin(startAngle) * radius);
+                    var eps = this.geometry.closePointEps;
 
                     // If the currentPath exists, take its points. Otherwise call `moveTo` to start a path.
                     var points = this.currentPath ? this.currentPath.points : null;
@@ -29760,7 +28034,7 @@
                         var xDiff = Math.abs(points[points.length - 2] - startX);
                         var yDiff = Math.abs(points[points.length - 1] - startY);
 
-                        if (xDiff < 0.001 && yDiff < 0.001)
+                        if (xDiff < eps && yDiff < eps)
                         ;
                         else
                         {
@@ -30051,143 +28325,198 @@
                     {
                         if (this.batchDirty !== geometry.batchDirty)
                         {
-                            this.batches = [];
-                            this.batchTint = -1;
-                            this._transformID = -1;
-                            this.batchDirty = geometry.batchDirty;
-
-                            this.vertexData = new Float32Array(geometry.points);
-
-                            var blendMode = this.blendMode;
-
-                            for (var i = 0; i < geometry.batches.length; i++)
-                            {
-                                var gI = geometry.batches[i];
-
-                                var color = gI.style.color;
-
-                                //        + (alpha * 255 << 24);
-
-                                var vertexData = new Float32Array(this.vertexData.buffer,
-                                    gI.attribStart * 4 * 2,
-                                    gI.attribSize * 2);
-
-                                var uvs = new Float32Array(geometry.uvsFloat32.buffer,
-                                    gI.attribStart * 4 * 2,
-                                    gI.attribSize * 2);
-
-                                var indices = new Uint16Array(geometry.indicesUint16.buffer,
-                                    gI.start * 2,
-                                    gI.size);
-
-                                var batch = {
-                                    vertexData: vertexData,
-                                    blendMode: blendMode,
-                                    indices: indices,
-                                    uvs: uvs,
-                                    _batchRGB: hex2rgb(color),
-                                    _tintRGB: color,
-                                    _texture: gI.style.texture,
-                                    alpha: gI.style.alpha,
-                                    worldAlpha: 1 };
-
-                                this.batches[i] = batch;
-                            }
+                            this._populateBatches();
                         }
 
-                        if (this.batches.length)
-                        {
-                            renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
-
-                            this.calculateVertices();
-                            this.calculateTints();
-
-                            for (var i$1 = 0; i$1 < this.batches.length; i$1++)
-                            {
-                                var batch$1 = this.batches[i$1];
-
-                                batch$1.worldAlpha = this.worldAlpha * batch$1.alpha;
-
-                                renderer.plugins[this.pluginName].render(batch$1);
-                            }
-                        }
+                        this._renderBatched(renderer);
                     }
                     else
                     {
                         // no batching...
                         renderer.batch.flush();
 
-                        if (!this.shader)
-                        {
-                            // if there is no shader here, we can use the default shader.
-                            // and that only gets created if we actually need it..
-                            if (!defaultShader)
-                            {
-                                var sampleValues = new Int32Array(16);
-
-                                for (var i$2 = 0; i$2 < 16; i$2++)
-                                {
-                                    sampleValues[i$2] = i$2;
-                                }
-
-                                var uniforms = {
-                                    tint: new Float32Array([1, 1, 1, 1]),
-                                    translationMatrix: new Matrix(),
-                                    default: UniformGroup.from({ uSamplers: sampleValues }, true),
-                                };
-
-                                // we can bbase default shader of the batch renderers program
-                                var program =  renderer.plugins.batch._shader.program;
-
-                                defaultShader = new Shader(program, uniforms);
-                            }
-
-                            this.shader = defaultShader;
-                        }
-
-                        var uniforms$1 = this.shader.uniforms;
-
-                        // lets set the transfomr
-                        uniforms$1.translationMatrix = this.transform.worldTransform;
-
-                        var tint = this.tint;
-                        var wa = this.worldAlpha;
-
-                        // and then lets set the tint..
-                        uniforms$1.tint[0] = (((tint >> 16) & 0xFF) / 255) * wa;
-                        uniforms$1.tint[1] = (((tint >> 8) & 0xFF) / 255) * wa;
-                        uniforms$1.tint[2] = ((tint & 0xFF) / 255) * wa;
-                        uniforms$1.tint[3] = wa;
-
-                        // the first draw call, we can set the uniforms of the shader directly here.
-
-                        // this means that we can tack advantage of the sync function of pixi!
-                        // bind and sync uniforms..
-                        // there is a way to optimise this..
-                        renderer.shader.bind(this.shader);
-
-                        // then render it
-                        renderer.geometry.bind(geometry, this.shader);
-
-                        // set state..
-                        renderer.state.set(this.state);
-
-                        // then render the rest of them...
-                        for (var i$3 = 0; i$3 < geometry.drawCalls.length; i$3++)
-                        {
-                            var drawCall = geometry.drawCalls[i$3];
-
-                            var groupTextureCount = drawCall.textureCount;
-
-                            for (var j = 0; j < groupTextureCount; j++)
-                            {
-                                renderer.texture.bind(drawCall.textures[j], j);
-                            }
-
-                            // bind the geometry...
-                            renderer.geometry.draw(drawCall.type, drawCall.size, drawCall.start);
-                        }
+                        this._renderDirect(renderer);
                     }
+                };
+
+                /**
+                 * Populating batches for rendering
+                 *
+                 * @protected
+                 */
+                Graphics.prototype._populateBatches = function _populateBatches ()
+                {
+                    var geometry = this.geometry;
+                    var blendMode = this.blendMode;
+
+                    this.batches = [];
+                    this.batchTint = -1;
+                    this._transformID = -1;
+                    this.batchDirty = geometry.batchDirty;
+
+                    this.vertexData = new Float32Array(geometry.points);
+
+                    for (var i = 0, l = geometry.batches.length; i < l; i++)
+                    {
+                        var gI = geometry.batches[i];
+                        var color = gI.style.color;
+                        var vertexData = new Float32Array(this.vertexData.buffer,
+                            gI.attribStart * 4 * 2,
+                            gI.attribSize * 2);
+
+                        var uvs = new Float32Array(geometry.uvsFloat32.buffer,
+                            gI.attribStart * 4 * 2,
+                            gI.attribSize * 2);
+
+                        var indices = new Uint16Array(geometry.indicesUint16.buffer,
+                            gI.start * 2,
+                            gI.size);
+
+                        var batch = {
+                            vertexData: vertexData,
+                            blendMode: blendMode,
+                            indices: indices,
+                            uvs: uvs,
+                            _batchRGB: hex2rgb(color),
+                            _tintRGB: color,
+                            _texture: gI.style.texture,
+                            alpha: gI.style.alpha,
+                            worldAlpha: 1 };
+
+                        this.batches[i] = batch;
+                    }
+                };
+
+                /**
+                 * Renders the batches using the BathedRenderer plugin
+                 *
+                 * @protected
+                 * @param {PIXI.Renderer} renderer - The renderer
+                 */
+                Graphics.prototype._renderBatched = function _renderBatched (renderer)
+                {
+                    if (!this.batches.length)
+                    {
+                        return;
+                    }
+
+                    renderer.batch.setObjectRenderer(renderer.plugins[this.pluginName]);
+
+                    this.calculateVertices();
+                    this.calculateTints();
+
+                    for (var i = 0, l = this.batches.length; i < l; i++)
+                    {
+                        var batch = this.batches[i];
+
+                        batch.worldAlpha = this.worldAlpha * batch.alpha;
+
+                        renderer.plugins[this.pluginName].render(batch);
+                    }
+                };
+
+                /**
+                 * Renders the graphics direct
+                 *
+                 * @protected
+                 * @param {PIXI.Renderer} renderer - The renderer
+                 */
+                Graphics.prototype._renderDirect = function _renderDirect (renderer)
+                {
+                    var shader = this._resolveDirectShader(renderer);
+
+                    var geometry = this.geometry;
+                    var tint = this.tint;
+                    var worldAlpha = this.worldAlpha;
+                    var uniforms = shader.uniforms;
+                    var drawCalls = geometry.drawCalls;
+
+                    // lets set the transfomr
+                    uniforms.translationMatrix = this.transform.worldTransform;
+
+                    // and then lets set the tint..
+                    uniforms.tint[0] = (((tint >> 16) & 0xFF) / 255) * worldAlpha;
+                    uniforms.tint[1] = (((tint >> 8) & 0xFF) / 255) * worldAlpha;
+                    uniforms.tint[2] = ((tint & 0xFF) / 255) * worldAlpha;
+                    uniforms.tint[3] = worldAlpha;
+
+                    // the first draw call, we can set the uniforms of the shader directly here.
+
+                    // this means that we can tack advantage of the sync function of pixi!
+                    // bind and sync uniforms..
+                    // there is a way to optimise this..
+                    renderer.shader.bind(shader);
+                    renderer.geometry.bind(geometry, shader);
+
+                    // set state..
+                    renderer.state.set(this.state);
+
+                    // then render the rest of them...
+                    for (var i = 0, l = drawCalls.length; i < l; i++)
+                    {
+                        this._renderDrawCallDirect(renderer, geometry.drawCalls[i]);
+                    }
+                };
+
+                /**
+                 * Renders specific DrawCall
+                 *
+                 * @param {PIXI.Renderer} renderer
+                 * @param {PIXI.BatchDrawCall} drawCall
+                 */
+                Graphics.prototype._renderDrawCallDirect = function _renderDrawCallDirect (renderer, drawCall)
+                {
+                    var groupTextureCount = drawCall.textureCount;
+
+                    for (var j = 0; j < groupTextureCount; j++)
+                    {
+                        renderer.texture.bind(drawCall.textures[j], j);
+                    }
+
+                    renderer.geometry.draw(drawCall.type, drawCall.size, drawCall.start);
+                };
+
+                /**
+                 * Resolves shader for direct rendering
+                 *
+                 * @protected
+                 * @param {PIXI.Renderer} renderer - The renderer
+                 */
+                Graphics.prototype._resolveDirectShader = function _resolveDirectShader (renderer)
+                {
+                    var shader = this.shader;
+
+                    var pluginName = this.pluginName;
+
+                    if (!shader)
+                    {
+                        // if there is no shader here, we can use the default shader.
+                        // and that only gets created if we actually need it..
+                        // but may be more than one plugins for graphics
+                        if (!DEFAULT_SHADERS[pluginName])
+                        {
+                            var sampleValues = new Int32Array(16);
+
+                            for (var i = 0; i < 16; i++)
+                            {
+                                sampleValues[i] = i;
+                            }
+
+                            var uniforms = {
+                                tint: new Float32Array([1, 1, 1, 1]),
+                                translationMatrix: new Matrix(),
+                                default: UniformGroup.from({ uSamplers: sampleValues }, true),
+                            };
+
+                            var program = renderer.plugins[pluginName]._shader.program;
+
+                            DEFAULT_SHADERS[pluginName] = new Shader(program, uniforms);
+                        }
+
+                        shader = DEFAULT_SHADERS[pluginName];
+                    }
+
+                    return shader;
                 };
 
                 /**
@@ -30394,10 +28723,11 @@
              * @member {PIXI.Point}
              */
             Graphics._TEMP_POINT = new Point();
+            //# sourceMappingURL=graphics.es.js.map
 
             /*!
-             * @pixi/sprite - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/sprite - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/sprite is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -30523,6 +28853,13 @@
                      */
                     this._cachedTint = 0xFFFFFF;
 
+                    /**
+                     * this is used to store the uvs data of the sprite, assigned at the same time
+                     * as the vertexData in calculateVertices()
+                     *
+                     * @private
+                     * @member {Float32Array}
+                     */
                     this.uvs = null;
 
                     // call texture setter
@@ -30597,7 +28934,6 @@
                     this._textureTrimmedID = -1;
                     this._cachedTint = 0xFFFFFF;
 
-                    this.uvs = this._texture._uvs.uvsFloat32;
                     // so if _width is 0 then width was not set..
                     if (this._width)
                     {
@@ -30631,6 +28967,12 @@
                     if (this._transformID === this.transform._worldID && this._textureID === texture._updateID)
                     {
                         return;
+                    }
+
+                    // update texture UV here, because base texture can be changed without calling `_onTextureUpdate`
+                    if (this._textureID !== texture._updateID)
+                    {
+                        this.uvs = this._texture._uvs.uvsFloat32;
                     }
 
                     this._transformID = this.transform._worldID;
@@ -31052,10 +29394,11 @@
 
                 return Sprite;
             }(Container));
+            //# sourceMappingURL=sprite.es.js.map
 
             /*!
-             * @pixi/text - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/text - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/text is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -32542,9 +30885,7 @@
                     // OffscreenCanvas2D measureText can be up to 40% faster.
                     var c = new OffscreenCanvas(0, 0);
 
-                    c.getContext('2d');
-
-                    return c;
+                    return c.getContext('2d') ? c : document.createElement('canvas');
                 }
                 catch (ex)
                 {
@@ -32814,7 +31155,6 @@
                     context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
                     context.font = this._font;
-                    context.strokeStyle = style.stroke;
                     context.lineWidth = style.strokeThickness;
                     context.textBaseline = style.textBaseline;
                     context.lineJoin = style.lineJoin;
@@ -32823,59 +31163,87 @@
                     var linePositionX;
                     var linePositionY;
 
-                    if (style.dropShadow)
+                    // require 2 passes if a shadow; the first to draw the drop shadow, the second to draw the text
+                    var passesCount = style.dropShadow ? 2 : 1;
+
+                    // For v4, we drew text at the colours of the drop shadow underneath the normal text. This gave the correct zIndex,
+                    // but features such as alpha and shadowblur did not look right at all, since we were using actual text as a shadow.
+                    //
+                    // For v5.0.0, we moved over to just use the canvas API for drop shadows, which made them look much nicer and more
+                    // visually please, but now because the stroke is drawn and then the fill, drop shadows would appear on both the fill
+                    // and the stroke; and fill drop shadows would appear over the top of the stroke.
+                    //
+                    // For v5.1.1, the new route is to revert to v4 style of drawing text first to get the drop shadows underneath normal
+                    // text, but instead drawing text in the correct location, we'll draw it off screen (-paddingY), and then adjust the
+                    // drop shadow so only that appears on screen (+paddingY). Now we'll have the correct draw order of the shadow
+                    // beneath the text, whilst also having the proper text shadow styling.
+                    for (var i = 0; i < passesCount; ++i)
                     {
-                        var dropShadowColor = style.dropShadowColor;
-                        var rgb = hex2rgb(typeof dropShadowColor === 'number' ? dropShadowColor : string2hex(dropShadowColor));
+                        var isShadowPass = style.dropShadow && i === 0;
+                        var dsOffsetText = isShadowPass ? height * 2 : 0; // we only want the drop shadow, so put text way off-screen
+                        var dsOffsetShadow = dsOffsetText * this.resolution;
 
-                        context.shadowColor = "rgba(" + (rgb[0] * 255) + "," + (rgb[1] * 255) + "," + (rgb[2] * 255) + "," + (style.dropShadowAlpha) + ")";
-                        context.shadowBlur = style.dropShadowBlur;
-                        context.shadowOffsetX = Math.cos(style.dropShadowAngle) * style.dropShadowDistance;
-                        context.shadowOffsetY = Math.sin(style.dropShadowAngle) * style.dropShadowDistance;
-                    }
-                    else
-                    {
-                        context.shadowColor = 0;
-                        context.shadowBlur = 0;
-                        context.shadowOffsetX = 0;
-                        context.shadowOffsetY = 0;
-                    }
-
-                    // set canvas text styles
-                    context.fillStyle = this._generateFillStyle(style, lines);
-
-                    // draw lines line by line
-                    for (var i = 0; i < lines.length; i++)
-                    {
-                        linePositionX = style.strokeThickness / 2;
-                        linePositionY = ((style.strokeThickness / 2) + (i * lineHeight)) + fontProperties.ascent;
-
-                        if (style.align === 'right')
+                        if (isShadowPass)
                         {
-                            linePositionX += maxLineWidth - lineWidths[i];
+                            // On Safari, text with gradient and drop shadows together do not position correctly
+                            // if the scale of the canvas is not 1: https://bugs.webkit.org/show_bug.cgi?id=197689
+                            // Therefore we'll set the styles to be a plain black whilst generating this drop shadow
+                            context.fillStyle = 'black';
+                            context.strokeStyle = 'black';
+
+                            var dropShadowColor = style.dropShadowColor;
+                            var rgb = hex2rgb(typeof dropShadowColor === 'number' ? dropShadowColor : string2hex(dropShadowColor));
+
+                            context.shadowColor = "rgba(" + (rgb[0] * 255) + "," + (rgb[1] * 255) + "," + (rgb[2] * 255) + "," + (style.dropShadowAlpha) + ")";
+                            context.shadowBlur = style.dropShadowBlur;
+                            context.shadowOffsetX = Math.cos(style.dropShadowAngle) * style.dropShadowDistance;
+                            context.shadowOffsetY = (Math.sin(style.dropShadowAngle) * style.dropShadowDistance) + dsOffsetShadow;
                         }
-                        else if (style.align === 'center')
+                        else
                         {
-                            linePositionX += (maxLineWidth - lineWidths[i]) / 2;
+                            // set canvas text styles
+                            context.fillStyle = this._generateFillStyle(style, lines);
+                            context.strokeStyle = style.stroke;
+
+                            context.shadowColor = 0;
+                            context.shadowBlur = 0;
+                            context.shadowOffsetX = 0;
+                            context.shadowOffsetY = 0;
                         }
 
-                        if (style.stroke && style.strokeThickness)
+                        // draw lines line by line
+                        for (var i$1 = 0; i$1 < lines.length; i$1++)
                         {
-                            this.drawLetterSpacing(
-                                lines[i],
-                                linePositionX + style.padding,
-                                linePositionY + style.padding,
-                                true
-                            );
-                        }
+                            linePositionX = style.strokeThickness / 2;
+                            linePositionY = ((style.strokeThickness / 2) + (i$1 * lineHeight)) + fontProperties.ascent;
 
-                        if (style.fill)
-                        {
-                            this.drawLetterSpacing(
-                                lines[i],
-                                linePositionX + style.padding,
-                                linePositionY + style.padding
-                            );
+                            if (style.align === 'right')
+                            {
+                                linePositionX += maxLineWidth - lineWidths[i$1];
+                            }
+                            else if (style.align === 'center')
+                            {
+                                linePositionX += (maxLineWidth - lineWidths[i$1]) / 2;
+                            }
+
+                            if (style.stroke && style.strokeThickness)
+                            {
+                                this.drawLetterSpacing(
+                                    lines[i$1],
+                                    linePositionX + style.padding,
+                                    linePositionY + style.padding - dsOffsetText,
+                                    true
+                                );
+                            }
+
+                            if (style.fill)
+                            {
+                                this.drawLetterSpacing(
+                                    lines[i$1],
+                                    linePositionX + style.padding,
+                                    linePositionY + style.padding - dsOffsetText
+                                );
+                            }
                         }
                     }
 
@@ -33294,10 +31662,11 @@
 
                 return Text;
             }(Sprite));
+            //# sourceMappingURL=text.es.js.map
 
             /*!
-             * @pixi/prepare - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/prepare - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/prepare is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -33978,6 +32347,7 @@
             {
                 return Date.now() - this.frameStart < this.maxMilliseconds;
             };
+            //# sourceMappingURL=prepare.es.js.map
 
             var prepare_es = /*#__PURE__*/Object.freeze({
                         BasePrepare: BasePrepare,
@@ -33987,8 +32357,8 @@
             });
 
             /*!
-             * @pixi/app - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/app - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/app is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -34091,7 +32461,7 @@
              * @param {boolean} [stageOptions.baseTexture=false] - Only used for child Sprites if stageOptions.children is set
              *  to true. Should it destroy the base texture of the child sprite
              */
-            Application.prototype.destroy = function destroy (removeView)
+            Application.prototype.destroy = function destroy (removeView, stageOptions)
             {
                     var this$1 = this;
 
@@ -34104,7 +32474,7 @@
                     plugin.destroy.call(this$1);
                 });
 
-                this.stage.destroy();
+                this.stage.destroy(stageOptions);
                 this.stage = null;
 
                 this.renderer.destroy(removeView);
@@ -34210,6 +32580,7 @@
             };
 
             Application.registerPlugin(ResizePlugin);
+            //# sourceMappingURL=app.es.js.map
 
             var parseUri = function parseURI (str, opts) {
               opts = opts || {};
@@ -36738,10 +35109,11 @@
 
               return Loader;
             };
+            //# sourceMappingURL=resource-loader.esm.js.map
 
             /*!
-             * @pixi/loaders - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/loaders - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/loaders is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37039,10 +35411,11 @@
              * @memberof PIXI
              */
             var LoaderResource = Resource$1;
+            //# sourceMappingURL=loaders.es.js.map
 
             /*!
-             * @pixi/particles - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/particles - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/particles is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37437,7 +35810,7 @@
                  * @member {Uint16Array}
                  * @private
                  */
-                this.indexBuffer = new Buffer$1(createIndicesForQuads(this.size), true, true);
+                this.indexBuffer = new Buffer(createIndicesForQuads(this.size), true, true);
                 geometry.addIndex(this.indexBuffer);
 
                 this.dynamicStride = 0;
@@ -37455,7 +35828,7 @@
 
                 this.dynamicData = new Float32Array(dynBuffer);
                 this.dynamicDataUint32 = new Uint32Array(dynBuffer);
-                this.dynamicBuffer = new Buffer$1(this.dynamicData, false, false);
+                this.dynamicBuffer = new Buffer(this.dynamicData, false, false);
 
                 // static //
                 var staticOffset = 0;
@@ -37475,7 +35848,7 @@
 
                 this.staticData = new Float32Array(statBuffer);
                 this.staticDataUint32 = new Uint32Array(statBuffer);
-                this.staticBuffer = new Buffer$1(this.staticData, true, false);
+                this.staticBuffer = new Buffer(this.staticData, true, false);
 
                 for (var i$2 = 0; i$2 < this.dynamicProperties.length; ++i$2)
                 {
@@ -38007,10 +36380,11 @@
 
                 return ParticleRenderer;
             }(ObjectRenderer));
+            //# sourceMappingURL=particles.es.js.map
 
             /*!
-             * @pixi/spritesheet - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/spritesheet - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/spritesheet is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -38415,10 +36789,11 @@
 
                 return url.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
             };
+            //# sourceMappingURL=spritesheet.es.js.map
 
             /*!
-             * @pixi/sprite-tiling - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/sprite-tiling - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/sprite-tiling is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -38911,10 +37286,11 @@
 
                 return TilingSpriteRenderer;
             }(ObjectRenderer));
+            //# sourceMappingURL=sprite-tiling.es.js.map
 
             /*!
-             * @pixi/text-bitmap - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/text-bitmap - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/text-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39736,10 +38112,11 @@
                     }
                 }
             };
+            //# sourceMappingURL=text-bitmap.es.js.map
 
             /*!
-             * @pixi/filter-alpha - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/filter-alpha - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/filter-alpha is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39800,10 +38177,11 @@
 
                 return AlphaFilter;
             }(Filter));
+            //# sourceMappingURL=filter-alpha.es.js.map
 
             /*!
-             * @pixi/filter-blur - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/filter-blur - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/filter-blur is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40225,10 +38603,11 @@
 
                 return BlurFilter;
             }(Filter));
+            //# sourceMappingURL=filter-blur.es.js.map
 
             /*!
-             * @pixi/filter-color-matrix - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/filter-color-matrix - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/filter-color-matrix is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40823,10 +39202,11 @@
 
             // Americanized alias
             ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
+            //# sourceMappingURL=filter-color-matrix.es.js.map
 
             /*!
-             * @pixi/filter-displacement - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/filter-displacement - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/filter-displacement is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40940,10 +39320,11 @@
 
                 return DisplacementFilter;
             }(Filter));
+            //# sourceMappingURL=filter-displacement.es.js.map
 
             /*!
-             * @pixi/filter-fxaa - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/filter-fxaa - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/filter-fxaa is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40977,10 +39358,11 @@
 
                 return FXAAFilter;
             }(Filter));
+            //# sourceMappingURL=filter-fxaa.es.js.map
 
             /*!
-             * @pixi/filter-noise - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/filter-noise - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/filter-noise is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41056,10 +39438,11 @@
 
                 return NoiseFilter;
             }(Filter));
+            //# sourceMappingURL=filter-noise.es.js.map
 
             /*!
-             * @pixi/mixin-cache-as-bitmap - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/mixin-cache-as-bitmap - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41481,10 +39864,11 @@
                 this.cacheAsBitmap = false;
                 this.destroy(options);
             };
+            //# sourceMappingURL=mixin-cache-as-bitmap.es.js.map
 
             /*!
-             * @pixi/mixin-get-child-by-name - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/mixin-get-child-by-name - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/mixin-get-child-by-name is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41518,10 +39902,11 @@
 
                 return null;
             };
+            //# sourceMappingURL=mixin-get-child-by-name.es.js.map
 
             /*!
-             * @pixi/mixin-get-global-position - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/mixin-get-global-position - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/mixin-get-global-position is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41555,10 +39940,11 @@
 
                 return point;
             };
+            //# sourceMappingURL=mixin-get-global-position.es.js.map
 
             /*!
-             * @pixi/mesh - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/mesh - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/mesh is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42293,9 +40679,9 @@
                 {
                     Geometry.call(this);
 
-                    var verticesBuffer = new Buffer$1(vertices);
-                    var uvsBuffer = new Buffer$1(uvs, true);
-                    var indexBuffer = new Buffer$1(index, true, true);
+                    var verticesBuffer = new Buffer(vertices);
+                    var uvsBuffer = new Buffer(uvs, true);
+                    var indexBuffer = new Buffer(index, true, true);
 
                     this.addAttribute('aVertexPosition', verticesBuffer, 2, false, TYPES.FLOAT)
                         .addAttribute('aTextureCoord', uvsBuffer, 2, false, TYPES.FLOAT)
@@ -42333,10 +40719,11 @@
 
                 return MeshGeometry;
             }(Geometry));
+            //# sourceMappingURL=mesh.es.js.map
 
             /*!
-             * @pixi/mesh-extras - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/mesh-extras - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/mesh-extras is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42613,7 +41000,7 @@
              * for (let i = 0; i < 20; i++) {
              *     points.push(new PIXI.Point(i * 50, 0));
              * };
-             * let rope = new PIXI.Rope(PIXI.Texture.from("snake.png"), points);
+             * let rope = new PIXI.SimpleRope(PIXI.Texture.from("snake.png"), points);
              *  ```
              *
              * @class
@@ -43088,10 +41475,11 @@
 
                 return NineSlicePlane;
             }(SimplePlane));
+            //# sourceMappingURL=mesh-extras.es.js.map
 
             /*!
-             * @pixi/sprite-animated - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * @pixi/sprite-animated - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * @pixi/sprite-animated is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -43396,7 +41784,7 @@
 
                     if (this.updateAnchor)
                     {
-                        this._anchor.copy(this._texture.defaultAnchor);
+                        this._anchor.copyFrom(this._texture.defaultAnchor);
                     }
 
                     if (this.onFrameChange)
@@ -43530,10 +41918,11 @@
 
                 return AnimatedSprite;
             }(Sprite));
+            //# sourceMappingURL=sprite-animated.es.js.map
 
             /*!
-             * pixi.js - v5.1.0
-             * Compiled Fri, 19 Jul 2019 21:54:36 UTC
+             * pixi.js - v5.1.3
+             * Compiled Mon, 09 Sep 2019 04:51:53 UTC
              *
              * pixi.js is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -44181,15 +42570,24 @@
                      * @name PIXI.BaseTexture#imageUrl
                      * @type {string}
                      * @deprecated since 5.0.0
-                     * @readonly
                      * @see PIXI.resource.ImageResource#url
                      */
                     imageUrl: {
                         get: function get()
                         {
-                            deprecation(v5, 'PIXI.BaseTexture.imageUrl property has been removed, use resource.url');
+                            deprecation(v5, 'PIXI.BaseTexture.imageUrl property has been removed, use PIXI.BaseTexture.resource.url');
 
                             return this.resource && this.resource.url;
+                        },
+
+                        set: function set(imageUrl)
+                        {
+                            deprecation(v5, 'PIXI.BaseTexture.imageUrl property has been removed, use PIXI.BaseTexture.resource.url');
+
+                            if (this.resource)
+                            {
+                                this.resource.url = imageUrl;
+                            }
                         },
                     },
                     /**
@@ -44202,13 +42600,13 @@
                     source: {
                         get: function get()
                         {
-                            deprecation(v5, 'PIXI.BaseTexture.source property has been moved, use `resource.source`');
+                            deprecation(v5, 'PIXI.BaseTexture.source property has been moved, use `PIXI.BaseTexture.resource.source`');
 
                             return this.resource && this.resource.source;
                         },
                         set: function set(source)
                         {
-                            deprecation(v5, 'PIXI.BaseTexture.source property has been moved, use `resource.source` '
+                            deprecation(v5, 'PIXI.BaseTexture.source property has been moved, use `PIXI.BaseTexture.resource.source` '
                                 + 'if you want to set HTMLCanvasElement. Otherwise, create new BaseTexture.');
 
                             if (this.resource)
@@ -44496,6 +42894,21 @@
                     };
                 }
 
+                /**
+                 * @deprecated since 5.0.0
+                 * @member {PIXI.Graphics} PIXI.Graphics#graphicsData
+                 * @see PIXI.Graphics#geometry
+                 * @readonly
+                 */
+                Object.defineProperty(PIXI.Graphics.prototype, 'graphicsData', {
+                    get: function get()
+                    {
+                        deprecation(v5, 'PIXI.Graphics.graphicsData property is deprecated, use PIXI.Graphics.geometry.graphicsData');
+
+                        return this.geometry.graphicsData;
+                    },
+                });
+
                 // Use these to deprecate all the Sprite from* methods
                 function spriteFrom(name, source, crossorigin, scaleMode)
                 {
@@ -44610,13 +43023,15 @@
                 Object.defineProperty(PIXI.AbstractRenderer.prototype, 'autoResize', {
                     get: function get()
                     {
-                        deprecation(v5, 'PIXI.AbstractRenderer.autoResize property is deprecated, use autoDensity');
+                        deprecation(v5, 'PIXI.AbstractRenderer.autoResize property is deprecated, '
+                            + 'use PIXI.AbstractRenderer.autoDensity');
 
                         return this.autoDensity;
                     },
                     set: function set(value)
                     {
-                        deprecation(v5, 'PIXI.AbstractRenderer.autoResize property is deprecated, use autoDensity');
+                        deprecation(v5, 'PIXI.AbstractRenderer.autoResize property is deprecated, '
+                            + 'use PIXI.AbstractRenderer.autoDensity');
 
                         this.autoDensity = value;
                     },
@@ -44630,7 +43045,7 @@
                 Object.defineProperty(PIXI.Renderer.prototype, 'textureManager', {
                     get: function get()
                     {
-                        deprecation(v5, 'PIXI.Renderer.textureManager property is deprecated, use texture');
+                        deprecation(v5, 'PIXI.Renderer.textureManager property is deprecated, use PIXI.Renderer.texture');
 
                         return this.texture;
                     },
@@ -44695,7 +43110,7 @@
              * @name VERSION
              * @type {string}
              */
-            var VERSION$1 = '5.1.0';
+            var VERSION$1 = '5.1.3';
 
             /**
              * @namespace PIXI
@@ -44737,6 +43152,7 @@
                 FXAAFilter: FXAAFilter,
                 NoiseFilter: NoiseFilter,
             };
+            //# sourceMappingURL=pixi.es.js.map
 
             var PIXI = /*#__PURE__*/Object.freeze({
                         accessibility: accessibility_es,
@@ -44747,37 +43163,7 @@
                         VERSION: VERSION$1,
                         filters: filters,
                         useDeprecated: useDeprecated,
-                        Bounds: Bounds,
-                        Container: Container,
-                        DisplayObject: DisplayObject,
                         Application: Application,
-                        AppLoaderPlugin: AppLoaderPlugin,
-                        Loader: Loader$1,
-                        LoaderResource: LoaderResource,
-                        TextureLoader: TextureLoader,
-                        ParticleContainer: ParticleContainer,
-                        ParticleRenderer: ParticleRenderer,
-                        Spritesheet: Spritesheet,
-                        SpritesheetLoader: SpritesheetLoader,
-                        TilingSprite: TilingSprite,
-                        TilingSpriteRenderer: TilingSpriteRenderer,
-                        BitmapFontLoader: BitmapFontLoader,
-                        BitmapText: BitmapText,
-                        Ticker: Ticker,
-                        TickerPlugin: TickerPlugin,
-                        UPDATE_PRIORITY: UPDATE_PRIORITY,
-                        BLEND_MODES: BLEND_MODES,
-                        DRAW_MODES: DRAW_MODES,
-                        ENV: ENV,
-                        FORMATS: FORMATS,
-                        GC_MODES: GC_MODES,
-                        MIPMAP_MODES: MIPMAP_MODES,
-                        PRECISION: PRECISION,
-                        RENDERER_TYPE: RENDERER_TYPE,
-                        SCALE_MODES: SCALE_MODES,
-                        TARGETS: TARGETS,
-                        TYPES: TYPES,
-                        WRAP_MODES: WRAP_MODES,
                         AbstractBatchRenderer: AbstractBatchRenderer,
                         AbstractRenderer: AbstractRenderer,
                         Attribute: Attribute,
@@ -44788,7 +43174,7 @@
                         BatchPluginFactory: BatchPluginFactory,
                         BatchRenderer: BatchRenderer,
                         BatchShaderGenerator: BatchShaderGenerator,
-                        Buffer: Buffer$1,
+                        Buffer: Buffer,
                         CubeTexture: CubeTexture,
                         Filter: Filter,
                         Framebuffer: Framebuffer,
@@ -44817,6 +43203,36 @@
                         defaultVertex: _default,
                         resources: index,
                         systems: systems,
+                        AppLoaderPlugin: AppLoaderPlugin,
+                        Loader: Loader$1,
+                        LoaderResource: LoaderResource,
+                        TextureLoader: TextureLoader,
+                        ParticleContainer: ParticleContainer,
+                        ParticleRenderer: ParticleRenderer,
+                        Spritesheet: Spritesheet,
+                        SpritesheetLoader: SpritesheetLoader,
+                        TilingSprite: TilingSprite,
+                        TilingSpriteRenderer: TilingSpriteRenderer,
+                        BitmapFontLoader: BitmapFontLoader,
+                        BitmapText: BitmapText,
+                        Ticker: Ticker,
+                        TickerPlugin: TickerPlugin,
+                        UPDATE_PRIORITY: UPDATE_PRIORITY,
+                        BLEND_MODES: BLEND_MODES,
+                        DRAW_MODES: DRAW_MODES,
+                        ENV: ENV,
+                        FORMATS: FORMATS,
+                        GC_MODES: GC_MODES,
+                        MIPMAP_MODES: MIPMAP_MODES,
+                        PRECISION: PRECISION,
+                        RENDERER_TYPE: RENDERER_TYPE,
+                        SCALE_MODES: SCALE_MODES,
+                        TARGETS: TARGETS,
+                        TYPES: TYPES,
+                        WRAP_MODES: WRAP_MODES,
+                        Bounds: Bounds,
+                        Container: Container,
+                        DisplayObject: DisplayObject,
                         FillStyle: FillStyle,
                         GRAPHICS_CURVES: GRAPHICS_CURVES,
                         Graphics: Graphics,
@@ -45448,6 +43864,10 @@
             }
             });
 
+            /**
+             * Controls a group of easings added by Ease.add()
+             * @extends EventEmitter
+             */
             class Easing extends eventemitter3$1
             {
                 /**
@@ -45559,6 +43979,7 @@
                  * helper function to find closest angle to change between angle start and angle finish (used by face)
                  * @param {number} start angle
                  * @param {number} finish angle
+                 * @private
                  */
                 static shortestAngle(start, finish)
                 {
@@ -45579,19 +44000,26 @@
 
                 /**
                  * remove all easings with matching element and params
-                 * @param {PIXI.DisplayObject} element
-                 * @param {(string|string[])} [params] if not set, removes all params for the element
+                 * @param {PIXI.DisplayObject} [element] if not set, removes all elements in this easing
+                 * @param {(string|string[])} [params] if not set, removes all params for each element
                  */
                 remove(element, params)
                 {
-                    params = typeof params === 'undefined' ? false : typeof params === 'string' ? [params] : params;
-                    for (let i = 0; i < this.eases.length; i++)
+                    if (arguments.length === 0)
                     {
-                        const ease = this.eases[i];
-                        if (ease.element === element && (params === false || params.indexOf(ease.entry) !== -1))
+                        this.eases = [];
+                    }
+                    else
+                    {
+                        params = typeof params === 'undefined' ? false : typeof params === 'string' ? [params] : params;
+                        for (let i = 0; i < this.eases.length; i++)
                         {
-                            this.eases.splice(i, 1);
-                            i--;
+                            const ease = this.eases[i];
+                            if ((!element || ease.element === element) && (params === false || params.indexOf(ease.entry) !== -1))
+                            {
+                                this.eases.splice(i, 1);
+                                i--;
+                            }
                         }
                     }
                     if (this.eases.length === 0)
@@ -45623,14 +44051,22 @@
 
                 updateTint(ease, colors)
                 {
-                    const index = Math.floor(this.options.ease(this.time, ease.start, ease.delta, this.options.duration));
+                    let index = Math.floor(this.options.ease(this.time, ease.start, ease.delta, this.options.duration));
+                    if (index === colors.length)
+                    {
+                        index = colors.length - 1;
+                    }
                     ease.element.tint = colors[index];
                 }
 
                 updateBlend(ease, colors)
                 {
                     const calc = this.options.ease(this.time, ease.start, ease.delta, this.options.duration);
-                    const index = Math.floor(calc);
+                    let index = Math.floor(calc);
+                    if (index === colors.length)
+                    {
+                        index = colors.length - 1;
+                    }
                     let next = index + 1;
                     if (next === colors.length)
                     {
@@ -45735,6 +44171,10 @@
 
                 update(elapsed)
                 {
+                    if (this.eases.length === 0)
+                    {
+                        return true
+                    }
                     if (this.wait)
                     {
                         this.wait -= elapsed;
@@ -45898,8 +44338,8 @@
                  * @param {number} [options.duration=1000] default duration if not set
                  * @param {(string|function)} [options.ease=Penner.easeInOutSine] default ease function if not set (see {@link https://www.npmjs.com/package/penner} for names of easing functions)
                  * @param {boolean} [options.useTicker=true] attach updates to a PIXI.Ticker
-                 * @param {PIXI.Ticker} [options.ticker=PIXI.ticker.shared || PIXI.Ticker.shared] which PIXI.Ticker to use
-                 * @param {number} [options.maxFrame=1000/60] maximum frame time (set to Infinity to ignore)
+                 * @param {PIXI.Ticker} [options.ticker=PIXI.ticker.shared || PIXI.Ticker.shared] which PIXI.Ticker to use; only used if useTicker = true
+                 * @param {number} [options.maxFrame=1000/60] maximum frame time (set to Infinity to ignore); only used if useTicker = true
                  * @fires Ease#complete
                  * @fires Ease#each
                  */
@@ -45909,7 +44349,7 @@
                     this.options = Object.assign({}, easeOptions, options);
                     this.easings = [];
                     this.empty = true;
-                    if (this.options.useTicker === true)
+                    if (this.options.useTicker)
                     {
                         if (this.options.ticker)
                         {
@@ -45940,7 +44380,7 @@
                 destroy()
                 {
                     this.removeAll();
-                    if (this.options.useTicker === true)
+                    if (this.options.useTicker)
                     {
                         this.ticker.remove(this.update, this);
                     }
@@ -46043,31 +44483,10 @@
                 }
 
                 /**
-                 * remove all eases from a DisplayObject
-                 * WARNING: 'complete' events will not fire for these removals
-                 * @param {PIXI.DisplayObject} object
-                 */
-                removeAllEases(element)
-                {
-                    for (let i = 0; i < this.easings.length; i++)
-                    {
-                        if (this.easings[i].remove(element))
-                        {
-                            this.easings.splice(i, 1);
-                            i--;
-                        }
-                    }
-                    if (this.easings.length === 0)
-                    {
-                        this.empty = true;
-                    }
-                }
-
-                /**
                  * removes one or more eases from a DisplayObject
                  * WARNING: 'complete' events will not fire for these removals
                  * @param {PIXI.DisplayObject} element
-                 * @param {(string|string[])} param
+                 * @param {(string|string[])} [param] omit to remove all easings for an element
                  */
                 removeEase(element, param)
                 {
@@ -46097,19 +44516,23 @@
 
                 /**
                  * update frame; this is called automatically if options.useTicker !== false
-                 * @param {number} elapsed time in ms since last frame (capped at options.maxFrame)
+                 * @param {number} elapsed time in ms since last frame
                  */
-                update()
+                update(elapsed)
                 {
+                    if (this.options.useTicker)
+                    {
+                        elapsed = this.ticker.elapsedMS;
+                    }
+                    elapsed = Math.min(elapsed, this.options.maxFrame);
                     if (!this.empty)
                     {
-                        const elapsed = Math.max(this.ticker.elapsedMS, this.options.maxFrame);
-                        for (let i = 0; i < this.easings.length; i++)
+                        const list = this.easings.slice(0);
+                        for (let easing of list)
                         {
-                            if (this.easings[i].update(elapsed))
+                            if (easing.update(elapsed))
                             {
-                                this.easings.splice(i, 1);
-                                i--;
+                                this.easings.splice(this.easings.indexOf(easing), 1);
                             }
                         }
                         this.emit('each', this);
@@ -46181,6 +44604,7 @@
             let ease = new Ease();
 
             Ease.ease = ease;
+            //# sourceMappingURL=ease.es.js.map
 
             var alea = createCommonjsModule(function (module) {
             // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -50599,7 +49023,11 @@
                     const point = this.viewport.toLocal(this.getPointerPosition(event));
                     if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
                     {
-                        return this.viewport.plugins.wheel(event)
+                        const stop = this.viewport.plugins.wheel(event);
+                        if (stop)
+                        {
+                            event.preventDefault();
+                        }
                     }
                 }
 
@@ -52689,7 +51117,7 @@
                     this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
                     if (!this.parent.options.passiveWheel)
                     {
-                        e.preventDefault();
+                        return true
                     }
                 }
             }
@@ -52902,8 +51330,8 @@
              * @property {number} [worldWidth=this.width]
              * @property {number} [worldHeight=this.height]
              * @property {number} [threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
-             * @property {boolean} [passiveWheel=true] whether the 'wheel' event is set to passive
-             * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport
+             * @property {boolean} [passiveWheel=true] whether the 'wheel' event is set to passive (note: if false, e.preventDefault() will be called when wheel is used over the viewport)
+             * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport (except wheel events, see options.passiveWheel)
              * @property {HitArea} [forceHitArea] change the default hitArea from world size to a new value
              * @property {boolean} [noTicker] set this if you want to manually call update() function on each frame
              * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
@@ -54328,37 +52756,7 @@
 
             }).call(commonjsGlobal$3);
             });
-
-            /**
-             * @typedef {object} ViewportOptions
-             * @property {number} [screenWidth=window.innerWidth]
-             * @property {number} [screenHeight=window.innerHeight]
-             * @property {number} [worldWidth=this.width]
-             * @property {number} [worldHeight=this.height]
-             * @property {number} [threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
-             * @property {boolean} [passiveWheel=true] whether the 'wheel' event is set to passive
-             * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport
-             * @property {HitArea} [forceHitArea] change the default hitArea from world size to a new value
-             * @property {boolean} [noTicker] set this if you want to manually call update() function on each frame
-             * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
-             * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
-             * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
-             * @property {boolean} [disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
-             */
-
-            const viewportOptions$1 = {
-                screenWidth: window.innerWidth,
-                screenHeight: window.innerHeight,
-                worldWidth: null,
-                worldHeight: null,
-                threshold: 5,
-                passiveWheel: true,
-                stopPropagation: false,
-                forceHitArea: null,
-                noTicker: false,
-                interaction: null,
-                disableOnContextMenu: false
-            };
+            //# sourceMappingURL=viewport.es.js.map
 
             class UserPlugin extends Plugin$1
             {
@@ -54995,7 +53393,8 @@
                 _viewport$1 = _application.stage.addChild(new Viewport(
                 {
                     interaction: _application.renderer.plugins.interaction,
-                    passiveWheel: false
+                    passiveWheel: false,
+                    stopPropagation: true
                 }));
                 _viewport$1
                     .drag({ clampWheel: true })

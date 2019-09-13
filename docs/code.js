@@ -29,7 +29,8 @@ function viewport()
     _viewport = _application.stage.addChild(new Viewport(
     {
         interaction: _application.renderer.plugins.interaction,
-        passiveWheel: false
+        passiveWheel: false,
+        stopPropagation: true
     }))
     _viewport
         .drag({ clampWheel: true })

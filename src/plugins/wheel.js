@@ -130,7 +130,7 @@ export class Wheel extends Plugin
         this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent })
         if (!this.parent.options.passiveWheel)
         {
-            e.preventDefault()
+            return true
         }
     }
 }

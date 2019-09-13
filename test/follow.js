@@ -12,7 +12,6 @@ describe('follow', () =>
         const follow = viewport.plugins.get('follow')
         assert.equal(follow.options.speed, 0)
         assert.isNull(follow.options.acceleration)
-        assert.equal(follow.options.speed, 0)
         assert.isNull(follow.options.radius)
         target.x = 20
         target.y = 21
