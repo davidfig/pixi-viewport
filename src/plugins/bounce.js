@@ -197,17 +197,18 @@ export class Bounce extends Plugin
         if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
         {
             oob = oob || this.parent.OOB()
-            const point = oob.cornerPoint
+            const pointBottomRight = oob.cornerPointBottomRight
+            const pointTopLeft = oob.cornerPointTopLeft
             if (!this.toX && !decelerate.x)
             {
                 let x = null
                 if (oob.left && this.left)
                 {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : 0
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -pointTopLeft.x
                 }
                 else if (oob.right && this.right)
                 {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -pointBottomRight.x
                 }
                 if (x !== null && this.parent.x !== x)
                 {
@@ -220,11 +221,11 @@ export class Bounce extends Plugin
                 let y = null
                 if (oob.top && this.top)
                 {
-                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : 0
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -pointTopLeft.y
                 }
                 else if (oob.bottom && this.bottom)
                 {
-                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -pointBottomRight.y
                 }
                 if (y !== null && this.parent.y !== y)
                 {

@@ -121,6 +121,21 @@ export class Viewport extends PIXI.Container
         this._worldHeight = this.options.worldHeight
         this.forceHitArea = this.options.forceHitArea
 
+        /** 
+         * top-left corner of world bounds
+         * by default (0, 0), 
+         * you might want to override it to have custom world bounds, likely used together with bounce plugin
+         * @type {PIXI.Point} 
+         */
+        this.boundsTopLeft = PIXI.Point(0, 0);
+        /** 
+         * bottom-right corner of world bounds
+         * by default (worldWidth, worldHeight), 
+         * you might want to override it to have custom world bounds, likely used together with bounce plugin
+         * @type {PIXI.Point} 
+         */
+        this.boundsBottomRight = PIXI.Point(this._worldWidth, this._worldHeight);
+
         /**
          * number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
          * @type {number}
@@ -666,9 +681,13 @@ export class Viewport extends PIXI.Container
             right: this.right > this._worldWidth,
             top: this.top < 0,
             bottom: this.bottom > this._worldHeight,
-            cornerPoint: new PIXI.Point(
-                this._worldWidth * this.scale.x - this.screenWidth,
-                this._worldHeight * this.scale.y - this.screenHeight
+            cornerPointTopLeft: new PIXI.Point(
+                this.boundsTopLeft.x * this.scale.x,
+                this.boundsTopLeft.y * this.scale.y
+            ),
+            cornerPointBottomRight: new PIXI.Point(
+                this.boundsBottomRight.x * this.scale.x - this.screenWidth,
+                this.boundsBottomRight.y * this.scale.y - this.screenHeight
             )
         }
     }
