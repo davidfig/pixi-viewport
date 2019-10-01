@@ -19,6 +19,7 @@ import { Plugin } from './plugin'
  * @property {string} [underflow=center] where to place world if too small for screen
  * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
  * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
+ * @property {number} [keyToPress=null] keyCode of key that needs to be pressed for the drag to be triggered, e.g.: 13 for enter.
  */
 
 const dragOptions = {
@@ -29,7 +30,8 @@ const dragOptions = {
     clampWheel: false,
     underflow: 'center',
     factor: 1,
-    mouseButtons: 'all'
+    mouseButtons: 'all',
+    keyToPress: null
 }
 
 /**
@@ -49,9 +51,28 @@ export class Drag extends Plugin
         this.reverse = this.options.reverse ? 1 : -1
         this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x'
         this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y'
+        this.keyIsPressed = false
 
         this.parseUnderflow()
         this.mouseButtons(this.options.mouseButtons)
+        this.handleKeyPresses(this.options.keyToPress)
+    }
+
+    /**
+     * Handles keypress events and set the keyIsPressed boolean accordingly
+     * @param {number} keyCode - keycode of key that should be pressed in order to trigger drag event
+     */
+    handleKeyPresses(keyCode)
+    {
+        parent.addEventListener("keydown", e => {
+            if (e.keyCode === keyCode)
+                this.keyIsPressed = true
+        })
+
+        parent.addEventListener("keyup", e => {
+            if (e.keyCode === keyCode)
+                this.keyIsPressed = false
+        })
     }
 
     /**
@@ -108,6 +129,18 @@ export class Drag extends Plugin
     }
 
     /**
+     * @returns {boolean}
+     */
+    checkKeyPress()
+    {
+        if (!this.options.keyToPress || this.keyIsPressed)
+            return true
+
+        return false
+    }
+
+
+    /**
      * @param {PIXI.interaction.InteractionEvent} event
      */
     down(event)
@@ -116,7 +149,7 @@ export class Drag extends Plugin
         {
             return
         }
-        if (this.checkButtons(event))
+        if (this.checkButtons(event) && this.checkKeyPress())
         {
             this.last = { x: event.data.global.x, y: event.data.global.y }
             this.current = event.data.pointerId
