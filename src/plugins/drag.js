@@ -133,7 +133,7 @@ export class Drag extends Plugin
      */
     checkKeyPress()
     {
-        if (!this.options.keyToPress || this.keyIsPressed)
+        if (!this.options.keyToPress || this.keyIsPressed || 'ontouchstart' in window)
             return true
 
         return false
