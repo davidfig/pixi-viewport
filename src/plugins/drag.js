@@ -19,7 +19,7 @@ import { Plugin } from './plugin'
  * @property {string} [underflow=center] where to place world if too small for screen
  * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
  * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
- * @property {number} [keyToPress=null] keyCode of key that needs to be pressed for the drag to be triggered, e.g.: 13 for enter.
+ * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
  */
 
 const dragOptions = {
@@ -60,17 +60,17 @@ export class Drag extends Plugin
 
     /**
      * Handles keypress events and set the keyIsPressed boolean accordingly
-     * @param {number} keyCode - keycode of key that should be pressed in order to trigger drag event
+     * @param {array} codes - key codes that can be used to trigger drag event
      */
-    handleKeyPresses(keyCode)
-    {
+    handleKeyPresses(codes)
+    {   
         parent.addEventListener("keydown", e => {
-            if (e.keyCode === keyCode)
+            if (codes.includes(e.code))
                 this.keyIsPressed = true
         })
 
         parent.addEventListener("keyup", e => {
-            if (e.keyCode === keyCode)
+            if (codes.includes(e.code))
                 this.keyIsPressed = false
         })
     }
@@ -138,7 +138,6 @@ export class Drag extends Plugin
 
         return false
     }
-
 
     /**
      * @param {PIXI.interaction.InteractionEvent} event
