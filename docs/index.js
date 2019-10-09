@@ -598,6 +598,7 @@
             {
                 window.Int32Array = Array;
             }
+            //# sourceMappingURL=polyfill.es.js.map
 
             var isMobile_min = createCommonjsModule(function (module) {
             !function(e){var n=/iPhone/i,t=/iPod/i,r=/iPad/i,a=/\bAndroid(?:.+)Mobile\b/i,p=/Android/i,l=/\bAndroid(?:.+)SD4930UR\b/i,b=/\bAndroid(?:.+)(?:KF[A-Z]{2,4})\b/i,f=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,c=/BlackBerry/i,s=/BB10/i,v=/Opera Mini/i,h=/\b(CriOS|Chrome)(?:.+)Mobile/i,w=/\Mobile(?:.+)Firefox\b/i;function m(e,i){return e.test(i)}function i(e){var i=e||("undefined"!=typeof navigator?navigator.userAgent:""),o=i.split("[FBAN");void 0!==o[1]&&(i=o[0]),void 0!==(o=i.split("Twitter"))[1]&&(i=o[0]);var d={apple:{phone:m(n,i)&&!m(f,i),ipod:m(t,i),tablet:!m(n,i)&&m(r,i)&&!m(f,i),device:(m(n,i)||m(t,i)||m(r,i))&&!m(f,i)},amazon:{phone:m(l,i),tablet:!m(l,i)&&m(b,i),device:m(l,i)||m(b,i)},android:{phone:!m(f,i)&&m(l,i)||!m(f,i)&&m(a,i),tablet:!m(f,i)&&!m(l,i)&&!m(a,i)&&(m(b,i)||m(p,i)),device:!m(f,i)&&(m(l,i)||m(b,i)||m(a,i)||m(p,i))},windows:{phone:m(f,i),tablet:m(u,i),device:m(f,i)||m(u,i)},other:{blackberry:m(c,i),blackberry10:m(s,i),opera:m(v,i),firefox:m(w,i),chrome:m(h,i),device:m(c,i)||m(s,i)||m(v,i)||m(w,i)||m(h,i)}};return d.any=d.apple.device||d.android.device||d.windows.device||d.other.device,d.phone=d.apple.phone||d.android.phone||d.windows.phone,d.tablet=d.apple.tablet||d.android.tablet||d.windows.tablet,d}module.exports&&"undefined"==typeof window?module.exports=i:module.exports&&"undefined"!=typeof window?module.exports=i():e.isMobile=i();}(commonjsGlobal);
@@ -914,6 +915,7 @@
                  */
                 ROUND_PIXELS: false,
             };
+            //# sourceMappingURL=settings.es.js.map
 
             var eventemitter3 = createCommonjsModule(function (module) {
 
@@ -3404,6 +3406,7 @@
                 MEDIUM: 'mediump',
                 HIGH: 'highp',
             };
+            //# sourceMappingURL=constants.es.js.map
 
             /*!
              * @pixi/utils - v5.1.3
@@ -4358,6 +4361,7 @@
 
                 warnings[message] = true;
             }
+            //# sourceMappingURL=utils.es.js.map
 
             var utils_es = /*#__PURE__*/Object.freeze({
                         BaseTextureCache: BaseTextureCache,
@@ -6491,6 +6495,7 @@
 
                 return false;
             };
+            //# sourceMappingURL=math.es.js.map
 
             /*!
              * @pixi/display - v5.1.3
@@ -8286,6 +8291,7 @@
 
             // performance increase to avoid using call.. (10x faster)
             Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
+            //# sourceMappingURL=display.es.js.map
 
             /*!
              * @pixi/accessibility - v5.1.3
@@ -8918,6 +8924,7 @@
                 this.children = null;
                 this.renderer = null;
             };
+            //# sourceMappingURL=accessibility.es.js.map
 
             var accessibility_es = /*#__PURE__*/Object.freeze({
                         AccessibilityManager: AccessibilityManager,
@@ -9135,6 +9142,7 @@
              * @see PIXI.Runner#emit
              */
             Runner.prototype.run = Runner.prototype.emit;
+            //# sourceMappingURL=runner.es.js.map
 
             /*!
              * @pixi/ticker - v5.1.3
@@ -10087,6 +10095,7 @@
                     oldTicker.destroy();
                 }
             };
+            //# sourceMappingURL=ticker.es.js.map
 
             /*!
              * @pixi/core - v5.1.3
@@ -22464,6 +22473,7 @@
             // Setup the default BatchRenderer plugin, this is what
             // we'll actually export at the root level
             var BatchRenderer = BatchPluginFactory.create();
+            //# sourceMappingURL=core.es.js.map
 
             /*!
              * @pixi/extract - v5.1.3
@@ -22735,6 +22745,7 @@
                     }
                 }
             };
+            //# sourceMappingURL=extract.es.js.map
 
             var extract_es = /*#__PURE__*/Object.freeze({
                         Extract: Extract
@@ -25193,6 +25204,7 @@
 
                 return InteractionManager;
             }(eventemitter3));
+            //# sourceMappingURL=interaction.es.js.map
 
             var interaction_es = /*#__PURE__*/Object.freeze({
                         InteractionData: InteractionData,
@@ -28711,6 +28723,7 @@
              * @member {PIXI.Point}
              */
             Graphics._TEMP_POINT = new Point();
+            //# sourceMappingURL=graphics.es.js.map
 
             /*!
              * @pixi/sprite - v5.1.3
@@ -29381,6 +29394,7 @@
 
                 return Sprite;
             }(Container));
+            //# sourceMappingURL=sprite.es.js.map
 
             /*!
              * @pixi/text - v5.1.3
@@ -31648,6 +31662,7 @@
 
                 return Text;
             }(Sprite));
+            //# sourceMappingURL=text.es.js.map
 
             /*!
              * @pixi/prepare - v5.1.3
@@ -32332,6 +32347,7 @@
             {
                 return Date.now() - this.frameStart < this.maxMilliseconds;
             };
+            //# sourceMappingURL=prepare.es.js.map
 
             var prepare_es = /*#__PURE__*/Object.freeze({
                         BasePrepare: BasePrepare,
@@ -32564,6 +32580,7 @@
             };
 
             Application.registerPlugin(ResizePlugin);
+            //# sourceMappingURL=app.es.js.map
 
             var parseUri = function parseURI (str, opts) {
               opts = opts || {};
@@ -35092,6 +35109,7 @@
 
               return Loader;
             };
+            //# sourceMappingURL=resource-loader.esm.js.map
 
             /*!
              * @pixi/loaders - v5.1.3
@@ -35393,6 +35411,7 @@
              * @memberof PIXI
              */
             var LoaderResource = Resource$1;
+            //# sourceMappingURL=loaders.es.js.map
 
             /*!
              * @pixi/particles - v5.1.3
@@ -36361,6 +36380,7 @@
 
                 return ParticleRenderer;
             }(ObjectRenderer));
+            //# sourceMappingURL=particles.es.js.map
 
             /*!
              * @pixi/spritesheet - v5.1.3
@@ -36769,6 +36789,7 @@
 
                 return url.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
             };
+            //# sourceMappingURL=spritesheet.es.js.map
 
             /*!
              * @pixi/sprite-tiling - v5.1.3
@@ -37265,6 +37286,7 @@
 
                 return TilingSpriteRenderer;
             }(ObjectRenderer));
+            //# sourceMappingURL=sprite-tiling.es.js.map
 
             /*!
              * @pixi/text-bitmap - v5.1.3
@@ -38090,6 +38112,7 @@
                     }
                 }
             };
+            //# sourceMappingURL=text-bitmap.es.js.map
 
             /*!
              * @pixi/filter-alpha - v5.1.3
@@ -38154,6 +38177,7 @@
 
                 return AlphaFilter;
             }(Filter));
+            //# sourceMappingURL=filter-alpha.es.js.map
 
             /*!
              * @pixi/filter-blur - v5.1.3
@@ -38579,6 +38603,7 @@
 
                 return BlurFilter;
             }(Filter));
+            //# sourceMappingURL=filter-blur.es.js.map
 
             /*!
              * @pixi/filter-color-matrix - v5.1.3
@@ -39177,6 +39202,7 @@
 
             // Americanized alias
             ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
+            //# sourceMappingURL=filter-color-matrix.es.js.map
 
             /*!
              * @pixi/filter-displacement - v5.1.3
@@ -39294,6 +39320,7 @@
 
                 return DisplacementFilter;
             }(Filter));
+            //# sourceMappingURL=filter-displacement.es.js.map
 
             /*!
              * @pixi/filter-fxaa - v5.1.3
@@ -39331,6 +39358,7 @@
 
                 return FXAAFilter;
             }(Filter));
+            //# sourceMappingURL=filter-fxaa.es.js.map
 
             /*!
              * @pixi/filter-noise - v5.1.3
@@ -39410,6 +39438,7 @@
 
                 return NoiseFilter;
             }(Filter));
+            //# sourceMappingURL=filter-noise.es.js.map
 
             /*!
              * @pixi/mixin-cache-as-bitmap - v5.1.3
@@ -39835,6 +39864,7 @@
                 this.cacheAsBitmap = false;
                 this.destroy(options);
             };
+            //# sourceMappingURL=mixin-cache-as-bitmap.es.js.map
 
             /*!
              * @pixi/mixin-get-child-by-name - v5.1.3
@@ -39872,6 +39902,7 @@
 
                 return null;
             };
+            //# sourceMappingURL=mixin-get-child-by-name.es.js.map
 
             /*!
              * @pixi/mixin-get-global-position - v5.1.3
@@ -39909,6 +39940,7 @@
 
                 return point;
             };
+            //# sourceMappingURL=mixin-get-global-position.es.js.map
 
             /*!
              * @pixi/mesh - v5.1.3
@@ -40687,6 +40719,7 @@
 
                 return MeshGeometry;
             }(Geometry));
+            //# sourceMappingURL=mesh.es.js.map
 
             /*!
              * @pixi/mesh-extras - v5.1.3
@@ -41442,6 +41475,7 @@
 
                 return NineSlicePlane;
             }(SimplePlane));
+            //# sourceMappingURL=mesh-extras.es.js.map
 
             /*!
              * @pixi/sprite-animated - v5.1.3
@@ -41884,6 +41918,7 @@
 
                 return AnimatedSprite;
             }(Sprite));
+            //# sourceMappingURL=sprite-animated.es.js.map
 
             /*!
              * pixi.js - v5.1.3
@@ -43117,6 +43152,7 @@
                 FXAAFilter: FXAAFilter,
                 NoiseFilter: NoiseFilter,
             };
+            //# sourceMappingURL=pixi.es.js.map
 
             var PIXI = /*#__PURE__*/Object.freeze({
                         accessibility: accessibility_es,
@@ -44568,6 +44604,7 @@
             let ease = new Ease();
 
             Ease.ease = ease;
+            //# sourceMappingURL=ease.es.js.map
 
             var alea = createCommonjsModule(function (module) {
             // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -49410,7 +49447,9 @@
 
                     this.parseUnderflow();
                     this.mouseButtons(this.options.mouseButtons);
-                    this.handleKeyPresses(this.options.keyToPress);
+                    if (this.options.keyToPress) {
+                        this.handleKeyPresses(this.options.keyToPress);
+                    }
                 }
 
                 /**
@@ -50733,21 +50772,21 @@
                     this.ease = ease$2(this.options.ease);
                     if (this.options.width > 0)
                     {
-                        this.x_scale = parent.screenWidth / this.options.width;
+                        this.xScale = parent.screenWidth / this.options.width;
                     }
                     if (this.options.height > 0)
                     {
-                        this.y_scale = parent.screenHeight / this.options.height;
+                        this.yScale = parent.screenHeight / this.options.height;
                     }
-                    this.xIndependent = this.x_scale ? true : false;
-                    this.yIndependent = this.y_scale ? true : false;
-                    this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-                    this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+                    this.xIndependent = this.xScale ? true : false;
+                    this.yIndependent = this.yScale ? true : false;
+                    this.xScale = this.xIndependent ? this.xScale : this.yScale;
+                    this.yScale = this.yIndependent ? this.yScale : this.xScale;
 
                     if (this.options.time === 0)
                     {
-                        parent.container.scale.x = this.x_scale;
-                        parent.container.scale.y = this.y_scale;
+                        parent.container.scale.x = this.xScale;
+                        parent.container.scale.y = this.yScale;
                         if (this.options.removeOnComplete)
                         {
                             this.parent.plugins.remove('snap-zoom');
@@ -50762,7 +50801,7 @@
                 createSnapping()
                 {
                     const scale = this.parent.scale;
-                    this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.x_scale - scale.x, deltaY: this.y_scale - scale.y };
+                    this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.xScale - scale.x, deltaY: this.yScale - scale.y };
                     this.parent.emit('snap-zoom-start', this.parent);
                 }
 
@@ -50772,14 +50811,14 @@
 
                     if (this.options.width > 0)
                     {
-                        this.x_scale = this.parent._screenWidth / this.options.width;
+                        this.xScale = this.parent.screenWidth / this.options.width;
                     }
                     if (this.options.height > 0)
                     {
-                        this.y_scale = this.parent._screenHeight / this.options.height;
+                        this.yScale = this.parent.screenHeight / this.options.height;
                     }
-                    this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-                    this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+                    this.xScale = this.xIndependent ? this.xScale : this.yScale;
+                    this.yScale = this.yIndependent ? this.yScale : this.xScale;
                 }
 
                 reset()
@@ -50825,7 +50864,7 @@
                     }
                     if (!this.snapping)
                     {
-                        if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
+                        if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale)
                         {
                             this.createSnapping();
                         }
@@ -50836,7 +50875,7 @@
                         snapping.time += elapsed;
                         if (snapping.time >= this.options.time)
                         {
-                            this.parent.scale.set(this.x_scale, this.y_scale);
+                            this.parent.scale.set(this.xScale, this.yScale);
                             if (this.options.removeOnComplete)
                             {
                                 this.parent.plugins.remove('snap-zoom');
@@ -52754,6 +52793,7 @@
 
             }).call(commonjsGlobal$3);
             });
+            //# sourceMappingURL=viewport.es.js.map
 
             class UserPlugin extends Plugin$1
             {

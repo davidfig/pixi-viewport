@@ -57,7 +57,9 @@ export class Drag extends Plugin
 
         this.parseUnderflow()
         this.mouseButtons(this.options.mouseButtons)
-        this.handleKeyPresses(this.options.keyToPress)
+        if (this.options.keyToPress) {
+            this.handleKeyPresses(this.options.keyToPress)
+        }
     }
 
     /**
