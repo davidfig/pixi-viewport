@@ -638,7 +638,9 @@ class Drag extends Plugin
 
         this.parseUnderflow();
         this.mouseButtons(this.options.mouseButtons);
-        this.handleKeyPresses(this.options.keyToPress);
+        if (this.options.keyToPress) {
+            this.handleKeyPresses(this.options.keyToPress);
+        }
     }
 
     /**
@@ -2213,21 +2215,21 @@ class SnapZoom extends Plugin
         this.ease = ease(this.options.ease);
         if (this.options.width > 0)
         {
-            this.x_scale = parent.screenWidth / this.options.width;
+            this.xScale = parent.screenWidth / this.options.width;
         }
         if (this.options.height > 0)
         {
-            this.y_scale = parent.screenHeight / this.options.height;
+            this.yScale = parent.screenHeight / this.options.height;
         }
-        this.xIndependent = this.x_scale ? true : false;
-        this.yIndependent = this.y_scale ? true : false;
-        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+        this.xIndependent = this.xScale ? true : false;
+        this.yIndependent = this.yScale ? true : false;
+        this.xScale = this.xIndependent ? this.xScale : this.yScale;
+        this.yScale = this.yIndependent ? this.yScale : this.xScale;
 
         if (this.options.time === 0)
         {
-            parent.container.scale.x = this.x_scale;
-            parent.container.scale.y = this.y_scale;
+            parent.container.scale.x = this.xScale;
+            parent.container.scale.y = this.yScale;
             if (this.options.removeOnComplete)
             {
                 this.parent.plugins.remove('snap-zoom');
@@ -2242,7 +2244,7 @@ class SnapZoom extends Plugin
     createSnapping()
     {
         const scale = this.parent.scale;
-        this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.x_scale - scale.x, deltaY: this.y_scale - scale.y };
+        this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.xScale - scale.x, deltaY: this.yScale - scale.y };
         this.parent.emit('snap-zoom-start', this.parent);
     }
 
@@ -2252,14 +2254,14 @@ class SnapZoom extends Plugin
 
         if (this.options.width > 0)
         {
-            this.x_scale = this.parent._screenWidth / this.options.width;
+            this.xScale = this.parent.screenWidth / this.options.width;
         }
         if (this.options.height > 0)
         {
-            this.y_scale = this.parent._screenHeight / this.options.height;
+            this.yScale = this.parent.screenHeight / this.options.height;
         }
-        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+        this.xScale = this.xIndependent ? this.xScale : this.yScale;
+        this.yScale = this.yIndependent ? this.yScale : this.xScale;
     }
 
     reset()
@@ -2305,7 +2307,7 @@ class SnapZoom extends Plugin
         }
         if (!this.snapping)
         {
-            if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
+            if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale)
             {
                 this.createSnapping();
             }
@@ -2316,7 +2318,7 @@ class SnapZoom extends Plugin
             snapping.time += elapsed;
             if (snapping.time >= this.options.time)
             {
-                this.parent.scale.set(this.x_scale, this.y_scale);
+                this.parent.scale.set(this.xScale, this.yScale);
                 if (this.options.removeOnComplete)
                 {
                     this.parent.plugins.remove('snap-zoom');
