@@ -20,6 +20,7 @@ import { Plugin } from './plugin'
  * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
  * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
  * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
+ * @property {boolean} {ignoreKeyToPressOnTouch=false} ignore keyToPress for touch events
  */
 
 const dragOptions = {
@@ -31,7 +32,8 @@ const dragOptions = {
     underflow: 'center',
     factor: 1,
     mouseButtons: 'all',
-    keyToPress: null
+    keyToPress: null,
+    ignoreKeyToPressOnTouch: false
 }
 
 /**
@@ -63,7 +65,7 @@ export class Drag extends Plugin
      * @param {array} codes - key codes that can be used to trigger drag event
      */
     handleKeyPresses(codes)
-    {   
+    {
         parent.addEventListener("keydown", e => {
             if (codes.includes(e.code))
                 this.keyIsPressed = true
@@ -129,11 +131,12 @@ export class Drag extends Plugin
     }
 
     /**
+     * @param {PIXI.interaction.InteractionEvent} event
      * @returns {boolean}
      */
-    checkKeyPress()
+    checkKeyPress(event)
     {
-        if (!this.options.keyToPress || this.keyIsPressed || 'ontouchstart' in window)
+        if (!this.options.keyToPress || this.keyIsPressed || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'))
             return true
 
         return false
@@ -148,7 +151,7 @@ export class Drag extends Plugin
         {
             return
         }
-        if (this.checkButtons(event) && this.checkKeyPress())
+        if (this.checkButtons(event) && this.checkKeyPress(event))
         {
             this.last = { x: event.data.global.x, y: event.data.global.y }
             this.current = event.data.pointerId
