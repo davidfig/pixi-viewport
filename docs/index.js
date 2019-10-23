@@ -49629,7 +49629,7 @@
                                 this.clamp();
                             }
                             this.parent.emit('wheel-scroll', this.parent);
-                            this.parent.emit('moved', this.parent);
+                            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
                             if (!this.parent.options.passiveWheel)
                             {
                                 event.preventDefault();
