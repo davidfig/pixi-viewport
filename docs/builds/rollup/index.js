@@ -43838,7 +43838,7 @@
              * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
              * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
              * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
-             * @property {boolean} {ignoreKeyToPressOnTouch=false} ignore keyToPress for touch events
+             * @property {boolean} [ignoreKeyToPressOnTouch=false] ignore keyToPress for touch events
              */
 
             const dragOptions = {
@@ -44040,6 +44040,10 @@
                  */
                 up()
                 {
+                    if (this.paused)
+                    {
+                        return
+                    }
                     const touches = this.parent.input.touches;
                     if (touches.length === 1)
                     {

@@ -222,6 +222,10 @@ export class Drag extends Plugin
      */
     up()
     {
+        if (this.paused)
+        {
+            return
+        }
         const touches = this.parent.input.touches
         if (touches.length === 1)
         {
