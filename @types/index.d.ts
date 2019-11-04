@@ -9,6 +9,7 @@ type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
 type WheelEventType = 'wheel'
 type ZoomedEventType = 'zoomed'
 type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel'
+type MovedEventSourceType = 'bounce-x' | 'bounce-y' | 'clamp-x' | 'clamp-y' | 'decelerate' | 'drag' | 'wheel' | 'follow' | 'mouse-edges' | 'pinch' | 'snap'
 type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | string
 
 interface ViewportOptions
@@ -175,6 +176,12 @@ interface WheelData
     dx: number
     dy: number
     dz: number
+}
+
+interface MovedEventData
+{
+    type: MovedEventSourceType
+    viewport: Viewport
 }
 
 interface WheelEventData

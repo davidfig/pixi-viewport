@@ -43127,7 +43127,37 @@
                         VERSION: VERSION$1,
                         filters: filters,
                         useDeprecated: useDeprecated,
+                        Bounds: Bounds,
+                        Container: Container,
+                        DisplayObject: DisplayObject,
                         Application: Application,
+                        AppLoaderPlugin: AppLoaderPlugin,
+                        Loader: Loader$1,
+                        LoaderResource: LoaderResource,
+                        TextureLoader: TextureLoader,
+                        ParticleContainer: ParticleContainer,
+                        ParticleRenderer: ParticleRenderer,
+                        Spritesheet: Spritesheet,
+                        SpritesheetLoader: SpritesheetLoader,
+                        TilingSprite: TilingSprite,
+                        TilingSpriteRenderer: TilingSpriteRenderer,
+                        BitmapFontLoader: BitmapFontLoader,
+                        BitmapText: BitmapText,
+                        Ticker: Ticker,
+                        TickerPlugin: TickerPlugin,
+                        UPDATE_PRIORITY: UPDATE_PRIORITY,
+                        BLEND_MODES: BLEND_MODES,
+                        DRAW_MODES: DRAW_MODES,
+                        ENV: ENV,
+                        FORMATS: FORMATS,
+                        GC_MODES: GC_MODES,
+                        MIPMAP_MODES: MIPMAP_MODES,
+                        PRECISION: PRECISION,
+                        RENDERER_TYPE: RENDERER_TYPE,
+                        SCALE_MODES: SCALE_MODES,
+                        TARGETS: TARGETS,
+                        TYPES: TYPES,
+                        WRAP_MODES: WRAP_MODES,
                         AbstractBatchRenderer: AbstractBatchRenderer,
                         AbstractRenderer: AbstractRenderer,
                         Attribute: Attribute,
@@ -43167,36 +43197,6 @@
                         defaultVertex: _default,
                         resources: index,
                         systems: systems,
-                        AppLoaderPlugin: AppLoaderPlugin,
-                        Loader: Loader$1,
-                        LoaderResource: LoaderResource,
-                        TextureLoader: TextureLoader,
-                        ParticleContainer: ParticleContainer,
-                        ParticleRenderer: ParticleRenderer,
-                        Spritesheet: Spritesheet,
-                        SpritesheetLoader: SpritesheetLoader,
-                        TilingSprite: TilingSprite,
-                        TilingSpriteRenderer: TilingSpriteRenderer,
-                        BitmapFontLoader: BitmapFontLoader,
-                        BitmapText: BitmapText,
-                        Ticker: Ticker,
-                        TickerPlugin: TickerPlugin,
-                        UPDATE_PRIORITY: UPDATE_PRIORITY,
-                        BLEND_MODES: BLEND_MODES,
-                        DRAW_MODES: DRAW_MODES,
-                        ENV: ENV,
-                        FORMATS: FORMATS,
-                        GC_MODES: GC_MODES,
-                        MIPMAP_MODES: MIPMAP_MODES,
-                        PRECISION: PRECISION,
-                        RENDERER_TYPE: RENDERER_TYPE,
-                        SCALE_MODES: SCALE_MODES,
-                        TARGETS: TARGETS,
-                        TYPES: TYPES,
-                        WRAP_MODES: WRAP_MODES,
-                        Bounds: Bounds,
-                        Container: Container,
-                        DisplayObject: DisplayObject,
                         FillStyle: FillStyle,
                         GRAPHICS_CURVES: GRAPHICS_CURVES,
                         Graphics: Graphics,
@@ -43837,6 +43837,8 @@
              * @property {string} [underflow=center] where to place world if too small for screen
              * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
              * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
+             * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
+             * @property {boolean} [ignoreKeyToPressOnTouch=false] ignore keyToPress for touch events
              */
 
             const dragOptions = {
@@ -43847,7 +43849,9 @@
                 clampWheel: false,
                 underflow: 'center',
                 factor: 1,
-                mouseButtons: 'all'
+                mouseButtons: 'all',
+                keyToPress: null,
+                ignoreKeyToPressOnTouch: false
             };
 
             /**
@@ -43867,9 +43871,30 @@
                     this.reverse = this.options.reverse ? 1 : -1;
                     this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x';
                     this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y';
+                    this.keyIsPressed = false;
 
                     this.parseUnderflow();
                     this.mouseButtons(this.options.mouseButtons);
+                    if (this.options.keyToPress) {
+                        this.handleKeyPresses(this.options.keyToPress);
+                    }
+                }
+
+                /**
+                 * Handles keypress events and set the keyIsPressed boolean accordingly
+                 * @param {array} codes - key codes that can be used to trigger drag event
+                 */
+                handleKeyPresses(codes)
+                {
+                    parent.addEventListener("keydown", e => {
+                        if (codes.includes(e.code))
+                            this.keyIsPressed = true;
+                    });
+
+                    parent.addEventListener("keyup", e => {
+                        if (codes.includes(e.code))
+                            this.keyIsPressed = false;
+                    });
                 }
 
                 /**
@@ -43927,6 +43952,18 @@
 
                 /**
                  * @param {PIXI.interaction.InteractionEvent} event
+                 * @returns {boolean}
+                 */
+                checkKeyPress(event)
+                {
+                    if (!this.options.keyToPress || this.keyIsPressed || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'))
+                        return true
+
+                    return false
+                }
+
+                /**
+                 * @param {PIXI.interaction.InteractionEvent} event
                  */
                 down(event)
                 {
@@ -43934,7 +43971,7 @@
                     {
                         return
                     }
-                    if (this.checkButtons(event))
+                    if (this.checkButtons(event) && this.checkKeyPress(event))
                     {
                         this.last = { x: event.data.global.x, y: event.data.global.y };
                         this.current = event.data.pointerId;
@@ -44003,6 +44040,10 @@
                  */
                 up()
                 {
+                    if (this.paused)
+                    {
+                        return
+                    }
                     const touches = this.parent.input.touches;
                     if (touches.length === 1)
                     {
@@ -44057,7 +44098,7 @@
                                 this.clamp();
                             }
                             this.parent.emit('wheel-scroll', this.parent);
-                            this.parent.emit('moved', this.parent);
+                            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
                             if (!this.parent.options.passiveWheel)
                             {
                                 event.preventDefault();
@@ -45415,21 +45456,21 @@
                     this.ease = ease(this.options.ease);
                     if (this.options.width > 0)
                     {
-                        this.x_scale = parent.screenWidth / this.options.width;
+                        this.xScale = parent.screenWidth / this.options.width;
                     }
                     if (this.options.height > 0)
                     {
-                        this.y_scale = parent.screenHeight / this.options.height;
+                        this.yScale = parent.screenHeight / this.options.height;
                     }
-                    this.xIndependent = this.x_scale ? true : false;
-                    this.yIndependent = this.y_scale ? true : false;
-                    this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-                    this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+                    this.xIndependent = this.xScale ? true : false;
+                    this.yIndependent = this.yScale ? true : false;
+                    this.xScale = this.xIndependent ? this.xScale : this.yScale;
+                    this.yScale = this.yIndependent ? this.yScale : this.xScale;
 
                     if (this.options.time === 0)
                     {
-                        parent.container.scale.x = this.x_scale;
-                        parent.container.scale.y = this.y_scale;
+                        parent.container.scale.x = this.xScale;
+                        parent.container.scale.y = this.yScale;
                         if (this.options.removeOnComplete)
                         {
                             this.parent.plugins.remove('snap-zoom');
@@ -45444,7 +45485,7 @@
                 createSnapping()
                 {
                     const scale = this.parent.scale;
-                    this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.x_scale - scale.x, deltaY: this.y_scale - scale.y };
+                    this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.xScale - scale.x, deltaY: this.yScale - scale.y };
                     this.parent.emit('snap-zoom-start', this.parent);
                 }
 
@@ -45454,14 +45495,14 @@
 
                     if (this.options.width > 0)
                     {
-                        this.x_scale = this.parent._screenWidth / this.options.width;
+                        this.xScale = this.parent.screenWidth / this.options.width;
                     }
                     if (this.options.height > 0)
                     {
-                        this.y_scale = this.parent._screenHeight / this.options.height;
+                        this.yScale = this.parent.screenHeight / this.options.height;
                     }
-                    this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-                    this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+                    this.xScale = this.xIndependent ? this.xScale : this.yScale;
+                    this.yScale = this.yIndependent ? this.yScale : this.xScale;
                 }
 
                 reset()
@@ -45507,7 +45548,7 @@
                     }
                     if (!this.snapping)
                     {
-                        if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
+                        if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale)
                         {
                             this.createSnapping();
                         }
@@ -45518,7 +45559,7 @@
                         snapping.time += elapsed;
                         if (snapping.time >= this.options.time)
                         {
-                            this.parent.scale.set(this.x_scale, this.y_scale);
+                            this.parent.scale.set(this.xScale, this.yScale);
                             if (this.options.removeOnComplete)
                             {
                                 this.parent.plugins.remove('snap-zoom');

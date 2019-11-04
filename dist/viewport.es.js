@@ -600,6 +600,8 @@ class Plugin
  * @property {string} [underflow=center] where to place world if too small for screen
  * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
  * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
+ * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
+ * @property {boolean} [ignoreKeyToPressOnTouch=false] ignore keyToPress for touch events
  */
 
 const dragOptions = {
@@ -610,7 +612,9 @@ const dragOptions = {
     clampWheel: false,
     underflow: 'center',
     factor: 1,
-    mouseButtons: 'all'
+    mouseButtons: 'all',
+    keyToPress: null,
+    ignoreKeyToPressOnTouch: false
 };
 
 /**
@@ -630,9 +634,30 @@ class Drag extends Plugin
         this.reverse = this.options.reverse ? 1 : -1;
         this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x';
         this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y';
+        this.keyIsPressed = false;
 
         this.parseUnderflow();
         this.mouseButtons(this.options.mouseButtons);
+        if (this.options.keyToPress) {
+            this.handleKeyPresses(this.options.keyToPress);
+        }
+    }
+
+    /**
+     * Handles keypress events and set the keyIsPressed boolean accordingly
+     * @param {array} codes - key codes that can be used to trigger drag event
+     */
+    handleKeyPresses(codes)
+    {
+        parent.addEventListener("keydown", e => {
+            if (codes.includes(e.code))
+                this.keyIsPressed = true;
+        });
+
+        parent.addEventListener("keyup", e => {
+            if (codes.includes(e.code))
+                this.keyIsPressed = false;
+        });
     }
 
     /**
@@ -690,6 +715,18 @@ class Drag extends Plugin
 
     /**
      * @param {PIXI.interaction.InteractionEvent} event
+     * @returns {boolean}
+     */
+    checkKeyPress(event)
+    {
+        if (!this.options.keyToPress || this.keyIsPressed || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'))
+            return true
+
+        return false
+    }
+
+    /**
+     * @param {PIXI.interaction.InteractionEvent} event
      */
     down(event)
     {
@@ -697,7 +734,7 @@ class Drag extends Plugin
         {
             return
         }
-        if (this.checkButtons(event))
+        if (this.checkButtons(event) && this.checkKeyPress(event))
         {
             this.last = { x: event.data.global.x, y: event.data.global.y };
             this.current = event.data.pointerId;
@@ -766,6 +803,10 @@ class Drag extends Plugin
      */
     up()
     {
+        if (this.paused)
+        {
+            return
+        }
         const touches = this.parent.input.touches;
         if (touches.length === 1)
         {
@@ -820,7 +861,7 @@ class Drag extends Plugin
                     this.clamp();
                 }
                 this.parent.emit('wheel-scroll', this.parent);
-                this.parent.emit('moved', this.parent);
+                this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
                 if (!this.parent.options.passiveWheel)
                 {
                     event.preventDefault();
@@ -2178,21 +2219,21 @@ class SnapZoom extends Plugin
         this.ease = ease(this.options.ease);
         if (this.options.width > 0)
         {
-            this.x_scale = parent.screenWidth / this.options.width;
+            this.xScale = parent.screenWidth / this.options.width;
         }
         if (this.options.height > 0)
         {
-            this.y_scale = parent.screenHeight / this.options.height;
+            this.yScale = parent.screenHeight / this.options.height;
         }
-        this.xIndependent = this.x_scale ? true : false;
-        this.yIndependent = this.y_scale ? true : false;
-        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+        this.xIndependent = this.xScale ? true : false;
+        this.yIndependent = this.yScale ? true : false;
+        this.xScale = this.xIndependent ? this.xScale : this.yScale;
+        this.yScale = this.yIndependent ? this.yScale : this.xScale;
 
         if (this.options.time === 0)
         {
-            parent.container.scale.x = this.x_scale;
-            parent.container.scale.y = this.y_scale;
+            parent.container.scale.x = this.xScale;
+            parent.container.scale.y = this.yScale;
             if (this.options.removeOnComplete)
             {
                 this.parent.plugins.remove('snap-zoom');
@@ -2207,7 +2248,7 @@ class SnapZoom extends Plugin
     createSnapping()
     {
         const scale = this.parent.scale;
-        this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.x_scale - scale.x, deltaY: this.y_scale - scale.y };
+        this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.xScale - scale.x, deltaY: this.yScale - scale.y };
         this.parent.emit('snap-zoom-start', this.parent);
     }
 
@@ -2217,14 +2258,14 @@ class SnapZoom extends Plugin
 
         if (this.options.width > 0)
         {
-            this.x_scale = this.parent._screenWidth / this.options.width;
+            this.xScale = this.parent.screenWidth / this.options.width;
         }
         if (this.options.height > 0)
         {
-            this.y_scale = this.parent._screenHeight / this.options.height;
+            this.yScale = this.parent.screenHeight / this.options.height;
         }
-        this.x_scale = this.xIndependent ? this.x_scale : this.y_scale;
-        this.y_scale = this.yIndependent ? this.y_scale : this.x_scale;
+        this.xScale = this.xIndependent ? this.xScale : this.yScale;
+        this.yScale = this.yIndependent ? this.yScale : this.xScale;
     }
 
     reset()
@@ -2270,7 +2311,7 @@ class SnapZoom extends Plugin
         }
         if (!this.snapping)
         {
-            if (this.parent.scale.x !== this.x_scale || this.parent.scale.y !== this.y_scale)
+            if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale)
             {
                 this.createSnapping();
             }
@@ -2281,7 +2322,7 @@ class SnapZoom extends Plugin
             snapping.time += elapsed;
             if (snapping.time >= this.options.time)
             {
-                this.parent.scale.set(this.x_scale, this.y_scale);
+                this.parent.scale.set(this.xScale, this.yScale);
                 if (this.options.removeOnComplete)
                 {
                     this.parent.plugins.remove('snap-zoom');

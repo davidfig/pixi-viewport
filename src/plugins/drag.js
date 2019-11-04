@@ -19,6 +19,8 @@ import { Plugin } from './plugin'
  * @property {string} [underflow=center] where to place world if too small for screen
  * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
  * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
+ * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
+ * @property {boolean} [ignoreKeyToPressOnTouch=false] ignore keyToPress for touch events
  */
 
 const dragOptions = {
@@ -29,7 +31,9 @@ const dragOptions = {
     clampWheel: false,
     underflow: 'center',
     factor: 1,
-    mouseButtons: 'all'
+    mouseButtons: 'all',
+    keyToPress: null,
+    ignoreKeyToPressOnTouch: false
 }
 
 /**
@@ -49,9 +53,30 @@ export class Drag extends Plugin
         this.reverse = this.options.reverse ? 1 : -1
         this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x'
         this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y'
+        this.keyIsPressed = false
 
         this.parseUnderflow()
         this.mouseButtons(this.options.mouseButtons)
+        if (this.options.keyToPress) {
+            this.handleKeyPresses(this.options.keyToPress)
+        }
+    }
+
+    /**
+     * Handles keypress events and set the keyIsPressed boolean accordingly
+     * @param {array} codes - key codes that can be used to trigger drag event
+     */
+    handleKeyPresses(codes)
+    {
+        parent.addEventListener("keydown", e => {
+            if (codes.includes(e.code))
+                this.keyIsPressed = true
+        })
+
+        parent.addEventListener("keyup", e => {
+            if (codes.includes(e.code))
+                this.keyIsPressed = false
+        })
     }
 
     /**
@@ -109,6 +134,18 @@ export class Drag extends Plugin
 
     /**
      * @param {PIXI.interaction.InteractionEvent} event
+     * @returns {boolean}
+     */
+    checkKeyPress(event)
+    {
+        if (!this.options.keyToPress || this.keyIsPressed || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'))
+            return true
+
+        return false
+    }
+
+    /**
+     * @param {PIXI.interaction.InteractionEvent} event
      */
     down(event)
     {
@@ -116,7 +153,7 @@ export class Drag extends Plugin
         {
             return
         }
-        if (this.checkButtons(event))
+        if (this.checkButtons(event) && this.checkKeyPress(event))
         {
             this.last = { x: event.data.global.x, y: event.data.global.y }
             this.current = event.data.pointerId
@@ -185,6 +222,10 @@ export class Drag extends Plugin
      */
     up()
     {
+        if (this.paused)
+        {
+            return
+        }
         const touches = this.parent.input.touches
         if (touches.length === 1)
         {
@@ -239,7 +280,7 @@ export class Drag extends Plugin
                     this.clamp()
                 }
                 this.parent.emit('wheel-scroll', this.parent)
-                this.parent.emit('moved', this.parent)
+                this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
                 if (!this.parent.options.passiveWheel)
                 {
                     event.preventDefault()
