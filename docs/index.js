@@ -43127,37 +43127,7 @@
                         VERSION: VERSION$1,
                         filters: filters,
                         useDeprecated: useDeprecated,
-                        Bounds: Bounds,
-                        Container: Container,
-                        DisplayObject: DisplayObject,
                         Application: Application,
-                        AppLoaderPlugin: AppLoaderPlugin,
-                        Loader: Loader$1,
-                        LoaderResource: LoaderResource,
-                        TextureLoader: TextureLoader,
-                        ParticleContainer: ParticleContainer,
-                        ParticleRenderer: ParticleRenderer,
-                        Spritesheet: Spritesheet,
-                        SpritesheetLoader: SpritesheetLoader,
-                        TilingSprite: TilingSprite,
-                        TilingSpriteRenderer: TilingSpriteRenderer,
-                        BitmapFontLoader: BitmapFontLoader,
-                        BitmapText: BitmapText,
-                        Ticker: Ticker,
-                        TickerPlugin: TickerPlugin,
-                        UPDATE_PRIORITY: UPDATE_PRIORITY,
-                        BLEND_MODES: BLEND_MODES,
-                        DRAW_MODES: DRAW_MODES,
-                        ENV: ENV,
-                        FORMATS: FORMATS,
-                        GC_MODES: GC_MODES,
-                        MIPMAP_MODES: MIPMAP_MODES,
-                        PRECISION: PRECISION,
-                        RENDERER_TYPE: RENDERER_TYPE,
-                        SCALE_MODES: SCALE_MODES,
-                        TARGETS: TARGETS,
-                        TYPES: TYPES,
-                        WRAP_MODES: WRAP_MODES,
                         AbstractBatchRenderer: AbstractBatchRenderer,
                         AbstractRenderer: AbstractRenderer,
                         Attribute: Attribute,
@@ -43197,6 +43167,36 @@
                         defaultVertex: _default,
                         resources: index,
                         systems: systems,
+                        AppLoaderPlugin: AppLoaderPlugin,
+                        Loader: Loader$1,
+                        LoaderResource: LoaderResource,
+                        TextureLoader: TextureLoader,
+                        ParticleContainer: ParticleContainer,
+                        ParticleRenderer: ParticleRenderer,
+                        Spritesheet: Spritesheet,
+                        SpritesheetLoader: SpritesheetLoader,
+                        TilingSprite: TilingSprite,
+                        TilingSpriteRenderer: TilingSpriteRenderer,
+                        BitmapFontLoader: BitmapFontLoader,
+                        BitmapText: BitmapText,
+                        Ticker: Ticker,
+                        TickerPlugin: TickerPlugin,
+                        UPDATE_PRIORITY: UPDATE_PRIORITY,
+                        BLEND_MODES: BLEND_MODES,
+                        DRAW_MODES: DRAW_MODES,
+                        ENV: ENV,
+                        FORMATS: FORMATS,
+                        GC_MODES: GC_MODES,
+                        MIPMAP_MODES: MIPMAP_MODES,
+                        PRECISION: PRECISION,
+                        RENDERER_TYPE: RENDERER_TYPE,
+                        SCALE_MODES: SCALE_MODES,
+                        TARGETS: TARGETS,
+                        TYPES: TYPES,
+                        WRAP_MODES: WRAP_MODES,
+                        Bounds: Bounds,
+                        Container: Container,
+                        DisplayObject: DisplayObject,
                         FillStyle: FillStyle,
                         GRAPHICS_CURVES: GRAPHICS_CURVES,
                         Graphics: Graphics,
@@ -50503,17 +50503,18 @@
                     if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
                     {
                         oob = oob || this.parent.OOB();
-                        const point = oob.cornerPoint;
+                        const pointBottomRight = oob.cornerPointBottomRight;
+                        const pointTopLeft = oob.cornerPointTopLeft;
                         if (!this.toX && !decelerate.x)
                         {
                             let x = null;
                             if (oob.left && this.left)
                             {
-                                x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : 0;
+                                x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -pointTopLeft.x;
                             }
                             else if (oob.right && this.right)
                             {
-                                x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x;
+                                x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -pointBottomRight.x;
                             }
                             if (x !== null && this.parent.x !== x)
                             {
@@ -50526,11 +50527,11 @@
                             let y = null;
                             if (oob.top && this.top)
                             {
-                                y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : 0;
+                                y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -pointTopLeft.y;
                             }
                             else if (oob.bottom && this.bottom)
                             {
-                                y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y;
+                                y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -pointBottomRight.y;
                             }
                             if (y !== null && this.parent.y !== y)
                             {
@@ -51433,6 +51434,21 @@
                     this._worldHeight = this.options.worldHeight;
                     this.forceHitArea = this.options.forceHitArea;
 
+                    /** 
+                     * top-left corner of world bounds
+                     * by default (0, 0), 
+                     * you might want to override it to have custom world bounds, likely used together with bounce plugin
+                     * @type {PIXI.Point} 
+                     */
+                    this.boundsTopLeft = Point(0, 0);
+                    /** 
+                     * bottom-right corner of world bounds
+                     * by default (worldWidth, worldHeight), 
+                     * you might want to override it to have custom world bounds, likely used together with bounce plugin
+                     * @type {PIXI.Point} 
+                     */
+                    this.boundsBottomRight = Point(this._worldWidth, this._worldHeight);
+
                     /**
                      * number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
                      * @type {number}
@@ -51978,9 +51994,13 @@
                         right: this.right > this._worldWidth,
                         top: this.top < 0,
                         bottom: this.bottom > this._worldHeight,
-                        cornerPoint: new Point(
-                            this._worldWidth * this.scale.x - this.screenWidth,
-                            this._worldHeight * this.scale.y - this.screenHeight
+                        cornerPointTopLeft: new Point(
+                            this.boundsTopLeft.x * this.scale.x,
+                            this.boundsTopLeft.y * this.scale.y
+                        ),
+                        cornerPointBottomRight: new Point(
+                            this.boundsBottomRight.x * this.scale.x - this.screenWidth,
+                            this.boundsBottomRight.y * this.scale.y - this.screenHeight
                         )
                     }
                 }

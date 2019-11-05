@@ -199,10 +199,10 @@
             
                 <li class="parent " data-name="Viewport#bottom"><a href="Viewport.html#bottom">bottom</a></li>
             
-                <li class="parent " data-name="Viewport#boundsTopLeft"><a href="Viewport.html#boundsTopLeft">boundsTopLeft</a></li>
-
                 <li class="parent " data-name="Viewport#boundsBottomRight"><a href="Viewport.html#boundsBottomRight">boundsBottomRight</a></li>
-
+            
+                <li class="parent " data-name="Viewport#boundsTopLeft"><a href="Viewport.html#boundsTopLeft">boundsTopLeft</a></li>
+            
                 <li class="parent " data-name="Viewport#center"><a href="Viewport.html#center">center</a></li>
             
                 <li class="parent " data-name="Viewport#corner"><a href="Viewport.html#corner">corner</a></li>
@@ -647,40 +647,113 @@
     
 </dd>
 
-<dt>
-    <div class="nameContainer">
-        <h4 class="name" id="boundsTopLeft">
-            <a class="share-icon" href="#boundsTopLeft"><span class="glyphicon glyphicon-link"></span></a>
-            <span class="">boundsTopLeft</span>
-            <span class="type-signature type">PIXI.Point</span>
-        </h4>
-    </div>
-</dt>
-<dd>
-    <div class="description">
-        <p>top-left corner of world bounds, by default (0, 0), you might want to override it to have custom world bounds, likely used together with bounce plugin </p>
-    </div>    
-    <dl class="details">        
-    </dl>
-</dd>
-
+        
+            
 <dt>
     <div class="nameContainer">
         <h4 class="name" id="boundsBottomRight">
             <a class="share-icon" href="#boundsBottomRight"><span class="glyphicon glyphicon-link"></span></a>
             <span class="">boundsBottomRight</span>
             <span class="type-signature type">PIXI.Point</span>
+            
+            
+            
+            
         </h4>
     </div>
+    
+    
 </dt>
 <dd>
-    <div class="description">
-        <p>bottom-right corner of world bounds, by default (worldWidth, worldHeight), you might want to override it to have custom world bounds, likely used together with bounce plugin</p>
-    </div>    
-    <dl class="details">        
-    </dl>
-</dd>
     
+    <div class="description">
+        <p>bottom-right corner of world bounds
+by default (worldWidth, worldHeight),
+you might want to override it to have custom world bounds, likely used together with bounce plugin</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="boundsTopLeft">
+            <a class="share-icon" href="#boundsTopLeft"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">boundsTopLeft</span>
+            <span class="type-signature type">PIXI.Point</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>top-left corner of world bounds
+by default (0, 0),
+you might want to override it to have custom world bounds, likely used together with bounce plugin</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
             
 <dt>
     <div class="nameContainer">
@@ -1666,7 +1739,7 @@ NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, View
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line819">viewport.js:819</a>
+            <a href="src_viewport.js.html#line838">viewport.js:838</a>
         </div>
         
     </div>
@@ -2033,7 +2106,7 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line788">viewport.js:788</a>
+            <a href="src_viewport.js.html#line807">viewport.js:807</a>
         </div>
         
     </div>
@@ -2193,7 +2266,7 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line882">viewport.js:882</a>
+            <a href="src_viewport.js.html#line901">viewport.js:901</a>
         </div>
         
     </div>
@@ -2350,7 +2423,7 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line800">viewport.js:800</a>
+            <a href="src_viewport.js.html#line819">viewport.js:819</a>
         </div>
         
     </div>
@@ -2508,7 +2581,7 @@ NOTE: this fires 'moved' event during deceleration</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line158">viewport.js:158</a>
+            <a href="src_viewport.js.html#line173">viewport.js:173</a>
         </div>
         
     </div>
@@ -2771,7 +2844,7 @@ NOTE: this fires 'moved' event during deceleration</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line774">viewport.js:774</a>
+            <a href="src_viewport.js.html#line793">viewport.js:793</a>
         </div>
         
     </div>
@@ -2929,7 +3002,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line926">viewport.js:926</a>
+            <a href="src_viewport.js.html#line945">viewport.js:945</a>
         </div>
         
     </div>
@@ -3119,7 +3192,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line558">viewport.js:558</a>
+            <a href="src_viewport.js.html#line573">viewport.js:573</a>
         </div>
         
     </div>
@@ -3354,7 +3427,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line488">viewport.js:488</a>
+            <a href="src_viewport.js.html#line503">viewport.js:503</a>
         </div>
         
     </div>
@@ -3623,7 +3696,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line453">viewport.js:453</a>
+            <a href="src_viewport.js.html#line468">viewport.js:468</a>
         </div>
         
     </div>
@@ -3892,7 +3965,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line520">viewport.js:520</a>
+            <a href="src_viewport.js.html#line535">viewport.js:535</a>
         </div>
         
     </div>
@@ -4042,7 +4115,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line860">viewport.js:860</a>
+            <a href="src_viewport.js.html#line879">viewport.js:879</a>
         </div>
         
     </div>
@@ -4232,7 +4305,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line297">viewport.js:297</a>
+            <a href="src_viewport.js.html#line312">viewport.js:312</a>
         </div>
         
     </div>
@@ -4337,7 +4410,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line893">viewport.js:893</a>
+            <a href="src_viewport.js.html#line912">viewport.js:912</a>
         </div>
         
     </div>
@@ -4466,7 +4539,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line393">viewport.js:393</a>
+            <a href="src_viewport.js.html#line408">viewport.js:408</a>
         </div>
         
     </div>
@@ -4654,7 +4727,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line431">viewport.js:431</a>
+            <a href="src_viewport.js.html#line446">viewport.js:446</a>
         </div>
         
     </div>
@@ -4842,7 +4915,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line662">viewport.js:662</a>
+            <a href="src_viewport.js.html#line677">viewport.js:677</a>
         </div>
         
     </div>
@@ -4947,7 +5020,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line830">viewport.js:830</a>
+            <a href="src_viewport.js.html#line849">viewport.js:849</a>
         </div>
         
     </div>
@@ -5104,7 +5177,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line236">viewport.js:236</a>
+            <a href="src_viewport.js.html#line251">viewport.js:251</a>
         </div>
         
     </div>
@@ -5344,7 +5417,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line593">viewport.js:593</a>
+            <a href="src_viewport.js.html#line608">viewport.js:608</a>
         </div>
         
     </div>
@@ -5529,7 +5602,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line843">viewport.js:843</a>
+            <a href="src_viewport.js.html#line862">viewport.js:862</a>
         </div>
         
     </div>
@@ -5742,7 +5815,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line652">viewport.js:652</a>
+            <a href="src_viewport.js.html#line667">viewport.js:667</a>
         </div>
         
     </div>
@@ -5859,7 +5932,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line326">viewport.js:326</a>
+            <a href="src_viewport.js.html#line341">viewport.js:341</a>
         </div>
         
     </div>
@@ -6047,7 +6120,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line308">viewport.js:308</a>
+            <a href="src_viewport.js.html#line323">viewport.js:323</a>
         </div>
         
     </div>
@@ -6235,7 +6308,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line173">viewport.js:173</a>
+            <a href="src_viewport.js.html#line188">viewport.js:188</a>
         </div>
         
     </div>
@@ -6357,7 +6430,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line871">viewport.js:871</a>
+            <a href="src_viewport.js.html#line890">viewport.js:890</a>
         </div>
         
     </div>
@@ -6514,7 +6587,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line630">viewport.js:630</a>
+            <a href="src_viewport.js.html#line645">viewport.js:645</a>
         </div>
         
     </div>
@@ -6699,7 +6772,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line619">viewport.js:619</a>
+            <a href="src_viewport.js.html#line634">viewport.js:634</a>
         </div>
         
     </div>
@@ -6894,7 +6967,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1016">viewport.js:1016</a>
+            <a href="src_viewport.js.html#line1035">viewport.js:1035</a>
         </div>
         
     </div>
@@ -6980,7 +7053,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1010">viewport.js:1010</a>
+            <a href="src_viewport.js.html#line1029">viewport.js:1029</a>
         </div>
         
     </div>
@@ -7066,7 +7139,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1028">viewport.js:1028</a>
+            <a href="src_viewport.js.html#line1047">viewport.js:1047</a>
         </div>
         
     </div>
@@ -7152,7 +7225,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1022">viewport.js:1022</a>
+            <a href="src_viewport.js.html#line1041">viewport.js:1041</a>
         </div>
         
     </div>
@@ -7238,7 +7311,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line947">viewport.js:947</a>
+            <a href="src_viewport.js.html#line966">viewport.js:966</a>
         </div>
         
     </div>
@@ -7421,7 +7494,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line965">viewport.js:965</a>
+            <a href="src_viewport.js.html#line984">viewport.js:984</a>
         </div>
         
     </div>
@@ -7604,7 +7677,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line956">viewport.js:956</a>
+            <a href="src_viewport.js.html#line975">viewport.js:975</a>
         </div>
         
     </div>
@@ -7787,7 +7860,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1091">viewport.js:1091</a>
+            <a href="src_viewport.js.html#line1110">viewport.js:1110</a>
         </div>
         
     </div>
@@ -7873,7 +7946,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1057">viewport.js:1057</a>
+            <a href="src_viewport.js.html#line1076">viewport.js:1076</a>
         </div>
         
     </div>
@@ -7959,7 +8032,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1051">viewport.js:1051</a>
+            <a href="src_viewport.js.html#line1070">viewport.js:1070</a>
         </div>
         
     </div>
@@ -8045,7 +8118,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1063">viewport.js:1063</a>
+            <a href="src_viewport.js.html#line1082">viewport.js:1082</a>
         </div>
         
     </div>
@@ -8205,7 +8278,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1079">viewport.js:1079</a>
+            <a href="src_viewport.js.html#line1098">viewport.js:1098</a>
         </div>
         
     </div>
@@ -8291,7 +8364,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line980">viewport.js:980</a>
+            <a href="src_viewport.js.html#line999">viewport.js:999</a>
         </div>
         
     </div>
@@ -8377,7 +8450,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line974">viewport.js:974</a>
+            <a href="src_viewport.js.html#line993">viewport.js:993</a>
         </div>
         
     </div>
@@ -8463,7 +8536,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line992">viewport.js:992</a>
+            <a href="src_viewport.js.html#line1011">viewport.js:1011</a>
         </div>
         
     </div>
@@ -8549,7 +8622,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line986">viewport.js:986</a>
+            <a href="src_viewport.js.html#line1005">viewport.js:1005</a>
         </div>
         
     </div>
@@ -8635,7 +8708,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1004">viewport.js:1004</a>
+            <a href="src_viewport.js.html#line1023">viewport.js:1023</a>
         </div>
         
     </div>
@@ -8721,7 +8794,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line998">viewport.js:998</a>
+            <a href="src_viewport.js.html#line1017">viewport.js:1017</a>
         </div>
         
     </div>
@@ -8807,7 +8880,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1034">viewport.js:1034</a>
+            <a href="src_viewport.js.html#line1053">viewport.js:1053</a>
         </div>
         
     </div>
@@ -9060,7 +9133,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1045">viewport.js:1045</a>
+            <a href="src_viewport.js.html#line1064">viewport.js:1064</a>
         </div>
         
     </div>
@@ -9146,7 +9219,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1071">viewport.js:1071</a>
+            <a href="src_viewport.js.html#line1090">viewport.js:1090</a>
         </div>
         
     </div>
@@ -9306,7 +9379,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1085">viewport.js:1085</a>
+            <a href="src_viewport.js.html#line1104">viewport.js:1104</a>
         </div>
         
     </div>
@@ -9388,7 +9461,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Oct 24 2019 14:45:54 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Nov 05 2019 18:56:02 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>
