@@ -198,4 +198,9 @@ export class Clamp extends Plugin
             }
         }
     }
+
+    reset() 
+    {
+        this.update();
+    }
 }

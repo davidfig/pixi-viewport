@@ -78,4 +78,9 @@ export class ClampZoom extends Plugin
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
         }
     }
+
+    reset()
+    {
+        this.clamp();
+    }
 }
