@@ -77,7 +77,7 @@ export class PluginManager
     {
         for (let plugin of this.list)
         {
-            plugin.reset();
+            plugin.reset()
         }
     }
 
