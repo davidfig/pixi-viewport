@@ -39,6 +39,7 @@ export class Clamp extends Plugin
             this.options.bottom = this.options.direction === 'y' || this.options.direction === 'all' ? true : null
         }
         this.parseUnderflow()
+        this.last = { x: null, y: null, scaleX: null, scaleY: null }
         this.update()
     }
 
@@ -76,6 +77,12 @@ export class Clamp extends Plugin
     update()
     {
         if (this.paused)
+        {
+            return
+        }
+
+        // only clamp on change
+        if (this.parent.x === this.last.x && this.parent.y === this.last.y && this.parent.scale.x === this.last.scaleX && this.parent.scale.y === this.last.scaleY)
         {
             return
         }
@@ -197,5 +204,9 @@ export class Clamp extends Plugin
                 this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' })
             }
         }
+        this.last.x = this.parent.x
+        this.last.y = this.parent.y
+        this.last.scaleX = this.parent.scale.x
+        this.last.scaleY = this.parent.scale.y
     }
 }

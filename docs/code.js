@@ -4,7 +4,7 @@ import { ease } from 'pixi-ease'
 import Random from 'yy-random'
 import Counter from 'yy-counter'
 import FPS from 'yy-fps'
-import clicked from 'clicked'
+import { clicked } from 'clicked'
 // import highlight from 'highlight.js'
 import DomEase from 'dom-ease'
 
