@@ -347,26 +347,9 @@ class PluginManager
      */
     reset()
     {
-        if (this.plugins['bounce'])
+        for (let plugin of this.list)
         {
-            this.plugins['bounce'].reset();
-            this.plugins['bounce'].bounce();
-        }
-        if (this.plugins['decelerate'])
-        {
-            this.plugins['decelerate'].reset();
-        }
-        if (this.plugins['snap'])
-        {
-            this.plugins['snap'].reset();
-        }
-        if (this.plugins['clamp'])
-        {
-            this.plugins['clamp'].update();
-        }
-        if (this.plugins['clamp-zoom'])
-        {
-            this.plugins['clamp-zoom'].clamp();
+            plugin.reset();
         }
     }
 
@@ -1278,6 +1261,11 @@ class Clamp extends Plugin
         this.last.scaleX = this.parent.scale.x;
         this.last.scaleY = this.parent.scale.y;
     }
+
+    reset() 
+    {
+        this.update();
+    }
 }
 
 /**
@@ -1357,6 +1345,11 @@ class ClampZoom extends Plugin
             this.parent.scale.x *= this.parent.scale.y / original;
             this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
         }
+    }
+
+    reset()
+    {
+        this.clamp();
     }
 }
 
@@ -2035,6 +2028,7 @@ class Bounce extends Plugin
     reset()
     {
         this.toX = this.toY = null;
+        this.bounce();
     }
 }
 
