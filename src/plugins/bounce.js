@@ -237,6 +237,7 @@ export class Bounce extends Plugin
 
     reset()
     {
-        this.toX = this.toY = null
+        this.toX = this.toY = null;
+        this.bounce();
     }
 }

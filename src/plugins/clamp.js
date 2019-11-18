@@ -209,4 +209,9 @@ export class Clamp extends Plugin
         this.last.scaleX = this.parent.scale.x
         this.last.scaleY = this.parent.scale.y
     }
+
+    reset() 
+    {
+        this.update();
+    }
 }
