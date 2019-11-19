@@ -1,3 +1,4 @@
+import * as PIXI from 'pixi.js'
 import { Plugin } from './plugin'
 import ease from '../ease'
 
@@ -6,6 +7,11 @@ import ease from '../ease'
  * @property {string} [sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
  * @property {number} [friction=0.5] friction to apply to decelerate if active
  * @property {number} [time=150] time in ms to finish bounce
+ * @property {object} [bounceBox] use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
+ * @property {number} [bounceBox.x=0]
+ * @property {number} [bounceBox.y=0]
+ * @property {number} [bounceBox.width=viewport.worldWidth]
+ * @property {number} [bounceBox.height=viewport.worldHeight]
  * @property {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
  * @property {string} [underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
  */
@@ -15,7 +21,8 @@ const bounceOptions = {
     friction: 0.5,
     time: 150,
     ease: 'easeInOutSine',
-    underflow: 'center'
+    underflow: 'center',
+    bounceBox: null
 }
 
 export class Bounce extends Plugin
@@ -167,6 +174,42 @@ export class Bounce extends Plugin
         return y
     }
 
+    oob()
+    {
+        const box = this.options.bounceBox
+        if (box) {
+            const x1 = typeof box.x === 'undefined' ? 0 : box.x
+            const y1 = typeof box.y === 'undefined' ? 0 : box.y
+            const width = typeof box.width === 'undefined' ? this.parent.worldWidth : box.width
+            const height = typeof box.height === 'undefined' ? this.parent.worldHeight : box.height
+            return {
+                left: this.parent.left < x1,
+                right: this.parent.right > width,
+                top: this.parent.top < y1,
+                bottom: this.parent.bottom > height,
+                topLeft: new PIXI.Point(
+                    x1 * this.parent.scale.x,
+                    y1 * this.parent.scale.y
+                ),
+                bottomRight: new PIXI.Point(
+                    width * this.parent.scale.x - this.parent.screenWidth,
+                    height * this.parent.scale.y - this.parent.screenHeight
+                )
+            }
+        }
+        return {
+            left: this.parent.left < 0,
+            right: this.parent.right > this.parent.worldWidth,
+            top: this.parent.top < 0,
+            bottom: this.parent.bottom > this.parent.worldHeight,
+            topLeft: new PIXI.Point(0, 0),
+            bottomRight: new PIXI.Point(
+                this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
+                this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
+            )
+        }
+    }
+
     bounce()
     {
         if (this.paused)
@@ -180,7 +223,7 @@ export class Bounce extends Plugin
         {
             if ((decelerate.x && decelerate.percentChangeX === decelerate.options.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.options.friction))
             {
-                oob = this.parent.OOB()
+                oob = this.oob()
                 if ((oob.left && this.left) || (oob.right && this.right))
                 {
                     decelerate.percentChangeX = this.options.friction
@@ -196,18 +239,19 @@ export class Bounce extends Plugin
         decelerate = decelerate || {}
         if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
         {
-            oob = oob || this.parent.OOB()
-            const point = oob.cornerPoint
+            oob = oob || this.oob()
+            const topLeft = oob.topLeft
+            const bottomRight = oob.bottomRight
             if (!this.toX && !decelerate.x)
             {
                 let x = null
                 if (oob.left && this.left)
                 {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : 0
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x
                 }
                 else if (oob.right && this.right)
                 {
-                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
+                    x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x
                 }
                 if (x !== null && this.parent.x !== x)
                 {
@@ -220,11 +264,11 @@ export class Bounce extends Plugin
                 let y = null
                 if (oob.top && this.top)
                 {
-                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : 0
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y
                 }
                 else if (oob.bottom && this.bottom)
                 {
-                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
+                    y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y
                 }
                 if (y !== null && this.parent.y !== y)
                 {
@@ -237,7 +281,7 @@ export class Bounce extends Plugin
 
     reset()
     {
-        this.toX = this.toY = null;
-        this.bounce();
+        this.toX = this.toY = null
+        this.bounce()
     }
 }

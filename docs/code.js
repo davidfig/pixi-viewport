@@ -14,8 +14,8 @@ import { UserPlugin } from './user-plugin'
 import { gui } from './gui'
 
 const BORDER = 10
-const WIDTH = 3000
-const HEIGHT = 3000
+const WIDTH = 2000
+const HEIGHT = 2000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000

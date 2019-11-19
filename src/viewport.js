@@ -663,12 +663,12 @@ export class Viewport extends PIXI.Container
     {
         return {
             left: this.left < 0,
-            right: this.right > this._worldWidth,
+            right: this.right > this.worldWidth,
             top: this.top < 0,
             bottom: this.bottom > this._worldHeight,
             cornerPoint: new PIXI.Point(
-                this._worldWidth * this.scale.x - this.screenWidth,
-                this._worldHeight * this.scale.y - this.screenHeight
+                this.worldWidth * this.scale.x - this.screenWidth,
+                this.worldHeight * this.scale.y - this.screenHeight
             )
         }
     }
