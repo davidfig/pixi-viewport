@@ -81,6 +81,6 @@ export class ClampZoom extends Plugin
 
     reset()
     {
-        this.clamp();
+        this.clamp()
     }
 }
