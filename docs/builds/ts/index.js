@@ -46497,6 +46497,7 @@
                 forceStart: false,
                 noMove: false
             };
+
             class SnapZoom extends Plugin
             {
                 /**
@@ -46560,11 +46561,6 @@
                     }
                     this.xScale = this.xIndependent ? this.xScale : this.yScale;
                     this.yScale = this.yIndependent ? this.yScale : this.xScale;
-                }
-
-                reset()
-                {
-                    this.snapping = null;
                 }
 
                 wheel()
