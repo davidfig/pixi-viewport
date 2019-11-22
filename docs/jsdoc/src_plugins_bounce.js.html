@@ -373,7 +373,8 @@
             </div>
         </header>
         <article>
-            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './plugin'
+            <pre id="source-code" class="prettyprint source "><code>import * as PIXI from 'pixi.js'
+import { Plugin } from './plugin'
 import ease from '../ease'
 
 /**
@@ -381,6 +382,11 @@ import ease from '../ease'
  * @property {string} [sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
  * @property {number} [friction=0.5] friction to apply to decelerate if active
  * @property {number} [time=150] time in ms to finish bounce
+ * @property {object} [bounceBox] use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
+ * @property {number} [bounceBox.x=0]
+ * @property {number} [bounceBox.y=0]
+ * @property {number} [bounceBox.width=viewport.worldWidth]
+ * @property {number} [bounceBox.height=viewport.worldHeight]
  * @property {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
  * @property {string} [underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
  */
@@ -390,7 +396,8 @@ const bounceOptions = {
     friction: 0.5,
     time: 150,
     ease: 'easeInOutSine',
-    underflow: 'center'
+    underflow: 'center',
+    bounceBox: null
 }
 
 export class Bounce extends Plugin
@@ -542,6 +549,42 @@ export class Bounce extends Plugin
         return y
     }
 
+    oob()
+    {
+        const box = this.options.bounceBox
+        if (box) {
+            const x1 = typeof box.x === 'undefined' ? 0 : box.x
+            const y1 = typeof box.y === 'undefined' ? 0 : box.y
+            const width = typeof box.width === 'undefined' ? this.parent.worldWidth : box.width
+            const height = typeof box.height === 'undefined' ? this.parent.worldHeight : box.height
+            return {
+                left: this.parent.left &lt; x1,
+                right: this.parent.right > width,
+                top: this.parent.top &lt; y1,
+                bottom: this.parent.bottom > height,
+                topLeft: new PIXI.Point(
+                    x1 * this.parent.scale.x,
+                    y1 * this.parent.scale.y
+                ),
+                bottomRight: new PIXI.Point(
+                    width * this.parent.scale.x - this.parent.screenWidth,
+                    height * this.parent.scale.y - this.parent.screenHeight
+                )
+            }
+        }
+        return {
+            left: this.parent.left &lt; 0,
+            right: this.parent.right > this.parent.worldWidth,
+            top: this.parent.top &lt; 0,
+            bottom: this.parent.bottom > this.parent.worldHeight,
+            topLeft: new PIXI.Point(0, 0),
+            bottomRight: new PIXI.Point(
+                this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
+                this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
+            )
+        }
+    }
+
     bounce()
     {
         if (this.paused)
@@ -555,7 +598,7 @@ export class Bounce extends Plugin
         {
             if ((decelerate.x &amp;&amp; decelerate.percentChangeX === decelerate.options.friction) || (decelerate.y &amp;&amp; decelerate.percentChangeY === decelerate.options.friction))
             {
-                oob = this.parent.OOB()
+                oob = this.oob()
                 if ((oob.left &amp;&amp; this.left) || (oob.right &amp;&amp; this.right))
                 {
                     decelerate.percentChangeX = this.options.friction
@@ -571,18 +614,19 @@ export class Bounce extends Plugin
         decelerate = decelerate || {}
         if (!drag.active &amp;&amp; !pinch.active &amp;&amp; ((!this.toX || !this.toY) &amp;&amp; (!decelerate.x || !decelerate.y)))
         {
-            oob = oob || this.parent.OOB()
-            const point = oob.cornerPoint
+            oob = oob || this.oob()
+            const topLeft = oob.topLeft
+            const bottomRight = oob.bottomRight
             if (!this.toX &amp;&amp; !decelerate.x)
             {
                 let x = null
                 if (oob.left &amp;&amp; this.left)
                 {
-                    x = (this.parent.screenWorldWidth &lt; this.parent.screenWidth) ? this.calcUnderflowX() : 0
+                    x = (this.parent.screenWorldWidth &lt; this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x
                 }
                 else if (oob.right &amp;&amp; this.right)
                 {
-                    x = (this.parent.screenWorldWidth &lt; this.parent.screenWidth) ? this.calcUnderflowX() : -point.x
+                    x = (this.parent.screenWorldWidth &lt; this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x
                 }
                 if (x !== null &amp;&amp; this.parent.x !== x)
                 {
@@ -595,11 +639,11 @@ export class Bounce extends Plugin
                 let y = null
                 if (oob.top &amp;&amp; this.top)
                 {
-                    y = (this.parent.screenWorldHeight &lt; this.parent.screenHeight) ? this.calcUnderflowY() : 0
+                    y = (this.parent.screenWorldHeight &lt; this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y
                 }
                 else if (oob.bottom &amp;&amp; this.bottom)
                 {
-                    y = (this.parent.screenWorldHeight &lt; this.parent.screenHeight) ? this.calcUnderflowY() : -point.y
+                    y = (this.parent.screenWorldHeight &lt; this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y
                 }
                 if (y !== null &amp;&amp; this.parent.y !== y)
                 {
@@ -613,6 +657,7 @@ export class Bounce extends Plugin
     reset()
     {
         this.toX = this.toY = null
+        this.bounce()
     }
 }</code></pre>
         </article>
@@ -627,7 +672,7 @@ export class Bounce extends Plugin
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Oct 24 2019 14:45:53 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Nov 19 2019 11:29:15 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

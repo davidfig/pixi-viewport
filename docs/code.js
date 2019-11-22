@@ -4,7 +4,7 @@ import { ease } from 'pixi-ease'
 import Random from 'yy-random'
 import Counter from 'yy-counter'
 import FPS from 'yy-fps'
-import clicked from 'clicked'
+import { clicked } from 'clicked'
 // import highlight from 'highlight.js'
 import DomEase from 'dom-ease'
 
@@ -14,8 +14,8 @@ import { UserPlugin } from './user-plugin'
 import { gui } from './gui'
 
 const BORDER = 10
-const WIDTH = 3000
-const HEIGHT = 3000
+const WIDTH = 2000
+const HEIGHT = 2000
 const STAR_SIZE = 30
 const OBJECT_SIZE = 50
 const OBJECT_ROTATION_TIME = 1000
