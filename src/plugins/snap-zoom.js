@@ -156,7 +156,6 @@ export class SnapZoom extends Plugin
             }
             else
             {
-                const snapping = this.snapping
                 this.parent.scale.x = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time)
                 this.parent.scale.y = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time)
             }
@@ -165,7 +164,7 @@ export class SnapZoom extends Plugin
             {
                 clamp.clamp()
             }
-            if (!this.options.noMove)
+            if (!this.options.noMove && !this.snapping)
             {
                 if (!this.options.center)
                 {
