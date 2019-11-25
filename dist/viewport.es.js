@@ -2316,11 +2316,6 @@ class SnapZoom extends Plugin
         this.yScale = this.yIndependent ? this.yScale : this.xScale;
     }
 
-    reset()
-    {
-        this.snapping = null;
-    }
-
     wheel()
     {
         if (this.options.removeOnInterrupt)
@@ -2388,7 +2383,7 @@ class SnapZoom extends Plugin
             {
                 clamp.clamp();
             }
-            if (!this.options.noMove && !this.snapping)
+            if (!this.options.noMove)
             {
                 if (!this.options.center)
                 {
