@@ -21,11 +21,12 @@ interface ViewportOptions
     screenWidth?: number
     threshold?: number
     passiveWheel?: boolean
+    stopPropagation?: boolean
     noTicker?: boolean
     ticker?: PIXI.Ticker
     worldHeight?: number
     worldWidth?: number
-    noOnContextMenu?: boolean
+    disableOnContextMenu?: boolean
 }
 
 interface DragOptions
