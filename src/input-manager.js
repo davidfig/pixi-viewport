@@ -168,7 +168,7 @@ export class InputManager
 
         if (this.clickedAvailable && this.count() === 0)
         {
-            this.viewport.emit('clicked', { screen: this.last, world: this.viewport.toWorld(this.last), viewport: this })
+            this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this })
             this.clickedAvailable = false
         }
 
