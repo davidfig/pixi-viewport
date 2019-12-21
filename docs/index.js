@@ -50104,7 +50104,7 @@
 
                     if (this.clickedAvailable && this.count() === 0)
                     {
-                        this.viewport.emit('clicked', { screen: this.last, world: this.viewport.toWorld(this.last), viewport: this });
+                        this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this });
                         this.clickedAvailable = false;
                     }
 
@@ -50701,7 +50701,7 @@
                                 this.last = newPoint;
                                 if (!this.moved)
                                 {
-                                    this.parent.emit('drag-start', { screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent});
+                                    this.parent.emit('drag-start', { event: event, screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent});
                                 }
                                 this.moved = true;
                                 this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
@@ -50719,7 +50719,7 @@
                  * @param {PIXI.interaction.InteractionEvent} event
                  * @returns {boolean}
                  */
-                up()
+                up(event)
                 {
                     if (this.paused)
                     {
@@ -50742,7 +50742,7 @@
                         if (this.moved)
                         {
                             const screen = new Point(this.last.x, this.last.y);
-                            this.parent.emit('drag-end', {screen, world: this.parent.toWorld(screen), viewport: this.parent});
+                            this.parent.emit('drag-end', { event: event, screen, world: this.parent.toWorld(screen), viewport: this.parent});
                             this.last = null;
                             this.moved = false;
                             return true
