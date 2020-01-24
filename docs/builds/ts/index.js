@@ -46829,6 +46829,7 @@
                             this.parent.x += point.x - newPoint.x;
                             this.parent.y += point.y - newPoint.y;
                         }
+                        this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
                         this.smoothingCount++;
                         if (this.smoothingCount >= this.options.smooth)
                         {
