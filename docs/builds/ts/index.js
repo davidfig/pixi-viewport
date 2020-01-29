@@ -48005,24 +48005,39 @@
                  * @param {number} y - top
                  * @param {number} width
                  * @param {number} height
+                 * @param {boolean} [resizeToFit] resize the viewport so the box fits within the viewport
                  */
-                ensureVisible(x, y, width, height)
+                ensureVisible(x, y, width, height, resizeToFit)
                 {
+                    if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
+                    {
+                        this.fit(true, width, height);
+                        this.emit('zoomed', { viewport: this, type: 'ensureVisible' });
+                    }
+                    let moved = false;
                     if (x < this.left)
                     {
                         this.left = x;
+                        moved = true;
                     }
                     else if (x + width > this.right)
                     {
                         this.right = x + width;
+                        moved = true;
                     }
                     if (y < this.top)
                     {
                         this.top = y;
+                        moved = true;
                     }
                     else if (y + height > this.bottom)
                     {
                         this.bottom = y + height;
+                        moved = true;
+                    }
+                    if (moved)
+                    {
+                        this.emit('moved', { viewport: this, type: 'ensureVisible' });
                     }
                 }
             }

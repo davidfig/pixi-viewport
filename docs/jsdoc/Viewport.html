@@ -2883,7 +2883,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
             <span class="">
                 ensureVisible
             </span>
-            <span class="signature">(x, y, width, height)</span>
+            <span class="signature">(x, y, width, height, <span class="optional">resizeToFit</span>)</span>
             
             
             
@@ -2892,7 +2892,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line926">viewport.js:926</a>
+            <a href="src_viewport.js.html#line927">viewport.js:927</a>
         </div>
         
     </div>
@@ -2950,6 +2950,11 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 <p>left</p></td>
         </tr>
 	
@@ -2972,6 +2977,11 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
             
             
             <td class="description last">
+                
+                    
+                    
+                        
+                    
                 
                 <p>top</p></td>
         </tr>
@@ -2996,6 +3006,11 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 </td>
         </tr>
 	
@@ -3019,7 +3034,42 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>resizeToFit</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>resize the viewport so the box fits within the viewport</p></td>
         </tr>
 	
 	
@@ -6857,7 +6907,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1016">viewport.js:1016</a>
+            <a href="src_viewport.js.html#line1031">viewport.js:1031</a>
         </div>
         
     </div>
@@ -6943,7 +6993,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1010">viewport.js:1010</a>
+            <a href="src_viewport.js.html#line1025">viewport.js:1025</a>
         </div>
         
     </div>
@@ -7029,7 +7079,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1028">viewport.js:1028</a>
+            <a href="src_viewport.js.html#line1043">viewport.js:1043</a>
         </div>
         
     </div>
@@ -7115,7 +7165,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1022">viewport.js:1022</a>
+            <a href="src_viewport.js.html#line1037">viewport.js:1037</a>
         </div>
         
     </div>
@@ -7201,7 +7251,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line947">viewport.js:947</a>
+            <a href="src_viewport.js.html#line962">viewport.js:962</a>
         </div>
         
     </div>
@@ -7384,7 +7434,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line965">viewport.js:965</a>
+            <a href="src_viewport.js.html#line980">viewport.js:980</a>
         </div>
         
     </div>
@@ -7567,7 +7617,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line956">viewport.js:956</a>
+            <a href="src_viewport.js.html#line971">viewport.js:971</a>
         </div>
         
     </div>
@@ -7750,7 +7800,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1091">viewport.js:1091</a>
+            <a href="src_viewport.js.html#line1106">viewport.js:1106</a>
         </div>
         
     </div>
@@ -7836,7 +7886,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1057">viewport.js:1057</a>
+            <a href="src_viewport.js.html#line1072">viewport.js:1072</a>
         </div>
         
     </div>
@@ -7922,7 +7972,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1051">viewport.js:1051</a>
+            <a href="src_viewport.js.html#line1066">viewport.js:1066</a>
         </div>
         
     </div>
@@ -8008,7 +8058,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1063">viewport.js:1063</a>
+            <a href="src_viewport.js.html#line1078">viewport.js:1078</a>
         </div>
         
     </div>
@@ -8019,7 +8069,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
     
     <div class="description">
-        <p>fires when viewport moves through UI interaction, deceleration, or follow</p>
+        <p>fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow</p>
     </div>
     
 
@@ -8108,7 +8158,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
             
             
             
-            <td class="description last"><p>(drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel)</p></td>
+            <td class="description last"><p>(drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
         </tr>
 	
 	
@@ -8168,7 +8218,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1079">viewport.js:1079</a>
+            <a href="src_viewport.js.html#line1094">viewport.js:1094</a>
         </div>
         
     </div>
@@ -8254,7 +8304,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line980">viewport.js:980</a>
+            <a href="src_viewport.js.html#line995">viewport.js:995</a>
         </div>
         
     </div>
@@ -8340,7 +8390,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line974">viewport.js:974</a>
+            <a href="src_viewport.js.html#line989">viewport.js:989</a>
         </div>
         
     </div>
@@ -8426,7 +8476,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line992">viewport.js:992</a>
+            <a href="src_viewport.js.html#line1007">viewport.js:1007</a>
         </div>
         
     </div>
@@ -8512,7 +8562,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line986">viewport.js:986</a>
+            <a href="src_viewport.js.html#line1001">viewport.js:1001</a>
         </div>
         
     </div>
@@ -8598,7 +8648,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1004">viewport.js:1004</a>
+            <a href="src_viewport.js.html#line1019">viewport.js:1019</a>
         </div>
         
     </div>
@@ -8684,7 +8734,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line998">viewport.js:998</a>
+            <a href="src_viewport.js.html#line1013">viewport.js:1013</a>
         </div>
         
     </div>
@@ -8770,7 +8820,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1034">viewport.js:1034</a>
+            <a href="src_viewport.js.html#line1049">viewport.js:1049</a>
         </div>
         
     </div>
@@ -9023,7 +9073,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1045">viewport.js:1045</a>
+            <a href="src_viewport.js.html#line1060">viewport.js:1060</a>
         </div>
         
     </div>
@@ -9109,7 +9159,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1071">viewport.js:1071</a>
+            <a href="src_viewport.js.html#line1086">viewport.js:1086</a>
         </div>
         
     </div>
@@ -9120,7 +9170,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
     
     <div class="description">
-        <p>fires when viewport moves through UI interaction, deceleration, or follow</p>
+        <p>fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow</p>
     </div>
     
 
@@ -9209,7 +9259,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
             
             
             
-            <td class="description last"><p>(drag-zoom, pinch, wheel, clamp-zoom)</p></td>
+            <td class="description last"><p>(drag-zoom, pinch, wheel, clamp-zoom, ensureVisible)</p></td>
         </tr>
 	
 	
@@ -9269,7 +9319,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1085">viewport.js:1085</a>
+            <a href="src_viewport.js.html#line1100">viewport.js:1100</a>
         </div>
         
     </div>
@@ -9351,7 +9401,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sat Jan 25 2020 07:41:32 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Wed Jan 29 2020 18:01:11 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>
