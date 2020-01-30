@@ -876,6 +876,16 @@ export class Viewport extends PIXI.Container
 
     /**
      * enable clamping of zoom to constraints
+     * @description
+     * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
+     * before clamping. The maxWidth/maxHeight is how larger the world can scale (as it would appear on
+     * the screen) before clamping.
+     *
+     * For example, if you have a world size of 1000 x 1000 and a screen size of 100 x 100, if you set
+     * minWidth/Height = 100 then the world will not be able to zoom smaller than the screen size (ie,
+     * zooming out so it appears smaller than the screen). Similarly, if you set maxWidth/Height = 100
+     * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
+     * larger than the screen).
      * @param {ClampZoomOptions} [options]
      * @return {Viewport} this
      */
