@@ -634,7 +634,7 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * changes scale of viewport and maintains center of viewport--same as calling setScale(scale, true)
+     * changes scale of viewport and maintains center of viewport
      * @type {number}
      */
     set scaled(scale)

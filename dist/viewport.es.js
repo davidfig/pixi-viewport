@@ -1269,18 +1269,25 @@ class Clamp extends Plugin
 }
 
 /**
+ * use either minimum width/height or minimum scale
  * @typedef {object} ClampZoomOptions
  * @property {number} [minWidth] minimum width
  * @property {number} [minHeight] minimum height
  * @property {number} [maxWidth] maximum width
  * @property {number} [maxHeight] maximum height
+ * @property {number} [minScale] minimum scale
+ * @property {number} [maxScale] minimum scale
  */
 
 const clampZoomOptions = {
     minWidth: null,
     minHeight: null,
     maxWidth: null,
-    maxHeight: null
+    maxHeight: null,
+    minScaleX: null,
+    maxScaleY: null,
+    minScaleX: null,
+    maxScaleY: null
 };
 
 class ClampZoom extends Plugin
@@ -1309,41 +1316,60 @@ class ClampZoom extends Plugin
             return
         }
 
-        let width = this.parent.worldScreenWidth;
-        let height = this.parent.worldScreenHeight;
-        if (this.options.minWidth !== null && width < this.options.minWidth)
+        if (this.minWidth || this.minHeight || this.maxWidth || this.maxHeight)
         {
-            const original = this.parent.scale.x;
-            this.parent.fitWidth(this.options.minWidth, false, false, true);
-            this.parent.scale.y *= this.parent.scale.x / original;
-            width = this.parent.worldScreenWidth;
-            height = this.parent.worldScreenHeight;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            let width = this.parent.worldScreenWidth;
+            let height = this.parent.worldScreenHeight;
+            if (this.options.minWidth !== null && width < this.options.minWidth)
+            {
+                const original = this.parent.scale.x;
+                this.parent.fitWidth(this.options.minWidth, false, false, true);
+                this.parent.scale.y *= this.parent.scale.x / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.maxWidth !== null && width > this.options.maxWidth)
+            {
+                const original = this.parent.scale.x;
+                this.parent.fitWidth(this.options.maxWidth, false, false, true);
+                this.parent.scale.y *= this.parent.scale.x / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.minHeight !== null && height < this.options.minHeight)
+            {
+                const original = this.parent.scale.y;
+                this.parent.fitHeight(this.options.minHeight, false, false, true);
+                this.parent.scale.x *= this.parent.scale.y / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.maxHeight !== null && height > this.options.maxHeight)
+            {
+                const original = this.parent.scale.y;
+                this.parent.fitHeight(this.options.maxHeight, false, false, true);
+                this.parent.scale.x *= this.parent.scale.y / original;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
         }
-        if (this.options.maxWidth !== null && width > this.options.maxWidth)
+        else
         {
-            const original = this.parent.scale.x;
-            this.parent.fitWidth(this.options.maxWidth, false, false, true);
-            this.parent.scale.y *= this.parent.scale.x / original;
-            width = this.parent.worldScreenWidth;
-            height = this.parent.worldScreenHeight;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-        }
-        if (this.options.minHeight !== null && height < this.options.minHeight)
-        {
-            const original = this.parent.scale.y;
-            this.parent.fitHeight(this.options.minHeight, false, false, true);
-            this.parent.scale.x *= this.parent.scale.y / original;
-            width = this.parent.worldScreenWidth;
-            height = this.parent.worldScreenHeight;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-        }
-        if (this.options.maxHeight !== null && height > this.options.maxHeight)
-        {
-            const original = this.parent.scale.y;
-            this.parent.fitHeight(this.options.maxHeight, false, false, true);
-            this.parent.scale.x *= this.parent.scale.y / original;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            let scale = this.parent.viewport.scale.x;
+            if (this.options.minScale !== null && scale < this.options.minScale)
+            {
+                scale = minScale;
+            }
+            if (this.options.maxScale !== null && scale > this.options.maxScale)
+            {
+                scale = maxScale;
+            }
+            if (scale !== this.viewport.scale.x) {
+                this.parent.scale.set(scale);
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
         }
     }
 
@@ -3471,7 +3497,7 @@ class Viewport extends Container
     }
 
     /**
-     * changes scale of viewport and maintains center of viewport--same as calling setScale(scale, true)
+     * changes scale of viewport and maintains center of viewport
      * @type {number}
      */
     set scaled(scale)
@@ -3713,6 +3739,16 @@ class Viewport extends Container
 
     /**
      * enable clamping of zoom to constraints
+     * @description
+     * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
+     * before clamping. The maxWidth/maxHeight is how larger the world can scale (as it would appear on
+     * the screen) before clamping.
+     *
+     * For example, if you have a world size of 1000 x 1000 and a screen size of 100 x 100, if you set
+     * minWidth/Height = 100 then the world will not be able to zoom smaller than the screen size (ie,
+     * zooming out so it appears smaller than the screen). Similarly, if you set maxWidth/Height = 100
+     * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
+     * larger than the screen).
      * @param {ClampZoomOptions} [options]
      * @return {Viewport} this
      */

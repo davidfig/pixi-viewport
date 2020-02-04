@@ -52,6 +52,8 @@ function viewport()
     _viewport.plugins.add('test', new UserPlugin(_viewport))
 
     // _viewport.ensureVisible(0, 0, 5000, 5000, true)
+
+    _viewport.clampZoom({ minScale: 0.2, maxScale: 2.5 })
 }
 
 function resize()
