@@ -51219,10 +51219,8 @@
                 minHeight: null,
                 maxWidth: null,
                 maxHeight: null,
-                minScaleX: null,
-                maxScaleY: null,
-                minScaleX: null,
-                maxScaleY: null
+                minScale: null,
+                maxScale: null
             };
 
             class ClampZoom extends Plugin
