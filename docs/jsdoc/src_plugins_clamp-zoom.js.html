@@ -376,18 +376,25 @@
             <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './plugin'
 
 /**
+ * use either minimum width/height or minimum scale
  * @typedef {object} ClampZoomOptions
  * @property {number} [minWidth] minimum width
  * @property {number} [minHeight] minimum height
  * @property {number} [maxWidth] maximum width
  * @property {number} [maxHeight] maximum height
+ * @property {number} [minScale] minimum scale
+ * @property {number} [maxScale] minimum scale
  */
 
 const clampZoomOptions = {
     minWidth: null,
     minHeight: null,
     maxWidth: null,
-    maxHeight: null
+    maxHeight: null,
+    minScaleX: null,
+    maxScaleY: null,
+    minScaleX: null,
+    maxScaleY: null
 }
 
 export class ClampZoom extends Plugin
@@ -416,41 +423,60 @@ export class ClampZoom extends Plugin
             return
         }
 
-        let width = this.parent.worldScreenWidth
-        let height = this.parent.worldScreenHeight
-        if (this.options.minWidth !== null &amp;&amp; width &lt; this.options.minWidth)
+        if (this.minWidth || this.minHeight || this.maxWidth || this.maxHeight)
         {
-            const original = this.parent.scale.x
-            this.parent.fitWidth(this.options.minWidth, false, false, true)
-            this.parent.scale.y *= this.parent.scale.x / original
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+            let width = this.parent.worldScreenWidth
+            let height = this.parent.worldScreenHeight
+            if (this.options.minWidth !== null &amp;&amp; width &lt; this.options.minWidth)
+            {
+                const original = this.parent.scale.x
+                this.parent.fitWidth(this.options.minWidth, false, false, true)
+                this.parent.scale.y *= this.parent.scale.x / original
+                width = this.parent.worldScreenWidth
+                height = this.parent.worldScreenHeight
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+            }
+            if (this.options.maxWidth !== null &amp;&amp; width > this.options.maxWidth)
+            {
+                const original = this.parent.scale.x
+                this.parent.fitWidth(this.options.maxWidth, false, false, true)
+                this.parent.scale.y *= this.parent.scale.x / original
+                width = this.parent.worldScreenWidth
+                height = this.parent.worldScreenHeight
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+            }
+            if (this.options.minHeight !== null &amp;&amp; height &lt; this.options.minHeight)
+            {
+                const original = this.parent.scale.y
+                this.parent.fitHeight(this.options.minHeight, false, false, true)
+                this.parent.scale.x *= this.parent.scale.y / original
+                width = this.parent.worldScreenWidth
+                height = this.parent.worldScreenHeight
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+            }
+            if (this.options.maxHeight !== null &amp;&amp; height > this.options.maxHeight)
+            {
+                const original = this.parent.scale.y
+                this.parent.fitHeight(this.options.maxHeight, false, false, true)
+                this.parent.scale.x *= this.parent.scale.y / original
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+            }
         }
-        if (this.options.maxWidth !== null &amp;&amp; width > this.options.maxWidth)
+        else
         {
-            const original = this.parent.scale.x
-            this.parent.fitWidth(this.options.maxWidth, false, false, true)
-            this.parent.scale.y *= this.parent.scale.x / original
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
-        }
-        if (this.options.minHeight !== null &amp;&amp; height &lt; this.options.minHeight)
-        {
-            const original = this.parent.scale.y
-            this.parent.fitHeight(this.options.minHeight, false, false, true)
-            this.parent.scale.x *= this.parent.scale.y / original
-            width = this.parent.worldScreenWidth
-            height = this.parent.worldScreenHeight
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
-        }
-        if (this.options.maxHeight !== null &amp;&amp; height > this.options.maxHeight)
-        {
-            const original = this.parent.scale.y
-            this.parent.fitHeight(this.options.maxHeight, false, false, true)
-            this.parent.scale.x *= this.parent.scale.y / original
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+            let scale = this.parent.scale.x
+            if (this.options.minScale !== null &amp;&amp; scale &lt; this.options.minScale)
+            {
+                scale = this.options.minScale
+            }
+            if (this.options.maxScale !== null &amp;&amp; scale > this.options.maxScale)
+            {
+                scale = this.options.maxScale
+            }
+            if (scale !== this.parent.scale.x) {
+                this.parent.scale.set(scale)
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+            }
         }
     }
 
@@ -472,7 +498,7 @@ export class ClampZoom extends Plugin
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Jan 31 2020 06:17:48 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Feb 04 2020 20:09:10 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

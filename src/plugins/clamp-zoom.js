@@ -16,10 +16,8 @@ const clampZoomOptions = {
     minHeight: null,
     maxWidth: null,
     maxHeight: null,
-    minScaleX: null,
-    maxScaleY: null,
-    minScaleX: null,
-    maxScaleY: null
+    minScale: null,
+    maxScale: null
 }
 
 export class ClampZoom extends Plugin

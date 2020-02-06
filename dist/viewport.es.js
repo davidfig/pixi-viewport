@@ -1357,16 +1357,16 @@ class ClampZoom extends Plugin
         }
         else
         {
-            let scale = this.parent.viewport.scale.x;
+            let scale = this.parent.scale.x;
             if (this.options.minScale !== null && scale < this.options.minScale)
             {
-                scale = minScale;
+                scale = this.options.minScale;
             }
             if (this.options.maxScale !== null && scale > this.options.maxScale)
             {
-                scale = maxScale;
+                scale = this.options.maxScale;
             }
-            if (scale !== this.viewport.scale.x) {
+            if (scale !== this.parent.scale.x) {
                 this.parent.scale.set(scale);
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
