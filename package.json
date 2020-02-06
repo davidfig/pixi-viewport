@@ -1,6 +1,6 @@
 {
     "name": "pixi-viewport",
-    "version": "4.8.0",
+    "version": "4.8.1",
     "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
     "main": "dist/viewport.js",
     "module": "dist/viewport.es.js",
