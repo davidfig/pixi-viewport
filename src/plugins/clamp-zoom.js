@@ -46,7 +46,7 @@ export class ClampZoom extends Plugin
             return
         }
 
-        if (this.minWidth || this.minHeight || this.maxWidth || this.maxHeight)
+        if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
         {
             let width = this.parent.worldScreenWidth
             let height = this.parent.worldScreenHeight
