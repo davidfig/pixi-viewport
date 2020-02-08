@@ -54677,7 +54677,8 @@
 
                 // _viewport.ensureVisible(0, 0, 5000, 5000, true)
 
-                _viewport$1.clampZoom({ minScale: 0.2, maxScale: 2.5 });
+                // _viewport.clampZoom({ minScale: 0.2, maxScale: 2.5 })
+                // _viewport.clampZoom({ minWidth: 1000, minHeight: 1000, maxWidth: 5000, maxHeight: 5000 })
             }
 
             function resize()
