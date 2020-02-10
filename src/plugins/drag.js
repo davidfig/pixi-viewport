@@ -12,7 +12,8 @@ import { Plugin } from './plugin'
 /**
  * @typedef DragOptions
  * @property {string} [direction=all] direction to drag
- * @property {boolean} [wheel=true] use wheel to scroll in y direction(unless wheel plugin is active)
+ * @property {boolean} [pressDrag=true] whether click to drag is active
+ * @property {boolean} [wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
  * @property {number} [wheelScroll=1] number of pixels to scroll with each wheel spin
  * @property {boolean} [reverse] reverse the direction of the wheel scroll
  * @property {(boolean|string)} [clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
@@ -25,6 +26,7 @@ import { Plugin } from './plugin'
 
 const dragOptions = {
     direction: 'all',
+    pressDrag: true,
     wheel: true,
     wheelScroll: 1,
     reverse: false,
@@ -149,7 +151,7 @@ export class Drag extends Plugin
      */
     down(event)
     {
-        if (this.paused)
+        if (this.paused || !this.options.pressDrag)
         {
             return
         }
@@ -175,7 +177,7 @@ export class Drag extends Plugin
      */
     move(event)
     {
-        if (this.paused)
+        if (this.paused || !this.options.pressDrag)
         {
             return
         }
