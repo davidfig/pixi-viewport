@@ -32,6 +32,7 @@ interface ViewportOptions
 interface DragOptions
 {
     direction?: DirectionType
+    pressDrag?: boolean
     wheel?: boolean
     wheelScroll?: number
     reverse?: boolean
