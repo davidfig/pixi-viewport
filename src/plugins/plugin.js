@@ -61,8 +61,7 @@ export class Plugin
      */
     gestureChange(event)
     {
-console.log(event.scale)
-        return true
+        return false
     }
 
     /**

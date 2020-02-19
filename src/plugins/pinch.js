@@ -126,6 +126,11 @@ export class Pinch extends Plugin
         }
     }
 
+    gestureChange(e) {
+        console.log(e.scale)
+        return true
+    }
+
     wheel(e) {
         if (!this.options.noTrackpadZoom && !this.paused && this.parent.input.count() === 0 && e.ctrlKey) {
             const point = this.parent.input.getPointerPosition(e)
