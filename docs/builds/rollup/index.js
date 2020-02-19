@@ -45274,8 +45274,9 @@
                             {
                                 oldPoint = this.parent.toLocal(point);
                             }
-                            const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
-                            const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.options.percent;
+                            let dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
+                            dist = dist === 0 ? dist = 0.0000000001 : dist;
+                            const change = (1 - last / dist) * this.options.percent * this.parent.scale.x;
                             this.parent.scale.x += change;
                             this.parent.scale.y += change;
                             this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch' });

@@ -34,7 +34,7 @@ function viewport()
     }))
     _viewport
         .drag({ clampWheel: true })
-        .wheel({ smooth: 3 })
+        // .wheel({ smooth: 3 })
         .pinch()
         .decelerate()
         .on('clicked', click)

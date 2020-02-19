@@ -264,7 +264,7 @@ export class Drag extends Plugin
             return
         }
 
-        if (this.options.wheel)
+        if (this.options.wheel && !event.ctrlKey)
         {
             const wheel = this.parent.plugins.get('wheel')
             if (!wheel)

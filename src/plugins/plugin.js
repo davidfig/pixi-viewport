@@ -56,6 +56,15 @@ export class Plugin
     }
 
     /**
+     * handler for iOS and Mac gesture events
+     * @param {UIEvent} event
+     */
+    gestureChange(event)
+    {
+console.log(event.scale)
+    }
+
+    /**
      * called on each tick
      * @param {number} elapsed time in millisecond since last update
      */

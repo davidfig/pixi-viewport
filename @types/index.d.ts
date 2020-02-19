@@ -46,6 +46,8 @@ interface PinchOptions
 {
     percent?: number
     noDrag?: boolean
+    noTrackpadZoom?: false
+    trackpadPercent?: number
     center?: PIXI.Point
 }
 

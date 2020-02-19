@@ -41,8 +41,10 @@ export class InputManager
         this.viewport.on('pointerupoutside', this.up, this)
         this.viewport.on('pointercancel', this.up, this)
         this.viewport.on('pointerout', this.up, this)
-        this.wheelFunction = (e) => this.handleWheel(e)
+        this.wheelFunction = e => this.handleWheel(e)
         this.viewport.options.divWheel.addEventListener('wheel', this.wheelFunction, { passive: this.viewport.options.passiveWheel })
+        this.gestureChange = e => this.handleGestureChange(e)
+        this.viewport.options.divWheel.addEventListener('gesturechange', this.gestureChange, { passive: this.viewport.options.passiveWheel })
         this.isMouseDown = false
     }
 
@@ -214,6 +216,23 @@ export class InputManager
         if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
         {
             const stop = this.viewport.plugins.wheel(event)
+            if (stop && !this.viewport.options.passiveWheel)
+            {
+                event.preventDefault()
+            }
+        }
+    }
+
+    handleGestureChange(event) {
+        if (this.viewport.pause || !this.viewport.worldVisible)
+        {
+            return
+        }
+        // only handle wheel events where the mouse is over the viewport
+        const point = this.viewport.toLocal(this.getPointerPosition(event))
+        if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
+        {
+            const stop = this.viewport.plugins.gestureChange(event)
             if (stop && !this.viewport.options.passiveWheel)
             {
                 event.preventDefault()
