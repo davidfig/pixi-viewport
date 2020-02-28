@@ -87,18 +87,55 @@ export class ClampZoom extends Plugin
         }
         else
         {
-            let scale = this.parent.scale.x
-            if (this.options.minScale !== null && scale < this.options.minScale)
+            if (this.options.minScale || this.options.maxScale)
             {
-                scale = this.options.minScale
-            }
-            if (this.options.maxScale !== null && scale > this.options.maxScale)
-            {
-                scale = this.options.maxScale
-            }
-            if (scale !== this.parent.scale.x) {
-                this.parent.scale.set(scale)
-                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+                let minScale = { x: null, y: null }
+                let maxScale = { y: null, x: null }
+
+                if (typeof this.options.minScale === 'number')
+                {
+                    minScale.x = this.options.minScale
+                    minScale.y = this.options.minScale
+                }
+                else if (this.options.minScale !== null)
+                {
+                    minScale = { ...this.options.minScale }
+                }
+
+                if (typeof this.options.maxScale === 'number')
+                {
+                    maxScale.x = this.options.maxScale
+                    maxScale.y = this.options.maxScale
+                }
+                else if (this.options.maxScale !== null)
+                {
+                    maxScale = { ...this.options.maxScale }
+                }
+
+                let scaleX = this.parent.scale.x
+                let scaleY = this.parent.scale.y
+
+                if (minScale.x !== null && scaleX < minScale.x)
+                {
+                    scaleX = minScale.x
+                }
+                if (maxScale.x !== null && scaleX > maxScale.x)
+                {
+                    scaleX = maxScale.x
+                }
+                if (minScale.y !== null && scaleY < minScale.y)
+                {
+                    scaleY = minScale.y
+                }
+                if (maxScale.y !== null && scaleY > maxScale.y)
+                {
+                    scaleY = maxScale.y
+                }
+                if (scaleX !== this.parent.scale.x || scaleY !== this.parent.scale.y)
+                {
+                    this.parent.scale.set(scaleX, scaleY)
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
+                }
             }
         }
     }
