@@ -52358,13 +52358,16 @@
                     {
                         return
                     }
+            console.log('down');
                     if (event.data.pointerType === 'mouse')
                     {
                         this.isMouseDown = true;
                     }
                     else if (!this.get(event.data.pointerId))
                     {
+            console.log('not get...');
                         this.touches.push({ id: event.data.pointerId, last: null });
+                        console.log(this.count());
                     }
                     if (this.count() === 1)
                     {
@@ -52417,7 +52420,16 @@
                     {
                         return
                     }
-
+                    if (event.data.pointerType === 'mouse')
+                    {
+                        this.isMouseDown = true;
+                    }
+                    else if (!this.get(event.data.pointerId))
+                    {
+            console.log('what?!');
+                        this.touches.push({ id: event.data.pointerId, last: null });
+                    }
+            console.log(this.count());
                     const stop = this.viewport.plugins.move(event);
 
                     if (this.clickedAvailable)
@@ -52501,7 +52513,7 @@
                     {
                         return
                     }
-
+            console.log('wheel');
                     // only handle wheel events where the mouse is over the viewport
                     const point = this.viewport.toLocal(this.getPointerPosition(event));
                     if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
@@ -52856,7 +52868,7 @@
                  */
                 gestureChange(event)
                 {
-            console.log(event.scale);
+                    return false
                 }
 
                 /**
@@ -53369,6 +53381,11 @@
                             return true
                         }
                     }
+                }
+
+                gestureChange(e) {
+                    console.log(e.scale);
+                    return true
                 }
 
                 wheel(e) {
