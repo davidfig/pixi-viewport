@@ -7,6 +7,7 @@ import { Plugin } from './plugin'
  * @property {boolean} [interrupt=true] stop smoothing with any user input on the viewport
  * @property {boolean} [reverse] reverse the direction of the scroll
  * @property {PIXI.Point} [center] place this point at center during zoom instead of current mouse position
+ * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
  */
 
 const wheelOptions = {
@@ -14,7 +15,8 @@ const wheelOptions = {
     smooth: false,
     interrupt: true,
     reverse: false,
-    center: null
+    center: null,
+    lineHeight: 20
 }
 
 export class Wheel extends Plugin
@@ -86,7 +88,7 @@ export class Wheel extends Plugin
 
         let point = this.parent.input.getPointerPosition(e)
         const sign = this.options.reverse ? -1 : 1
-        const step = sign * -e.deltaY * (e.deltaMode ? 120 : 1) / 500
+        const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500
         const change = Math.pow(2, (1 + this.options.percent) * step)
         if (this.options.smooth)
         {

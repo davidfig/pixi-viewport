@@ -120,6 +120,8 @@ interface WheelOptions
     reverse?: boolean
     center?: PIXI.Point
     smooth?: number
+    interrupt?: boolean
+    lineHeight?: number
 }
 
 interface ClampZoomOptions
