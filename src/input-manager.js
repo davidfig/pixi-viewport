@@ -168,7 +168,7 @@ export class InputManager
 
         if (this.clickedAvailable && this.count() === 0)
         {
-            this.viewport.emit('clicked', { screen: this.last, world: this.viewport.toWorld(this.last), viewport: this })
+            this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this })
             this.clickedAvailable = false
         }
 
@@ -214,7 +214,7 @@ export class InputManager
         if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
         {
             const stop = this.viewport.plugins.wheel(event)
-            if (stop)
+            if (stop && !this.viewport.options.passiveWheel)
             {
                 event.preventDefault()
             }

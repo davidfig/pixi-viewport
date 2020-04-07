@@ -169,7 +169,7 @@ class InputManager
 
         if (this.clickedAvailable && this.count() === 0)
         {
-            this.viewport.emit('clicked', { screen: this.last, world: this.viewport.toWorld(this.last), viewport: this });
+            this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this });
             this.clickedAvailable = false;
         }
 
@@ -215,7 +215,7 @@ class InputManager
         if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
         {
             const stop = this.viewport.plugins.wheel(event);
-            if (stop)
+            if (stop && !this.viewport.options.passiveWheel)
             {
                 event.preventDefault();
             }
@@ -576,7 +576,8 @@ class Plugin
 /**
  * @typedef DragOptions
  * @property {string} [direction=all] direction to drag
- * @property {boolean} [wheel=true] use wheel to scroll in y direction(unless wheel plugin is active)
+ * @property {boolean} [pressDrag=true] whether click to drag is active
+ * @property {boolean} [wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
  * @property {number} [wheelScroll=1] number of pixels to scroll with each wheel spin
  * @property {boolean} [reverse] reverse the direction of the wheel scroll
  * @property {(boolean|string)} [clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
@@ -589,6 +590,7 @@ class Plugin
 
 const dragOptions = {
     direction: 'all',
+    pressDrag: true,
     wheel: true,
     wheelScroll: 1,
     reverse: false,
@@ -713,7 +715,7 @@ class Drag extends Plugin
      */
     down(event)
     {
-        if (this.paused)
+        if (this.paused || !this.options.pressDrag)
         {
             return
         }
@@ -739,7 +741,7 @@ class Drag extends Plugin
      */
     move(event)
     {
-        if (this.paused)
+        if (this.paused || !this.options.pressDrag)
         {
             return
         }
@@ -766,7 +768,7 @@ class Drag extends Plugin
                     this.last = newPoint;
                     if (!this.moved)
                     {
-                        this.parent.emit('drag-start', { screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent});
+                        this.parent.emit('drag-start', { event: event, screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent});
                     }
                     this.moved = true;
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
@@ -784,7 +786,7 @@ class Drag extends Plugin
      * @param {PIXI.interaction.InteractionEvent} event
      * @returns {boolean}
      */
-    up()
+    up(event)
     {
         if (this.paused)
         {
@@ -807,7 +809,7 @@ class Drag extends Plugin
             if (this.moved)
             {
                 const screen = new Point(this.last.x, this.last.y);
-                this.parent.emit('drag-end', {screen, world: this.parent.toWorld(screen), viewport: this.parent});
+                this.parent.emit('drag-end', { event: event, screen, world: this.parent.toWorld(screen), viewport: this.parent});
                 this.last = null;
                 this.moved = false;
                 return true
@@ -1269,18 +1271,23 @@ class Clamp extends Plugin
 }
 
 /**
+ * use either minimum width/height or minimum scale
  * @typedef {object} ClampZoomOptions
  * @property {number} [minWidth] minimum width
  * @property {number} [minHeight] minimum height
  * @property {number} [maxWidth] maximum width
  * @property {number} [maxHeight] maximum height
+ * @property {number} [minScale] minimum scale
+ * @property {number} [maxScale] minimum scale
  */
 
 const clampZoomOptions = {
     minWidth: null,
     minHeight: null,
     maxWidth: null,
-    maxHeight: null
+    maxHeight: null,
+    minScale: null,
+    maxScale: null
 };
 
 class ClampZoom extends Plugin
@@ -1309,41 +1316,60 @@ class ClampZoom extends Plugin
             return
         }
 
-        let width = this.parent.worldScreenWidth;
-        let height = this.parent.worldScreenHeight;
-        if (this.options.minWidth !== null && width < this.options.minWidth)
+        if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
         {
-            const original = this.parent.scale.x;
-            this.parent.fitWidth(this.options.minWidth, false, false, true);
-            this.parent.scale.y *= this.parent.scale.x / original;
-            width = this.parent.worldScreenWidth;
-            height = this.parent.worldScreenHeight;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            let width = this.parent.worldScreenWidth;
+            let height = this.parent.worldScreenHeight;
+            if (this.options.minWidth !== null && width < this.options.minWidth)
+            {
+                const original = this.parent.scale.x;
+                this.parent.fitWidth(this.options.minWidth, false, false, true);
+                this.parent.scale.y *= this.parent.scale.x / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.maxWidth !== null && width > this.options.maxWidth)
+            {
+                const original = this.parent.scale.x;
+                this.parent.fitWidth(this.options.maxWidth, false, false, true);
+                this.parent.scale.y *= this.parent.scale.x / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.minHeight !== null && height < this.options.minHeight)
+            {
+                const original = this.parent.scale.y;
+                this.parent.fitHeight(this.options.minHeight, false, false, true);
+                this.parent.scale.x *= this.parent.scale.y / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.maxHeight !== null && height > this.options.maxHeight)
+            {
+                const original = this.parent.scale.y;
+                this.parent.fitHeight(this.options.maxHeight, false, false, true);
+                this.parent.scale.x *= this.parent.scale.y / original;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
         }
-        if (this.options.maxWidth !== null && width > this.options.maxWidth)
+        else
         {
-            const original = this.parent.scale.x;
-            this.parent.fitWidth(this.options.maxWidth, false, false, true);
-            this.parent.scale.y *= this.parent.scale.x / original;
-            width = this.parent.worldScreenWidth;
-            height = this.parent.worldScreenHeight;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-        }
-        if (this.options.minHeight !== null && height < this.options.minHeight)
-        {
-            const original = this.parent.scale.y;
-            this.parent.fitHeight(this.options.minHeight, false, false, true);
-            this.parent.scale.x *= this.parent.scale.y / original;
-            width = this.parent.worldScreenWidth;
-            height = this.parent.worldScreenHeight;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-        }
-        if (this.options.maxHeight !== null && height > this.options.maxHeight)
-        {
-            const original = this.parent.scale.y;
-            this.parent.fitHeight(this.options.maxHeight, false, false, true);
-            this.parent.scale.x *= this.parent.scale.y / original;
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            let scale = this.parent.scale.x;
+            if (this.options.minScale !== null && scale < this.options.minScale)
+            {
+                scale = this.options.minScale;
+            }
+            if (this.options.maxScale !== null && scale > this.options.maxScale)
+            {
+                scale = this.options.maxScale;
+            }
+            if (scale !== this.parent.scale.x) {
+                this.parent.scale.set(scale);
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
         }
     }
 
@@ -2583,6 +2609,7 @@ class Wheel extends Plugin
                 this.parent.x += point.x - newPoint.x;
                 this.parent.y += point.y - newPoint.y;
             }
+            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
             this.smoothingCount++;
             if (this.smoothingCount >= this.options.smooth)
             {
@@ -3470,7 +3497,7 @@ class Viewport extends Container
     }
 
     /**
-     * changes scale of viewport and maintains center of viewport--same as calling setScale(scale, true)
+     * changes scale of viewport and maintains center of viewport
      * @type {number}
      */
     set scaled(scale)
@@ -3712,6 +3739,16 @@ class Viewport extends Container
 
     /**
      * enable clamping of zoom to constraints
+     * @description
+     * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
+     * before clamping. The maxWidth/maxHeight is how larger the world can scale (as it would appear on
+     * the screen) before clamping.
+     *
+     * For example, if you have a world size of 1000 x 1000 and a screen size of 100 x 100, if you set
+     * minWidth/Height = 100 then the world will not be able to zoom smaller than the screen size (ie,
+     * zooming out so it appears smaller than the screen). Similarly, if you set maxWidth/Height = 100
+     * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
+     * larger than the screen).
      * @param {ClampZoomOptions} [options]
      * @return {Viewport} this
      */
@@ -3758,24 +3795,39 @@ class Viewport extends Container
      * @param {number} y - top
      * @param {number} width
      * @param {number} height
+     * @param {boolean} [resizeToFit] resize the viewport so the box fits within the viewport
      */
-    ensureVisible(x, y, width, height)
+    ensureVisible(x, y, width, height, resizeToFit)
     {
+        if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
+        {
+            this.fit(true, width, height);
+            this.emit('zoomed', { viewport: this, type: 'ensureVisible' });
+        }
+        let moved = false;
         if (x < this.left)
         {
             this.left = x;
+            moved = true;
         }
         else if (x + width > this.right)
         {
             this.right = x + width;
+            moved = true;
         }
         if (y < this.top)
         {
             this.top = y;
+            moved = true;
         }
         else if (y + height > this.bottom)
         {
             this.bottom = y + height;
+            moved = true;
+        }
+        if (moved)
+        {
+            this.emit('moved', { viewport: this, type: 'ensureVisible' });
         }
     }
 }
@@ -3897,19 +3949,19 @@ class Viewport extends Container
  */
 
 /**
- * fires when viewport moves through UI interaction, deceleration, or follow
+ * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
  * @event Viewport#moved
  * @type {object}
  * @property {Viewport} viewport
- * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel)
+ * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
  */
 
 /**
- * fires when viewport moves through UI interaction, deceleration, or follow
+ * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
  * @event Viewport#zoomed
  * @type {object}
  * @property {Viewport} viewport
- * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
+ * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom, ensureVisible)
  */
 
 /**

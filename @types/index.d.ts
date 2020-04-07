@@ -32,6 +32,7 @@ interface ViewportOptions
 interface DragOptions
 {
     direction?: DirectionType
+    pressDrag?: boolean
     wheel?: boolean
     wheelScroll?: number
     reverse?: boolean
@@ -130,6 +131,8 @@ interface ClampZoomOptions
     minHeight?: number
     maxWidth?: number
     maxHeight?: number
+    minScale?: number
+    maxScale?: number
 }
 
 interface MouseEdgesOptions
@@ -169,6 +172,7 @@ interface OutOfBounds
 
 interface ClickEventData
 {
+    event: PIXI.interaction.InteractionEvent
     screen: PIXI.Point
     viewport: Viewport
     world: PIXI.Point

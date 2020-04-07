@@ -598,6 +598,7 @@
             {
                 window.Int32Array = Array;
             }
+            //# sourceMappingURL=polyfill.es.js.map
 
             var isMobile_min = createCommonjsModule(function (module) {
             !function(e){var n=/iPhone/i,t=/iPod/i,r=/iPad/i,a=/\bAndroid(?:.+)Mobile\b/i,p=/Android/i,l=/\bAndroid(?:.+)SD4930UR\b/i,b=/\bAndroid(?:.+)(?:KF[A-Z]{2,4})\b/i,f=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,c=/BlackBerry/i,s=/BB10/i,v=/Opera Mini/i,h=/\b(CriOS|Chrome)(?:.+)Mobile/i,w=/\Mobile(?:.+)Firefox\b/i;function m(e,i){return e.test(i)}function i(e){var i=e||("undefined"!=typeof navigator?navigator.userAgent:""),o=i.split("[FBAN");void 0!==o[1]&&(i=o[0]),void 0!==(o=i.split("Twitter"))[1]&&(i=o[0]);var d={apple:{phone:m(n,i)&&!m(f,i),ipod:m(t,i),tablet:!m(n,i)&&m(r,i)&&!m(f,i),device:(m(n,i)||m(t,i)||m(r,i))&&!m(f,i)},amazon:{phone:m(l,i),tablet:!m(l,i)&&m(b,i),device:m(l,i)||m(b,i)},android:{phone:!m(f,i)&&m(l,i)||!m(f,i)&&m(a,i),tablet:!m(f,i)&&!m(l,i)&&!m(a,i)&&(m(b,i)||m(p,i)),device:!m(f,i)&&(m(l,i)||m(b,i)||m(a,i)||m(p,i))},windows:{phone:m(f,i),tablet:m(u,i),device:m(f,i)||m(u,i)},other:{blackberry:m(c,i),blackberry10:m(s,i),opera:m(v,i),firefox:m(w,i),chrome:m(h,i),device:m(c,i)||m(s,i)||m(v,i)||m(w,i)||m(h,i)}};return d.any=d.apple.device||d.android.device||d.windows.device||d.other.device,d.phone=d.apple.phone||d.android.phone||d.windows.phone,d.tablet=d.apple.tablet||d.android.tablet||d.windows.tablet,d}module.exports&&"undefined"==typeof window?module.exports=i:module.exports&&"undefined"!=typeof window?module.exports=i():e.isMobile=i();}(commonjsGlobal);
@@ -914,6 +915,7 @@
                  */
                 ROUND_PIXELS: false,
             };
+            //# sourceMappingURL=settings.es.js.map
 
             var eventemitter3 = createCommonjsModule(function (module) {
 
@@ -3452,6 +3454,7 @@
                 MASK_TYPES[MASK_TYPES["STENCIL"] = 2] = "STENCIL";
                 MASK_TYPES[MASK_TYPES["SPRITE"] = 3] = "SPRITE";
             })(MASK_TYPES || (MASK_TYPES = {}));
+            //# sourceMappingURL=constants.es.js.map
 
             /*!
              * @pixi/utils - v5.2.0
@@ -4406,6 +4409,7 @@
 
                 warnings[message] = true;
             }
+            //# sourceMappingURL=utils.es.js.map
 
             var utils_es = /*#__PURE__*/Object.freeze({
                         __proto__: null,
@@ -6346,6 +6350,7 @@
                 };
                 return RoundedRectangle;
             }());
+            //# sourceMappingURL=math.es.js.map
 
             /*!
              * @pixi/display - v5.2.0
@@ -8239,6 +8244,7 @@
 
             // performance increase to avoid using call.. (10x faster)
             Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
+            //# sourceMappingURL=display.es.js.map
 
             /*!
              * @pixi/accessibility - v5.2.0
@@ -8925,6 +8931,7 @@
                 this.children = null;
                 this.renderer = null;
             };
+            //# sourceMappingURL=accessibility.es.js.map
 
             var accessibility_es = /*#__PURE__*/Object.freeze({
                         __proto__: null,
@@ -9127,6 +9134,7 @@
                  */
                 run: { value: Runner.prototype.emit },
             });
+            //# sourceMappingURL=runner.es.js.map
 
             /*!
              * @pixi/ticker - v5.2.0
@@ -9949,6 +9957,7 @@
                 };
                 return TickerPlugin;
             }());
+            //# sourceMappingURL=ticker.es.js.map
 
             /*!
              * @pixi/core - v5.2.0
@@ -22985,6 +22994,7 @@
             // Setup the default BatchRenderer plugin, this is what
             // we'll actually export at the root level
             var BatchRenderer = BatchPluginFactory.create();
+            //# sourceMappingURL=core.es.js.map
 
             /*!
              * @pixi/extract - v5.2.0
@@ -23256,6 +23266,7 @@
                     }
                 }
             };
+            //# sourceMappingURL=extract.es.js.map
 
             var extract_es = /*#__PURE__*/Object.freeze({
                         __proto__: null,
@@ -25766,6 +25777,7 @@
 
                 return InteractionManager;
             }(eventemitter3));
+            //# sourceMappingURL=interaction.es.js.map
 
             var interaction_es = /*#__PURE__*/Object.freeze({
                         __proto__: null,
@@ -29581,6 +29593,7 @@
              * @member {PIXI.Point}
              */
             Graphics._TEMP_POINT = new Point();
+            //# sourceMappingURL=graphics.es.js.map
 
             /*!
              * @pixi/sprite - v5.2.0
@@ -30256,6 +30269,7 @@
 
                 return Sprite;
             }(Container));
+            //# sourceMappingURL=sprite.es.js.map
 
             /*!
              * @pixi/text - v5.2.0
@@ -32527,6 +32541,7 @@
 
                 return Text;
             }(Sprite));
+            //# sourceMappingURL=text.es.js.map
 
             /*!
              * @pixi/prepare - v5.2.0
@@ -33231,6 +33246,7 @@
             {
                 return Date.now() - this.frameStart < this.maxMilliseconds;
             };
+            //# sourceMappingURL=prepare.es.js.map
 
             var prepare_es = /*#__PURE__*/Object.freeze({
                         __proto__: null,
@@ -33464,6 +33480,7 @@
             };
 
             Application.registerPlugin(ResizePlugin);
+            //# sourceMappingURL=app.es.js.map
 
             var parseUri = function parseURI (str, opts) {
               opts = opts || {};
@@ -35989,6 +36006,7 @@
 
               return Loader;
             };
+            //# sourceMappingURL=resource-loader.esm.js.map
 
             /*!
              * @pixi/loaders - v5.2.0
@@ -36290,6 +36308,7 @@
              * @memberof PIXI
              */
             var LoaderResource = Resource$1;
+            //# sourceMappingURL=loaders.es.js.map
 
             /*!
              * @pixi/particles - v5.2.0
@@ -37258,6 +37277,7 @@
 
                 return ParticleRenderer;
             }(ObjectRenderer));
+            //# sourceMappingURL=particles.es.js.map
 
             /*!
              * @pixi/spritesheet - v5.2.0
@@ -37666,6 +37686,7 @@
 
                 return url.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
             };
+            //# sourceMappingURL=spritesheet.es.js.map
 
             /*!
              * @pixi/sprite-tiling - v5.2.0
@@ -38162,6 +38183,7 @@
 
                 return TilingSpriteRenderer;
             }(ObjectRenderer));
+            //# sourceMappingURL=sprite-tiling.es.js.map
 
             /*!
              * @pixi/text-bitmap - v5.2.0
@@ -38987,6 +39009,7 @@
                     }
                 }
             };
+            //# sourceMappingURL=text-bitmap.es.js.map
 
             /*!
              * @pixi/filter-alpha - v5.2.0
@@ -39051,6 +39074,7 @@
 
                 return AlphaFilter;
             }(Filter));
+            //# sourceMappingURL=filter-alpha.es.js.map
 
             /*!
              * @pixi/filter-blur - v5.2.0
@@ -39476,6 +39500,7 @@
 
                 return BlurFilter;
             }(Filter));
+            //# sourceMappingURL=filter-blur.es.js.map
 
             /*!
              * @pixi/filter-color-matrix - v5.2.0
@@ -40074,6 +40099,7 @@
 
             // Americanized alias
             ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
+            //# sourceMappingURL=filter-color-matrix.es.js.map
 
             /*!
              * @pixi/filter-displacement - v5.2.0
@@ -40191,6 +40217,7 @@
 
                 return DisplacementFilter;
             }(Filter));
+            //# sourceMappingURL=filter-displacement.es.js.map
 
             /*!
              * @pixi/filter-fxaa - v5.2.0
@@ -40228,6 +40255,7 @@
 
                 return FXAAFilter;
             }(Filter));
+            //# sourceMappingURL=filter-fxaa.es.js.map
 
             /*!
              * @pixi/filter-noise - v5.2.0
@@ -40307,6 +40335,7 @@
 
                 return NoiseFilter;
             }(Filter));
+            //# sourceMappingURL=filter-noise.es.js.map
 
             /*!
              * @pixi/mixin-cache-as-bitmap - v5.2.0
@@ -40732,6 +40761,7 @@
                 this.cacheAsBitmap = false;
                 this.destroy(options);
             };
+            //# sourceMappingURL=mixin-cache-as-bitmap.es.js.map
 
             /*!
              * @pixi/mixin-get-child-by-name - v5.2.0
@@ -40769,6 +40799,7 @@
 
                 return null;
             };
+            //# sourceMappingURL=mixin-get-child-by-name.es.js.map
 
             /*!
              * @pixi/mixin-get-global-position - v5.2.0
@@ -40806,6 +40837,7 @@
 
                 return point;
             };
+            //# sourceMappingURL=mixin-get-global-position.es.js.map
 
             /*!
              * @pixi/mesh - v5.2.0
@@ -41584,6 +41616,7 @@
 
                 return MeshGeometry;
             }(Geometry));
+            //# sourceMappingURL=mesh.es.js.map
 
             /*!
              * @pixi/mesh-extras - v5.2.0
@@ -42374,6 +42407,7 @@
 
                 return NineSlicePlane;
             }(SimplePlane));
+            //# sourceMappingURL=mesh-extras.es.js.map
 
             /*!
              * @pixi/sprite-animated - v5.2.0
@@ -42816,6 +42850,7 @@
 
                 return AnimatedSprite;
             }(Sprite));
+            //# sourceMappingURL=sprite-animated.es.js.map
 
             /*!
              * pixi.js - v5.2.0
@@ -44153,6 +44188,7 @@
                 FXAAFilter: FXAAFilter,
                 NoiseFilter: NoiseFilter,
             };
+            //# sourceMappingURL=pixi.es.js.map
 
             var PIXI = /*#__PURE__*/Object.freeze({
                         __proto__: null,
@@ -45609,6 +45645,7 @@
             let ease = new Ease();
 
             Ease.ease = ease;
+            //# sourceMappingURL=ease.es.js.map
 
             var alea = createCommonjsModule(function (module) {
             // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -48808,6 +48845,7 @@
                     }
                 }
             }
+            //# sourceMappingURL=clicked.es.js.map
 
             var penner$1 = createCommonjsModule(function (module, exports) {
             /*
@@ -50104,7 +50142,7 @@
 
                     if (this.clickedAvailable && this.count() === 0)
                     {
-                        this.viewport.emit('clicked', { screen: this.last, world: this.viewport.toWorld(this.last), viewport: this });
+                        this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this });
                         this.clickedAvailable = false;
                     }
 
@@ -50150,7 +50188,7 @@
                     if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
                     {
                         const stop = this.viewport.plugins.wheel(event);
-                        if (stop)
+                        if (stop && !this.viewport.options.passiveWheel)
                         {
                             event.preventDefault();
                         }
@@ -50511,7 +50549,8 @@
             /**
              * @typedef DragOptions
              * @property {string} [direction=all] direction to drag
-             * @property {boolean} [wheel=true] use wheel to scroll in y direction(unless wheel plugin is active)
+             * @property {boolean} [pressDrag=true] whether click to drag is active
+             * @property {boolean} [wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
              * @property {number} [wheelScroll=1] number of pixels to scroll with each wheel spin
              * @property {boolean} [reverse] reverse the direction of the wheel scroll
              * @property {(boolean|string)} [clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
@@ -50524,6 +50563,7 @@
 
             const dragOptions = {
                 direction: 'all',
+                pressDrag: true,
                 wheel: true,
                 wheelScroll: 1,
                 reverse: false,
@@ -50648,7 +50688,7 @@
                  */
                 down(event)
                 {
-                    if (this.paused)
+                    if (this.paused || !this.options.pressDrag)
                     {
                         return
                     }
@@ -50674,7 +50714,7 @@
                  */
                 move(event)
                 {
-                    if (this.paused)
+                    if (this.paused || !this.options.pressDrag)
                     {
                         return
                     }
@@ -50701,7 +50741,7 @@
                                 this.last = newPoint;
                                 if (!this.moved)
                                 {
-                                    this.parent.emit('drag-start', { screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent});
+                                    this.parent.emit('drag-start', { event: event, screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent});
                                 }
                                 this.moved = true;
                                 this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
@@ -50719,7 +50759,7 @@
                  * @param {PIXI.interaction.InteractionEvent} event
                  * @returns {boolean}
                  */
-                up()
+                up(event)
                 {
                     if (this.paused)
                     {
@@ -50742,7 +50782,7 @@
                         if (this.moved)
                         {
                             const screen = new Point(this.last.x, this.last.y);
-                            this.parent.emit('drag-end', {screen, world: this.parent.toWorld(screen), viewport: this.parent});
+                            this.parent.emit('drag-end', { event: event, screen, world: this.parent.toWorld(screen), viewport: this.parent});
                             this.last = null;
                             this.moved = false;
                             return true
@@ -50928,8 +50968,9 @@
                             {
                                 oldPoint = this.parent.toLocal(point);
                             }
-                            const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
-                            const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.options.percent;
+                            let dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
+                            dist = dist === 0 ? dist = 0.0000000001 : dist;
+                            const change = (1 - last / dist) * this.options.percent * this.parent.scale.x;
                             this.parent.scale.x += change;
                             this.parent.scale.y += change;
                             this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch' });
@@ -51204,18 +51245,23 @@
             }
 
             /**
+             * use either minimum width/height or minimum scale
              * @typedef {object} ClampZoomOptions
              * @property {number} [minWidth] minimum width
              * @property {number} [minHeight] minimum height
              * @property {number} [maxWidth] maximum width
              * @property {number} [maxHeight] maximum height
+             * @property {number} [minScale] minimum scale
+             * @property {number} [maxScale] minimum scale
              */
 
             const clampZoomOptions = {
                 minWidth: null,
                 minHeight: null,
                 maxWidth: null,
-                maxHeight: null
+                maxHeight: null,
+                minScale: null,
+                maxScale: null
             };
 
             class ClampZoom extends Plugin
@@ -51244,41 +51290,60 @@
                         return
                     }
 
-                    let width = this.parent.worldScreenWidth;
-                    let height = this.parent.worldScreenHeight;
-                    if (this.options.minWidth !== null && width < this.options.minWidth)
+                    if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
                     {
-                        const original = this.parent.scale.x;
-                        this.parent.fitWidth(this.options.minWidth, false, false, true);
-                        this.parent.scale.y *= this.parent.scale.x / original;
-                        width = this.parent.worldScreenWidth;
-                        height = this.parent.worldScreenHeight;
-                        this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                        let width = this.parent.worldScreenWidth;
+                        let height = this.parent.worldScreenHeight;
+                        if (this.options.minWidth !== null && width < this.options.minWidth)
+                        {
+                            const original = this.parent.scale.x;
+                            this.parent.fitWidth(this.options.minWidth, false, false, true);
+                            this.parent.scale.y *= this.parent.scale.x / original;
+                            width = this.parent.worldScreenWidth;
+                            height = this.parent.worldScreenHeight;
+                            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                        }
+                        if (this.options.maxWidth !== null && width > this.options.maxWidth)
+                        {
+                            const original = this.parent.scale.x;
+                            this.parent.fitWidth(this.options.maxWidth, false, false, true);
+                            this.parent.scale.y *= this.parent.scale.x / original;
+                            width = this.parent.worldScreenWidth;
+                            height = this.parent.worldScreenHeight;
+                            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                        }
+                        if (this.options.minHeight !== null && height < this.options.minHeight)
+                        {
+                            const original = this.parent.scale.y;
+                            this.parent.fitHeight(this.options.minHeight, false, false, true);
+                            this.parent.scale.x *= this.parent.scale.y / original;
+                            width = this.parent.worldScreenWidth;
+                            height = this.parent.worldScreenHeight;
+                            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                        }
+                        if (this.options.maxHeight !== null && height > this.options.maxHeight)
+                        {
+                            const original = this.parent.scale.y;
+                            this.parent.fitHeight(this.options.maxHeight, false, false, true);
+                            this.parent.scale.x *= this.parent.scale.y / original;
+                            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                        }
                     }
-                    if (this.options.maxWidth !== null && width > this.options.maxWidth)
+                    else
                     {
-                        const original = this.parent.scale.x;
-                        this.parent.fitWidth(this.options.maxWidth, false, false, true);
-                        this.parent.scale.y *= this.parent.scale.x / original;
-                        width = this.parent.worldScreenWidth;
-                        height = this.parent.worldScreenHeight;
-                        this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-                    }
-                    if (this.options.minHeight !== null && height < this.options.minHeight)
-                    {
-                        const original = this.parent.scale.y;
-                        this.parent.fitHeight(this.options.minHeight, false, false, true);
-                        this.parent.scale.x *= this.parent.scale.y / original;
-                        width = this.parent.worldScreenWidth;
-                        height = this.parent.worldScreenHeight;
-                        this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-                    }
-                    if (this.options.maxHeight !== null && height > this.options.maxHeight)
-                    {
-                        const original = this.parent.scale.y;
-                        this.parent.fitHeight(this.options.maxHeight, false, false, true);
-                        this.parent.scale.x *= this.parent.scale.y / original;
-                        this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                        let scale = this.parent.scale.x;
+                        if (this.options.minScale !== null && scale < this.options.minScale)
+                        {
+                            scale = this.options.minScale;
+                        }
+                        if (this.options.maxScale !== null && scale > this.options.maxScale)
+                        {
+                            scale = this.options.maxScale;
+                        }
+                        if (scale !== this.parent.scale.x) {
+                            this.parent.scale.set(scale);
+                            this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                        }
                     }
                 }
 
@@ -52266,6 +52331,7 @@
                             this.parent.x += point.x - newPoint.x;
                             this.parent.y += point.y - newPoint.y;
                         }
+                        this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
                         this.smoothingCount++;
                         if (this.smoothingCount >= this.options.smooth)
                         {
@@ -53153,7 +53219,7 @@
                 }
 
                 /**
-                 * changes scale of viewport and maintains center of viewport--same as calling setScale(scale, true)
+                 * changes scale of viewport and maintains center of viewport
                  * @type {number}
                  */
                 set scaled(scale)
@@ -53395,6 +53461,16 @@
 
                 /**
                  * enable clamping of zoom to constraints
+                 * @description
+                 * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
+                 * before clamping. The maxWidth/maxHeight is how larger the world can scale (as it would appear on
+                 * the screen) before clamping.
+                 *
+                 * For example, if you have a world size of 1000 x 1000 and a screen size of 100 x 100, if you set
+                 * minWidth/Height = 100 then the world will not be able to zoom smaller than the screen size (ie,
+                 * zooming out so it appears smaller than the screen). Similarly, if you set maxWidth/Height = 100
+                 * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
+                 * larger than the screen).
                  * @param {ClampZoomOptions} [options]
                  * @return {Viewport} this
                  */
@@ -53441,24 +53517,39 @@
                  * @param {number} y - top
                  * @param {number} width
                  * @param {number} height
+                 * @param {boolean} [resizeToFit] resize the viewport so the box fits within the viewport
                  */
-                ensureVisible(x, y, width, height)
+                ensureVisible(x, y, width, height, resizeToFit)
                 {
+                    if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
+                    {
+                        this.fit(true, width, height);
+                        this.emit('zoomed', { viewport: this, type: 'ensureVisible' });
+                    }
+                    let moved = false;
                     if (x < this.left)
                     {
                         this.left = x;
+                        moved = true;
                     }
                     else if (x + width > this.right)
                     {
                         this.right = x + width;
+                        moved = true;
                     }
                     if (y < this.top)
                     {
                         this.top = y;
+                        moved = true;
                     }
                     else if (y + height > this.bottom)
                     {
                         this.bottom = y + height;
+                        moved = true;
+                    }
+                    if (moved)
+                    {
+                        this.emit('moved', { viewport: this, type: 'ensureVisible' });
                     }
                 }
             }
@@ -53580,19 +53671,19 @@
              */
 
             /**
-             * fires when viewport moves through UI interaction, deceleration, or follow
+             * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
              * @event Viewport#moved
              * @type {object}
              * @property {Viewport} viewport
-             * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel)
+             * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
              */
 
             /**
-             * fires when viewport moves through UI interaction, deceleration, or follow
+             * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
              * @event Viewport#zoomed
              * @type {object}
              * @property {Viewport} viewport
-             * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
+             * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom, ensureVisible)
              */
 
             /**
@@ -53967,6 +54058,7 @@
 
             }).call(commonjsGlobal$3);
             });
+            //# sourceMappingURL=viewport.es.js.map
 
             class UserPlugin extends Plugin$1
             {
@@ -54624,6 +54716,13 @@
                 // _viewport.removeListeners()
 
                 _viewport$1.plugins.add('test', new UserPlugin(_viewport$1));
+
+                // _viewport.ensureVisible(0, 0, 5000, 5000, true)
+
+                // _viewport.clampZoom({ minScale: 0.2, maxScale: 2.5 })
+                // _viewport.clampZoom({ minWidth: 1000, minHeight: 1000, maxWidth: 5000, maxHeight: 5000 })
+
+                // _viewport.drag({ pressDrag: false })
             }
 
             function resize()

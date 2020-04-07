@@ -634,7 +634,7 @@ export class Viewport extends PIXI.Container
     }
 
     /**
-     * changes scale of viewport and maintains center of viewport--same as calling setScale(scale, true)
+     * changes scale of viewport and maintains center of viewport
      * @type {number}
      */
     set scaled(scale)
@@ -812,6 +812,11 @@ export class Viewport extends PIXI.Container
      * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {object} [options.bounceBox] use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
+     * @param {number} [options.bounceBox.x=0]
+     * @param {number} [options.bounceBox.y=0]
+     * @param {number} [options.bounceBox.width=viewport.worldWidth]
+     * @param {number} [options.bounceBox.height=viewport.worldHeight]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
@@ -876,6 +881,16 @@ export class Viewport extends PIXI.Container
 
     /**
      * enable clamping of zoom to constraints
+     * @description
+     * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
+     * before clamping. The maxWidth/maxHeight is how larger the world can scale (as it would appear on
+     * the screen) before clamping.
+     *
+     * For example, if you have a world size of 1000 x 1000 and a screen size of 100 x 100, if you set
+     * minWidth/Height = 100 then the world will not be able to zoom smaller than the screen size (ie,
+     * zooming out so it appears smaller than the screen). Similarly, if you set maxWidth/Height = 100
+     * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
+     * larger than the screen).
      * @param {ClampZoomOptions} [options]
      * @return {Viewport} this
      */
@@ -922,24 +937,39 @@ export class Viewport extends PIXI.Container
      * @param {number} y - top
      * @param {number} width
      * @param {number} height
+     * @param {boolean} [resizeToFit] resize the viewport so the box fits within the viewport
      */
-    ensureVisible(x, y, width, height)
+    ensureVisible(x, y, width, height, resizeToFit)
     {
+        if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
+        {
+            this.fit(true, width, height)
+            this.emit('zoomed', { viewport: this, type: 'ensureVisible' })
+        }
+        let moved = false
         if (x < this.left)
         {
             this.left = x
+            moved = true
         }
         else if (x + width > this.right)
         {
             this.right = x + width
+            moved = true
         }
         if (y < this.top)
         {
             this.top = y
+            moved = true
         }
         else if (y + height > this.bottom)
         {
             this.bottom = y + height
+            moved = true
+        }
+        if (moved)
+        {
+            this.emit('moved', { viewport: this, type: 'ensureVisible' })
         }
     }
 }
@@ -1061,19 +1091,19 @@ export class Viewport extends PIXI.Container
  */
 
 /**
- * fires when viewport moves through UI interaction, deceleration, or follow
+ * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
  * @event Viewport#moved
  * @type {object}
  * @property {Viewport} viewport
- * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel)
+ * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
  */
 
 /**
- * fires when viewport moves through UI interaction, deceleration, or follow
+ * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
  * @event Viewport#zoomed
  * @type {object}
  * @property {Viewport} viewport
- * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom)
+ * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom, ensureVisible)
  */
 
 /**

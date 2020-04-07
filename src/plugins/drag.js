@@ -12,7 +12,8 @@ import { Plugin } from './plugin'
 /**
  * @typedef DragOptions
  * @property {string} [direction=all] direction to drag
- * @property {boolean} [wheel=true] use wheel to scroll in y direction(unless wheel plugin is active)
+ * @property {boolean} [pressDrag=true] whether click to drag is active
+ * @property {boolean} [wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
  * @property {number} [wheelScroll=1] number of pixels to scroll with each wheel spin
  * @property {boolean} [reverse] reverse the direction of the wheel scroll
  * @property {(boolean|string)} [clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
@@ -25,6 +26,7 @@ import { Plugin } from './plugin'
 
 const dragOptions = {
     direction: 'all',
+    pressDrag: true,
     wheel: true,
     wheelScroll: 1,
     reverse: false,
@@ -149,7 +151,7 @@ export class Drag extends Plugin
      */
     down(event)
     {
-        if (this.paused)
+        if (this.paused || !this.options.pressDrag)
         {
             return
         }
@@ -175,7 +177,7 @@ export class Drag extends Plugin
      */
     move(event)
     {
-        if (this.paused)
+        if (this.paused || !this.options.pressDrag)
         {
             return
         }
@@ -202,7 +204,7 @@ export class Drag extends Plugin
                     this.last = newPoint
                     if (!this.moved)
                     {
-                        this.parent.emit('drag-start', { screen: new PIXI.Point(this.last.x, this.last.y), world: this.parent.toWorld(new PIXI.Point(this.last.x, this.last.y)), viewport: this.parent})
+                        this.parent.emit('drag-start', { event: event, screen: new PIXI.Point(this.last.x, this.last.y), world: this.parent.toWorld(new PIXI.Point(this.last.x, this.last.y)), viewport: this.parent})
                     }
                     this.moved = true
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
@@ -220,7 +222,7 @@ export class Drag extends Plugin
      * @param {PIXI.interaction.InteractionEvent} event
      * @returns {boolean}
      */
-    up()
+    up(event)
     {
         if (this.paused)
         {
@@ -243,7 +245,7 @@ export class Drag extends Plugin
             if (this.moved)
             {
                 const screen = new PIXI.Point(this.last.x, this.last.y)
-                this.parent.emit('drag-end', {screen, world: this.parent.toWorld(screen), viewport: this.parent})
+                this.parent.emit('drag-end', { event: event, screen, world: this.parent.toWorld(screen), viewport: this.parent})
                 this.last = null
                 this.moved = false
                 return true
