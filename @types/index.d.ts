@@ -145,6 +145,7 @@ interface MouseEdgesOptions
     reverse?: boolean
     noDecelerate?: boolean
     linear?: boolean
+    allowButtons?: boolean
 }
 
 interface SnapZoomOptions
