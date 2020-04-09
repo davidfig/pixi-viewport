@@ -9,6 +9,7 @@ type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
 type WheelEventType = 'wheel'
 type ZoomedEventType = 'zoomed'
 type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel'
+type MovedEventType = 'moved'
 type MovedEventSourceType = 'bounce-x' | 'bounce-y' | 'clamp-x' | 'clamp-y' | 'decelerate' | 'drag' | 'wheel' | 'follow' | 'mouse-edges' | 'pinch' | 'snap'
 type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | string
 
@@ -303,6 +304,11 @@ export declare class Viewport extends PIXI.Container
     on(
         event: ZoomedEventType,
         fn: (data: ZoomedEventData) => void,
+        context?: any
+    ): this
+    on(
+        event: MovedEventType,
+        fn: (data: MovedEventData) => void,
         context?: any
     ): this
 
