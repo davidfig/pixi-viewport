@@ -1,10 +1,10 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("pixi.js")):"function"==typeof define&&define.amd?define(["exports","pixi.js"],e):e((t=t||self).Viewport={},t.PIXI)}(this,function(t,e){"use strict";class i{constructor(t){this.viewport=t,this.touches=[],this.addListeners()}addListeners(){this.viewport.interactive=!0,this.viewport.forceHitArea||(this.viewport.hitArea=new e.Rectangle(0,0,this.viewport.worldWidth,this.viewport.worldHeight)),this.viewport.on("pointerdown",this.down,this),this.viewport.on("pointermove",this.move,this),this.viewport.on("pointerup",this.up,this),this.viewport.on("pointerupoutside",this.up,this),this.viewport.on("pointercancel",this.up,this),this.viewport.on("pointerout",this.up,this),this.wheelFunction=t=>this.handleWheel(t),this.viewport.options.divWheel.addEventListener("wheel",this.wheelFunction,{passive:this.viewport.options.passiveWheel}),this.isMouseDown=!1}destroy(){this.viewport.options.divWheel.removeEventListener("wheel",this.wheelFunction)}down(t){if(this.viewport.pause||!this.viewport.worldVisible)return;if("mouse"===t.data.pointerType?this.isMouseDown=!0:this.get(t.data.pointerId)||this.touches.push({id:t.data.pointerId,last:null}),1===this.count()){this.last=t.data.global.clone();const e=this.viewport.plugins.get("decelerate"),i=this.viewport.plugins.get("bounce");e&&e.isActive()||i&&i.isActive()?this.clickedAvailable=!1:this.clickedAvailable=!0}else this.clickedAvailable=!1;this.viewport.plugins.down(t)&&this.viewport.options.stopPropagation&&t.stopPropagation()}checkThreshold(t){return Math.abs(t)>=this.viewport.threshold}move(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.plugins.move(t);if(this.clickedAvailable){const e=t.data.global.x-this.last.x,i=t.data.global.y-this.last.y;(this.checkThreshold(e)||this.checkThreshold(i))&&(this.clickedAvailable=!1)}e&&this.viewport.options.stopPropagation&&t.stopPropagation()}up(t){if(this.viewport.pause||!this.viewport.worldVisible)return;"mouse"===t.data.pointerType&&(this.isMouseDown=!1),"mouse"!==t.data.pointerType&&this.remove(t.data.pointerId);const e=this.viewport.plugins.up(t);this.clickedAvailable&&0===this.count()&&(this.viewport.emit("clicked",{event:t,screen:this.last,world:this.viewport.toWorld(this.last),viewport:this}),this.clickedAvailable=!1),e&&this.viewport.options.stopPropagation&&t.stopPropagation()}getPointerPosition(t){let i=new e.Point;return this.viewport.options.interaction?this.viewport.options.interaction.mapPositionToPoint(i,t.clientX,t.clientY):(i.x=t.clientX,i.y=t.clientY),i}handleWheel(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.toLocal(this.getPointerPosition(t));if(this.viewport.left<=e.x&&e.x<=this.viewport.right&&this.viewport.top<=e.y&&e.y<=this.viewport.bottom){this.viewport.plugins.wheel(t)&&!this.viewport.options.passiveWheel&&t.preventDefault()}}pause(){this.touches=[],this.isMouseDown=!1}get(t){for(let e of this.touches)if(e.id===t)return e;return null}remove(t){for(let e=0;e<this.touches.length;e++)if(this.touches[e].id===t)return void this.touches.splice(e,1)}count(){return(this.isMouseDown?1:0)+this.touches.length}}const s=["drag","pinch","wheel","follow","mouse-edges","decelerate","bounce","snap-zoom","clamp-zoom","snap","clamp"];class n{constructor(t){this.viewport=t,this.list=[],this.plugins={}}add(t,e,i=s.length){this.plugins[t]=e;const n=s.indexOf(t);-1!==n&&s.splice(n,1),s.splice(i,0,t),this.sort()}get(t){return this.plugins[t]}update(t){for(let e of this.list)e.update(t)}resize(){for(let t of this.list)t.resize()}reset(){for(let t of this.list)t.reset()}remove(t){this.plugins[t]&&(this.plugins[t]=null,this.viewport.emit(t+"-remove"),this.sort())}pause(t){this.plugins[t]&&this.plugins[t].pause()}resume(t){this.plugins[t]&&this.plugins[t].resume()}sort(){this.list=[];for(let t of s)this.plugins[t]&&this.list.push(this.plugins[t])}down(t){let e=!1;for(let i of this.list)i.down(t)&&(e=!0);return e}move(t){let e=!1;for(let i of this.viewport.plugins.list)i.move(t)&&(e=!0);return e}up(t){let e=!1;for(let i of this.list)i.up(t)&&(e=!0);return e}wheel(t){let e=!1;for(let i of this.list)i.wheel(t)&&(e=!0);return e}}class h{constructor(t){this.parent=t,this.paused=!1}destroy(){}down(){return!1}move(){return!1}up(){return!1}wheel(){return!1}update(){}resize(){}reset(){}pause(){this.paused=!0}resume(){this.paused=!1}}const o={direction:"all",pressDrag:!0,wheel:!0,wheelScroll:1,reverse:!1,clampWheel:!1,underflow:"center",factor:1,mouseButtons:"all",keyToPress:null,ignoreKeyToPressOnTouch:!1};class r extends h{constructor(t,e={}){super(t),this.options=Object.assign({},o,e),this.moved=!1,this.reverse=this.options.reverse?1:-1,this.xDirection=!this.options.direction||"all"===this.options.direction||"x"===this.options.direction,this.yDirection=!this.options.direction||"all"===this.options.direction||"y"===this.options.direction,this.keyIsPressed=!1,this.parseUnderflow(),this.mouseButtons(this.options.mouseButtons),this.options.keyToPress&&this.handleKeyPresses(this.options.keyToPress)}handleKeyPresses(t){parent.addEventListener("keydown",e=>{t.includes(e.code)&&(this.keyIsPressed=!0)}),parent.addEventListener("keyup",e=>{t.includes(e.code)&&(this.keyIsPressed=!1)})}mouseButtons(t){this.mouse=t&&"all"!==t?[-1!==t.indexOf("left"),-1!==t.indexOf("middle"),-1!==t.indexOf("right")]:[!0,!0,!0]}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}checkButtons(t){const e="mouse"===t.data.pointerType,i=this.parent.input.count();return!(!(1===i||i>1&&!this.parent.plugins.get("pinch"))||e&&!this.mouse[t.data.button])}checkKeyPress(t){return!!(!this.options.keyToPress||this.keyIsPressed||this.options.ignoreKeyToPressOnTouch&&"touch"===t.data.pointerType)}down(t){if(!this.paused&&this.options.pressDrag)return this.checkButtons(t)&&this.checkKeyPress(t)?(this.last={x:t.data.global.x,y:t.data.global.y},this.current=t.data.pointerId,!0):void(this.last=null)}get active(){return this.moved}move(t){if(!this.paused&&this.options.pressDrag&&this.last&&this.current===t.data.pointerId){const i=t.data.global.x,s=t.data.global.y,n=this.parent.input.count();if(1===n||n>1&&!this.parent.plugins.get("pinch")){const n=i-this.last.x,h=s-this.last.y;if(this.moved||this.xDirection&&this.parent.input.checkThreshold(n)||this.yDirection&&this.parent.input.checkThreshold(h)){const n={x:i,y:s};return this.xDirection&&(this.parent.x+=(n.x-this.last.x)*this.options.factor),this.yDirection&&(this.parent.y+=(n.y-this.last.y)*this.options.factor),this.last=n,this.moved||this.parent.emit("drag-start",{event:t,screen:new e.Point(this.last.x,this.last.y),world:this.parent.toWorld(new e.Point(this.last.x,this.last.y)),viewport:this.parent}),this.moved=!0,this.parent.emit("moved",{viewport:this.parent,type:"drag"}),!0}}else this.moved=!1}}up(t){if(this.paused)return;const i=this.parent.input.touches;if(1===i.length){const t=i[0];return t.last&&(this.last={x:t.last.x,y:t.last.y},this.current=t.id),this.moved=!1,!0}if(this.last&&this.moved){const i=new e.Point(this.last.x,this.last.y);return this.parent.emit("drag-end",{event:t,screen:i,world:this.parent.toWorld(i),viewport:this.parent}),this.last=null,this.moved=!1,!0}}wheel(t){if(!this.paused&&this.options.wheel){if(!this.parent.plugins.get("wheel"))return this.xDirection&&(this.parent.x+=t.deltaX*this.options.wheelScroll*this.reverse),this.yDirection&&(this.parent.y+=t.deltaY*this.options.wheelScroll*this.reverse),this.options.clampWheel&&this.clamp(),this.parent.emit("wheel-scroll",this.parent),this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.options.passiveWheel||t.preventDefault(),!0}}resume(){this.last=null,this.paused=!1}clamp(){const t=this.parent.plugins.get("decelerate")||{};if("y"!==this.options.clampWheel)if(this.parent.screenWorldWidth<this.parent.screenWidth)switch(this.underflowX){case-1:this.parent.x=0;break;case 1:this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}else this.parent.left<0?(this.parent.x=0,t.x=0):this.parent.right>this.parent.worldWidth&&(this.parent.x=-this.parent.worldWidth*this.parent.scale.x+this.parent.screenWidth,t.x=0);if("x"!==this.options.clampWheel)if(this.parent.screenWorldHeight<this.parent.screenHeight)switch(this.underflowY){case-1:this.parent.y=0;break;case 1:this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}else this.parent.top<0&&(this.parent.y=0,t.y=0),this.parent.bottom>this.parent.worldHeight&&(this.parent.y=-this.parent.worldHeight*this.parent.scale.y+this.parent.screenHeight,t.y=0)}}const a={noDrag:!1,percent:1,center:null};class p extends h{constructor(t,e={}){super(t),this.options=Object.assign({},a,e)}down(){if(this.parent.input.count()>=2)return this.active=!0,!0}move(t){if(this.paused||!this.active)return;const e=t.data.global.x,i=t.data.global.y,s=this.parent.input.touches;if(s.length>=2){const n=s[0],h=s[1],o=n.last&&h.last?Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2)):null;if(n.id===t.data.pointerId?n.last={x:e,y:i,data:t.data}:h.id===t.data.pointerId&&(h.last={x:e,y:i,data:t.data}),o){let t;const e={x:n.last.x+(h.last.x-n.last.x)/2,y:n.last.y+(h.last.y-n.last.y)/2};this.options.center||(t=this.parent.toLocal(e));const i=(Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2))-o)/this.parent.screenWidth*this.parent.scale.x*this.options.percent;this.parent.scale.x+=i,this.parent.scale.y+=i,this.parent.emit("zoomed",{viewport:this.parent,type:"pinch"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})}!this.options.noDrag&&this.lastCenter&&(this.parent.x+=e.x-this.lastCenter.x,this.parent.y+=e.y-this.lastCenter.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})),this.lastCenter=e,this.moved=!0}else this.pinching||(this.parent.emit("pinch-start",this.parent),this.pinching=!0);return!0}}up(){if(this.pinching&&this.parent.input.touches.length<=1)return this.active=!1,this.lastCenter=null,this.pinching=!1,this.moved=!1,this.parent.emit("pinch-end",this.parent),!0}}const l={left:!1,right:!1,top:!1,bottom:!1,direction:null,underflow:"center"};class c extends h{constructor(t,e={}){super(t),this.options=Object.assign({},l,e),this.options.direction&&(this.options.left="x"===this.options.direction||"all"===this.options.direction||null,this.options.right="x"===this.options.direction||"all"===this.options.direction||null,this.options.top="y"===this.options.direction||"all"===this.options.direction||null,this.options.bottom="y"===this.options.direction||"all"===this.options.direction||null),this.parseUnderflow(),this.last={x:null,y:null,scaleX:null,scaleY:null},this.update()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"none"===t?this.noUnderflow=!0:"center"===t?(this.underflowX=this.underflowY=0,this.noUnderflow=!1):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0,this.noUnderflow=!1)}move(){return this.update(),!1}update(){if(this.paused)return;if(this.parent.x===this.last.x&&this.parent.y===this.last.y&&this.parent.scale.x===this.last.scaleX&&this.parent.scale.y===this.last.scaleY)return;const t={x:this.parent.x,y:this.parent.y},e=this.parent.plugins.decelerate||{};if(null!==this.options.left||null!==this.options.right){let i=!1;if(this.parent.screenWorldWidth<this.parent.screenWidth){if(!this.noUnderflow)switch(this.underflowX){case-1:0!==this.parent.x&&(this.parent.x=0,i=!0);break;case 1:this.parent.x!==this.parent.screenWidth-this.parent.screenWorldWidth&&(this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth,i=!0);break;default:this.parent.x!==(this.parent.screenWidth-this.parent.screenWorldWidth)/2&&(this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2,i=!0)}}else null!==this.options.left&&this.parent.left<(!0===this.options.left?0:this.options.left)&&(this.parent.x=-(!0===this.options.left?0:this.options.left)*this.parent.scale.x,e.x=0,i=!0),null!==this.options.right&&this.parent.right>(!0===this.options.right?this.parent.worldWidth:this.options.right)&&(this.parent.x=-(!0===this.options.right?this.parent.worldWidth:this.options.right)*this.parent.scale.x+this.parent.screenWidth,e.x=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-x"})}if(null!==this.options.top||null!==this.options.bottom){let i=!1;if(this.parent.screenWorldHeight<this.parent.screenHeight){if(!this.noUnderflow)switch(this.underflowY){case-1:0!==this.parent.y&&(this.parent.y=0,i=!0);break;case 1:this.parent.y!==this.parent.screenHeight-this.parent.screenWorldHeight&&(this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight,i=!0);break;default:this.parent.y!==(this.parent.screenHeight-this.parent.screenWorldHeight)/2&&(this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2,i=!0)}}else null!==this.options.top&&this.parent.top<(!0===this.options.top?0:this.options.top)&&(this.parent.y=-(!0===this.options.top?0:this.options.top)*this.parent.scale.y,e.y=0,i=!0),null!==this.options.bottom&&this.parent.bottom>(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)&&(this.parent.y=-(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)*this.parent.scale.y+this.parent.screenHeight,e.y=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-y"})}this.last.x=this.parent.x,this.last.y=this.parent.y,this.last.scaleX=this.parent.scale.x,this.last.scaleY=this.parent.scale.y}reset(){this.update()}}const d={minWidth:null,minHeight:null,maxWidth:null,maxHeight:null,minScale:null,maxScale:null};class u extends h{constructor(t,e={}){super(t),this.options=Object.assign({},d,e),this.clamp()}resize(){this.clamp()}clamp(){if(!this.paused)if(this.options.minWidth||this.options.minHeight||this.options.maxWidth||this.options.maxHeight){let t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight;if(null!==this.options.minWidth&&t<this.options.minWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.minWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxWidth&&t>this.options.maxWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.maxWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.minHeight&&e<this.options.minHeight){const i=this.parent.scale.y;this.parent.fitHeight(this.options.minHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxHeight&&e>this.options.maxHeight){const t=this.parent.scale.y;this.parent.fitHeight(this.options.maxHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/t,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}}else{let t=this.parent.scale.x;null!==this.options.minScale&&t<this.options.minScale&&(t=this.options.minScale),null!==this.options.maxScale&&t>this.options.maxScale&&(t=this.options.maxScale),t!==this.parent.scale.x&&(this.parent.scale.set(t),this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"}))}}reset(){this.clamp()}}const g={friction:.95,bounce:.8,minSpeed:.01};class m extends h{constructor(t,e={}){super(t),this.options=Object.assign({},g,e),this.saved=[],this.reset(),this.parent.on("moved",t=>this.moved(t))}destroy(){this.parent}down(){this.saved=[],this.x=this.y=!1}isActive(){return this.x||this.y}move(){if(this.paused)return;const t=this.parent.input.count();(1===t||t>1&&!this.parent.plugins.get("pinch"))&&(this.saved.push({x:this.parent.x,y:this.parent.y,time:performance.now()}),this.saved.length>60&&this.saved.splice(0,30))}moved(t){if(this.saved.length){const e=this.saved[this.saved.length-1];"clamp-x"===t.type?e.x===t.original.x&&(e.x=this.parent.x):"clamp-y"===t.type&&e.y===t.original.y&&(e.y=this.parent.y)}}up(){if(0===this.parent.input.count()&&this.saved.length){const t=performance.now();for(let e of this.saved)if(e.time>=t-100){const i=t-e.time;this.x=(this.parent.x-e.x)/i,this.y=(this.parent.y-e.y)/i,this.percentChangeX=this.percentChangeY=this.options.friction;break}}}activate(t){void 0!==(t=t||{}).x&&(this.x=t.x,this.percentChangeX=this.options.friction),void 0!==t.y&&(this.y=t.y,this.percentChangeY=this.options.friction)}update(t){if(this.paused)return;let e;this.x&&(this.parent.x+=this.x*t,this.x*=this.percentChangeX,Math.abs(this.x)<this.options.minSpeed&&(this.x=0),e=!0),this.y&&(this.parent.y+=this.y*t,this.y*=this.percentChangeY,Math.abs(this.y)<this.options.minSpeed&&(this.y=0),e=!0),e&&this.parent.emit("moved",{viewport:this.parent,type:"decelerate"})}reset(){this.x=this.y=null}}var w="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f=function(t,e){return t(e={exports:{}},e.exports),e.exports}(function(t,e){(function(){var e;(function(e){t.exports=e})(e={linear:function(t,e,i,s){return i*t/s+e},easeInQuad:function(t,e,i,s){return i*(t/=s)*t+e},easeOutQuad:function(t,e,i,s){return-i*(t/=s)*(t-2)+e},easeInOutQuad:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t+e:-i/2*(--t*(t-2)-1)+e},easeInCubic:function(t,e,i,s){return i*(t/=s)*t*t+e},easeOutCubic:function(t,e,i,s){return i*((t=t/s-1)*t*t+1)+e},easeInOutCubic:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t+e:i/2*((t-=2)*t*t+2)+e},easeInQuart:function(t,e,i,s){return i*(t/=s)*t*t*t+e},easeOutQuart:function(t,e,i,s){return-i*((t=t/s-1)*t*t*t-1)+e},easeInOutQuart:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t+e:-i/2*((t-=2)*t*t*t-2)+e},easeInQuint:function(t,e,i,s){return i*(t/=s)*t*t*t*t+e},easeOutQuint:function(t,e,i,s){return i*((t=t/s-1)*t*t*t*t+1)+e},easeInOutQuint:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t*t+e:i/2*((t-=2)*t*t*t*t+2)+e},easeInSine:function(t,e,i,s){return-i*Math.cos(t/s*(Math.PI/2))+i+e},easeOutSine:function(t,e,i,s){return i*Math.sin(t/s*(Math.PI/2))+e},easeInOutSine:function(t,e,i,s){return-i/2*(Math.cos(Math.PI*t/s)-1)+e},easeInExpo:function(t,e,i,s){return 0===t?e:i*Math.pow(2,10*(t/s-1))+e},easeOutExpo:function(t,e,i,s){return t===s?e+i:i*(1-Math.pow(2,-10*t/s))+e},easeInOutExpo:function(t,e,i,s){return(t/=s/2)<1?i/2*Math.pow(2,10*(t-1))+e:i/2*(2-Math.pow(2,-10*--t))+e},easeInCirc:function(t,e,i,s){return-i*(Math.sqrt(1-(t/=s)*t)-1)+e},easeOutCirc:function(t,e,i,s){return i*Math.sqrt(1-(t=t/s-1)*t)+e},easeInOutCirc:function(t,e,i,s){return(t/=s/2)<1?-i/2*(Math.sqrt(1-t*t)-1)+e:i/2*(Math.sqrt(1-(t-=2)*t)+1)+e},easeInElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),-n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)+e},easeOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),n*Math.pow(2,-10*t)*Math.sin((t*s-o)*(2*Math.PI)/h)+i+e},easeInOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s/2),(h=0)||(h=s*(.3*1.5)),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),t<1?n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*-.5+e:n*Math.pow(2,-10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*.5+i+e},easeInBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*(t/=s)*t*((n+1)*t-n)+e},easeOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*((t=t/s-1)*t*((n+1)*t+n)+1)+e},easeInOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),(t/=s/2)<1?i/2*(t*t*((1+(n*=1.525))*t-n))+e:i/2*((t-=2)*t*((1+(n*=1.525))*t+n)+2)+e},easeInBounce:function(t,i,s,n){return s-e.easeOutBounce(n-t,0,s,n)+i},easeOutBounce:function(t,e,i,s){return(t/=s)<1/2.75?i*(7.5625*t*t)+e:t<2/2.75?i*(7.5625*(t-=1.5/2.75)*t+.75)+e:t<2.5/2.75?i*(7.5625*(t-=2.25/2.75)*t+.9375)+e:i*(7.5625*(t-=2.625/2.75)*t+.984375)+e},easeInOutBounce:function(t,i,s,n){return t<n/2?.5*e.easeInBounce(2*t,0,s,n)+i:.5*e.easeOutBounce(2*t-n,0,s,n)+.5*s+i}})}).call(w)});function y(t,e){return t?"function"==typeof t?t:"string"==typeof t?f[t]:void 0:f[e]}const x={sides:"all",friction:.5,time:150,ease:"easeInOutSine",underflow:"center",bounceBox:null};class v extends h{constructor(t,e={}){super(t),this.options=Object.assign({},x,e),this.ease=y(this.options.ease,"easeInOutSine"),this.options.sides&&("all"===this.options.sides?this.top=this.bottom=this.left=this.right=!0:"horizontal"===this.options.sides?this.right=this.left=!0:"vertical"===this.options.sides?this.top=this.bottom=!0:(this.top=-1!==this.options.sides.indexOf("top"),this.bottom=-1!==this.options.sides.indexOf("bottom"),this.left=-1!==this.options.sides.indexOf("left"),this.right=-1!==this.options.sides.indexOf("right"))),this.parseUnderflow(),this.last={},this.reset()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}isActive(){return null!==this.toX||null!==this.toY}down(){this.toX=this.toY=null}up(){this.bounce()}update(t){if(!this.paused){if(this.bounce(),this.toX){const e=this.toX;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-x"}),e.time>=this.options.time?(this.parent.x=e.end,this.toX=null,this.parent.emit("bounce-x-end",this.parent)):this.parent.x=this.ease(e.time,e.start,e.delta,this.options.time)}if(this.toY){const e=this.toY;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-y"}),e.time>=this.options.time?(this.parent.y=e.end,this.toY=null,this.parent.emit("bounce-y-end",this.parent)):this.parent.y=this.ease(e.time,e.start,e.delta,this.options.time)}}}calcUnderflowX(){let t;switch(this.underflowX){case-1:t=0;break;case 1:t=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:t=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}return t}calcUnderflowY(){let t;switch(this.underflowY){case-1:t=0;break;case 1:t=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:t=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}return t}oob(){const t=this.options.bounceBox;if(t){const i=void 0===t.x?0:t.x,s=void 0===t.y?0:t.y,n=void 0===t.width?this.parent.worldWidth:t.width,h=void 0===t.height?this.parent.worldHeight:t.height;return{left:this.parent.left<i,right:this.parent.right>n,top:this.parent.top<s,bottom:this.parent.bottom>h,topLeft:new e.Point(i*this.parent.scale.x,s*this.parent.scale.y),bottomRight:new e.Point(n*this.parent.scale.x-this.parent.screenWidth,h*this.parent.scale.y-this.parent.screenHeight)}}return{left:this.parent.left<0,right:this.parent.right>this.parent.worldWidth,top:this.parent.top<0,bottom:this.parent.bottom>this.parent.worldHeight,topLeft:new e.Point(0,0),bottomRight:new e.Point(this.parent.worldWidth*this.parent.scale.x-this.parent.screenWidth,this.parent.worldHeight*this.parent.scale.y-this.parent.screenHeight)}}bounce(){if(this.paused)return;let t,e=this.parent.plugins.get("decelerate");e&&(e.x||e.y)&&(e.x&&e.percentChangeX===e.options.friction||e.y&&e.percentChangeY===e.options.friction)&&(((t=this.oob()).left&&this.left||t.right&&this.right)&&(e.percentChangeX=this.options.friction),(t.top&&this.top||t.bottom&&this.bottom)&&(e.percentChangeY=this.options.friction));const i=this.parent.plugins.get("drag")||{},s=this.parent.plugins.get("pinch")||{};if(e=e||{},!(i.active||s.active||this.toX&&this.toY||e.x&&e.y)){const i=(t=t||this.oob()).topLeft,s=t.bottomRight;if(!this.toX&&!e.x){let e=null;t.left&&this.left?e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-i.x:t.right&&this.right&&(e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-s.x),null!==e&&this.parent.x!==e&&(this.toX={time:0,start:this.parent.x,delta:e-this.parent.x,end:e},this.parent.emit("bounce-x-start",this.parent))}if(!this.toY&&!e.y){let e=null;t.top&&this.top?e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-i.y:t.bottom&&this.bottom&&(e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-s.y),null!==e&&this.parent.y!==e&&(this.toY={time:0,start:this.parent.y,delta:e-this.parent.y,end:e},this.parent.emit("bounce-y-start",this.parent))}}}reset(){this.toX=this.toY=null,this.bounce()}}const b={topLeft:!1,friction:.8,time:1e3,ease:"easeInOutSine",interrupt:!0,removeOnComplete:!1,removeOnInterrupt:!1,forceStart:!1};class W extends h{constructor(t,e,i,s={}){super(t),this.options=Object.assign({},b,s),this.ease=y(s.ease,"easeInOutSine"),this.x=e,this.y=i,this.options.forceStart&&this.snapStart()}snapStart(){this.percent=0,this.snapping={time:0};const t=this.options.topLeft?this.parent.corner:this.parent.center;this.deltaX=this.x-t.x,this.deltaY=this.y-t.y,this.startX=t.x,this.startY=t.y,this.parent.emit("snap-start",this.parent)}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap"):this.options.interrupt&&(this.snapping=null)}up(){if(0===this.parent.input.count()){const t=this.parent.plugins.get("decelerate");t&&(t.x||t.y)&&(t.percentChangeX=t.percentChangeY=this.options.friction)}}update(t){if(!(this.paused||this.options.interrupt&&0!==this.parent.input.count()))if(this.snapping){const e=this.snapping;let i,s,n;if(e.time+=t,e.time>this.options.time)i=!0,s=this.startX+this.deltaX,n=this.startY+this.deltaY;else{const t=this.ease(e.time,0,1,this.options.time);s=this.startX+this.deltaX*t,n=this.startY+this.deltaY*t}this.options.topLeft?this.parent.moveCorner(s,n):this.parent.moveCenter(s,n),this.parent.emit("moved",{viewport:this.parent,type:"snap"}),i&&(this.options.removeOnComplete&&this.parent.plugins.remove("snap"),this.parent.emit("snap-end",this.parent),this.snapping=null)}else{const t=this.options.topLeft?this.parent.corner:this.parent.center;t.x===this.x&&t.y===this.y||this.snapStart()}}}const H={width:0,height:0,time:1e3,ease:"easeInOutSine",center:null,interrupt:!0,removeOnComplete:!1,removeOnInterrupts:!1,forceStart:!1,noMove:!1};class M extends h{constructor(t,e={}){super(t),this.options=Object.assign({},H,e),this.ease=y(this.options.ease),this.options.width>0&&(this.xScale=t.screenWidth/this.options.width),this.options.height>0&&(this.yScale=t.screenHeight/this.options.height),this.xIndependent=!!this.xScale,this.yIndependent=!!this.yScale,this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale,0===this.options.time?(t.container.scale.x=this.xScale,t.container.scale.y=this.yScale,this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom")):e.forceStart&&this.createSnapping()}createSnapping(){const t=this.parent.scale;this.snapping={time:0,startX:t.x,startY:t.y,deltaX:this.xScale-t.x,deltaY:this.yScale-t.y},this.parent.emit("snap-zoom-start",this.parent)}resize(){this.snapping=null,this.options.width>0&&(this.xScale=this.parent.screenWidth/this.options.width),this.options.height>0&&(this.yScale=this.parent.screenHeight/this.options.height),this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap-zoom")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap-zoom"):this.options.interrupt&&(this.snapping=null)}update(t){if(this.paused)return;if(this.options.interrupt&&0!==this.parent.input.count())return;let e;if(this.options.center||this.options.noMove||(e=this.parent.center),this.snapping){if(this.snapping){const i=this.snapping;if(i.time+=t,i.time>=this.options.time)this.parent.scale.set(this.xScale,this.yScale),this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom"),this.parent.emit("snap-zoom-end",this.parent),this.snapping=null;else{const t=this.snapping;this.parent.scale.x=this.ease(t.time,t.startX,t.deltaX,this.options.time),this.parent.scale.y=this.ease(t.time,t.startY,t.deltaY,this.options.time)}const s=this.parent.plugins.get("clamp-zoom");s&&s.clamp(),this.options.noMove||(this.options.center?this.parent.moveCenter(this.options.center):this.parent.moveCenter(e))}}else this.parent.scale.x===this.xScale&&this.parent.scale.y===this.yScale||this.createSnapping()}resume(){this.snapping=null,super.resume()}}const S={speed:0,acceleration:null,radius:null};class O extends h{constructor(t,e,i={}){super(t),this.target=e,this.options=Object.assign({},S,i),this.velocity={x:0,y:0}}update(t){if(this.paused)return;const e=this.parent.center;let i=this.target.x,s=this.target.y;if(this.options.radius){if(!(Math.sqrt(Math.pow(this.target.y-e.y,2)+Math.pow(this.target.x-e.x,2))>this.options.radius))return;{const t=Math.atan2(this.target.y-e.y,this.target.x-e.x);i=this.target.x-Math.cos(t)*this.options.radius,s=this.target.y-Math.sin(t)*this.options.radius}}const n=i-e.x,h=s-e.y;if(n||h)if(this.options.speed)if(this.options.acceleration){const o=Math.atan2(s-e.y,i-e.x),r=Math.sqrt(Math.pow(n,2)+Math.pow(h,2));if(r){const a=(Math.pow(this.velocity.x,2)+Math.pow(this.velocity.y,2))/(2*this.options.acceleration);this.velocity=r>a?{x:Math.min(this.velocity.x+this.options.acceleration*t,this.options.speed),y:Math.min(this.velocity.y+this.options.acceleration*t,this.options.speed)}:{x:Math.max(this.velocity.x-this.options.acceleration*this.options.speed,0),y:Math.max(this.velocity.y-this.options.acceleration*this.options.speed,0)};const p=Math.cos(o)*this.velocity.x,l=Math.sin(o)*this.velocity.y,c=Math.abs(p)>Math.abs(n)?i:e.x+p,d=Math.abs(l)>Math.abs(h)?s:e.y+l;this.parent.moveCenter(c,d),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}else{const t=Math.atan2(s-e.y,i-e.x),o=Math.cos(t)*this.options.speed,r=Math.sin(t)*this.options.speed,a=Math.abs(o)>Math.abs(n)?i:e.x+o,p=Math.abs(r)>Math.abs(h)?s:e.y+r;this.parent.moveCenter(a,p),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}else this.parent.moveCenter(i,s),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}const z={percent:.1,smooth:!1,interrupt:!0,reverse:!1,center:null};class I extends h{constructor(t,e={}){super(t),this.options=Object.assign({},z,e)}down(){this.options.interrupt&&(this.smoothing=null)}update(){if(this.smoothing){const t=this.smoothingCenter,e=this.smoothing;let i;this.options.center||(i=this.parent.toLocal(t)),this.parent.scale.x+=e.x,this.parent.scale.y+=e.y,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const e=this.parent.toGlobal(i);this.parent.x+=t.x-e.x,this.parent.y+=t.y-e.y}this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.smoothingCount++,this.smoothingCount>=this.options.smooth&&(this.smoothing=null)}}wheel(t){if(this.paused)return;let e=this.parent.input.getPointerPosition(t);const i=(this.options.reverse?-1:1)*-t.deltaY*(t.deltaMode?120:1)/500,s=Math.pow(2,(1+this.options.percent)*i);if(this.options.smooth){const t={x:this.smoothing?this.smoothing.x*(this.options.smooth-this.smoothingCount):0,y:this.smoothing?this.smoothing.y*(this.options.smooth-this.smoothingCount):0};this.smoothing={x:((this.parent.scale.x+t.x)*s-this.parent.scale.x)/this.options.smooth,y:((this.parent.scale.y+t.y)*s-this.parent.scale.y)/this.options.smooth},this.smoothingCount=0,this.smoothingCenter=e}else{let t;this.options.center||(t=this.parent.toLocal(e)),this.parent.scale.x*=s,this.parent.scale.y*=s,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const i=this.parent.plugins.get("clamp-zoom");if(i&&i.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y}}return this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.emit("wheel",{wheel:{dx:t.deltaX,dy:t.deltaY,dz:t.deltaZ},event:t,viewport:this.parent}),!this.parent.options.passiveWheel||void 0}}const C={radius:null,distance:null,top:null,bottom:null,left:null,right:null,speed:8,reverse:!1,noDecelerate:!1,linear:!1,allowButtons:!1};class k extends h{constructor(t,e={}){super(t),this.options=Object.assign({},C,e),this.reverse=this.options.reverse?1:-1,this.radiusSquared=Math.pow(this.options.radius,2),this.resize()}resize(){const t=this.options.distance;null!==t?(this.left=t,this.top=t,this.right=this.parent.worldScreenWidth-t,this.bottom=this.parent.worldScreenHeight-t):this.radius||(this.left=this.options.left,this.top=this.options.top,this.right=null===this.options.right?null:this.parent.worldScreenWidth-this.options.right,this.bottom=null===this.options.bottom?null:this.parent.worldScreenHeight-this.options.bottom)}down(){this.options.allowButtons||(this.horizontal=this.vertical=null)}move(t){if("mouse"!==t.data.pointerType&&1!==t.data.identifier||!this.options.allowButtons&&0!==t.data.buttons)return;const e=t.data.global.x,i=t.data.global.y;if(this.radiusSquared){const t=this.parent.toScreen(this.parent.center);if(Math.pow(t.x-e,2)+Math.pow(t.y-i,2)>=this.radiusSquared){const s=Math.atan2(t.y-i,t.x-e);this.options.linear?(this.horizontal=Math.round(Math.cos(s))*this.options.speed*this.reverse*.06,this.vertical=Math.round(Math.sin(s))*this.options.speed*this.reverse*.06):(this.horizontal=Math.cos(s)*this.options.speed*this.reverse*.06,this.vertical=Math.sin(s)*this.options.speed*this.reverse*.06)}else this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=0}else null!==this.left&&e<this.left?this.horizontal=1*this.reverse*this.options.speed*.06:null!==this.right&&e>this.right?this.horizontal=-1*this.reverse*this.options.speed*.06:(this.decelerateHorizontal(),this.horizontal=0),null!==this.top&&i<this.top?this.vertical=1*this.reverse*this.options.speed*.06:null!==this.bottom&&i>this.bottom?this.vertical=-1*this.reverse*this.options.speed*.06:(this.decelerateVertical(),this.vertical=0)}decelerateHorizontal(){const t=this.parent.plugins.get("decelerate");this.horizontal&&t&&!this.options.noDecelerate&&t.activate({x:this.horizontal*this.options.speed*this.reverse/(1e3/60)})}decelerateVertical(){const t=this.parent.plugins.get("decelerate");this.vertical&&t&&!this.options.noDecelerate&&t.activate({y:this.vertical*this.options.speed*this.reverse/(1e3/60)})}up(){this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=null}update(){if(!this.paused&&(this.horizontal||this.vertical)){const t=this.parent.center;this.horizontal&&(t.x+=this.horizontal*this.options.speed),this.vertical&&(t.y+=this.vertical*this.options.speed),this.parent.moveCenter(t),this.parent.emit("moved",{viewport:this.parent,type:"mouse-edges"})}}}const P={screenWidth:window.innerWidth,screenHeight:window.innerHeight,worldWidth:null,worldHeight:null,threshold:5,passiveWheel:!0,stopPropagation:!1,forceHitArea:null,noTicker:!1,interaction:null,disableOnContextMenu:!1};t.Plugin=h,t.Viewport=class extends e.Container{constructor(t={}){if(super(),this.options=Object.assign({},P,t),t.ticker)this.options.ticker=t.ticker;else{let i;const s=e;i=parseInt(/^(\d+)\./.exec(e.VERSION)[1])<5?s.ticker.shared:s.Ticker.shared,this.options.ticker=t.ticker||i}this.screenWidth=this.options.screenWidth,this.screenHeight=this.options.screenHeight,this._worldWidth=this.options.worldWidth,this._worldHeight=this.options.worldHeight,this.forceHitArea=this.options.forceHitArea,this.threshold=this.options.threshold,this.options.divWheel=this.options.divWheel||document.body,this.options.disableOnContextMenu&&(this.options.divWheel.oncontextmenu=t=>t.preventDefault()),this.options.noTicker||(this.tickerFunction=()=>this.update(this.options.ticker.elapsedMS),this.options.ticker.add(this.tickerFunction)),this.input=new i(this),this.plugins=new n(this)}destroy(t){this.options.noTicker||this.options.ticker.remove(this.tickerFunction),this.input.destroy(),super.destroy(t)}update(t){this.pause||(this.plugins.update(t),this.lastViewport&&(this.lastViewport.x!==this.x||this.lastViewport.y!==this.y?this.moving=!0:this.moving&&(this.emit("moved-end",this),this.moving=!1),this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y?this.zooming=!0:this.zooming&&(this.emit("zoomed-end",this),this.zooming=!1)),this.forceHitArea||(this._hitAreaDefault=new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight),this.hitArea=this._hitAreaDefault),this._dirty=this._dirty||!this.lastViewport||this.lastViewport.x!==this.x||this.lastViewport.y!==this.y||this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y,this.lastViewport={x:this.x,y:this.y,scaleX:this.scale.x,scaleY:this.scale.y},this.emit("frame-end",this))}resize(t=window.innerWidth,e=window.innerHeight,i,s){this.screenWidth=t,this.screenHeight=e,void 0!==i&&(this._worldWidth=i),void 0!==s&&(this._worldHeight=s),this.plugins.resize()}get worldWidth(){return this._worldWidth?this._worldWidth:this.width/this.scale.x}set worldWidth(t){this._worldWidth=t,this.plugins.resize()}get worldHeight(){return this._worldHeight?this._worldHeight:this.height/this.scale.y}set worldHeight(t){this._worldHeight=t,this.plugins.resize()}getVisibleBounds(){return new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight)}toWorld(t,i){return 2===arguments.length?this.toLocal(new e.Point(t,i)):this.toLocal(t)}toScreen(t,i){return 2===arguments.length?this.toGlobal(new e.Point(t,i)):this.toGlobal(t)}get worldScreenWidth(){return this.screenWidth/this.scale.x}get worldScreenHeight(){return this.screenHeight/this.scale.y}get screenWorldWidth(){return this.worldWidth*this.scale.x}get screenWorldHeight(){return this.worldHeight*this.scale.y}get center(){return new e.Point(this.worldScreenWidth/2-this.x/this.scale.x,this.worldScreenHeight/2-this.y/this.scale.y)}set center(t){this.moveCenter(t)}moveCenter(){let t,e;return isNaN(arguments[0])?(t=arguments[0].x,e=arguments[0].y):(t=arguments[0],e=arguments[1]),this.position.set((this.worldScreenWidth/2-t)*this.scale.x,(this.worldScreenHeight/2-e)*this.scale.y),this.plugins.reset(),this.dirty=!0,this}get corner(){return new e.Point(-this.x/this.scale.x,-this.y/this.scale.y)}set corner(t){this.moveCorner(t)}moveCorner(t,e){return 1===arguments.length?this.position.set(-t.x*this.scale.x,-t.y*this.scale.y):this.position.set(-t*this.scale.x,-e*this.scale.y),this.plugins.reset(),this}fitWidth(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.x=this.screenWidth/t,i&&(this.scale.y=this.scale.x);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitHeight(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.y=this.screenHeight/t,i&&(this.scale.x=this.scale.y);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitWorld(t){let e;t&&(e=this.center),this.scale.x=this.screenWidth/this.worldWidth,this.scale.y=this.screenHeight/this.worldHeight,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const i=this.plugins.get("clamp-zoom");return i&&i.clamp(),t&&this.moveCenter(e),this}fit(t,e=this.worldWidth,i=this.worldHeight){let s;t&&(s=this.center),this.scale.x=this.screenWidth/e,this.scale.y=this.screenHeight/i,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const n=this.plugins.get("clamp-zoom");return n&&n.clamp(),t&&this.moveCenter(s),this}setZoom(t,e){let i;e&&(i=this.center),this.scale.set(t);const s=this.plugins.get("clamp-zoom");return s&&s.clamp(),e&&this.moveCenter(i),this}zoomPercent(t,e){return this.setZoom(this.scale.x+this.scale.x*t,e)}zoom(t,e){return this.fitWidth(t+this.worldScreenWidth,e),this}set scaled(t){this.setZoom(t,!0)}get scaled(){return this.scale.x}snapZoom(t){return this.plugins.add("snap-zoom",new M(this,t)),this}OOB(){return{left:this.left<0,right:this.right>this.worldWidth,top:this.top<0,bottom:this.bottom>this._worldHeight,cornerPoint:new e.Point(this.worldWidth*this.scale.x-this.screenWidth,this.worldHeight*this.scale.y-this.screenHeight)}}get right(){return-this.x/this.scale.x+this.worldScreenWidth}set right(t){this.x=-t*this.scale.x+this.screenWidth,this.plugins.reset()}get left(){return-this.x/this.scale.x}set left(t){this.x=-t*this.scale.x,this.plugins.reset()}get top(){return-this.y/this.scale.y}set top(t){this.y=-t*this.scale.y,this.plugins.reset()}get bottom(){return-this.y/this.scale.y+this.worldScreenHeight}set bottom(t){this.y=-t*this.scale.y+this.screenHeight,this.plugins.reset()}get dirty(){return this._dirty}set dirty(t){this._dirty=t}get forceHitArea(){return this._forceHitArea}set forceHitArea(t){t?(this._forceHitArea=t,this.hitArea=t):(this._forceHitArea=null,this.hitArea=new e.Rectangle(0,0,this.worldWidth,this.worldHeight))}drag(t){return this.plugins.add("drag",new r(this,t)),this}clamp(t){return this.plugins.add("clamp",new c(this,t)),this}decelerate(t){return this.plugins.add("decelerate",new m(this,t)),this}bounce(t){return this.plugins.add("bounce",new v(this,t)),this}pinch(t){return this.plugins.add("pinch",new p(this,t)),this}snap(t,e,i){return this.plugins.add("snap",new W(this,t,e,i)),this}follow(t,e){return this.plugins.add("follow",new O(this,t,e)),this}wheel(t){return this.plugins.add("wheel",new I(this,t)),this}clampZoom(t){return this.plugins.add("clamp-zoom",new u(this,t)),this}mouseEdges(t){return this.plugins.add("mouse-edges",new k(this,t)),this}get pause(){return this._pause}set pause(t){this._pause=t,this.lastViewport=null,this.moving=!1,this.zooming=!1,t&&this.input.pause()}ensureVisible(t,e,i,s,n){n&&(i>this.worldScreenWidth||s>this.worldScreenHeight)&&(this.fit(!0,i,s),this.emit("zoomed",{viewport:this,type:"ensureVisible"}));let h=!1;t<this.left?(this.left=t,h=!0):t+i>this.right&&(this.right=t+i,h=!0),e<this.top?(this.top=e,h=!0):e+s>this.bottom&&(this.bottom=e+s,h=!0),h&&this.emit("moved",{viewport:this,type:"ensureVisible"})}},Object.defineProperty(t,"__esModule",{value:!0})});
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("pixi.js")):"function"==typeof define&&define.amd?define(["exports","pixi.js"],e):e((t=t||self).Viewport={},t.PIXI)}(this,(function(t,e){"use strict";class i{constructor(t){this.viewport=t,this.touches=[],this.addListeners()}addListeners(){this.viewport.interactive=!0,this.viewport.forceHitArea||(this.viewport.hitArea=new e.Rectangle(0,0,this.viewport.worldWidth,this.viewport.worldHeight)),this.viewport.on("pointerdown",this.down,this),this.viewport.on("pointermove",this.move,this),this.viewport.on("pointerup",this.up,this),this.viewport.on("pointerupoutside",this.up,this),this.viewport.on("pointercancel",this.up,this),this.viewport.on("pointerout",this.up,this),this.wheelFunction=t=>this.handleWheel(t),this.viewport.options.divWheel.addEventListener("wheel",this.wheelFunction,{passive:this.viewport.options.passiveWheel}),this.isMouseDown=!1}destroy(){this.viewport.options.divWheel.removeEventListener("wheel",this.wheelFunction)}down(t){if(this.viewport.pause||!this.viewport.worldVisible)return;if("mouse"===t.data.pointerType?this.isMouseDown=!0:this.get(t.data.pointerId)||this.touches.push({id:t.data.pointerId,last:null}),1===this.count()){this.last=t.data.global.clone();const e=this.viewport.plugins.get("decelerate"),i=this.viewport.plugins.get("bounce");e&&e.isActive()||i&&i.isActive()?this.clickedAvailable=!1:this.clickedAvailable=!0}else this.clickedAvailable=!1;this.viewport.plugins.down(t)&&this.viewport.options.stopPropagation&&t.stopPropagation()}checkThreshold(t){return Math.abs(t)>=this.viewport.threshold}move(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.plugins.move(t);if(this.clickedAvailable){const e=t.data.global.x-this.last.x,i=t.data.global.y-this.last.y;(this.checkThreshold(e)||this.checkThreshold(i))&&(this.clickedAvailable=!1)}e&&this.viewport.options.stopPropagation&&t.stopPropagation()}up(t){if(this.viewport.pause||!this.viewport.worldVisible)return;"mouse"===t.data.pointerType&&(this.isMouseDown=!1),"mouse"!==t.data.pointerType&&this.remove(t.data.pointerId);const e=this.viewport.plugins.up(t);this.clickedAvailable&&0===this.count()&&(this.viewport.emit("clicked",{event:t,screen:this.last,world:this.viewport.toWorld(this.last),viewport:this}),this.clickedAvailable=!1),e&&this.viewport.options.stopPropagation&&t.stopPropagation()}getPointerPosition(t){let i=new e.Point;return this.viewport.options.interaction?this.viewport.options.interaction.mapPositionToPoint(i,t.clientX,t.clientY):(i.x=t.clientX,i.y=t.clientY),i}handleWheel(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.toLocal(this.getPointerPosition(t));if(this.viewport.left<=e.x&&e.x<=this.viewport.right&&this.viewport.top<=e.y&&e.y<=this.viewport.bottom){this.viewport.plugins.wheel(t)&&!this.viewport.options.passiveWheel&&t.preventDefault()}}pause(){this.touches=[],this.isMouseDown=!1}get(t){for(let e of this.touches)if(e.id===t)return e;return null}remove(t){for(let e=0;e<this.touches.length;e++)if(this.touches[e].id===t)return void this.touches.splice(e,1)}count(){return(this.isMouseDown?1:0)+this.touches.length}}const s=["drag","pinch","wheel","follow","mouse-edges","decelerate","bounce","snap-zoom","clamp-zoom","snap","clamp"];class n{constructor(t){this.viewport=t,this.list=[],this.plugins={}}add(t,e,i=s.length){this.plugins[t]=e;const n=s.indexOf(t);-1!==n&&s.splice(n,1),s.splice(i,0,t),this.sort()}get(t){return this.plugins[t]}update(t){for(let e of this.list)e.update(t)}resize(){for(let t of this.list)t.resize()}reset(){for(let t of this.list)t.reset()}remove(t){this.plugins[t]&&(this.plugins[t]=null,this.viewport.emit(t+"-remove"),this.sort())}pause(t){this.plugins[t]&&this.plugins[t].pause()}resume(t){this.plugins[t]&&this.plugins[t].resume()}sort(){this.list=[];for(let t of s)this.plugins[t]&&this.list.push(this.plugins[t])}down(t){let e=!1;for(let i of this.list)i.down(t)&&(e=!0);return e}move(t){let e=!1;for(let i of this.viewport.plugins.list)i.move(t)&&(e=!0);return e}up(t){let e=!1;for(let i of this.list)i.up(t)&&(e=!0);return e}wheel(t){let e=!1;for(let i of this.list)i.wheel(t)&&(e=!0);return e}}class h{constructor(t){this.parent=t,this.paused=!1}destroy(){}down(){return!1}move(){return!1}up(){return!1}wheel(){return!1}update(){}resize(){}reset(){}pause(){this.paused=!0}resume(){this.paused=!1}}const o={direction:"all",pressDrag:!0,wheel:!0,wheelScroll:1,reverse:!1,clampWheel:!1,underflow:"center",factor:1,mouseButtons:"all",keyToPress:null,ignoreKeyToPressOnTouch:!1};class r extends h{constructor(t,e={}){super(t),this.options=Object.assign({},o,e),this.moved=!1,this.reverse=this.options.reverse?1:-1,this.xDirection=!this.options.direction||"all"===this.options.direction||"x"===this.options.direction,this.yDirection=!this.options.direction||"all"===this.options.direction||"y"===this.options.direction,this.keyIsPressed=!1,this.parseUnderflow(),this.mouseButtons(this.options.mouseButtons),this.options.keyToPress&&this.handleKeyPresses(this.options.keyToPress)}handleKeyPresses(t){parent.addEventListener("keydown",e=>{t.includes(e.code)&&(this.keyIsPressed=!0)}),parent.addEventListener("keyup",e=>{t.includes(e.code)&&(this.keyIsPressed=!1)})}mouseButtons(t){this.mouse=t&&"all"!==t?[-1!==t.indexOf("left"),-1!==t.indexOf("middle"),-1!==t.indexOf("right")]:[!0,!0,!0]}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}checkButtons(t){const e="mouse"===t.data.pointerType,i=this.parent.input.count();return!(!(1===i||i>1&&!this.parent.plugins.get("pinch"))||e&&!this.mouse[t.data.button])}checkKeyPress(t){return!!(!this.options.keyToPress||this.keyIsPressed||this.options.ignoreKeyToPressOnTouch&&"touch"===t.data.pointerType)}down(t){if(!this.paused&&this.options.pressDrag)return this.checkButtons(t)&&this.checkKeyPress(t)?(this.last={x:t.data.global.x,y:t.data.global.y},this.current=t.data.pointerId,!0):void(this.last=null)}get active(){return this.moved}move(t){if(!this.paused&&this.options.pressDrag&&this.last&&this.current===t.data.pointerId){const i=t.data.global.x,s=t.data.global.y,n=this.parent.input.count();if(1===n||n>1&&!this.parent.plugins.get("pinch")){const n=i-this.last.x,h=s-this.last.y;if(this.moved||this.xDirection&&this.parent.input.checkThreshold(n)||this.yDirection&&this.parent.input.checkThreshold(h)){const n={x:i,y:s};return this.xDirection&&(this.parent.x+=(n.x-this.last.x)*this.options.factor),this.yDirection&&(this.parent.y+=(n.y-this.last.y)*this.options.factor),this.last=n,this.moved||this.parent.emit("drag-start",{event:t,screen:new e.Point(this.last.x,this.last.y),world:this.parent.toWorld(new e.Point(this.last.x,this.last.y)),viewport:this.parent}),this.moved=!0,this.parent.emit("moved",{viewport:this.parent,type:"drag"}),!0}}else this.moved=!1}}up(t){if(this.paused)return;const i=this.parent.input.touches;if(1===i.length){const t=i[0];return t.last&&(this.last={x:t.last.x,y:t.last.y},this.current=t.id),this.moved=!1,!0}if(this.last&&this.moved){const i=new e.Point(this.last.x,this.last.y);return this.parent.emit("drag-end",{event:t,screen:i,world:this.parent.toWorld(i),viewport:this.parent}),this.last=null,this.moved=!1,!0}}wheel(t){if(!this.paused&&this.options.wheel){if(!this.parent.plugins.get("wheel"))return this.xDirection&&(this.parent.x+=t.deltaX*this.options.wheelScroll*this.reverse),this.yDirection&&(this.parent.y+=t.deltaY*this.options.wheelScroll*this.reverse),this.options.clampWheel&&this.clamp(),this.parent.emit("wheel-scroll",this.parent),this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.options.passiveWheel||t.preventDefault(),!0}}resume(){this.last=null,this.paused=!1}clamp(){const t=this.parent.plugins.get("decelerate")||{};if("y"!==this.options.clampWheel)if(this.parent.screenWorldWidth<this.parent.screenWidth)switch(this.underflowX){case-1:this.parent.x=0;break;case 1:this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}else this.parent.left<0?(this.parent.x=0,t.x=0):this.parent.right>this.parent.worldWidth&&(this.parent.x=-this.parent.worldWidth*this.parent.scale.x+this.parent.screenWidth,t.x=0);if("x"!==this.options.clampWheel)if(this.parent.screenWorldHeight<this.parent.screenHeight)switch(this.underflowY){case-1:this.parent.y=0;break;case 1:this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}else this.parent.top<0&&(this.parent.y=0,t.y=0),this.parent.bottom>this.parent.worldHeight&&(this.parent.y=-this.parent.worldHeight*this.parent.scale.y+this.parent.screenHeight,t.y=0)}}const a={noDrag:!1,percent:1,center:null};class p extends h{constructor(t,e={}){super(t),this.options=Object.assign({},a,e)}down(){if(this.parent.input.count()>=2)return this.active=!0,!0}move(t){if(this.paused||!this.active)return;const e=t.data.global.x,i=t.data.global.y,s=this.parent.input.touches;if(s.length>=2){const n=s[0],h=s[1],o=n.last&&h.last?Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2)):null;if(n.id===t.data.pointerId?n.last={x:e,y:i,data:t.data}:h.id===t.data.pointerId&&(h.last={x:e,y:i,data:t.data}),o){let t;const e={x:n.last.x+(h.last.x-n.last.x)/2,y:n.last.y+(h.last.y-n.last.y)/2};this.options.center||(t=this.parent.toLocal(e));let i=Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2));i=0===i?i=1e-10:i;const s=(1-o/i)*this.options.percent*this.parent.scale.x;this.parent.scale.x+=s,this.parent.scale.y+=s,this.parent.emit("zoomed",{viewport:this.parent,type:"pinch"});const r=this.parent.plugins.get("clamp-zoom");if(r&&r.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})}!this.options.noDrag&&this.lastCenter&&(this.parent.x+=e.x-this.lastCenter.x,this.parent.y+=e.y-this.lastCenter.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})),this.lastCenter=e,this.moved=!0}else this.pinching||(this.parent.emit("pinch-start",this.parent),this.pinching=!0);return!0}}up(){if(this.pinching&&this.parent.input.touches.length<=1)return this.active=!1,this.lastCenter=null,this.pinching=!1,this.moved=!1,this.parent.emit("pinch-end",this.parent),!0}}const l={left:!1,right:!1,top:!1,bottom:!1,direction:null,underflow:"center"};class c extends h{constructor(t,e={}){super(t),this.options=Object.assign({},l,e),this.options.direction&&(this.options.left="x"===this.options.direction||"all"===this.options.direction||null,this.options.right="x"===this.options.direction||"all"===this.options.direction||null,this.options.top="y"===this.options.direction||"all"===this.options.direction||null,this.options.bottom="y"===this.options.direction||"all"===this.options.direction||null),this.parseUnderflow(),this.last={x:null,y:null,scaleX:null,scaleY:null},this.update()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"none"===t?this.noUnderflow=!0:"center"===t?(this.underflowX=this.underflowY=0,this.noUnderflow=!1):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0,this.noUnderflow=!1)}move(){return this.update(),!1}update(){if(this.paused)return;if(this.parent.x===this.last.x&&this.parent.y===this.last.y&&this.parent.scale.x===this.last.scaleX&&this.parent.scale.y===this.last.scaleY)return;const t={x:this.parent.x,y:this.parent.y},e=this.parent.plugins.decelerate||{};if(null!==this.options.left||null!==this.options.right){let i=!1;if(this.parent.screenWorldWidth<this.parent.screenWidth){if(!this.noUnderflow)switch(this.underflowX){case-1:0!==this.parent.x&&(this.parent.x=0,i=!0);break;case 1:this.parent.x!==this.parent.screenWidth-this.parent.screenWorldWidth&&(this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth,i=!0);break;default:this.parent.x!==(this.parent.screenWidth-this.parent.screenWorldWidth)/2&&(this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2,i=!0)}}else null!==this.options.left&&this.parent.left<(!0===this.options.left?0:this.options.left)&&(this.parent.x=-(!0===this.options.left?0:this.options.left)*this.parent.scale.x,e.x=0,i=!0),null!==this.options.right&&this.parent.right>(!0===this.options.right?this.parent.worldWidth:this.options.right)&&(this.parent.x=-(!0===this.options.right?this.parent.worldWidth:this.options.right)*this.parent.scale.x+this.parent.screenWidth,e.x=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-x"})}if(null!==this.options.top||null!==this.options.bottom){let i=!1;if(this.parent.screenWorldHeight<this.parent.screenHeight){if(!this.noUnderflow)switch(this.underflowY){case-1:0!==this.parent.y&&(this.parent.y=0,i=!0);break;case 1:this.parent.y!==this.parent.screenHeight-this.parent.screenWorldHeight&&(this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight,i=!0);break;default:this.parent.y!==(this.parent.screenHeight-this.parent.screenWorldHeight)/2&&(this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2,i=!0)}}else null!==this.options.top&&this.parent.top<(!0===this.options.top?0:this.options.top)&&(this.parent.y=-(!0===this.options.top?0:this.options.top)*this.parent.scale.y,e.y=0,i=!0),null!==this.options.bottom&&this.parent.bottom>(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)&&(this.parent.y=-(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)*this.parent.scale.y+this.parent.screenHeight,e.y=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-y"})}this.last.x=this.parent.x,this.last.y=this.parent.y,this.last.scaleX=this.parent.scale.x,this.last.scaleY=this.parent.scale.y}reset(){this.update()}}const d={minWidth:null,minHeight:null,maxWidth:null,maxHeight:null,minScale:null,maxScale:null};class u extends h{constructor(t,e={}){super(t),this.options=Object.assign({},d,e),this.clamp()}resize(){this.clamp()}clamp(){if(!this.paused)if(this.options.minWidth||this.options.minHeight||this.options.maxWidth||this.options.maxHeight){let t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight;if(null!==this.options.minWidth&&t<this.options.minWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.minWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxWidth&&t>this.options.maxWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.maxWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.minHeight&&e<this.options.minHeight){const i=this.parent.scale.y;this.parent.fitHeight(this.options.minHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxHeight&&e>this.options.maxHeight){const t=this.parent.scale.y;this.parent.fitHeight(this.options.maxHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/t,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}}else{let t=this.parent.scale.x;null!==this.options.minScale&&t<this.options.minScale&&(t=this.options.minScale),null!==this.options.maxScale&&t>this.options.maxScale&&(t=this.options.maxScale),t!==this.parent.scale.x&&(this.parent.scale.set(t),this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"}))}}reset(){this.clamp()}}const g={friction:.95,bounce:.8,minSpeed:.01};class m extends h{constructor(t,e={}){super(t),this.options=Object.assign({},g,e),this.saved=[],this.reset(),this.parent.on("moved",t=>this.moved(t))}destroy(){this.parent}down(){this.saved=[],this.x=this.y=!1}isActive(){return this.x||this.y}move(){if(this.paused)return;const t=this.parent.input.count();(1===t||t>1&&!this.parent.plugins.get("pinch"))&&(this.saved.push({x:this.parent.x,y:this.parent.y,time:performance.now()}),this.saved.length>60&&this.saved.splice(0,30))}moved(t){if(this.saved.length){const e=this.saved[this.saved.length-1];"clamp-x"===t.type?e.x===t.original.x&&(e.x=this.parent.x):"clamp-y"===t.type&&e.y===t.original.y&&(e.y=this.parent.y)}}up(){if(0===this.parent.input.count()&&this.saved.length){const t=performance.now();for(let e of this.saved)if(e.time>=t-100){const i=t-e.time;this.x=(this.parent.x-e.x)/i,this.y=(this.parent.y-e.y)/i,this.percentChangeX=this.percentChangeY=this.options.friction;break}}}activate(t){void 0!==(t=t||{}).x&&(this.x=t.x,this.percentChangeX=this.options.friction),void 0!==t.y&&(this.y=t.y,this.percentChangeY=this.options.friction)}update(t){if(this.paused)return;let e;this.x&&(this.parent.x+=this.x*t,this.x*=this.percentChangeX,Math.abs(this.x)<this.options.minSpeed&&(this.x=0),e=!0),this.y&&(this.parent.y+=this.y*t,this.y*=this.percentChangeY,Math.abs(this.y)<this.options.minSpeed&&(this.y=0),e=!0),e&&this.parent.emit("moved",{viewport:this.parent,type:"decelerate"})}reset(){this.x=this.y=null}}var w="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f=function(t,e){return t(e={exports:{}},e.exports),e.exports}((function(t,e){(function(){var e;(function(e){t.exports=e})(e={linear:function(t,e,i,s){return i*t/s+e},easeInQuad:function(t,e,i,s){return i*(t/=s)*t+e},easeOutQuad:function(t,e,i,s){return-i*(t/=s)*(t-2)+e},easeInOutQuad:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t+e:-i/2*(--t*(t-2)-1)+e},easeInCubic:function(t,e,i,s){return i*(t/=s)*t*t+e},easeOutCubic:function(t,e,i,s){return i*((t=t/s-1)*t*t+1)+e},easeInOutCubic:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t+e:i/2*((t-=2)*t*t+2)+e},easeInQuart:function(t,e,i,s){return i*(t/=s)*t*t*t+e},easeOutQuart:function(t,e,i,s){return-i*((t=t/s-1)*t*t*t-1)+e},easeInOutQuart:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t+e:-i/2*((t-=2)*t*t*t-2)+e},easeInQuint:function(t,e,i,s){return i*(t/=s)*t*t*t*t+e},easeOutQuint:function(t,e,i,s){return i*((t=t/s-1)*t*t*t*t+1)+e},easeInOutQuint:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t*t+e:i/2*((t-=2)*t*t*t*t+2)+e},easeInSine:function(t,e,i,s){return-i*Math.cos(t/s*(Math.PI/2))+i+e},easeOutSine:function(t,e,i,s){return i*Math.sin(t/s*(Math.PI/2))+e},easeInOutSine:function(t,e,i,s){return-i/2*(Math.cos(Math.PI*t/s)-1)+e},easeInExpo:function(t,e,i,s){return 0===t?e:i*Math.pow(2,10*(t/s-1))+e},easeOutExpo:function(t,e,i,s){return t===s?e+i:i*(1-Math.pow(2,-10*t/s))+e},easeInOutExpo:function(t,e,i,s){return(t/=s/2)<1?i/2*Math.pow(2,10*(t-1))+e:i/2*(2-Math.pow(2,-10*--t))+e},easeInCirc:function(t,e,i,s){return-i*(Math.sqrt(1-(t/=s)*t)-1)+e},easeOutCirc:function(t,e,i,s){return i*Math.sqrt(1-(t=t/s-1)*t)+e},easeInOutCirc:function(t,e,i,s){return(t/=s/2)<1?-i/2*(Math.sqrt(1-t*t)-1)+e:i/2*(Math.sqrt(1-(t-=2)*t)+1)+e},easeInElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),-n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)+e},easeOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),n*Math.pow(2,-10*t)*Math.sin((t*s-o)*(2*Math.PI)/h)+i+e},easeInOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s/2),(h=0)||(h=s*(.3*1.5)),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),t<1?n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*-.5+e:n*Math.pow(2,-10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*.5+i+e},easeInBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*(t/=s)*t*((n+1)*t-n)+e},easeOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*((t=t/s-1)*t*((n+1)*t+n)+1)+e},easeInOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),(t/=s/2)<1?i/2*(t*t*((1+(n*=1.525))*t-n))+e:i/2*((t-=2)*t*((1+(n*=1.525))*t+n)+2)+e},easeInBounce:function(t,i,s,n){return s-e.easeOutBounce(n-t,0,s,n)+i},easeOutBounce:function(t,e,i,s){return(t/=s)<1/2.75?i*(7.5625*t*t)+e:t<2/2.75?i*(7.5625*(t-=1.5/2.75)*t+.75)+e:t<2.5/2.75?i*(7.5625*(t-=2.25/2.75)*t+.9375)+e:i*(7.5625*(t-=2.625/2.75)*t+.984375)+e},easeInOutBounce:function(t,i,s,n){return t<n/2?.5*e.easeInBounce(2*t,0,s,n)+i:.5*e.easeOutBounce(2*t-n,0,s,n)+.5*s+i}})}).call(w)}));function y(t,e){return t?"function"==typeof t?t:"string"==typeof t?f[t]:void 0:f[e]}const x={sides:"all",friction:.5,time:150,ease:"easeInOutSine",underflow:"center",bounceBox:null};class v extends h{constructor(t,e={}){super(t),this.options=Object.assign({},x,e),this.ease=y(this.options.ease,"easeInOutSine"),this.options.sides&&("all"===this.options.sides?this.top=this.bottom=this.left=this.right=!0:"horizontal"===this.options.sides?this.right=this.left=!0:"vertical"===this.options.sides?this.top=this.bottom=!0:(this.top=-1!==this.options.sides.indexOf("top"),this.bottom=-1!==this.options.sides.indexOf("bottom"),this.left=-1!==this.options.sides.indexOf("left"),this.right=-1!==this.options.sides.indexOf("right"))),this.parseUnderflow(),this.last={},this.reset()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}isActive(){return null!==this.toX||null!==this.toY}down(){this.toX=this.toY=null}up(){this.bounce()}update(t){if(!this.paused){if(this.bounce(),this.toX){const e=this.toX;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-x"}),e.time>=this.options.time?(this.parent.x=e.end,this.toX=null,this.parent.emit("bounce-x-end",this.parent)):this.parent.x=this.ease(e.time,e.start,e.delta,this.options.time)}if(this.toY){const e=this.toY;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-y"}),e.time>=this.options.time?(this.parent.y=e.end,this.toY=null,this.parent.emit("bounce-y-end",this.parent)):this.parent.y=this.ease(e.time,e.start,e.delta,this.options.time)}}}calcUnderflowX(){let t;switch(this.underflowX){case-1:t=0;break;case 1:t=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:t=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}return t}calcUnderflowY(){let t;switch(this.underflowY){case-1:t=0;break;case 1:t=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:t=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}return t}oob(){const t=this.options.bounceBox;if(t){const i=void 0===t.x?0:t.x,s=void 0===t.y?0:t.y,n=void 0===t.width?this.parent.worldWidth:t.width,h=void 0===t.height?this.parent.worldHeight:t.height;return{left:this.parent.left<i,right:this.parent.right>n,top:this.parent.top<s,bottom:this.parent.bottom>h,topLeft:new e.Point(i*this.parent.scale.x,s*this.parent.scale.y),bottomRight:new e.Point(n*this.parent.scale.x-this.parent.screenWidth,h*this.parent.scale.y-this.parent.screenHeight)}}return{left:this.parent.left<0,right:this.parent.right>this.parent.worldWidth,top:this.parent.top<0,bottom:this.parent.bottom>this.parent.worldHeight,topLeft:new e.Point(0,0),bottomRight:new e.Point(this.parent.worldWidth*this.parent.scale.x-this.parent.screenWidth,this.parent.worldHeight*this.parent.scale.y-this.parent.screenHeight)}}bounce(){if(this.paused)return;let t,e=this.parent.plugins.get("decelerate");e&&(e.x||e.y)&&(e.x&&e.percentChangeX===e.options.friction||e.y&&e.percentChangeY===e.options.friction)&&(t=this.oob(),(t.left&&this.left||t.right&&this.right)&&(e.percentChangeX=this.options.friction),(t.top&&this.top||t.bottom&&this.bottom)&&(e.percentChangeY=this.options.friction));const i=this.parent.plugins.get("drag")||{},s=this.parent.plugins.get("pinch")||{};if(e=e||{},!(i.active||s.active||this.toX&&this.toY||e.x&&e.y)){t=t||this.oob();const i=t.topLeft,s=t.bottomRight;if(!this.toX&&!e.x){let e=null;t.left&&this.left?e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-i.x:t.right&&this.right&&(e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-s.x),null!==e&&this.parent.x!==e&&(this.toX={time:0,start:this.parent.x,delta:e-this.parent.x,end:e},this.parent.emit("bounce-x-start",this.parent))}if(!this.toY&&!e.y){let e=null;t.top&&this.top?e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-i.y:t.bottom&&this.bottom&&(e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-s.y),null!==e&&this.parent.y!==e&&(this.toY={time:0,start:this.parent.y,delta:e-this.parent.y,end:e},this.parent.emit("bounce-y-start",this.parent))}}}reset(){this.toX=this.toY=null,this.bounce()}}const b={topLeft:!1,friction:.8,time:1e3,ease:"easeInOutSine",interrupt:!0,removeOnComplete:!1,removeOnInterrupt:!1,forceStart:!1};class W extends h{constructor(t,e,i,s={}){super(t),this.options=Object.assign({},b,s),this.ease=y(s.ease,"easeInOutSine"),this.x=e,this.y=i,this.options.forceStart&&this.snapStart()}snapStart(){this.percent=0,this.snapping={time:0};const t=this.options.topLeft?this.parent.corner:this.parent.center;this.deltaX=this.x-t.x,this.deltaY=this.y-t.y,this.startX=t.x,this.startY=t.y,this.parent.emit("snap-start",this.parent)}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap"):this.options.interrupt&&(this.snapping=null)}up(){if(0===this.parent.input.count()){const t=this.parent.plugins.get("decelerate");t&&(t.x||t.y)&&(t.percentChangeX=t.percentChangeY=this.options.friction)}}update(t){if(!(this.paused||this.options.interrupt&&0!==this.parent.input.count()))if(this.snapping){const e=this.snapping;let i,s,n;if(e.time+=t,e.time>this.options.time)i=!0,s=this.startX+this.deltaX,n=this.startY+this.deltaY;else{const t=this.ease(e.time,0,1,this.options.time);s=this.startX+this.deltaX*t,n=this.startY+this.deltaY*t}this.options.topLeft?this.parent.moveCorner(s,n):this.parent.moveCenter(s,n),this.parent.emit("moved",{viewport:this.parent,type:"snap"}),i&&(this.options.removeOnComplete&&this.parent.plugins.remove("snap"),this.parent.emit("snap-end",this.parent),this.snapping=null)}else{const t=this.options.topLeft?this.parent.corner:this.parent.center;t.x===this.x&&t.y===this.y||this.snapStart()}}}const H={width:0,height:0,time:1e3,ease:"easeInOutSine",center:null,interrupt:!0,removeOnComplete:!1,removeOnInterrupts:!1,forceStart:!1,noMove:!1};class M extends h{constructor(t,e={}){super(t),this.options=Object.assign({},H,e),this.ease=y(this.options.ease),this.options.width>0&&(this.xScale=t.screenWidth/this.options.width),this.options.height>0&&(this.yScale=t.screenHeight/this.options.height),this.xIndependent=!!this.xScale,this.yIndependent=!!this.yScale,this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale,0===this.options.time?(t.container.scale.x=this.xScale,t.container.scale.y=this.yScale,this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom")):e.forceStart&&this.createSnapping()}createSnapping(){const t=this.parent.scale;this.snapping={time:0,startX:t.x,startY:t.y,deltaX:this.xScale-t.x,deltaY:this.yScale-t.y},this.parent.emit("snap-zoom-start",this.parent)}resize(){this.snapping=null,this.options.width>0&&(this.xScale=this.parent.screenWidth/this.options.width),this.options.height>0&&(this.yScale=this.parent.screenHeight/this.options.height),this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap-zoom")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap-zoom"):this.options.interrupt&&(this.snapping=null)}update(t){if(this.paused)return;if(this.options.interrupt&&0!==this.parent.input.count())return;let e;if(this.options.center||this.options.noMove||(e=this.parent.center),this.snapping){if(this.snapping){const i=this.snapping;if(i.time+=t,i.time>=this.options.time)this.parent.scale.set(this.xScale,this.yScale),this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom"),this.parent.emit("snap-zoom-end",this.parent),this.snapping=null;else{const t=this.snapping;this.parent.scale.x=this.ease(t.time,t.startX,t.deltaX,this.options.time),this.parent.scale.y=this.ease(t.time,t.startY,t.deltaY,this.options.time)}const s=this.parent.plugins.get("clamp-zoom");s&&s.clamp(),this.options.noMove||(this.options.center?this.parent.moveCenter(this.options.center):this.parent.moveCenter(e))}}else this.parent.scale.x===this.xScale&&this.parent.scale.y===this.yScale||this.createSnapping()}resume(){this.snapping=null,super.resume()}}const S={speed:0,acceleration:null,radius:null};class O extends h{constructor(t,e,i={}){super(t),this.target=e,this.options=Object.assign({},S,i),this.velocity={x:0,y:0}}update(t){if(this.paused)return;const e=this.parent.center;let i=this.target.x,s=this.target.y;if(this.options.radius){if(!(Math.sqrt(Math.pow(this.target.y-e.y,2)+Math.pow(this.target.x-e.x,2))>this.options.radius))return;{const t=Math.atan2(this.target.y-e.y,this.target.x-e.x);i=this.target.x-Math.cos(t)*this.options.radius,s=this.target.y-Math.sin(t)*this.options.radius}}const n=i-e.x,h=s-e.y;if(n||h)if(this.options.speed)if(this.options.acceleration){const o=Math.atan2(s-e.y,i-e.x),r=Math.sqrt(Math.pow(n,2)+Math.pow(h,2));if(r){const a=(Math.pow(this.velocity.x,2)+Math.pow(this.velocity.y,2))/(2*this.options.acceleration);this.velocity=r>a?{x:Math.min(this.velocity.x+this.options.acceleration*t,this.options.speed),y:Math.min(this.velocity.y+this.options.acceleration*t,this.options.speed)}:{x:Math.max(this.velocity.x-this.options.acceleration*this.options.speed,0),y:Math.max(this.velocity.y-this.options.acceleration*this.options.speed,0)};const p=Math.cos(o)*this.velocity.x,l=Math.sin(o)*this.velocity.y,c=Math.abs(p)>Math.abs(n)?i:e.x+p,d=Math.abs(l)>Math.abs(h)?s:e.y+l;this.parent.moveCenter(c,d),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}else{const t=Math.atan2(s-e.y,i-e.x),o=Math.cos(t)*this.options.speed,r=Math.sin(t)*this.options.speed,a=Math.abs(o)>Math.abs(n)?i:e.x+o,p=Math.abs(r)>Math.abs(h)?s:e.y+r;this.parent.moveCenter(a,p),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}else this.parent.moveCenter(i,s),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}const z={percent:.1,smooth:!1,interrupt:!0,reverse:!1,center:null,lineHeight:20};class I extends h{constructor(t,e={}){super(t),this.options=Object.assign({},z,e)}down(){this.options.interrupt&&(this.smoothing=null)}update(){if(this.smoothing){const t=this.smoothingCenter,e=this.smoothing;let i;this.options.center||(i=this.parent.toLocal(t)),this.parent.scale.x+=e.x,this.parent.scale.y+=e.y,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const e=this.parent.toGlobal(i);this.parent.x+=t.x-e.x,this.parent.y+=t.y-e.y}this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.smoothingCount++,this.smoothingCount>=this.options.smooth&&(this.smoothing=null)}}wheel(t){if(this.paused)return;let e=this.parent.input.getPointerPosition(t);const i=(this.options.reverse?-1:1)*-t.deltaY*(t.deltaMode?this.options.lineHeight:1)/500,s=Math.pow(2,(1+this.options.percent)*i);if(this.options.smooth){const t={x:this.smoothing?this.smoothing.x*(this.options.smooth-this.smoothingCount):0,y:this.smoothing?this.smoothing.y*(this.options.smooth-this.smoothingCount):0};this.smoothing={x:((this.parent.scale.x+t.x)*s-this.parent.scale.x)/this.options.smooth,y:((this.parent.scale.y+t.y)*s-this.parent.scale.y)/this.options.smooth},this.smoothingCount=0,this.smoothingCenter=e}else{let t;this.options.center||(t=this.parent.toLocal(e)),this.parent.scale.x*=s,this.parent.scale.y*=s,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const i=this.parent.plugins.get("clamp-zoom");if(i&&i.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y}}return this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.emit("wheel",{wheel:{dx:t.deltaX,dy:t.deltaY,dz:t.deltaZ},event:t,viewport:this.parent}),!this.parent.options.passiveWheel||void 0}}const C={radius:null,distance:null,top:null,bottom:null,left:null,right:null,speed:8,reverse:!1,noDecelerate:!1,linear:!1,allowButtons:!1};class k extends h{constructor(t,e={}){super(t),this.options=Object.assign({},C,e),this.reverse=this.options.reverse?1:-1,this.radiusSquared=Math.pow(this.options.radius,2),this.resize()}resize(){const t=this.options.distance;null!==t?(this.left=t,this.top=t,this.right=this.parent.worldScreenWidth-t,this.bottom=this.parent.worldScreenHeight-t):this.radius||(this.left=this.options.left,this.top=this.options.top,this.right=null===this.options.right?null:this.parent.worldScreenWidth-this.options.right,this.bottom=null===this.options.bottom?null:this.parent.worldScreenHeight-this.options.bottom)}down(){this.options.allowButtons||(this.horizontal=this.vertical=null)}move(t){if("mouse"!==t.data.pointerType&&1!==t.data.identifier||!this.options.allowButtons&&0!==t.data.buttons)return;const e=t.data.global.x,i=t.data.global.y;if(this.radiusSquared){const t=this.parent.toScreen(this.parent.center);if(Math.pow(t.x-e,2)+Math.pow(t.y-i,2)>=this.radiusSquared){const s=Math.atan2(t.y-i,t.x-e);this.options.linear?(this.horizontal=Math.round(Math.cos(s))*this.options.speed*this.reverse*.06,this.vertical=Math.round(Math.sin(s))*this.options.speed*this.reverse*.06):(this.horizontal=Math.cos(s)*this.options.speed*this.reverse*.06,this.vertical=Math.sin(s)*this.options.speed*this.reverse*.06)}else this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=0}else null!==this.left&&e<this.left?this.horizontal=1*this.reverse*this.options.speed*.06:null!==this.right&&e>this.right?this.horizontal=-1*this.reverse*this.options.speed*.06:(this.decelerateHorizontal(),this.horizontal=0),null!==this.top&&i<this.top?this.vertical=1*this.reverse*this.options.speed*.06:null!==this.bottom&&i>this.bottom?this.vertical=-1*this.reverse*this.options.speed*.06:(this.decelerateVertical(),this.vertical=0)}decelerateHorizontal(){const t=this.parent.plugins.get("decelerate");this.horizontal&&t&&!this.options.noDecelerate&&t.activate({x:this.horizontal*this.options.speed*this.reverse/(1e3/60)})}decelerateVertical(){const t=this.parent.plugins.get("decelerate");this.vertical&&t&&!this.options.noDecelerate&&t.activate({y:this.vertical*this.options.speed*this.reverse/(1e3/60)})}up(){this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=null}update(){if(!this.paused&&(this.horizontal||this.vertical)){const t=this.parent.center;this.horizontal&&(t.x+=this.horizontal*this.options.speed),this.vertical&&(t.y+=this.vertical*this.options.speed),this.parent.moveCenter(t),this.parent.emit("moved",{viewport:this.parent,type:"mouse-edges"})}}}const P={screenWidth:window.innerWidth,screenHeight:window.innerHeight,worldWidth:null,worldHeight:null,threshold:5,passiveWheel:!0,stopPropagation:!1,forceHitArea:null,noTicker:!1,interaction:null,disableOnContextMenu:!1};class X extends e.Container{constructor(t={}){if(super(),this.options=Object.assign({},P,t),t.ticker)this.options.ticker=t.ticker;else{let i;const s=e;i=parseInt(/^(\d+)\./.exec(e.VERSION)[1])<5?s.ticker.shared:s.Ticker.shared,this.options.ticker=t.ticker||i}this.screenWidth=this.options.screenWidth,this.screenHeight=this.options.screenHeight,this._worldWidth=this.options.worldWidth,this._worldHeight=this.options.worldHeight,this.forceHitArea=this.options.forceHitArea,this.threshold=this.options.threshold,this.options.divWheel=this.options.divWheel||document.body,this.options.disableOnContextMenu&&(this.options.divWheel.oncontextmenu=t=>t.preventDefault()),this.options.noTicker||(this.tickerFunction=()=>this.update(this.options.ticker.elapsedMS),this.options.ticker.add(this.tickerFunction)),this.input=new i(this),this.plugins=new n(this)}destroy(t){this.options.noTicker||this.options.ticker.remove(this.tickerFunction),this.input.destroy(),super.destroy(t)}update(t){this.pause||(this.plugins.update(t),this.lastViewport&&(this.lastViewport.x!==this.x||this.lastViewport.y!==this.y?this.moving=!0:this.moving&&(this.emit("moved-end",this),this.moving=!1),this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y?this.zooming=!0:this.zooming&&(this.emit("zoomed-end",this),this.zooming=!1)),this.forceHitArea||(this._hitAreaDefault=new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight),this.hitArea=this._hitAreaDefault),this._dirty=this._dirty||!this.lastViewport||this.lastViewport.x!==this.x||this.lastViewport.y!==this.y||this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y,this.lastViewport={x:this.x,y:this.y,scaleX:this.scale.x,scaleY:this.scale.y},this.emit("frame-end",this))}resize(t=window.innerWidth,e=window.innerHeight,i,s){this.screenWidth=t,this.screenHeight=e,void 0!==i&&(this._worldWidth=i),void 0!==s&&(this._worldHeight=s),this.plugins.resize()}get worldWidth(){return this._worldWidth?this._worldWidth:this.width/this.scale.x}set worldWidth(t){this._worldWidth=t,this.plugins.resize()}get worldHeight(){return this._worldHeight?this._worldHeight:this.height/this.scale.y}set worldHeight(t){this._worldHeight=t,this.plugins.resize()}getVisibleBounds(){return new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight)}toWorld(t,i){return 2===arguments.length?this.toLocal(new e.Point(t,i)):this.toLocal(t)}toScreen(t,i){return 2===arguments.length?this.toGlobal(new e.Point(t,i)):this.toGlobal(t)}get worldScreenWidth(){return this.screenWidth/this.scale.x}get worldScreenHeight(){return this.screenHeight/this.scale.y}get screenWorldWidth(){return this.worldWidth*this.scale.x}get screenWorldHeight(){return this.worldHeight*this.scale.y}get center(){return new e.Point(this.worldScreenWidth/2-this.x/this.scale.x,this.worldScreenHeight/2-this.y/this.scale.y)}set center(t){this.moveCenter(t)}moveCenter(){let t,e;return isNaN(arguments[0])?(t=arguments[0].x,e=arguments[0].y):(t=arguments[0],e=arguments[1]),this.position.set((this.worldScreenWidth/2-t)*this.scale.x,(this.worldScreenHeight/2-e)*this.scale.y),this.plugins.reset(),this.dirty=!0,this}get corner(){return new e.Point(-this.x/this.scale.x,-this.y/this.scale.y)}set corner(t){this.moveCorner(t)}moveCorner(t,e){return 1===arguments.length?this.position.set(-t.x*this.scale.x,-t.y*this.scale.y):this.position.set(-t*this.scale.x,-e*this.scale.y),this.plugins.reset(),this}fitWidth(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.x=this.screenWidth/t,i&&(this.scale.y=this.scale.x);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitHeight(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.y=this.screenHeight/t,i&&(this.scale.x=this.scale.y);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitWorld(t){let e;t&&(e=this.center),this.scale.x=this.screenWidth/this.worldWidth,this.scale.y=this.screenHeight/this.worldHeight,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const i=this.plugins.get("clamp-zoom");return i&&i.clamp(),t&&this.moveCenter(e),this}fit(t,e=this.worldWidth,i=this.worldHeight){let s;t&&(s=this.center),this.scale.x=this.screenWidth/e,this.scale.y=this.screenHeight/i,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const n=this.plugins.get("clamp-zoom");return n&&n.clamp(),t&&this.moveCenter(s),this}setZoom(t,e){let i;e&&(i=this.center),this.scale.set(t);const s=this.plugins.get("clamp-zoom");return s&&s.clamp(),e&&this.moveCenter(i),this}zoomPercent(t,e){return this.setZoom(this.scale.x+this.scale.x*t,e)}zoom(t,e){return this.fitWidth(t+this.worldScreenWidth,e),this}set scaled(t){this.setZoom(t,!0)}get scaled(){return this.scale.x}snapZoom(t){return this.plugins.add("snap-zoom",new M(this,t)),this}OOB(){return{left:this.left<0,right:this.right>this.worldWidth,top:this.top<0,bottom:this.bottom>this._worldHeight,cornerPoint:new e.Point(this.worldWidth*this.scale.x-this.screenWidth,this.worldHeight*this.scale.y-this.screenHeight)}}get right(){return-this.x/this.scale.x+this.worldScreenWidth}set right(t){this.x=-t*this.scale.x+this.screenWidth,this.plugins.reset()}get left(){return-this.x/this.scale.x}set left(t){this.x=-t*this.scale.x,this.plugins.reset()}get top(){return-this.y/this.scale.y}set top(t){this.y=-t*this.scale.y,this.plugins.reset()}get bottom(){return-this.y/this.scale.y+this.worldScreenHeight}set bottom(t){this.y=-t*this.scale.y+this.screenHeight,this.plugins.reset()}get dirty(){return this._dirty}set dirty(t){this._dirty=t}get forceHitArea(){return this._forceHitArea}set forceHitArea(t){t?(this._forceHitArea=t,this.hitArea=t):(this._forceHitArea=null,this.hitArea=new e.Rectangle(0,0,this.worldWidth,this.worldHeight))}drag(t){return this.plugins.add("drag",new r(this,t)),this}clamp(t){return this.plugins.add("clamp",new c(this,t)),this}decelerate(t){return this.plugins.add("decelerate",new m(this,t)),this}bounce(t){return this.plugins.add("bounce",new v(this,t)),this}pinch(t){return this.plugins.add("pinch",new p(this,t)),this}snap(t,e,i){return this.plugins.add("snap",new W(this,t,e,i)),this}follow(t,e){return this.plugins.add("follow",new O(this,t,e)),this}wheel(t){return this.plugins.add("wheel",new I(this,t)),this}clampZoom(t){return this.plugins.add("clamp-zoom",new u(this,t)),this}mouseEdges(t){return this.plugins.add("mouse-edges",new k(this,t)),this}get pause(){return this._pause}set pause(t){this._pause=t,this.lastViewport=null,this.moving=!1,this.zooming=!1,t&&this.input.pause()}ensureVisible(t,e,i,s,n){n&&(i>this.worldScreenWidth||s>this.worldScreenHeight)&&(this.fit(!0,i,s),this.emit("zoomed",{viewport:this,type:"ensureVisible"}));let h=!1;t<this.left?(this.left=t,h=!0):t+i>this.right&&(this.right=t+i,h=!0),e<this.top?(this.top=e,h=!0):e+s>this.bottom&&(this.bottom=e+s,h=!0),h&&this.emit("moved",{viewport:this,type:"ensureVisible"})}}t.Plugin=h,t.Viewport=X,Object.defineProperty(t,"__esModule",{value:!0})}));
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"pixi.js":44}],2:[function(require,module,exports){
+},{"pixi.js":45}],2:[function(require,module,exports){
 const PIXI = require('pixi.js')
 const Viewport = require('../../../').Viewport
 
@@ -35,10 +35,10 @@ window.onload = () =>
         .pinch()
         .decelerate()
 }
-},{"../../../":1,"pixi.js":44}],3:[function(require,module,exports){
+},{"../../../":1,"pixi.js":45}],3:[function(require,module,exports){
 /*!
- * @pixi/accessibility - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/accessibility - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/accessibility is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -742,8 +742,8 @@ exports.accessibleTarget = accessibleTarget;
 
 },{"@pixi/display":7,"@pixi/utils":36}],4:[function(require,module,exports){
 /*!
- * @pixi/app - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/app - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/app is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -977,8 +977,8 @@ exports.Application = Application;
 
 },{"@pixi/core":6,"@pixi/display":7}],5:[function(require,module,exports){
 /*!
- * @pixi/constants - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/constants - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/constants is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1122,8 +1122,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 },{}],6:[function(require,module,exports){
 /*!
- * @pixi/core - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/core - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/core is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -8382,6 +8382,18 @@ function compileProgram(gl, vertexSrc, fragmentSrc, attributeLocations)
     // if linking fails, then log and cleanup
     if (!gl.getProgramParameter(program, gl.LINK_STATUS))
     {
+        if (!gl.getShaderParameter(glVertShader, gl.COMPILE_STATUS))
+        {
+            console.warn(vertexSrc);
+            console.error(gl.getShaderInfoLog(glVertShader));
+        }
+
+        if (!gl.getShaderParameter(glFragShader, gl.COMPILE_STATUS))
+        {
+            console.warn(fragmentSrc);
+            console.error(gl.getShaderInfoLog(glFragShader));
+        }
+
         console.error('Pixi.js Error: Could not initialize shader.');
         console.error('gl.VALIDATE_STATUS', gl.getProgramParameter(program, gl.VALIDATE_STATUS));
         console.error('gl.getError()', gl.getError());
@@ -8416,14 +8428,6 @@ function compileShader(gl, type, src)
 
     gl.shaderSource(shader, src);
     gl.compileShader(shader);
-
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-    {
-        console.warn(src);
-        console.error(gl.getShaderInfoLog(shader));
-
-        return null;
-    }
 
     return shader;
 }
@@ -8757,8 +8761,7 @@ var GLSL_TO_ARRAY_SETTERS = {
 
 function generateUniformsSync(group, uniformData)
 {
-    var textureCount = 0;
-    var func = "var v = null;\n    var cv = null\n    var gl = renderer.gl";
+    var func = "var v = null;\n    var cv = null\n    var t = 0;\n    var gl = renderer.gl\n    ";
 
     for (var i in group.uniforms)
     {
@@ -8768,7 +8771,7 @@ function generateUniformsSync(group, uniformData)
         {
             if (group.uniforms[i].group)
             {
-                func += "\n                    renderer.shader.syncUniformGroup(uv." + i + ");\n                ";
+                func += "\n                    renderer.shader.syncUniformGroup(uv." + i + ", syncData);\n                ";
             }
 
             continue;
@@ -8783,9 +8786,7 @@ function generateUniformsSync(group, uniformData)
         else if ((data.type === 'sampler2D' || data.type === 'samplerCube' || data.type === 'sampler2DArray') && data.size === 1 && !data.isArray)
         /* eslint-disable max-len */
         {
-            func += "\n            renderer.texture.bind(uv." + i + ", " + textureCount + ");\n\n            if(ud." + i + ".value !== " + textureCount + ")\n            {\n                ud." + i + ".value = " + textureCount + ";\n                gl.uniform1i(ud." + i + ".location, " + textureCount + ");\n; // eslint-disable-line max-len\n            }\n";
-
-            textureCount++;
+            func += "\n\n            t = syncData.textureCount++;\n\n            renderer.texture.bind(uv." + i + ", t);\n            \n            if(ud." + i + ".value !== t)\n            {\n                ud." + i + ".value = t;\n                gl.uniform1i(ud." + i + ".location, t);\n; // eslint-disable-line max-len\n            }\n";
         }
         else if (data.type === 'mat3' && data.size === 1)
         {
@@ -8835,7 +8836,13 @@ function generateUniformsSync(group, uniformData)
         }
     }
 
-    return new Function('ud', 'uv', 'renderer', func); // eslint-disable-line no-new-func
+    /**
+     * the introduction of syncData is to solve an issue where textures in uniform groups are not set correctly
+     * the texture count was always starting from 0 in each group. This needs to increment each time a texture is used
+     * no matter which group is being used
+     *
+     */
+    return new Function('ud', 'uv', 'renderer', 'syncData', func); // eslint-disable-line no-new-func
 }
 
 var fragTemplate = [
@@ -10888,6 +10895,8 @@ GLProgram.prototype.destroy = function destroy ()
 };
 
 var UID$4 = 0;
+// defualt sync data so we don't create a new one each time!
+var defaultSyncData = { textureCount: 0 };
 
 /**
  * System plugin to the renderer to manage shaders.
@@ -10974,7 +10983,9 @@ var ShaderSystem = /*@__PURE__*/(function (System) {
 
         if (!dontSync)
         {
-            this.syncUniformGroup(shader.uniformGroup);
+            defaultSyncData.textureCount = 0;
+
+            this.syncUniformGroup(shader.uniformGroup, defaultSyncData);
         }
 
         return glProgram;
@@ -10993,7 +11004,13 @@ var ShaderSystem = /*@__PURE__*/(function (System) {
         shader.syncUniforms(glProgram.uniformData, uniforms, this.renderer);
     };
 
-    ShaderSystem.prototype.syncUniformGroup = function syncUniformGroup (group)
+    /**
+     *
+     * syncs uniforms on the group
+     * @param {*} group the uniform group to sync
+     * @param {*} syncData this is data that is passed to the sync function and any nested sync functions
+     */
+    ShaderSystem.prototype.syncUniformGroup = function syncUniformGroup (group, syncData)
     {
         var glProgram = this.getglProgram();
 
@@ -11001,7 +11018,7 @@ var ShaderSystem = /*@__PURE__*/(function (System) {
         {
             glProgram.uniformGroups[group.id] = group.dirtyId;
 
-            this.syncUniforms(group, glProgram);
+            this.syncUniforms(group, glProgram, syncData);
         }
     };
 
@@ -11011,11 +11028,11 @@ var ShaderSystem = /*@__PURE__*/(function (System) {
      *
      * @private
      */
-    ShaderSystem.prototype.syncUniforms = function syncUniforms (group, glProgram)
+    ShaderSystem.prototype.syncUniforms = function syncUniforms (group, glProgram, syncData)
     {
         var syncFunc = group.syncUniforms[this.shader.program.id] || this.createSyncGroups(group);
 
-        syncFunc(glProgram.uniformData, group.uniforms, this.renderer);
+        syncFunc(glProgram.uniformData, group.uniforms, this.renderer, syncData);
     };
 
     ShaderSystem.prototype.createSyncGroups = function createSyncGroups (group)
@@ -12915,9 +12932,9 @@ var Renderer = /*@__PURE__*/(function (AbstractRenderer) {
      * @type {object}
      * @readonly
      * @property {PIXI.accessibility.AccessibilityManager} accessibility Support tabbing interactive elements.
-     * @property {PIXI.extract.Extract} extract Extract image data from renderer.
+     * @property {PIXI.Extract} extract Extract image data from renderer.
      * @property {PIXI.interaction.InteractionManager} interaction Handles mouse, touch and pointer events.
-     * @property {PIXI.prepare.Prepare} prepare Pre-render display objects.
+     * @property {PIXI.Prepare} prepare Pre-render display objects.
      */
 
     /**
@@ -13738,7 +13755,8 @@ var AbstractBatchRenderer = /*@__PURE__*/(function (ObjectRenderer) {
                 this.bindAndClearTexArray(texArray);
             }
 
-            stateSystem.setBlendMode(blend);
+            this.state.blendMode = blend;
+            stateSystem.set(this.state);
             gl.drawElements(type, size, gl.UNSIGNED_SHORT, start * 2);
         }
     };
@@ -14217,8 +14235,8 @@ exports.systems = systems;
 
 },{"@pixi/constants":5,"@pixi/display":7,"@pixi/math":18,"@pixi/runner":27,"@pixi/settings":28,"@pixi/ticker":35,"@pixi/utils":36}],7:[function(require,module,exports){
 /*!
- * @pixi/display - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/display - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/display is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -14306,8 +14324,6 @@ Bounds.prototype.isEmpty = function isEmpty ()
  */
 Bounds.prototype.clear = function clear ()
 {
-    this.updateID++;
-
     this.minX = Infinity;
     this.minY = Infinity;
     this.maxX = -Infinity;
@@ -14899,11 +14915,21 @@ var DisplayObject = /*@__PURE__*/(function (EventEmitter) {
      */
     DisplayObject.prototype.updateTransform = function updateTransform ()
     {
+        this._boundsID++;
+
         this.transform.updateTransform(this.parent.transform);
         // multiply the alphas..
         this.worldAlpha = this.alpha * this.parent.worldAlpha;
+    };
 
-        this._bounds.updateID++;
+    /**
+     * Recalculates the bounds of the display object.
+     *
+     * Does nothing by default and can be overwritten in a parent class.
+     */
+    DisplayObject.prototype.calculateBounds = function calculateBounds ()
+    {
+        // OVERWRITE;
     };
 
     /**
@@ -15152,11 +15178,11 @@ var DisplayObject = /*@__PURE__*/(function (EventEmitter) {
      */
     DisplayObject.prototype.destroy = function destroy ()
     {
-        this.removeAllListeners();
         if (this.parent)
         {
             this.parent.removeChild(this);
         }
+        this.removeAllListeners();
         this.transform = null;
 
         this.parent = null;
@@ -15386,7 +15412,7 @@ var DisplayObject = /*@__PURE__*/(function (EventEmitter) {
      * sprite.mask = graphics;
      * @todo At the moment, PIXI.CanvasRenderer doesn't support PIXI.Sprite as mask.
      *
-     * @member {PIXI.Graphics|PIXI.Sprite|null}
+     * @member {PIXI.Container|PIXI.MaskData}
      */
     prototypeAccessors.mask.get = function ()
     {
@@ -16123,8 +16149,8 @@ exports.DisplayObject = DisplayObject;
 
 },{"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],8:[function(require,module,exports){
 /*!
- * @pixi/extract - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/extract - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/extract is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16141,12 +16167,25 @@ var TEMP_RECT = new math.Rectangle();
 var BYTES_PER_PIXEL = 4;
 
 /**
- * The extract manager provides functionality to export content from the renderers.
+ * This class provides renderer-specific plugins for exporting content from a renderer.
+ * For instance, these plugins can be used for saving an Image, Canvas element or for exporting the raw image data (pixels).
  *
- * An instance of this class is automatically created by default, and can be found at `renderer.plugins.extract`
+ * Do not instantiate these plugins directly. It is available from the `renderer.plugins` property.
+ * See {@link PIXI.CanvasRenderer#plugins} or {@link PIXI.Renderer#plugins}.
+ * @example
+ * // Create a new app (will auto-add extract plugin to renderer)
+ * const app = new PIXI.Application();
  *
+ * // Draw a red circle
+ * const graphics = new PIXI.Graphics()
+ *     .beginFill(0xFF0000)
+ *     .drawCircle(0, 0, 50);
+ *
+ * // Render the graphics as an HTMLImageElement
+ * const image = app.renderer.plugins.extract.image(graphics);
+ * document.body.appendChild(image);
  * @class
- * @memberof PIXI.extract
+ * @memberof PIXI
  */
 var Extract = function Extract(renderer)
 {
@@ -16154,9 +16193,9 @@ var Extract = function Extract(renderer)
     /**
      * Collection of methods for extracting data (image, pixels, etc.) from a display object or render texture
      *
-     * @member {PIXI.extract.Extract} extract
+     * @member {PIXI.Extract} extract
      * @memberof PIXI.Renderer#
-     * @see PIXI.extract.Extract
+     * @see PIXI.Extract
      */
     renderer.extract = this;
 };
@@ -16400,34 +16439,13 @@ Extract.arrayPostDivide = function arrayPostDivide (pixels, out)
     }
 };
 
-/**
- * This namespace provides renderer-specific plugins for exporting content from a renderer.
- * For instance, these plugins can be used for saving an Image, Canvas element or for exporting the raw image data (pixels).
- *
- * Do not instantiate these plugins directly. It is available from the `renderer.plugins` property.
- * See {@link PIXI.CanvasRenderer#plugins} or {@link PIXI.Renderer#plugins}.
- * @example
- * // Create a new app (will auto-add extract plugin to renderer)
- * const app = new PIXI.Application();
- *
- * // Draw a red circle
- * const graphics = new PIXI.Graphics()
- *     .beginFill(0xFF0000)
- *     .drawCircle(0, 0, 50);
- *
- * // Render the graphics as an HTMLImageElement
- * const image = app.renderer.plugins.extract.image(graphics);
- * document.body.appendChild(image);
- * @namespace PIXI.extract
- */
-
 exports.Extract = Extract;
 
 
 },{"@pixi/core":6,"@pixi/math":18,"@pixi/utils":36}],9:[function(require,module,exports){
 /*!
- * @pixi/filter-alpha - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/filter-alpha - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/filter-alpha is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16499,8 +16517,8 @@ exports.AlphaFilter = AlphaFilter;
 
 },{"@pixi/core":6}],10:[function(require,module,exports){
 /*!
- * @pixi/filter-blur - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/filter-blur - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/filter-blur is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16689,7 +16707,7 @@ var BlurFilterPass = /*@__PURE__*/(function (Filter) {
             var flop = renderTarget;
 
             this.state.blend = false;
-            filterManager.applyFilter(this, flip, flop, false);
+            filterManager.applyFilter(this, flip, flop, true);
 
             for (var i = 1; i < this.passes - 1; i++)
             {
@@ -16935,8 +16953,8 @@ exports.BlurFilterPass = BlurFilterPass;
 
 },{"@pixi/core":6,"@pixi/settings":28}],11:[function(require,module,exports){
 /*!
- * @pixi/filter-color-matrix - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/filter-color-matrix - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/filter-color-matrix is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17542,8 +17560,8 @@ exports.ColorMatrixFilter = ColorMatrixFilter;
 
 },{"@pixi/core":6}],12:[function(require,module,exports){
 /*!
- * @pixi/filter-displacement - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/filter-displacement - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/filter-displacement is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17669,8 +17687,8 @@ exports.DisplacementFilter = DisplacementFilter;
 
 },{"@pixi/core":6,"@pixi/math":18}],13:[function(require,module,exports){
 /*!
- * @pixi/filter-fxaa - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/filter-fxaa - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/filter-fxaa is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17715,8 +17733,8 @@ exports.FXAAFilter = FXAAFilter;
 
 },{"@pixi/core":6}],14:[function(require,module,exports){
 /*!
- * @pixi/filter-noise - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/filter-noise - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/filter-noise is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17803,8 +17821,8 @@ exports.NoiseFilter = NoiseFilter;
 
 },{"@pixi/core":6}],15:[function(require,module,exports){
 /*!
- * @pixi/graphics - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/graphics - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/graphics is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17843,7 +17861,7 @@ var GRAPHICS_CURVES = {
     {
         if ( defaultSegments === void 0 ) defaultSegments = 20;
 
-        if (!this.adaptive)
+        if (!this.adaptive || !length || Number.isNaN(length))
         {
             return defaultSegments;
         }
@@ -18059,7 +18077,7 @@ var buildCircle = {
 
         var seg = (Math.PI * 2) / totalSegs;
 
-        for (var i = 0; i < totalSegs; i++)
+        for (var i = 0; i < totalSegs - 0.5; i++)
         {
             points.push(
                 x + (Math.sin(-seg * i) * width),
@@ -19000,8 +19018,9 @@ QuadraticUtils.curveTo = function curveTo (cpX, cpY, toX, toY, points)
 };
 
 /**
- * A structure to hold interim batch objects.
- *
+ * A structure to hold interim batch objects for Graphics.
+ * @class
+ * @memberof PIXI.graphicsUtils
  */
 var BatchPart = function BatchPart()
 {
@@ -19053,6 +19072,7 @@ BatchPart.prototype.reset = function reset ()
 /**
  * Map of fill commands for each shape type.
  *
+ * @memberof PIXI.graphicsUtils
  * @member {Object}
  */
 var FILL_COMMANDS = {};
@@ -19065,13 +19085,15 @@ FILL_COMMANDS[math.SHAPES.RREC] = buildRoundedRectangle;
 /**
  * Batch pool, stores unused batches for preventing allocations.
  *
- * @type {Array<BatchPart>}
+ * @memberof PIXI.graphicsUtils
+ * @type {Array<PIXI.graphicsUtils.BatchPart>}
  */
 var BATCH_POOL = [];
 
 /**
  * Draw call pool, stores unused draw calls for preventing allocations.
  *
+ * @memberof PIXI.graphicsUtils
  * @type {Array<PIXI.BatchDrawCall>}
  */
 var DRAW_CALL_POOL = [];
@@ -19290,7 +19312,7 @@ var GraphicsGeometry = /*@__PURE__*/(function (BatchGeometry) {
          * Intermediate abstract format sent to batch system.
          * Can be converted to drawCalls or to batchable objects.
          *
-         * @member {BatchPart[]}
+         * @member {PIXI.graphicsUtils.BatchPart[]}
          * @protected
          */
         this.batches = [];
@@ -19392,12 +19414,10 @@ var GraphicsGeometry = /*@__PURE__*/(function (BatchGeometry) {
 
         for (var i$1 = 0; i$1 < this.batches.length; i$1++)
         {
-            var batch =  this.batches[i$1];
+            var batchPart = this.batches[i$1];
 
-            batch.start = 0;
-            batch.attribStart = 0;
-            batch.style = null;
-            BATCH_POOL.push(batch);
+            batchPart.reset();
+            BATCH_POOL.push(batchPart);
         }
 
         this.batches.length = 0;
@@ -19624,32 +19644,10 @@ var GraphicsGeometry = /*@__PURE__*/(function (BatchGeometry) {
                 if (!style.visible) { continue; }
 
                 var nextTexture = style.texture.baseTexture;
-                var index$1 = this.indices.length;
+                var index = this.indices.length;
                 var attribIndex = this.points.length / 2;
 
                 nextTexture.wrapMode = constants.WRAP_MODES.REPEAT;
-
-                // close batch if style is different
-                if (batchPart && !this._compareStyles(currentStyle, style))
-                {
-                    batchPart.end(index$1, attribIndex);
-
-                    if (batchPart.size > 0)
-                    {
-                        batchPart = null;
-                    }
-                }
-                // spawn new batch if its first batch or previous was closed
-                if (!batchPart)
-                {
-                    batchPart = BATCH_POOL.pop() || new BatchPart();
-                    batchPart.begin(style, index$1, attribIndex);
-                    this.batches.push(batchPart);
-
-                    currentStyle = style;
-                }
-
-                var start = this.points.length / 2;
 
                 if (j === 0)
                 {
@@ -19660,13 +19658,37 @@ var GraphicsGeometry = /*@__PURE__*/(function (BatchGeometry) {
                     this.processLine(data);
                 }
 
-                var size = (this.points.length / 2) - start;
+                var size = (this.points.length / 2) - attribIndex;
 
-                this.addUvs(this.points, uvs, style.texture, start, size, style.matrix);
+                if (size === 0) { continue; }
+                // close batch if style is different
+                if (batchPart && !this._compareStyles(currentStyle, style))
+                {
+                    batchPart.end(index, attribIndex);
+                    batchPart = null;
+                }
+                // spawn new batch if its first batch or previous was closed
+                if (!batchPart)
+                {
+                    batchPart = BATCH_POOL.pop() || new BatchPart();
+                    batchPart.begin(style, index, attribIndex);
+                    this.batches.push(batchPart);
+                    currentStyle = style;
+                }
+
+                this.addUvs(this.points, uvs, style.texture, attribIndex, size, style.matrix);
             }
         }
 
-        if (!batchPart)
+        if (batchPart)
+        {
+            var index$1 = this.indices.length;
+            var attrib = this.points.length / 2;
+
+            batchPart.end(index$1, attrib);
+        }
+
+        if (this.batches.length === 0)
         {
             // there are no visible styles in GraphicsData
             // its possible that someone wants Graphics just for the bounds
@@ -19674,11 +19696,6 @@ var GraphicsGeometry = /*@__PURE__*/(function (BatchGeometry) {
 
             return;
         }
-
-        var index = this.indices.length;
-        var attrib = this.points.length / 2;
-
-        batchPart.end(index, attrib);
 
         this.indicesUint16 = new Uint16Array(this.indices);
 
@@ -21628,8 +21645,8 @@ exports.graphicsUtils = index;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/utils":36}],16:[function(require,module,exports){
 /*!
- * @pixi/interaction - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/interaction - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/interaction is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -22445,7 +22462,7 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
         this.autoPreventDefault = options.autoPreventDefault !== undefined ? options.autoPreventDefault : true;
 
         /**
-         * Frequency in milliseconds that the mousemove, mouseover & mouseout interaction events will be checked.
+         * Maximum requency in milliseconds at which pointer over/out states will be checked by {@link tickerUpdate}.
          *
          * @member {number}
          * @default 10
@@ -22516,6 +22533,14 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
          * @member {boolean}
          */
         this.eventsAdded = false;
+
+        /**
+         * Has the system ticker been added?
+         *
+         * @protected
+         * @member {boolean}
+         */
+        this.tickerAdded = false;
 
         /**
          * Is the mouse hovering over the renderer?
@@ -23034,12 +23059,40 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
          * @param {PIXI.interaction.InteractionEvent} event - Interaction event
          */
 
+        this._useSystemTicker = options.useSystemTicker !== undefined ? options.useSystemTicker : true;
+
         this.setTargetElement(this.renderer.view, this.renderer.resolution);
     }
 
     if ( EventEmitter ) InteractionManager.__proto__ = EventEmitter;
     InteractionManager.prototype = Object.create( EventEmitter && EventEmitter.prototype );
     InteractionManager.prototype.constructor = InteractionManager;
+
+    var prototypeAccessors = { useSystemTicker: { configurable: true } };
+
+    /**
+     * Should the InteractionManager automatically add {@link tickerUpdate} to {@link PIXI.Ticker.system}.
+     *
+     * @member {boolean}
+     * @default true
+     */
+    prototypeAccessors.useSystemTicker.get = function ()
+    {
+        return this._useSystemTicker;
+    };
+    prototypeAccessors.useSystemTicker.set = function (useSystemTicker)
+    {
+        this._useSystemTicker = useSystemTicker;
+
+        if (useSystemTicker)
+        {
+            this.addTickerListener();
+        }
+        else
+        {
+            this.removeTickerListener();
+        }
+    };
 
     /**
      * Hit tests a point against the display tree, returning the first interactive object that is hit.
@@ -23079,6 +23132,8 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
     {
         if ( resolution === void 0 ) resolution = 1;
 
+        this.removeTickerListener();
+
         this.removeEvents();
 
         this.interactionDOMElement = element;
@@ -23086,6 +23141,42 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
         this.resolution = resolution;
 
         this.addEvents();
+
+        this.addTickerListener();
+    };
+
+    /**
+     * Add the ticker listener
+     *
+     * @private
+     */
+    InteractionManager.prototype.addTickerListener = function addTickerListener ()
+    {
+        if (this.tickerAdded || !this.interactionDOMElement || !this._useSystemTicker)
+        {
+            return;
+        }
+
+        ticker.Ticker.system.add(this.tickerUpdate, this, ticker.UPDATE_PRIORITY.INTERACTION);
+
+        this.tickerAdded = true;
+    };
+
+    /**
+     * Remove the ticker listener
+     *
+     * @private
+     */
+    InteractionManager.prototype.removeTickerListener = function removeTickerListener ()
+    {
+        if (!this.tickerAdded)
+        {
+            return;
+        }
+
+        ticker.Ticker.system.remove(this.tickerUpdate, this);
+
+        this.tickerAdded = false;
     };
 
     /**
@@ -23095,12 +23186,10 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
      */
     InteractionManager.prototype.addEvents = function addEvents ()
     {
-        if (!this.interactionDOMElement)
+        if (this.eventsAdded || !this.interactionDOMElement)
         {
             return;
         }
-
-        ticker.Ticker.system.add(this.update, this, ticker.UPDATE_PRIORITY.INTERACTION);
 
         if (window.navigator.msPointerEnabled)
         {
@@ -23158,12 +23247,10 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
      */
     InteractionManager.prototype.removeEvents = function removeEvents ()
     {
-        if (!this.interactionDOMElement)
+        if (!this.eventsAdded || !this.interactionDOMElement)
         {
             return;
         }
-
-        ticker.Ticker.system.remove(this.update, this);
 
         if (window.navigator.msPointerEnabled)
         {
@@ -23207,12 +23294,14 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
     };
 
     /**
-     * Updates the state of interactive objects.
+     * Updates the state of interactive objects if at least {@link interactionFrequency}
+     * milliseconds have passed since the last invocation.
+     *
      * Invoked by a throttled ticker update from {@link PIXI.Ticker.system}.
      *
-     * @param {number} deltaTime - time delta since last tick
+     * @param {number} deltaTime - time delta since the last call
      */
-    InteractionManager.prototype.update = function update (deltaTime)
+    InteractionManager.prototype.tickerUpdate = function tickerUpdate (deltaTime)
     {
         this._deltaTime += deltaTime;
 
@@ -23223,6 +23312,14 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
 
         this._deltaTime = 0;
 
+        this.update();
+    };
+
+    /**
+     * Updates the state of interactive objects.
+     */
+    InteractionManager.prototype.update = function update ()
+    {
         if (!this.interactionDOMElement)
         {
             return;
@@ -24107,6 +24204,8 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
     {
         this.removeEvents();
 
+        this.removeTickerListener();
+
         this.removeAllListeners();
 
         this.renderer = null;
@@ -24137,6 +24236,8 @@ var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
         this.search = null;
     };
 
+    Object.defineProperties( InteractionManager.prototype, prototypeAccessors );
+
     return InteractionManager;
 }(utils.EventEmitter));
 
@@ -24157,8 +24258,8 @@ exports.interactiveTarget = interactiveTarget;
 
 },{"@pixi/display":7,"@pixi/math":18,"@pixi/ticker":35,"@pixi/utils":36}],17:[function(require,module,exports){
 /*!
- * @pixi/loaders - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/loaders - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/loaders is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -24470,10 +24571,10 @@ exports.LoaderResource = LoaderResource;
 exports.TextureLoader = TextureLoader;
 
 
-},{"@pixi/core":6,"@pixi/utils":36,"resource-loader":50}],18:[function(require,module,exports){
+},{"@pixi/core":6,"@pixi/utils":36,"resource-loader":51}],18:[function(require,module,exports){
 /*!
- * @pixi/math - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/math - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/math is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -24599,12 +24700,14 @@ var Point = /** @class */ (function () {
      *
      * @param {number} [x=0] - position of the point on the x axis
      * @param {number} [y=x] - position of the point on the y axis
+     * @returns {this} Returns itself.
      */
     Point.prototype.set = function (x, y) {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = x; }
         this.x = x;
         this.y = y;
+        return this;
     };
     return Point;
 }());
@@ -24655,6 +24758,7 @@ var ObservablePoint = /** @class */ (function () {
      *
      * @param {number} [x=0] - position of the point on the x axis
      * @param {number} [y=x] - position of the point on the y axis
+     * @returns {this} Returns itself.
      */
     ObservablePoint.prototype.set = function (x, y) {
         if (x === void 0) { x = 0; }
@@ -24664,6 +24768,7 @@ var ObservablePoint = /** @class */ (function () {
             this._y = y;
             this.cb.call(this.scope);
         }
+        return this;
     };
     /**
      * Copies x and y from the given point
@@ -26398,8 +26503,8 @@ exports.groupD8 = groupD8;
 
 },{}],19:[function(require,module,exports){
 /*!
- * @pixi/mesh-extras - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/mesh-extras - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/mesh-extras is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -27037,8 +27142,7 @@ var NineSlicePlane = /*@__PURE__*/(function (SimplePlane) {
     {
         var vertices = this.vertices;
 
-        var h = this._topHeight + this._bottomHeight;
-        var scale = this._height > h ? 1.0 : this._height / h;
+        var scale = this._getMinScale();
 
         vertices[9] = vertices[11] = vertices[13] = vertices[15] = this._topHeight * scale;
         vertices[17] = vertices[19] = vertices[21] = vertices[23] = this._height - (this._bottomHeight * scale);
@@ -27053,12 +27157,30 @@ var NineSlicePlane = /*@__PURE__*/(function (SimplePlane) {
     {
         var vertices = this.vertices;
 
-        var w = this._leftWidth + this._rightWidth;
-        var scale = this._width > w ? 1.0 : this._width / w;
+        var scale = this._getMinScale();
 
         vertices[2] = vertices[10] = vertices[18] = vertices[26] = this._leftWidth * scale;
         vertices[4] = vertices[12] = vertices[20] = vertices[28] = this._width - (this._rightWidth * scale);
         vertices[6] = vertices[14] = vertices[22] = vertices[30] = this._width;
+    };
+
+    /**
+     * Returns the smaller of a set of vertical and horizontal scale of nine slice corners.
+     *
+     * @return {number} Smaller number of vertical and horizontal scale.
+     * @private
+     */
+    NineSlicePlane.prototype._getMinScale = function _getMinScale ()
+    {
+        var w = this._leftWidth + this._rightWidth;
+        var scaleW = this._width > w ? 1.0 : this._width / w;
+
+        var h = this._topHeight + this._bottomHeight;
+        var scaleH = this._height > h ? 1.0 : this._height / h;
+
+        var scale = Math.min(scaleW, scaleH);
+
+        return scale;
     };
 
     /**
@@ -27204,8 +27326,8 @@ exports.SimpleRope = SimpleRope;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/mesh":20}],20:[function(require,module,exports){
 /*!
- * @pixi/mesh - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/mesh - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/mesh is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -27649,9 +27771,11 @@ var Mesh = /*@__PURE__*/(function (Container) {
 
         if (this._roundPixels)
         {
-            for (var i$1 = 0; i$1 < vertexData.length; i$1++)
+            var resolution = settings.settings.RESOLUTION;
+
+            for (var i$1 = 0; i$1 < vertexData.length; ++i$1)
             {
-                vertexData[i$1] = Math.round(vertexData[i$1]);
+                vertexData[i$1] = Math.round((vertexData[i$1] * resolution | 0) / resolution);
             }
         }
 
@@ -27999,8 +28123,8 @@ exports.MeshMaterial = MeshMaterial;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],21:[function(require,module,exports){
 /*!
- * @pixi/mixin-cache-as-bitmap - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/mixin-cache-as-bitmap - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -28434,8 +28558,8 @@ display.DisplayObject.prototype._cacheAsBitmapDestroy = function _cacheAsBitmapD
 
 },{"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],22:[function(require,module,exports){
 /*!
- * @pixi/mixin-get-child-by-name - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/mixin-get-child-by-name - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/mixin-get-child-by-name is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -28476,8 +28600,8 @@ display.Container.prototype.getChildByName = function getChildByName(name)
 
 },{"@pixi/display":7}],23:[function(require,module,exports){
 /*!
- * @pixi/mixin-get-global-position - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/mixin-get-global-position - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/mixin-get-global-position is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -28519,8 +28643,8 @@ display.DisplayObject.prototype.getGlobalPosition = function getGlobalPosition(p
 
 },{"@pixi/display":7,"@pixi/math":18}],24:[function(require,module,exports){
 /*!
- * @pixi/particles - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/particles - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/particles is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -29146,6 +29270,14 @@ var ParticleRenderer = /*@__PURE__*/(function (ObjectRenderer) {
             } ];
 
         this.shader = core.Shader.from(vertex, fragment, {});
+
+        /**
+         * The WebGL state in which this renderer will work.
+         *
+         * @member {PIXI.State}
+         * @readonly
+         */
+        this.state = core.State.for2d();
     }
 
     if ( ObjectRenderer ) ParticleRenderer.__proto__ = ObjectRenderer;
@@ -29184,7 +29316,8 @@ var ParticleRenderer = /*@__PURE__*/(function (ObjectRenderer) {
         var baseTexture = children[0]._texture.baseTexture;
 
         // if the uvs have not updated then no point rendering just yet!
-        this.renderer.state.setBlendMode(utils.correctBlendMode(container.blendMode, baseTexture.alphaMode));
+        this.state.blendMode = utils.correctBlendMode(container.blendMode, baseTexture.alphaMode);
+        renderer.state.set(this.state);
 
         var gl = renderer.gl;
 
@@ -29502,8 +29635,8 @@ exports.ParticleRenderer = ParticleRenderer;
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/utils":36}],25:[function(require,module,exports){
 (function (global){
 /*!
- * @pixi/polyfill - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/polyfill - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/polyfill is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -29668,10 +29801,10 @@ if (!window.Int32Array)
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"es6-promise-polyfill":38,"object-assign":42}],26:[function(require,module,exports){
+},{"es6-promise-polyfill":38,"object-assign":43}],26:[function(require,module,exports){
 /*!
- * @pixi/prepare - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/prepare - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/prepare is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -29699,11 +29832,11 @@ var text = require('@pixi/text');
 settings.settings.UPLOADS_PER_FRAME = 4;
 
 /**
- * CountLimiter limits the number of items handled by a {@link PIXI.prepare.BasePrepare} to a specified
+ * CountLimiter limits the number of items handled by a {@link PIXI.BasePrepare} to a specified
  * number of items per frame.
  *
  * @class
- * @memberof PIXI.prepare
+ * @memberof PIXI
  */
 var CountLimiter = function CountLimiter(maxItemsPerFrame)
 {
@@ -29742,7 +29875,7 @@ CountLimiter.prototype.allowedToUpload = function allowedToUpload ()
  * The prepare manager provides functionality to upload content to the GPU.
  *
  * BasePrepare handles basic queuing functionality and is extended by
- * {@link PIXI.prepare.Prepare} and {@link PIXI.prepare.CanvasPrepare}
+ * {@link PIXI.Prepare} and {@link PIXI.CanvasPrepare}
  * to provide preparation capabilities specific to their respective renderers.
  *
  * @example
@@ -29759,7 +29892,7 @@ CountLimiter.prototype.allowedToUpload = function allowedToUpload ()
  *
  * @abstract
  * @class
- * @memberof PIXI.prepare
+ * @memberof PIXI
  */
 var BasePrepare = function BasePrepare(renderer)
 {
@@ -29767,7 +29900,7 @@ var BasePrepare = function BasePrepare(renderer)
 
     /**
      * The limiter to be used to control how quickly items are prepared.
-     * @type {PIXI.prepare.CountLimiter|PIXI.prepare.TimeLimiter}
+     * @type {PIXI.CountLimiter|PIXI.TimeLimiter}
      */
     this.limiter = new CountLimiter(settings.settings.UPLOADS_PER_FRAME);
 
@@ -29781,7 +29914,7 @@ var BasePrepare = function BasePrepare(renderer)
     /**
      * The only real difference between CanvasPrepare and Prepare is what they pass
      * to upload hooks. That different parameter is stored here.
-     * @type {PIXI.prepare.CanvasPrepare|PIXI.Renderer}
+     * @type {object}
      * @protected
      */
     this.uploadHookHelper = null;
@@ -29960,7 +30093,7 @@ BasePrepare.prototype.prepareItems = function prepareItems ()
  *
  * @param {Function} addHook - Function call that takes two parameters: `item:*, queue:Array`
  *      function must return `true` if it was able to add item to the queue.
- * @return {PIXI.prepare.BasePrepare} Instance of plugin for chaining.
+ * @return {this} Instance of plugin for chaining.
  */
 BasePrepare.prototype.registerFindHook = function registerFindHook (addHook)
 {
@@ -29977,7 +30110,7 @@ BasePrepare.prototype.registerFindHook = function registerFindHook (addHook)
  *
  * @param {Function} uploadHook - Function call that takes two parameters: `prepare:CanvasPrepare, item:*` and
  *      function must return `true` if it was able to handle upload of item.
- * @return {PIXI.prepare.BasePrepare} Instance of plugin for chaining.
+ * @return {this} Instance of plugin for chaining.
  */
 BasePrepare.prototype.registerUploadHook = function registerUploadHook (uploadHook)
 {
@@ -29994,7 +30127,7 @@ BasePrepare.prototype.registerUploadHook = function registerUploadHook (uploadHo
  *
  * @param {PIXI.DisplayObject|PIXI.Container|PIXI.BaseTexture|PIXI.Texture|PIXI.Graphics|PIXI.Text|*} item - Object to
  *    add to the queue
- * @return {PIXI.prepare.BasePrepare} Instance of plugin for chaining.
+ * @return {this} Instance of plugin for chaining.
  */
 BasePrepare.prototype.add = function add (item)
 {
@@ -30226,13 +30359,35 @@ function findTextStyle(item, queue)
 }
 
 /**
- * The prepare manager provides functionality to upload content to the GPU.
+ * The prepare plugin provides renderer-specific plugins for pre-rendering DisplayObjects. These plugins are useful for
+ * asynchronously preparing and uploading to the GPU assets, textures, graphics waiting to be displayed.
  *
- * An instance of this class is automatically created by default, and can be found at `renderer.plugins.prepare`
+ * Do not instantiate this plugin directly. It is available from the `renderer.plugins` property.
+ * See {@link PIXI.CanvasRenderer#plugins} or {@link PIXI.Renderer#plugins}.
+ * @example
+ * // Create a new application
+ * const app = new PIXI.Application();
+ * document.body.appendChild(app.view);
+ *
+ * // Don't start rendering right away
+ * app.stop();
+ *
+ * // create a display object
+ * const rect = new PIXI.Graphics()
+ *     .beginFill(0x00ff00)
+ *     .drawRect(40, 40, 200, 200);
+ *
+ * // Add to the stage
+ * app.stage.addChild(rect);
+ *
+ * // Don't start rendering until the graphic is uploaded to the GPU
+ * app.renderer.plugins.prepare.upload(app.stage, () => {
+ *     app.start();
+ * });
  *
  * @class
- * @extends PIXI.prepare.BasePrepare
- * @memberof PIXI.prepare
+ * @extends PIXI.BasePrepare
+ * @memberof PIXI
  */
 var Prepare = /*@__PURE__*/(function (BasePrepare) {
     function Prepare(renderer)
@@ -30348,7 +30503,7 @@ function findGraphics(item, queue)
  * number of milliseconds per frame.
  *
  * @class
- * @memberof PIXI.prepare
+ * @memberof PIXI
  */
 var TimeLimiter = function TimeLimiter(maxMilliseconds)
 {
@@ -30383,35 +30538,6 @@ TimeLimiter.prototype.allowedToUpload = function allowedToUpload ()
     return Date.now() - this.frameStart < this.maxMilliseconds;
 };
 
-/**
- * The prepare namespace provides renderer-specific plugins for pre-rendering DisplayObjects. These plugins are useful for
- * asynchronously preparing and uploading to the GPU assets, textures, graphics waiting to be displayed.
- *
- * Do not instantiate these plugins directly. It is available from the `renderer.plugins` property.
- * See {@link PIXI.CanvasRenderer#plugins} or {@link PIXI.Renderer#plugins}.
- * @example
- * // Create a new application
- * const app = new PIXI.Application();
- * document.body.appendChild(app.view);
- *
- * // Don't start rendering right away
- * app.stop();
- *
- * // create a display object
- * const rect = new PIXI.Graphics()
- *     .beginFill(0x00ff00)
- *     .drawRect(40, 40, 200, 200);
- *
- * // Add to the stage
- * app.stage.addChild(rect);
- *
- * // Don't start rendering until the graphic is uploaded to the GPU
- * app.renderer.plugins.prepare.upload(app.stage, () => {
- *     app.start();
- * });
- * @namespace PIXI.prepare
- */
-
 exports.BasePrepare = BasePrepare;
 exports.CountLimiter = CountLimiter;
 exports.Prepare = Prepare;
@@ -30420,8 +30546,8 @@ exports.TimeLimiter = TimeLimiter;
 
 },{"@pixi/core":6,"@pixi/display":7,"@pixi/graphics":15,"@pixi/settings":28,"@pixi/text":34,"@pixi/ticker":35}],27:[function(require,module,exports){
 /*!
- * @pixi/runner - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/runner - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/runner is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -30624,8 +30750,8 @@ exports.Runner = Runner;
 
 },{}],28:[function(require,module,exports){
 /*!
- * @pixi/settings - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/settings - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/settings is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -30636,7 +30762,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var isMobile = _interopDefault(require('ismobilejs'));
+var isMobileCall = _interopDefault(require('ismobilejs'));
+
+// The ESM/CJS versions of ismobilejs only
+
+var isMobile = isMobileCall();
 
 /**
  * The maximum recommended texture units to use.
@@ -30948,8 +31078,8 @@ exports.settings = settings;
 
 },{"ismobilejs":40}],29:[function(require,module,exports){
 /*!
- * @pixi/sprite-animated - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/sprite-animated - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/sprite-animated is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -31212,7 +31342,8 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
 
         if (this._currentTime < 0 && !this.loop)
         {
-            this.gotoAndStop(0);
+            this._currentTime = 0;
+            this.stop();
 
             if (this.onComplete)
             {
@@ -31221,7 +31352,8 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
         }
         else if (this._currentTime >= this._textures.length && !this.loop)
         {
-            this.gotoAndStop(this._textures.length - 1);
+            this._currentTime = this._textures.length - 1;
+            this.stop();
 
             if (this.onComplete)
             {
@@ -31409,8 +31541,8 @@ exports.AnimatedSprite = AnimatedSprite;
 
 },{"@pixi/core":6,"@pixi/sprite":31,"@pixi/ticker":35}],30:[function(require,module,exports){
 /*!
- * @pixi/sprite-tiling - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/sprite-tiling - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/sprite-tiling is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -31685,7 +31817,7 @@ var TilingSprite = /*@__PURE__*/(function (Sprite) {
      * The source can be - frame id, image url, video url, canvas element, video element, base texture
      *
      * @static
-     * @param {number|string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source - Source to create texture from
+     * @param {string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source - Source to create texture from
      * @param {number} width - the width of the tiling sprite
      * @param {number} height - the height of the tiling sprite
      * @return {PIXI.TilingSprite} The newly created texture
@@ -31806,6 +31938,14 @@ var TilingSpriteRenderer = /*@__PURE__*/(function (ObjectRenderer) {
         this.simpleShader = core.Shader.from(vertex, fragmentSimple, uniforms);
 
         this.quad = new core.QuadUv();
+
+        /**
+         * The WebGL state in which this renderer will work.
+         *
+         * @member {PIXI.State}
+         * @readonly
+         */
+        this.state = core.State.for2d();
     }
 
     if ( ObjectRenderer ) TilingSpriteRenderer.__proto__ = ObjectRenderer;
@@ -31906,7 +32046,8 @@ var TilingSpriteRenderer = /*@__PURE__*/(function (ObjectRenderer) {
         renderer.shader.bind(shader);
         renderer.geometry.bind(quad);// , renderer.shader.getGLShader());
 
-        renderer.state.setBlendMode(utils.correctBlendMode(ts.blendMode, baseTex.alphaMode));
+        this.state.blendMode = utils.correctBlendMode(ts.blendMode, baseTex.alphaMode);
+        renderer.state.set(this.state);
         renderer.geometry.draw(this.renderer.gl.TRIANGLES, 6, 0);
     };
 
@@ -31919,8 +32060,8 @@ exports.TilingSpriteRenderer = TilingSpriteRenderer;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/math":18,"@pixi/sprite":31,"@pixi/utils":36}],31:[function(require,module,exports){
 /*!
- * @pixi/sprite - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/sprite - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/sprite is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -32237,9 +32378,11 @@ var Sprite = /*@__PURE__*/(function (Container) {
 
         if (this._roundPixels)
         {
-            for (var i = 0; i < 8; i++)
+            var resolution = settings.settings.RESOLUTION;
+
+            for (var i = 0; i < vertexData.length; ++i)
             {
-                vertexData[i] = Math.round(vertexData[i]);
+                vertexData[i] = Math.round((vertexData[i] * resolution | 0) / resolution);
             }
         }
     };
@@ -32438,7 +32581,7 @@ var Sprite = /*@__PURE__*/(function (Container) {
      * The source can be - frame id, image url, video url, canvas element, video element, base texture
      *
      * @static
-     * @param {number|string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source Source to create texture from
+     * @param {string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source Source to create texture from
      * @param {object} [options] See {@link PIXI.BaseTexture}'s constructor for options.
      * @return {PIXI.Sprite} The newly created sprite
      */
@@ -32608,8 +32751,8 @@ exports.Sprite = Sprite;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],32:[function(require,module,exports){
 /*!
- * @pixi/spritesheet - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/spritesheet - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/spritesheet is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -33029,8 +33172,8 @@ exports.SpritesheetLoader = SpritesheetLoader;
 
 },{"@pixi/core":6,"@pixi/loaders":17,"@pixi/math":18,"@pixi/utils":36}],33:[function(require,module,exports){
 /*!
- * @pixi/text-bitmap - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/text-bitmap - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/text-bitmap is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -33729,6 +33872,7 @@ BitmapFontLoader.add = function add ()
 BitmapFontLoader.dirname = function dirname (url)
 {
     var dir = url
+        .replace(/\\/g, '/') // convert windows notation to UNIX notation, URL-safe because it's a forbidden character
         .replace(/\/$/, '') // replace trailing slash
         .replace(/\/[^\/]*$/, ''); // remove everything after the last
 
@@ -33870,8 +34014,8 @@ exports.BitmapText = BitmapText;
 
 },{"@pixi/core":6,"@pixi/display":7,"@pixi/loaders":17,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],34:[function(require,module,exports){
 /*!
- * @pixi/text - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/text - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/text is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -34909,7 +35053,7 @@ TextMetrics.wordWrap = function wordWrap (text, style, canvas)
             if (TextMetrics.canBreakWords(token, style.breakWords))
             {
                 // break word into characters
-                var characters = token.split('');
+                var characters = TextMetrics.wordWrapSplit(token);
 
                 // loop the characters
                 for (var j = 0; j < characters.length; j++)
@@ -35190,12 +35334,12 @@ TextMetrics.tokenize = function tokenize (text)
 };
 
 /**
- * This method exists to be easily overridden
+ * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
+ *
  * It allows one to customise which words should break
  * Examples are if the token is CJK or numbers.
  * It must return a boolean.
  *
- * @private
  * @param  {string}  token   The token
  * @param  {boolean}  breakWords  The style attr break words
  * @return {boolean} whether to break word or not
@@ -35206,13 +35350,13 @@ TextMetrics.canBreakWords = function canBreakWords (token, breakWords)
 };
 
 /**
- * This method exists to be easily overridden
+ * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
+ *
  * It allows one to determine whether a pair of characters
  * should be broken by newlines
  * For example certain characters in CJK langs or numbers.
  * It must return a boolean.
  *
- * @private
  * @param  {string}  char  The character
  * @param  {string}  nextChar  The next character
  * @param  {string}  token The token/word the characters are from
@@ -35223,6 +35367,25 @@ TextMetrics.canBreakWords = function canBreakWords (token, breakWords)
 TextMetrics.canBreakChars = function canBreakChars (char, nextChar, token, index, breakWords) // eslint-disable-line no-unused-vars
 {
     return true;
+};
+
+/**
+ * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
+ *
+ * It is called when a token (usually a word) has to be split into separate pieces
+ * in order to determine the point to break a word.
+ * It must return an array of characters.
+ *
+ * @example
+ * // Correctly splits emojis, eg "🤪🤪" will result in two element array, each with one emoji.
+ * TextMetrics.wordWrapSplit = (token) => [...token];
+ *
+ * @param  {string}  token The token to split
+ * @return {string[]} The characters of the token
+ */
+TextMetrics.wordWrapSplit = function wordWrapSplit (token)
+{
+    return token.split('');
 };
 
 /**
@@ -35366,8 +35529,14 @@ var canvas = (function () {
     {
         // OffscreenCanvas2D measureText can be up to 40% faster.
         var c = new OffscreenCanvas(0, 0);
+        var context = c.getContext('2d');
 
-        return c.getContext('2d') ? c : document.createElement('canvas');
+        if (context && context.measureText)
+        {
+            return c;
+        }
+
+        return document.createElement('canvas');
     }
     catch (ex)
     {
@@ -35915,8 +36084,12 @@ var Text = /*@__PURE__*/(function (Sprite) {
         var currentIteration;
         var stop;
 
-        var width = Math.ceil(this.canvas.width / this._resolution);
-        var height = Math.ceil(this.canvas.height / this._resolution);
+        // a dropshadow will enlarge the canvas and result in the gradient being
+        // generated with the incorrect dimensions
+        var dropShadowCorrection = (style.dropShadow) ? style.dropShadowDistance : 0;
+
+        var width = Math.ceil(this.canvas.width / this._resolution) - dropShadowCorrection;
+        var height = Math.ceil(this.canvas.height / this._resolution) - dropShadowCorrection;
 
         // make a copy of the style settings, so we can manipulate them later
         var fill = style.fill.slice();
@@ -36157,8 +36330,8 @@ exports.TextStyle = TextStyle;
 
 },{"@pixi/core":6,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],35:[function(require,module,exports){
 /*!
- * @pixi/ticker - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/ticker - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/ticker is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -36630,6 +36803,26 @@ var Ticker = /** @class */ (function () {
         }
         return this;
     };
+    Object.defineProperty(Ticker.prototype, "count", {
+        /**
+         * Counts the number of listeners on this ticker.
+         *
+         * @returns {number} The number of listeners on this ticker
+         */
+        get: function () {
+            if (!this._head) {
+                return 0;
+            }
+            var count = 0;
+            var current = this._head;
+            while ((current = current.next)) {
+                count++;
+            }
+            return count;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Starts the ticker. If the ticker has listeners
      * a new animation frame is requested at this point.
@@ -36988,8 +37181,8 @@ exports.TickerPlugin = TickerPlugin;
 
 },{"@pixi/settings":28}],36:[function(require,module,exports){
 /*!
- * @pixi/utils - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * @pixi/utils - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * @pixi/utils is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -37003,7 +37196,8 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var settings = require('@pixi/settings');
 var eventemitter3 = _interopDefault(require('eventemitter3'));
 var earcut = _interopDefault(require('earcut'));
-var _url = _interopDefault(require('url'));
+var _url = require('url');
+var _url__default = _interopDefault(_url);
 var constants = require('@pixi/constants');
 
 /**
@@ -37017,7 +37211,6 @@ var constants = require('@pixi/constants');
  * @example `@2x`
  */
 settings.settings.RETINA_PREFIX = /@([0-9\.]+)x/;
-
 /**
  * Should the `failIfMajorPerformanceCaveat` flag be enabled as a context option used in the `isWebGLSupported` function.
  * For most scenarios this should be left as true, as otherwise the user may have a poor experience.
@@ -37032,19 +37225,16 @@ settings.settings.RETINA_PREFIX = /@([0-9\.]+)x/;
 settings.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
 
 var saidHello = false;
-var VERSION = '5.2.0';
-
+var VERSION = '5.2.1';
 /**
  * Skips the hello message of renderers that are created after this is run.
  *
  * @function skipHello
  * @memberof PIXI.utils
  */
-function skipHello()
-{
+function skipHello() {
     saidHello = true;
 }
-
 /**
  * Logs out the version and renderer information for this running instance of PIXI.
  * If you don't want to see this message you can run `PIXI.utils.skipHello()` before
@@ -37055,17 +37245,14 @@ function skipHello()
  * @memberof PIXI.utils
  * @param {string} type - The string renderer type to log.
  */
-function sayHello(type)
-{
-    if (saidHello)
-    {
+function sayHello(type) {
+    var _a;
+    if (saidHello) {
         return;
     }
-
-    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
-    {
+    if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
         var args = [
-            ("\n %c %c %c PixiJS " + VERSION + " - ✰ " + type + " ✰  %c  %c  http://www.pixijs.com/  %c %c ♥%c♥%c♥ \n\n"),
+            "\n %c %c %c PixiJS " + VERSION + " - \u2730 " + type + " \u2730  %c  %c  http://www.pixijs.com/  %c %c \u2665%c\u2665%c\u2665 \n\n",
             'background: #ff66a5; padding:5px 0;',
             'background: #ff66a5; padding:5px 0;',
             'color: #ff66a5; background: #030307; padding:5px 0;',
@@ -37075,19 +37262,15 @@ function sayHello(type)
             'color: #ff2424; background: #fff; padding:5px 0;',
             'color: #ff2424; background: #fff; padding:5px 0;',
             'color: #ff2424; background: #fff; padding:5px 0;' ];
-
-        window.console.log.apply(console, args);
+        (_a = window.console).log.apply(_a, args);
     }
-    else if (window.console)
-    {
-        window.console.log(("PixiJS " + VERSION + " - " + type + " - http://www.pixijs.com/"));
+    else if (window.console) {
+        window.console.log("PixiJS " + VERSION + " - " + type + " - http://www.pixijs.com/");
     }
-
     saidHello = true;
 }
 
 var supported;
-
 /**
  * Helper for checking for WebGL support.
  *
@@ -37095,51 +37278,35 @@ var supported;
  * @function isWebGLSupported
  * @return {boolean} Is WebGL supported.
  */
-function isWebGLSupported()
-{
-    if (typeof supported === 'undefined')
-    {
-        supported = (function supported()
-        {
+function isWebGLSupported() {
+    if (typeof supported === 'undefined') {
+        supported = (function supported() {
             var contextOptions = {
                 stencil: true,
                 failIfMajorPerformanceCaveat: settings.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT,
             };
-
-            try
-            {
-                if (!window.WebGLRenderingContext)
-                {
+            try {
+                if (!window.WebGLRenderingContext) {
                     return false;
                 }
-
                 var canvas = document.createElement('canvas');
-                var gl = canvas.getContext('webgl', contextOptions)
-                    || canvas.getContext('experimental-webgl', contextOptions);
-
+                var gl = (canvas.getContext('webgl', contextOptions)
+                    || canvas.getContext('experimental-webgl', contextOptions));
                 var success = !!(gl && gl.getContextAttributes().stencil);
-
-                if (gl)
-                {
+                if (gl) {
                     var loseContext = gl.getExtension('WEBGL_lose_context');
-
-                    if (loseContext)
-                    {
+                    if (loseContext) {
                         loseContext.loseContext();
                     }
                 }
-
                 gl = null;
-
                 return success;
             }
-            catch (e)
-            {
+            catch (e) {
                 return false;
             }
         })();
     }
-
     return supported;
 }
 
@@ -37154,17 +37321,13 @@ function isWebGLSupported()
  * @param  {number[]} [out=[]] If supplied, this array will be used rather than returning a new one
  * @return {number[]} An array representing the [R, G, B] of the color where all values are floats.
  */
-function hex2rgb(hex, out)
-{
+function hex2rgb(hex, out) {
     out = out || [];
-
     out[0] = ((hex >> 16) & 0xFF) / 255;
     out[1] = ((hex >> 8) & 0xFF) / 255;
     out[2] = (hex & 0xFF) / 255;
-
     return out;
 }
-
 /**
  * Converts a hexadecimal color number to a string.
  *
@@ -37175,14 +37338,11 @@ function hex2rgb(hex, out)
  * @param {number} hex - Number in hex (e.g., `0xffffff`)
  * @return {string} The string color (e.g., `"#ffffff"`).
  */
-function hex2string(hex)
-{
-    hex = hex.toString(16);
-    hex = '000000'.substr(0, 6 - hex.length) + hex;
-
-    return ("#" + hex);
+function hex2string(hex) {
+    var hexString = hex.toString(16);
+    hexString = '000000'.substr(0, 6 - hexString.length) + hexString;
+    return "#" + hexString;
 }
-
 /**
  * Converts a hexadecimal string to a hexadecimal color number.
  *
@@ -37193,16 +37353,12 @@ function hex2string(hex)
  * @param {string} The string color (e.g., `"#ffffff"`)
  * @return {number} Number in hexadecimal.
  */
-function string2hex(string)
-{
-    if (typeof string === 'string' && string[0] === '#')
-    {
+function string2hex(string) {
+    if (typeof string === 'string' && string[0] === '#') {
         string = string.substr(1);
     }
-
     return parseInt(string, 16);
 }
-
 /**
  * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
  *
@@ -37213,8 +37369,7 @@ function string2hex(string)
  * @param {number[]} rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
  * @return {number} Number in hexadecimal.
  */
-function rgb2hex(rgb)
-{
+function rgb2hex(rgb) {
     return (((rgb[0] * 255) << 16) + ((rgb[1] * 255) << 8) + (rgb[2] * 255 | 0));
 }
 
@@ -37224,36 +37379,26 @@ function rgb2hex(rgb)
  * @memberof PIXI.utils
  * @function mapPremultipliedBlendModes
  * @private
- * @param {Array<number[]>} [array] - The array to output into.
  * @return {Array<number[]>} Mapped modes.
  */
-function mapPremultipliedBlendModes()
-{
+function mapPremultipliedBlendModes() {
     var pm = [];
     var npm = [];
-
-    for (var i = 0; i < 32; i++)
-    {
+    for (var i = 0; i < 32; i++) {
         pm[i] = i;
         npm[i] = i;
     }
-
     pm[constants.BLEND_MODES.NORMAL_NPM] = constants.BLEND_MODES.NORMAL;
     pm[constants.BLEND_MODES.ADD_NPM] = constants.BLEND_MODES.ADD;
     pm[constants.BLEND_MODES.SCREEN_NPM] = constants.BLEND_MODES.SCREEN;
-
     npm[constants.BLEND_MODES.NORMAL] = constants.BLEND_MODES.NORMAL_NPM;
     npm[constants.BLEND_MODES.ADD] = constants.BLEND_MODES.ADD_NPM;
     npm[constants.BLEND_MODES.SCREEN] = constants.BLEND_MODES.SCREEN_NPM;
-
     var array = [];
-
     array.push(npm);
     array.push(pm);
-
     return array;
 }
-
 /**
  * maps premultiply flag and blendMode to adjusted blendMode
  * @memberof PIXI.utils
@@ -37261,7 +37406,6 @@ function mapPremultipliedBlendModes()
  * @type {Array<number[]>}
  */
 var premultiplyBlendMode = mapPremultipliedBlendModes();
-
 /**
  * changes blendMode according to texture format
  *
@@ -37271,11 +37415,9 @@ var premultiplyBlendMode = mapPremultipliedBlendModes();
  * @param {boolean} premultiplied  whether source is premultiplied
  * @returns {number} true blend mode for this texture
  */
-function correctBlendMode(blendMode, premultiplied)
-{
+function correctBlendMode(blendMode, premultiplied) {
     return premultiplyBlendMode[premultiplied ? 1 : 0][blendMode];
 }
-
 /**
  * combines rgb and alpha to out array
  *
@@ -37287,26 +37429,21 @@ function correctBlendMode(blendMode, premultiplied)
  * @param {boolean} [premultiply=true] do premultiply it
  * @returns {Float32Array} vec4 rgba
  */
-function premultiplyRgba(rgb, alpha, out, premultiply)
-{
+function premultiplyRgba(rgb, alpha, out, premultiply) {
     out = out || new Float32Array(4);
-    if (premultiply || premultiply === undefined)
-    {
+    if (premultiply || premultiply === undefined) {
         out[0] = rgb[0] * alpha;
         out[1] = rgb[1] * alpha;
         out[2] = rgb[2] * alpha;
     }
-    else
-    {
+    else {
         out[0] = rgb[0];
         out[1] = rgb[1];
         out[2] = rgb[2];
     }
     out[3] = alpha;
-
     return out;
 }
-
 /**
  * premultiplies tint
  *
@@ -37316,27 +37453,21 @@ function premultiplyRgba(rgb, alpha, out, premultiply)
  * @param {number} alpha floating point alpha (0.0-1.0)
  * @returns {number} tint multiplied by alpha
  */
-function premultiplyTint(tint, alpha)
-{
-    if (alpha === 1.0)
-    {
+function premultiplyTint(tint, alpha) {
+    if (alpha === 1.0) {
         return (alpha * 255 << 24) + tint;
     }
-    if (alpha === 0.0)
-    {
+    if (alpha === 0.0) {
         return 0;
     }
     var R = ((tint >> 16) & 0xFF);
     var G = ((tint >> 8) & 0xFF);
     var B = (tint & 0xFF);
-
     R = ((R * alpha) + 0.5) | 0;
     G = ((G * alpha) + 0.5) | 0;
     B = ((B * alpha) + 0.5) | 0;
-
     return (alpha * 255 << 24) + (R << 16) + (G << 8) + B;
 }
-
 /**
  * converts integer tint and float alpha to vec4 form, premultiplies by default
  *
@@ -37348,20 +37479,17 @@ function premultiplyTint(tint, alpha)
  * @param {boolean} [premultiply=true] do premultiply it
  * @returns {Float32Array} vec4 rgba
  */
-function premultiplyTintToRgba(tint, alpha, out, premultiply)
-{
+function premultiplyTintToRgba(tint, alpha, out, premultiply) {
     out = out || new Float32Array(4);
     out[0] = ((tint >> 16) & 0xFF) / 255.0;
     out[1] = ((tint >> 8) & 0xFF) / 255.0;
     out[2] = (tint & 0xFF) / 255.0;
-    if (premultiply || premultiply === undefined)
-    {
+    if (premultiply || premultiply === undefined) {
         out[0] *= alpha;
         out[1] *= alpha;
         out[2] *= alpha;
     }
     out[3] = alpha;
-
     return out;
 }
 
@@ -37374,23 +37502,16 @@ function premultiplyTintToRgba(tint, alpha, out, premultiply)
  * @param {Uint16Array|Uint32Array} [outBuffer] - Buffer for output, length has to be `6 * size`
  * @return {Uint16Array|Uint32Array} - Resulting index buffer
  */
-function createIndicesForQuads(size, outBuffer)
-{
-    if ( outBuffer === void 0 ) outBuffer = null;
-
+function createIndicesForQuads(size, outBuffer) {
+    if (outBuffer === void 0) { outBuffer = null; }
     // the total number of indices in our array, there are 6 points per quad.
     var totalIndices = size * 6;
-
     outBuffer = outBuffer || new Uint16Array(totalIndices);
-
-    if (outBuffer.length !== totalIndices)
-    {
-        throw new Error(("Out buffer length is incorrect, got " + (outBuffer.length) + " and expected " + totalIndices));
+    if (outBuffer.length !== totalIndices) {
+        throw new Error("Out buffer length is incorrect, got " + outBuffer.length + " and expected " + totalIndices);
     }
-
     // fill the indices with the quads to draw
-    for (var i = 0, j = 0; i < totalIndices; i += 6, j += 4)
-    {
+    for (var i = 0, j = 0; i < totalIndices; i += 6, j += 4) {
         outBuffer[i + 0] = j + 0;
         outBuffer[i + 1] = j + 1;
         outBuffer[i + 2] = j + 2;
@@ -37398,8 +37519,119 @@ function createIndicesForQuads(size, outBuffer)
         outBuffer[i + 4] = j + 2;
         outBuffer[i + 5] = j + 3;
     }
-
     return outBuffer;
+}
+
+function getBufferType(array) {
+    if (array.BYTES_PER_ELEMENT === 4) {
+        if (array instanceof Float32Array) {
+            return 'Float32Array';
+        }
+        else if (array instanceof Uint32Array) {
+            return 'Uint32Array';
+        }
+        return 'Int32Array';
+    }
+    else if (array.BYTES_PER_ELEMENT === 2) {
+        if (array instanceof Uint16Array) {
+            return 'Uint16Array';
+        }
+    }
+    else if (array.BYTES_PER_ELEMENT === 1) {
+        if (array instanceof Uint8Array) {
+            return 'Uint8Array';
+        }
+    }
+    // TODO map out the rest of the array elements!
+    return null;
+}
+
+/* eslint-disable object-shorthand */
+var map = { Float32Array: Float32Array, Uint32Array: Uint32Array, Int32Array: Int32Array, Uint8Array: Uint8Array };
+function interleaveTypedArrays(arrays, sizes) {
+    var outSize = 0;
+    var stride = 0;
+    var views = {};
+    for (var i = 0; i < arrays.length; i++) {
+        stride += sizes[i];
+        outSize += arrays[i].length;
+    }
+    var buffer = new ArrayBuffer(outSize * 4);
+    var out = null;
+    var littleOffset = 0;
+    for (var i = 0; i < arrays.length; i++) {
+        var size = sizes[i];
+        var array = arrays[i];
+        /*
+        @todo This is unsafe casting but consistent with how the code worked previously. Should it stay this way
+              or should and `getBufferTypeUnsafe` function be exposed that throws an Error if unsupported type is passed?
+         */
+        var type = getBufferType(array);
+        if (!views[type]) {
+            views[type] = new map[type](buffer);
+        }
+        out = views[type];
+        for (var j = 0; j < array.length; j++) {
+            var indexStart = ((j / size | 0) * stride) + littleOffset;
+            var index = j % size;
+            out[indexStart + index] = array[j];
+        }
+        littleOffset += size;
+    }
+    return new Float32Array(buffer);
+}
+
+// Taken from the bit-twiddle package
+/**
+ * Rounds to next power of two.
+ *
+ * @function nextPow2
+ * @memberof PIXI.utils
+ * @param {number} v input value
+ * @return {number}
+ */
+function nextPow2(v) {
+    v += v === 0 ? 1 : 0;
+    --v;
+    v |= v >>> 1;
+    v |= v >>> 2;
+    v |= v >>> 4;
+    v |= v >>> 8;
+    v |= v >>> 16;
+    return v + 1;
+}
+/**
+ * Checks if a number is a power of two.
+ *
+ * @function isPow2
+ * @memberof PIXI.utils
+ * @param {number} v input value
+ * @return {boolean} `true` if value is power of two
+ */
+function isPow2(v) {
+    return !(v & (v - 1)) && (!!v);
+}
+/**
+ * Computes ceil of log base 2
+ *
+ * @function log2
+ * @memberof PIXI.utils
+ * @param {number} v input value
+ * @return {number} logarithm base 2
+ */
+function log2(v) {
+    var r = (v > 0xFFFF ? 1 : 0) << 4;
+    v >>>= r;
+    var shift = (v > 0xFF ? 1 : 0) << 3;
+    v >>>= shift;
+    r |= shift;
+    shift = (v > 0xF ? 1 : 0) << 2;
+    v >>>= shift;
+    r |= shift;
+    shift = (v > 0x3 ? 1 : 0) << 1;
+    v >>>= shift;
+    r |= shift;
+    return r | (v >> 1);
 }
 
 /**
@@ -37411,40 +37643,18 @@ function createIndicesForQuads(size, outBuffer)
  * @param {number} startIdx starting index
  * @param {number} removeCount how many to remove
  */
-function removeItems(arr, startIdx, removeCount)
-{
+function removeItems(arr, startIdx, removeCount) {
     var length = arr.length;
     var i;
-
-    if (startIdx >= length || removeCount === 0)
-    {
+    if (startIdx >= length || removeCount === 0) {
         return;
     }
-
     removeCount = (startIdx + removeCount > length ? length - startIdx : removeCount);
-
     var len = length - removeCount;
-
-    for (i = startIdx; i < len; ++i)
-    {
+    for (i = startIdx; i < len; ++i) {
         arr[i] = arr[i + removeCount];
     }
-
     arr.length = len;
-}
-
-var nextUid = 0;
-
-/**
- * Gets the next unique identifier
- *
- * @memberof PIXI.utils
- * @function uid
- * @return {number} The next unique identifier to use.
- */
-function uid()
-{
-    return ++nextUid;
 }
 
 /**
@@ -37455,72 +37665,65 @@ function uid()
  * @param {number} n - the number to check the sign of
  * @returns {number} 0 if `n` is 0, -1 if `n` is negative, 1 if `n` is positive
  */
-function sign(n)
-{
-    if (n === 0) { return 0; }
-
+function sign(n) {
+    if (n === 0)
+        { return 0; }
     return n < 0 ? -1 : 1;
 }
 
-// Taken from the bit-twiddle package
-
+var nextUid = 0;
 /**
- * Rounds to next power of two.
+ * Gets the next unique identifier
  *
- * @function nextPow2
  * @memberof PIXI.utils
- * @param {number} v input value
- * @return {number}
+ * @function uid
+ * @return {number} The next unique identifier to use.
  */
-function nextPow2(v)
-{
-    v += v === 0;
-    --v;
-    v |= v >>> 1;
-    v |= v >>> 2;
-    v |= v >>> 4;
-    v |= v >>> 8;
-    v |= v >>> 16;
-
-    return v + 1;
+function uid() {
+    return ++nextUid;
 }
 
+// A map of warning messages already fired
+var warnings = {};
 /**
- * Checks if a number is a power of two.
+ * Helper for warning developers about deprecated features & settings.
+ * A stack track for warnings is given; useful for tracking-down where
+ * deprecated methods/properties/classes are being used within the code.
  *
- * @function isPow2
  * @memberof PIXI.utils
- * @param {number} v input value
- * @return {boolean} `true` if value is power of two
+ * @function deprecation
+ * @param {string} version - The version where the feature became deprecated
+ * @param {string} message - Message should include what is deprecated, where, and the new solution
+ * @param {number} [ignoreDepth=3] - The number of steps to ignore at the top of the error stack
+ *        this is mostly to ignore internal deprecation calls.
  */
-function isPow2(v)
-{
-    return !(v & (v - 1)) && (!!v);
-}
-
-/**
- * Computes ceil of log base 2
- *
- * @function log2
- * @memberof PIXI.utils
- * @param {number} v input value
- * @return {number} logarithm base 2
- */
-function log2(v)
-{
-    var r = (v > 0xFFFF) << 4;
-
-    v >>>= r;
-
-    var shift = (v > 0xFF) << 3;
-
-    v >>>= shift; r |= shift;
-    shift = (v > 0xF) << 2;
-    v >>>= shift; r |= shift;
-    shift = (v > 0x3) << 1;
-    v >>>= shift; r |= shift;
-
-    return r | (v >> 1);
+function deprecation(version, message, ignoreDepth) {
+    if (ignoreDepth === void 0) { ignoreDepth = 3; }
+    // Ignore duplicat
+    if (warnings[message]) {
+        return;
+    }
+    /* eslint-disable no-console */
+    var stack = new Error().stack;
+    // Handle IE < 10 and Safari < 6
+    if (typeof stack === 'undefined') {
+        console.warn('PixiJS Deprecation Warning: ', message + "\nDeprecated since v" + version);
+    }
+    else {
+        // chop off the stack trace which includes PixiJS internal calls
+        stack = stack.split('\n').splice(ignoreDepth).join('\n');
+        if (console.groupCollapsed) {
+            console.groupCollapsed('%cPixiJS Deprecation Warning: %c%s', 'color:#614108;background:#fffbe6', 'font-weight:normal;color:#614108;background:#fffbe6', message + "\nDeprecated since v" + version);
+            console.warn(stack);
+            console.groupEnd();
+        }
+        else {
+            console.warn('PixiJS Deprecation Warning: ', message + "\nDeprecated since v" + version);
+            console.warn(stack);
+        }
+    }
+    /* eslint-enable no-console */
+    warnings[message] = true;
 }
 
 /**
@@ -37532,7 +37735,6 @@ function log2(v)
  * @type {Object}
  */
 var ProgramCache = {};
-
 /**
  * @todo Describe property usage
  *
@@ -37542,7 +37744,6 @@ var ProgramCache = {};
  * @type {Object}
  */
 var TextureCache = Object.create(null);
-
 /**
  * @todo Describe property usage
  *
@@ -37551,7 +37752,6 @@ var TextureCache = Object.create(null);
  * @memberof PIXI.utils
  * @type {Object}
  */
-
 var BaseTextureCache = Object.create(null);
 /**
  * Destroys all texture in the cache
@@ -37559,39 +37759,118 @@ var BaseTextureCache = Object.create(null);
  * @memberof PIXI.utils
  * @function destroyTextureCache
  */
-function destroyTextureCache()
-{
+function destroyTextureCache() {
     var key;
-
-    for (key in TextureCache)
-    {
+    for (key in TextureCache) {
         TextureCache[key].destroy();
     }
-    for (key in BaseTextureCache)
-    {
+    for (key in BaseTextureCache) {
         BaseTextureCache[key].destroy();
     }
 }
-
 /**
  * Removes all textures from cache, but does not destroy them
  *
  * @memberof PIXI.utils
  * @function clearTextureCache
  */
-function clearTextureCache()
-{
+function clearTextureCache() {
     var key;
-
-    for (key in TextureCache)
-    {
+    for (key in TextureCache) {
         delete TextureCache[key];
     }
-    for (key in BaseTextureCache)
-    {
+    for (key in BaseTextureCache) {
         delete BaseTextureCache[key];
     }
 }
+
+/**
+ * Creates a Canvas element of the given size to be used as a target for rendering to.
+ *
+ * @class
+ * @memberof PIXI.utils
+ */
+var CanvasRenderTarget = /** @class */ (function () {
+    /**
+     * @param {number} width - the width for the newly created canvas
+     * @param {number} height - the height for the newly created canvas
+     * @param {number} [resolution=1] - The resolution / device pixel ratio of the canvas
+     */
+    function CanvasRenderTarget(width, height, resolution) {
+        /**
+         * The Canvas object that belongs to this CanvasRenderTarget.
+         *
+         * @member {HTMLCanvasElement}
+         */
+        this.canvas = document.createElement('canvas');
+        /**
+         * A CanvasRenderingContext2D object representing a two-dimensional rendering context.
+         *
+         * @member {CanvasRenderingContext2D}
+         */
+        this.context = this.canvas.getContext('2d');
+        this.resolution = resolution || settings.settings.RESOLUTION;
+        this.resize(width, height);
+    }
+    /**
+     * Clears the canvas that was created by the CanvasRenderTarget class.
+     *
+     * @private
+     */
+    CanvasRenderTarget.prototype.clear = function () {
+        this.context.setTransform(1, 0, 0, 1, 0, 0);
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    };
+    /**
+     * Resizes the canvas to the specified width and height.
+     *
+     * @param {number} width - the new width of the canvas
+     * @param {number} height - the new height of the canvas
+     */
+    CanvasRenderTarget.prototype.resize = function (width, height) {
+        this.canvas.width = width * this.resolution;
+        this.canvas.height = height * this.resolution;
+    };
+    /**
+     * Destroys this canvas.
+     *
+     */
+    CanvasRenderTarget.prototype.destroy = function () {
+        this.context = null;
+        this.canvas = null;
+    };
+    Object.defineProperty(CanvasRenderTarget.prototype, "width", {
+        /**
+         * The width of the canvas buffer in pixels.
+         *
+         * @member {number}
+         */
+        get: function () {
+            return this.canvas.width;
+        },
+        set: function (val) {
+            this.canvas.width = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(CanvasRenderTarget.prototype, "height", {
+        /**
+         * The height of the canvas buffer in pixels.
+         *
+         * @member {number}
+         */
+        get: function () {
+            return this.canvas.height;
+        },
+        set: function (val) {
+            this.canvas.height = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return CanvasRenderTarget;
+}());
 
 /**
  * Trim transparent borders from a canvas
@@ -37601,18 +37880,14 @@ function clearTextureCache()
  * @param {HTMLCanvasElement} canvas - the canvas to trim
  * @returns {object} Trim data
  */
-function trimCanvas(canvas)
-{
+function trimCanvas(canvas) {
     // https://gist.github.com/remy/784508
-
     var width = canvas.width;
     var height = canvas.height;
-
     var context = canvas.getContext('2d');
     var imageData = context.getImageData(0, 0, width, height);
     var pixels = imageData.data;
     var len = pixels.length;
-
     var bound = {
         top: null,
         left: null,
@@ -37623,155 +37898,44 @@ function trimCanvas(canvas)
     var i;
     var x;
     var y;
-
-    for (i = 0; i < len; i += 4)
-    {
-        if (pixels[i + 3] !== 0)
-        {
+    for (i = 0; i < len; i += 4) {
+        if (pixels[i + 3] !== 0) {
             x = (i / 4) % width;
             y = ~~((i / 4) / width);
-
-            if (bound.top === null)
-            {
+            if (bound.top === null) {
                 bound.top = y;
             }
-
-            if (bound.left === null)
-            {
+            if (bound.left === null) {
                 bound.left = x;
             }
-            else if (x < bound.left)
-            {
+            else if (x < bound.left) {
                 bound.left = x;
             }
-
-            if (bound.right === null)
-            {
+            if (bound.right === null) {
                 bound.right = x + 1;
             }
-            else if (bound.right < x)
-            {
+            else if (bound.right < x) {
                 bound.right = x + 1;
             }
-
-            if (bound.bottom === null)
-            {
+            if (bound.bottom === null) {
                 bound.bottom = y;
             }
-            else if (bound.bottom < y)
-            {
+            else if (bound.bottom < y) {
                 bound.bottom = y;
             }
         }
     }
-
-    if (bound.top !== null)
-    {
+    if (bound.top !== null) {
         width = bound.right - bound.left;
         height = bound.bottom - bound.top + 1;
         data = context.getImageData(bound.left, bound.top, width, height);
     }
-
     return {
         height: height,
         width: width,
         data: data,
     };
 }
-
-/**
- * Creates a Canvas element of the given size to be used as a target for rendering to.
- *
- * @class
- * @memberof PIXI.utils
- */
-var CanvasRenderTarget = function CanvasRenderTarget(width, height, resolution)
-{
-    /**
-     * The Canvas object that belongs to this CanvasRenderTarget.
-     *
-     * @member {HTMLCanvasElement}
-     */
-    this.canvas = document.createElement('canvas');
-
-    /**
-     * A CanvasRenderingContext2D object representing a two-dimensional rendering context.
-     *
-     * @member {CanvasRenderingContext2D}
-     */
-    this.context = this.canvas.getContext('2d');
-
-    this.resolution = resolution || settings.settings.RESOLUTION;
-
-    this.resize(width, height);
-};
-
-var prototypeAccessors = { width: { configurable: true },height: { configurable: true } };
-
-/**
- * Clears the canvas that was created by the CanvasRenderTarget class.
- *
- * @private
- */
-CanvasRenderTarget.prototype.clear = function clear ()
-{
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-};
-
-/**
- * Resizes the canvas to the specified width and height.
- *
- * @param {number} width - the new width of the canvas
- * @param {number} height - the new height of the canvas
- */
-CanvasRenderTarget.prototype.resize = function resize (width, height)
-{
-    this.canvas.width = width * this.resolution;
-    this.canvas.height = height * this.resolution;
-};
-
-/**
- * Destroys this canvas.
- *
- */
-CanvasRenderTarget.prototype.destroy = function destroy ()
-{
-    this.context = null;
-    this.canvas = null;
-};
-
-/**
- * The width of the canvas buffer in pixels.
- *
- * @member {number}
- */
-prototypeAccessors.width.get = function ()
-{
-    return this.canvas.width;
-};
-
-prototypeAccessors.width.set = function (val) // eslint-disable-line require-jsdoc
-{
-    this.canvas.width = val;
-};
-
-/**
- * The height of the canvas buffer in pixels.
- *
- * @member {number}
- */
-prototypeAccessors.height.get = function ()
-{
-    return this.canvas.height;
-};
-
-prototypeAccessors.height.set = function (val) // eslint-disable-line require-jsdoc
-{
-    this.canvas.height = val;
-};
-
-Object.defineProperties( CanvasRenderTarget.prototype, prototypeAccessors );
 
 /**
  * Regexp for data URI.
@@ -37785,16 +37949,33 @@ Object.defineProperties( CanvasRenderTarget.prototype, prototypeAccessors );
 var DATA_URI = /^\s*data:(?:([\w-]+)\/([\w+.-]+))?(?:;charset=([\w-]+))?(?:;(base64))?,(.*)/i;
 
 /**
- * Typedef for decomposeDataUri return object.
- *
  * @memberof PIXI.utils
- * @typedef {object} DecomposedDataUri
- * @property {string} mediaType Media type, eg. `image`
- * @property {string} subType Sub type, eg. `png`
- * @property {string} encoding Data encoding, eg. `base64`
- * @property {string} data The actual data
+ * @interface DecomposedDataUri
  */
-
+/**
+ * type, eg. `image`
+ * @memberof PIXI.utils.DecomposedDataUri#
+ * @member {string} mediaType
+ */
+/**
+ * Sub type, eg. `png`
+ * @memberof PIXI.utils.DecomposedDataUri#
+ * @member {string} subType
+ */
+/**
+ * @memberof PIXI.utils.DecomposedDataUri#
+ * @member {string} charset
+ */
+/**
+ * Data encoding, eg. `base64`
+ * @memberof PIXI.utils.DecomposedDataUri#
+ * @member {string} encoding
+ */
+/**
+ * The actual data
+ * @memberof PIXI.utils.DecomposedDataUri#
+ * @member {string} data
+ */
 /**
  * Split a data URI into components. Returns undefined if
  * parameter `dataUri` is not a valid data URI.
@@ -37804,12 +37985,9 @@ var DATA_URI = /^\s*data:(?:([\w-]+)\/([\w+.-]+))?(?:;charset=([\w-]+))?(?:;(bas
  * @param {string} dataUri - the data URI to check
  * @return {PIXI.utils.DecomposedDataUri|undefined} The decomposed data uri or undefined
  */
-function decomposeDataUri(dataUri)
-{
+function decomposeDataUri(dataUri) {
     var dataUriMatch = DATA_URI.exec(dataUri);
-
-    if (dataUriMatch)
-    {
+    if (dataUriMatch) {
         return {
             mediaType: dataUriMatch[1] ? dataUriMatch[1].toLowerCase() : undefined,
             subType: dataUriMatch[2] ? dataUriMatch[2].toLowerCase() : undefined,
@@ -37818,12 +37996,10 @@ function decomposeDataUri(dataUri)
             data: dataUriMatch[5],
         };
     }
-
     return undefined;
 }
 
 var tempAnchor;
-
 /**
  * Sets the `crossOrigin` property for this resource based on if the url
  * for this resource is cross-origin. If crossOrigin was manually set, this
@@ -37835,38 +38011,27 @@ var tempAnchor;
  * @param {object} [loc=window.location] - The location object to test against.
  * @return {string} The crossOrigin value to use (or empty string for none).
  */
-function determineCrossOrigin(url, loc)
-{
-    if ( loc === void 0 ) loc = window.location;
-
+function determineCrossOrigin(url, loc) {
+    if (loc === void 0) { loc = window.location; }
     // data: and javascript: urls are considered same-origin
-    if (url.indexOf('data:') === 0)
-    {
+    if (url.indexOf('data:') === 0) {
         return '';
     }
-
     // default is window.location
     loc = loc || window.location;
-
-    if (!tempAnchor)
-    {
+    if (!tempAnchor) {
         tempAnchor = document.createElement('a');
     }
-
     // let the browser determine the full href for the url of this resource and then
     // parse with the node url lib, we can't use the properties of the anchor element
     // because they don't work in IE9 :(
     tempAnchor.href = url;
-    url = _url.parse(tempAnchor.href);
-
-    var samePort = (!url.port && loc.port === '') || (url.port === loc.port);
-
+    var parsedUrl = _url.parse(tempAnchor.href);
+    var samePort = (!parsedUrl.port && loc.port === '') || (parsedUrl.port === loc.port);
     // if cross origin
-    if (url.hostname !== loc.hostname || !samePort || url.protocol !== loc.protocol)
-    {
+    if (parsedUrl.hostname !== loc.hostname || !samePort || parsedUrl.protocol !== loc.protocol) {
         return 'anonymous';
     }
-
     return '';
 }
 
@@ -37880,76 +38045,12 @@ function determineCrossOrigin(url, loc)
  * @param {number} [defaultValue=1] - the defaultValue if no filename prefix is set.
  * @return {number} resolution / device pixel ratio of an asset
  */
-function getResolutionOfUrl(url, defaultValue)
-{
+function getResolutionOfUrl(url, defaultValue) {
     var resolution = settings.settings.RETINA_PREFIX.exec(url);
-
-    if (resolution)
-    {
+    if (resolution) {
         return parseFloat(resolution[1]);
     }
-
     return defaultValue !== undefined ? defaultValue : 1;
-}
-
-// A map of warning messages already fired
-var warnings = {};
-
-/**
- * Helper for warning developers about deprecated features & settings.
- * A stack track for warnings is given; useful for tracking-down where
- * deprecated methods/properties/classes are being used within the code.
- *
- * @memberof PIXI.utils
- * @function deprecation
- * @param {string} version - The version where the feature became deprecated
- * @param {string} message - Message should include what is deprecated, where, and the new solution
- * @param {number} [ignoreDepth=3] - The number of steps to ignore at the top of the error stack
- *        this is mostly to ignore internal deprecation calls.
- */
-function deprecation(version, message, ignoreDepth)
-{
-    if ( ignoreDepth === void 0 ) ignoreDepth = 3;
-
-    // Ignore duplicat
-    if (warnings[message])
-    {
-        return;
-    }
-
-    /* eslint-disable no-console */
-    var stack = new Error().stack;
-
-    // Handle IE < 10 and Safari < 6
-    if (typeof stack === 'undefined')
-    {
-        console.warn('PixiJS Deprecation Warning: ', (message + "\nDeprecated since v" + version));
-    }
-    else
-    {
-        // chop off the stack trace which includes PixiJS internal calls
-        stack = stack.split('\n').splice(ignoreDepth).join('\n');
-
-        if (console.groupCollapsed)
-        {
-            console.groupCollapsed(
-                '%cPixiJS Deprecation Warning: %c%s',
-                'color:#614108;background:#fffbe6',
-                'font-weight:normal;color:#614108;background:#fffbe6',
-                (message + "\nDeprecated since v" + version)
-            );
-            console.warn(stack);
-            console.groupEnd();
-        }
-        else
-        {
-            console.warn('PixiJS Deprecation Warning: ', (message + "\nDeprecated since v" + version));
-            console.warn(stack);
-        }
-    }
-    /* eslint-enable no-console */
-
-    warnings[message] = true;
 }
 
 /**
@@ -37979,7 +38080,7 @@ Object.defineProperty(exports, 'isMobile', {
 });
 exports.EventEmitter = eventemitter3;
 exports.earcut = earcut;
-exports.url = _url;
+exports.url = _url__default;
 exports.BaseTextureCache = BaseTextureCache;
 exports.CanvasRenderTarget = CanvasRenderTarget;
 exports.DATA_URI = DATA_URI;
@@ -37992,9 +38093,11 @@ exports.decomposeDataUri = decomposeDataUri;
 exports.deprecation = deprecation;
 exports.destroyTextureCache = destroyTextureCache;
 exports.determineCrossOrigin = determineCrossOrigin;
+exports.getBufferType = getBufferType;
 exports.getResolutionOfUrl = getResolutionOfUrl;
 exports.hex2rgb = hex2rgb;
 exports.hex2string = hex2string;
+exports.interleaveTypedArrays = interleaveTypedArrays;
 exports.isPow2 = isPow2;
 exports.isWebGLSupported = isWebGLSupported;
 exports.log2 = log2;
@@ -38013,7 +38116,7 @@ exports.trimCanvas = trimCanvas;
 exports.uid = uid;
 
 
-},{"@pixi/constants":5,"@pixi/settings":28,"earcut":37,"eventemitter3":39,"url":52}],37:[function(require,module,exports){
+},{"@pixi/constants":5,"@pixi/settings":28,"earcut":37,"eventemitter3":39,"url":53}],37:[function(require,module,exports){
 'use strict';
 
 module.exports = earcut;
@@ -39015,7 +39118,7 @@ Promise.reject = function(reason){
 })(typeof window != 'undefined' ? window : typeof global != 'undefined' ? global : typeof self != 'undefined' ? self : this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
-},{"timers":51}],39:[function(require,module,exports){
+},{"timers":52}],39:[function(require,module,exports){
 'use strict';
 
 var has = Object.prototype.hasOwnProperty
@@ -39354,8 +39457,112 @@ if ('undefined' !== typeof module) {
 }
 
 },{}],40:[function(require,module,exports){
-!function(e){var n=/iPhone/i,t=/iPod/i,r=/iPad/i,a=/\bAndroid(?:.+)Mobile\b/i,p=/Android/i,l=/\bAndroid(?:.+)SD4930UR\b/i,b=/\bAndroid(?:.+)(?:KF[A-Z]{2,4})\b/i,f=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,c=/BlackBerry/i,s=/BB10/i,v=/Opera Mini/i,h=/\b(CriOS|Chrome)(?:.+)Mobile/i,w=/\Mobile(?:.+)Firefox\b/i;function m(e,i){return e.test(i)}function i(e){var i=e||("undefined"!=typeof navigator?navigator.userAgent:""),o=i.split("[FBAN");void 0!==o[1]&&(i=o[0]),void 0!==(o=i.split("Twitter"))[1]&&(i=o[0]);var d={apple:{phone:m(n,i)&&!m(f,i),ipod:m(t,i),tablet:!m(n,i)&&m(r,i)&&!m(f,i),device:(m(n,i)||m(t,i)||m(r,i))&&!m(f,i)},amazon:{phone:m(l,i),tablet:!m(l,i)&&m(b,i),device:m(l,i)||m(b,i)},android:{phone:!m(f,i)&&m(l,i)||!m(f,i)&&m(a,i),tablet:!m(f,i)&&!m(l,i)&&!m(a,i)&&(m(b,i)||m(p,i)),device:!m(f,i)&&(m(l,i)||m(b,i)||m(a,i)||m(p,i))},windows:{phone:m(f,i),tablet:m(u,i),device:m(f,i)||m(u,i)},other:{blackberry:m(c,i),blackberry10:m(s,i),opera:m(v,i),firefox:m(w,i),chrome:m(h,i),device:m(c,i)||m(s,i)||m(v,i)||m(w,i)||m(h,i)}};return d.any=d.apple.device||d.android.device||d.windows.device||d.other.device,d.phone=d.apple.phone||d.android.phone||d.windows.phone,d.tablet=d.apple.tablet||d.android.tablet||d.windows.tablet,d}"undefined"!=typeof module&&module.exports&&"undefined"==typeof window?module.exports=i:"undefined"!=typeof module&&module.exports&&"undefined"!=typeof window?module.exports=i():"function"==typeof define&&define.amd?define([],e.isMobile=i()):e.isMobile=i()}(this);
-},{}],41:[function(require,module,exports){
+"use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(require("./isMobile"));
+var isMobile_1 = require("./isMobile");
+exports.default = isMobile_1.default;
+
+},{"./isMobile":41}],41:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const appleIphone = /iPhone/i;
+const appleIpod = /iPod/i;
+const appleTablet = /iPad/i;
+const androidPhone = /\bAndroid(?:.+)Mobile\b/i;
+const androidTablet = /Android/i;
+const amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
+const amazonTablet = /Silk/i;
+const windowsPhone = /Windows Phone/i;
+const windowsTablet = /\bWindows(?:.+)ARM\b/i;
+const otherBlackBerry = /BlackBerry/i;
+const otherBlackBerry10 = /BB10/i;
+const otherOpera = /Opera Mini/i;
+const otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
+const otherFirefox = /Mobile(?:.+)Firefox\b/i;
+function match(regex, userAgent) {
+    return regex.test(userAgent);
+}
+function isMobile(userAgent) {
+    userAgent =
+        userAgent || (typeof navigator !== 'undefined' ? navigator.userAgent : '');
+    let tmp = userAgent.split('[FBAN');
+    if (typeof tmp[1] !== 'undefined') {
+        userAgent = tmp[0];
+    }
+    tmp = userAgent.split('Twitter');
+    if (typeof tmp[1] !== 'undefined') {
+        userAgent = tmp[0];
+    }
+    const result = {
+        apple: {
+            phone: match(appleIphone, userAgent) && !match(windowsPhone, userAgent),
+            ipod: match(appleIpod, userAgent),
+            tablet: !match(appleIphone, userAgent) &&
+                match(appleTablet, userAgent) &&
+                !match(windowsPhone, userAgent),
+            device: (match(appleIphone, userAgent) ||
+                match(appleIpod, userAgent) ||
+                match(appleTablet, userAgent)) &&
+                !match(windowsPhone, userAgent),
+        },
+        amazon: {
+            phone: match(amazonPhone, userAgent),
+            tablet: !match(amazonPhone, userAgent) && match(amazonTablet, userAgent),
+            device: match(amazonPhone, userAgent) || match(amazonTablet, userAgent),
+        },
+        android: {
+            phone: (!match(windowsPhone, userAgent) && match(amazonPhone, userAgent)) ||
+                (!match(windowsPhone, userAgent) && match(androidPhone, userAgent)),
+            tablet: !match(windowsPhone, userAgent) &&
+                !match(amazonPhone, userAgent) &&
+                !match(androidPhone, userAgent) &&
+                (match(amazonTablet, userAgent) || match(androidTablet, userAgent)),
+            device: (!match(windowsPhone, userAgent) &&
+                (match(amazonPhone, userAgent) ||
+                    match(amazonTablet, userAgent) ||
+                    match(androidPhone, userAgent) ||
+                    match(androidTablet, userAgent))) ||
+                match(/\bokhttp\b/i, userAgent),
+        },
+        windows: {
+            phone: match(windowsPhone, userAgent),
+            tablet: match(windowsTablet, userAgent),
+            device: match(windowsPhone, userAgent) || match(windowsTablet, userAgent),
+        },
+        other: {
+            blackberry: match(otherBlackBerry, userAgent),
+            blackberry10: match(otherBlackBerry10, userAgent),
+            opera: match(otherOpera, userAgent),
+            firefox: match(otherFirefox, userAgent),
+            chrome: match(otherChrome, userAgent),
+            device: match(otherBlackBerry, userAgent) ||
+                match(otherBlackBerry10, userAgent) ||
+                match(otherOpera, userAgent) ||
+                match(otherFirefox, userAgent) ||
+                match(otherChrome, userAgent),
+        },
+        any: false,
+        phone: false,
+        tablet: false,
+    };
+    result.any =
+        result.apple.device ||
+            result.android.device ||
+            result.windows.device ||
+            result.other.device;
+    result.phone =
+        result.apple.phone || result.android.phone || result.windows.phone;
+    result.tablet =
+        result.apple.tablet || result.android.tablet || result.windows.tablet;
+    return result;
+}
+exports.default = isMobile;
+
+},{}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
@@ -39522,7 +39729,7 @@ MiniSignal.MiniSignalBinding = MiniSignalBinding;
 exports['default'] = MiniSignal;
 module.exports = exports['default'];
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -39614,7 +39821,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict'
 
 module.exports = function parseURI (str, opts) {
@@ -39646,10 +39853,10 @@ module.exports = function parseURI (str, opts) {
   return uri
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /*!
- * pixi.js - v5.2.0
- * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+ * pixi.js - v5.2.1
+ * Compiled Tue, 28 Jan 2020 23:33:11 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -39660,14 +39867,14 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 require('@pixi/polyfill');
 var accessibility = require('@pixi/accessibility');
-var extract = require('@pixi/extract');
 var interaction = require('@pixi/interaction');
-var prepare = require('@pixi/prepare');
 var utils = require('@pixi/utils');
 var app = require('@pixi/app');
 var core = require('@pixi/core');
+var extract = require('@pixi/extract');
 var loaders = require('@pixi/loaders');
 var particles = require('@pixi/particles');
+var prepare = require('@pixi/prepare');
 var spritesheet = require('@pixi/spritesheet');
 var spriteTiling = require('@pixi/sprite-tiling');
 var textBitmap = require('@pixi/text-bitmap');
@@ -39857,6 +40064,91 @@ function useDeprecated()
                 utils.deprecation('5.2.0', 'PIXI.GroupD8 namespace has moved to PIXI.groupD8');
 
                 return PIXI.groupD8;
+            },
+        },
+    });
+
+    /**
+     * @namespace PIXI.prepare
+     * @see PIXI
+     * @deprecated since 5.2.1
+     */
+    PIXI.prepare = {};
+
+    Object.defineProperties(PIXI.prepare, {
+        /**
+         * @class PIXI.prepare.BasePrepare
+         * @deprecated since 5.2.1
+         * @see PIXI.BasePrepare
+         */
+        BasePrepare: {
+            get: function get()
+            {
+                utils.deprecation('5.2.1', 'PIXI.prepare.BasePrepare moved to PIXI.BasePrepare');
+
+                return PIXI.BasePrepare;
+            },
+        },
+        /**
+         * @class PIXI.prepare.Prepare
+         * @deprecated since 5.2.1
+         * @see PIXI.Prepare
+         */
+        Prepare: {
+            get: function get()
+            {
+                utils.deprecation('5.2.1', 'PIXI.prepare.Prepare moved to PIXI.Prepare');
+
+                return PIXI.Prepare;
+            },
+        },
+        /**
+         * @class PIXI.prepare.CanvasPrepare
+         * @deprecated since 5.2.1
+         * @see PIXI.CanvasPrepare
+         */
+        CanvasPrepare: {
+            get: function get()
+            {
+                utils.deprecation('5.2.1', 'PIXI.prepare.CanvasPrepare moved to PIXI.CanvasPrepare');
+
+                return PIXI.CanvasPrepare;
+            },
+        },
+    });
+
+    /**
+     * @namespace PIXI.extract
+     * @see PIXI
+     * @deprecated since 5.2.1
+     */
+    PIXI.extract = {};
+
+    Object.defineProperties(PIXI.extract, {
+        /**
+         * @class PIXI.extract.Extract
+         * @deprecated since 5.2.1
+         * @see PIXI.Extract
+         */
+        Extract: {
+            get: function get()
+            {
+                utils.deprecation('5.2.1', 'PIXI.extract.Extract moved to PIXI.Extract');
+
+                return PIXI.Extract;
+            },
+        },
+        /**
+         * @class PIXI.extract.CanvasExtract
+         * @deprecated since 5.2.1
+         * @see PIXI.CanvasExtract
+         */
+        CanvasExtract: {
+            get: function get()
+            {
+                utils.deprecation('5.2.1', 'PIXI.extract.CanvasExtract moved to PIXI.CanvasExtract');
+
+                return PIXI.CanvasExtract;
             },
         },
     });
@@ -40222,28 +40514,28 @@ function useDeprecated()
     /**
      * @class PIXI.extract.WebGLExtract
      * @deprecated since 5.0.0
-     * @see PIXI.extract.Extract
+     * @see PIXI.Extract
      */
     Object.defineProperty(PIXI.extract, 'WebGLExtract', {
         get: function get()
         {
-            utils.deprecation(v5, 'PIXI.extract.WebGLExtract method has moved to PIXI.extract.Extract');
+            utils.deprecation(v5, 'PIXI.extract.WebGLExtract method has moved to PIXI.Extract');
 
-            return PIXI.extract.Extract;
+            return PIXI.Extract;
         },
     });
 
     /**
      * @class PIXI.prepare.WebGLPrepare
      * @deprecated since 5.0.0
-     * @see PIXI.prepare.Prepare
+     * @see PIXI.Prepare
      */
     Object.defineProperty(PIXI.prepare, 'WebGLPrepare', {
         get: function get()
         {
-            utils.deprecation(v5, 'PIXI.prepare.WebGLPrepare class has moved to PIXI.prepare.Prepare');
+            utils.deprecation(v5, 'PIXI.prepare.WebGLPrepare class has moved to PIXI.Prepare');
 
-            return PIXI.prepare.Prepare;
+            return PIXI.Prepare;
         },
     });
 
@@ -40778,6 +41070,28 @@ function useDeprecated()
         },
     });
 
+    /**
+     * @deprecated since 5.0.0
+     * @member {PIXI.Point[]} PIXI.SimpleRope#points
+     * @see PIXI.Mesh#geometry
+     */
+    Object.defineProperty(PIXI.SimpleRope.prototype, 'points', {
+        get: function get()
+        {
+            utils.deprecation(v5, 'PIXI.SimpleRope.points property is deprecated, '
+                + 'use PIXI.SimpleRope.geometry.points');
+
+            return this.geometry.points;
+        },
+        set: function set(value)
+        {
+            utils.deprecation(v5, 'PIXI.SimpleRope.points property is deprecated, '
+                + 'use PIXI.SimpleRope.geometry.points');
+
+            this.geometry.points = value;
+        },
+    });
+
     // Use these to deprecate all the Sprite from* methods
     function spriteFrom(name, source, crossorigin, scaleMode)
     {
@@ -40979,7 +41293,7 @@ app.Application.registerPlugin(loaders.AppLoaderPlugin);
  * @name VERSION
  * @type {string}
  */
-var VERSION = '5.2.0';
+var VERSION = '5.2.1';
 
 /**
  * @namespace PIXI
@@ -41038,6 +41352,14 @@ Object.keys(core).forEach(function (key) {
         }
     });
 });
+Object.keys(extract).forEach(function (key) {
+    Object.defineProperty(exports, key, {
+        enumerable: true,
+        get: function () {
+            return extract[key];
+        }
+    });
+});
 Object.keys(loaders).forEach(function (key) {
     Object.defineProperty(exports, key, {
         enumerable: true,
@@ -41051,6 +41373,14 @@ Object.keys(particles).forEach(function (key) {
         enumerable: true,
         get: function () {
             return particles[key];
+        }
+    });
+});
+Object.keys(prepare).forEach(function (key) {
+    Object.defineProperty(exports, key, {
+        enumerable: true,
+        get: function () {
+            return prepare[key];
         }
     });
 });
@@ -41175,16 +41505,14 @@ Object.keys(settings).forEach(function (key) {
     });
 });
 exports.accessibility = accessibility;
-exports.extract = extract;
 exports.interaction = interaction;
-exports.prepare = prepare;
 exports.utils = utils;
 exports.VERSION = VERSION;
 exports.filters = filters;
 exports.useDeprecated = useDeprecated;
 
 
-},{"@pixi/accessibility":3,"@pixi/app":4,"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/extract":8,"@pixi/filter-alpha":9,"@pixi/filter-blur":10,"@pixi/filter-color-matrix":11,"@pixi/filter-displacement":12,"@pixi/filter-fxaa":13,"@pixi/filter-noise":14,"@pixi/graphics":15,"@pixi/interaction":16,"@pixi/loaders":17,"@pixi/math":18,"@pixi/mesh":20,"@pixi/mesh-extras":19,"@pixi/mixin-cache-as-bitmap":21,"@pixi/mixin-get-child-by-name":22,"@pixi/mixin-get-global-position":23,"@pixi/particles":24,"@pixi/polyfill":25,"@pixi/prepare":26,"@pixi/runner":27,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/sprite-animated":29,"@pixi/sprite-tiling":30,"@pixi/spritesheet":32,"@pixi/text":34,"@pixi/text-bitmap":33,"@pixi/ticker":35,"@pixi/utils":36}],45:[function(require,module,exports){
+},{"@pixi/accessibility":3,"@pixi/app":4,"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/extract":8,"@pixi/filter-alpha":9,"@pixi/filter-blur":10,"@pixi/filter-color-matrix":11,"@pixi/filter-displacement":12,"@pixi/filter-fxaa":13,"@pixi/filter-noise":14,"@pixi/graphics":15,"@pixi/interaction":16,"@pixi/loaders":17,"@pixi/math":18,"@pixi/mesh":20,"@pixi/mesh-extras":19,"@pixi/mixin-cache-as-bitmap":21,"@pixi/mixin-get-child-by-name":22,"@pixi/mixin-get-global-position":23,"@pixi/particles":24,"@pixi/polyfill":25,"@pixi/prepare":26,"@pixi/runner":27,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/sprite-animated":29,"@pixi/sprite-tiling":30,"@pixi/spritesheet":32,"@pixi/text":34,"@pixi/text-bitmap":33,"@pixi/ticker":35,"@pixi/utils":36}],46:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -41370,7 +41698,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/punycode v1.4.1 by @mathias */
 ;(function(root) {
@@ -41907,7 +42235,7 @@ process.umask = function() { return 0; };
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -41993,7 +42321,7 @@ var isArray = Array.isArray || function (xs) {
   return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -42080,13 +42408,13 @@ var objectKeys = Object.keys || function (obj) {
   return res;
 };
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 'use strict';
 
 exports.decode = exports.parse = require('./decode');
 exports.encode = exports.stringify = require('./encode');
 
-},{"./decode":47,"./encode":48}],50:[function(require,module,exports){
+},{"./decode":48,"./encode":49}],51:[function(require,module,exports){
 /*!
  * resource-loader - v3.0.1
  * https://github.com/pixijs/pixi-sound
@@ -44437,7 +44765,7 @@ exports.encodeBinary = encodeBinary;
 exports.middleware = index;
 
 
-},{"mini-signals":41,"parse-uri":43}],51:[function(require,module,exports){
+},{"mini-signals":42,"parse-uri":44}],52:[function(require,module,exports){
 (function (setImmediate,clearImmediate){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -44516,7 +44844,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
   delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":45,"timers":51}],52:[function(require,module,exports){
+},{"process/browser.js":46,"timers":52}],53:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -45250,7 +45578,7 @@ Url.prototype.parseHost = function() {
   if (host) this.hostname = host;
 };
 
-},{"./util":53,"punycode":46,"querystring":49}],53:[function(require,module,exports){
+},{"./util":54,"punycode":47,"querystring":50}],54:[function(require,module,exports){
 'use strict';
 
 module.exports = {

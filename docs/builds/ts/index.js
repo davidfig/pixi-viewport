@@ -599,17 +599,109 @@
                 window.Int32Array = Array;
             }
 
-            var isMobile_min = createCommonjsModule(function (module) {
-            !function(e){var n=/iPhone/i,t=/iPod/i,r=/iPad/i,a=/\bAndroid(?:.+)Mobile\b/i,p=/Android/i,l=/\bAndroid(?:.+)SD4930UR\b/i,b=/\bAndroid(?:.+)(?:KF[A-Z]{2,4})\b/i,f=/Windows Phone/i,u=/\bWindows(?:.+)ARM\b/i,c=/BlackBerry/i,s=/BB10/i,v=/Opera Mini/i,h=/\b(CriOS|Chrome)(?:.+)Mobile/i,w=/\Mobile(?:.+)Firefox\b/i;function m(e,i){return e.test(i)}function i(e){var i=e||("undefined"!=typeof navigator?navigator.userAgent:""),o=i.split("[FBAN");void 0!==o[1]&&(i=o[0]),void 0!==(o=i.split("Twitter"))[1]&&(i=o[0]);var d={apple:{phone:m(n,i)&&!m(f,i),ipod:m(t,i),tablet:!m(n,i)&&m(r,i)&&!m(f,i),device:(m(n,i)||m(t,i)||m(r,i))&&!m(f,i)},amazon:{phone:m(l,i),tablet:!m(l,i)&&m(b,i),device:m(l,i)||m(b,i)},android:{phone:!m(f,i)&&m(l,i)||!m(f,i)&&m(a,i),tablet:!m(f,i)&&!m(l,i)&&!m(a,i)&&(m(b,i)||m(p,i)),device:!m(f,i)&&(m(l,i)||m(b,i)||m(a,i)||m(p,i))},windows:{phone:m(f,i),tablet:m(u,i),device:m(f,i)||m(u,i)},other:{blackberry:m(c,i),blackberry10:m(s,i),opera:m(v,i),firefox:m(w,i),chrome:m(h,i),device:m(c,i)||m(s,i)||m(v,i)||m(w,i)||m(h,i)}};return d.any=d.apple.device||d.android.device||d.windows.device||d.other.device,d.phone=d.apple.phone||d.android.phone||d.windows.phone,d.tablet=d.apple.tablet||d.android.tablet||d.windows.tablet,d}module.exports&&"undefined"==typeof window?module.exports=i:module.exports&&"undefined"!=typeof window?module.exports=i():e.isMobile=i();}(commonjsGlobal);
-            });
+            const appleIphone = /iPhone/i;
+            const appleIpod = /iPod/i;
+            const appleTablet = /iPad/i;
+            const androidPhone = /\bAndroid(?:.+)Mobile\b/i;
+            const androidTablet = /Android/i;
+            const amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
+            const amazonTablet = /Silk/i;
+            const windowsPhone = /Windows Phone/i;
+            const windowsTablet = /\bWindows(?:.+)ARM\b/i;
+            const otherBlackBerry = /BlackBerry/i;
+            const otherBlackBerry10 = /BB10/i;
+            const otherOpera = /Opera Mini/i;
+            const otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
+            const otherFirefox = /Mobile(?:.+)Firefox\b/i;
+            function match(regex, userAgent) {
+                return regex.test(userAgent);
+            }
+            function isMobile(userAgent) {
+                userAgent =
+                    userAgent || (typeof navigator !== 'undefined' ? navigator.userAgent : '');
+                let tmp = userAgent.split('[FBAN');
+                if (typeof tmp[1] !== 'undefined') {
+                    userAgent = tmp[0];
+                }
+                tmp = userAgent.split('Twitter');
+                if (typeof tmp[1] !== 'undefined') {
+                    userAgent = tmp[0];
+                }
+                const result = {
+                    apple: {
+                        phone: match(appleIphone, userAgent) && !match(windowsPhone, userAgent),
+                        ipod: match(appleIpod, userAgent),
+                        tablet: !match(appleIphone, userAgent) &&
+                            match(appleTablet, userAgent) &&
+                            !match(windowsPhone, userAgent),
+                        device: (match(appleIphone, userAgent) ||
+                            match(appleIpod, userAgent) ||
+                            match(appleTablet, userAgent)) &&
+                            !match(windowsPhone, userAgent),
+                    },
+                    amazon: {
+                        phone: match(amazonPhone, userAgent),
+                        tablet: !match(amazonPhone, userAgent) && match(amazonTablet, userAgent),
+                        device: match(amazonPhone, userAgent) || match(amazonTablet, userAgent),
+                    },
+                    android: {
+                        phone: (!match(windowsPhone, userAgent) && match(amazonPhone, userAgent)) ||
+                            (!match(windowsPhone, userAgent) && match(androidPhone, userAgent)),
+                        tablet: !match(windowsPhone, userAgent) &&
+                            !match(amazonPhone, userAgent) &&
+                            !match(androidPhone, userAgent) &&
+                            (match(amazonTablet, userAgent) || match(androidTablet, userAgent)),
+                        device: (!match(windowsPhone, userAgent) &&
+                            (match(amazonPhone, userAgent) ||
+                                match(amazonTablet, userAgent) ||
+                                match(androidPhone, userAgent) ||
+                                match(androidTablet, userAgent))) ||
+                            match(/\bokhttp\b/i, userAgent),
+                    },
+                    windows: {
+                        phone: match(windowsPhone, userAgent),
+                        tablet: match(windowsTablet, userAgent),
+                        device: match(windowsPhone, userAgent) || match(windowsTablet, userAgent),
+                    },
+                    other: {
+                        blackberry: match(otherBlackBerry, userAgent),
+                        blackberry10: match(otherBlackBerry10, userAgent),
+                        opera: match(otherOpera, userAgent),
+                        firefox: match(otherFirefox, userAgent),
+                        chrome: match(otherChrome, userAgent),
+                        device: match(otherBlackBerry, userAgent) ||
+                            match(otherBlackBerry10, userAgent) ||
+                            match(otherOpera, userAgent) ||
+                            match(otherFirefox, userAgent) ||
+                            match(otherChrome, userAgent),
+                    },
+                    any: false,
+                    phone: false,
+                    tablet: false,
+                };
+                result.any =
+                    result.apple.device ||
+                        result.android.device ||
+                        result.windows.device ||
+                        result.other.device;
+                result.phone =
+                    result.apple.phone || result.android.phone || result.windows.phone;
+                result.tablet =
+                    result.apple.tablet || result.android.tablet || result.windows.tablet;
+                return result;
+            }
 
             /*!
-             * @pixi/settings - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/settings - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/settings is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
              */
+
+            // The ESM/CJS versions of ismobilejs only
+
+            var isMobile$1 = isMobile();
 
             /**
              * The maximum recommended texture units to use.
@@ -628,11 +720,11 @@
             {
                 var allowMax = true;
 
-                if (isMobile_min.tablet || isMobile_min.phone)
+                if (isMobile$1.tablet || isMobile$1.phone)
                 {
                     allowMax = false;
 
-                    if (isMobile_min.apple.device)
+                    if (isMobile$1.apple.device)
                     {
                         var match = (navigator.userAgent).match(/OS (\d+)_(\d+)?/);
 
@@ -647,7 +739,7 @@
                             }
                         }
                     }
-                    if (isMobile_min.android.device)
+                    if (isMobile$1.android.device)
                     {
                         var match$1 = (navigator.userAgent).match(/Android\s([0-9.]*)/);
 
@@ -677,7 +769,7 @@
              */
             function canUploadSameBuffer()
             {
-                return !isMobile_min.apple.device;
+                return !isMobile$1.apple.device;
             }
 
             /**
@@ -878,7 +970,7 @@
                  * @type {PIXI.PRECISION}
                  * @default PIXI.PRECISION.MEDIUM
                  */
-                PRECISION_FRAGMENT: isMobile_min.apple.device ? 'highp' : 'mediump',
+                PRECISION_FRAGMENT: isMobile$1.apple.device ? 'highp' : 'mediump',
 
                 /**
                  * Can we upload the same buffer in a single frame?
@@ -2192,6 +2284,1967 @@
               });
             }
 
+            var lookup = [];
+            var revLookup = [];
+            var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
+            var inited = false;
+            function init () {
+              inited = true;
+              var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+              for (var i = 0, len = code.length; i < len; ++i) {
+                lookup[i] = code[i];
+                revLookup[code.charCodeAt(i)] = i;
+              }
+
+              revLookup['-'.charCodeAt(0)] = 62;
+              revLookup['_'.charCodeAt(0)] = 63;
+            }
+
+            function toByteArray (b64) {
+              if (!inited) {
+                init();
+              }
+              var i, j, l, tmp, placeHolders, arr;
+              var len = b64.length;
+
+              if (len % 4 > 0) {
+                throw new Error('Invalid string. Length must be a multiple of 4')
+              }
+
+              // the number of equal signs (place holders)
+              // if there are two placeholders, than the two characters before it
+              // represent one byte
+              // if there is only one, then the three characters before it represent 2 bytes
+              // this is just a cheap hack to not do indexOf twice
+              placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0;
+
+              // base64 is 4/3 + up to two characters of the original data
+              arr = new Arr(len * 3 / 4 - placeHolders);
+
+              // if there are placeholders, only get up to the last complete 4 chars
+              l = placeHolders > 0 ? len - 4 : len;
+
+              var L = 0;
+
+              for (i = 0, j = 0; i < l; i += 4, j += 3) {
+                tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)];
+                arr[L++] = (tmp >> 16) & 0xFF;
+                arr[L++] = (tmp >> 8) & 0xFF;
+                arr[L++] = tmp & 0xFF;
+              }
+
+              if (placeHolders === 2) {
+                tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4);
+                arr[L++] = tmp & 0xFF;
+              } else if (placeHolders === 1) {
+                tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2);
+                arr[L++] = (tmp >> 8) & 0xFF;
+                arr[L++] = tmp & 0xFF;
+              }
+
+              return arr
+            }
+
+            function tripletToBase64 (num) {
+              return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+            }
+
+            function encodeChunk (uint8, start, end) {
+              var tmp;
+              var output = [];
+              for (var i = start; i < end; i += 3) {
+                tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
+                output.push(tripletToBase64(tmp));
+              }
+              return output.join('')
+            }
+
+            function fromByteArray (uint8) {
+              if (!inited) {
+                init();
+              }
+              var tmp;
+              var len = uint8.length;
+              var extraBytes = len % 3; // if we have 1 byte left, pad 2 bytes
+              var output = '';
+              var parts = [];
+              var maxChunkLength = 16383; // must be multiple of 3
+
+              // go through the array every three bytes, we'll deal with trailing stuff later
+              for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+                parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)));
+              }
+
+              // pad the end with zeros, but make sure to not forget the extra bytes
+              if (extraBytes === 1) {
+                tmp = uint8[len - 1];
+                output += lookup[tmp >> 2];
+                output += lookup[(tmp << 4) & 0x3F];
+                output += '==';
+              } else if (extraBytes === 2) {
+                tmp = (uint8[len - 2] << 8) + (uint8[len - 1]);
+                output += lookup[tmp >> 10];
+                output += lookup[(tmp >> 4) & 0x3F];
+                output += lookup[(tmp << 2) & 0x3F];
+                output += '=';
+              }
+
+              parts.push(output);
+
+              return parts.join('')
+            }
+
+            function read (buffer, offset, isLE, mLen, nBytes) {
+              var e, m;
+              var eLen = nBytes * 8 - mLen - 1;
+              var eMax = (1 << eLen) - 1;
+              var eBias = eMax >> 1;
+              var nBits = -7;
+              var i = isLE ? (nBytes - 1) : 0;
+              var d = isLE ? -1 : 1;
+              var s = buffer[offset + i];
+
+              i += d;
+
+              e = s & ((1 << (-nBits)) - 1);
+              s >>= (-nBits);
+              nBits += eLen;
+              for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+              m = e & ((1 << (-nBits)) - 1);
+              e >>= (-nBits);
+              nBits += mLen;
+              for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+              if (e === 0) {
+                e = 1 - eBias;
+              } else if (e === eMax) {
+                return m ? NaN : ((s ? -1 : 1) * Infinity)
+              } else {
+                m = m + Math.pow(2, mLen);
+                e = e - eBias;
+              }
+              return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+            }
+
+            function write (buffer, value, offset, isLE, mLen, nBytes) {
+              var e, m, c;
+              var eLen = nBytes * 8 - mLen - 1;
+              var eMax = (1 << eLen) - 1;
+              var eBias = eMax >> 1;
+              var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0);
+              var i = isLE ? 0 : (nBytes - 1);
+              var d = isLE ? 1 : -1;
+              var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
+
+              value = Math.abs(value);
+
+              if (isNaN(value) || value === Infinity) {
+                m = isNaN(value) ? 1 : 0;
+                e = eMax;
+              } else {
+                e = Math.floor(Math.log(value) / Math.LN2);
+                if (value * (c = Math.pow(2, -e)) < 1) {
+                  e--;
+                  c *= 2;
+                }
+                if (e + eBias >= 1) {
+                  value += rt / c;
+                } else {
+                  value += rt * Math.pow(2, 1 - eBias);
+                }
+                if (value * c >= 2) {
+                  e++;
+                  c /= 2;
+                }
+
+                if (e + eBias >= eMax) {
+                  m = 0;
+                  e = eMax;
+                } else if (e + eBias >= 1) {
+                  m = (value * c - 1) * Math.pow(2, mLen);
+                  e = e + eBias;
+                } else {
+                  m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
+                  e = 0;
+                }
+              }
+
+              for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+              e = (e << mLen) | m;
+              eLen += mLen;
+              for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+              buffer[offset + i - d] |= s * 128;
+            }
+
+            var toString = {}.toString;
+
+            var isArray = Array.isArray || function (arr) {
+              return toString.call(arr) == '[object Array]';
+            };
+
+            var INSPECT_MAX_BYTES = 50;
+
+            /**
+             * If `Buffer.TYPED_ARRAY_SUPPORT`:
+             *   === true    Use Uint8Array implementation (fastest)
+             *   === false   Use Object implementation (most compatible, even IE6)
+             *
+             * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+             * Opera 11.6+, iOS 4.2+.
+             *
+             * Due to various browser bugs, sometimes the Object implementation will be used even
+             * when the browser supports typed arrays.
+             *
+             * Note:
+             *
+             *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+             *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+             *
+             *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+             *
+             *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+             *     incorrect length in some situations.
+
+             * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+             * get the Object implementation, which is slower but behaves correctly.
+             */
+            Buffer.TYPED_ARRAY_SUPPORT = global$1.TYPED_ARRAY_SUPPORT !== undefined
+              ? global$1.TYPED_ARRAY_SUPPORT
+              : true;
+
+            function kMaxLength () {
+              return Buffer.TYPED_ARRAY_SUPPORT
+                ? 0x7fffffff
+                : 0x3fffffff
+            }
+
+            function createBuffer (that, length) {
+              if (kMaxLength() < length) {
+                throw new RangeError('Invalid typed array length')
+              }
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                // Return an augmented `Uint8Array` instance, for best performance
+                that = new Uint8Array(length);
+                that.__proto__ = Buffer.prototype;
+              } else {
+                // Fallback: Return an object instance of the Buffer class
+                if (that === null) {
+                  that = new Buffer(length);
+                }
+                that.length = length;
+              }
+
+              return that
+            }
+
+            /**
+             * The Buffer constructor returns instances of `Uint8Array` that have their
+             * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
+             * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
+             * and the `Uint8Array` methods. Square bracket notation works as expected -- it
+             * returns a single octet.
+             *
+             * The `Uint8Array` prototype remains unmodified.
+             */
+
+            function Buffer (arg, encodingOrOffset, length) {
+              if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
+                return new Buffer(arg, encodingOrOffset, length)
+              }
+
+              // Common case.
+              if (typeof arg === 'number') {
+                if (typeof encodingOrOffset === 'string') {
+                  throw new Error(
+                    'If encoding is specified then the first argument must be a string'
+                  )
+                }
+                return allocUnsafe(this, arg)
+              }
+              return from(this, arg, encodingOrOffset, length)
+            }
+
+            Buffer.poolSize = 8192; // not used by this implementation
+
+            // TODO: Legacy, not needed anymore. Remove in next major version.
+            Buffer._augment = function (arr) {
+              arr.__proto__ = Buffer.prototype;
+              return arr
+            };
+
+            function from (that, value, encodingOrOffset, length) {
+              if (typeof value === 'number') {
+                throw new TypeError('"value" argument must not be a number')
+              }
+
+              if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
+                return fromArrayBuffer(that, value, encodingOrOffset, length)
+              }
+
+              if (typeof value === 'string') {
+                return fromString(that, value, encodingOrOffset)
+              }
+
+              return fromObject(that, value)
+            }
+
+            /**
+             * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
+             * if value is a number.
+             * Buffer.from(str[, encoding])
+             * Buffer.from(array)
+             * Buffer.from(buffer)
+             * Buffer.from(arrayBuffer[, byteOffset[, length]])
+             **/
+            Buffer.from = function (value, encodingOrOffset, length) {
+              return from(null, value, encodingOrOffset, length)
+            };
+
+            if (Buffer.TYPED_ARRAY_SUPPORT) {
+              Buffer.prototype.__proto__ = Uint8Array.prototype;
+              Buffer.__proto__ = Uint8Array;
+            }
+
+            function assertSize (size) {
+              if (typeof size !== 'number') {
+                throw new TypeError('"size" argument must be a number')
+              } else if (size < 0) {
+                throw new RangeError('"size" argument must not be negative')
+              }
+            }
+
+            function alloc (that, size, fill, encoding) {
+              assertSize(size);
+              if (size <= 0) {
+                return createBuffer(that, size)
+              }
+              if (fill !== undefined) {
+                // Only pay attention to encoding if it's a string. This
+                // prevents accidentally sending in a number that would
+                // be interpretted as a start offset.
+                return typeof encoding === 'string'
+                  ? createBuffer(that, size).fill(fill, encoding)
+                  : createBuffer(that, size).fill(fill)
+              }
+              return createBuffer(that, size)
+            }
+
+            /**
+             * Creates a new filled Buffer instance.
+             * alloc(size[, fill[, encoding]])
+             **/
+            Buffer.alloc = function (size, fill, encoding) {
+              return alloc(null, size, fill, encoding)
+            };
+
+            function allocUnsafe (that, size) {
+              assertSize(size);
+              that = createBuffer(that, size < 0 ? 0 : checked(size) | 0);
+              if (!Buffer.TYPED_ARRAY_SUPPORT) {
+                for (var i = 0; i < size; ++i) {
+                  that[i] = 0;
+                }
+              }
+              return that
+            }
+
+            /**
+             * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
+             * */
+            Buffer.allocUnsafe = function (size) {
+              return allocUnsafe(null, size)
+            };
+            /**
+             * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
+             */
+            Buffer.allocUnsafeSlow = function (size) {
+              return allocUnsafe(null, size)
+            };
+
+            function fromString (that, string, encoding) {
+              if (typeof encoding !== 'string' || encoding === '') {
+                encoding = 'utf8';
+              }
+
+              if (!Buffer.isEncoding(encoding)) {
+                throw new TypeError('"encoding" must be a valid string encoding')
+              }
+
+              var length = byteLength(string, encoding) | 0;
+              that = createBuffer(that, length);
+
+              var actual = that.write(string, encoding);
+
+              if (actual !== length) {
+                // Writing a hex string, for example, that contains invalid characters will
+                // cause everything after the first invalid character to be ignored. (e.g.
+                // 'abxxcd' will be treated as 'ab')
+                that = that.slice(0, actual);
+              }
+
+              return that
+            }
+
+            function fromArrayLike (that, array) {
+              var length = array.length < 0 ? 0 : checked(array.length) | 0;
+              that = createBuffer(that, length);
+              for (var i = 0; i < length; i += 1) {
+                that[i] = array[i] & 255;
+              }
+              return that
+            }
+
+            function fromArrayBuffer (that, array, byteOffset, length) {
+              array.byteLength; // this throws if `array` is not a valid ArrayBuffer
+
+              if (byteOffset < 0 || array.byteLength < byteOffset) {
+                throw new RangeError('\'offset\' is out of bounds')
+              }
+
+              if (array.byteLength < byteOffset + (length || 0)) {
+                throw new RangeError('\'length\' is out of bounds')
+              }
+
+              if (byteOffset === undefined && length === undefined) {
+                array = new Uint8Array(array);
+              } else if (length === undefined) {
+                array = new Uint8Array(array, byteOffset);
+              } else {
+                array = new Uint8Array(array, byteOffset, length);
+              }
+
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                // Return an augmented `Uint8Array` instance, for best performance
+                that = array;
+                that.__proto__ = Buffer.prototype;
+              } else {
+                // Fallback: Return an object instance of the Buffer class
+                that = fromArrayLike(that, array);
+              }
+              return that
+            }
+
+            function fromObject (that, obj) {
+              if (internalIsBuffer(obj)) {
+                var len = checked(obj.length) | 0;
+                that = createBuffer(that, len);
+
+                if (that.length === 0) {
+                  return that
+                }
+
+                obj.copy(that, 0, 0, len);
+                return that
+              }
+
+              if (obj) {
+                if ((typeof ArrayBuffer !== 'undefined' &&
+                    obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
+                  if (typeof obj.length !== 'number' || isnan(obj.length)) {
+                    return createBuffer(that, 0)
+                  }
+                  return fromArrayLike(that, obj)
+                }
+
+                if (obj.type === 'Buffer' && isArray(obj.data)) {
+                  return fromArrayLike(that, obj.data)
+                }
+              }
+
+              throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+            }
+
+            function checked (length) {
+              // Note: cannot use `length < kMaxLength()` here because that fails when
+              // length is NaN (which is otherwise coerced to zero.)
+              if (length >= kMaxLength()) {
+                throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+                                     'size: 0x' + kMaxLength().toString(16) + ' bytes')
+              }
+              return length | 0
+            }
+            Buffer.isBuffer = isBuffer;
+            function internalIsBuffer (b) {
+              return !!(b != null && b._isBuffer)
+            }
+
+            Buffer.compare = function compare (a, b) {
+              if (!internalIsBuffer(a) || !internalIsBuffer(b)) {
+                throw new TypeError('Arguments must be Buffers')
+              }
+
+              if (a === b) return 0
+
+              var x = a.length;
+              var y = b.length;
+
+              for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+                if (a[i] !== b[i]) {
+                  x = a[i];
+                  y = b[i];
+                  break
+                }
+              }
+
+              if (x < y) return -1
+              if (y < x) return 1
+              return 0
+            };
+
+            Buffer.isEncoding = function isEncoding (encoding) {
+              switch (String(encoding).toLowerCase()) {
+                case 'hex':
+                case 'utf8':
+                case 'utf-8':
+                case 'ascii':
+                case 'latin1':
+                case 'binary':
+                case 'base64':
+                case 'ucs2':
+                case 'ucs-2':
+                case 'utf16le':
+                case 'utf-16le':
+                  return true
+                default:
+                  return false
+              }
+            };
+
+            Buffer.concat = function concat (list, length) {
+              if (!isArray(list)) {
+                throw new TypeError('"list" argument must be an Array of Buffers')
+              }
+
+              if (list.length === 0) {
+                return Buffer.alloc(0)
+              }
+
+              var i;
+              if (length === undefined) {
+                length = 0;
+                for (i = 0; i < list.length; ++i) {
+                  length += list[i].length;
+                }
+              }
+
+              var buffer = Buffer.allocUnsafe(length);
+              var pos = 0;
+              for (i = 0; i < list.length; ++i) {
+                var buf = list[i];
+                if (!internalIsBuffer(buf)) {
+                  throw new TypeError('"list" argument must be an Array of Buffers')
+                }
+                buf.copy(buffer, pos);
+                pos += buf.length;
+              }
+              return buffer
+            };
+
+            function byteLength (string, encoding) {
+              if (internalIsBuffer(string)) {
+                return string.length
+              }
+              if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
+                  (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
+                return string.byteLength
+              }
+              if (typeof string !== 'string') {
+                string = '' + string;
+              }
+
+              var len = string.length;
+              if (len === 0) return 0
+
+              // Use a for loop to avoid recursion
+              var loweredCase = false;
+              for (;;) {
+                switch (encoding) {
+                  case 'ascii':
+                  case 'latin1':
+                  case 'binary':
+                    return len
+                  case 'utf8':
+                  case 'utf-8':
+                  case undefined:
+                    return utf8ToBytes(string).length
+                  case 'ucs2':
+                  case 'ucs-2':
+                  case 'utf16le':
+                  case 'utf-16le':
+                    return len * 2
+                  case 'hex':
+                    return len >>> 1
+                  case 'base64':
+                    return base64ToBytes(string).length
+                  default:
+                    if (loweredCase) return utf8ToBytes(string).length // assume utf8
+                    encoding = ('' + encoding).toLowerCase();
+                    loweredCase = true;
+                }
+              }
+            }
+            Buffer.byteLength = byteLength;
+
+            function slowToString (encoding, start, end) {
+              var loweredCase = false;
+
+              // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
+              // property of a typed array.
+
+              // This behaves neither like String nor Uint8Array in that we set start/end
+              // to their upper/lower bounds if the value passed is out of range.
+              // undefined is handled specially as per ECMA-262 6th Edition,
+              // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
+              if (start === undefined || start < 0) {
+                start = 0;
+              }
+              // Return early if start > this.length. Done here to prevent potential uint32
+              // coercion fail below.
+              if (start > this.length) {
+                return ''
+              }
+
+              if (end === undefined || end > this.length) {
+                end = this.length;
+              }
+
+              if (end <= 0) {
+                return ''
+              }
+
+              // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
+              end >>>= 0;
+              start >>>= 0;
+
+              if (end <= start) {
+                return ''
+              }
+
+              if (!encoding) encoding = 'utf8';
+
+              while (true) {
+                switch (encoding) {
+                  case 'hex':
+                    return hexSlice(this, start, end)
+
+                  case 'utf8':
+                  case 'utf-8':
+                    return utf8Slice(this, start, end)
+
+                  case 'ascii':
+                    return asciiSlice(this, start, end)
+
+                  case 'latin1':
+                  case 'binary':
+                    return latin1Slice(this, start, end)
+
+                  case 'base64':
+                    return base64Slice(this, start, end)
+
+                  case 'ucs2':
+                  case 'ucs-2':
+                  case 'utf16le':
+                  case 'utf-16le':
+                    return utf16leSlice(this, start, end)
+
+                  default:
+                    if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+                    encoding = (encoding + '').toLowerCase();
+                    loweredCase = true;
+                }
+              }
+            }
+
+            // The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
+            // Buffer instances.
+            Buffer.prototype._isBuffer = true;
+
+            function swap (b, n, m) {
+              var i = b[n];
+              b[n] = b[m];
+              b[m] = i;
+            }
+
+            Buffer.prototype.swap16 = function swap16 () {
+              var len = this.length;
+              if (len % 2 !== 0) {
+                throw new RangeError('Buffer size must be a multiple of 16-bits')
+              }
+              for (var i = 0; i < len; i += 2) {
+                swap(this, i, i + 1);
+              }
+              return this
+            };
+
+            Buffer.prototype.swap32 = function swap32 () {
+              var len = this.length;
+              if (len % 4 !== 0) {
+                throw new RangeError('Buffer size must be a multiple of 32-bits')
+              }
+              for (var i = 0; i < len; i += 4) {
+                swap(this, i, i + 3);
+                swap(this, i + 1, i + 2);
+              }
+              return this
+            };
+
+            Buffer.prototype.swap64 = function swap64 () {
+              var len = this.length;
+              if (len % 8 !== 0) {
+                throw new RangeError('Buffer size must be a multiple of 64-bits')
+              }
+              for (var i = 0; i < len; i += 8) {
+                swap(this, i, i + 7);
+                swap(this, i + 1, i + 6);
+                swap(this, i + 2, i + 5);
+                swap(this, i + 3, i + 4);
+              }
+              return this
+            };
+
+            Buffer.prototype.toString = function toString () {
+              var length = this.length | 0;
+              if (length === 0) return ''
+              if (arguments.length === 0) return utf8Slice(this, 0, length)
+              return slowToString.apply(this, arguments)
+            };
+
+            Buffer.prototype.equals = function equals (b) {
+              if (!internalIsBuffer(b)) throw new TypeError('Argument must be a Buffer')
+              if (this === b) return true
+              return Buffer.compare(this, b) === 0
+            };
+
+            Buffer.prototype.inspect = function inspect () {
+              var str = '';
+              var max = INSPECT_MAX_BYTES;
+              if (this.length > 0) {
+                str = this.toString('hex', 0, max).match(/.{2}/g).join(' ');
+                if (this.length > max) str += ' ... ';
+              }
+              return '<Buffer ' + str + '>'
+            };
+
+            Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+              if (!internalIsBuffer(target)) {
+                throw new TypeError('Argument must be a Buffer')
+              }
+
+              if (start === undefined) {
+                start = 0;
+              }
+              if (end === undefined) {
+                end = target ? target.length : 0;
+              }
+              if (thisStart === undefined) {
+                thisStart = 0;
+              }
+              if (thisEnd === undefined) {
+                thisEnd = this.length;
+              }
+
+              if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+                throw new RangeError('out of range index')
+              }
+
+              if (thisStart >= thisEnd && start >= end) {
+                return 0
+              }
+              if (thisStart >= thisEnd) {
+                return -1
+              }
+              if (start >= end) {
+                return 1
+              }
+
+              start >>>= 0;
+              end >>>= 0;
+              thisStart >>>= 0;
+              thisEnd >>>= 0;
+
+              if (this === target) return 0
+
+              var x = thisEnd - thisStart;
+              var y = end - start;
+              var len = Math.min(x, y);
+
+              var thisCopy = this.slice(thisStart, thisEnd);
+              var targetCopy = target.slice(start, end);
+
+              for (var i = 0; i < len; ++i) {
+                if (thisCopy[i] !== targetCopy[i]) {
+                  x = thisCopy[i];
+                  y = targetCopy[i];
+                  break
+                }
+              }
+
+              if (x < y) return -1
+              if (y < x) return 1
+              return 0
+            };
+
+            // Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+            // OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+            //
+            // Arguments:
+            // - buffer - a Buffer to search
+            // - val - a string, Buffer, or number
+            // - byteOffset - an index into `buffer`; will be clamped to an int32
+            // - encoding - an optional encoding, relevant is val is a string
+            // - dir - true for indexOf, false for lastIndexOf
+            function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+              // Empty buffer means no match
+              if (buffer.length === 0) return -1
+
+              // Normalize byteOffset
+              if (typeof byteOffset === 'string') {
+                encoding = byteOffset;
+                byteOffset = 0;
+              } else if (byteOffset > 0x7fffffff) {
+                byteOffset = 0x7fffffff;
+              } else if (byteOffset < -0x80000000) {
+                byteOffset = -0x80000000;
+              }
+              byteOffset = +byteOffset;  // Coerce to Number.
+              if (isNaN(byteOffset)) {
+                // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+                byteOffset = dir ? 0 : (buffer.length - 1);
+              }
+
+              // Normalize byteOffset: negative offsets start from the end of the buffer
+              if (byteOffset < 0) byteOffset = buffer.length + byteOffset;
+              if (byteOffset >= buffer.length) {
+                if (dir) return -1
+                else byteOffset = buffer.length - 1;
+              } else if (byteOffset < 0) {
+                if (dir) byteOffset = 0;
+                else return -1
+              }
+
+              // Normalize val
+              if (typeof val === 'string') {
+                val = Buffer.from(val, encoding);
+              }
+
+              // Finally, search either indexOf (if dir is true) or lastIndexOf
+              if (internalIsBuffer(val)) {
+                // Special case: looking for empty string/buffer always fails
+                if (val.length === 0) {
+                  return -1
+                }
+                return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+              } else if (typeof val === 'number') {
+                val = val & 0xFF; // Search for a byte value [0-255]
+                if (Buffer.TYPED_ARRAY_SUPPORT &&
+                    typeof Uint8Array.prototype.indexOf === 'function') {
+                  if (dir) {
+                    return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+                  } else {
+                    return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+                  }
+                }
+                return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+              }
+
+              throw new TypeError('val must be string, number or Buffer')
+            }
+
+            function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
+              var indexSize = 1;
+              var arrLength = arr.length;
+              var valLength = val.length;
+
+              if (encoding !== undefined) {
+                encoding = String(encoding).toLowerCase();
+                if (encoding === 'ucs2' || encoding === 'ucs-2' ||
+                    encoding === 'utf16le' || encoding === 'utf-16le') {
+                  if (arr.length < 2 || val.length < 2) {
+                    return -1
+                  }
+                  indexSize = 2;
+                  arrLength /= 2;
+                  valLength /= 2;
+                  byteOffset /= 2;
+                }
+              }
+
+              function read (buf, i) {
+                if (indexSize === 1) {
+                  return buf[i]
+                } else {
+                  return buf.readUInt16BE(i * indexSize)
+                }
+              }
+
+              var i;
+              if (dir) {
+                var foundIndex = -1;
+                for (i = byteOffset; i < arrLength; i++) {
+                  if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+                    if (foundIndex === -1) foundIndex = i;
+                    if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+                  } else {
+                    if (foundIndex !== -1) i -= i - foundIndex;
+                    foundIndex = -1;
+                  }
+                }
+              } else {
+                if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength;
+                for (i = byteOffset; i >= 0; i--) {
+                  var found = true;
+                  for (var j = 0; j < valLength; j++) {
+                    if (read(arr, i + j) !== read(val, j)) {
+                      found = false;
+                      break
+                    }
+                  }
+                  if (found) return i
+                }
+              }
+
+              return -1
+            }
+
+            Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+              return this.indexOf(val, byteOffset, encoding) !== -1
+            };
+
+            Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+              return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+            };
+
+            Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+              return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
+            };
+
+            function hexWrite (buf, string, offset, length) {
+              offset = Number(offset) || 0;
+              var remaining = buf.length - offset;
+              if (!length) {
+                length = remaining;
+              } else {
+                length = Number(length);
+                if (length > remaining) {
+                  length = remaining;
+                }
+              }
+
+              // must be an even number of digits
+              var strLen = string.length;
+              if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
+
+              if (length > strLen / 2) {
+                length = strLen / 2;
+              }
+              for (var i = 0; i < length; ++i) {
+                var parsed = parseInt(string.substr(i * 2, 2), 16);
+                if (isNaN(parsed)) return i
+                buf[offset + i] = parsed;
+              }
+              return i
+            }
+
+            function utf8Write (buf, string, offset, length) {
+              return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+            }
+
+            function asciiWrite (buf, string, offset, length) {
+              return blitBuffer(asciiToBytes(string), buf, offset, length)
+            }
+
+            function latin1Write (buf, string, offset, length) {
+              return asciiWrite(buf, string, offset, length)
+            }
+
+            function base64Write (buf, string, offset, length) {
+              return blitBuffer(base64ToBytes(string), buf, offset, length)
+            }
+
+            function ucs2Write (buf, string, offset, length) {
+              return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+            }
+
+            Buffer.prototype.write = function write (string, offset, length, encoding) {
+              // Buffer#write(string)
+              if (offset === undefined) {
+                encoding = 'utf8';
+                length = this.length;
+                offset = 0;
+              // Buffer#write(string, encoding)
+              } else if (length === undefined && typeof offset === 'string') {
+                encoding = offset;
+                length = this.length;
+                offset = 0;
+              // Buffer#write(string, offset[, length][, encoding])
+              } else if (isFinite(offset)) {
+                offset = offset | 0;
+                if (isFinite(length)) {
+                  length = length | 0;
+                  if (encoding === undefined) encoding = 'utf8';
+                } else {
+                  encoding = length;
+                  length = undefined;
+                }
+              // legacy write(string, encoding, offset, length) - remove in v0.13
+              } else {
+                throw new Error(
+                  'Buffer.write(string, encoding, offset[, length]) is no longer supported'
+                )
+              }
+
+              var remaining = this.length - offset;
+              if (length === undefined || length > remaining) length = remaining;
+
+              if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+                throw new RangeError('Attempt to write outside buffer bounds')
+              }
+
+              if (!encoding) encoding = 'utf8';
+
+              var loweredCase = false;
+              for (;;) {
+                switch (encoding) {
+                  case 'hex':
+                    return hexWrite(this, string, offset, length)
+
+                  case 'utf8':
+                  case 'utf-8':
+                    return utf8Write(this, string, offset, length)
+
+                  case 'ascii':
+                    return asciiWrite(this, string, offset, length)
+
+                  case 'latin1':
+                  case 'binary':
+                    return latin1Write(this, string, offset, length)
+
+                  case 'base64':
+                    // Warning: maxLength not taken into account in base64Write
+                    return base64Write(this, string, offset, length)
+
+                  case 'ucs2':
+                  case 'ucs-2':
+                  case 'utf16le':
+                  case 'utf-16le':
+                    return ucs2Write(this, string, offset, length)
+
+                  default:
+                    if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+                    encoding = ('' + encoding).toLowerCase();
+                    loweredCase = true;
+                }
+              }
+            };
+
+            Buffer.prototype.toJSON = function toJSON () {
+              return {
+                type: 'Buffer',
+                data: Array.prototype.slice.call(this._arr || this, 0)
+              }
+            };
+
+            function base64Slice (buf, start, end) {
+              if (start === 0 && end === buf.length) {
+                return fromByteArray(buf)
+              } else {
+                return fromByteArray(buf.slice(start, end))
+              }
+            }
+
+            function utf8Slice (buf, start, end) {
+              end = Math.min(buf.length, end);
+              var res = [];
+
+              var i = start;
+              while (i < end) {
+                var firstByte = buf[i];
+                var codePoint = null;
+                var bytesPerSequence = (firstByte > 0xEF) ? 4
+                  : (firstByte > 0xDF) ? 3
+                  : (firstByte > 0xBF) ? 2
+                  : 1;
+
+                if (i + bytesPerSequence <= end) {
+                  var secondByte, thirdByte, fourthByte, tempCodePoint;
+
+                  switch (bytesPerSequence) {
+                    case 1:
+                      if (firstByte < 0x80) {
+                        codePoint = firstByte;
+                      }
+                      break
+                    case 2:
+                      secondByte = buf[i + 1];
+                      if ((secondByte & 0xC0) === 0x80) {
+                        tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F);
+                        if (tempCodePoint > 0x7F) {
+                          codePoint = tempCodePoint;
+                        }
+                      }
+                      break
+                    case 3:
+                      secondByte = buf[i + 1];
+                      thirdByte = buf[i + 2];
+                      if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+                        tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F);
+                        if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+                          codePoint = tempCodePoint;
+                        }
+                      }
+                      break
+                    case 4:
+                      secondByte = buf[i + 1];
+                      thirdByte = buf[i + 2];
+                      fourthByte = buf[i + 3];
+                      if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+                        tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F);
+                        if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+                          codePoint = tempCodePoint;
+                        }
+                      }
+                  }
+                }
+
+                if (codePoint === null) {
+                  // we did not generate a valid codePoint so insert a
+                  // replacement char (U+FFFD) and advance only 1 byte
+                  codePoint = 0xFFFD;
+                  bytesPerSequence = 1;
+                } else if (codePoint > 0xFFFF) {
+                  // encode to utf16 (surrogate pair dance)
+                  codePoint -= 0x10000;
+                  res.push(codePoint >>> 10 & 0x3FF | 0xD800);
+                  codePoint = 0xDC00 | codePoint & 0x3FF;
+                }
+
+                res.push(codePoint);
+                i += bytesPerSequence;
+              }
+
+              return decodeCodePointsArray(res)
+            }
+
+            // Based on http://stackoverflow.com/a/22747272/680742, the browser with
+            // the lowest limit is Chrome, with 0x10000 args.
+            // We go 1 magnitude less, for safety
+            var MAX_ARGUMENTS_LENGTH = 0x1000;
+
+            function decodeCodePointsArray (codePoints) {
+              var len = codePoints.length;
+              if (len <= MAX_ARGUMENTS_LENGTH) {
+                return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+              }
+
+              // Decode in chunks to avoid "call stack size exceeded".
+              var res = '';
+              var i = 0;
+              while (i < len) {
+                res += String.fromCharCode.apply(
+                  String,
+                  codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+                );
+              }
+              return res
+            }
+
+            function asciiSlice (buf, start, end) {
+              var ret = '';
+              end = Math.min(buf.length, end);
+
+              for (var i = start; i < end; ++i) {
+                ret += String.fromCharCode(buf[i] & 0x7F);
+              }
+              return ret
+            }
+
+            function latin1Slice (buf, start, end) {
+              var ret = '';
+              end = Math.min(buf.length, end);
+
+              for (var i = start; i < end; ++i) {
+                ret += String.fromCharCode(buf[i]);
+              }
+              return ret
+            }
+
+            function hexSlice (buf, start, end) {
+              var len = buf.length;
+
+              if (!start || start < 0) start = 0;
+              if (!end || end < 0 || end > len) end = len;
+
+              var out = '';
+              for (var i = start; i < end; ++i) {
+                out += toHex(buf[i]);
+              }
+              return out
+            }
+
+            function utf16leSlice (buf, start, end) {
+              var bytes = buf.slice(start, end);
+              var res = '';
+              for (var i = 0; i < bytes.length; i += 2) {
+                res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256);
+              }
+              return res
+            }
+
+            Buffer.prototype.slice = function slice (start, end) {
+              var len = this.length;
+              start = ~~start;
+              end = end === undefined ? len : ~~end;
+
+              if (start < 0) {
+                start += len;
+                if (start < 0) start = 0;
+              } else if (start > len) {
+                start = len;
+              }
+
+              if (end < 0) {
+                end += len;
+                if (end < 0) end = 0;
+              } else if (end > len) {
+                end = len;
+              }
+
+              if (end < start) end = start;
+
+              var newBuf;
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                newBuf = this.subarray(start, end);
+                newBuf.__proto__ = Buffer.prototype;
+              } else {
+                var sliceLen = end - start;
+                newBuf = new Buffer(sliceLen, undefined);
+                for (var i = 0; i < sliceLen; ++i) {
+                  newBuf[i] = this[i + start];
+                }
+              }
+
+              return newBuf
+            };
+
+            /*
+             * Need to make sure that buffer isn't trying to write out of bounds.
+             */
+            function checkOffset (offset, ext, length) {
+              if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+              if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+            }
+
+            Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+              offset = offset | 0;
+              byteLength = byteLength | 0;
+              if (!noAssert) checkOffset(offset, byteLength, this.length);
+
+              var val = this[offset];
+              var mul = 1;
+              var i = 0;
+              while (++i < byteLength && (mul *= 0x100)) {
+                val += this[offset + i] * mul;
+              }
+
+              return val
+            };
+
+            Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+              offset = offset | 0;
+              byteLength = byteLength | 0;
+              if (!noAssert) {
+                checkOffset(offset, byteLength, this.length);
+              }
+
+              var val = this[offset + --byteLength];
+              var mul = 1;
+              while (byteLength > 0 && (mul *= 0x100)) {
+                val += this[offset + --byteLength] * mul;
+              }
+
+              return val
+            };
+
+            Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 1, this.length);
+              return this[offset]
+            };
+
+            Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 2, this.length);
+              return this[offset] | (this[offset + 1] << 8)
+            };
+
+            Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 2, this.length);
+              return (this[offset] << 8) | this[offset + 1]
+            };
+
+            Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 4, this.length);
+
+              return ((this[offset]) |
+                  (this[offset + 1] << 8) |
+                  (this[offset + 2] << 16)) +
+                  (this[offset + 3] * 0x1000000)
+            };
+
+            Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 4, this.length);
+
+              return (this[offset] * 0x1000000) +
+                ((this[offset + 1] << 16) |
+                (this[offset + 2] << 8) |
+                this[offset + 3])
+            };
+
+            Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+              offset = offset | 0;
+              byteLength = byteLength | 0;
+              if (!noAssert) checkOffset(offset, byteLength, this.length);
+
+              var val = this[offset];
+              var mul = 1;
+              var i = 0;
+              while (++i < byteLength && (mul *= 0x100)) {
+                val += this[offset + i] * mul;
+              }
+              mul *= 0x80;
+
+              if (val >= mul) val -= Math.pow(2, 8 * byteLength);
+
+              return val
+            };
+
+            Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+              offset = offset | 0;
+              byteLength = byteLength | 0;
+              if (!noAssert) checkOffset(offset, byteLength, this.length);
+
+              var i = byteLength;
+              var mul = 1;
+              var val = this[offset + --i];
+              while (i > 0 && (mul *= 0x100)) {
+                val += this[offset + --i] * mul;
+              }
+              mul *= 0x80;
+
+              if (val >= mul) val -= Math.pow(2, 8 * byteLength);
+
+              return val
+            };
+
+            Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 1, this.length);
+              if (!(this[offset] & 0x80)) return (this[offset])
+              return ((0xff - this[offset] + 1) * -1)
+            };
+
+            Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 2, this.length);
+              var val = this[offset] | (this[offset + 1] << 8);
+              return (val & 0x8000) ? val | 0xFFFF0000 : val
+            };
+
+            Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 2, this.length);
+              var val = this[offset + 1] | (this[offset] << 8);
+              return (val & 0x8000) ? val | 0xFFFF0000 : val
+            };
+
+            Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 4, this.length);
+
+              return (this[offset]) |
+                (this[offset + 1] << 8) |
+                (this[offset + 2] << 16) |
+                (this[offset + 3] << 24)
+            };
+
+            Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 4, this.length);
+
+              return (this[offset] << 24) |
+                (this[offset + 1] << 16) |
+                (this[offset + 2] << 8) |
+                (this[offset + 3])
+            };
+
+            Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 4, this.length);
+              return read(this, offset, true, 23, 4)
+            };
+
+            Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 4, this.length);
+              return read(this, offset, false, 23, 4)
+            };
+
+            Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 8, this.length);
+              return read(this, offset, true, 52, 8)
+            };
+
+            Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+              if (!noAssert) checkOffset(offset, 8, this.length);
+              return read(this, offset, false, 52, 8)
+            };
+
+            function checkInt (buf, value, offset, ext, max, min) {
+              if (!internalIsBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+              if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
+              if (offset + ext > buf.length) throw new RangeError('Index out of range')
+            }
+
+            Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              byteLength = byteLength | 0;
+              if (!noAssert) {
+                var maxBytes = Math.pow(2, 8 * byteLength) - 1;
+                checkInt(this, value, offset, byteLength, maxBytes, 0);
+              }
+
+              var mul = 1;
+              var i = 0;
+              this[offset] = value & 0xFF;
+              while (++i < byteLength && (mul *= 0x100)) {
+                this[offset + i] = (value / mul) & 0xFF;
+              }
+
+              return offset + byteLength
+            };
+
+            Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              byteLength = byteLength | 0;
+              if (!noAssert) {
+                var maxBytes = Math.pow(2, 8 * byteLength) - 1;
+                checkInt(this, value, offset, byteLength, maxBytes, 0);
+              }
+
+              var i = byteLength - 1;
+              var mul = 1;
+              this[offset + i] = value & 0xFF;
+              while (--i >= 0 && (mul *= 0x100)) {
+                this[offset + i] = (value / mul) & 0xFF;
+              }
+
+              return offset + byteLength
+            };
+
+            Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0);
+              if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
+              this[offset] = (value & 0xff);
+              return offset + 1
+            };
+
+            function objectWriteUInt16 (buf, value, offset, littleEndian) {
+              if (value < 0) value = 0xffff + value + 1;
+              for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
+                buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+                  (littleEndian ? i : 1 - i) * 8;
+              }
+            }
+
+            Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset] = (value & 0xff);
+                this[offset + 1] = (value >>> 8);
+              } else {
+                objectWriteUInt16(this, value, offset, true);
+              }
+              return offset + 2
+            };
+
+            Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset] = (value >>> 8);
+                this[offset + 1] = (value & 0xff);
+              } else {
+                objectWriteUInt16(this, value, offset, false);
+              }
+              return offset + 2
+            };
+
+            function objectWriteUInt32 (buf, value, offset, littleEndian) {
+              if (value < 0) value = 0xffffffff + value + 1;
+              for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
+                buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff;
+              }
+            }
+
+            Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset + 3] = (value >>> 24);
+                this[offset + 2] = (value >>> 16);
+                this[offset + 1] = (value >>> 8);
+                this[offset] = (value & 0xff);
+              } else {
+                objectWriteUInt32(this, value, offset, true);
+              }
+              return offset + 4
+            };
+
+            Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset] = (value >>> 24);
+                this[offset + 1] = (value >>> 16);
+                this[offset + 2] = (value >>> 8);
+                this[offset + 3] = (value & 0xff);
+              } else {
+                objectWriteUInt32(this, value, offset, false);
+              }
+              return offset + 4
+            };
+
+            Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) {
+                var limit = Math.pow(2, 8 * byteLength - 1);
+
+                checkInt(this, value, offset, byteLength, limit - 1, -limit);
+              }
+
+              var i = 0;
+              var mul = 1;
+              var sub = 0;
+              this[offset] = value & 0xFF;
+              while (++i < byteLength && (mul *= 0x100)) {
+                if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+                  sub = 1;
+                }
+                this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
+              }
+
+              return offset + byteLength
+            };
+
+            Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) {
+                var limit = Math.pow(2, 8 * byteLength - 1);
+
+                checkInt(this, value, offset, byteLength, limit - 1, -limit);
+              }
+
+              var i = byteLength - 1;
+              var mul = 1;
+              var sub = 0;
+              this[offset + i] = value & 0xFF;
+              while (--i >= 0 && (mul *= 0x100)) {
+                if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+                  sub = 1;
+                }
+                this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
+              }
+
+              return offset + byteLength
+            };
+
+            Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80);
+              if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
+              if (value < 0) value = 0xff + value + 1;
+              this[offset] = (value & 0xff);
+              return offset + 1
+            };
+
+            Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset] = (value & 0xff);
+                this[offset + 1] = (value >>> 8);
+              } else {
+                objectWriteUInt16(this, value, offset, true);
+              }
+              return offset + 2
+            };
+
+            Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset] = (value >>> 8);
+                this[offset + 1] = (value & 0xff);
+              } else {
+                objectWriteUInt16(this, value, offset, false);
+              }
+              return offset + 2
+            };
+
+            Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset] = (value & 0xff);
+                this[offset + 1] = (value >>> 8);
+                this[offset + 2] = (value >>> 16);
+                this[offset + 3] = (value >>> 24);
+              } else {
+                objectWriteUInt32(this, value, offset, true);
+              }
+              return offset + 4
+            };
+
+            Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+              value = +value;
+              offset = offset | 0;
+              if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
+              if (value < 0) value = 0xffffffff + value + 1;
+              if (Buffer.TYPED_ARRAY_SUPPORT) {
+                this[offset] = (value >>> 24);
+                this[offset + 1] = (value >>> 16);
+                this[offset + 2] = (value >>> 8);
+                this[offset + 3] = (value & 0xff);
+              } else {
+                objectWriteUInt32(this, value, offset, false);
+              }
+              return offset + 4
+            };
+
+            function checkIEEE754 (buf, value, offset, ext, max, min) {
+              if (offset + ext > buf.length) throw new RangeError('Index out of range')
+              if (offset < 0) throw new RangeError('Index out of range')
+            }
+
+            function writeFloat (buf, value, offset, littleEndian, noAssert) {
+              if (!noAssert) {
+                checkIEEE754(buf, value, offset, 4);
+              }
+              write(buf, value, offset, littleEndian, 23, 4);
+              return offset + 4
+            }
+
+            Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+              return writeFloat(this, value, offset, true, noAssert)
+            };
+
+            Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+              return writeFloat(this, value, offset, false, noAssert)
+            };
+
+            function writeDouble (buf, value, offset, littleEndian, noAssert) {
+              if (!noAssert) {
+                checkIEEE754(buf, value, offset, 8);
+              }
+              write(buf, value, offset, littleEndian, 52, 8);
+              return offset + 8
+            }
+
+            Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+              return writeDouble(this, value, offset, true, noAssert)
+            };
+
+            Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+              return writeDouble(this, value, offset, false, noAssert)
+            };
+
+            // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+            Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+              if (!start) start = 0;
+              if (!end && end !== 0) end = this.length;
+              if (targetStart >= target.length) targetStart = target.length;
+              if (!targetStart) targetStart = 0;
+              if (end > 0 && end < start) end = start;
+
+              // Copy 0 bytes; we're done
+              if (end === start) return 0
+              if (target.length === 0 || this.length === 0) return 0
+
+              // Fatal error conditions
+              if (targetStart < 0) {
+                throw new RangeError('targetStart out of bounds')
+              }
+              if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+              if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+              // Are we oob?
+              if (end > this.length) end = this.length;
+              if (target.length - targetStart < end - start) {
+                end = target.length - targetStart + start;
+              }
+
+              var len = end - start;
+              var i;
+
+              if (this === target && start < targetStart && targetStart < end) {
+                // descending copy from end
+                for (i = len - 1; i >= 0; --i) {
+                  target[i + targetStart] = this[i + start];
+                }
+              } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+                // ascending copy from start
+                for (i = 0; i < len; ++i) {
+                  target[i + targetStart] = this[i + start];
+                }
+              } else {
+                Uint8Array.prototype.set.call(
+                  target,
+                  this.subarray(start, start + len),
+                  targetStart
+                );
+              }
+
+              return len
+            };
+
+            // Usage:
+            //    buffer.fill(number[, offset[, end]])
+            //    buffer.fill(buffer[, offset[, end]])
+            //    buffer.fill(string[, offset[, end]][, encoding])
+            Buffer.prototype.fill = function fill (val, start, end, encoding) {
+              // Handle string cases:
+              if (typeof val === 'string') {
+                if (typeof start === 'string') {
+                  encoding = start;
+                  start = 0;
+                  end = this.length;
+                } else if (typeof end === 'string') {
+                  encoding = end;
+                  end = this.length;
+                }
+                if (val.length === 1) {
+                  var code = val.charCodeAt(0);
+                  if (code < 256) {
+                    val = code;
+                  }
+                }
+                if (encoding !== undefined && typeof encoding !== 'string') {
+                  throw new TypeError('encoding must be a string')
+                }
+                if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+                  throw new TypeError('Unknown encoding: ' + encoding)
+                }
+              } else if (typeof val === 'number') {
+                val = val & 255;
+              }
+
+              // Invalid ranges are not set to a default, so can range check early.
+              if (start < 0 || this.length < start || this.length < end) {
+                throw new RangeError('Out of range index')
+              }
+
+              if (end <= start) {
+                return this
+              }
+
+              start = start >>> 0;
+              end = end === undefined ? this.length : end >>> 0;
+
+              if (!val) val = 0;
+
+              var i;
+              if (typeof val === 'number') {
+                for (i = start; i < end; ++i) {
+                  this[i] = val;
+                }
+              } else {
+                var bytes = internalIsBuffer(val)
+                  ? val
+                  : utf8ToBytes(new Buffer(val, encoding).toString());
+                var len = bytes.length;
+                for (i = 0; i < end - start; ++i) {
+                  this[i + start] = bytes[i % len];
+                }
+              }
+
+              return this
+            };
+
+            // HELPER FUNCTIONS
+            // ================
+
+            var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g;
+
+            function base64clean (str) {
+              // Node strips out invalid characters like \n and \t from the string, base64-js does not
+              str = stringtrim(str).replace(INVALID_BASE64_RE, '');
+              // Node converts strings with length < 2 to ''
+              if (str.length < 2) return ''
+              // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+              while (str.length % 4 !== 0) {
+                str = str + '=';
+              }
+              return str
+            }
+
+            function stringtrim (str) {
+              if (str.trim) return str.trim()
+              return str.replace(/^\s+|\s+$/g, '')
+            }
+
+            function toHex (n) {
+              if (n < 16) return '0' + n.toString(16)
+              return n.toString(16)
+            }
+
+            function utf8ToBytes (string, units) {
+              units = units || Infinity;
+              var codePoint;
+              var length = string.length;
+              var leadSurrogate = null;
+              var bytes = [];
+
+              for (var i = 0; i < length; ++i) {
+                codePoint = string.charCodeAt(i);
+
+                // is surrogate component
+                if (codePoint > 0xD7FF && codePoint < 0xE000) {
+                  // last char was a lead
+                  if (!leadSurrogate) {
+                    // no lead yet
+                    if (codePoint > 0xDBFF) {
+                      // unexpected trail
+                      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+                      continue
+                    } else if (i + 1 === length) {
+                      // unpaired lead
+                      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+                      continue
+                    }
+
+                    // valid lead
+                    leadSurrogate = codePoint;
+
+                    continue
+                  }
+
+                  // 2 leads in a row
+                  if (codePoint < 0xDC00) {
+                    if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+                    leadSurrogate = codePoint;
+                    continue
+                  }
+
+                  // valid surrogate pair
+                  codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000;
+                } else if (leadSurrogate) {
+                  // valid bmp char, but last char was a lead
+                  if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
+                }
+
+                leadSurrogate = null;
+
+                // encode utf8
+                if (codePoint < 0x80) {
+                  if ((units -= 1) < 0) break
+                  bytes.push(codePoint);
+                } else if (codePoint < 0x800) {
+                  if ((units -= 2) < 0) break
+                  bytes.push(
+                    codePoint >> 0x6 | 0xC0,
+                    codePoint & 0x3F | 0x80
+                  );
+                } else if (codePoint < 0x10000) {
+                  if ((units -= 3) < 0) break
+                  bytes.push(
+                    codePoint >> 0xC | 0xE0,
+                    codePoint >> 0x6 & 0x3F | 0x80,
+                    codePoint & 0x3F | 0x80
+                  );
+                } else if (codePoint < 0x110000) {
+                  if ((units -= 4) < 0) break
+                  bytes.push(
+                    codePoint >> 0x12 | 0xF0,
+                    codePoint >> 0xC & 0x3F | 0x80,
+                    codePoint >> 0x6 & 0x3F | 0x80,
+                    codePoint & 0x3F | 0x80
+                  );
+                } else {
+                  throw new Error('Invalid code point')
+                }
+              }
+
+              return bytes
+            }
+
+            function asciiToBytes (str) {
+              var byteArray = [];
+              for (var i = 0; i < str.length; ++i) {
+                // Node's code seems to be doing this and not & 0x7F..
+                byteArray.push(str.charCodeAt(i) & 0xFF);
+              }
+              return byteArray
+            }
+
+            function utf16leToBytes (str, units) {
+              var c, hi, lo;
+              var byteArray = [];
+              for (var i = 0; i < str.length; ++i) {
+                if ((units -= 2) < 0) break
+
+                c = str.charCodeAt(i);
+                hi = c >> 8;
+                lo = c % 256;
+                byteArray.push(lo);
+                byteArray.push(hi);
+              }
+
+              return byteArray
+            }
+
+
+            function base64ToBytes (str) {
+              return toByteArray(base64clean(str))
+            }
+
+            function blitBuffer (src, dst, offset, length) {
+              for (var i = 0; i < length; ++i) {
+                if ((i + offset >= dst.length) || (i >= src.length)) break
+                dst[i + offset] = src[i];
+              }
+              return i
+            }
+
+            function isnan (val) {
+              return val !== val // eslint-disable-line no-self-compare
+            }
+
+
+            // the following is from is-buffer, also by Feross Aboukhadijeh and with same lisence
+            // The _isBuffer check is for Safari 5-7 support, because it's missing
+            // Object.prototype.constructor. Remove this eventually
+            function isBuffer(obj) {
+              return obj != null && (!!obj._isBuffer || isFastBuffer(obj) || isSlowBuffer(obj))
+            }
+
+            function isFastBuffer (obj) {
+              return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+            }
+
+            // For Node v0.10 support. Remove this eventually.
+            function isSlowBuffer (obj) {
+              return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isFastBuffer(obj.slice(0, 0))
+            }
+
             function isNull(arg) {
               return arg === null;
             }
@@ -3039,8 +5092,8 @@
             }
 
             /*!
-             * @pixi/constants - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/constants - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/constants is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -3383,9 +5436,9 @@
              *
              * @name PRECISION
              * @memberof PIXI
+             * @constant
              * @static
              * @enum {string}
-             * @constant
              * @property {string} LOW='lowp'
              * @property {string} MEDIUM='mediump'
              * @property {string} HIGH='highp'
@@ -3418,8 +5471,8 @@
             })(MASK_TYPES || (MASK_TYPES = {}));
 
             /*!
-             * @pixi/utils - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/utils - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/utils is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -3436,7 +5489,6 @@
              * @example `@2x`
              */
             settings.RETINA_PREFIX = /@([0-9\.]+)x/;
-
             /**
              * Should the `failIfMajorPerformanceCaveat` flag be enabled as a context option used in the `isWebGLSupported` function.
              * For most scenarios this should be left as true, as otherwise the user may have a poor experience.
@@ -3451,19 +5503,16 @@
             settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
 
             var saidHello = false;
-            var VERSION = '5.2.0';
-
+            var VERSION = '5.2.1';
             /**
              * Skips the hello message of renderers that are created after this is run.
              *
              * @function skipHello
              * @memberof PIXI.utils
              */
-            function skipHello()
-            {
+            function skipHello() {
                 saidHello = true;
             }
-
             /**
              * Logs out the version and renderer information for this running instance of PIXI.
              * If you don't want to see this message you can run `PIXI.utils.skipHello()` before
@@ -3474,17 +5523,14 @@
              * @memberof PIXI.utils
              * @param {string} type - The string renderer type to log.
              */
-            function sayHello(type)
-            {
-                if (saidHello)
-                {
+            function sayHello(type) {
+                var _a;
+                if (saidHello) {
                     return;
                 }
-
-                if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
-                {
+                if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
                     var args = [
-                        ("\n %c %c %c PixiJS " + VERSION + " - ✰ " + type + " ✰  %c  %c  http://www.pixijs.com/  %c %c ♥%c♥%c♥ \n\n"),
+                        "\n %c %c %c PixiJS " + VERSION + " - \u2730 " + type + " \u2730  %c  %c  http://www.pixijs.com/  %c %c \u2665%c\u2665%c\u2665 \n\n",
                         'background: #ff66a5; padding:5px 0;',
                         'background: #ff66a5; padding:5px 0;',
                         'color: #ff66a5; background: #030307; padding:5px 0;',
@@ -3494,19 +5540,15 @@
                         'color: #ff2424; background: #fff; padding:5px 0;',
                         'color: #ff2424; background: #fff; padding:5px 0;',
                         'color: #ff2424; background: #fff; padding:5px 0;' ];
-
-                    window.console.log.apply(console, args);
+                    (_a = window.console).log.apply(_a, args);
                 }
-                else if (window.console)
-                {
-                    window.console.log(("PixiJS " + VERSION + " - " + type + " - http://www.pixijs.com/"));
+                else if (window.console) {
+                    window.console.log("PixiJS " + VERSION + " - " + type + " - http://www.pixijs.com/");
                 }
-
                 saidHello = true;
             }
 
             var supported;
-
             /**
              * Helper for checking for WebGL support.
              *
@@ -3514,51 +5556,35 @@
              * @function isWebGLSupported
              * @return {boolean} Is WebGL supported.
              */
-            function isWebGLSupported()
-            {
-                if (typeof supported === 'undefined')
-                {
-                    supported = (function supported()
-                    {
+            function isWebGLSupported() {
+                if (typeof supported === 'undefined') {
+                    supported = (function supported() {
                         var contextOptions = {
                             stencil: true,
                             failIfMajorPerformanceCaveat: settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT,
                         };
-
-                        try
-                        {
-                            if (!window.WebGLRenderingContext)
-                            {
+                        try {
+                            if (!window.WebGLRenderingContext) {
                                 return false;
                             }
-
                             var canvas = document.createElement('canvas');
-                            var gl = canvas.getContext('webgl', contextOptions)
-                                || canvas.getContext('experimental-webgl', contextOptions);
-
+                            var gl = (canvas.getContext('webgl', contextOptions)
+                                || canvas.getContext('experimental-webgl', contextOptions));
                             var success = !!(gl && gl.getContextAttributes().stencil);
-
-                            if (gl)
-                            {
+                            if (gl) {
                                 var loseContext = gl.getExtension('WEBGL_lose_context');
-
-                                if (loseContext)
-                                {
+                                if (loseContext) {
                                     loseContext.loseContext();
                                 }
                             }
-
                             gl = null;
-
                             return success;
                         }
-                        catch (e)
-                        {
+                        catch (e) {
                             return false;
                         }
                     })();
                 }
-
                 return supported;
             }
 
@@ -3573,17 +5599,13 @@
              * @param  {number[]} [out=[]] If supplied, this array will be used rather than returning a new one
              * @return {number[]} An array representing the [R, G, B] of the color where all values are floats.
              */
-            function hex2rgb(hex, out)
-            {
+            function hex2rgb(hex, out) {
                 out = out || [];
-
                 out[0] = ((hex >> 16) & 0xFF) / 255;
                 out[1] = ((hex >> 8) & 0xFF) / 255;
                 out[2] = (hex & 0xFF) / 255;
-
                 return out;
             }
-
             /**
              * Converts a hexadecimal color number to a string.
              *
@@ -3594,14 +5616,11 @@
              * @param {number} hex - Number in hex (e.g., `0xffffff`)
              * @return {string} The string color (e.g., `"#ffffff"`).
              */
-            function hex2string(hex)
-            {
-                hex = hex.toString(16);
-                hex = '000000'.substr(0, 6 - hex.length) + hex;
-
-                return ("#" + hex);
+            function hex2string(hex) {
+                var hexString = hex.toString(16);
+                hexString = '000000'.substr(0, 6 - hexString.length) + hexString;
+                return "#" + hexString;
             }
-
             /**
              * Converts a hexadecimal string to a hexadecimal color number.
              *
@@ -3612,16 +5631,12 @@
              * @param {string} The string color (e.g., `"#ffffff"`)
              * @return {number} Number in hexadecimal.
              */
-            function string2hex(string)
-            {
-                if (typeof string === 'string' && string[0] === '#')
-                {
+            function string2hex(string) {
+                if (typeof string === 'string' && string[0] === '#') {
                     string = string.substr(1);
                 }
-
                 return parseInt(string, 16);
             }
-
             /**
              * Converts a color as an [R, G, B] array of normalized floats to a hexadecimal number.
              *
@@ -3632,8 +5647,7 @@
              * @param {number[]} rgb - Array of numbers where all values are normalized floats from 0.0 to 1.0.
              * @return {number} Number in hexadecimal.
              */
-            function rgb2hex(rgb)
-            {
+            function rgb2hex(rgb) {
                 return (((rgb[0] * 255) << 16) + ((rgb[1] * 255) << 8) + (rgb[2] * 255 | 0));
             }
 
@@ -3643,36 +5657,26 @@
              * @memberof PIXI.utils
              * @function mapPremultipliedBlendModes
              * @private
-             * @param {Array<number[]>} [array] - The array to output into.
              * @return {Array<number[]>} Mapped modes.
              */
-            function mapPremultipliedBlendModes()
-            {
+            function mapPremultipliedBlendModes() {
                 var pm = [];
                 var npm = [];
-
-                for (var i = 0; i < 32; i++)
-                {
+                for (var i = 0; i < 32; i++) {
                     pm[i] = i;
                     npm[i] = i;
                 }
-
                 pm[BLEND_MODES.NORMAL_NPM] = BLEND_MODES.NORMAL;
                 pm[BLEND_MODES.ADD_NPM] = BLEND_MODES.ADD;
                 pm[BLEND_MODES.SCREEN_NPM] = BLEND_MODES.SCREEN;
-
                 npm[BLEND_MODES.NORMAL] = BLEND_MODES.NORMAL_NPM;
                 npm[BLEND_MODES.ADD] = BLEND_MODES.ADD_NPM;
                 npm[BLEND_MODES.SCREEN] = BLEND_MODES.SCREEN_NPM;
-
                 var array = [];
-
                 array.push(npm);
                 array.push(pm);
-
                 return array;
             }
-
             /**
              * maps premultiply flag and blendMode to adjusted blendMode
              * @memberof PIXI.utils
@@ -3680,7 +5684,6 @@
              * @type {Array<number[]>}
              */
             var premultiplyBlendMode = mapPremultipliedBlendModes();
-
             /**
              * changes blendMode according to texture format
              *
@@ -3690,11 +5693,9 @@
              * @param {boolean} premultiplied  whether source is premultiplied
              * @returns {number} true blend mode for this texture
              */
-            function correctBlendMode(blendMode, premultiplied)
-            {
+            function correctBlendMode(blendMode, premultiplied) {
                 return premultiplyBlendMode[premultiplied ? 1 : 0][blendMode];
             }
-
             /**
              * combines rgb and alpha to out array
              *
@@ -3706,26 +5707,21 @@
              * @param {boolean} [premultiply=true] do premultiply it
              * @returns {Float32Array} vec4 rgba
              */
-            function premultiplyRgba(rgb, alpha, out, premultiply)
-            {
+            function premultiplyRgba(rgb, alpha, out, premultiply) {
                 out = out || new Float32Array(4);
-                if (premultiply || premultiply === undefined)
-                {
+                if (premultiply || premultiply === undefined) {
                     out[0] = rgb[0] * alpha;
                     out[1] = rgb[1] * alpha;
                     out[2] = rgb[2] * alpha;
                 }
-                else
-                {
+                else {
                     out[0] = rgb[0];
                     out[1] = rgb[1];
                     out[2] = rgb[2];
                 }
                 out[3] = alpha;
-
                 return out;
             }
-
             /**
              * premultiplies tint
              *
@@ -3735,27 +5731,21 @@
              * @param {number} alpha floating point alpha (0.0-1.0)
              * @returns {number} tint multiplied by alpha
              */
-            function premultiplyTint(tint, alpha)
-            {
-                if (alpha === 1.0)
-                {
+            function premultiplyTint(tint, alpha) {
+                if (alpha === 1.0) {
                     return (alpha * 255 << 24) + tint;
                 }
-                if (alpha === 0.0)
-                {
+                if (alpha === 0.0) {
                     return 0;
                 }
                 var R = ((tint >> 16) & 0xFF);
                 var G = ((tint >> 8) & 0xFF);
                 var B = (tint & 0xFF);
-
                 R = ((R * alpha) + 0.5) | 0;
                 G = ((G * alpha) + 0.5) | 0;
                 B = ((B * alpha) + 0.5) | 0;
-
                 return (alpha * 255 << 24) + (R << 16) + (G << 8) + B;
             }
-
             /**
              * converts integer tint and float alpha to vec4 form, premultiplies by default
              *
@@ -3767,20 +5757,17 @@
              * @param {boolean} [premultiply=true] do premultiply it
              * @returns {Float32Array} vec4 rgba
              */
-            function premultiplyTintToRgba(tint, alpha, out, premultiply)
-            {
+            function premultiplyTintToRgba(tint, alpha, out, premultiply) {
                 out = out || new Float32Array(4);
                 out[0] = ((tint >> 16) & 0xFF) / 255.0;
                 out[1] = ((tint >> 8) & 0xFF) / 255.0;
                 out[2] = (tint & 0xFF) / 255.0;
-                if (premultiply || premultiply === undefined)
-                {
+                if (premultiply || premultiply === undefined) {
                     out[0] *= alpha;
                     out[1] *= alpha;
                     out[2] *= alpha;
                 }
                 out[3] = alpha;
-
                 return out;
             }
 
@@ -3793,23 +5780,16 @@
              * @param {Uint16Array|Uint32Array} [outBuffer] - Buffer for output, length has to be `6 * size`
              * @return {Uint16Array|Uint32Array} - Resulting index buffer
              */
-            function createIndicesForQuads(size, outBuffer)
-            {
-                if ( outBuffer === void 0 ) outBuffer = null;
-
+            function createIndicesForQuads(size, outBuffer) {
+                if (outBuffer === void 0) { outBuffer = null; }
                 // the total number of indices in our array, there are 6 points per quad.
                 var totalIndices = size * 6;
-
                 outBuffer = outBuffer || new Uint16Array(totalIndices);
-
-                if (outBuffer.length !== totalIndices)
-                {
-                    throw new Error(("Out buffer length is incorrect, got " + (outBuffer.length) + " and expected " + totalIndices));
+                if (outBuffer.length !== totalIndices) {
+                    throw new Error("Out buffer length is incorrect, got " + outBuffer.length + " and expected " + totalIndices);
                 }
-
                 // fill the indices with the quads to draw
-                for (var i = 0, j = 0; i < totalIndices; i += 6, j += 4)
-                {
+                for (var i = 0, j = 0; i < totalIndices; i += 6, j += 4) {
                     outBuffer[i + 0] = j + 0;
                     outBuffer[i + 1] = j + 1;
                     outBuffer[i + 2] = j + 2;
@@ -3817,8 +5797,119 @@
                     outBuffer[i + 4] = j + 2;
                     outBuffer[i + 5] = j + 3;
                 }
-
                 return outBuffer;
+            }
+
+            function getBufferType(array) {
+                if (array.BYTES_PER_ELEMENT === 4) {
+                    if (array instanceof Float32Array) {
+                        return 'Float32Array';
+                    }
+                    else if (array instanceof Uint32Array) {
+                        return 'Uint32Array';
+                    }
+                    return 'Int32Array';
+                }
+                else if (array.BYTES_PER_ELEMENT === 2) {
+                    if (array instanceof Uint16Array) {
+                        return 'Uint16Array';
+                    }
+                }
+                else if (array.BYTES_PER_ELEMENT === 1) {
+                    if (array instanceof Uint8Array) {
+                        return 'Uint8Array';
+                    }
+                }
+                // TODO map out the rest of the array elements!
+                return null;
+            }
+
+            /* eslint-disable object-shorthand */
+            var map$1 = { Float32Array: Float32Array, Uint32Array: Uint32Array, Int32Array: Int32Array, Uint8Array: Uint8Array };
+            function interleaveTypedArrays(arrays, sizes) {
+                var outSize = 0;
+                var stride = 0;
+                var views = {};
+                for (var i = 0; i < arrays.length; i++) {
+                    stride += sizes[i];
+                    outSize += arrays[i].length;
+                }
+                var buffer = new ArrayBuffer(outSize * 4);
+                var out = null;
+                var littleOffset = 0;
+                for (var i = 0; i < arrays.length; i++) {
+                    var size = sizes[i];
+                    var array = arrays[i];
+                    /*
+                    @todo This is unsafe casting but consistent with how the code worked previously. Should it stay this way
+                          or should and `getBufferTypeUnsafe` function be exposed that throws an Error if unsupported type is passed?
+                     */
+                    var type = getBufferType(array);
+                    if (!views[type]) {
+                        views[type] = new map$1[type](buffer);
+                    }
+                    out = views[type];
+                    for (var j = 0; j < array.length; j++) {
+                        var indexStart = ((j / size | 0) * stride) + littleOffset;
+                        var index = j % size;
+                        out[indexStart + index] = array[j];
+                    }
+                    littleOffset += size;
+                }
+                return new Float32Array(buffer);
+            }
+
+            // Taken from the bit-twiddle package
+            /**
+             * Rounds to next power of two.
+             *
+             * @function nextPow2
+             * @memberof PIXI.utils
+             * @param {number} v input value
+             * @return {number}
+             */
+            function nextPow2(v) {
+                v += v === 0 ? 1 : 0;
+                --v;
+                v |= v >>> 1;
+                v |= v >>> 2;
+                v |= v >>> 4;
+                v |= v >>> 8;
+                v |= v >>> 16;
+                return v + 1;
+            }
+            /**
+             * Checks if a number is a power of two.
+             *
+             * @function isPow2
+             * @memberof PIXI.utils
+             * @param {number} v input value
+             * @return {boolean} `true` if value is power of two
+             */
+            function isPow2(v) {
+                return !(v & (v - 1)) && (!!v);
+            }
+            /**
+             * Computes ceil of log base 2
+             *
+             * @function log2
+             * @memberof PIXI.utils
+             * @param {number} v input value
+             * @return {number} logarithm base 2
+             */
+            function log2(v) {
+                var r = (v > 0xFFFF ? 1 : 0) << 4;
+                v >>>= r;
+                var shift = (v > 0xFF ? 1 : 0) << 3;
+                v >>>= shift;
+                r |= shift;
+                shift = (v > 0xF ? 1 : 0) << 2;
+                v >>>= shift;
+                r |= shift;
+                shift = (v > 0x3 ? 1 : 0) << 1;
+                v >>>= shift;
+                r |= shift;
+                return r | (v >> 1);
             }
 
             /**
@@ -3830,40 +5921,18 @@
              * @param {number} startIdx starting index
              * @param {number} removeCount how many to remove
              */
-            function removeItems(arr, startIdx, removeCount)
-            {
+            function removeItems(arr, startIdx, removeCount) {
                 var length = arr.length;
                 var i;
-
-                if (startIdx >= length || removeCount === 0)
-                {
+                if (startIdx >= length || removeCount === 0) {
                     return;
                 }
-
                 removeCount = (startIdx + removeCount > length ? length - startIdx : removeCount);
-
                 var len = length - removeCount;
-
-                for (i = startIdx; i < len; ++i)
-                {
+                for (i = startIdx; i < len; ++i) {
                     arr[i] = arr[i + removeCount];
                 }
-
                 arr.length = len;
-            }
-
-            var nextUid = 0;
-
-            /**
-             * Gets the next unique identifier
-             *
-             * @memberof PIXI.utils
-             * @function uid
-             * @return {number} The next unique identifier to use.
-             */
-            function uid()
-            {
-                return ++nextUid;
             }
 
             /**
@@ -3874,72 +5943,65 @@
              * @param {number} n - the number to check the sign of
              * @returns {number} 0 if `n` is 0, -1 if `n` is negative, 1 if `n` is positive
              */
-            function sign(n)
-            {
-                if (n === 0) { return 0; }
-
+            function sign(n) {
+                if (n === 0)
+                    { return 0; }
                 return n < 0 ? -1 : 1;
             }
 
-            // Taken from the bit-twiddle package
-
+            var nextUid = 0;
             /**
-             * Rounds to next power of two.
+             * Gets the next unique identifier
              *
-             * @function nextPow2
              * @memberof PIXI.utils
-             * @param {number} v input value
-             * @return {number}
+             * @function uid
+             * @return {number} The next unique identifier to use.
              */
-            function nextPow2(v)
-            {
-                v += v === 0;
-                --v;
-                v |= v >>> 1;
-                v |= v >>> 2;
-                v |= v >>> 4;
-                v |= v >>> 8;
-                v |= v >>> 16;
-
-                return v + 1;
+            function uid() {
+                return ++nextUid;
             }
 
+            // A map of warning messages already fired
+            var warnings = {};
             /**
-             * Checks if a number is a power of two.
+             * Helper for warning developers about deprecated features & settings.
+             * A stack track for warnings is given; useful for tracking-down where
+             * deprecated methods/properties/classes are being used within the code.
              *
-             * @function isPow2
              * @memberof PIXI.utils
-             * @param {number} v input value
-             * @return {boolean} `true` if value is power of two
+             * @function deprecation
+             * @param {string} version - The version where the feature became deprecated
+             * @param {string} message - Message should include what is deprecated, where, and the new solution
+             * @param {number} [ignoreDepth=3] - The number of steps to ignore at the top of the error stack
+             *        this is mostly to ignore internal deprecation calls.
              */
-            function isPow2(v)
-            {
-                return !(v & (v - 1)) && (!!v);
-            }
-
-            /**
-             * Computes ceil of log base 2
-             *
-             * @function log2
-             * @memberof PIXI.utils
-             * @param {number} v input value
-             * @return {number} logarithm base 2
-             */
-            function log2(v)
-            {
-                var r = (v > 0xFFFF) << 4;
-
-                v >>>= r;
-
-                var shift = (v > 0xFF) << 3;
-
-                v >>>= shift; r |= shift;
-                shift = (v > 0xF) << 2;
-                v >>>= shift; r |= shift;
-                shift = (v > 0x3) << 1;
-                v >>>= shift; r |= shift;
-
-                return r | (v >> 1);
+            function deprecation(version, message, ignoreDepth) {
+                if (ignoreDepth === void 0) { ignoreDepth = 3; }
+                // Ignore duplicat
+                if (warnings[message]) {
+                    return;
+                }
+                /* eslint-disable no-console */
+                var stack = new Error().stack;
+                // Handle IE < 10 and Safari < 6
+                if (typeof stack === 'undefined') {
+                    console.warn('PixiJS Deprecation Warning: ', message + "\nDeprecated since v" + version);
+                }
+                else {
+                    // chop off the stack trace which includes PixiJS internal calls
+                    stack = stack.split('\n').splice(ignoreDepth).join('\n');
+                    if (console.groupCollapsed) {
+                        console.groupCollapsed('%cPixiJS Deprecation Warning: %c%s', 'color:#614108;background:#fffbe6', 'font-weight:normal;color:#614108;background:#fffbe6', message + "\nDeprecated since v" + version);
+                        console.warn(stack);
+                        console.groupEnd();
+                    }
+                    else {
+                        console.warn('PixiJS Deprecation Warning: ', message + "\nDeprecated since v" + version);
+                        console.warn(stack);
+                    }
+                }
+                /* eslint-enable no-console */
+                warnings[message] = true;
             }
 
             /**
@@ -3951,7 +6013,6 @@
              * @type {Object}
              */
             var ProgramCache = {};
-
             /**
              * @todo Describe property usage
              *
@@ -3961,7 +6022,6 @@
              * @type {Object}
              */
             var TextureCache = Object.create(null);
-
             /**
              * @todo Describe property usage
              *
@@ -3970,7 +6030,6 @@
              * @memberof PIXI.utils
              * @type {Object}
              */
-
             var BaseTextureCache = Object.create(null);
             /**
              * Destroys all texture in the cache
@@ -3978,39 +6037,118 @@
              * @memberof PIXI.utils
              * @function destroyTextureCache
              */
-            function destroyTextureCache()
-            {
+            function destroyTextureCache() {
                 var key;
-
-                for (key in TextureCache)
-                {
+                for (key in TextureCache) {
                     TextureCache[key].destroy();
                 }
-                for (key in BaseTextureCache)
-                {
+                for (key in BaseTextureCache) {
                     BaseTextureCache[key].destroy();
                 }
             }
-
             /**
              * Removes all textures from cache, but does not destroy them
              *
              * @memberof PIXI.utils
              * @function clearTextureCache
              */
-            function clearTextureCache()
-            {
+            function clearTextureCache() {
                 var key;
-
-                for (key in TextureCache)
-                {
+                for (key in TextureCache) {
                     delete TextureCache[key];
                 }
-                for (key in BaseTextureCache)
-                {
+                for (key in BaseTextureCache) {
                     delete BaseTextureCache[key];
                 }
             }
+
+            /**
+             * Creates a Canvas element of the given size to be used as a target for rendering to.
+             *
+             * @class
+             * @memberof PIXI.utils
+             */
+            var CanvasRenderTarget = /** @class */ (function () {
+                /**
+                 * @param {number} width - the width for the newly created canvas
+                 * @param {number} height - the height for the newly created canvas
+                 * @param {number} [resolution=1] - The resolution / device pixel ratio of the canvas
+                 */
+                function CanvasRenderTarget(width, height, resolution) {
+                    /**
+                     * The Canvas object that belongs to this CanvasRenderTarget.
+                     *
+                     * @member {HTMLCanvasElement}
+                     */
+                    this.canvas = document.createElement('canvas');
+                    /**
+                     * A CanvasRenderingContext2D object representing a two-dimensional rendering context.
+                     *
+                     * @member {CanvasRenderingContext2D}
+                     */
+                    this.context = this.canvas.getContext('2d');
+                    this.resolution = resolution || settings.RESOLUTION;
+                    this.resize(width, height);
+                }
+                /**
+                 * Clears the canvas that was created by the CanvasRenderTarget class.
+                 *
+                 * @private
+                 */
+                CanvasRenderTarget.prototype.clear = function () {
+                    this.context.setTransform(1, 0, 0, 1, 0, 0);
+                    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                };
+                /**
+                 * Resizes the canvas to the specified width and height.
+                 *
+                 * @param {number} width - the new width of the canvas
+                 * @param {number} height - the new height of the canvas
+                 */
+                CanvasRenderTarget.prototype.resize = function (width, height) {
+                    this.canvas.width = width * this.resolution;
+                    this.canvas.height = height * this.resolution;
+                };
+                /**
+                 * Destroys this canvas.
+                 *
+                 */
+                CanvasRenderTarget.prototype.destroy = function () {
+                    this.context = null;
+                    this.canvas = null;
+                };
+                Object.defineProperty(CanvasRenderTarget.prototype, "width", {
+                    /**
+                     * The width of the canvas buffer in pixels.
+                     *
+                     * @member {number}
+                     */
+                    get: function () {
+                        return this.canvas.width;
+                    },
+                    set: function (val) {
+                        this.canvas.width = val;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(CanvasRenderTarget.prototype, "height", {
+                    /**
+                     * The height of the canvas buffer in pixels.
+                     *
+                     * @member {number}
+                     */
+                    get: function () {
+                        return this.canvas.height;
+                    },
+                    set: function (val) {
+                        this.canvas.height = val;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return CanvasRenderTarget;
+            }());
 
             /**
              * Trim transparent borders from a canvas
@@ -4020,18 +6158,14 @@
              * @param {HTMLCanvasElement} canvas - the canvas to trim
              * @returns {object} Trim data
              */
-            function trimCanvas(canvas)
-            {
+            function trimCanvas(canvas) {
                 // https://gist.github.com/remy/784508
-
                 var width = canvas.width;
                 var height = canvas.height;
-
                 var context = canvas.getContext('2d');
                 var imageData = context.getImageData(0, 0, width, height);
                 var pixels = imageData.data;
                 var len = pixels.length;
-
                 var bound = {
                     top: null,
                     left: null,
@@ -4042,155 +6176,44 @@
                 var i;
                 var x;
                 var y;
-
-                for (i = 0; i < len; i += 4)
-                {
-                    if (pixels[i + 3] !== 0)
-                    {
+                for (i = 0; i < len; i += 4) {
+                    if (pixels[i + 3] !== 0) {
                         x = (i / 4) % width;
                         y = ~~((i / 4) / width);
-
-                        if (bound.top === null)
-                        {
+                        if (bound.top === null) {
                             bound.top = y;
                         }
-
-                        if (bound.left === null)
-                        {
+                        if (bound.left === null) {
                             bound.left = x;
                         }
-                        else if (x < bound.left)
-                        {
+                        else if (x < bound.left) {
                             bound.left = x;
                         }
-
-                        if (bound.right === null)
-                        {
+                        if (bound.right === null) {
                             bound.right = x + 1;
                         }
-                        else if (bound.right < x)
-                        {
+                        else if (bound.right < x) {
                             bound.right = x + 1;
                         }
-
-                        if (bound.bottom === null)
-                        {
+                        if (bound.bottom === null) {
                             bound.bottom = y;
                         }
-                        else if (bound.bottom < y)
-                        {
+                        else if (bound.bottom < y) {
                             bound.bottom = y;
                         }
                     }
                 }
-
-                if (bound.top !== null)
-                {
+                if (bound.top !== null) {
                     width = bound.right - bound.left;
                     height = bound.bottom - bound.top + 1;
                     data = context.getImageData(bound.left, bound.top, width, height);
                 }
-
                 return {
                     height: height,
                     width: width,
                     data: data,
                 };
             }
-
-            /**
-             * Creates a Canvas element of the given size to be used as a target for rendering to.
-             *
-             * @class
-             * @memberof PIXI.utils
-             */
-            var CanvasRenderTarget = function CanvasRenderTarget(width, height, resolution)
-            {
-                /**
-                 * The Canvas object that belongs to this CanvasRenderTarget.
-                 *
-                 * @member {HTMLCanvasElement}
-                 */
-                this.canvas = document.createElement('canvas');
-
-                /**
-                 * A CanvasRenderingContext2D object representing a two-dimensional rendering context.
-                 *
-                 * @member {CanvasRenderingContext2D}
-                 */
-                this.context = this.canvas.getContext('2d');
-
-                this.resolution = resolution || settings.RESOLUTION;
-
-                this.resize(width, height);
-            };
-
-            var prototypeAccessors = { width: { configurable: true },height: { configurable: true } };
-
-            /**
-             * Clears the canvas that was created by the CanvasRenderTarget class.
-             *
-             * @private
-             */
-            CanvasRenderTarget.prototype.clear = function clear ()
-            {
-                this.context.setTransform(1, 0, 0, 1, 0, 0);
-                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            };
-
-            /**
-             * Resizes the canvas to the specified width and height.
-             *
-             * @param {number} width - the new width of the canvas
-             * @param {number} height - the new height of the canvas
-             */
-            CanvasRenderTarget.prototype.resize = function resize (width, height)
-            {
-                this.canvas.width = width * this.resolution;
-                this.canvas.height = height * this.resolution;
-            };
-
-            /**
-             * Destroys this canvas.
-             *
-             */
-            CanvasRenderTarget.prototype.destroy = function destroy ()
-            {
-                this.context = null;
-                this.canvas = null;
-            };
-
-            /**
-             * The width of the canvas buffer in pixels.
-             *
-             * @member {number}
-             */
-            prototypeAccessors.width.get = function ()
-            {
-                return this.canvas.width;
-            };
-
-            prototypeAccessors.width.set = function (val) // eslint-disable-line require-jsdoc
-            {
-                this.canvas.width = val;
-            };
-
-            /**
-             * The height of the canvas buffer in pixels.
-             *
-             * @member {number}
-             */
-            prototypeAccessors.height.get = function ()
-            {
-                return this.canvas.height;
-            };
-
-            prototypeAccessors.height.set = function (val) // eslint-disable-line require-jsdoc
-            {
-                this.canvas.height = val;
-            };
-
-            Object.defineProperties( CanvasRenderTarget.prototype, prototypeAccessors );
 
             /**
              * Regexp for data URI.
@@ -4204,16 +6227,33 @@
             var DATA_URI = /^\s*data:(?:([\w-]+)\/([\w+.-]+))?(?:;charset=([\w-]+))?(?:;(base64))?,(.*)/i;
 
             /**
-             * Typedef for decomposeDataUri return object.
-             *
              * @memberof PIXI.utils
-             * @typedef {object} DecomposedDataUri
-             * @property {string} mediaType Media type, eg. `image`
-             * @property {string} subType Sub type, eg. `png`
-             * @property {string} encoding Data encoding, eg. `base64`
-             * @property {string} data The actual data
+             * @interface DecomposedDataUri
              */
-
+            /**
+             * type, eg. `image`
+             * @memberof PIXI.utils.DecomposedDataUri#
+             * @member {string} mediaType
+             */
+            /**
+             * Sub type, eg. `png`
+             * @memberof PIXI.utils.DecomposedDataUri#
+             * @member {string} subType
+             */
+            /**
+             * @memberof PIXI.utils.DecomposedDataUri#
+             * @member {string} charset
+             */
+            /**
+             * Data encoding, eg. `base64`
+             * @memberof PIXI.utils.DecomposedDataUri#
+             * @member {string} encoding
+             */
+            /**
+             * The actual data
+             * @memberof PIXI.utils.DecomposedDataUri#
+             * @member {string} data
+             */
             /**
              * Split a data URI into components. Returns undefined if
              * parameter `dataUri` is not a valid data URI.
@@ -4223,12 +6263,9 @@
              * @param {string} dataUri - the data URI to check
              * @return {PIXI.utils.DecomposedDataUri|undefined} The decomposed data uri or undefined
              */
-            function decomposeDataUri(dataUri)
-            {
+            function decomposeDataUri(dataUri) {
                 var dataUriMatch = DATA_URI.exec(dataUri);
-
-                if (dataUriMatch)
-                {
+                if (dataUriMatch) {
                     return {
                         mediaType: dataUriMatch[1] ? dataUriMatch[1].toLowerCase() : undefined,
                         subType: dataUriMatch[2] ? dataUriMatch[2].toLowerCase() : undefined,
@@ -4237,12 +6274,10 @@
                         data: dataUriMatch[5],
                     };
                 }
-
                 return undefined;
             }
 
             var tempAnchor;
-
             /**
              * Sets the `crossOrigin` property for this resource based on if the url
              * for this resource is cross-origin. If crossOrigin was manually set, this
@@ -4254,38 +6289,27 @@
              * @param {object} [loc=window.location] - The location object to test against.
              * @return {string} The crossOrigin value to use (or empty string for none).
              */
-            function determineCrossOrigin(url$1, loc)
-            {
-                if ( loc === void 0 ) loc = window.location;
-
+            function determineCrossOrigin(url, loc) {
+                if (loc === void 0) { loc = window.location; }
                 // data: and javascript: urls are considered same-origin
-                if (url$1.indexOf('data:') === 0)
-                {
+                if (url.indexOf('data:') === 0) {
                     return '';
                 }
-
                 // default is window.location
                 loc = loc || window.location;
-
-                if (!tempAnchor)
-                {
+                if (!tempAnchor) {
                     tempAnchor = document.createElement('a');
                 }
-
                 // let the browser determine the full href for the url of this resource and then
                 // parse with the node url lib, we can't use the properties of the anchor element
                 // because they don't work in IE9 :(
-                tempAnchor.href = url$1;
-                url$1 = url.parse(tempAnchor.href);
-
-                var samePort = (!url$1.port && loc.port === '') || (url$1.port === loc.port);
-
+                tempAnchor.href = url;
+                var parsedUrl = urlParse(tempAnchor.href);
+                var samePort = (!parsedUrl.port && loc.port === '') || (parsedUrl.port === loc.port);
                 // if cross origin
-                if (url$1.hostname !== loc.hostname || !samePort || url$1.protocol !== loc.protocol)
-                {
+                if (parsedUrl.hostname !== loc.hostname || !samePort || parsedUrl.protocol !== loc.protocol) {
                     return 'anonymous';
                 }
-
                 return '';
             }
 
@@ -4299,76 +6323,12 @@
              * @param {number} [defaultValue=1] - the defaultValue if no filename prefix is set.
              * @return {number} resolution / device pixel ratio of an asset
              */
-            function getResolutionOfUrl(url, defaultValue)
-            {
+            function getResolutionOfUrl(url, defaultValue) {
                 var resolution = settings.RETINA_PREFIX.exec(url);
-
-                if (resolution)
-                {
+                if (resolution) {
                     return parseFloat(resolution[1]);
                 }
-
                 return defaultValue !== undefined ? defaultValue : 1;
-            }
-
-            // A map of warning messages already fired
-            var warnings = {};
-
-            /**
-             * Helper for warning developers about deprecated features & settings.
-             * A stack track for warnings is given; useful for tracking-down where
-             * deprecated methods/properties/classes are being used within the code.
-             *
-             * @memberof PIXI.utils
-             * @function deprecation
-             * @param {string} version - The version where the feature became deprecated
-             * @param {string} message - Message should include what is deprecated, where, and the new solution
-             * @param {number} [ignoreDepth=3] - The number of steps to ignore at the top of the error stack
-             *        this is mostly to ignore internal deprecation calls.
-             */
-            function deprecation(version, message, ignoreDepth)
-            {
-                if ( ignoreDepth === void 0 ) ignoreDepth = 3;
-
-                // Ignore duplicat
-                if (warnings[message])
-                {
-                    return;
-                }
-
-                /* eslint-disable no-console */
-                var stack = new Error().stack;
-
-                // Handle IE < 10 and Safari < 6
-                if (typeof stack === 'undefined')
-                {
-                    console.warn('PixiJS Deprecation Warning: ', (message + "\nDeprecated since v" + version));
-                }
-                else
-                {
-                    // chop off the stack trace which includes PixiJS internal calls
-                    stack = stack.split('\n').splice(ignoreDepth).join('\n');
-
-                    if (console.groupCollapsed)
-                    {
-                        console.groupCollapsed(
-                            '%cPixiJS Deprecation Warning: %c%s',
-                            'color:#614108;background:#fffbe6',
-                            'font-weight:normal;color:#614108;background:#fffbe6',
-                            (message + "\nDeprecated since v" + version)
-                        );
-                        console.warn(stack);
-                        console.groupEnd();
-                    }
-                    else
-                    {
-                        console.warn('PixiJS Deprecation Warning: ', (message + "\nDeprecated since v" + version));
-                        console.warn(stack);
-                    }
-                }
-                /* eslint-enable no-console */
-
-                warnings[message] = true;
             }
 
             var utils_es = /*#__PURE__*/Object.freeze({
@@ -4385,9 +6345,11 @@
                         deprecation: deprecation,
                         destroyTextureCache: destroyTextureCache,
                         determineCrossOrigin: determineCrossOrigin,
+                        getBufferType: getBufferType,
                         getResolutionOfUrl: getResolutionOfUrl,
                         hex2rgb: hex2rgb,
                         hex2string: hex2string,
+                        interleaveTypedArrays: interleaveTypedArrays,
                         isPow2: isPow2,
                         isWebGLSupported: isWebGLSupported,
                         log2: log2,
@@ -4404,15 +6366,15 @@
                         string2hex: string2hex,
                         trimCanvas: trimCanvas,
                         uid: uid,
-                        isMobile: isMobile_min,
+                        isMobile: isMobile$1,
                         EventEmitter: eventemitter3,
                         earcut: earcut_1,
                         url: url
             });
 
             /*!
-             * @pixi/math - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/math - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/math is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -4534,12 +6496,14 @@
                  *
                  * @param {number} [x=0] - position of the point on the x axis
                  * @param {number} [y=x] - position of the point on the y axis
+                 * @returns {this} Returns itself.
                  */
                 Point.prototype.set = function (x, y) {
                     if (x === void 0) { x = 0; }
                     if (y === void 0) { y = x; }
                     this.x = x;
                     this.y = y;
+                    return this;
                 };
                 return Point;
             }());
@@ -4590,6 +6554,7 @@
                  *
                  * @param {number} [x=0] - position of the point on the x axis
                  * @param {number} [y=x] - position of the point on the y axis
+                 * @returns {this} Returns itself.
                  */
                 ObservablePoint.prototype.set = function (x, y) {
                     if (x === void 0) { x = 0; }
@@ -4599,6 +6564,7 @@
                         this._y = y;
                         this.cb.call(this.scope);
                     }
+                    return this;
                 };
                 /**
                  * Copies x and y from the given point
@@ -5175,7 +7141,7 @@
              * Initializes `rotationCayley` and `rotationMatrices`. It is called
              * only once below.
              */
-            function init() {
+            function init$1() {
                 for (var i = 0; i < 16; i++) {
                     var row = [];
                     rotationCayley.push(row);
@@ -5201,7 +7167,7 @@
                     rotationMatrices.push(mat);
                 }
             }
-            init();
+            init$1();
             /**
              * @memberof PIXI
              * @typedef {number} GD8Symmetry
@@ -6312,8 +8278,8 @@
             }());
 
             /*!
-             * @pixi/display - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/display - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/display is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -6394,8 +8360,6 @@
              */
             Bounds.prototype.clear = function clear ()
             {
-                this.updateID++;
-
                 this.minX = Infinity;
                 this.minY = Infinity;
                 this.maxX = -Infinity;
@@ -6987,11 +8951,21 @@
                  */
                 DisplayObject.prototype.updateTransform = function updateTransform ()
                 {
+                    this._boundsID++;
+
                     this.transform.updateTransform(this.parent.transform);
                     // multiply the alphas..
                     this.worldAlpha = this.alpha * this.parent.worldAlpha;
+                };
 
-                    this._bounds.updateID++;
+                /**
+                 * Recalculates the bounds of the display object.
+                 *
+                 * Does nothing by default and can be overwritten in a parent class.
+                 */
+                DisplayObject.prototype.calculateBounds = function calculateBounds ()
+                {
+                    // OVERWRITE;
                 };
 
                 /**
@@ -7240,11 +9214,11 @@
                  */
                 DisplayObject.prototype.destroy = function destroy ()
                 {
-                    this.removeAllListeners();
                     if (this.parent)
                     {
                         this.parent.removeChild(this);
                     }
+                    this.removeAllListeners();
                     this.transform = null;
 
                     this.parent = null;
@@ -7474,7 +9448,7 @@
                  * sprite.mask = graphics;
                  * @todo At the moment, PIXI.CanvasRenderer doesn't support PIXI.Sprite as mask.
                  *
-                 * @member {PIXI.Graphics|PIXI.Sprite|null}
+                 * @member {PIXI.Container|PIXI.MaskData}
                  */
                 prototypeAccessors.mask.get = function ()
                 {
@@ -8205,8 +10179,8 @@
             Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
             /*!
-             * @pixi/accessibility - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/accessibility - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/accessibility is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -8342,7 +10316,7 @@
                  * @private
                  */
                 this._hookDiv = null;
-                if (isMobile_min.tablet || isMobile_min.phone)
+                if (isMobile$1.tablet || isMobile$1.phone)
                 {
                     this.createTouchHook();
                 }
@@ -8897,204 +10871,8 @@
             });
 
             /*!
-             * @pixi/runner - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
-             *
-             * @pixi/runner is licensed under the MIT License.
-             * http://www.opensource.org/licenses/mit-license
-             */
-            /**
-             * A Runner is a highly performant and simple alternative to signals. Best used in situations
-             * where events are dispatched to many objects at high frequency (say every frame!)
-             *
-             *
-             * like a signal..
-             * ```
-             * import { Runner } from '@pixi/runner';
-             *
-             * const myObject = {
-             *     loaded: new Runner('loaded')
-             * }
-             *
-             * const listener = {
-             *     loaded: function(){
-             *         // thin
-             *     }
-             * }
-             *
-             * myObject.update.add(listener);
-             *
-             * myObject.loaded.emit();
-             * ```
-             *
-             * Or for handling calling the same function on many items
-             * ```
-             * import { Runner } from '@pixi/runner';
-             *
-             * const myGame = {
-             *     update: new Runner('update')
-             * }
-             *
-             * const gameObject = {
-             *     update: function(time){
-             *         // update my gamey state
-             *     }
-             * }
-             *
-             * myGame.update.add(gameObject1);
-             *
-             * myGame.update.emit(time);
-             * ```
-             * @class
-             * @memberof PIXI
-             */
-            var Runner = /** @class */ (function () {
-                /**
-                 *  @param {string} name the function name that will be executed on the listeners added to this Runner.
-                 */
-                function Runner(name) {
-                    this.items = [];
-                    this._name = name;
-                    this._aliasCount = 0;
-                }
-                /**
-                 * Dispatch/Broadcast Runner to all listeners added to the queue.
-                 * @param {...any} params - optional parameters to pass to each listener
-                 * @return {PIXI.Runner}
-                 */
-                Runner.prototype.emit = function (a0, a1, a2, a3, a4, a5, a6, a7) {
-                    if (arguments.length > 8) {
-                        throw new Error('max arguments reached');
-                    }
-                    var _a = this, name = _a.name, items = _a.items;
-                    this._aliasCount++;
-                    for (var i = 0, len = items.length; i < len; i++) {
-                        items[i][name](a0, a1, a2, a3, a4, a5, a6, a7);
-                    }
-                    if (items === this.items) {
-                        this._aliasCount--;
-                    }
-                    return this;
-                };
-                Runner.prototype.ensureNonAliasedItems = function () {
-                    if (this._aliasCount > 0 && this.items.length > 1) {
-                        this._aliasCount = 0;
-                        this.items = this.items.slice(0);
-                    }
-                };
-                /**
-                 * Add a listener to the Runner
-                 *
-                 * Runners do not need to have scope or functions passed to them.
-                 * All that is required is to pass the listening object and ensure that it has contains a function that has the same name
-                 * as the name provided to the Runner when it was created.
-                 *
-                 * Eg A listener passed to this Runner will require a 'complete' function.
-                 *
-                 * ```
-                 * import { Runner } from '@pixi/runner';
-                 *
-                 * const complete = new Runner('complete');
-                 * ```
-                 *
-                 * The scope used will be the object itself.
-                 *
-                 * @param {any} item - The object that will be listening.
-                 * @return {PIXI.Runner}
-                 */
-                Runner.prototype.add = function (item) {
-                    if (item[this._name]) {
-                        this.ensureNonAliasedItems();
-                        this.remove(item);
-                        this.items.push(item);
-                    }
-                    return this;
-                };
-                /**
-                 * Remove a single listener from the dispatch queue.
-                 * @param {any} item - The listenr that you would like to remove.
-                 * @return {PIXI.Runner}
-                 */
-                Runner.prototype.remove = function (item) {
-                    var index = this.items.indexOf(item);
-                    if (index !== -1) {
-                        this.ensureNonAliasedItems();
-                        this.items.splice(index, 1);
-                    }
-                    return this;
-                };
-                /**
-                 * Check to see if the listener is already in the Runner
-                 * @param {any} item - The listener that you would like to check.
-                 */
-                Runner.prototype.contains = function (item) {
-                    return this.items.indexOf(item) !== -1;
-                };
-                /**
-                 * Remove all listeners from the Runner
-                 * @return {PIXI.Runner}
-                 */
-                Runner.prototype.removeAll = function () {
-                    this.ensureNonAliasedItems();
-                    this.items.length = 0;
-                    return this;
-                };
-                /**
-                 * Remove all references, don't use after this.
-                 */
-                Runner.prototype.destroy = function () {
-                    this.removeAll();
-                    this.items = null;
-                    this._name = null;
-                };
-                Object.defineProperty(Runner.prototype, "empty", {
-                    /**
-                     * `true` if there are no this Runner contains no listeners
-                     *
-                     * @member {boolean}
-                     * @readonly
-                     */
-                    get: function () {
-                        return this.items.length === 0;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                Object.defineProperty(Runner.prototype, "name", {
-                    /**
-                     * The name of the runner.
-                     *
-                     * @member {string}
-                     * @readonly
-                     */
-                    get: function () {
-                        return this._name;
-                    },
-                    enumerable: true,
-                    configurable: true
-                });
-                return Runner;
-            }());
-            Object.defineProperties(Runner.prototype, {
-                /**
-                 * Alias for `emit`
-                 * @memberof PIXI.Runner#
-                 * @method dispatch
-                 * @see PIXI.Runner#emit
-                 */
-                dispatch: { value: Runner.prototype.emit },
-                /**
-                 * Alias for `emit`
-                 * @memberof PIXI.Runner#
-                 * @method run
-                 * @see PIXI.Runner#emit
-                 */
-                run: { value: Runner.prototype.emit },
-            });
-
-            /*!
-             * @pixi/ticker - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/ticker - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/ticker is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -9562,6 +11340,26 @@
                     }
                     return this;
                 };
+                Object.defineProperty(Ticker.prototype, "count", {
+                    /**
+                     * Counts the number of listeners on this ticker.
+                     *
+                     * @returns {number} The number of listeners on this ticker
+                     */
+                    get: function () {
+                        if (!this._head) {
+                            return 0;
+                        }
+                        var count = 0;
+                        var current = this._head;
+                        while ((current = current.next)) {
+                            count++;
+                        }
+                        return count;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
                  * Starts the ticker. If the ticker has listeners
                  * a new animation frame is requested at this point.
@@ -9915,8 +11713,2802 @@
             }());
 
             /*!
-             * @pixi/core - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/interaction - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+             *
+             * @pixi/interaction is licensed under the MIT License.
+             * http://www.opensource.org/licenses/mit-license
+             */
+
+            /**
+             * Holds all information related to an Interaction event
+             *
+             * @class
+             * @memberof PIXI.interaction
+             */
+            var InteractionData = function InteractionData()
+            {
+                /**
+                 * This point stores the global coords of where the touch/mouse event happened
+                 *
+                 * @member {PIXI.Point}
+                 */
+                this.global = new Point();
+
+                /**
+                 * The target Sprite that was interacted with
+                 *
+                 * @member {PIXI.Sprite}
+                 */
+                this.target = null;
+
+                /**
+                 * When passed to an event handler, this will be the original DOM Event that was captured
+                 *
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
+                 * @member {MouseEvent|TouchEvent|PointerEvent}
+                 */
+                this.originalEvent = null;
+
+                /**
+                 * Unique identifier for this interaction
+                 *
+                 * @member {number}
+                 */
+                this.identifier = null;
+
+                /**
+                 * Indicates whether or not the pointer device that created the event is the primary pointer.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/isPrimary
+                 * @type {Boolean}
+                 */
+                this.isPrimary = false;
+
+                /**
+                 * Indicates which button was pressed on the mouse or pointer device to trigger the event.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+                 * @type {number}
+                 */
+                this.button = 0;
+
+                /**
+                 * Indicates which buttons are pressed on the mouse or pointer device when the event is triggered.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+                 * @type {number}
+                 */
+                this.buttons = 0;
+
+                /**
+                 * The width of the pointer's contact along the x-axis, measured in CSS pixels.
+                 * radiusX of TouchEvents will be represented by this value.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/width
+                 * @type {number}
+                 */
+                this.width = 0;
+
+                /**
+                 * The height of the pointer's contact along the y-axis, measured in CSS pixels.
+                 * radiusY of TouchEvents will be represented by this value.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/height
+                 * @type {number}
+                 */
+                this.height = 0;
+
+                /**
+                 * The angle, in degrees, between the pointer device and the screen.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltX
+                 * @type {number}
+                 */
+                this.tiltX = 0;
+
+                /**
+                 * The angle, in degrees, between the pointer device and the screen.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltY
+                 * @type {number}
+                 */
+                this.tiltY = 0;
+
+                /**
+                 * The type of pointer that triggered the event.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
+                 * @type {string}
+                 */
+                this.pointerType = null;
+
+                /**
+                 * Pressure applied by the pointing device during the event. A Touch's force property
+                 * will be represented by this value.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure
+                 * @type {number}
+                 */
+                this.pressure = 0;
+
+                /**
+                 * From TouchEvents (not PointerEvents triggered by touches), the rotationAngle of the Touch.
+                 * @see https://developer.mozilla.org/en-US/docs/Web/API/Touch/rotationAngle
+                 * @type {number}
+                 */
+                this.rotationAngle = 0;
+
+                /**
+                 * Twist of a stylus pointer.
+                 * @see https://w3c.github.io/pointerevents/#pointerevent-interface
+                 * @type {number}
+                 */
+                this.twist = 0;
+
+                /**
+                 * Barrel pressure on a stylus pointer.
+                 * @see https://w3c.github.io/pointerevents/#pointerevent-interface
+                 * @type {number}
+                 */
+                this.tangentialPressure = 0;
+            };
+
+            var prototypeAccessors = { pointerId: { configurable: true } };
+
+            /**
+             * The unique identifier of the pointer. It will be the same as `identifier`.
+             * @readonly
+             * @member {number}
+             * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerId
+             */
+            prototypeAccessors.pointerId.get = function ()
+            {
+                return this.identifier;
+            };
+
+            /**
+             * This will return the local coordinates of the specified displayObject for this InteractionData
+             *
+             * @param {PIXI.DisplayObject} displayObject - The DisplayObject that you would like the local
+             *  coords off
+             * @param {PIXI.Point} [point] - A Point object in which to store the value, optional (otherwise
+             *  will create a new point)
+             * @param {PIXI.Point} [globalPos] - A Point object containing your custom global coords, optional
+             *  (otherwise will use the current global coords)
+             * @return {PIXI.Point} A point containing the coordinates of the InteractionData position relative
+             *  to the DisplayObject
+             */
+            InteractionData.prototype.getLocalPosition = function getLocalPosition (displayObject, point, globalPos)
+            {
+                return displayObject.worldTransform.applyInverse(globalPos || this.global, point);
+            };
+
+            /**
+             * Copies properties from normalized event data.
+             *
+             * @param {Touch|MouseEvent|PointerEvent} event The normalized event data
+             */
+            InteractionData.prototype.copyEvent = function copyEvent (event)
+            {
+                // isPrimary should only change on touchstart/pointerdown, so we don't want to overwrite
+                // it with "false" on later events when our shim for it on touch events might not be
+                // accurate
+                if (event.isPrimary)
+                {
+                    this.isPrimary = true;
+                }
+                this.button = event.button;
+                // event.buttons is not available in all browsers (ie. Safari), but it does have a non-standard
+                // event.which property instead, which conveys the same information.
+                this.buttons = Number.isInteger(event.buttons) ? event.buttons : event.which;
+                this.width = event.width;
+                this.height = event.height;
+                this.tiltX = event.tiltX;
+                this.tiltY = event.tiltY;
+                this.pointerType = event.pointerType;
+                this.pressure = event.pressure;
+                this.rotationAngle = event.rotationAngle;
+                this.twist = event.twist || 0;
+                this.tangentialPressure = event.tangentialPressure || 0;
+            };
+
+            /**
+             * Resets the data for pooling.
+             */
+            InteractionData.prototype.reset = function reset ()
+            {
+                // isPrimary is the only property that we really need to reset - everything else is
+                // guaranteed to be overwritten
+                this.isPrimary = false;
+            };
+
+            Object.defineProperties( InteractionData.prototype, prototypeAccessors );
+
+            /**
+             * Event class that mimics native DOM events.
+             *
+             * @class
+             * @memberof PIXI.interaction
+             */
+            var InteractionEvent = function InteractionEvent()
+            {
+                /**
+                 * Whether this event will continue propagating in the tree.
+                 *
+                 * Remaining events for the {@link stopsPropagatingAt} object
+                 * will still be dispatched.
+                 *
+                 * @member {boolean}
+                 */
+                this.stopped = false;
+
+                /**
+                 * At which object this event stops propagating.
+                 *
+                 * @private
+                 * @member {PIXI.DisplayObject}
+                 */
+                this.stopsPropagatingAt = null;
+
+                /**
+                 * Whether we already reached the element we want to
+                 * stop propagating at. This is important for delayed events,
+                 * where we start over deeper in the tree again.
+                 *
+                 * @private
+                 * @member {boolean}
+                 */
+                this.stopPropagationHint = false;
+
+                /**
+                 * The object which caused this event to be dispatched.
+                 * For listener callback see {@link PIXI.interaction.InteractionEvent.currentTarget}.
+                 *
+                 * @member {PIXI.DisplayObject}
+                 */
+                this.target = null;
+
+                /**
+                 * The object whose event listener’s callback is currently being invoked.
+                 *
+                 * @member {PIXI.DisplayObject}
+                 */
+                this.currentTarget = null;
+
+                /**
+                 * Type of the event
+                 *
+                 * @member {string}
+                 */
+                this.type = null;
+
+                /**
+                 * InteractionData related to this event
+                 *
+                 * @member {PIXI.interaction.InteractionData}
+                 */
+                this.data = null;
+            };
+
+            /**
+             * Prevents event from reaching any objects other than the current object.
+             *
+             */
+            InteractionEvent.prototype.stopPropagation = function stopPropagation ()
+            {
+                this.stopped = true;
+                this.stopPropagationHint = true;
+                this.stopsPropagatingAt = this.currentTarget;
+            };
+
+            /**
+             * Resets the event.
+             */
+            InteractionEvent.prototype.reset = function reset ()
+            {
+                this.stopped = false;
+                this.stopsPropagatingAt = null;
+                this.stopPropagationHint = false;
+                this.currentTarget = null;
+                this.target = null;
+            };
+
+            /**
+             * DisplayObjects with the {@link PIXI.interaction.interactiveTarget} mixin use this class to track interactions
+             *
+             * @class
+             * @private
+             * @memberof PIXI.interaction
+             */
+            var InteractionTrackingData = function InteractionTrackingData(pointerId)
+            {
+                this._pointerId = pointerId;
+                this._flags = InteractionTrackingData.FLAGS.NONE;
+            };
+
+            var prototypeAccessors$1 = { pointerId: { configurable: true },flags: { configurable: true },none: { configurable: true },over: { configurable: true },rightDown: { configurable: true },leftDown: { configurable: true } };
+
+            /**
+             *
+             * @private
+             * @param {number} flag - The interaction flag to set
+             * @param {boolean} yn - Should the flag be set or unset
+             */
+            InteractionTrackingData.prototype._doSet = function _doSet (flag, yn)
+            {
+                if (yn)
+                {
+                    this._flags = this._flags | flag;
+                }
+                else
+                {
+                    this._flags = this._flags & (~flag);
+                }
+            };
+
+            /**
+             * Unique pointer id of the event
+             *
+             * @readonly
+             * @private
+             * @member {number}
+             */
+            prototypeAccessors$1.pointerId.get = function ()
+            {
+                return this._pointerId;
+            };
+
+            /**
+             * State of the tracking data, expressed as bit flags
+             *
+             * @private
+             * @member {number}
+             */
+            prototypeAccessors$1.flags.get = function ()
+            {
+                return this._flags;
+            };
+
+            prototypeAccessors$1.flags.set = function (flags) // eslint-disable-line require-jsdoc
+            {
+                this._flags = flags;
+            };
+
+            /**
+             * Is the tracked event inactive (not over or down)?
+             *
+             * @private
+             * @member {number}
+             */
+            prototypeAccessors$1.none.get = function ()
+            {
+                return this._flags === this.constructor.FLAGS.NONE;
+            };
+
+            /**
+             * Is the tracked event over the DisplayObject?
+             *
+             * @private
+             * @member {boolean}
+             */
+            prototypeAccessors$1.over.get = function ()
+            {
+                return (this._flags & this.constructor.FLAGS.OVER) !== 0;
+            };
+
+            prototypeAccessors$1.over.set = function (yn) // eslint-disable-line require-jsdoc
+            {
+                this._doSet(this.constructor.FLAGS.OVER, yn);
+            };
+
+            /**
+             * Did the right mouse button come down in the DisplayObject?
+             *
+             * @private
+             * @member {boolean}
+             */
+            prototypeAccessors$1.rightDown.get = function ()
+            {
+                return (this._flags & this.constructor.FLAGS.RIGHT_DOWN) !== 0;
+            };
+
+            prototypeAccessors$1.rightDown.set = function (yn) // eslint-disable-line require-jsdoc
+            {
+                this._doSet(this.constructor.FLAGS.RIGHT_DOWN, yn);
+            };
+
+            /**
+             * Did the left mouse button come down in the DisplayObject?
+             *
+             * @private
+             * @member {boolean}
+             */
+            prototypeAccessors$1.leftDown.get = function ()
+            {
+                return (this._flags & this.constructor.FLAGS.LEFT_DOWN) !== 0;
+            };
+
+            prototypeAccessors$1.leftDown.set = function (yn) // eslint-disable-line require-jsdoc
+            {
+                this._doSet(this.constructor.FLAGS.LEFT_DOWN, yn);
+            };
+
+            Object.defineProperties( InteractionTrackingData.prototype, prototypeAccessors$1 );
+
+            InteractionTrackingData.FLAGS = Object.freeze({
+                NONE: 0,
+                OVER: 1 << 0,
+                LEFT_DOWN: 1 << 1,
+                RIGHT_DOWN: 1 << 2,
+            });
+
+            /**
+             * Strategy how to search through stage tree for interactive objects
+             *
+             * @private
+             * @class
+             * @memberof PIXI.interaction
+             */
+            var TreeSearch = function TreeSearch()
+            {
+                this._tempPoint = new Point();
+            };
+
+            /**
+             * Recursive implementation for findHit
+             *
+             * @private
+             * @param {PIXI.interaction.InteractionEvent} interactionEvent - event containing the point that
+             *  is tested for collision
+             * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the displayObject
+             *  that will be hit test (recursively crawls its children)
+             * @param {Function} [func] - the function that will be called on each interactive object. The
+             *  interactionEvent, displayObject and hit will be passed to the function
+             * @param {boolean} [hitTest] - this indicates if the objects inside should be hit test against the point
+             * @param {boolean} [interactive] - Whether the displayObject is interactive
+             * @return {boolean} returns true if the displayObject hit the point
+             */
+            TreeSearch.prototype.recursiveFindHit = function recursiveFindHit (interactionEvent, displayObject, func, hitTest, interactive)
+            {
+                if (!displayObject || !displayObject.visible)
+                {
+                    return false;
+                }
+
+                var point = interactionEvent.data.global;
+
+                // Took a little while to rework this function correctly! But now it is done and nice and optimized! ^_^
+                //
+                // This function will now loop through all objects and then only hit test the objects it HAS
+                // to, not all of them. MUCH faster..
+                // An object will be hit test if the following is true:
+                //
+                // 1: It is interactive.
+                // 2: It belongs to a parent that is interactive AND one of the parents children have not already been hit.
+                //
+                // As another little optimization once an interactive object has been hit we can carry on
+                // through the scenegraph, but we know that there will be no more hits! So we can avoid extra hit tests
+                // A final optimization is that an object is not hit test directly if a child has already been hit.
+
+                interactive = displayObject.interactive || interactive;
+
+                var hit = false;
+                var interactiveParent = interactive;
+
+                // Flag here can set to false if the event is outside the parents hitArea or mask
+                var hitTestChildren = true;
+
+                // If there is a hitArea, no need to test against anything else if the pointer is not within the hitArea
+                // There is also no longer a need to hitTest children.
+                if (displayObject.hitArea)
+                {
+                    if (hitTest)
+                    {
+                        displayObject.worldTransform.applyInverse(point, this._tempPoint);
+                        if (!displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y))
+                        {
+                            hitTest = false;
+                            hitTestChildren = false;
+                        }
+                        else
+                        {
+                            hit = true;
+                        }
+                    }
+                    interactiveParent = false;
+                }
+                // If there is a mask, no need to hitTest against anything else if the pointer is not within the mask.
+                // We still want to hitTestChildren, however, to ensure a mouseout can still be generated.
+                // https://github.com/pixijs/pixi.js/issues/5135
+                else if (displayObject._mask)
+                {
+                    if (hitTest)
+                    {
+                        if (!(displayObject._mask.containsPoint && displayObject._mask.containsPoint(point)))
+                        {
+                            hitTest = false;
+                        }
+                    }
+                }
+
+                // ** FREE TIP **! If an object is not interactive or has no buttons in it
+                // (such as a game scene!) set interactiveChildren to false for that displayObject.
+                // This will allow PixiJS to completely ignore and bypass checking the displayObjects children.
+                if (hitTestChildren && displayObject.interactiveChildren && displayObject.children)
+                {
+                    var children = displayObject.children;
+
+                    for (var i = children.length - 1; i >= 0; i--)
+                    {
+                        var child = children[i];
+
+                        // time to get recursive.. if this function will return if something is hit..
+                        var childHit = this.recursiveFindHit(interactionEvent, child, func, hitTest, interactiveParent);
+
+                        if (childHit)
+                        {
+                            // its a good idea to check if a child has lost its parent.
+                            // this means it has been removed whilst looping so its best
+                            if (!child.parent)
+                            {
+                                continue;
+                            }
+
+                            // we no longer need to hit test any more objects in this container as we we
+                            // now know the parent has been hit
+                            interactiveParent = false;
+
+                            // If the child is interactive , that means that the object hit was actually
+                            // interactive and not just the child of an interactive object.
+                            // This means we no longer need to hit test anything else. We still need to run
+                            // through all objects, but we don't need to perform any hit tests.
+
+                            if (childHit)
+                            {
+                                if (interactionEvent.target)
+                                {
+                                    hitTest = false;
+                                }
+                                hit = true;
+                            }
+                        }
+                    }
+                }
+
+                // no point running this if the item is not interactive or does not have an interactive parent.
+                if (interactive)
+                {
+                    // if we are hit testing (as in we have no hit any objects yet)
+                    // We also don't need to worry about hit testing if once of the displayObjects children
+                    // has already been hit - but only if it was interactive, otherwise we need to keep
+                    // looking for an interactive child, just in case we hit one
+                    if (hitTest && !interactionEvent.target)
+                    {
+                        // already tested against hitArea if it is defined
+                        if (!displayObject.hitArea && displayObject.containsPoint)
+                        {
+                            if (displayObject.containsPoint(point))
+                            {
+                                hit = true;
+                            }
+                        }
+                    }
+
+                    if (displayObject.interactive)
+                    {
+                        if (hit && !interactionEvent.target)
+                        {
+                            interactionEvent.target = displayObject;
+                        }
+
+                        if (func)
+                        {
+                            func(interactionEvent, displayObject, !!hit);
+                        }
+                    }
+                }
+
+                return hit;
+            };
+
+            /**
+             * This function is provides a neat way of crawling through the scene graph and running a
+             * specified function on all interactive objects it finds. It will also take care of hit
+             * testing the interactive objects and passes the hit across in the function.
+             *
+             * @private
+             * @param {PIXI.interaction.InteractionEvent} interactionEvent - event containing the point that
+             *  is tested for collision
+             * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the displayObject
+             *  that will be hit test (recursively crawls its children)
+             * @param {Function} [func] - the function that will be called on each interactive object. The
+             *  interactionEvent, displayObject and hit will be passed to the function
+             * @param {boolean} [hitTest] - this indicates if the objects inside should be hit test against the point
+             * @return {boolean} returns true if the displayObject hit the point
+             */
+            TreeSearch.prototype.findHit = function findHit (interactionEvent, displayObject, func, hitTest)
+            {
+                this.recursiveFindHit(interactionEvent, displayObject, func, hitTest, false);
+            };
+
+            /**
+             * Interface for classes that represent a hit area.
+             *
+             * It is implemented by the following classes:
+             * - {@link PIXI.Circle}
+             * - {@link PIXI.Ellipse}
+             * - {@link PIXI.Polygon}
+             * - {@link PIXI.RoundedRectangle}
+             *
+             * @interface IHitArea
+             * @memberof PIXI
+             */
+
+            /**
+             * Checks whether the x and y coordinates given are contained within this area
+             *
+             * @method
+             * @name contains
+             * @memberof PIXI.IHitArea#
+             * @param {number} x - The X coordinate of the point to test
+             * @param {number} y - The Y coordinate of the point to test
+             * @return {boolean} Whether the x/y coordinates are within this area
+             */
+
+            /**
+             * Default property values of interactive objects
+             * Used by {@link PIXI.interaction.InteractionManager} to automatically give all DisplayObjects these properties
+             *
+             * @private
+             * @name interactiveTarget
+             * @type {Object}
+             * @memberof PIXI.interaction
+             * @example
+             *      function MyObject() {}
+             *
+             *      Object.assign(
+             *          DisplayObject.prototype,
+             *          PIXI.interaction.interactiveTarget
+             *      );
+             */
+            var interactiveTarget = {
+
+                /**
+                 * Enable interaction events for the DisplayObject. Touch, pointer and mouse
+                 * events will not be emitted unless `interactive` is set to `true`.
+                 *
+                 * @example
+                 * const sprite = new PIXI.Sprite(texture);
+                 * sprite.interactive = true;
+                 * sprite.on('tap', (event) => {
+                 *    //handle event
+                 * });
+                 * @member {boolean}
+                 * @memberof PIXI.DisplayObject#
+                 */
+                interactive: false,
+
+                /**
+                 * Determines if the children to the displayObject can be clicked/touched
+                 * Setting this to false allows PixiJS to bypass a recursive `hitTest` function
+                 *
+                 * @member {boolean}
+                 * @memberof PIXI.Container#
+                 */
+                interactiveChildren: true,
+
+                /**
+                 * Interaction shape. Children will be hit first, then this shape will be checked.
+                 * Setting this will cause this shape to be checked in hit tests rather than the displayObject's bounds.
+                 *
+                 * @example
+                 * const sprite = new PIXI.Sprite(texture);
+                 * sprite.interactive = true;
+                 * sprite.hitArea = new PIXI.Rectangle(0, 0, 100, 100);
+                 * @member {PIXI.IHitArea}
+                 * @memberof PIXI.DisplayObject#
+                 */
+                hitArea: null,
+
+                /**
+                 * If enabled, the mouse cursor use the pointer behavior when hovered over the displayObject if it is interactive
+                 * Setting this changes the 'cursor' property to `'pointer'`.
+                 *
+                 * @example
+                 * const sprite = new PIXI.Sprite(texture);
+                 * sprite.interactive = true;
+                 * sprite.buttonMode = true;
+                 * @member {boolean}
+                 * @memberof PIXI.DisplayObject#
+                 */
+                get buttonMode()
+                {
+                    return this.cursor === 'pointer';
+                },
+                set buttonMode(value)
+                {
+                    if (value)
+                    {
+                        this.cursor = 'pointer';
+                    }
+                    else if (this.cursor === 'pointer')
+                    {
+                        this.cursor = null;
+                    }
+                },
+
+                /**
+                 * This defines what cursor mode is used when the mouse cursor
+                 * is hovered over the displayObject.
+                 *
+                 * @example
+                 * const sprite = new PIXI.Sprite(texture);
+                 * sprite.interactive = true;
+                 * sprite.cursor = 'wait';
+                 * @see https://developer.mozilla.org/en/docs/Web/CSS/cursor
+                 *
+                 * @member {string}
+                 * @memberof PIXI.DisplayObject#
+                 */
+                cursor: null,
+
+                /**
+                 * Internal set of all active pointers, by identifier
+                 *
+                 * @member {Map<number, InteractionTrackingData>}
+                 * @memberof PIXI.DisplayObject#
+                 * @private
+                 */
+                get trackedPointers()
+                {
+                    if (this._trackedPointers === undefined) { this._trackedPointers = {}; }
+
+                    return this._trackedPointers;
+                },
+
+                /**
+                 * Map of all tracked pointers, by identifier. Use trackedPointers to access.
+                 *
+                 * @private
+                 * @type {Map<number, InteractionTrackingData>}
+                 */
+                _trackedPointers: undefined,
+            };
+
+            // Mix interactiveTarget into DisplayObject.prototype,
+            // after deprecation has been handled
+            DisplayObject.mixin(interactiveTarget);
+
+            var MOUSE_POINTER_ID = 1;
+
+            // helpers for hitTest() - only used inside hitTest()
+            var hitTestEvent = {
+                target: null,
+                data: {
+                    global: null,
+                },
+            };
+
+            /**
+             * The interaction manager deals with mouse, touch and pointer events.
+             *
+             * Any DisplayObject can be interactive if its `interactive` property is set to true.
+             *
+             * This manager also supports multitouch.
+             *
+             * An instance of this class is automatically created by default, and can be found at `renderer.plugins.interaction`
+             *
+             * @class
+             * @extends PIXI.utils.EventEmitter
+             * @memberof PIXI.interaction
+             */
+            var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
+                function InteractionManager(renderer, options)
+                {
+                    EventEmitter.call(this);
+
+                    options = options || {};
+
+                    /**
+                     * The renderer this interaction manager works for.
+                     *
+                     * @member {PIXI.AbstractRenderer}
+                     */
+                    this.renderer = renderer;
+
+                    /**
+                     * Should default browser actions automatically be prevented.
+                     * Does not apply to pointer events for backwards compatibility
+                     * preventDefault on pointer events stops mouse events from firing
+                     * Thus, for every pointer event, there will always be either a mouse of touch event alongside it.
+                     *
+                     * @member {boolean}
+                     * @default true
+                     */
+                    this.autoPreventDefault = options.autoPreventDefault !== undefined ? options.autoPreventDefault : true;
+
+                    /**
+                     * Maximum requency in milliseconds at which pointer over/out states will be checked by {@link tickerUpdate}.
+                     *
+                     * @member {number}
+                     * @default 10
+                     */
+                    this.interactionFrequency = options.interactionFrequency || 10;
+
+                    /**
+                     * The mouse data
+                     *
+                     * @member {PIXI.interaction.InteractionData}
+                     */
+                    this.mouse = new InteractionData();
+                    this.mouse.identifier = MOUSE_POINTER_ID;
+
+                    // setting the mouse to start off far off screen will mean that mouse over does
+                    //  not get called before we even move the mouse.
+                    this.mouse.global.set(-999999);
+
+                    /**
+                     * Actively tracked InteractionData
+                     *
+                     * @private
+                     * @member {Object.<number,PIXI.interaction.InteractionData>}
+                     */
+                    this.activeInteractionData = {};
+                    this.activeInteractionData[MOUSE_POINTER_ID] = this.mouse;
+
+                    /**
+                     * Pool of unused InteractionData
+                     *
+                     * @private
+                     * @member {PIXI.interaction.InteractionData[]}
+                     */
+                    this.interactionDataPool = [];
+
+                    /**
+                     * An event data object to handle all the event tracking/dispatching
+                     *
+                     * @member {object}
+                     */
+                    this.eventData = new InteractionEvent();
+
+                    /**
+                     * The DOM element to bind to.
+                     *
+                     * @protected
+                     * @member {HTMLElement}
+                     */
+                    this.interactionDOMElement = null;
+
+                    /**
+                     * This property determines if mousemove and touchmove events are fired only when the cursor
+                     * is over the object.
+                     * Setting to true will make things work more in line with how the DOM version works.
+                     * Setting to false can make things easier for things like dragging
+                     * It is currently set to false as this is how PixiJS used to work. This will be set to true in
+                     * future versions of pixi.
+                     *
+                     * @member {boolean}
+                     * @default false
+                     */
+                    this.moveWhenInside = false;
+
+                    /**
+                     * Have events been attached to the dom element?
+                     *
+                     * @protected
+                     * @member {boolean}
+                     */
+                    this.eventsAdded = false;
+
+                    /**
+                     * Has the system ticker been added?
+                     *
+                     * @protected
+                     * @member {boolean}
+                     */
+                    this.tickerAdded = false;
+
+                    /**
+                     * Is the mouse hovering over the renderer?
+                     *
+                     * @protected
+                     * @member {boolean}
+                     */
+                    this.mouseOverRenderer = false;
+
+                    /**
+                     * Does the device support touch events
+                     * https://www.w3.org/TR/touch-events/
+                     *
+                     * @readonly
+                     * @member {boolean}
+                     */
+                    this.supportsTouchEvents = 'ontouchstart' in window;
+
+                    /**
+                     * Does the device support pointer events
+                     * https://www.w3.org/Submission/pointer-events/
+                     *
+                     * @readonly
+                     * @member {boolean}
+                     */
+                    this.supportsPointerEvents = !!window.PointerEvent;
+
+                    // this will make it so that you don't have to call bind all the time
+
+                    /**
+                     * @private
+                     * @member {Function}
+                     */
+                    this.onPointerUp = this.onPointerUp.bind(this);
+                    this.processPointerUp = this.processPointerUp.bind(this);
+
+                    /**
+                     * @private
+                     * @member {Function}
+                     */
+                    this.onPointerCancel = this.onPointerCancel.bind(this);
+                    this.processPointerCancel = this.processPointerCancel.bind(this);
+
+                    /**
+                     * @private
+                     * @member {Function}
+                     */
+                    this.onPointerDown = this.onPointerDown.bind(this);
+                    this.processPointerDown = this.processPointerDown.bind(this);
+
+                    /**
+                     * @private
+                     * @member {Function}
+                     */
+                    this.onPointerMove = this.onPointerMove.bind(this);
+                    this.processPointerMove = this.processPointerMove.bind(this);
+
+                    /**
+                     * @private
+                     * @member {Function}
+                     */
+                    this.onPointerOut = this.onPointerOut.bind(this);
+                    this.processPointerOverOut = this.processPointerOverOut.bind(this);
+
+                    /**
+                     * @private
+                     * @member {Function}
+                     */
+                    this.onPointerOver = this.onPointerOver.bind(this);
+
+                    /**
+                     * Dictionary of how different cursor modes are handled. Strings are handled as CSS cursor
+                     * values, objects are handled as dictionaries of CSS values for interactionDOMElement,
+                     * and functions are called instead of changing the CSS.
+                     * Default CSS cursor values are provided for 'default' and 'pointer' modes.
+                     * @member {Object.<string, Object>}
+                     */
+                    this.cursorStyles = {
+                        default: 'inherit',
+                        pointer: 'pointer',
+                    };
+
+                    /**
+                     * The mode of the cursor that is being used.
+                     * The value of this is a key from the cursorStyles dictionary.
+                     *
+                     * @member {string}
+                     */
+                    this.currentCursorMode = null;
+
+                    /**
+                     * Internal cached let.
+                     *
+                     * @private
+                     * @member {string}
+                     */
+                    this.cursor = null;
+
+                    /**
+                     * The current resolution / device pixel ratio.
+                     *
+                     * @member {number}
+                     * @default 1
+                     */
+                    this.resolution = 1;
+
+                    /**
+                     * Delayed pointer events. Used to guarantee correct ordering of over/out events.
+                     *
+                     * @private
+                     * @member {Array}
+                     */
+                    this.delayedEvents = [];
+
+                    /**
+                     * TreeSearch component that is used to hitTest stage tree
+                     *
+                     * @private
+                     * @member {PIXI.interaction.TreeSearch}
+                     */
+                    this.search = new TreeSearch();
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is pressed on the display
+                     * object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#mousedown
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
+                     * on the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#rightdown
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is released over the display
+                     * object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#mouseup
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
+                     * over the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#rightup
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is pressed and released on
+                     * the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#click
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
+                     * and released on the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#rightclick
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is released outside the
+                     * display object that initially registered a
+                     * [mousedown]{@link PIXI.interaction.InteractionManager#event:mousedown}.
+                     *
+                     * @event PIXI.interaction.InteractionManager#mouseupoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
+                     * outside the display object that initially registered a
+                     * [rightdown]{@link PIXI.interaction.InteractionManager#event:rightdown}.
+                     *
+                     * @event PIXI.interaction.InteractionManager#rightupoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device (usually a mouse) is moved while over the display object
+                     *
+                     * @event PIXI.interaction.InteractionManager#mousemove
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device (usually a mouse) is moved onto the display object
+                     *
+                     * @event PIXI.interaction.InteractionManager#mouseover
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device (usually a mouse) is moved off the display object
+                     *
+                     * @event PIXI.interaction.InteractionManager#mouseout
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is pressed on the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointerdown
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is released over the display object.
+                     * Not always fired when some buttons are held down while others are released. In those cases,
+                     * use [mousedown]{@link PIXI.interaction.InteractionManager#event:mousedown} and
+                     * [mouseup]{@link PIXI.interaction.InteractionManager#event:mouseup} instead.
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointerup
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when the operating system cancels a pointer event
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointercancel
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is pressed and released on the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointertap
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is released outside the display object that initially
+                     * registered a [pointerdown]{@link PIXI.interaction.InteractionManager#event:pointerdown}.
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointerupoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device is moved while over the display object
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointermove
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device is moved onto the display object
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointerover
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device is moved off the display object
+                     *
+                     * @event PIXI.interaction.InteractionManager#pointerout
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is placed on the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#touchstart
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is removed from the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#touchend
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when the operating system cancels a touch
+                     *
+                     * @event PIXI.interaction.InteractionManager#touchcancel
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is placed and removed from the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#tap
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is removed outside of the display object that initially
+                     * registered a [touchstart]{@link PIXI.interaction.InteractionManager#event:touchstart}.
+                     *
+                     * @event PIXI.interaction.InteractionManager#touchendoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is moved along the display object.
+                     *
+                     * @event PIXI.interaction.InteractionManager#touchmove
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is pressed on the display.
+                     * object. DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#mousedown
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
+                     * on the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#rightdown
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is released over the display
+                     * object. DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#mouseup
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
+                     * over the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#rightup
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is pressed and released on
+                     * the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#click
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
+                     * and released on the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#rightclick
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button (usually a mouse left-button) is released outside the
+                     * display object that initially registered a
+                     * [mousedown]{@link PIXI.DisplayObject#event:mousedown}.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#mouseupoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
+                     * outside the display object that initially registered a
+                     * [rightdown]{@link PIXI.DisplayObject#event:rightdown}.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#rightupoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device (usually a mouse) is moved while over the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#mousemove
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device (usually a mouse) is moved onto the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#mouseover
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device (usually a mouse) is moved off the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#mouseout
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is pressed on the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointerdown
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is released over the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointerup
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when the operating system cancels a pointer event.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointercancel
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is pressed and released on the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointertap
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device button is released outside the display object that initially
+                     * registered a [pointerdown]{@link PIXI.DisplayObject#event:pointerdown}.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointerupoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device is moved while over the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointermove
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device is moved onto the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointerover
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a pointer device is moved off the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#pointerout
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is placed on the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#touchstart
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is removed from the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#touchend
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when the operating system cancels a touch.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#touchcancel
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is placed and removed from the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#tap
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is removed outside of the display object that initially
+                     * registered a [touchstart]{@link PIXI.DisplayObject#event:touchstart}.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#touchendoutside
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    /**
+                     * Fired when a touch point is moved along the display object.
+                     * DisplayObject's `interactive` property must be set to `true` to fire event.
+                     *
+                     * @event PIXI.DisplayObject#touchmove
+                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
+                     */
+
+                    this._useSystemTicker = options.useSystemTicker !== undefined ? options.useSystemTicker : true;
+
+                    this.setTargetElement(this.renderer.view, this.renderer.resolution);
+                }
+
+                if ( EventEmitter ) InteractionManager.__proto__ = EventEmitter;
+                InteractionManager.prototype = Object.create( EventEmitter && EventEmitter.prototype );
+                InteractionManager.prototype.constructor = InteractionManager;
+
+                var prototypeAccessors = { useSystemTicker: { configurable: true } };
+
+                /**
+                 * Should the InteractionManager automatically add {@link tickerUpdate} to {@link PIXI.Ticker.system}.
+                 *
+                 * @member {boolean}
+                 * @default true
+                 */
+                prototypeAccessors.useSystemTicker.get = function ()
+                {
+                    return this._useSystemTicker;
+                };
+                prototypeAccessors.useSystemTicker.set = function (useSystemTicker)
+                {
+                    this._useSystemTicker = useSystemTicker;
+
+                    if (useSystemTicker)
+                    {
+                        this.addTickerListener();
+                    }
+                    else
+                    {
+                        this.removeTickerListener();
+                    }
+                };
+
+                /**
+                 * Hit tests a point against the display tree, returning the first interactive object that is hit.
+                 *
+                 * @param {PIXI.Point} globalPoint - A point to hit test with, in global space.
+                 * @param {PIXI.Container} [root] - The root display object to start from. If omitted, defaults
+                 * to the last rendered root of the associated renderer.
+                 * @return {PIXI.DisplayObject} The hit display object, if any.
+                 */
+                InteractionManager.prototype.hitTest = function hitTest (globalPoint, root)
+                {
+                    // clear the target for our hit test
+                    hitTestEvent.target = null;
+                    // assign the global point
+                    hitTestEvent.data.global = globalPoint;
+                    // ensure safety of the root
+                    if (!root)
+                    {
+                        root = this.renderer._lastObjectRendered;
+                    }
+                    // run the hit test
+                    this.processInteractive(hitTestEvent, root, null, true);
+                    // return our found object - it'll be null if we didn't hit anything
+
+                    return hitTestEvent.target;
+                };
+
+                /**
+                 * Sets the DOM element which will receive mouse/touch events. This is useful for when you have
+                 * other DOM elements on top of the renderers Canvas element. With this you'll be bale to delegate
+                 * another DOM element to receive those events.
+                 *
+                 * @param {HTMLElement} element - the DOM element which will receive mouse and touch events.
+                 * @param {number} [resolution=1] - The resolution / device pixel ratio of the new element (relative to the canvas).
+                 */
+                InteractionManager.prototype.setTargetElement = function setTargetElement (element, resolution)
+                {
+                    if ( resolution === void 0 ) resolution = 1;
+
+                    this.removeTickerListener();
+
+                    this.removeEvents();
+
+                    this.interactionDOMElement = element;
+
+                    this.resolution = resolution;
+
+                    this.addEvents();
+
+                    this.addTickerListener();
+                };
+
+                /**
+                 * Add the ticker listener
+                 *
+                 * @private
+                 */
+                InteractionManager.prototype.addTickerListener = function addTickerListener ()
+                {
+                    if (this.tickerAdded || !this.interactionDOMElement || !this._useSystemTicker)
+                    {
+                        return;
+                    }
+
+                    Ticker.system.add(this.tickerUpdate, this, UPDATE_PRIORITY.INTERACTION);
+
+                    this.tickerAdded = true;
+                };
+
+                /**
+                 * Remove the ticker listener
+                 *
+                 * @private
+                 */
+                InteractionManager.prototype.removeTickerListener = function removeTickerListener ()
+                {
+                    if (!this.tickerAdded)
+                    {
+                        return;
+                    }
+
+                    Ticker.system.remove(this.tickerUpdate, this);
+
+                    this.tickerAdded = false;
+                };
+
+                /**
+                 * Registers all the DOM events
+                 *
+                 * @private
+                 */
+                InteractionManager.prototype.addEvents = function addEvents ()
+                {
+                    if (this.eventsAdded || !this.interactionDOMElement)
+                    {
+                        return;
+                    }
+
+                    if (window.navigator.msPointerEnabled)
+                    {
+                        this.interactionDOMElement.style['-ms-content-zooming'] = 'none';
+                        this.interactionDOMElement.style['-ms-touch-action'] = 'none';
+                    }
+                    else if (this.supportsPointerEvents)
+                    {
+                        this.interactionDOMElement.style['touch-action'] = 'none';
+                    }
+
+                    /**
+                     * These events are added first, so that if pointer events are normalized, they are fired
+                     * in the same order as non-normalized events. ie. pointer event 1st, mouse / touch 2nd
+                     */
+                    if (this.supportsPointerEvents)
+                    {
+                        window.document.addEventListener('pointermove', this.onPointerMove, true);
+                        this.interactionDOMElement.addEventListener('pointerdown', this.onPointerDown, true);
+                        // pointerout is fired in addition to pointerup (for touch events) and pointercancel
+                        // we already handle those, so for the purposes of what we do in onPointerOut, we only
+                        // care about the pointerleave event
+                        this.interactionDOMElement.addEventListener('pointerleave', this.onPointerOut, true);
+                        this.interactionDOMElement.addEventListener('pointerover', this.onPointerOver, true);
+                        window.addEventListener('pointercancel', this.onPointerCancel, true);
+                        window.addEventListener('pointerup', this.onPointerUp, true);
+                    }
+                    else
+                    {
+                        window.document.addEventListener('mousemove', this.onPointerMove, true);
+                        this.interactionDOMElement.addEventListener('mousedown', this.onPointerDown, true);
+                        this.interactionDOMElement.addEventListener('mouseout', this.onPointerOut, true);
+                        this.interactionDOMElement.addEventListener('mouseover', this.onPointerOver, true);
+                        window.addEventListener('mouseup', this.onPointerUp, true);
+                    }
+
+                    // always look directly for touch events so that we can provide original data
+                    // In a future version we should change this to being just a fallback and rely solely on
+                    // PointerEvents whenever available
+                    if (this.supportsTouchEvents)
+                    {
+                        this.interactionDOMElement.addEventListener('touchstart', this.onPointerDown, true);
+                        this.interactionDOMElement.addEventListener('touchcancel', this.onPointerCancel, true);
+                        this.interactionDOMElement.addEventListener('touchend', this.onPointerUp, true);
+                        this.interactionDOMElement.addEventListener('touchmove', this.onPointerMove, true);
+                    }
+
+                    this.eventsAdded = true;
+                };
+
+                /**
+                 * Removes all the DOM events that were previously registered
+                 *
+                 * @private
+                 */
+                InteractionManager.prototype.removeEvents = function removeEvents ()
+                {
+                    if (!this.eventsAdded || !this.interactionDOMElement)
+                    {
+                        return;
+                    }
+
+                    if (window.navigator.msPointerEnabled)
+                    {
+                        this.interactionDOMElement.style['-ms-content-zooming'] = '';
+                        this.interactionDOMElement.style['-ms-touch-action'] = '';
+                    }
+                    else if (this.supportsPointerEvents)
+                    {
+                        this.interactionDOMElement.style['touch-action'] = '';
+                    }
+
+                    if (this.supportsPointerEvents)
+                    {
+                        window.document.removeEventListener('pointermove', this.onPointerMove, true);
+                        this.interactionDOMElement.removeEventListener('pointerdown', this.onPointerDown, true);
+                        this.interactionDOMElement.removeEventListener('pointerleave', this.onPointerOut, true);
+                        this.interactionDOMElement.removeEventListener('pointerover', this.onPointerOver, true);
+                        window.removeEventListener('pointercancel', this.onPointerCancel, true);
+                        window.removeEventListener('pointerup', this.onPointerUp, true);
+                    }
+                    else
+                    {
+                        window.document.removeEventListener('mousemove', this.onPointerMove, true);
+                        this.interactionDOMElement.removeEventListener('mousedown', this.onPointerDown, true);
+                        this.interactionDOMElement.removeEventListener('mouseout', this.onPointerOut, true);
+                        this.interactionDOMElement.removeEventListener('mouseover', this.onPointerOver, true);
+                        window.removeEventListener('mouseup', this.onPointerUp, true);
+                    }
+
+                    if (this.supportsTouchEvents)
+                    {
+                        this.interactionDOMElement.removeEventListener('touchstart', this.onPointerDown, true);
+                        this.interactionDOMElement.removeEventListener('touchcancel', this.onPointerCancel, true);
+                        this.interactionDOMElement.removeEventListener('touchend', this.onPointerUp, true);
+                        this.interactionDOMElement.removeEventListener('touchmove', this.onPointerMove, true);
+                    }
+
+                    this.interactionDOMElement = null;
+
+                    this.eventsAdded = false;
+                };
+
+                /**
+                 * Updates the state of interactive objects if at least {@link interactionFrequency}
+                 * milliseconds have passed since the last invocation.
+                 *
+                 * Invoked by a throttled ticker update from {@link PIXI.Ticker.system}.
+                 *
+                 * @param {number} deltaTime - time delta since the last call
+                 */
+                InteractionManager.prototype.tickerUpdate = function tickerUpdate (deltaTime)
+                {
+                    this._deltaTime += deltaTime;
+
+                    if (this._deltaTime < this.interactionFrequency)
+                    {
+                        return;
+                    }
+
+                    this._deltaTime = 0;
+
+                    this.update();
+                };
+
+                /**
+                 * Updates the state of interactive objects.
+                 */
+                InteractionManager.prototype.update = function update ()
+                {
+                    if (!this.interactionDOMElement)
+                    {
+                        return;
+                    }
+
+                    // if the user move the mouse this check has already been done using the mouse move!
+                    if (this.didMove)
+                    {
+                        this.didMove = false;
+
+                        return;
+                    }
+
+                    this.cursor = null;
+
+                    // Resets the flag as set by a stopPropagation call. This flag is usually reset by a user interaction of any kind,
+                    // but there was a scenario of a display object moving under a static mouse cursor.
+                    // In this case, mouseover and mouseevents would not pass the flag test in dispatchEvent function
+                    for (var k in this.activeInteractionData)
+                    {
+                        // eslint-disable-next-line no-prototype-builtins
+                        if (this.activeInteractionData.hasOwnProperty(k))
+                        {
+                            var interactionData = this.activeInteractionData[k];
+
+                            if (interactionData.originalEvent && interactionData.pointerType !== 'touch')
+                            {
+                                var interactionEvent = this.configureInteractionEventForDOMEvent(
+                                    this.eventData,
+                                    interactionData.originalEvent,
+                                    interactionData
+                                );
+
+                                this.processInteractive(
+                                    interactionEvent,
+                                    this.renderer._lastObjectRendered,
+                                    this.processPointerOverOut,
+                                    true
+                                );
+                            }
+                        }
+                    }
+
+                    this.setCursorMode(this.cursor);
+                };
+
+                /**
+                 * Sets the current cursor mode, handling any callbacks or CSS style changes.
+                 *
+                 * @param {string} mode - cursor mode, a key from the cursorStyles dictionary
+                 */
+                InteractionManager.prototype.setCursorMode = function setCursorMode (mode)
+                {
+                    mode = mode || 'default';
+                    // if the mode didn't actually change, bail early
+                    if (this.currentCursorMode === mode)
+                    {
+                        return;
+                    }
+                    this.currentCursorMode = mode;
+                    var style = this.cursorStyles[mode];
+
+                    // only do things if there is a cursor style for it
+                    if (style)
+                    {
+                        switch (typeof style)
+                        {
+                            case 'string':
+                                // string styles are handled as cursor CSS
+                                this.interactionDOMElement.style.cursor = style;
+                                break;
+                            case 'function':
+                                // functions are just called, and passed the cursor mode
+                                style(mode);
+                                break;
+                            case 'object':
+                                // if it is an object, assume that it is a dictionary of CSS styles,
+                                // apply it to the interactionDOMElement
+                                Object.assign(this.interactionDOMElement.style, style);
+                                break;
+                        }
+                    }
+                    else if (typeof mode === 'string' && !Object.prototype.hasOwnProperty.call(this.cursorStyles, mode))
+                    {
+                        // if it mode is a string (not a Symbol) and cursorStyles doesn't have any entry
+                        // for the mode, then assume that the dev wants it to be CSS for the cursor.
+                        this.interactionDOMElement.style.cursor = mode;
+                    }
+                };
+
+                /**
+                 * Dispatches an event on the display object that was interacted with
+                 *
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the display object in question
+                 * @param {string} eventString - the name of the event (e.g, mousedown)
+                 * @param {object} eventData - the event data object
+                 * @private
+                 */
+                InteractionManager.prototype.dispatchEvent = function dispatchEvent (displayObject, eventString, eventData)
+                {
+                    // Even if the event was stopped, at least dispatch any remaining events
+                    // for the same display object.
+                    if (!eventData.stopPropagationHint || displayObject === eventData.stopsPropagatingAt)
+                    {
+                        eventData.currentTarget = displayObject;
+                        eventData.type = eventString;
+
+                        displayObject.emit(eventString, eventData);
+
+                        if (displayObject[eventString])
+                        {
+                            displayObject[eventString](eventData);
+                        }
+                    }
+                };
+
+                /**
+                 * Puts a event on a queue to be dispatched later. This is used to guarantee correct
+                 * ordering of over/out events.
+                 *
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the display object in question
+                 * @param {string} eventString - the name of the event (e.g, mousedown)
+                 * @param {object} eventData - the event data object
+                 * @private
+                 */
+                InteractionManager.prototype.delayDispatchEvent = function delayDispatchEvent (displayObject, eventString, eventData)
+                {
+                    this.delayedEvents.push({ displayObject: displayObject, eventString: eventString, eventData: eventData });
+                };
+
+                /**
+                 * Maps x and y coords from a DOM object and maps them correctly to the PixiJS view. The
+                 * resulting value is stored in the point. This takes into account the fact that the DOM
+                 * element could be scaled and positioned anywhere on the screen.
+                 *
+                 * @param  {PIXI.Point} point - the point that the result will be stored in
+                 * @param  {number} x - the x coord of the position to map
+                 * @param  {number} y - the y coord of the position to map
+                 */
+                InteractionManager.prototype.mapPositionToPoint = function mapPositionToPoint (point, x, y)
+                {
+                    var rect;
+
+                    // IE 11 fix
+                    if (!this.interactionDOMElement.parentElement)
+                    {
+                        rect = { x: 0, y: 0, width: 0, height: 0 };
+                    }
+                    else
+                    {
+                        rect = this.interactionDOMElement.getBoundingClientRect();
+                    }
+
+                    var resolutionMultiplier = 1.0 / this.resolution;
+
+                    point.x = ((x - rect.left) * (this.interactionDOMElement.width / rect.width)) * resolutionMultiplier;
+                    point.y = ((y - rect.top) * (this.interactionDOMElement.height / rect.height)) * resolutionMultiplier;
+                };
+
+                /**
+                 * This function is provides a neat way of crawling through the scene graph and running a
+                 * specified function on all interactive objects it finds. It will also take care of hit
+                 * testing the interactive objects and passes the hit across in the function.
+                 *
+                 * @protected
+                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - event containing the point that
+                 *  is tested for collision
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the displayObject
+                 *  that will be hit test (recursively crawls its children)
+                 * @param {Function} [func] - the function that will be called on each interactive object. The
+                 *  interactionEvent, displayObject and hit will be passed to the function
+                 * @param {boolean} [hitTest] - indicates whether we want to calculate hits
+                 *  or just iterate through all interactive objects
+                 */
+                InteractionManager.prototype.processInteractive = function processInteractive (interactionEvent, displayObject, func, hitTest)
+                {
+                    var hit = this.search.findHit(interactionEvent, displayObject, func, hitTest);
+
+                    var delayedEvents = this.delayedEvents;
+
+                    if (!delayedEvents.length)
+                    {
+                        return hit;
+                    }
+                    // Reset the propagation hint, because we start deeper in the tree again.
+                    interactionEvent.stopPropagationHint = false;
+
+                    var delayedLen = delayedEvents.length;
+
+                    this.delayedEvents = [];
+
+                    for (var i = 0; i < delayedLen; i++)
+                    {
+                        var ref = delayedEvents[i];
+                        var displayObject$1 = ref.displayObject;
+                        var eventString = ref.eventString;
+                        var eventData = ref.eventData;
+
+                        // When we reach the object we wanted to stop propagating at,
+                        // set the propagation hint.
+                        if (eventData.stopsPropagatingAt === displayObject$1)
+                        {
+                            eventData.stopPropagationHint = true;
+                        }
+
+                        this.dispatchEvent(displayObject$1, eventString, eventData);
+                    }
+
+                    return hit;
+                };
+
+                /**
+                 * Is called when the pointer button is pressed down on the renderer element
+                 *
+                 * @private
+                 * @param {PointerEvent} originalEvent - The DOM event of a pointer button being pressed down
+                 */
+                InteractionManager.prototype.onPointerDown = function onPointerDown (originalEvent)
+                {
+                    // if we support touch events, then only use those for touch events, not pointer events
+                    if (this.supportsTouchEvents && originalEvent.pointerType === 'touch') { return; }
+
+                    var events = this.normalizeToPointerData(originalEvent);
+
+                    /**
+                     * No need to prevent default on natural pointer events, as there are no side effects
+                     * Normalized events, however, may have the double mousedown/touchstart issue on the native android browser,
+                     * so still need to be prevented.
+                     */
+
+                    // Guaranteed that there will be at least one event in events, and all events must have the same pointer type
+
+                    if (this.autoPreventDefault && events[0].isNormalized)
+                    {
+                        var cancelable = originalEvent.cancelable || !('cancelable' in originalEvent);
+
+                        if (cancelable)
+                        {
+                            originalEvent.preventDefault();
+                        }
+                    }
+
+                    var eventLen = events.length;
+
+                    for (var i = 0; i < eventLen; i++)
+                    {
+                        var event = events[i];
+
+                        var interactionData = this.getInteractionDataForPointerId(event);
+
+                        var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
+
+                        interactionEvent.data.originalEvent = originalEvent;
+
+                        this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, this.processPointerDown, true);
+
+                        this.emit('pointerdown', interactionEvent);
+                        if (event.pointerType === 'touch')
+                        {
+                            this.emit('touchstart', interactionEvent);
+                        }
+                        // emit a mouse event for "pen" pointers, the way a browser would emit a fallback event
+                        else if (event.pointerType === 'mouse' || event.pointerType === 'pen')
+                        {
+                            var isRightButton = event.button === 2;
+
+                            this.emit(isRightButton ? 'rightdown' : 'mousedown', this.eventData);
+                        }
+                    }
+                };
+
+                /**
+                 * Processes the result of the pointer down check and dispatches the event if need be
+                 *
+                 * @private
+                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
+                 * @param {boolean} hit - the result of the hit test on the display object
+                 */
+                InteractionManager.prototype.processPointerDown = function processPointerDown (interactionEvent, displayObject, hit)
+                {
+                    var data = interactionEvent.data;
+                    var id = interactionEvent.data.identifier;
+
+                    if (hit)
+                    {
+                        if (!displayObject.trackedPointers[id])
+                        {
+                            displayObject.trackedPointers[id] = new InteractionTrackingData(id);
+                        }
+                        this.dispatchEvent(displayObject, 'pointerdown', interactionEvent);
+
+                        if (data.pointerType === 'touch')
+                        {
+                            this.dispatchEvent(displayObject, 'touchstart', interactionEvent);
+                        }
+                        else if (data.pointerType === 'mouse' || data.pointerType === 'pen')
+                        {
+                            var isRightButton = data.button === 2;
+
+                            if (isRightButton)
+                            {
+                                displayObject.trackedPointers[id].rightDown = true;
+                            }
+                            else
+                            {
+                                displayObject.trackedPointers[id].leftDown = true;
+                            }
+
+                            this.dispatchEvent(displayObject, isRightButton ? 'rightdown' : 'mousedown', interactionEvent);
+                        }
+                    }
+                };
+
+                /**
+                 * Is called when the pointer button is released on the renderer element
+                 *
+                 * @private
+                 * @param {PointerEvent} originalEvent - The DOM event of a pointer button being released
+                 * @param {boolean} cancelled - true if the pointer is cancelled
+                 * @param {Function} func - Function passed to {@link processInteractive}
+                 */
+                InteractionManager.prototype.onPointerComplete = function onPointerComplete (originalEvent, cancelled, func)
+                {
+                    var events = this.normalizeToPointerData(originalEvent);
+
+                    var eventLen = events.length;
+
+                    // if the event wasn't targeting our canvas, then consider it to be pointerupoutside
+                    // in all cases (unless it was a pointercancel)
+                    var eventAppend = originalEvent.target !== this.interactionDOMElement ? 'outside' : '';
+
+                    for (var i = 0; i < eventLen; i++)
+                    {
+                        var event = events[i];
+
+                        var interactionData = this.getInteractionDataForPointerId(event);
+
+                        var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
+
+                        interactionEvent.data.originalEvent = originalEvent;
+
+                        // perform hit testing for events targeting our canvas or cancel events
+                        this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, func, cancelled || !eventAppend);
+
+                        this.emit(cancelled ? 'pointercancel' : ("pointerup" + eventAppend), interactionEvent);
+
+                        if (event.pointerType === 'mouse' || event.pointerType === 'pen')
+                        {
+                            var isRightButton = event.button === 2;
+
+                            this.emit(isRightButton ? ("rightup" + eventAppend) : ("mouseup" + eventAppend), interactionEvent);
+                        }
+                        else if (event.pointerType === 'touch')
+                        {
+                            this.emit(cancelled ? 'touchcancel' : ("touchend" + eventAppend), interactionEvent);
+                            this.releaseInteractionDataForPointerId(event.pointerId, interactionData);
+                        }
+                    }
+                };
+
+                /**
+                 * Is called when the pointer button is cancelled
+                 *
+                 * @private
+                 * @param {PointerEvent} event - The DOM event of a pointer button being released
+                 */
+                InteractionManager.prototype.onPointerCancel = function onPointerCancel (event)
+                {
+                    // if we support touch events, then only use those for touch events, not pointer events
+                    if (this.supportsTouchEvents && event.pointerType === 'touch') { return; }
+
+                    this.onPointerComplete(event, true, this.processPointerCancel);
+                };
+
+                /**
+                 * Processes the result of the pointer cancel check and dispatches the event if need be
+                 *
+                 * @private
+                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
+                 */
+                InteractionManager.prototype.processPointerCancel = function processPointerCancel (interactionEvent, displayObject)
+                {
+                    var data = interactionEvent.data;
+
+                    var id = interactionEvent.data.identifier;
+
+                    if (displayObject.trackedPointers[id] !== undefined)
+                    {
+                        delete displayObject.trackedPointers[id];
+                        this.dispatchEvent(displayObject, 'pointercancel', interactionEvent);
+
+                        if (data.pointerType === 'touch')
+                        {
+                            this.dispatchEvent(displayObject, 'touchcancel', interactionEvent);
+                        }
+                    }
+                };
+
+                /**
+                 * Is called when the pointer button is released on the renderer element
+                 *
+                 * @private
+                 * @param {PointerEvent} event - The DOM event of a pointer button being released
+                 */
+                InteractionManager.prototype.onPointerUp = function onPointerUp (event)
+                {
+                    // if we support touch events, then only use those for touch events, not pointer events
+                    if (this.supportsTouchEvents && event.pointerType === 'touch') { return; }
+
+                    this.onPointerComplete(event, false, this.processPointerUp);
+                };
+
+                /**
+                 * Processes the result of the pointer up check and dispatches the event if need be
+                 *
+                 * @private
+                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
+                 * @param {boolean} hit - the result of the hit test on the display object
+                 */
+                InteractionManager.prototype.processPointerUp = function processPointerUp (interactionEvent, displayObject, hit)
+                {
+                    var data = interactionEvent.data;
+
+                    var id = interactionEvent.data.identifier;
+
+                    var trackingData = displayObject.trackedPointers[id];
+
+                    var isTouch = data.pointerType === 'touch';
+
+                    var isMouse = (data.pointerType === 'mouse' || data.pointerType === 'pen');
+                    // need to track mouse down status in the mouse block so that we can emit
+                    // event in a later block
+                    var isMouseTap = false;
+
+                    // Mouse only
+                    if (isMouse)
+                    {
+                        var isRightButton = data.button === 2;
+
+                        var flags = InteractionTrackingData.FLAGS;
+
+                        var test = isRightButton ? flags.RIGHT_DOWN : flags.LEFT_DOWN;
+
+                        var isDown = trackingData !== undefined && (trackingData.flags & test);
+
+                        if (hit)
+                        {
+                            this.dispatchEvent(displayObject, isRightButton ? 'rightup' : 'mouseup', interactionEvent);
+
+                            if (isDown)
+                            {
+                                this.dispatchEvent(displayObject, isRightButton ? 'rightclick' : 'click', interactionEvent);
+                                // because we can confirm that the mousedown happened on this object, flag for later emit of pointertap
+                                isMouseTap = true;
+                            }
+                        }
+                        else if (isDown)
+                        {
+                            this.dispatchEvent(displayObject, isRightButton ? 'rightupoutside' : 'mouseupoutside', interactionEvent);
+                        }
+                        // update the down state of the tracking data
+                        if (trackingData)
+                        {
+                            if (isRightButton)
+                            {
+                                trackingData.rightDown = false;
+                            }
+                            else
+                            {
+                                trackingData.leftDown = false;
+                            }
+                        }
+                    }
+
+                    // Pointers and Touches, and Mouse
+                    if (hit)
+                    {
+                        this.dispatchEvent(displayObject, 'pointerup', interactionEvent);
+                        if (isTouch) { this.dispatchEvent(displayObject, 'touchend', interactionEvent); }
+
+                        if (trackingData)
+                        {
+                            // emit pointertap if not a mouse, or if the mouse block decided it was a tap
+                            if (!isMouse || isMouseTap)
+                            {
+                                this.dispatchEvent(displayObject, 'pointertap', interactionEvent);
+                            }
+                            if (isTouch)
+                            {
+                                this.dispatchEvent(displayObject, 'tap', interactionEvent);
+                                // touches are no longer over (if they ever were) when we get the touchend
+                                // so we should ensure that we don't keep pretending that they are
+                                trackingData.over = false;
+                            }
+                        }
+                    }
+                    else if (trackingData)
+                    {
+                        this.dispatchEvent(displayObject, 'pointerupoutside', interactionEvent);
+                        if (isTouch) { this.dispatchEvent(displayObject, 'touchendoutside', interactionEvent); }
+                    }
+                    // Only remove the tracking data if there is no over/down state still associated with it
+                    if (trackingData && trackingData.none)
+                    {
+                        delete displayObject.trackedPointers[id];
+                    }
+                };
+
+                /**
+                 * Is called when the pointer moves across the renderer element
+                 *
+                 * @private
+                 * @param {PointerEvent} originalEvent - The DOM event of a pointer moving
+                 */
+                InteractionManager.prototype.onPointerMove = function onPointerMove (originalEvent)
+                {
+                    // if we support touch events, then only use those for touch events, not pointer events
+                    if (this.supportsTouchEvents && originalEvent.pointerType === 'touch') { return; }
+
+                    var events = this.normalizeToPointerData(originalEvent);
+
+                    if (events[0].pointerType === 'mouse' || events[0].pointerType === 'pen')
+                    {
+                        this.didMove = true;
+
+                        this.cursor = null;
+                    }
+
+                    var eventLen = events.length;
+
+                    for (var i = 0; i < eventLen; i++)
+                    {
+                        var event = events[i];
+
+                        var interactionData = this.getInteractionDataForPointerId(event);
+
+                        var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
+
+                        interactionEvent.data.originalEvent = originalEvent;
+
+                        this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, this.processPointerMove, true);
+
+                        this.emit('pointermove', interactionEvent);
+                        if (event.pointerType === 'touch') { this.emit('touchmove', interactionEvent); }
+                        if (event.pointerType === 'mouse' || event.pointerType === 'pen') { this.emit('mousemove', interactionEvent); }
+                    }
+
+                    if (events[0].pointerType === 'mouse')
+                    {
+                        this.setCursorMode(this.cursor);
+
+                        // TODO BUG for parents interactive object (border order issue)
+                    }
+                };
+
+                /**
+                 * Processes the result of the pointer move check and dispatches the event if need be
+                 *
+                 * @private
+                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
+                 * @param {boolean} hit - the result of the hit test on the display object
+                 */
+                InteractionManager.prototype.processPointerMove = function processPointerMove (interactionEvent, displayObject, hit)
+                {
+                    var data = interactionEvent.data;
+
+                    var isTouch = data.pointerType === 'touch';
+
+                    var isMouse = (data.pointerType === 'mouse' || data.pointerType === 'pen');
+
+                    if (isMouse)
+                    {
+                        this.processPointerOverOut(interactionEvent, displayObject, hit);
+                    }
+
+                    if (!this.moveWhenInside || hit)
+                    {
+                        this.dispatchEvent(displayObject, 'pointermove', interactionEvent);
+                        if (isTouch) { this.dispatchEvent(displayObject, 'touchmove', interactionEvent); }
+                        if (isMouse) { this.dispatchEvent(displayObject, 'mousemove', interactionEvent); }
+                    }
+                };
+
+                /**
+                 * Is called when the pointer is moved out of the renderer element
+                 *
+                 * @private
+                 * @param {PointerEvent} originalEvent - The DOM event of a pointer being moved out
+                 */
+                InteractionManager.prototype.onPointerOut = function onPointerOut (originalEvent)
+                {
+                    // if we support touch events, then only use those for touch events, not pointer events
+                    if (this.supportsTouchEvents && originalEvent.pointerType === 'touch') { return; }
+
+                    var events = this.normalizeToPointerData(originalEvent);
+
+                    // Only mouse and pointer can call onPointerOut, so events will always be length 1
+                    var event = events[0];
+
+                    if (event.pointerType === 'mouse')
+                    {
+                        this.mouseOverRenderer = false;
+                        this.setCursorMode(null);
+                    }
+
+                    var interactionData = this.getInteractionDataForPointerId(event);
+
+                    var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
+
+                    interactionEvent.data.originalEvent = event;
+
+                    this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, this.processPointerOverOut, false);
+
+                    this.emit('pointerout', interactionEvent);
+                    if (event.pointerType === 'mouse' || event.pointerType === 'pen')
+                    {
+                        this.emit('mouseout', interactionEvent);
+                    }
+                    else
+                    {
+                        // we can get touchleave events after touchend, so we want to make sure we don't
+                        // introduce memory leaks
+                        this.releaseInteractionDataForPointerId(interactionData.identifier);
+                    }
+                };
+
+                /**
+                 * Processes the result of the pointer over/out check and dispatches the event if need be
+                 *
+                 * @private
+                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
+                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
+                 * @param {boolean} hit - the result of the hit test on the display object
+                 */
+                InteractionManager.prototype.processPointerOverOut = function processPointerOverOut (interactionEvent, displayObject, hit)
+                {
+                    var data = interactionEvent.data;
+
+                    var id = interactionEvent.data.identifier;
+
+                    var isMouse = (data.pointerType === 'mouse' || data.pointerType === 'pen');
+
+                    var trackingData = displayObject.trackedPointers[id];
+
+                    // if we just moused over the display object, then we need to track that state
+                    if (hit && !trackingData)
+                    {
+                        trackingData = displayObject.trackedPointers[id] = new InteractionTrackingData(id);
+                    }
+
+                    if (trackingData === undefined) { return; }
+
+                    if (hit && this.mouseOverRenderer)
+                    {
+                        if (!trackingData.over)
+                        {
+                            trackingData.over = true;
+                            this.delayDispatchEvent(displayObject, 'pointerover', interactionEvent);
+                            if (isMouse)
+                            {
+                                this.delayDispatchEvent(displayObject, 'mouseover', interactionEvent);
+                            }
+                        }
+
+                        // only change the cursor if it has not already been changed (by something deeper in the
+                        // display tree)
+                        if (isMouse && this.cursor === null)
+                        {
+                            this.cursor = displayObject.cursor;
+                        }
+                    }
+                    else if (trackingData.over)
+                    {
+                        trackingData.over = false;
+                        this.dispatchEvent(displayObject, 'pointerout', this.eventData);
+                        if (isMouse)
+                        {
+                            this.dispatchEvent(displayObject, 'mouseout', interactionEvent);
+                        }
+                        // if there is no mouse down information for the pointer, then it is safe to delete
+                        if (trackingData.none)
+                        {
+                            delete displayObject.trackedPointers[id];
+                        }
+                    }
+                };
+
+                /**
+                 * Is called when the pointer is moved into the renderer element
+                 *
+                 * @private
+                 * @param {PointerEvent} originalEvent - The DOM event of a pointer button being moved into the renderer view
+                 */
+                InteractionManager.prototype.onPointerOver = function onPointerOver (originalEvent)
+                {
+                    var events = this.normalizeToPointerData(originalEvent);
+
+                    // Only mouse and pointer can call onPointerOver, so events will always be length 1
+                    var event = events[0];
+
+                    var interactionData = this.getInteractionDataForPointerId(event);
+
+                    var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
+
+                    interactionEvent.data.originalEvent = event;
+
+                    if (event.pointerType === 'mouse')
+                    {
+                        this.mouseOverRenderer = true;
+                    }
+
+                    this.emit('pointerover', interactionEvent);
+                    if (event.pointerType === 'mouse' || event.pointerType === 'pen')
+                    {
+                        this.emit('mouseover', interactionEvent);
+                    }
+                };
+
+                /**
+                 * Get InteractionData for a given pointerId. Store that data as well
+                 *
+                 * @private
+                 * @param {PointerEvent} event - Normalized pointer event, output from normalizeToPointerData
+                 * @return {PIXI.interaction.InteractionData} - Interaction data for the given pointer identifier
+                 */
+                InteractionManager.prototype.getInteractionDataForPointerId = function getInteractionDataForPointerId (event)
+                {
+                    var pointerId = event.pointerId;
+
+                    var interactionData;
+
+                    if (pointerId === MOUSE_POINTER_ID || event.pointerType === 'mouse')
+                    {
+                        interactionData = this.mouse;
+                    }
+                    else if (this.activeInteractionData[pointerId])
+                    {
+                        interactionData = this.activeInteractionData[pointerId];
+                    }
+                    else
+                    {
+                        interactionData = this.interactionDataPool.pop() || new InteractionData();
+                        interactionData.identifier = pointerId;
+                        this.activeInteractionData[pointerId] = interactionData;
+                    }
+                    // copy properties from the event, so that we can make sure that touch/pointer specific
+                    // data is available
+                    interactionData.copyEvent(event);
+
+                    return interactionData;
+                };
+
+                /**
+                 * Return unused InteractionData to the pool, for a given pointerId
+                 *
+                 * @private
+                 * @param {number} pointerId - Identifier from a pointer event
+                 */
+                InteractionManager.prototype.releaseInteractionDataForPointerId = function releaseInteractionDataForPointerId (pointerId)
+                {
+                    var interactionData = this.activeInteractionData[pointerId];
+
+                    if (interactionData)
+                    {
+                        delete this.activeInteractionData[pointerId];
+                        interactionData.reset();
+                        this.interactionDataPool.push(interactionData);
+                    }
+                };
+
+                /**
+                 * Configure an InteractionEvent to wrap a DOM PointerEvent and InteractionData
+                 *
+                 * @private
+                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The event to be configured
+                 * @param {PointerEvent} pointerEvent - The DOM event that will be paired with the InteractionEvent
+                 * @param {PIXI.interaction.InteractionData} interactionData - The InteractionData that will be paired
+                 *        with the InteractionEvent
+                 * @return {PIXI.interaction.InteractionEvent} the interaction event that was passed in
+                 */
+                InteractionManager.prototype.configureInteractionEventForDOMEvent = function configureInteractionEventForDOMEvent (interactionEvent, pointerEvent, interactionData)
+                {
+                    interactionEvent.data = interactionData;
+
+                    this.mapPositionToPoint(interactionData.global, pointerEvent.clientX, pointerEvent.clientY);
+
+                    // Not really sure why this is happening, but it's how a previous version handled things
+                    if (pointerEvent.pointerType === 'touch')
+                    {
+                        pointerEvent.globalX = interactionData.global.x;
+                        pointerEvent.globalY = interactionData.global.y;
+                    }
+
+                    interactionData.originalEvent = pointerEvent;
+                    interactionEvent.reset();
+
+                    return interactionEvent;
+                };
+
+                /**
+                 * Ensures that the original event object contains all data that a regular pointer event would have
+                 *
+                 * @private
+                 * @param {TouchEvent|MouseEvent|PointerEvent} event - The original event data from a touch or mouse event
+                 * @return {PointerEvent[]} An array containing a single normalized pointer event, in the case of a pointer
+                 *  or mouse event, or a multiple normalized pointer events if there are multiple changed touches
+                 */
+                InteractionManager.prototype.normalizeToPointerData = function normalizeToPointerData (event)
+                {
+                    var normalizedEvents = [];
+
+                    if (this.supportsTouchEvents && event instanceof TouchEvent)
+                    {
+                        for (var i = 0, li = event.changedTouches.length; i < li; i++)
+                        {
+                            var touch = event.changedTouches[i];
+
+                            if (typeof touch.button === 'undefined') { touch.button = event.touches.length ? 1 : 0; }
+                            if (typeof touch.buttons === 'undefined') { touch.buttons = event.touches.length ? 1 : 0; }
+                            if (typeof touch.isPrimary === 'undefined')
+                            {
+                                touch.isPrimary = event.touches.length === 1 && event.type === 'touchstart';
+                            }
+                            if (typeof touch.width === 'undefined') { touch.width = touch.radiusX || 1; }
+                            if (typeof touch.height === 'undefined') { touch.height = touch.radiusY || 1; }
+                            if (typeof touch.tiltX === 'undefined') { touch.tiltX = 0; }
+                            if (typeof touch.tiltY === 'undefined') { touch.tiltY = 0; }
+                            if (typeof touch.pointerType === 'undefined') { touch.pointerType = 'touch'; }
+                            if (typeof touch.pointerId === 'undefined') { touch.pointerId = touch.identifier || 0; }
+                            if (typeof touch.pressure === 'undefined') { touch.pressure = touch.force || 0.5; }
+                            if (typeof touch.twist === 'undefined') { touch.twist = 0; }
+                            if (typeof touch.tangentialPressure === 'undefined') { touch.tangentialPressure = 0; }
+                            // TODO: Remove these, as layerX/Y is not a standard, is deprecated, has uneven
+                            // support, and the fill ins are not quite the same
+                            // offsetX/Y might be okay, but is not the same as clientX/Y when the canvas's top
+                            // left is not 0,0 on the page
+                            if (typeof touch.layerX === 'undefined') { touch.layerX = touch.offsetX = touch.clientX; }
+                            if (typeof touch.layerY === 'undefined') { touch.layerY = touch.offsetY = touch.clientY; }
+
+                            // mark the touch as normalized, just so that we know we did it
+                            touch.isNormalized = true;
+
+                            normalizedEvents.push(touch);
+                        }
+                    }
+                    // apparently PointerEvent subclasses MouseEvent, so yay
+                    else if (event instanceof MouseEvent && (!this.supportsPointerEvents || !(event instanceof window.PointerEvent)))
+                    {
+                        if (typeof event.isPrimary === 'undefined') { event.isPrimary = true; }
+                        if (typeof event.width === 'undefined') { event.width = 1; }
+                        if (typeof event.height === 'undefined') { event.height = 1; }
+                        if (typeof event.tiltX === 'undefined') { event.tiltX = 0; }
+                        if (typeof event.tiltY === 'undefined') { event.tiltY = 0; }
+                        if (typeof event.pointerType === 'undefined') { event.pointerType = 'mouse'; }
+                        if (typeof event.pointerId === 'undefined') { event.pointerId = MOUSE_POINTER_ID; }
+                        if (typeof event.pressure === 'undefined') { event.pressure = 0.5; }
+                        if (typeof event.twist === 'undefined') { event.twist = 0; }
+                        if (typeof event.tangentialPressure === 'undefined') { event.tangentialPressure = 0; }
+
+                        // mark the mouse event as normalized, just so that we know we did it
+                        event.isNormalized = true;
+
+                        normalizedEvents.push(event);
+                    }
+                    else
+                    {
+                        normalizedEvents.push(event);
+                    }
+
+                    return normalizedEvents;
+                };
+
+                /**
+                 * Destroys the interaction manager
+                 *
+                 */
+                InteractionManager.prototype.destroy = function destroy ()
+                {
+                    this.removeEvents();
+
+                    this.removeTickerListener();
+
+                    this.removeAllListeners();
+
+                    this.renderer = null;
+
+                    this.mouse = null;
+
+                    this.eventData = null;
+
+                    this.interactionDOMElement = null;
+
+                    this.onPointerDown = null;
+                    this.processPointerDown = null;
+
+                    this.onPointerUp = null;
+                    this.processPointerUp = null;
+
+                    this.onPointerCancel = null;
+                    this.processPointerCancel = null;
+
+                    this.onPointerMove = null;
+                    this.processPointerMove = null;
+
+                    this.onPointerOut = null;
+                    this.processPointerOverOut = null;
+
+                    this.onPointerOver = null;
+
+                    this.search = null;
+                };
+
+                Object.defineProperties( InteractionManager.prototype, prototypeAccessors );
+
+                return InteractionManager;
+            }(eventemitter3));
+
+            var interaction_es = /*#__PURE__*/Object.freeze({
+                        __proto__: null,
+                        InteractionData: InteractionData,
+                        InteractionEvent: InteractionEvent,
+                        InteractionManager: InteractionManager,
+                        InteractionTrackingData: InteractionTrackingData,
+                        interactiveTarget: interactiveTarget
+            });
+
+            /*!
+             * @pixi/runner - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+             *
+             * @pixi/runner is licensed under the MIT License.
+             * http://www.opensource.org/licenses/mit-license
+             */
+            /**
+             * A Runner is a highly performant and simple alternative to signals. Best used in situations
+             * where events are dispatched to many objects at high frequency (say every frame!)
+             *
+             *
+             * like a signal..
+             * ```
+             * import { Runner } from '@pixi/runner';
+             *
+             * const myObject = {
+             *     loaded: new Runner('loaded')
+             * }
+             *
+             * const listener = {
+             *     loaded: function(){
+             *         // thin
+             *     }
+             * }
+             *
+             * myObject.update.add(listener);
+             *
+             * myObject.loaded.emit();
+             * ```
+             *
+             * Or for handling calling the same function on many items
+             * ```
+             * import { Runner } from '@pixi/runner';
+             *
+             * const myGame = {
+             *     update: new Runner('update')
+             * }
+             *
+             * const gameObject = {
+             *     update: function(time){
+             *         // update my gamey state
+             *     }
+             * }
+             *
+             * myGame.update.add(gameObject1);
+             *
+             * myGame.update.emit(time);
+             * ```
+             * @class
+             * @memberof PIXI
+             */
+            var Runner = /** @class */ (function () {
+                /**
+                 *  @param {string} name the function name that will be executed on the listeners added to this Runner.
+                 */
+                function Runner(name) {
+                    this.items = [];
+                    this._name = name;
+                    this._aliasCount = 0;
+                }
+                /**
+                 * Dispatch/Broadcast Runner to all listeners added to the queue.
+                 * @param {...any} params - optional parameters to pass to each listener
+                 * @return {PIXI.Runner}
+                 */
+                Runner.prototype.emit = function (a0, a1, a2, a3, a4, a5, a6, a7) {
+                    if (arguments.length > 8) {
+                        throw new Error('max arguments reached');
+                    }
+                    var _a = this, name = _a.name, items = _a.items;
+                    this._aliasCount++;
+                    for (var i = 0, len = items.length; i < len; i++) {
+                        items[i][name](a0, a1, a2, a3, a4, a5, a6, a7);
+                    }
+                    if (items === this.items) {
+                        this._aliasCount--;
+                    }
+                    return this;
+                };
+                Runner.prototype.ensureNonAliasedItems = function () {
+                    if (this._aliasCount > 0 && this.items.length > 1) {
+                        this._aliasCount = 0;
+                        this.items = this.items.slice(0);
+                    }
+                };
+                /**
+                 * Add a listener to the Runner
+                 *
+                 * Runners do not need to have scope or functions passed to them.
+                 * All that is required is to pass the listening object and ensure that it has contains a function that has the same name
+                 * as the name provided to the Runner when it was created.
+                 *
+                 * Eg A listener passed to this Runner will require a 'complete' function.
+                 *
+                 * ```
+                 * import { Runner } from '@pixi/runner';
+                 *
+                 * const complete = new Runner('complete');
+                 * ```
+                 *
+                 * The scope used will be the object itself.
+                 *
+                 * @param {any} item - The object that will be listening.
+                 * @return {PIXI.Runner}
+                 */
+                Runner.prototype.add = function (item) {
+                    if (item[this._name]) {
+                        this.ensureNonAliasedItems();
+                        this.remove(item);
+                        this.items.push(item);
+                    }
+                    return this;
+                };
+                /**
+                 * Remove a single listener from the dispatch queue.
+                 * @param {any} item - The listenr that you would like to remove.
+                 * @return {PIXI.Runner}
+                 */
+                Runner.prototype.remove = function (item) {
+                    var index = this.items.indexOf(item);
+                    if (index !== -1) {
+                        this.ensureNonAliasedItems();
+                        this.items.splice(index, 1);
+                    }
+                    return this;
+                };
+                /**
+                 * Check to see if the listener is already in the Runner
+                 * @param {any} item - The listener that you would like to check.
+                 */
+                Runner.prototype.contains = function (item) {
+                    return this.items.indexOf(item) !== -1;
+                };
+                /**
+                 * Remove all listeners from the Runner
+                 * @return {PIXI.Runner}
+                 */
+                Runner.prototype.removeAll = function () {
+                    this.ensureNonAliasedItems();
+                    this.items.length = 0;
+                    return this;
+                };
+                /**
+                 * Remove all references, don't use after this.
+                 */
+                Runner.prototype.destroy = function () {
+                    this.removeAll();
+                    this.items = null;
+                    this._name = null;
+                };
+                Object.defineProperty(Runner.prototype, "empty", {
+                    /**
+                     * `true` if there are no this Runner contains no listeners
+                     *
+                     * @member {boolean}
+                     * @readonly
+                     */
+                    get: function () {
+                        return this.items.length === 0;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(Runner.prototype, "name", {
+                    /**
+                     * The name of the runner.
+                     *
+                     * @member {string}
+                     * @readonly
+                     */
+                    get: function () {
+                        return this._name;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                return Runner;
+            }());
+            Object.defineProperties(Runner.prototype, {
+                /**
+                 * Alias for `emit`
+                 * @memberof PIXI.Runner#
+                 * @method dispatch
+                 * @see PIXI.Runner#emit
+                 */
+                dispatch: { value: Runner.prototype.emit },
+                /**
+                 * Alias for `emit`
+                 * @memberof PIXI.Runner#
+                 * @method run
+                 * @see PIXI.Runner#emit
+                 */
+                run: { value: Runner.prototype.emit },
+            });
+
+            /*!
+             * @pixi/core - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/core is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -9992,7 +14584,7 @@
                 this.onError = new Runner('onError', 1);
             };
 
-            var prototypeAccessors$1 = { valid: { configurable: true },width: { configurable: true },height: { configurable: true } };
+            var prototypeAccessors$2 = { valid: { configurable: true },width: { configurable: true },height: { configurable: true } };
 
             /**
              * Bind to a parent BaseTexture
@@ -10045,7 +14637,7 @@
              * @readonly
              * @member {boolean}
              */
-            prototypeAccessors$1.valid.get = function ()
+            prototypeAccessors$2.valid.get = function ()
             {
                 return !!this._width && !!this._height;
             };
@@ -10078,7 +14670,7 @@
              * @member {number}
              * @readonly
              */
-            prototypeAccessors$1.width.get = function ()
+            prototypeAccessors$2.width.get = function ()
             {
                 return this._width;
             };
@@ -10089,7 +14681,7 @@
              * @member {number}
              * @readonly
              */
-            prototypeAccessors$1.height.get = function ()
+            prototypeAccessors$2.height.get = function ()
             {
                 return this._height;
             };
@@ -10150,7 +14742,7 @@
                 }
             };
 
-            Object.defineProperties( Resource.prototype, prototypeAccessors$1 );
+            Object.defineProperties( Resource.prototype, prototypeAccessors$2 );
 
             /**
              * Base for all the image/canvas resources
@@ -14130,7 +18722,7 @@
              * @class
              * @memberof PIXI
              */
-            var Buffer = function Buffer(data, _static, index)
+            var Buffer$1 = function Buffer(data, _static, index)
             {
                 if ( _static === void 0 ) _static = true;
                 if ( index === void 0 ) index = false;
@@ -14166,7 +18758,7 @@
              * flags this buffer as requiring an upload to the GPU
              * @param {ArrayBuffer|SharedArrayBuffer|ArrayBufferView} [data] the data to update in the buffer.
              */
-            Buffer.prototype.update = function update (data)
+            Buffer$1.prototype.update = function update (data)
             {
                 this.data = data || this.data;
                 this._updateID++;
@@ -14175,7 +18767,7 @@
             /**
              * disposes WebGL resources that are connected to this geometry
              */
-            Buffer.prototype.dispose = function dispose ()
+            Buffer$1.prototype.dispose = function dispose ()
             {
                 this.disposeRunner.run(this, false);
             };
@@ -14183,7 +18775,7 @@
             /**
              * Destroys the buffer
              */
-            Buffer.prototype.destroy = function destroy ()
+            Buffer$1.prototype.destroy = function destroy ()
             {
                 this.dispose();
 
@@ -14197,17 +18789,17 @@
              * @param {ArrayBufferView | number[]} data the TypedArray that the buffer will store. If this is a regular Array it will be converted to a Float32Array.
              * @return {PIXI.Buffer} A new Buffer based on the data provided.
              */
-            Buffer.from = function from (data)
+            Buffer$1.from = function from (data)
             {
                 if (data instanceof Array)
                 {
                     data = new Float32Array(data);
                 }
 
-                return new Buffer(data);
+                return new Buffer$1(data);
             };
 
-            function getBufferType(array)
+            function getBufferType$1(array)
             {
                 if (array.BYTES_PER_ELEMENT === 4)
                 {
@@ -14242,14 +18834,14 @@
             }
 
             /* eslint-disable object-shorthand */
-            var map$1 = {
+            var map$2 = {
                 Float32Array: Float32Array,
                 Uint32Array: Uint32Array,
                 Int32Array: Int32Array,
                 Uint8Array: Uint8Array,
             };
 
-            function interleaveTypedArrays(arrays, sizes)
+            function interleaveTypedArrays$1(arrays, sizes)
             {
                 var outSize = 0;
                 var stride = 0;
@@ -14271,11 +18863,11 @@
                     var size = sizes[i$1];
                     var array = arrays[i$1];
 
-                    var type = getBufferType(array);
+                    var type = getBufferType$1(array);
 
                     if (!views[type])
                     {
-                        views[type] = new map$1[type](buffer);
+                        views[type] = new map$2[type](buffer);
                     }
 
                     out = views[type];
@@ -14399,7 +18991,7 @@
                         buffer = new Float32Array(buffer);
                     }
 
-                    buffer = new Buffer(buffer);
+                    buffer = new Buffer$1(buffer);
                 }
 
                 var ids = id.split('|');
@@ -14470,7 +19062,7 @@
                         buffer = new Uint16Array(buffer);
                     }
 
-                    buffer = new Buffer(buffer);
+                    buffer = new Buffer$1(buffer);
                 }
 
                 buffer.index = true;
@@ -14508,7 +19100,7 @@
                 // assume already that no buffers are interleaved
                 var arrays = [];
                 var sizes = [];
-                var interleavedBuffer = new Buffer();
+                var interleavedBuffer = new Buffer$1();
                 var i;
 
                 for (i in this.attributes)
@@ -14524,7 +19116,7 @@
                     attribute.buffer = 0;
                 }
 
-                interleavedBuffer.data = interleaveTypedArrays(arrays, sizes);
+                interleavedBuffer.data = interleaveTypedArrays$1(arrays, sizes);
 
                 for (i = 0; i < this.buffers.length; i++)
                 {
@@ -14588,7 +19180,7 @@
 
                 for (var i = 0; i < this.buffers.length; i++)
                 {
-                    geometry.buffers[i] = new Buffer(this.buffers[i].data.slice());
+                    geometry.buffers[i] = new Buffer$1(this.buffers[i].data.slice());
                 }
 
                 for (var i$1 in this.attributes)
@@ -14652,8 +19244,8 @@
                 for (var i$1 = 0; i$1 < geometry.buffers.length; i$1++)
                 {
                     // TODO types!
-                    arrays[i$1] = new map$1$1[getBufferType(geometry.buffers[i$1].data)](sizes[i$1]);
-                    geometryOut.buffers[i$1] = new Buffer(arrays[i$1]);
+                    arrays[i$1] = new map$1$1[getBufferType$1(geometry.buffers[i$1].data)](sizes[i$1]);
+                    geometryOut.buffers[i$1] = new Buffer$1(arrays[i$1]);
                 }
 
                 // pass to set data..
@@ -14779,8 +19371,8 @@
                         1, 1,
                         0, 1 ]);
 
-                    this.vertexBuffer = new Buffer(this.vertices);
-                    this.uvBuffer = new Buffer(this.uvs);
+                    this.vertexBuffer = new Buffer$1(this.vertices);
+                    this.uvBuffer = new Buffer$1(this.uvs);
 
                     this.addAttribute('aVertexPosition', this.vertexBuffer)
                         .addAttribute('aTextureCoord', this.uvBuffer)
@@ -15608,7 +20200,7 @@
              * @type {number}
              * @default PIXI.ENV.WEBGL2
              */
-            settings.PREFER_ENV = isMobile_min.any ? ENV.WEBGL : ENV.WEBGL2;
+            settings.PREFER_ENV = isMobile$1.any ? ENV.WEBGL : ENV.WEBGL2;
 
             /**
              * If set to `true`, Textures and BaseTexture objects stored
@@ -17164,6 +21756,18 @@
                 // if linking fails, then log and cleanup
                 if (!gl.getProgramParameter(program, gl.LINK_STATUS))
                 {
+                    if (!gl.getShaderParameter(glVertShader, gl.COMPILE_STATUS))
+                    {
+                        console.warn(vertexSrc);
+                        console.error(gl.getShaderInfoLog(glVertShader));
+                    }
+
+                    if (!gl.getShaderParameter(glFragShader, gl.COMPILE_STATUS))
+                    {
+                        console.warn(fragmentSrc);
+                        console.error(gl.getShaderInfoLog(glFragShader));
+                    }
+
                     console.error('Pixi.js Error: Could not initialize shader.');
                     console.error('gl.VALIDATE_STATUS', gl.getProgramParameter(program, gl.VALIDATE_STATUS));
                     console.error('gl.getError()', gl.getError());
@@ -17198,14 +21802,6 @@
 
                 gl.shaderSource(shader, src);
                 gl.compileShader(shader);
-
-                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
-                {
-                    console.warn(src);
-                    console.error(gl.getShaderInfoLog(shader));
-
-                    return null;
-                }
 
                 return shader;
             }
@@ -17539,8 +22135,7 @@
 
             function generateUniformsSync(group, uniformData)
             {
-                var textureCount = 0;
-                var func = "var v = null;\n    var cv = null\n    var gl = renderer.gl";
+                var func = "var v = null;\n    var cv = null\n    var t = 0;\n    var gl = renderer.gl\n    ";
 
                 for (var i in group.uniforms)
                 {
@@ -17550,7 +22145,7 @@
                     {
                         if (group.uniforms[i].group)
                         {
-                            func += "\n                    renderer.shader.syncUniformGroup(uv." + i + ");\n                ";
+                            func += "\n                    renderer.shader.syncUniformGroup(uv." + i + ", syncData);\n                ";
                         }
 
                         continue;
@@ -17565,9 +22160,7 @@
                     else if ((data.type === 'sampler2D' || data.type === 'samplerCube' || data.type === 'sampler2DArray') && data.size === 1 && !data.isArray)
                     /* eslint-disable max-len */
                     {
-                        func += "\n            renderer.texture.bind(uv." + i + ", " + textureCount + ");\n\n            if(ud." + i + ".value !== " + textureCount + ")\n            {\n                ud." + i + ".value = " + textureCount + ";\n                gl.uniform1i(ud." + i + ".location, " + textureCount + ");\n; // eslint-disable-line max-len\n            }\n";
-
-                        textureCount++;
+                        func += "\n\n            t = syncData.textureCount++;\n\n            renderer.texture.bind(uv." + i + ", t);\n            \n            if(ud." + i + ".value !== t)\n            {\n                ud." + i + ".value = t;\n                gl.uniform1i(ud." + i + ".location, t);\n; // eslint-disable-line max-len\n            }\n";
                     }
                     else if (data.type === 'mat3' && data.size === 1)
                     {
@@ -17617,7 +22210,13 @@
                     }
                 }
 
-                return new Function('ud', 'uv', 'renderer', func); // eslint-disable-line no-new-func
+                /**
+                 * the introduction of syncData is to solve an issue where textures in uniform groups are not set correctly
+                 * the texture count was always starting from 0 in each group. This needs to increment each time a texture is used
+                 * no matter which group is being used
+                 *
+                 */
+                return new Function('ud', 'uv', 'renderer', 'syncData', func); // eslint-disable-line no-new-func
             }
 
             var fragTemplate = [
@@ -17989,7 +22588,7 @@
                 }
             };
 
-            var prototypeAccessors$2 = { uniforms: { configurable: true } };
+            var prototypeAccessors$2$1 = { uniforms: { configurable: true } };
 
             // TODO move to shader system..
             Shader.prototype.checkUniformExists = function checkUniformExists (name, group)
@@ -18027,7 +22626,7 @@
              * @readonly
              * @member {object}
              */
-            prototypeAccessors$2.uniforms.get = function ()
+            prototypeAccessors$2$1.uniforms.get = function ()
             {
                 return this.uniformGroup.uniforms;
             };
@@ -18048,7 +22647,7 @@
                 return new Shader(program, uniforms);
             };
 
-            Object.defineProperties( Shader.prototype, prototypeAccessors$2 );
+            Object.defineProperties( Shader.prototype, prototypeAccessors$2$1 );
 
             /* eslint-disable max-len */
 
@@ -19666,6 +24265,8 @@
             };
 
             var UID$4 = 0;
+            // defualt sync data so we don't create a new one each time!
+            var defaultSyncData = { textureCount: 0 };
 
             /**
              * System plugin to the renderer to manage shaders.
@@ -19752,7 +24353,9 @@
 
                     if (!dontSync)
                     {
-                        this.syncUniformGroup(shader.uniformGroup);
+                        defaultSyncData.textureCount = 0;
+
+                        this.syncUniformGroup(shader.uniformGroup, defaultSyncData);
                     }
 
                     return glProgram;
@@ -19771,7 +24374,13 @@
                     shader.syncUniforms(glProgram.uniformData, uniforms, this.renderer);
                 };
 
-                ShaderSystem.prototype.syncUniformGroup = function syncUniformGroup (group)
+                /**
+                 *
+                 * syncs uniforms on the group
+                 * @param {*} group the uniform group to sync
+                 * @param {*} syncData this is data that is passed to the sync function and any nested sync functions
+                 */
+                ShaderSystem.prototype.syncUniformGroup = function syncUniformGroup (group, syncData)
                 {
                     var glProgram = this.getglProgram();
 
@@ -19779,7 +24388,7 @@
                     {
                         glProgram.uniformGroups[group.id] = group.dirtyId;
 
-                        this.syncUniforms(group, glProgram);
+                        this.syncUniforms(group, glProgram, syncData);
                     }
                 };
 
@@ -19789,11 +24398,11 @@
                  *
                  * @private
                  */
-                ShaderSystem.prototype.syncUniforms = function syncUniforms (group, glProgram)
+                ShaderSystem.prototype.syncUniforms = function syncUniforms (group, glProgram, syncData)
                 {
                     var syncFunc = group.syncUniforms[this.shader.program.id] || this.createSyncGroups(group);
 
-                    syncFunc(glProgram.uniformData, group.uniforms, this.renderer);
+                    syncFunc(glProgram.uniformData, group.uniforms, this.renderer, syncData);
                 };
 
                 ShaderSystem.prototype.createSyncGroups = function createSyncGroups (group)
@@ -21693,9 +26302,9 @@
                  * @type {object}
                  * @readonly
                  * @property {PIXI.accessibility.AccessibilityManager} accessibility Support tabbing interactive elements.
-                 * @property {PIXI.extract.Extract} extract Extract image data from renderer.
+                 * @property {PIXI.Extract} extract Extract image data from renderer.
                  * @property {PIXI.interaction.InteractionManager} interaction Handles mouse, touch and pointer events.
-                 * @property {PIXI.prepare.Prepare} prepare Pre-render display objects.
+                 * @property {PIXI.Prepare} prepare Pre-render display objects.
                  */
 
                 /**
@@ -22516,7 +27125,8 @@
                             this.bindAndClearTexArray(texArray);
                         }
 
-                        stateSystem.setBlendMode(blend);
+                        this.state.blendMode = blend;
+                        stateSystem.set(this.state);
                         gl.drawElements(type, size, gl.UNSIGNED_SHORT, start * 2);
                     }
                 };
@@ -22852,7 +27462,7 @@
                      * @member {PIXI.Buffer}
                      * @protected
                      */
-                    this._buffer = new Buffer(null, _static, false);
+                    this._buffer = new Buffer$1(null, _static, false);
 
                     /**
                      * Index buffer data
@@ -22860,7 +27470,7 @@
                      * @member {PIXI.Buffer}
                      * @protected
                      */
-                    this._indexBuffer = new Buffer(null, _static, true);
+                    this._indexBuffer = new Buffer$1(null, _static, true);
 
                     this.addAttribute('aVertexPosition', this._buffer, 2, false, TYPES.FLOAT)
                         .addAttribute('aTextureCoord', this._buffer, 2, false, TYPES.FLOAT)
@@ -22951,8 +27561,233 @@
             var BatchRenderer = BatchPluginFactory.create();
 
             /*!
-             * @pixi/extract - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/app - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+             *
+             * @pixi/app is licensed under the MIT License.
+             * http://www.opensource.org/licenses/mit-license
+             */
+
+            /**
+             * Convenience class to create a new PIXI application.
+             *
+             * This class automatically creates the renderer, ticker and root container.
+             *
+             * @example
+             * // Create the application
+             * const app = new PIXI.Application();
+             *
+             * // Add the view to the DOM
+             * document.body.appendChild(app.view);
+             *
+             * // ex, add display objects
+             * app.stage.addChild(PIXI.Sprite.from('something.png'));
+             *
+             * @class
+             * @memberof PIXI
+             */
+            var Application = function Application(options)
+            {
+                var this$1 = this;
+
+                // The default options
+                options = Object.assign({
+                    forceCanvas: false,
+                }, options);
+
+                /**
+                 * WebGL renderer if available, otherwise CanvasRenderer.
+                 * @member {PIXI.Renderer|PIXI.CanvasRenderer}
+                 */
+                this.renderer = autoDetectRenderer(options);
+
+                /**
+                 * The root display container that's rendered.
+                 * @member {PIXI.Container}
+                 */
+                this.stage = new Container();
+
+                // install plugins here
+                Application._plugins.forEach(function (plugin) {
+                    plugin.init.call(this$1, options);
+                });
+            };
+
+            var prototypeAccessors$6 = { view: { configurable: true },screen: { configurable: true } };
+
+            /**
+             * Register a middleware plugin for the application
+             * @static
+             * @param {PIXI.Application.Plugin} plugin - Plugin being installed
+             */
+            Application.registerPlugin = function registerPlugin (plugin)
+            {
+                Application._plugins.push(plugin);
+            };
+
+            /**
+             * Render the current stage.
+             */
+            Application.prototype.render = function render ()
+            {
+                this.renderer.render(this.stage);
+            };
+
+            /**
+             * Reference to the renderer's canvas element.
+             * @member {HTMLCanvasElement}
+             * @readonly
+             */
+            prototypeAccessors$6.view.get = function ()
+            {
+                return this.renderer.view;
+            };
+
+            /**
+             * Reference to the renderer's screen rectangle. Its safe to use as `filterArea` or `hitArea` for the whole screen.
+             * @member {PIXI.Rectangle}
+             * @readonly
+             */
+            prototypeAccessors$6.screen.get = function ()
+            {
+                return this.renderer.screen;
+            };
+
+            /**
+             * Destroy and don't use after this.
+             * @param {Boolean} [removeView=false] Automatically remove canvas from DOM.
+             * @param {object|boolean} [stageOptions] - Options parameter. A boolean will act as if all options
+             *  have been set to that value
+             * @param {boolean} [stageOptions.children=false] - if set to true, all the children will have their destroy
+             *  method called as well. 'stageOptions' will be passed on to those calls.
+             * @param {boolean} [stageOptions.texture=false] - Only used for child Sprites if stageOptions.children is set
+             *  to true. Should it destroy the texture of the child sprite
+             * @param {boolean} [stageOptions.baseTexture=false] - Only used for child Sprites if stageOptions.children is set
+             *  to true. Should it destroy the base texture of the child sprite
+             */
+            Application.prototype.destroy = function destroy (removeView, stageOptions)
+            {
+                    var this$1 = this;
+
+                // Destroy plugins in the opposite order
+                // which they were constructed
+                var plugins = Application._plugins.slice(0);
+
+                plugins.reverse();
+                plugins.forEach(function (plugin) {
+                    plugin.destroy.call(this$1);
+                });
+
+                this.stage.destroy(stageOptions);
+                this.stage = null;
+
+                this.renderer.destroy(removeView);
+                this.renderer = null;
+
+                this._options = null;
+            };
+
+            Object.defineProperties( Application.prototype, prototypeAccessors$6 );
+
+            /**
+             * @memberof PIXI.Application
+             * @typedef {object} Plugin
+             * @property {function} init - Called when Application is constructed, scoped to Application instance.
+             *  Passes in `options` as the only argument, which are Application constructor options.
+             * @property {function} destroy - Called when destroying Application, scoped to Application instance
+             */
+
+            /**
+             * Collection of installed plugins.
+             * @static
+             * @private
+             * @type {PIXI.Application.Plugin[]}
+             */
+            Application._plugins = [];
+
+            /**
+             * Middleware for for Application's resize functionality
+             * @private
+             * @class
+             */
+            var ResizePlugin = function ResizePlugin () {};
+
+            ResizePlugin.init = function init (options)
+            {
+                    var this$1 = this;
+
+                /**
+                 * The element or window to resize the application to.
+                 * @type {Window|HTMLElement}
+                 * @name resizeTo
+                 * @memberof PIXI.Application#
+                 */
+                Object.defineProperty(this, 'resizeTo',
+                    {
+                        set: function set(dom)
+                        {
+                            window.removeEventListener('resize', this.resize);
+                            this._resizeTo = dom;
+                            if (dom)
+                            {
+                                window.addEventListener('resize', this.resize);
+                                this.resize();
+                            }
+                        },
+                        get: function get()
+                        {
+                            return this._resizeTo;
+                        },
+                    });
+
+                /**
+                 * If `resizeTo` is set, calling this function
+                 * will resize to the width and height of that element.
+                 * @method PIXI.Application#resize
+                 */
+                this.resize = function () {
+                    if (this$1._resizeTo)
+                    {
+                        // Resize to the window
+                        if (this$1._resizeTo === window)
+                        {
+                            this$1.renderer.resize(
+                                window.innerWidth,
+                                window.innerHeight
+                            );
+                        }
+                        // Resize to other HTML entities
+                        else
+                        {
+                            this$1.renderer.resize(
+                                this$1._resizeTo.clientWidth,
+                                this$1._resizeTo.clientHeight
+                            );
+                        }
+                    }
+                };
+
+                // On resize
+                this._resizeTo = null;
+                this.resizeTo = options.resizeTo || null;
+            };
+
+            /**
+             * Clean up the ticker, scoped to application
+             * @static
+             * @private
+             */
+            ResizePlugin.destroy = function destroy ()
+            {
+                this.resizeTo = null;
+                this.resize = null;
+            };
+
+            Application.registerPlugin(ResizePlugin);
+
+            /*!
+             * @pixi/extract - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/extract is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -22962,12 +27797,25 @@
             var BYTES_PER_PIXEL = 4;
 
             /**
-             * The extract manager provides functionality to export content from the renderers.
+             * This class provides renderer-specific plugins for exporting content from a renderer.
+             * For instance, these plugins can be used for saving an Image, Canvas element or for exporting the raw image data (pixels).
              *
-             * An instance of this class is automatically created by default, and can be found at `renderer.plugins.extract`
+             * Do not instantiate these plugins directly. It is available from the `renderer.plugins` property.
+             * See {@link PIXI.CanvasRenderer#plugins} or {@link PIXI.Renderer#plugins}.
+             * @example
+             * // Create a new app (will auto-add extract plugin to renderer)
+             * const app = new PIXI.Application();
              *
+             * // Draw a red circle
+             * const graphics = new PIXI.Graphics()
+             *     .beginFill(0xFF0000)
+             *     .drawCircle(0, 0, 50);
+             *
+             * // Render the graphics as an HTMLImageElement
+             * const image = app.renderer.plugins.extract.image(graphics);
+             * document.body.appendChild(image);
              * @class
-             * @memberof PIXI.extract
+             * @memberof PIXI
              */
             var Extract = function Extract(renderer)
             {
@@ -22975,9 +27823,9 @@
                 /**
                  * Collection of methods for extracting data (image, pixels, etc.) from a display object or render texture
                  *
-                 * @member {PIXI.extract.Extract} extract
+                 * @member {PIXI.Extract} extract
                  * @memberof PIXI.Renderer#
-                 * @see PIXI.extract.Extract
+                 * @see PIXI.Extract
                  */
                 renderer.extract = this;
             };
@@ -23221,2528 +28069,3815 @@
                 }
             };
 
-            var extract_es = /*#__PURE__*/Object.freeze({
-                        __proto__: null,
-                        Extract: Extract
+            var parseUri = function parseURI (str, opts) {
+              opts = opts || {};
+
+              var o = {
+                key: ['source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'],
+                q: {
+                  name: 'queryKey',
+                  parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+                },
+                parser: {
+                  strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+                  loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+                }
+              };
+
+              var m = o.parser[opts.strictMode ? 'strict' : 'loose'].exec(str);
+              var uri = {};
+              var i = 14;
+
+              while (i--) uri[o.key[i]] = m[i] || '';
+
+              uri[o.q.name] = {};
+              uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+                if ($1) uri[o.q.name][$1] = $2;
+              });
+
+              return uri
+            };
+
+            var miniSignals = createCommonjsModule(function (module, exports) {
+
+            Object.defineProperty(exports, '__esModule', {
+              value: true
             });
 
+            var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+            function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+            var MiniSignalBinding = (function () {
+              function MiniSignalBinding(fn, once, thisArg) {
+                if (once === undefined) once = false;
+
+                _classCallCheck(this, MiniSignalBinding);
+
+                this._fn = fn;
+                this._once = once;
+                this._thisArg = thisArg;
+                this._next = this._prev = this._owner = null;
+              }
+
+              _createClass(MiniSignalBinding, [{
+                key: 'detach',
+                value: function detach() {
+                  if (this._owner === null) return false;
+                  this._owner.detach(this);
+                  return true;
+                }
+              }]);
+
+              return MiniSignalBinding;
+            })();
+
+            function _addMiniSignalBinding(self, node) {
+              if (!self._head) {
+                self._head = node;
+                self._tail = node;
+              } else {
+                self._tail._next = node;
+                node._prev = self._tail;
+                self._tail = node;
+              }
+
+              node._owner = self;
+
+              return node;
+            }
+
+            var MiniSignal = (function () {
+              function MiniSignal() {
+                _classCallCheck(this, MiniSignal);
+
+                this._head = this._tail = undefined;
+              }
+
+              _createClass(MiniSignal, [{
+                key: 'handlers',
+                value: function handlers() {
+                  var exists = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+                  var node = this._head;
+
+                  if (exists) return !!node;
+
+                  var ee = [];
+
+                  while (node) {
+                    ee.push(node);
+                    node = node._next;
+                  }
+
+                  return ee;
+                }
+              }, {
+                key: 'has',
+                value: function has(node) {
+                  if (!(node instanceof MiniSignalBinding)) {
+                    throw new Error('MiniSignal#has(): First arg must be a MiniSignalBinding object.');
+                  }
+
+                  return node._owner === this;
+                }
+              }, {
+                key: 'dispatch',
+                value: function dispatch() {
+                  var node = this._head;
+
+                  if (!node) return false;
+
+                  while (node) {
+                    if (node._once) this.detach(node);
+                    node._fn.apply(node._thisArg, arguments);
+                    node = node._next;
+                  }
+
+                  return true;
+                }
+              }, {
+                key: 'add',
+                value: function add(fn) {
+                  var thisArg = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+                  if (typeof fn !== 'function') {
+                    throw new Error('MiniSignal#add(): First arg must be a Function.');
+                  }
+                  return _addMiniSignalBinding(this, new MiniSignalBinding(fn, false, thisArg));
+                }
+              }, {
+                key: 'once',
+                value: function once(fn) {
+                  var thisArg = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+                  if (typeof fn !== 'function') {
+                    throw new Error('MiniSignal#once(): First arg must be a Function.');
+                  }
+                  return _addMiniSignalBinding(this, new MiniSignalBinding(fn, true, thisArg));
+                }
+              }, {
+                key: 'detach',
+                value: function detach(node) {
+                  if (!(node instanceof MiniSignalBinding)) {
+                    throw new Error('MiniSignal#detach(): First arg must be a MiniSignalBinding object.');
+                  }
+                  if (node._owner !== this) return this;
+
+                  if (node._prev) node._prev._next = node._next;
+                  if (node._next) node._next._prev = node._prev;
+
+                  if (node === this._head) {
+                    this._head = node._next;
+                    if (node._next === null) {
+                      this._tail = null;
+                    }
+                  } else if (node === this._tail) {
+                    this._tail = node._prev;
+                    this._tail._next = null;
+                  }
+
+                  node._owner = null;
+                  return this;
+                }
+              }, {
+                key: 'detachAll',
+                value: function detachAll() {
+                  var node = this._head;
+                  if (!node) return this;
+
+                  this._head = this._tail = null;
+
+                  while (node) {
+                    node._owner = null;
+                    node = node._next;
+                  }
+                  return this;
+                }
+              }]);
+
+              return MiniSignal;
+            })();
+
+            MiniSignal.MiniSignalBinding = MiniSignalBinding;
+
+            exports['default'] = MiniSignal;
+            module.exports = exports['default'];
+            });
+
+            unwrapExports(miniSignals);
+
+            // main entry point for commonjs, exports MiniSignal
+            var miniSignals$1 = miniSignals;
+
             /*!
-             * @pixi/interaction - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * resource-loader - v3.0.1
+             * https://github.com/pixijs/pixi-sound
+             * Compiled Tue, 02 Jul 2019 14:06:18 UTC
              *
-             * @pixi/interaction is licensed under the MIT License.
+             * resource-loader is licensed under the MIT license.
              * http://www.opensource.org/licenses/mit-license
              */
 
             /**
-             * Holds all information related to an Interaction event
+             * Smaller version of the async library constructs.
+             *
+             * @namespace async
+             */
+
+            /**
+             * Noop function
+             *
+             * @ignore
+             * @function
+             * @memberof async
+             */
+            function _noop() {}
+            /* empty */
+
+            /**
+             * Iterates an array in series.
+             *
+             * @memberof async
+             * @function eachSeries
+             * @param {Array.<*>} array - Array to iterate.
+             * @param {function} iterator - Function to call for each element.
+             * @param {function} callback - Function to call when done, or on error.
+             * @param {boolean} [deferNext=false] - Break synchronous each loop by calling next with a setTimeout of 1.
+             */
+
+
+            function eachSeries(array, iterator, callback, deferNext) {
+              var i = 0;
+              var len = array.length;
+
+              (function next(err) {
+                if (err || i === len) {
+                  if (callback) {
+                    callback(err);
+                  }
+
+                  return;
+                }
+
+                if (deferNext) {
+                  setTimeout(function () {
+                    iterator(array[i++], next);
+                  }, 1);
+                } else {
+                  iterator(array[i++], next);
+                }
+              })();
+            }
+            /**
+             * Ensures a function is only called once.
+             *
+             * @ignore
+             * @memberof async
+             * @param {function} fn - The function to wrap.
+             * @return {function} The wrapping function.
+             */
+
+            function onlyOnce(fn) {
+              return function onceWrapper() {
+                if (fn === null) {
+                  throw new Error('Callback was already called.');
+                }
+
+                var callFn = fn;
+                fn = null;
+                callFn.apply(this, arguments);
+              };
+            }
+            /**
+             * Async queue implementation,
+             *
+             * @memberof async
+             * @function queue
+             * @param {function} worker - The worker function to call for each task.
+             * @param {number} concurrency - How many workers to run in parrallel.
+             * @return {*} The async queue object.
+             */
+
+
+            function queue(worker, concurrency) {
+              if (concurrency == null) {
+                // eslint-disable-line no-eq-null,eqeqeq
+                concurrency = 1;
+              } else if (concurrency === 0) {
+                throw new Error('Concurrency must not be zero');
+              }
+
+              var workers = 0;
+              var q = {
+                _tasks: [],
+                concurrency: concurrency,
+                saturated: _noop,
+                unsaturated: _noop,
+                buffer: concurrency / 4,
+                empty: _noop,
+                drain: _noop,
+                error: _noop,
+                started: false,
+                paused: false,
+                push: function push(data, callback) {
+                  _insert(data, false, callback);
+                },
+                kill: function kill() {
+                  workers = 0;
+                  q.drain = _noop;
+                  q.started = false;
+                  q._tasks = [];
+                },
+                unshift: function unshift(data, callback) {
+                  _insert(data, true, callback);
+                },
+                process: function process() {
+                  while (!q.paused && workers < q.concurrency && q._tasks.length) {
+                    var task = q._tasks.shift();
+
+                    if (q._tasks.length === 0) {
+                      q.empty();
+                    }
+
+                    workers += 1;
+
+                    if (workers === q.concurrency) {
+                      q.saturated();
+                    }
+
+                    worker(task.data, onlyOnce(_next(task)));
+                  }
+                },
+                length: function length() {
+                  return q._tasks.length;
+                },
+                running: function running() {
+                  return workers;
+                },
+                idle: function idle() {
+                  return q._tasks.length + workers === 0;
+                },
+                pause: function pause() {
+                  if (q.paused === true) {
+                    return;
+                  }
+
+                  q.paused = true;
+                },
+                resume: function resume() {
+                  if (q.paused === false) {
+                    return;
+                  }
+
+                  q.paused = false; // Need to call q.process once per concurrent
+                  // worker to preserve full concurrency after pause
+
+                  for (var w = 1; w <= q.concurrency; w++) {
+                    q.process();
+                  }
+                }
+              };
+
+              function _insert(data, insertAtFront, callback) {
+                if (callback != null && typeof callback !== 'function') {
+                  // eslint-disable-line no-eq-null,eqeqeq
+                  throw new Error('task callback must be a function');
+                }
+
+                q.started = true;
+
+                if (data == null && q.idle()) {
+                  // eslint-disable-line no-eq-null,eqeqeq
+                  // call drain immediately if there are no tasks
+                  setTimeout(function () {
+                    return q.drain();
+                  }, 1);
+                  return;
+                }
+
+                var item = {
+                  data: data,
+                  callback: typeof callback === 'function' ? callback : _noop
+                };
+
+                if (insertAtFront) {
+                  q._tasks.unshift(item);
+                } else {
+                  q._tasks.push(item);
+                }
+
+                setTimeout(function () {
+                  return q.process();
+                }, 1);
+              }
+
+              function _next(task) {
+                return function next() {
+                  workers -= 1;
+                  task.callback.apply(task, arguments);
+
+                  if (arguments[0] != null) {
+                    // eslint-disable-line no-eq-null,eqeqeq
+                    q.error(arguments[0], task.data);
+                  }
+
+                  if (workers <= q.concurrency - q.buffer) {
+                    q.unsaturated();
+                  }
+
+                  if (q.idle()) {
+                    q.drain();
+                  }
+
+                  q.process();
+                };
+              }
+
+              return q;
+            }
+
+            // a simple in-memory cache for resources
+            var cache = {};
+            /**
+             * A simple in-memory cache for resource.
+             *
+             * @memberof middleware
+             * @function caching
+             * @example
+             * import { Loader, middleware } from 'resource-loader';
+             * const loader = new Loader();
+             * loader.use(middleware.caching);
+             * @param {Resource} resource - Current Resource
+             * @param {function} next - Callback when complete
+             */
+
+            function caching(resource, next) {
+              var _this = this;
+
+              // if cached, then set data and complete the resource
+              if (cache[resource.url]) {
+                resource.data = cache[resource.url];
+                resource.complete(); // marks resource load complete and stops processing before middlewares
+              } // if not cached, wait for complete and store it in the cache.
+              else {
+                  resource.onComplete.once(function () {
+                    return cache[_this.url] = _this.data;
+                  });
+                }
+
+              next();
+            }
+
+            function _defineProperties(target, props) {
+              for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ("value" in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
+              }
+            }
+
+            function _createClass(Constructor, protoProps, staticProps) {
+              if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+              if (staticProps) _defineProperties(Constructor, staticProps);
+              return Constructor;
+            }
+
+            var useXdr = !!(window.XDomainRequest && !('withCredentials' in new XMLHttpRequest()));
+            var tempAnchor$1 = null; // some status constants
+
+            var STATUS_NONE = 0;
+            var STATUS_OK = 200;
+            var STATUS_EMPTY = 204;
+            var STATUS_IE_BUG_EMPTY = 1223;
+            var STATUS_TYPE_OK = 2; // noop
+
+            function _noop$1() {}
+            /* empty */
+
+            /**
+             * Manages the state and loading of a resource and all child resources.
              *
              * @class
-             * @memberof PIXI.interaction
              */
-            var InteractionData = function InteractionData()
-            {
-                /**
-                 * This point stores the global coords of where the touch/mouse event happened
-                 *
-                 * @member {PIXI.Point}
-                 */
-                this.global = new Point();
 
-                /**
-                 * The target Sprite that was interacted with
-                 *
-                 * @member {PIXI.Sprite}
-                 */
-                this.target = null;
 
-                /**
-                 * When passed to an event handler, this will be the original DOM Event that was captured
-                 *
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
-                 * @member {MouseEvent|TouchEvent|PointerEvent}
-                 */
-                this.originalEvent = null;
+            var Resource$1 =
+            /*#__PURE__*/
+            function () {
+              /**
+               * Sets the load type to be used for a specific extension.
+               *
+               * @static
+               * @param {string} extname - The extension to set the type for, e.g. "png" or "fnt"
+               * @param {Resource.LOAD_TYPE} loadType - The load type to set it to.
+               */
+              Resource.setExtensionLoadType = function setExtensionLoadType(extname, loadType) {
+                setExtMap(Resource._loadTypeMap, extname, loadType);
+              }
+              /**
+               * Sets the load type to be used for a specific extension.
+               *
+               * @static
+               * @param {string} extname - The extension to set the type for, e.g. "png" or "fnt"
+               * @param {Resource.XHR_RESPONSE_TYPE} xhrType - The xhr type to set it to.
+               */
+              ;
 
+              Resource.setExtensionXhrType = function setExtensionXhrType(extname, xhrType) {
+                setExtMap(Resource._xhrTypeMap, extname, xhrType);
+              }
+              /**
+               * @param {string} name - The name of the resource to load.
+               * @param {string|string[]} url - The url for this resource, for audio/video loads you can pass
+               *      an array of sources.
+               * @param {object} [options] - The options for the load.
+               * @param {string|boolean} [options.crossOrigin] - Is this request cross-origin? Default is to
+               *      determine automatically.
+               * @param {number} [options.timeout=0] - A timeout in milliseconds for the load. If the load takes
+               *      longer than this time it is cancelled and the load is considered a failure. If this value is
+               *      set to `0` then there is no explicit timeout.
+               * @param {Resource.LOAD_TYPE} [options.loadType=Resource.LOAD_TYPE.XHR] - How should this resource
+               *      be loaded?
+               * @param {Resource.XHR_RESPONSE_TYPE} [options.xhrType=Resource.XHR_RESPONSE_TYPE.DEFAULT] - How
+               *      should the data being loaded be interpreted when using XHR?
+               * @param {Resource.IMetadata} [options.metadata] - Extra configuration for middleware and the Resource object.
+               */
+              ;
+
+              function Resource(name, url, options) {
+                if (typeof name !== 'string' || typeof url !== 'string') {
+                  throw new Error('Both name and url are required for constructing a resource.');
+                }
+
+                options = options || {};
                 /**
-                 * Unique identifier for this interaction
+                 * The state flags of this resource.
+                 *
+                 * @private
+                 * @member {number}
+                 */
+
+                this._flags = 0; // set data url flag, needs to be set early for some _determineX checks to work.
+
+                this._setFlag(Resource.STATUS_FLAGS.DATA_URL, url.indexOf('data:') === 0);
+                /**
+                 * The name of this resource.
+                 *
+                 * @readonly
+                 * @member {string}
+                 */
+
+
+                this.name = name;
+                /**
+                 * The url used to load this resource.
+                 *
+                 * @readonly
+                 * @member {string}
+                 */
+
+                this.url = url;
+                /**
+                 * The extension used to load this resource.
+                 *
+                 * @readonly
+                 * @member {string}
+                 */
+
+                this.extension = this._getExtension();
+                /**
+                 * The data that was loaded by the resource.
+                 *
+                 * @member {any}
+                 */
+
+                this.data = null;
+                /**
+                 * Is this request cross-origin? If unset, determined automatically.
+                 *
+                 * @member {string}
+                 */
+
+                this.crossOrigin = options.crossOrigin === true ? 'anonymous' : options.crossOrigin;
+                /**
+                 * A timeout in milliseconds for the load. If the load takes longer than this time
+                 * it is cancelled and the load is considered a failure. If this value is set to `0`
+                 * then there is no explicit timeout.
                  *
                  * @member {number}
                  */
-                this.identifier = null;
 
+                this.timeout = options.timeout || 0;
                 /**
-                 * Indicates whether or not the pointer device that created the event is the primary pointer.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/isPrimary
-                 * @type {Boolean}
-                 */
-                this.isPrimary = false;
-
-                /**
-                 * Indicates which button was pressed on the mouse or pointer device to trigger the event.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
-                 * @type {number}
-                 */
-                this.button = 0;
-
-                /**
-                 * Indicates which buttons are pressed on the mouse or pointer device when the event is triggered.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
-                 * @type {number}
-                 */
-                this.buttons = 0;
-
-                /**
-                 * The width of the pointer's contact along the x-axis, measured in CSS pixels.
-                 * radiusX of TouchEvents will be represented by this value.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/width
-                 * @type {number}
-                 */
-                this.width = 0;
-
-                /**
-                 * The height of the pointer's contact along the y-axis, measured in CSS pixels.
-                 * radiusY of TouchEvents will be represented by this value.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/height
-                 * @type {number}
-                 */
-                this.height = 0;
-
-                /**
-                 * The angle, in degrees, between the pointer device and the screen.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltX
-                 * @type {number}
-                 */
-                this.tiltX = 0;
-
-                /**
-                 * The angle, in degrees, between the pointer device and the screen.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/tiltY
-                 * @type {number}
-                 */
-                this.tiltY = 0;
-
-                /**
-                 * The type of pointer that triggered the event.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerType
-                 * @type {string}
-                 */
-                this.pointerType = null;
-
-                /**
-                 * Pressure applied by the pointing device during the event. A Touch's force property
-                 * will be represented by this value.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pressure
-                 * @type {number}
-                 */
-                this.pressure = 0;
-
-                /**
-                 * From TouchEvents (not PointerEvents triggered by touches), the rotationAngle of the Touch.
-                 * @see https://developer.mozilla.org/en-US/docs/Web/API/Touch/rotationAngle
-                 * @type {number}
-                 */
-                this.rotationAngle = 0;
-
-                /**
-                 * Twist of a stylus pointer.
-                 * @see https://w3c.github.io/pointerevents/#pointerevent-interface
-                 * @type {number}
-                 */
-                this.twist = 0;
-
-                /**
-                 * Barrel pressure on a stylus pointer.
-                 * @see https://w3c.github.io/pointerevents/#pointerevent-interface
-                 * @type {number}
-                 */
-                this.tangentialPressure = 0;
-            };
-
-            var prototypeAccessors$6 = { pointerId: { configurable: true } };
-
-            /**
-             * The unique identifier of the pointer. It will be the same as `identifier`.
-             * @readonly
-             * @member {number}
-             * @see https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent/pointerId
-             */
-            prototypeAccessors$6.pointerId.get = function ()
-            {
-                return this.identifier;
-            };
-
-            /**
-             * This will return the local coordinates of the specified displayObject for this InteractionData
-             *
-             * @param {PIXI.DisplayObject} displayObject - The DisplayObject that you would like the local
-             *  coords off
-             * @param {PIXI.Point} [point] - A Point object in which to store the value, optional (otherwise
-             *  will create a new point)
-             * @param {PIXI.Point} [globalPos] - A Point object containing your custom global coords, optional
-             *  (otherwise will use the current global coords)
-             * @return {PIXI.Point} A point containing the coordinates of the InteractionData position relative
-             *  to the DisplayObject
-             */
-            InteractionData.prototype.getLocalPosition = function getLocalPosition (displayObject, point, globalPos)
-            {
-                return displayObject.worldTransform.applyInverse(globalPos || this.global, point);
-            };
-
-            /**
-             * Copies properties from normalized event data.
-             *
-             * @param {Touch|MouseEvent|PointerEvent} event The normalized event data
-             */
-            InteractionData.prototype.copyEvent = function copyEvent (event)
-            {
-                // isPrimary should only change on touchstart/pointerdown, so we don't want to overwrite
-                // it with "false" on later events when our shim for it on touch events might not be
-                // accurate
-                if (event.isPrimary)
-                {
-                    this.isPrimary = true;
-                }
-                this.button = event.button;
-                // event.buttons is not available in all browsers (ie. Safari), but it does have a non-standard
-                // event.which property instead, which conveys the same information.
-                this.buttons = Number.isInteger(event.buttons) ? event.buttons : event.which;
-                this.width = event.width;
-                this.height = event.height;
-                this.tiltX = event.tiltX;
-                this.tiltY = event.tiltY;
-                this.pointerType = event.pointerType;
-                this.pressure = event.pressure;
-                this.rotationAngle = event.rotationAngle;
-                this.twist = event.twist || 0;
-                this.tangentialPressure = event.tangentialPressure || 0;
-            };
-
-            /**
-             * Resets the data for pooling.
-             */
-            InteractionData.prototype.reset = function reset ()
-            {
-                // isPrimary is the only property that we really need to reset - everything else is
-                // guaranteed to be overwritten
-                this.isPrimary = false;
-            };
-
-            Object.defineProperties( InteractionData.prototype, prototypeAccessors$6 );
-
-            /**
-             * Event class that mimics native DOM events.
-             *
-             * @class
-             * @memberof PIXI.interaction
-             */
-            var InteractionEvent = function InteractionEvent()
-            {
-                /**
-                 * Whether this event will continue propagating in the tree.
+                 * The method of loading to use for this resource.
                  *
-                 * Remaining events for the {@link stopsPropagatingAt} object
-                 * will still be dispatched.
-                 *
-                 * @member {boolean}
+                 * @member {Resource.LOAD_TYPE}
                  */
-                this.stopped = false;
 
+                this.loadType = options.loadType || this._determineLoadType();
                 /**
-                 * At which object this event stops propagating.
-                 *
-                 * @private
-                 * @member {PIXI.DisplayObject}
-                 */
-                this.stopsPropagatingAt = null;
-
-                /**
-                 * Whether we already reached the element we want to
-                 * stop propagating at. This is important for delayed events,
-                 * where we start over deeper in the tree again.
-                 *
-                 * @private
-                 * @member {boolean}
-                 */
-                this.stopPropagationHint = false;
-
-                /**
-                 * The object which caused this event to be dispatched.
-                 * For listener callback see {@link PIXI.interaction.InteractionEvent.currentTarget}.
-                 *
-                 * @member {PIXI.DisplayObject}
-                 */
-                this.target = null;
-
-                /**
-                 * The object whose event listener’s callback is currently being invoked.
-                 *
-                 * @member {PIXI.DisplayObject}
-                 */
-                this.currentTarget = null;
-
-                /**
-                 * Type of the event
+                 * The type used to load the resource via XHR. If unset, determined automatically.
                  *
                  * @member {string}
                  */
-                this.type = null;
 
+                this.xhrType = options.xhrType;
                 /**
-                 * InteractionData related to this event
+                 * Extra info for middleware, and controlling specifics about how the resource loads.
                  *
-                 * @member {PIXI.interaction.InteractionData}
+                 * Note that if you pass in a `loadElement`, the Resource class takes ownership of it.
+                 * Meaning it will modify it as it sees fit.
+                 *
+                 * @member {Resource.IMetadata}
                  */
-                this.data = null;
-            };
 
-            /**
-             * Prevents event from reaching any objects other than the current object.
-             *
-             */
-            InteractionEvent.prototype.stopPropagation = function stopPropagation ()
-            {
-                this.stopped = true;
-                this.stopPropagationHint = true;
-                this.stopsPropagatingAt = this.currentTarget;
-            };
+                this.metadata = options.metadata || {};
+                /**
+                 * The error that occurred while loading (if any).
+                 *
+                 * @readonly
+                 * @member {Error}
+                 */
 
-            /**
-             * Resets the event.
-             */
-            InteractionEvent.prototype.reset = function reset ()
-            {
-                this.stopped = false;
-                this.stopsPropagatingAt = null;
-                this.stopPropagationHint = false;
-                this.currentTarget = null;
-                this.target = null;
-            };
+                this.error = null;
+                /**
+                 * The XHR object that was used to load this resource. This is only set
+                 * when `loadType` is `Resource.LOAD_TYPE.XHR`.
+                 *
+                 * @readonly
+                 * @member {XMLHttpRequest}
+                 */
 
-            /**
-             * DisplayObjects with the {@link PIXI.interaction.interactiveTarget} mixin use this class to track interactions
-             *
-             * @class
-             * @private
-             * @memberof PIXI.interaction
-             */
-            var InteractionTrackingData = function InteractionTrackingData(pointerId)
-            {
-                this._pointerId = pointerId;
-                this._flags = InteractionTrackingData.FLAGS.NONE;
-            };
+                this.xhr = null;
+                /**
+                 * The child resources this resource owns.
+                 *
+                 * @readonly
+                 * @member {Resource[]}
+                 */
 
-            var prototypeAccessors$1$2 = { pointerId: { configurable: true },flags: { configurable: true },none: { configurable: true },over: { configurable: true },rightDown: { configurable: true },leftDown: { configurable: true } };
+                this.children = [];
+                /**
+                 * The resource type.
+                 *
+                 * @readonly
+                 * @member {Resource.TYPE}
+                 */
 
-            /**
-             *
-             * @private
-             * @param {number} flag - The interaction flag to set
-             * @param {boolean} yn - Should the flag be set or unset
-             */
-            InteractionTrackingData.prototype._doSet = function _doSet (flag, yn)
-            {
-                if (yn)
-                {
-                    this._flags = this._flags | flag;
+                this.type = Resource.TYPE.UNKNOWN;
+                /**
+                 * The progress chunk owned by this resource.
+                 *
+                 * @readonly
+                 * @member {number}
+                 */
+
+                this.progressChunk = 0;
+                /**
+                 * The `dequeue` method that will be used a storage place for the async queue dequeue method
+                 * used privately by the loader.
+                 *
+                 * @private
+                 * @member {function}
+                 */
+
+                this._dequeue = _noop$1;
+                /**
+                 * Used a storage place for the on load binding used privately by the loader.
+                 *
+                 * @private
+                 * @member {function}
+                 */
+
+                this._onLoadBinding = null;
+                /**
+                 * The timer for element loads to check if they timeout.
+                 *
+                 * @private
+                 * @member {number}
+                 */
+
+                this._elementTimer = 0;
+                /**
+                 * The `complete` function bound to this resource's context.
+                 *
+                 * @private
+                 * @member {function}
+                 */
+
+                this._boundComplete = this.complete.bind(this);
+                /**
+                 * The `_onError` function bound to this resource's context.
+                 *
+                 * @private
+                 * @member {function}
+                 */
+
+                this._boundOnError = this._onError.bind(this);
+                /**
+                 * The `_onProgress` function bound to this resource's context.
+                 *
+                 * @private
+                 * @member {function}
+                 */
+
+                this._boundOnProgress = this._onProgress.bind(this);
+                /**
+                 * The `_onTimeout` function bound to this resource's context.
+                 *
+                 * @private
+                 * @member {function}
+                 */
+
+                this._boundOnTimeout = this._onTimeout.bind(this); // xhr callbacks
+
+                this._boundXhrOnError = this._xhrOnError.bind(this);
+                this._boundXhrOnTimeout = this._xhrOnTimeout.bind(this);
+                this._boundXhrOnAbort = this._xhrOnAbort.bind(this);
+                this._boundXhrOnLoad = this._xhrOnLoad.bind(this);
+                /**
+                 * Dispatched when the resource beings to load.
+                 *
+                 * The callback looks like {@link Resource.OnStartSignal}.
+                 *
+                 * @member {Signal<Resource.OnStartSignal>}
+                 */
+
+                this.onStart = new miniSignals$1();
+                /**
+                 * Dispatched each time progress of this resource load updates.
+                 * Not all resources types and loader systems can support this event
+                 * so sometimes it may not be available. If the resource
+                 * is being loaded on a modern browser, using XHR, and the remote server
+                 * properly sets Content-Length headers, then this will be available.
+                 *
+                 * The callback looks like {@link Resource.OnProgressSignal}.
+                 *
+                 * @member {Signal<Resource.OnProgressSignal>}
+                 */
+
+                this.onProgress = new miniSignals$1();
+                /**
+                 * Dispatched once this resource has loaded, if there was an error it will
+                 * be in the `error` property.
+                 *
+                 * The callback looks like {@link Resource.OnCompleteSignal}.
+                 *
+                 * @member {Signal<Resource.OnCompleteSignal>}
+                 */
+
+                this.onComplete = new miniSignals$1();
+                /**
+                 * Dispatched after this resource has had all the *after* middleware run on it.
+                 *
+                 * The callback looks like {@link Resource.OnCompleteSignal}.
+                 *
+                 * @member {Signal<Resource.OnCompleteSignal>}
+                 */
+
+                this.onAfterMiddleware = new miniSignals$1();
+              }
+              /**
+               * When the resource starts to load.
+               *
+               * @memberof Resource
+               * @callback OnStartSignal
+               * @param {Resource} resource - The resource that the event happened on.
+               */
+
+              /**
+               * When the resource reports loading progress.
+               *
+               * @memberof Resource
+               * @callback OnProgressSignal
+               * @param {Resource} resource - The resource that the event happened on.
+               * @param {number} percentage - The progress of the load in the range [0, 1].
+               */
+
+              /**
+               * When the resource finishes loading.
+               *
+               * @memberof Resource
+               * @callback OnCompleteSignal
+               * @param {Resource} resource - The resource that the event happened on.
+               */
+
+              /**
+               * @memberof Resource
+               * @typedef {object} IMetadata
+               * @property {HTMLImageElement|HTMLAudioElement|HTMLVideoElement} [loadElement=null] - The
+               *      element to use for loading, instead of creating one.
+               * @property {boolean} [skipSource=false] - Skips adding source(s) to the load element. This
+               *      is useful if you want to pass in a `loadElement` that you already added load sources to.
+               * @property {string|string[]} [mimeType] - The mime type to use for the source element
+               *      of a video/audio elment. If the urls are an array, you can pass this as an array as well
+               *      where each index is the mime type to use for the corresponding url index.
+               */
+
+              /**
+               * Stores whether or not this url is a data url.
+               *
+               * @readonly
+               * @member {boolean}
+               */
+
+
+              var _proto = Resource.prototype;
+
+              /**
+               * Marks the resource as complete.
+               *
+               */
+              _proto.complete = function complete() {
+                this._clearEvents();
+
+                this._finish();
+              }
+              /**
+               * Aborts the loading of this resource, with an optional message.
+               *
+               * @param {string} message - The message to use for the error
+               */
+              ;
+
+              _proto.abort = function abort(message) {
+                // abort can be called multiple times, ignore subsequent calls.
+                if (this.error) {
+                  return;
+                } // store error
+
+
+                this.error = new Error(message); // clear events before calling aborts
+
+                this._clearEvents(); // abort the actual loading
+
+
+                if (this.xhr) {
+                  this.xhr.abort();
+                } else if (this.xdr) {
+                  this.xdr.abort();
+                } else if (this.data) {
+                  // single source
+                  if (this.data.src) {
+                    this.data.src = Resource.EMPTY_GIF;
+                  } // multi-source
+                  else {
+                      while (this.data.firstChild) {
+                        this.data.removeChild(this.data.firstChild);
+                      }
+                    }
+                } // done now.
+
+
+                this._finish();
+              }
+              /**
+               * Kicks off loading of this resource. This method is asynchronous.
+               *
+               * @param {Resource.OnCompleteSignal} [cb] - Optional callback to call once the resource is loaded.
+               */
+              ;
+
+              _proto.load = function load(cb) {
+                var _this = this;
+
+                if (this.isLoading) {
+                  return;
                 }
-                else
-                {
-                    this._flags = this._flags & (~flag);
-                }
-            };
 
+                if (this.isComplete) {
+                  if (cb) {
+                    setTimeout(function () {
+                      return cb(_this);
+                    }, 1);
+                  }
+
+                  return;
+                } else if (cb) {
+                  this.onComplete.once(cb);
+                }
+
+                this._setFlag(Resource.STATUS_FLAGS.LOADING, true);
+
+                this.onStart.dispatch(this); // if unset, determine the value
+
+                if (this.crossOrigin === false || typeof this.crossOrigin !== 'string') {
+                  this.crossOrigin = this._determineCrossOrigin(this.url);
+                }
+
+                switch (this.loadType) {
+                  case Resource.LOAD_TYPE.IMAGE:
+                    this.type = Resource.TYPE.IMAGE;
+
+                    this._loadElement('image');
+
+                    break;
+
+                  case Resource.LOAD_TYPE.AUDIO:
+                    this.type = Resource.TYPE.AUDIO;
+
+                    this._loadSourceElement('audio');
+
+                    break;
+
+                  case Resource.LOAD_TYPE.VIDEO:
+                    this.type = Resource.TYPE.VIDEO;
+
+                    this._loadSourceElement('video');
+
+                    break;
+
+                  case Resource.LOAD_TYPE.XHR:
+                  /* falls through */
+
+                  default:
+                    if (useXdr && this.crossOrigin) {
+                      this._loadXdr();
+                    } else {
+                      this._loadXhr();
+                    }
+
+                    break;
+                }
+              }
+              /**
+               * Checks if the flag is set.
+               *
+               * @private
+               * @param {number} flag - The flag to check.
+               * @return {boolean} True if the flag is set.
+               */
+              ;
+
+              _proto._hasFlag = function _hasFlag(flag) {
+                return (this._flags & flag) !== 0;
+              }
+              /**
+               * (Un)Sets the flag.
+               *
+               * @private
+               * @param {number} flag - The flag to (un)set.
+               * @param {boolean} value - Whether to set or (un)set the flag.
+               */
+              ;
+
+              _proto._setFlag = function _setFlag(flag, value) {
+                this._flags = value ? this._flags | flag : this._flags & ~flag;
+              }
+              /**
+               * Clears all the events from the underlying loading source.
+               *
+               * @private
+               */
+              ;
+
+              _proto._clearEvents = function _clearEvents() {
+                clearTimeout(this._elementTimer);
+
+                if (this.data && this.data.removeEventListener) {
+                  this.data.removeEventListener('error', this._boundOnError, false);
+                  this.data.removeEventListener('load', this._boundComplete, false);
+                  this.data.removeEventListener('progress', this._boundOnProgress, false);
+                  this.data.removeEventListener('canplaythrough', this._boundComplete, false);
+                }
+
+                if (this.xhr) {
+                  if (this.xhr.removeEventListener) {
+                    this.xhr.removeEventListener('error', this._boundXhrOnError, false);
+                    this.xhr.removeEventListener('timeout', this._boundXhrOnTimeout, false);
+                    this.xhr.removeEventListener('abort', this._boundXhrOnAbort, false);
+                    this.xhr.removeEventListener('progress', this._boundOnProgress, false);
+                    this.xhr.removeEventListener('load', this._boundXhrOnLoad, false);
+                  } else {
+                    this.xhr.onerror = null;
+                    this.xhr.ontimeout = null;
+                    this.xhr.onprogress = null;
+                    this.xhr.onload = null;
+                  }
+                }
+              }
+              /**
+               * Finalizes the load.
+               *
+               * @private
+               */
+              ;
+
+              _proto._finish = function _finish() {
+                if (this.isComplete) {
+                  throw new Error('Complete called again for an already completed resource.');
+                }
+
+                this._setFlag(Resource.STATUS_FLAGS.COMPLETE, true);
+
+                this._setFlag(Resource.STATUS_FLAGS.LOADING, false);
+
+                this.onComplete.dispatch(this);
+              }
+              /**
+               * Loads this resources using an element that has a single source,
+               * like an HTMLImageElement.
+               *
+               * @private
+               * @param {string} type - The type of element to use.
+               */
+              ;
+
+              _proto._loadElement = function _loadElement(type) {
+                if (this.metadata.loadElement) {
+                  this.data = this.metadata.loadElement;
+                } else if (type === 'image' && typeof window.Image !== 'undefined') {
+                  this.data = new Image();
+                } else {
+                  this.data = document.createElement(type);
+                }
+
+                if (this.crossOrigin) {
+                  this.data.crossOrigin = this.crossOrigin;
+                }
+
+                if (!this.metadata.skipSource) {
+                  this.data.src = this.url;
+                }
+
+                this.data.addEventListener('error', this._boundOnError, false);
+                this.data.addEventListener('load', this._boundComplete, false);
+                this.data.addEventListener('progress', this._boundOnProgress, false);
+
+                if (this.timeout) {
+                  this._elementTimer = setTimeout(this._boundOnTimeout, this.timeout);
+                }
+              }
+              /**
+               * Loads this resources using an element that has multiple sources,
+               * like an HTMLAudioElement or HTMLVideoElement.
+               *
+               * @private
+               * @param {string} type - The type of element to use.
+               */
+              ;
+
+              _proto._loadSourceElement = function _loadSourceElement(type) {
+                if (this.metadata.loadElement) {
+                  this.data = this.metadata.loadElement;
+                } else if (type === 'audio' && typeof window.Audio !== 'undefined') {
+                  this.data = new Audio();
+                } else {
+                  this.data = document.createElement(type);
+                }
+
+                if (this.data === null) {
+                  this.abort("Unsupported element: " + type);
+                  return;
+                }
+
+                if (this.crossOrigin) {
+                  this.data.crossOrigin = this.crossOrigin;
+                }
+
+                if (!this.metadata.skipSource) {
+                  // support for CocoonJS Canvas+ runtime, lacks document.createElement('source')
+                  if (navigator.isCocoonJS) {
+                    this.data.src = Array.isArray(this.url) ? this.url[0] : this.url;
+                  } else if (Array.isArray(this.url)) {
+                    var mimeTypes = this.metadata.mimeType;
+
+                    for (var i = 0; i < this.url.length; ++i) {
+                      this.data.appendChild(this._createSource(type, this.url[i], Array.isArray(mimeTypes) ? mimeTypes[i] : mimeTypes));
+                    }
+                  } else {
+                    var _mimeTypes = this.metadata.mimeType;
+                    this.data.appendChild(this._createSource(type, this.url, Array.isArray(_mimeTypes) ? _mimeTypes[0] : _mimeTypes));
+                  }
+                }
+
+                this.data.addEventListener('error', this._boundOnError, false);
+                this.data.addEventListener('load', this._boundComplete, false);
+                this.data.addEventListener('progress', this._boundOnProgress, false);
+                this.data.addEventListener('canplaythrough', this._boundComplete, false);
+                this.data.load();
+
+                if (this.timeout) {
+                  this._elementTimer = setTimeout(this._boundOnTimeout, this.timeout);
+                }
+              }
+              /**
+               * Loads this resources using an XMLHttpRequest.
+               *
+               * @private
+               */
+              ;
+
+              _proto._loadXhr = function _loadXhr() {
+                // if unset, determine the value
+                if (typeof this.xhrType !== 'string') {
+                  this.xhrType = this._determineXhrType();
+                }
+
+                var xhr = this.xhr = new XMLHttpRequest(); // set the request type and url
+
+                xhr.open('GET', this.url, true);
+                xhr.timeout = this.timeout; // load json as text and parse it ourselves. We do this because some browsers
+                // *cough* safari *cough* can't deal with it.
+
+                if (this.xhrType === Resource.XHR_RESPONSE_TYPE.JSON || this.xhrType === Resource.XHR_RESPONSE_TYPE.DOCUMENT) {
+                  xhr.responseType = Resource.XHR_RESPONSE_TYPE.TEXT;
+                } else {
+                  xhr.responseType = this.xhrType;
+                }
+
+                xhr.addEventListener('error', this._boundXhrOnError, false);
+                xhr.addEventListener('timeout', this._boundXhrOnTimeout, false);
+                xhr.addEventListener('abort', this._boundXhrOnAbort, false);
+                xhr.addEventListener('progress', this._boundOnProgress, false);
+                xhr.addEventListener('load', this._boundXhrOnLoad, false);
+                xhr.send();
+              }
+              /**
+               * Loads this resources using an XDomainRequest. This is here because we need to support IE9 (gross).
+               *
+               * @private
+               */
+              ;
+
+              _proto._loadXdr = function _loadXdr() {
+                // if unset, determine the value
+                if (typeof this.xhrType !== 'string') {
+                  this.xhrType = this._determineXhrType();
+                }
+
+                var xdr = this.xhr = new XDomainRequest(); // eslint-disable-line no-undef
+                // XDomainRequest has a few quirks. Occasionally it will abort requests
+                // A way to avoid this is to make sure ALL callbacks are set even if not used
+                // More info here: http://stackoverflow.com/questions/15786966/xdomainrequest-aborts-post-on-ie-9
+
+                xdr.timeout = this.timeout || 5000; // XDR needs a timeout value or it breaks in IE9
+
+                xdr.onerror = this._boundXhrOnError;
+                xdr.ontimeout = this._boundXhrOnTimeout;
+                xdr.onprogress = this._boundOnProgress;
+                xdr.onload = this._boundXhrOnLoad;
+                xdr.open('GET', this.url, true); // Note: The xdr.send() call is wrapped in a timeout to prevent an
+                // issue with the interface where some requests are lost if multiple
+                // XDomainRequests are being sent at the same time.
+                // Some info here: https://github.com/photonstorm/phaser/issues/1248
+
+                setTimeout(function () {
+                  return xdr.send();
+                }, 1);
+              }
+              /**
+               * Creates a source used in loading via an element.
+               *
+               * @private
+               * @param {string} type - The element type (video or audio).
+               * @param {string} url - The source URL to load from.
+               * @param {string} [mime] - The mime type of the video
+               * @return {HTMLSourceElement} The source element.
+               */
+              ;
+
+              _proto._createSource = function _createSource(type, url, mime) {
+                if (!mime) {
+                  mime = type + "/" + this._getExtension(url);
+                }
+
+                var source = document.createElement('source');
+                source.src = url;
+                source.type = mime;
+                return source;
+              }
+              /**
+               * Called if a load errors out.
+               *
+               * @param {Event} event - The error event from the element that emits it.
+               * @private
+               */
+              ;
+
+              _proto._onError = function _onError(event) {
+                this.abort("Failed to load element using: " + event.target.nodeName);
+              }
+              /**
+               * Called if a load progress event fires for an element or xhr/xdr.
+               *
+               * @private
+               * @param {XMLHttpRequestProgressEvent|Event} event - Progress event.
+               */
+              ;
+
+              _proto._onProgress = function _onProgress(event) {
+                if (event && event.lengthComputable) {
+                  this.onProgress.dispatch(this, event.loaded / event.total);
+                }
+              }
+              /**
+               * Called if a timeout event fires for an element.
+               *
+               * @private
+               */
+              ;
+
+              _proto._onTimeout = function _onTimeout() {
+                this.abort("Load timed out.");
+              }
+              /**
+               * Called if an error event fires for xhr/xdr.
+               *
+               * @private
+               */
+              ;
+
+              _proto._xhrOnError = function _xhrOnError() {
+                var xhr = this.xhr;
+                this.abort(reqType(xhr) + " Request failed. Status: " + xhr.status + ", text: \"" + xhr.statusText + "\"");
+              }
+              /**
+               * Called if an error event fires for xhr/xdr.
+               *
+               * @private
+               */
+              ;
+
+              _proto._xhrOnTimeout = function _xhrOnTimeout() {
+                var xhr = this.xhr;
+                this.abort(reqType(xhr) + " Request timed out.");
+              }
+              /**
+               * Called if an abort event fires for xhr/xdr.
+               *
+               * @private
+               */
+              ;
+
+              _proto._xhrOnAbort = function _xhrOnAbort() {
+                var xhr = this.xhr;
+                this.abort(reqType(xhr) + " Request was aborted by the user.");
+              }
+              /**
+               * Called when data successfully loads from an xhr/xdr request.
+               *
+               * @private
+               * @param {XMLHttpRequestLoadEvent|Event} event - Load event
+               */
+              ;
+
+              _proto._xhrOnLoad = function _xhrOnLoad() {
+                var xhr = this.xhr;
+                var text = '';
+                var status = typeof xhr.status === 'undefined' ? STATUS_OK : xhr.status; // XDR has no `.status`, assume 200.
+                // responseText is accessible only if responseType is '' or 'text' and on older browsers
+
+                if (xhr.responseType === '' || xhr.responseType === 'text' || typeof xhr.responseType === 'undefined') {
+                  text = xhr.responseText;
+                } // status can be 0 when using the `file://` protocol so we also check if a response is set.
+                // If it has a response, we assume 200; otherwise a 0 status code with no contents is an aborted request.
+
+
+                if (status === STATUS_NONE && (text.length > 0 || xhr.responseType === Resource.XHR_RESPONSE_TYPE.BUFFER)) {
+                  status = STATUS_OK;
+                } // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
+                else if (status === STATUS_IE_BUG_EMPTY) {
+                    status = STATUS_EMPTY;
+                  }
+
+                var statusType = status / 100 | 0;
+
+                if (statusType === STATUS_TYPE_OK) {
+                  // if text, just return it
+                  if (this.xhrType === Resource.XHR_RESPONSE_TYPE.TEXT) {
+                    this.data = text;
+                    this.type = Resource.TYPE.TEXT;
+                  } // if json, parse into json object
+                  else if (this.xhrType === Resource.XHR_RESPONSE_TYPE.JSON) {
+                      try {
+                        this.data = JSON.parse(text);
+                        this.type = Resource.TYPE.JSON;
+                      } catch (e) {
+                        this.abort("Error trying to parse loaded json: " + e);
+                        return;
+                      }
+                    } // if xml, parse into an xml document or div element
+                    else if (this.xhrType === Resource.XHR_RESPONSE_TYPE.DOCUMENT) {
+                        try {
+                          if (window.DOMParser) {
+                            var domparser = new DOMParser();
+                            this.data = domparser.parseFromString(text, 'text/xml');
+                          } else {
+                            var div = document.createElement('div');
+                            div.innerHTML = text;
+                            this.data = div;
+                          }
+
+                          this.type = Resource.TYPE.XML;
+                        } catch (e) {
+                          this.abort("Error trying to parse loaded xml: " + e);
+                          return;
+                        }
+                      } // other types just return the response
+                      else {
+                          this.data = xhr.response || text;
+                        }
+                } else {
+                  this.abort("[" + xhr.status + "] " + xhr.statusText + ": " + xhr.responseURL);
+                  return;
+                }
+
+                this.complete();
+              }
+              /**
+               * Sets the `crossOrigin` property for this resource based on if the url
+               * for this resource is cross-origin. If crossOrigin was manually set, this
+               * function does nothing.
+               *
+               * @private
+               * @param {string} url - The url to test.
+               * @param {object} [loc=window.location] - The location object to test against.
+               * @return {string} The crossOrigin value to use (or empty string for none).
+               */
+              ;
+
+              _proto._determineCrossOrigin = function _determineCrossOrigin(url, loc) {
+                // data: and javascript: urls are considered same-origin
+                if (url.indexOf('data:') === 0) {
+                  return '';
+                } // A sandboxed iframe without the 'allow-same-origin' attribute will have a special
+                // origin designed not to match window.location.origin, and will always require
+                // crossOrigin requests regardless of whether the location matches.
+
+
+                if (window.origin !== window.location.origin) {
+                  return 'anonymous';
+                } // default is window.location
+
+
+                loc = loc || window.location;
+
+                if (!tempAnchor$1) {
+                  tempAnchor$1 = document.createElement('a');
+                } // let the browser determine the full href for the url of this resource and then
+                // parse with the node url lib, we can't use the properties of the anchor element
+                // because they don't work in IE9 :(
+
+
+                tempAnchor$1.href = url;
+                url = parseUri(tempAnchor$1.href, {
+                  strictMode: true
+                });
+                var samePort = !url.port && loc.port === '' || url.port === loc.port;
+                var protocol = url.protocol ? url.protocol + ":" : ''; // if cross origin
+
+                if (url.host !== loc.hostname || !samePort || protocol !== loc.protocol) {
+                  return 'anonymous';
+                }
+
+                return '';
+              }
+              /**
+               * Determines the responseType of an XHR request based on the extension of the
+               * resource being loaded.
+               *
+               * @private
+               * @return {Resource.XHR_RESPONSE_TYPE} The responseType to use.
+               */
+              ;
+
+              _proto._determineXhrType = function _determineXhrType() {
+                return Resource._xhrTypeMap[this.extension] || Resource.XHR_RESPONSE_TYPE.TEXT;
+              }
+              /**
+               * Determines the loadType of a resource based on the extension of the
+               * resource being loaded.
+               *
+               * @private
+               * @return {Resource.LOAD_TYPE} The loadType to use.
+               */
+              ;
+
+              _proto._determineLoadType = function _determineLoadType() {
+                return Resource._loadTypeMap[this.extension] || Resource.LOAD_TYPE.XHR;
+              }
+              /**
+               * Extracts the extension (sans '.') of the file being loaded by the resource.
+               *
+               * @private
+               * @return {string} The extension.
+               */
+              ;
+
+              _proto._getExtension = function _getExtension() {
+                var url = this.url;
+                var ext = '';
+
+                if (this.isDataUrl) {
+                  var slashIndex = url.indexOf('/');
+                  ext = url.substring(slashIndex + 1, url.indexOf(';', slashIndex));
+                } else {
+                  var queryStart = url.indexOf('?');
+                  var hashStart = url.indexOf('#');
+                  var index = Math.min(queryStart > -1 ? queryStart : url.length, hashStart > -1 ? hashStart : url.length);
+                  url = url.substring(0, index);
+                  ext = url.substring(url.lastIndexOf('.') + 1);
+                }
+
+                return ext.toLowerCase();
+              }
+              /**
+               * Determines the mime type of an XHR request based on the responseType of
+               * resource being loaded.
+               *
+               * @private
+               * @param {Resource.XHR_RESPONSE_TYPE} type - The type to get a mime type for.
+               * @return {string} The mime type to use.
+               */
+              ;
+
+              _proto._getMimeFromXhrType = function _getMimeFromXhrType(type) {
+                switch (type) {
+                  case Resource.XHR_RESPONSE_TYPE.BUFFER:
+                    return 'application/octet-binary';
+
+                  case Resource.XHR_RESPONSE_TYPE.BLOB:
+                    return 'application/blob';
+
+                  case Resource.XHR_RESPONSE_TYPE.DOCUMENT:
+                    return 'application/xml';
+
+                  case Resource.XHR_RESPONSE_TYPE.JSON:
+                    return 'application/json';
+
+                  case Resource.XHR_RESPONSE_TYPE.DEFAULT:
+                  case Resource.XHR_RESPONSE_TYPE.TEXT:
+                  /* falls through */
+
+                  default:
+                    return 'text/plain';
+                }
+              };
+
+              _createClass(Resource, [{
+                key: "isDataUrl",
+                get: function get() {
+                  return this._hasFlag(Resource.STATUS_FLAGS.DATA_URL);
+                }
+                /**
+                 * Describes if this resource has finished loading. Is true when the resource has completely
+                 * loaded.
+                 *
+                 * @readonly
+                 * @member {boolean}
+                 */
+
+              }, {
+                key: "isComplete",
+                get: function get() {
+                  return this._hasFlag(Resource.STATUS_FLAGS.COMPLETE);
+                }
+                /**
+                 * Describes if this resource is currently loading. Is true when the resource starts loading,
+                 * and is false again when complete.
+                 *
+                 * @readonly
+                 * @member {boolean}
+                 */
+
+              }, {
+                key: "isLoading",
+                get: function get() {
+                  return this._hasFlag(Resource.STATUS_FLAGS.LOADING);
+                }
+              }]);
+
+              return Resource;
+            }();
             /**
-             * Unique pointer id of the event
+             * The types of resources a resource could represent.
              *
+             * @static
              * @readonly
-             * @private
-             * @member {number}
+             * @enum {number}
              */
-            prototypeAccessors$1$2.pointerId.get = function ()
-            {
-                return this._pointerId;
+
+
+            Resource$1.STATUS_FLAGS = {
+              NONE: 0,
+              DATA_URL: 1 << 0,
+              COMPLETE: 1 << 1,
+              LOADING: 1 << 2
             };
+            /**
+             * The types of resources a resource could represent.
+             *
+             * @static
+             * @readonly
+             * @enum {number}
+             */
+
+            Resource$1.TYPE = {
+              UNKNOWN: 0,
+              JSON: 1,
+              XML: 2,
+              IMAGE: 3,
+              AUDIO: 4,
+              VIDEO: 5,
+              TEXT: 6
+            };
+            /**
+             * The types of loading a resource can use.
+             *
+             * @static
+             * @readonly
+             * @enum {number}
+             */
+
+            Resource$1.LOAD_TYPE = {
+              /** Uses XMLHttpRequest to load the resource. */
+              XHR: 1,
+
+              /** Uses an `Image` object to load the resource. */
+              IMAGE: 2,
+
+              /** Uses an `Audio` object to load the resource. */
+              AUDIO: 3,
+
+              /** Uses a `Video` object to load the resource. */
+              VIDEO: 4
+            };
+            /**
+             * The XHR ready states, used internally.
+             *
+             * @static
+             * @readonly
+             * @enum {string}
+             */
+
+            Resource$1.XHR_RESPONSE_TYPE = {
+              /** string */
+              DEFAULT: 'text',
+
+              /** ArrayBuffer */
+              BUFFER: 'arraybuffer',
+
+              /** Blob */
+              BLOB: 'blob',
+
+              /** Document */
+              DOCUMENT: 'document',
+
+              /** Object */
+              JSON: 'json',
+
+              /** String */
+              TEXT: 'text'
+            };
+            Resource$1._loadTypeMap = {
+              // images
+              gif: Resource$1.LOAD_TYPE.IMAGE,
+              png: Resource$1.LOAD_TYPE.IMAGE,
+              bmp: Resource$1.LOAD_TYPE.IMAGE,
+              jpg: Resource$1.LOAD_TYPE.IMAGE,
+              jpeg: Resource$1.LOAD_TYPE.IMAGE,
+              tif: Resource$1.LOAD_TYPE.IMAGE,
+              tiff: Resource$1.LOAD_TYPE.IMAGE,
+              webp: Resource$1.LOAD_TYPE.IMAGE,
+              tga: Resource$1.LOAD_TYPE.IMAGE,
+              svg: Resource$1.LOAD_TYPE.IMAGE,
+              'svg+xml': Resource$1.LOAD_TYPE.IMAGE,
+              // for SVG data urls
+              // audio
+              mp3: Resource$1.LOAD_TYPE.AUDIO,
+              ogg: Resource$1.LOAD_TYPE.AUDIO,
+              wav: Resource$1.LOAD_TYPE.AUDIO,
+              // videos
+              mp4: Resource$1.LOAD_TYPE.VIDEO,
+              webm: Resource$1.LOAD_TYPE.VIDEO
+            };
+            Resource$1._xhrTypeMap = {
+              // xml
+              xhtml: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+              html: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+              htm: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+              xml: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+              tmx: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+              svg: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+              // This was added to handle Tiled Tileset XML, but .tsx is also a TypeScript React Component.
+              // Since it is way less likely for people to be loading TypeScript files instead of Tiled files,
+              // this should probably be fine.
+              tsx: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+              // images
+              gif: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              png: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              bmp: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              jpg: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              jpeg: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              tif: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              tiff: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              webp: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              tga: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+              // json
+              json: Resource$1.XHR_RESPONSE_TYPE.JSON,
+              // text
+              text: Resource$1.XHR_RESPONSE_TYPE.TEXT,
+              txt: Resource$1.XHR_RESPONSE_TYPE.TEXT,
+              // fonts
+              ttf: Resource$1.XHR_RESPONSE_TYPE.BUFFER,
+              otf: Resource$1.XHR_RESPONSE_TYPE.BUFFER
+            }; // We can't set the `src` attribute to empty string, so on abort we set it to this 1px transparent gif
+
+            Resource$1.EMPTY_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+            /**
+             * Quick helper to set a value on one of the extension maps. Ensures there is no
+             * dot at the start of the extension.
+             *
+             * @ignore
+             * @param {object} map - The map to set on.
+             * @param {string} extname - The extension (or key) to set.
+             * @param {number} val - The value to set.
+             */
+
+            function setExtMap(map, extname, val) {
+              if (extname && extname.indexOf('.') === 0) {
+                extname = extname.substring(1);
+              }
+
+              if (!extname) {
+                return;
+              }
+
+              map[extname] = val;
+            }
+            /**
+             * Quick helper to get string xhr type.
+             *
+             * @ignore
+             * @param {XMLHttpRequest|XDomainRequest} xhr - The request to check.
+             * @return {string} The type.
+             */
+
+
+            function reqType(xhr) {
+              return xhr.toString().replace('object ', '');
+            }
+
+            var _keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+            /**
+             * Encodes binary into base64.
+             *
+             * @function encodeBinary
+             * @param {string} input The input data to encode.
+             * @returns {string} The encoded base64 string
+             */
+
+            function encodeBinary(input) {
+              var output = '';
+              var inx = 0;
+
+              while (inx < input.length) {
+                // Fill byte buffer array
+                var bytebuffer = [0, 0, 0];
+                var encodedCharIndexes = [0, 0, 0, 0];
+
+                for (var jnx = 0; jnx < bytebuffer.length; ++jnx) {
+                  if (inx < input.length) {
+                    // throw away high-order byte, as documented at:
+                    // https://developer.mozilla.org/En/Using_XMLHttpRequest#Handling_binary_data
+                    bytebuffer[jnx] = input.charCodeAt(inx++) & 0xff;
+                  } else {
+                    bytebuffer[jnx] = 0;
+                  }
+                } // Get each encoded character, 6 bits at a time
+                // index 1: first 6 bits
+
+
+                encodedCharIndexes[0] = bytebuffer[0] >> 2; // index 2: second 6 bits (2 least significant bits from input byte 1 + 4 most significant bits from byte 2)
+
+                encodedCharIndexes[1] = (bytebuffer[0] & 0x3) << 4 | bytebuffer[1] >> 4; // index 3: third 6 bits (4 least significant bits from input byte 2 + 2 most significant bits from byte 3)
+
+                encodedCharIndexes[2] = (bytebuffer[1] & 0x0f) << 2 | bytebuffer[2] >> 6; // index 3: forth 6 bits (6 least significant bits from input byte 3)
+
+                encodedCharIndexes[3] = bytebuffer[2] & 0x3f; // Determine whether padding happened, and adjust accordingly
+
+                var paddingBytes = inx - (input.length - 1);
+
+                switch (paddingBytes) {
+                  case 2:
+                    // Set last 2 characters to padding char
+                    encodedCharIndexes[3] = 64;
+                    encodedCharIndexes[2] = 64;
+                    break;
+
+                  case 1:
+                    // Set last character to padding char
+                    encodedCharIndexes[3] = 64;
+                    break;
+                  // No padding - proceed
+                } // Now we will grab each appropriate character out of our keystring
+                // based on our index array and append it to the output string
+
+
+                for (var _jnx = 0; _jnx < encodedCharIndexes.length; ++_jnx) {
+                  output += _keyStr.charAt(encodedCharIndexes[_jnx]);
+                }
+              }
+
+              return output;
+            }
+
+            var Url$1 = window.URL || window.webkitURL;
+            /**
+             * A middleware for transforming XHR loaded Blobs into more useful objects
+             *
+             * @memberof middleware
+             * @function parsing
+             * @example
+             * import { Loader, middleware } from 'resource-loader';
+             * const loader = new Loader();
+             * loader.use(middleware.parsing);
+             * @param {Resource} resource - Current Resource
+             * @param {function} next - Callback when complete
+             */
+
+            function parsing(resource, next) {
+              if (!resource.data) {
+                next();
+                return;
+              } // if this was an XHR load of a blob
+
+
+              if (resource.xhr && resource.xhrType === Resource$1.XHR_RESPONSE_TYPE.BLOB) {
+                // if there is no blob support we probably got a binary string back
+                if (!window.Blob || typeof resource.data === 'string') {
+                  var type = resource.xhr.getResponseHeader('content-type'); // this is an image, convert the binary string into a data url
+
+                  if (type && type.indexOf('image') === 0) {
+                    resource.data = new Image();
+                    resource.data.src = "data:" + type + ";base64," + encodeBinary(resource.xhr.responseText);
+                    resource.type = Resource$1.TYPE.IMAGE; // wait until the image loads and then callback
+
+                    resource.data.onload = function () {
+                      resource.data.onload = null;
+                      next();
+                    }; // next will be called on load
+
+
+                    return;
+                  }
+                } // if content type says this is an image, then we should transform the blob into an Image object
+                else if (resource.data.type.indexOf('image') === 0) {
+                    var src = Url$1.createObjectURL(resource.data);
+                    resource.blob = resource.data;
+                    resource.data = new Image();
+                    resource.data.src = src;
+                    resource.type = Resource$1.TYPE.IMAGE; // cleanup the no longer used blob after the image loads
+                    // TODO: Is this correct? Will the image be invalid after revoking?
+
+                    resource.data.onload = function () {
+                      Url$1.revokeObjectURL(src);
+                      resource.data.onload = null;
+                      next();
+                    }; // next will be called on load.
+
+
+                    return;
+                  }
+              }
+
+              next();
+            }
 
             /**
-             * State of the tracking data, expressed as bit flags
-             *
-             * @private
-             * @member {number}
+             * @namespace middleware
              */
-            prototypeAccessors$1$2.flags.get = function ()
-            {
-                return this._flags;
-            };
 
-            prototypeAccessors$1$2.flags.set = function (flags) // eslint-disable-line require-jsdoc
-            {
-                this._flags = flags;
-            };
-
-            /**
-             * Is the tracked event inactive (not over or down)?
-             *
-             * @private
-             * @member {number}
-             */
-            prototypeAccessors$1$2.none.get = function ()
-            {
-                return this._flags === this.constructor.FLAGS.NONE;
-            };
-
-            /**
-             * Is the tracked event over the DisplayObject?
-             *
-             * @private
-             * @member {boolean}
-             */
-            prototypeAccessors$1$2.over.get = function ()
-            {
-                return (this._flags & this.constructor.FLAGS.OVER) !== 0;
-            };
-
-            prototypeAccessors$1$2.over.set = function (yn) // eslint-disable-line require-jsdoc
-            {
-                this._doSet(this.constructor.FLAGS.OVER, yn);
-            };
-
-            /**
-             * Did the right mouse button come down in the DisplayObject?
-             *
-             * @private
-             * @member {boolean}
-             */
-            prototypeAccessors$1$2.rightDown.get = function ()
-            {
-                return (this._flags & this.constructor.FLAGS.RIGHT_DOWN) !== 0;
-            };
-
-            prototypeAccessors$1$2.rightDown.set = function (yn) // eslint-disable-line require-jsdoc
-            {
-                this._doSet(this.constructor.FLAGS.RIGHT_DOWN, yn);
-            };
-
-            /**
-             * Did the left mouse button come down in the DisplayObject?
-             *
-             * @private
-             * @member {boolean}
-             */
-            prototypeAccessors$1$2.leftDown.get = function ()
-            {
-                return (this._flags & this.constructor.FLAGS.LEFT_DOWN) !== 0;
-            };
-
-            prototypeAccessors$1$2.leftDown.set = function (yn) // eslint-disable-line require-jsdoc
-            {
-                this._doSet(this.constructor.FLAGS.LEFT_DOWN, yn);
-            };
-
-            Object.defineProperties( InteractionTrackingData.prototype, prototypeAccessors$1$2 );
-
-            InteractionTrackingData.FLAGS = Object.freeze({
-                NONE: 0,
-                OVER: 1 << 0,
-                LEFT_DOWN: 1 << 1,
-                RIGHT_DOWN: 1 << 2,
+            var index$1 = ({
+                caching: caching,
+                parsing: parsing
             });
 
+            var MAX_PROGRESS = 100;
+            var rgxExtractUrlHash = /(#[\w-]+)?$/;
             /**
-             * Strategy how to search through stage tree for interactive objects
+             * Manages the state and loading of multiple resources to load.
              *
-             * @private
              * @class
-             * @memberof PIXI.interaction
              */
-            var TreeSearch = function TreeSearch()
-            {
-                this._tempPoint = new Point();
-            };
 
-            /**
-             * Recursive implementation for findHit
-             *
-             * @private
-             * @param {PIXI.interaction.InteractionEvent} interactionEvent - event containing the point that
-             *  is tested for collision
-             * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the displayObject
-             *  that will be hit test (recursively crawls its children)
-             * @param {Function} [func] - the function that will be called on each interactive object. The
-             *  interactionEvent, displayObject and hit will be passed to the function
-             * @param {boolean} [hitTest] - this indicates if the objects inside should be hit test against the point
-             * @param {boolean} [interactive] - Whether the displayObject is interactive
-             * @return {boolean} returns true if the displayObject hit the point
-             */
-            TreeSearch.prototype.recursiveFindHit = function recursiveFindHit (interactionEvent, displayObject, func, hitTest, interactive)
-            {
-                if (!displayObject || !displayObject.visible)
-                {
-                    return false;
+            var Loader =
+            /*#__PURE__*/
+            function () {
+              /**
+               * @param {string} [baseUrl=''] - The base url for all resources loaded by this loader.
+               * @param {number} [concurrency=10] - The number of resources to load concurrently.
+               */
+              function Loader(baseUrl, concurrency) {
+                var _this = this;
+
+                if (baseUrl === void 0) {
+                  baseUrl = '';
                 }
 
-                var point = interactionEvent.data.global;
-
-                // Took a little while to rework this function correctly! But now it is done and nice and optimized! ^_^
-                //
-                // This function will now loop through all objects and then only hit test the objects it HAS
-                // to, not all of them. MUCH faster..
-                // An object will be hit test if the following is true:
-                //
-                // 1: It is interactive.
-                // 2: It belongs to a parent that is interactive AND one of the parents children have not already been hit.
-                //
-                // As another little optimization once an interactive object has been hit we can carry on
-                // through the scenegraph, but we know that there will be no more hits! So we can avoid extra hit tests
-                // A final optimization is that an object is not hit test directly if a child has already been hit.
-
-                interactive = displayObject.interactive || interactive;
-
-                var hit = false;
-                var interactiveParent = interactive;
-
-                // Flag here can set to false if the event is outside the parents hitArea or mask
-                var hitTestChildren = true;
-
-                // If there is a hitArea, no need to test against anything else if the pointer is not within the hitArea
-                // There is also no longer a need to hitTest children.
-                if (displayObject.hitArea)
-                {
-                    if (hitTest)
-                    {
-                        displayObject.worldTransform.applyInverse(point, this._tempPoint);
-                        if (!displayObject.hitArea.contains(this._tempPoint.x, this._tempPoint.y))
-                        {
-                            hitTest = false;
-                            hitTestChildren = false;
-                        }
-                        else
-                        {
-                            hit = true;
-                        }
-                    }
-                    interactiveParent = false;
-                }
-                // If there is a mask, no need to hitTest against anything else if the pointer is not within the mask.
-                // We still want to hitTestChildren, however, to ensure a mouseout can still be generated.
-                // https://github.com/pixijs/pixi.js/issues/5135
-                else if (displayObject._mask)
-                {
-                    if (hitTest)
-                    {
-                        if (!(displayObject._mask.containsPoint && displayObject._mask.containsPoint(point)))
-                        {
-                            hitTest = false;
-                        }
-                    }
+                if (concurrency === void 0) {
+                  concurrency = 10;
                 }
 
-                // ** FREE TIP **! If an object is not interactive or has no buttons in it
-                // (such as a game scene!) set interactiveChildren to false for that displayObject.
-                // This will allow PixiJS to completely ignore and bypass checking the displayObjects children.
-                if (hitTestChildren && displayObject.interactiveChildren && displayObject.children)
-                {
-                    var children = displayObject.children;
-
-                    for (var i = children.length - 1; i >= 0; i--)
-                    {
-                        var child = children[i];
-
-                        // time to get recursive.. if this function will return if something is hit..
-                        var childHit = this.recursiveFindHit(interactionEvent, child, func, hitTest, interactiveParent);
-
-                        if (childHit)
-                        {
-                            // its a good idea to check if a child has lost its parent.
-                            // this means it has been removed whilst looping so its best
-                            if (!child.parent)
-                            {
-                                continue;
-                            }
-
-                            // we no longer need to hit test any more objects in this container as we we
-                            // now know the parent has been hit
-                            interactiveParent = false;
-
-                            // If the child is interactive , that means that the object hit was actually
-                            // interactive and not just the child of an interactive object.
-                            // This means we no longer need to hit test anything else. We still need to run
-                            // through all objects, but we don't need to perform any hit tests.
-
-                            if (childHit)
-                            {
-                                if (interactionEvent.target)
-                                {
-                                    hitTest = false;
-                                }
-                                hit = true;
-                            }
-                        }
-                    }
-                }
-
-                // no point running this if the item is not interactive or does not have an interactive parent.
-                if (interactive)
-                {
-                    // if we are hit testing (as in we have no hit any objects yet)
-                    // We also don't need to worry about hit testing if once of the displayObjects children
-                    // has already been hit - but only if it was interactive, otherwise we need to keep
-                    // looking for an interactive child, just in case we hit one
-                    if (hitTest && !interactionEvent.target)
-                    {
-                        // already tested against hitArea if it is defined
-                        if (!displayObject.hitArea && displayObject.containsPoint)
-                        {
-                            if (displayObject.containsPoint(point))
-                            {
-                                hit = true;
-                            }
-                        }
-                    }
-
-                    if (displayObject.interactive)
-                    {
-                        if (hit && !interactionEvent.target)
-                        {
-                            interactionEvent.target = displayObject;
-                        }
-
-                        if (func)
-                        {
-                            func(interactionEvent, displayObject, !!hit);
-                        }
-                    }
-                }
-
-                return hit;
-            };
-
-            /**
-             * This function is provides a neat way of crawling through the scene graph and running a
-             * specified function on all interactive objects it finds. It will also take care of hit
-             * testing the interactive objects and passes the hit across in the function.
-             *
-             * @private
-             * @param {PIXI.interaction.InteractionEvent} interactionEvent - event containing the point that
-             *  is tested for collision
-             * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the displayObject
-             *  that will be hit test (recursively crawls its children)
-             * @param {Function} [func] - the function that will be called on each interactive object. The
-             *  interactionEvent, displayObject and hit will be passed to the function
-             * @param {boolean} [hitTest] - this indicates if the objects inside should be hit test against the point
-             * @return {boolean} returns true if the displayObject hit the point
-             */
-            TreeSearch.prototype.findHit = function findHit (interactionEvent, displayObject, func, hitTest)
-            {
-                this.recursiveFindHit(interactionEvent, displayObject, func, hitTest, false);
-            };
-
-            /**
-             * Interface for classes that represent a hit area.
-             *
-             * It is implemented by the following classes:
-             * - {@link PIXI.Circle}
-             * - {@link PIXI.Ellipse}
-             * - {@link PIXI.Polygon}
-             * - {@link PIXI.RoundedRectangle}
-             *
-             * @interface IHitArea
-             * @memberof PIXI
-             */
-
-            /**
-             * Checks whether the x and y coordinates given are contained within this area
-             *
-             * @method
-             * @name contains
-             * @memberof PIXI.IHitArea#
-             * @param {number} x - The X coordinate of the point to test
-             * @param {number} y - The Y coordinate of the point to test
-             * @return {boolean} Whether the x/y coordinates are within this area
-             */
-
-            /**
-             * Default property values of interactive objects
-             * Used by {@link PIXI.interaction.InteractionManager} to automatically give all DisplayObjects these properties
-             *
-             * @private
-             * @name interactiveTarget
-             * @type {Object}
-             * @memberof PIXI.interaction
-             * @example
-             *      function MyObject() {}
-             *
-             *      Object.assign(
-             *          DisplayObject.prototype,
-             *          PIXI.interaction.interactiveTarget
-             *      );
-             */
-            var interactiveTarget = {
-
                 /**
-                 * Enable interaction events for the DisplayObject. Touch, pointer and mouse
-                 * events will not be emitted unless `interactive` is set to `true`.
-                 *
-                 * @example
-                 * const sprite = new PIXI.Sprite(texture);
-                 * sprite.interactive = true;
-                 * sprite.on('tap', (event) => {
-                 *    //handle event
-                 * });
-                 * @member {boolean}
-                 * @memberof PIXI.DisplayObject#
-                 */
-                interactive: false,
-
-                /**
-                 * Determines if the children to the displayObject can be clicked/touched
-                 * Setting this to false allows PixiJS to bypass a recursive `hitTest` function
-                 *
-                 * @member {boolean}
-                 * @memberof PIXI.Container#
-                 */
-                interactiveChildren: true,
-
-                /**
-                 * Interaction shape. Children will be hit first, then this shape will be checked.
-                 * Setting this will cause this shape to be checked in hit tests rather than the displayObject's bounds.
-                 *
-                 * @example
-                 * const sprite = new PIXI.Sprite(texture);
-                 * sprite.interactive = true;
-                 * sprite.hitArea = new PIXI.Rectangle(0, 0, 100, 100);
-                 * @member {PIXI.IHitArea}
-                 * @memberof PIXI.DisplayObject#
-                 */
-                hitArea: null,
-
-                /**
-                 * If enabled, the mouse cursor use the pointer behavior when hovered over the displayObject if it is interactive
-                 * Setting this changes the 'cursor' property to `'pointer'`.
-                 *
-                 * @example
-                 * const sprite = new PIXI.Sprite(texture);
-                 * sprite.interactive = true;
-                 * sprite.buttonMode = true;
-                 * @member {boolean}
-                 * @memberof PIXI.DisplayObject#
-                 */
-                get buttonMode()
-                {
-                    return this.cursor === 'pointer';
-                },
-                set buttonMode(value)
-                {
-                    if (value)
-                    {
-                        this.cursor = 'pointer';
-                    }
-                    else if (this.cursor === 'pointer')
-                    {
-                        this.cursor = null;
-                    }
-                },
-
-                /**
-                 * This defines what cursor mode is used when the mouse cursor
-                 * is hovered over the displayObject.
-                 *
-                 * @example
-                 * const sprite = new PIXI.Sprite(texture);
-                 * sprite.interactive = true;
-                 * sprite.cursor = 'wait';
-                 * @see https://developer.mozilla.org/en/docs/Web/CSS/cursor
+                 * The base url for all resources loaded by this loader.
                  *
                  * @member {string}
-                 * @memberof PIXI.DisplayObject#
                  */
-                cursor: null,
-
+                this.baseUrl = baseUrl;
                 /**
-                 * Internal set of all active pointers, by identifier
+                 * The progress percent of the loader going through the queue.
                  *
-                 * @member {Map<number, InteractionTrackingData>}
-                 * @memberof PIXI.DisplayObject#
-                 * @private
+                 * @member {number}
+                 * @default 0
                  */
-                get trackedPointers()
-                {
-                    if (this._trackedPointers === undefined) { this._trackedPointers = {}; }
 
-                    return this._trackedPointers;
-                },
-
+                this.progress = 0;
                 /**
-                 * Map of all tracked pointers, by identifier. Use trackedPointers to access.
+                 * Loading state of the loader, true if it is currently loading resources.
+                 *
+                 * @member {boolean}
+                 * @default false
+                 */
+
+                this.loading = false;
+                /**
+                 * A querystring to append to every URL added to the loader.
+                 *
+                 * This should be a valid query string *without* the question-mark (`?`). The loader will
+                 * also *not* escape values for you. Make sure to escape your parameters with
+                 * [`encodeURIComponent`](https://mdn.io/encodeURIComponent) before assigning this property.
+                 *
+                 * @example
+                 * const loader = new Loader();
+                 *
+                 * loader.defaultQueryString = 'user=me&password=secret';
+                 *
+                 * // This will request 'image.png?user=me&password=secret'
+                 * loader.add('image.png').load();
+                 *
+                 * loader.reset();
+                 *
+                 * // This will request 'image.png?v=1&user=me&password=secret'
+                 * loader.add('iamge.png?v=1').load();
+                 *
+                 * @member {string}
+                 * @default ''
+                 */
+
+                this.defaultQueryString = '';
+                /**
+                 * The middleware to run before loading each resource.
                  *
                  * @private
-                 * @type {Map<number, InteractionTrackingData>}
+                 * @member {function[]}
                  */
-                _trackedPointers: undefined,
+
+                this._beforeMiddleware = [];
+                /**
+                 * The middleware to run after loading each resource.
+                 *
+                 * @private
+                 * @member {function[]}
+                 */
+
+                this._afterMiddleware = [];
+                /**
+                 * The tracks the resources we are currently completing parsing for.
+                 *
+                 * @private
+                 * @member {Resource[]}
+                 */
+
+                this._resourcesParsing = [];
+                /**
+                 * The `_loadResource` function bound with this object context.
+                 *
+                 * @private
+                 * @member {function}
+                 * @param {Resource} r - The resource to load
+                 * @param {Function} d - The dequeue function
+                 * @return {undefined}
+                 */
+
+                this._boundLoadResource = function (r, d) {
+                  return _this._loadResource(r, d);
+                };
+                /**
+                 * The resources waiting to be loaded.
+                 *
+                 * @private
+                 * @member {Resource[]}
+                 */
+
+
+                this._queue = queue(this._boundLoadResource, concurrency);
+
+                this._queue.pause();
+                /**
+                 * All the resources for this loader keyed by name.
+                 *
+                 * @member {object<string, Resource>}
+                 */
+
+
+                this.resources = {};
+                /**
+                 * Dispatched once per loaded or errored resource.
+                 *
+                 * The callback looks like {@link Loader.OnProgressSignal}.
+                 *
+                 * @member {Signal<Loader.OnProgressSignal>}
+                 */
+
+                this.onProgress = new miniSignals$1();
+                /**
+                 * Dispatched once per errored resource.
+                 *
+                 * The callback looks like {@link Loader.OnErrorSignal}.
+                 *
+                 * @member {Signal<Loader.OnErrorSignal>}
+                 */
+
+                this.onError = new miniSignals$1();
+                /**
+                 * Dispatched once per loaded resource.
+                 *
+                 * The callback looks like {@link Loader.OnLoadSignal}.
+                 *
+                 * @member {Signal<Loader.OnLoadSignal>}
+                 */
+
+                this.onLoad = new miniSignals$1();
+                /**
+                 * Dispatched when the loader begins to process the queue.
+                 *
+                 * The callback looks like {@link Loader.OnStartSignal}.
+                 *
+                 * @member {Signal<Loader.OnStartSignal>}
+                 */
+
+                this.onStart = new miniSignals$1();
+                /**
+                 * Dispatched when the queued resources all load.
+                 *
+                 * The callback looks like {@link Loader.OnCompleteSignal}.
+                 *
+                 * @member {Signal<Loader.OnCompleteSignal>}
+                 */
+
+                this.onComplete = new miniSignals$1(); // Add default before middleware
+
+                for (var i = 0; i < Loader._defaultBeforeMiddleware.length; ++i) {
+                  this.pre(Loader._defaultBeforeMiddleware[i]);
+                } // Add default after middleware
+
+
+                for (var _i = 0; _i < Loader._defaultAfterMiddleware.length; ++_i) {
+                  this.use(Loader._defaultAfterMiddleware[_i]);
+                }
+              }
+              /**
+               * When the progress changes the loader and resource are disaptched.
+               *
+               * @memberof Loader
+               * @callback OnProgressSignal
+               * @param {Loader} loader - The loader the progress is advancing on.
+               * @param {Resource} resource - The resource that has completed or failed to cause the progress to advance.
+               */
+
+              /**
+               * When an error occurrs the loader and resource are disaptched.
+               *
+               * @memberof Loader
+               * @callback OnErrorSignal
+               * @param {Loader} loader - The loader the error happened in.
+               * @param {Resource} resource - The resource that caused the error.
+               */
+
+              /**
+               * When a load completes the loader and resource are disaptched.
+               *
+               * @memberof Loader
+               * @callback OnLoadSignal
+               * @param {Loader} loader - The loader that laoded the resource.
+               * @param {Resource} resource - The resource that has completed loading.
+               */
+
+              /**
+               * When the loader starts loading resources it dispatches this callback.
+               *
+               * @memberof Loader
+               * @callback OnStartSignal
+               * @param {Loader} loader - The loader that has started loading resources.
+               */
+
+              /**
+               * When the loader completes loading resources it dispatches this callback.
+               *
+               * @memberof Loader
+               * @callback OnCompleteSignal
+               * @param {Loader} loader - The loader that has finished loading resources.
+               */
+
+              /**
+               * Options for a call to `.add()`.
+               *
+               * @see Loader#add
+               *
+               * @typedef {object} IAddOptions
+               * @property {string} [name] - The name of the resource to load, if not passed the url is used.
+               * @property {string} [key] - Alias for `name`.
+               * @property {string} [url] - The url for this resource, relative to the baseUrl of this loader.
+               * @property {string|boolean} [crossOrigin] - Is this request cross-origin? Default is to
+               *      determine automatically.
+               * @property {number} [timeout=0] - A timeout in milliseconds for the load. If the load takes
+               *      longer than this time it is cancelled and the load is considered a failure. If this value is
+               *      set to `0` then there is no explicit timeout.
+               * @property {Resource.LOAD_TYPE} [loadType=Resource.LOAD_TYPE.XHR] - How should this resource
+               *      be loaded?
+               * @property {Resource.XHR_RESPONSE_TYPE} [xhrType=Resource.XHR_RESPONSE_TYPE.DEFAULT] - How
+               *      should the data being loaded be interpreted when using XHR?
+               * @property {Resource.OnCompleteSignal} [onComplete] - Callback to add an an onComplete signal istener.
+               * @property {Resource.OnCompleteSignal} [callback] - Alias for `onComplete`.
+               * @property {Resource.IMetadata} [metadata] - Extra configuration for middleware and the Resource object.
+               */
+
+              /* eslint-disable require-jsdoc,valid-jsdoc */
+
+              /**
+               * Adds a resource (or multiple resources) to the loader queue.
+               *
+               * This function can take a wide variety of different parameters. The only thing that is always
+               * required the url to load. All the following will work:
+               *
+               * ```js
+               * loader
+               *     // normal param syntax
+               *     .add('key', 'http://...', function () {})
+               *     .add('http://...', function () {})
+               *     .add('http://...')
+               *
+               *     // object syntax
+               *     .add({
+               *         name: 'key2',
+               *         url: 'http://...'
+               *     }, function () {})
+               *     .add({
+               *         url: 'http://...'
+               *     }, function () {})
+               *     .add({
+               *         name: 'key3',
+               *         url: 'http://...'
+               *         onComplete: function () {}
+               *     })
+               *     .add({
+               *         url: 'https://...',
+               *         onComplete: function () {},
+               *         crossOrigin: true
+               *     })
+               *
+               *     // you can also pass an array of objects or urls or both
+               *     .add([
+               *         { name: 'key4', url: 'http://...', onComplete: function () {} },
+               *         { url: 'http://...', onComplete: function () {} },
+               *         'http://...'
+               *     ])
+               *
+               *     // and you can use both params and options
+               *     .add('key', 'http://...', { crossOrigin: true }, function () {})
+               *     .add('http://...', { crossOrigin: true }, function () {});
+               * ```
+               *
+               * @function
+               * @variation 1
+               * @param {string} name - The name of the resource to load.
+               * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
+               * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
+               * @return {this} Returns itself.
+               */
+
+              /**
+              * @function
+              * @variation 2
+              * @param {string} name - The name of the resource to load.
+              * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
+              * @param {IAddOptions} [options] - The options for the load.
+              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
+              * @return {this} Returns itself.
+              */
+
+              /**
+              * @function
+              * @variation 3
+              * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
+              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
+              * @return {this} Returns itself.
+              */
+
+              /**
+              * @function
+              * @variation 4
+              * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
+              * @param {IAddOptions} [options] - The options for the load.
+              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
+              * @return {this} Returns itself.
+              */
+
+              /**
+              * @function
+              * @variation 5
+              * @param {IAddOptions} options - The options for the load. This object must contain a `url` property.
+              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
+              * @return {this} Returns itself.
+              */
+
+              /**
+              * @function
+              * @variation 6
+              * @param {Array<IAddOptions|string>} resources - An array of resources to load, where each is
+              *      either an object with the options or a string url. If you pass an object, it must contain a `url` property.
+              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
+              * @return {this} Returns itself.
+              */
+
+
+              var _proto = Loader.prototype;
+
+              _proto.add = function add(name, url, options, cb) {
+                // special case of an array of objects or urls
+                if (Array.isArray(name)) {
+                  for (var i = 0; i < name.length; ++i) {
+                    this.add(name[i]);
+                  }
+
+                  return this;
+                } // if an object is passed instead of params
+
+
+                if (typeof name === 'object') {
+                  cb = url || name.callback || name.onComplete;
+                  options = name;
+                  url = name.url;
+                  name = name.name || name.key || name.url;
+                } // case where no name is passed shift all args over by one.
+
+
+                if (typeof url !== 'string') {
+                  cb = options;
+                  options = url;
+                  url = name;
+                } // now that we shifted make sure we have a proper url.
+
+
+                if (typeof url !== 'string') {
+                  throw new Error('No url passed to add resource to loader.');
+                } // options are optional so people might pass a function and no options
+
+
+                if (typeof options === 'function') {
+                  cb = options;
+                  options = null;
+                } // if loading already you can only add resources that have a parent.
+
+
+                if (this.loading && (!options || !options.parentResource)) {
+                  throw new Error('Cannot add resources while the loader is running.');
+                } // check if resource already exists.
+
+
+                if (this.resources[name]) {
+                  throw new Error("Resource named \"" + name + "\" already exists.");
+                } // add base url if this isn't an absolute url
+
+
+                url = this._prepareUrl(url); // create the store the resource
+
+                this.resources[name] = new Resource$1(name, url, options);
+
+                if (typeof cb === 'function') {
+                  this.resources[name].onAfterMiddleware.once(cb);
+                } // if actively loading, make sure to adjust progress chunks for that parent and its children
+
+
+                if (this.loading) {
+                  var parent = options.parentResource;
+                  var incompleteChildren = [];
+
+                  for (var _i2 = 0; _i2 < parent.children.length; ++_i2) {
+                    if (!parent.children[_i2].isComplete) {
+                      incompleteChildren.push(parent.children[_i2]);
+                    }
+                  }
+
+                  var fullChunk = parent.progressChunk * (incompleteChildren.length + 1); // +1 for parent
+
+                  var eachChunk = fullChunk / (incompleteChildren.length + 2); // +2 for parent & new child
+
+                  parent.children.push(this.resources[name]);
+                  parent.progressChunk = eachChunk;
+
+                  for (var _i3 = 0; _i3 < incompleteChildren.length; ++_i3) {
+                    incompleteChildren[_i3].progressChunk = eachChunk;
+                  }
+
+                  this.resources[name].progressChunk = eachChunk;
+                } // add the resource to the queue
+
+
+                this._queue.push(this.resources[name]);
+
+                return this;
+              }
+              /* eslint-enable require-jsdoc,valid-jsdoc */
+
+              /**
+               * Sets up a middleware function that will run *before* the
+               * resource is loaded.
+               *
+               * @param {function} fn - The middleware function to register.
+               * @return {this} Returns itself.
+               */
+              ;
+
+              _proto.pre = function pre(fn) {
+                this._beforeMiddleware.push(fn);
+
+                return this;
+              }
+              /**
+               * Sets up a middleware function that will run *after* the
+               * resource is loaded.
+               *
+               * @param {function} fn - The middleware function to register.
+               * @return {this} Returns itself.
+               */
+              ;
+
+              _proto.use = function use(fn) {
+                this._afterMiddleware.push(fn);
+
+                return this;
+              }
+              /**
+               * Resets the queue of the loader to prepare for a new load.
+               *
+               * @return {this} Returns itself.
+               */
+              ;
+
+              _proto.reset = function reset() {
+                this.progress = 0;
+                this.loading = false;
+
+                this._queue.kill();
+
+                this._queue.pause(); // abort all resource loads
+
+
+                for (var k in this.resources) {
+                  var res = this.resources[k];
+
+                  if (res._onLoadBinding) {
+                    res._onLoadBinding.detach();
+                  }
+
+                  if (res.isLoading) {
+                    res.abort();
+                  }
+                }
+
+                this.resources = {};
+                return this;
+              }
+              /**
+               * Starts loading the queued resources.
+               *
+               * @param {function} [cb] - Optional callback that will be bound to the `complete` event.
+               * @return {this} Returns itself.
+               */
+              ;
+
+              _proto.load = function load(cb) {
+                // register complete callback if they pass one
+                if (typeof cb === 'function') {
+                  this.onComplete.once(cb);
+                } // if the queue has already started we are done here
+
+
+                if (this.loading) {
+                  return this;
+                }
+
+                if (this._queue.idle()) {
+                  this._onStart();
+
+                  this._onComplete();
+                } else {
+                  // distribute progress chunks
+                  var numTasks = this._queue._tasks.length;
+                  var chunk = MAX_PROGRESS / numTasks;
+
+                  for (var i = 0; i < this._queue._tasks.length; ++i) {
+                    this._queue._tasks[i].data.progressChunk = chunk;
+                  } // notify we are starting
+
+
+                  this._onStart(); // start loading
+
+
+                  this._queue.resume();
+                }
+
+                return this;
+              }
+              /**
+               * The number of resources to load concurrently.
+               *
+               * @member {number}
+               * @default 10
+               */
+              ;
+
+              /**
+               * Prepares a url for usage based on the configuration of this object
+               *
+               * @private
+               * @param {string} url - The url to prepare.
+               * @return {string} The prepared url.
+               */
+              _proto._prepareUrl = function _prepareUrl(url) {
+                var parsedUrl = parseUri(url, {
+                  strictMode: true
+                });
+                var result; // absolute url, just use it as is.
+
+                if (parsedUrl.protocol || !parsedUrl.path || url.indexOf('//') === 0) {
+                  result = url;
+                } // if baseUrl doesn't end in slash and url doesn't start with slash, then add a slash inbetween
+                else if (this.baseUrl.length && this.baseUrl.lastIndexOf('/') !== this.baseUrl.length - 1 && url.charAt(0) !== '/') {
+                    result = this.baseUrl + "/" + url;
+                  } else {
+                    result = this.baseUrl + url;
+                  } // if we need to add a default querystring, there is a bit more work
+
+
+                if (this.defaultQueryString) {
+                  var hash = rgxExtractUrlHash.exec(result)[0];
+                  result = result.substr(0, result.length - hash.length);
+
+                  if (result.indexOf('?') !== -1) {
+                    result += "&" + this.defaultQueryString;
+                  } else {
+                    result += "?" + this.defaultQueryString;
+                  }
+
+                  result += hash;
+                }
+
+                return result;
+              }
+              /**
+               * Loads a single resource.
+               *
+               * @private
+               * @param {Resource} resource - The resource to load.
+               * @param {function} dequeue - The function to call when we need to dequeue this item.
+               */
+              ;
+
+              _proto._loadResource = function _loadResource(resource, dequeue) {
+                var _this2 = this;
+
+                resource._dequeue = dequeue; // run before middleware
+
+                eachSeries(this._beforeMiddleware, function (fn, next) {
+                  fn.call(_this2, resource, function () {
+                    // if the before middleware marks the resource as complete,
+                    // break and don't process any more before middleware
+                    next(resource.isComplete ? {} : null);
+                  });
+                }, function () {
+                  if (resource.isComplete) {
+                    _this2._onLoad(resource);
+                  } else {
+                    resource._onLoadBinding = resource.onComplete.once(_this2._onLoad, _this2);
+                    resource.load();
+                  }
+                }, true);
+              }
+              /**
+               * Called once loading has started.
+               *
+               * @private
+               */
+              ;
+
+              _proto._onStart = function _onStart() {
+                this.progress = 0;
+                this.loading = true;
+                this.onStart.dispatch(this);
+              }
+              /**
+               * Called once each resource has loaded.
+               *
+               * @private
+               */
+              ;
+
+              _proto._onComplete = function _onComplete() {
+                this.progress = MAX_PROGRESS;
+                this.loading = false;
+                this.onComplete.dispatch(this, this.resources);
+              }
+              /**
+               * Called each time a resources is loaded.
+               *
+               * @private
+               * @param {Resource} resource - The resource that was loaded
+               */
+              ;
+
+              _proto._onLoad = function _onLoad(resource) {
+                var _this3 = this;
+
+                resource._onLoadBinding = null; // remove this resource from the async queue, and add it to our list of resources that are being parsed
+
+                this._resourcesParsing.push(resource);
+
+                resource._dequeue(); // run all the after middleware for this resource
+
+
+                eachSeries(this._afterMiddleware, function (fn, next) {
+                  fn.call(_this3, resource, next);
+                }, function () {
+                  resource.onAfterMiddleware.dispatch(resource);
+                  _this3.progress = Math.min(MAX_PROGRESS, _this3.progress + resource.progressChunk);
+
+                  _this3.onProgress.dispatch(_this3, resource);
+
+                  if (resource.error) {
+                    _this3.onError.dispatch(resource.error, _this3, resource);
+                  } else {
+                    _this3.onLoad.dispatch(_this3, resource);
+                  }
+
+                  _this3._resourcesParsing.splice(_this3._resourcesParsing.indexOf(resource), 1); // do completion check
+
+
+                  if (_this3._queue.idle() && _this3._resourcesParsing.length === 0) {
+                    _this3._onComplete();
+                  }
+                }, true);
+              };
+
+              _createClass(Loader, [{
+                key: "concurrency",
+                get: function get() {
+                  return this._queue.concurrency;
+                } // eslint-disable-next-line require-jsdoc
+                ,
+                set: function set(concurrency) {
+                  this._queue.concurrency = concurrency;
+                }
+              }]);
+
+              return Loader;
+            }();
+            /**
+             * A default array of middleware to run before loading each resource.
+             * Each of these middlewares are added to any new Loader instances when they are created.
+             *
+             * @private
+             * @member {function[]}
+             */
+
+
+            Loader._defaultBeforeMiddleware = [];
+            /**
+             * A default array of middleware to run after loading each resource.
+             * Each of these middlewares are added to any new Loader instances when they are created.
+             *
+             * @private
+             * @member {function[]}
+             */
+
+            Loader._defaultAfterMiddleware = [];
+            /**
+             * Sets up a middleware function that will run *before* the
+             * resource is loaded.
+             *
+             * @static
+             * @param {function} fn - The middleware function to register.
+             * @return {Loader} Returns itself.
+             */
+
+            Loader.pre = function LoaderPreStatic(fn) {
+              Loader._defaultBeforeMiddleware.push(fn);
+
+              return Loader;
+            };
+            /**
+             * Sets up a middleware function that will run *after* the
+             * resource is loaded.
+             *
+             * @static
+             * @param {function} fn - The middleware function to register.
+             * @return {Loader} Returns itself.
+             */
+
+
+            Loader.use = function LoaderUseStatic(fn) {
+              Loader._defaultAfterMiddleware.push(fn);
+
+              return Loader;
             };
 
-            // Mix interactiveTarget into DisplayObject.prototype,
-            // after deprecation has been handled
-            DisplayObject.mixin(interactiveTarget);
+            /*!
+             * @pixi/loaders - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+             *
+             * @pixi/loaders is licensed under the MIT License.
+             * http://www.opensource.org/licenses/mit-license
+             */
 
-            var MOUSE_POINTER_ID = 1;
+            /**
+             * Loader plugin for handling Texture resources.
+             * @class
+             * @memberof PIXI
+             * @implements PIXI.ILoaderPlugin
+             */
+            var TextureLoader = function TextureLoader () {};
 
-            // helpers for hitTest() - only used inside hitTest()
-            var hitTestEvent = {
-                target: null,
-                data: {
-                    global: null,
-                },
+            TextureLoader.use = function use (resource, next)
+            {
+                // create a new texture if the data is an Image object
+                if (resource.data && resource.type === Resource$1.TYPE.IMAGE)
+                {
+                    resource.texture = Texture.fromLoader(
+                        resource.data,
+                        resource.url,
+                        resource.name
+                    );
+                }
+                next();
             };
 
             /**
-             * The interaction manager deals with mouse, touch and pointer events.
+             * The new loader, extends Resource Loader by Chad Engler: https://github.com/englercj/resource-loader
              *
-             * Any DisplayObject can be interactive if its `interactive` property is set to true.
+             * ```js
+             * const loader = PIXI.Loader.shared; // PixiJS exposes a premade instance for you to use.
+             * //or
+             * const loader = new PIXI.Loader(); // you can also create your own if you want
              *
-             * This manager also supports multitouch.
+             * const sprites = {};
              *
-             * An instance of this class is automatically created by default, and can be found at `renderer.plugins.interaction`
+             * // Chainable `add` to enqueue a resource
+             * loader.add('bunny', 'data/bunny.png')
+             *       .add('spaceship', 'assets/spritesheet.json');
+             * loader.add('scoreFont', 'assets/score.fnt');
+             *
+             * // Chainable `pre` to add a middleware that runs for each resource, *before* loading that resource.
+             * // This is useful to implement custom caching modules (using filesystem, indexeddb, memory, etc).
+             * loader.pre(cachingMiddleware);
+             *
+             * // Chainable `use` to add a middleware that runs for each resource, *after* loading that resource.
+             * // This is useful to implement custom parsing modules (like spritesheet parsers, spine parser, etc).
+             * loader.use(parsingMiddleware);
+             *
+             * // The `load` method loads the queue of resources, and calls the passed in callback called once all
+             * // resources have loaded.
+             * loader.load((loader, resources) => {
+             *     // resources is an object where the key is the name of the resource loaded and the value is the resource object.
+             *     // They have a couple default properties:
+             *     // - `url`: The URL that the resource was loaded from
+             *     // - `error`: The error that happened when trying to load (if any)
+             *     // - `data`: The raw data that was loaded
+             *     // also may contain other properties based on the middleware that runs.
+             *     sprites.bunny = new PIXI.TilingSprite(resources.bunny.texture);
+             *     sprites.spaceship = new PIXI.TilingSprite(resources.spaceship.texture);
+             *     sprites.scoreFont = new PIXI.TilingSprite(resources.scoreFont.texture);
+             * });
+             *
+             * // throughout the process multiple signals can be dispatched.
+             * loader.onProgress.add(() => {}); // called once per loaded/errored file
+             * loader.onError.add(() => {}); // called once per errored file
+             * loader.onLoad.add(() => {}); // called once per loaded file
+             * loader.onComplete.add(() => {}); // called once when the queued resources all load.
+             * ```
+             *
+             * @see https://github.com/englercj/resource-loader
+             *
+             * @class Loader
+             * @memberof PIXI
+             * @param {string} [baseUrl=''] - The base url for all resources loaded by this loader.
+             * @param {number} [concurrency=10] - The number of resources to load concurrently.
+             */
+            var Loader$1 = /*@__PURE__*/(function (ResourceLoader) {
+                function Loader(baseUrl, concurrency)
+                {
+                    var this$1 = this;
+
+                    ResourceLoader.call(this, baseUrl, concurrency);
+                    eventemitter3.call(this);
+
+                    for (var i = 0; i < Loader._plugins.length; ++i)
+                    {
+                        var plugin = Loader._plugins[i];
+                        var pre = plugin.pre;
+                        var use = plugin.use;
+
+                        if (pre)
+                        {
+                            this.pre(pre);
+                        }
+
+                        if (use)
+                        {
+                            this.use(use);
+                        }
+                    }
+
+                    // Compat layer, translate the new v2 signals into old v1 events.
+                    this.onStart.add(function (l) { return this$1.emit('start', l); });
+                    this.onProgress.add(function (l, r) { return this$1.emit('progress', l, r); });
+                    this.onError.add(function (e, l, r) { return this$1.emit('error', e, l, r); });
+                    this.onLoad.add(function (l, r) { return this$1.emit('load', l, r); });
+                    this.onComplete.add(function (l, r) { return this$1.emit('complete', l, r); });
+
+                    /**
+                     * If this loader cannot be destroyed.
+                     * @member {boolean}
+                     * @default false
+                     * @private
+                     */
+                    this._protected = false;
+                }
+
+                if ( ResourceLoader ) Loader.__proto__ = ResourceLoader;
+                Loader.prototype = Object.create( ResourceLoader && ResourceLoader.prototype );
+                Loader.prototype.constructor = Loader;
+
+                var staticAccessors = { shared: { configurable: true } };
+
+                /**
+                 * Destroy the loader, removes references.
+                 * @private
+                 */
+                Loader.prototype.destroy = function destroy ()
+                {
+                    if (!this._protected)
+                    {
+                        this.removeAllListeners();
+                        this.reset();
+                    }
+                };
+
+                /**
+                 * A premade instance of the loader that can be used to load resources.
+                 * @name shared
+                 * @type {PIXI.Loader}
+                 * @static
+                 * @memberof PIXI.Loader
+                 */
+                staticAccessors.shared.get = function ()
+                {
+                    var shared = Loader._shared;
+
+                    if (!shared)
+                    {
+                        shared = new Loader();
+                        shared._protected = true;
+                        Loader._shared = shared;
+                    }
+
+                    return shared;
+                };
+
+                Object.defineProperties( Loader, staticAccessors );
+
+                return Loader;
+            }(Loader));
+
+            // Copy EE3 prototype (mixin)
+            Object.assign(Loader$1.prototype, eventemitter3.prototype);
+
+            /**
+             * Collection of all installed `use` middleware for Loader.
+             *
+             * @static
+             * @member {Array<PIXI.ILoaderPlugin>} _plugins
+             * @memberof PIXI.Loader
+             * @private
+             */
+            Loader$1._plugins = [];
+
+            /**
+             * Adds a Loader plugin for the global shared loader and all
+             * new Loader instances created.
+             *
+             * @static
+             * @method registerPlugin
+             * @memberof PIXI.Loader
+             * @param {PIXI.ILoaderPlugin} plugin - The plugin to add
+             * @return {PIXI.Loader} Reference to PIXI.Loader for chaining
+             */
+            Loader$1.registerPlugin = function registerPlugin(plugin)
+            {
+                Loader$1._plugins.push(plugin);
+
+                if (plugin.add)
+                {
+                    plugin.add();
+                }
+
+                return Loader$1;
+            };
+
+            // parse any blob into more usable objects (e.g. Image)
+            Loader$1.registerPlugin({ use: index$1.parsing });
+
+            // parse any Image objects into textures
+            Loader$1.registerPlugin(TextureLoader);
+
+            /**
+             * Plugin to be installed for handling specific Loader resources.
+             *
+             * @memberof PIXI
+             * @typedef ILoaderPlugin
+             * @property {function} [add] - Function to call immediate after registering plugin.
+             * @property {PIXI.Loader.loaderMiddleware} [pre] - Middleware function to run before load, the
+             *           arguments for this are `(resource, next)`
+             * @property {PIXI.Loader.loaderMiddleware} [use] - Middleware function to run after load, the
+             *           arguments for this are `(resource, next)`
+             */
+
+            /**
+             * @memberof PIXI.Loader
+             * @callback loaderMiddleware
+             * @param {PIXI.LoaderResource} resource
+             * @param {function} next
+             */
+
+            /**
+             * @memberof PIXI.Loader#
+             * @member {object} onStart
+             */
+
+            /**
+             * @memberof PIXI.Loader#
+             * @member {object} onProgress
+             */
+
+            /**
+             * @memberof PIXI.Loader#
+             * @member {object} onError
+             */
+
+            /**
+             * @memberof PIXI.Loader#
+             * @member {object} onLoad
+             */
+
+            /**
+             * @memberof PIXI.Loader#
+             * @member {object} onComplete
+             */
+
+            /**
+             * Application plugin for supporting loader option. Installing the LoaderPlugin
+             * is not necessary if using **pixi.js** or **pixi.js-legacy**.
+             * @example
+             * import {AppLoaderPlugin} from '@pixi/loaders';
+             * import {Application} from '@pixi/app';
+             * Application.registerPlugin(AppLoaderPlugin);
+             * @class
+             * @memberof PIXI
+             */
+            var AppLoaderPlugin = function AppLoaderPlugin () {};
+
+            AppLoaderPlugin.init = function init (options)
+            {
+                options = Object.assign({
+                    sharedLoader: false,
+                }, options);
+
+                /**
+                 * Loader instance to help with asset loading.
+                 * @name PIXI.Application#loader
+                 * @type {PIXI.Loader}
+                 * @readonly
+                 */
+                this.loader = options.sharedLoader ? Loader$1.shared : new Loader$1();
+            };
+
+            /**
+             * Called when application destroyed
+             * @private
+             */
+            AppLoaderPlugin.destroy = function destroy ()
+            {
+                if (this.loader)
+                {
+                    this.loader.destroy();
+                    this.loader = null;
+                }
+            };
+
+            /**
+             * Reference to **{@link https://github.com/englercj/resource-loader
+             * resource-loader}**'s Resource class.
+             * @see http://englercj.github.io/resource-loader/Resource.html
+             * @class LoaderResource
+             * @memberof PIXI
+             */
+            var LoaderResource = Resource$1;
+
+            /*!
+             * @pixi/particles - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+             *
+             * @pixi/particles is licensed under the MIT License.
+             * http://www.opensource.org/licenses/mit-license
+             */
+
+            /**
+             * The ParticleContainer class is a really fast version of the Container built solely for speed,
+             * so use when you need a lot of sprites or particles.
+             *
+             * The tradeoff of the ParticleContainer is that most advanced functionality will not work.
+             * ParticleContainer implements the basic object transform (position, scale, rotation)
+             * and some advanced functionality like tint (as of v4.5.6).
+             *
+             * Other more advanced functionality like masking, children, filters, etc will not work on sprites in this batch.
+             *
+             * It's extremely easy to use:
+             * ```js
+             * let container = new ParticleContainer();
+             *
+             * for (let i = 0; i < 100; ++i)
+             * {
+             *     let sprite = PIXI.Sprite.from("myImage.png");
+             *     container.addChild(sprite);
+             * }
+             * ```
+             *
+             * And here you have a hundred sprites that will be rendered at the speed of light.
              *
              * @class
-             * @extends PIXI.utils.EventEmitter
-             * @memberof PIXI.interaction
+             * @extends PIXI.Container
+             * @memberof PIXI
              */
-            var InteractionManager = /*@__PURE__*/(function (EventEmitter) {
-                function InteractionManager(renderer, options)
+            var ParticleContainer = /*@__PURE__*/(function (Container) {
+                function ParticleContainer(maxSize, properties, batchSize, autoResize)
                 {
-                    EventEmitter.call(this);
+                    if ( maxSize === void 0 ) maxSize = 1500;
+                    if ( batchSize === void 0 ) batchSize = 16384;
+                    if ( autoResize === void 0 ) autoResize = false;
 
-                    options = options || {};
+                    Container.call(this);
+
+                    // Making sure the batch size is valid
+                    // 65535 is max vertex index in the index buffer (see ParticleRenderer)
+                    // so max number of particles is 65536 / 4 = 16384
+                    var maxBatchSize = 16384;
+
+                    if (batchSize > maxBatchSize)
+                    {
+                        batchSize = maxBatchSize;
+                    }
 
                     /**
-                     * The renderer this interaction manager works for.
+                     * Set properties to be dynamic (true) / static (false)
                      *
-                     * @member {PIXI.AbstractRenderer}
+                     * @member {boolean[]}
+                     * @private
                      */
-                    this.renderer = renderer;
+                    this._properties = [false, true, false, false, false];
 
                     /**
-                     * Should default browser actions automatically be prevented.
-                     * Does not apply to pointer events for backwards compatibility
-                     * preventDefault on pointer events stops mouse events from firing
-                     * Thus, for every pointer event, there will always be either a mouse of touch event alongside it.
+                     * @member {number}
+                     * @private
+                     */
+                    this._maxSize = maxSize;
+
+                    /**
+                     * @member {number}
+                     * @private
+                     */
+                    this._batchSize = batchSize;
+
+                    /**
+                     * @member {Array<PIXI.Buffer>}
+                     * @private
+                     */
+                    this._buffers = null;
+
+                    /**
+                     * for every batch stores _updateID corresponding to the last change in that batch
+                     * @member {number[]}
+                     * @private
+                     */
+                    this._bufferUpdateIDs = [];
+
+                    /**
+                     * when child inserted, removed or changes position this number goes up
+                     * @member {number[]}
+                     * @private
+                     */
+                    this._updateID = 0;
+
+                    /**
+                     * @member {boolean}
+                     *
+                     */
+                    this.interactiveChildren = false;
+
+                    /**
+                     * The blend mode to be applied to the sprite. Apply a value of `PIXI.BLEND_MODES.NORMAL`
+                     * to reset the blend mode.
+                     *
+                     * @member {number}
+                     * @default PIXI.BLEND_MODES.NORMAL
+                     * @see PIXI.BLEND_MODES
+                     */
+                    this.blendMode = BLEND_MODES.NORMAL;
+
+                    /**
+                     * If true, container allocates more batches in case there are more than `maxSize` particles.
+                     * @member {boolean}
+                     * @default false
+                     */
+                    this.autoResize = autoResize;
+
+                    /**
+                     * If true PixiJS will Math.floor() x/y values when rendering, stopping pixel interpolation.
+                     * Advantages can include sharper image quality (like text) and faster rendering on canvas.
+                     * The main disadvantage is movement of objects may appear less smooth.
+                     * Default to true here as performance is usually the priority for particles.
                      *
                      * @member {boolean}
                      * @default true
                      */
-                    this.autoPreventDefault = options.autoPreventDefault !== undefined ? options.autoPreventDefault : true;
+                    this.roundPixels = true;
 
                     /**
-                     * Frequency in milliseconds that the mousemove, mouseover & mouseout interaction events will be checked.
-                     *
-                     * @member {number}
-                     * @default 10
-                     */
-                    this.interactionFrequency = options.interactionFrequency || 10;
-
-                    /**
-                     * The mouse data
-                     *
-                     * @member {PIXI.interaction.InteractionData}
-                     */
-                    this.mouse = new InteractionData();
-                    this.mouse.identifier = MOUSE_POINTER_ID;
-
-                    // setting the mouse to start off far off screen will mean that mouse over does
-                    //  not get called before we even move the mouse.
-                    this.mouse.global.set(-999999);
-
-                    /**
-                     * Actively tracked InteractionData
-                     *
-                     * @private
-                     * @member {Object.<number,PIXI.interaction.InteractionData>}
-                     */
-                    this.activeInteractionData = {};
-                    this.activeInteractionData[MOUSE_POINTER_ID] = this.mouse;
-
-                    /**
-                     * Pool of unused InteractionData
-                     *
-                     * @private
-                     * @member {PIXI.interaction.InteractionData[]}
-                     */
-                    this.interactionDataPool = [];
-
-                    /**
-                     * An event data object to handle all the event tracking/dispatching
-                     *
-                     * @member {object}
-                     */
-                    this.eventData = new InteractionEvent();
-
-                    /**
-                     * The DOM element to bind to.
-                     *
-                     * @protected
-                     * @member {HTMLElement}
-                     */
-                    this.interactionDOMElement = null;
-
-                    /**
-                     * This property determines if mousemove and touchmove events are fired only when the cursor
-                     * is over the object.
-                     * Setting to true will make things work more in line with how the DOM version works.
-                     * Setting to false can make things easier for things like dragging
-                     * It is currently set to false as this is how PixiJS used to work. This will be set to true in
-                     * future versions of pixi.
-                     *
-                     * @member {boolean}
-                     * @default false
-                     */
-                    this.moveWhenInside = false;
-
-                    /**
-                     * Have events been attached to the dom element?
-                     *
-                     * @protected
-                     * @member {boolean}
-                     */
-                    this.eventsAdded = false;
-
-                    /**
-                     * Is the mouse hovering over the renderer?
-                     *
-                     * @protected
-                     * @member {boolean}
-                     */
-                    this.mouseOverRenderer = false;
-
-                    /**
-                     * Does the device support touch events
-                     * https://www.w3.org/TR/touch-events/
+                     * The texture used to render the children.
                      *
                      * @readonly
-                     * @member {boolean}
+                     * @member {PIXI.BaseTexture}
                      */
-                    this.supportsTouchEvents = 'ontouchstart' in window;
+                    this.baseTexture = null;
+
+                    this.setProperties(properties);
 
                     /**
-                     * Does the device support pointer events
-                     * https://www.w3.org/Submission/pointer-events/
-                     *
-                     * @readonly
-                     * @member {boolean}
-                     */
-                    this.supportsPointerEvents = !!window.PointerEvent;
-
-                    // this will make it so that you don't have to call bind all the time
-
-                    /**
-                     * @private
-                     * @member {Function}
-                     */
-                    this.onPointerUp = this.onPointerUp.bind(this);
-                    this.processPointerUp = this.processPointerUp.bind(this);
-
-                    /**
-                     * @private
-                     * @member {Function}
-                     */
-                    this.onPointerCancel = this.onPointerCancel.bind(this);
-                    this.processPointerCancel = this.processPointerCancel.bind(this);
-
-                    /**
-                     * @private
-                     * @member {Function}
-                     */
-                    this.onPointerDown = this.onPointerDown.bind(this);
-                    this.processPointerDown = this.processPointerDown.bind(this);
-
-                    /**
-                     * @private
-                     * @member {Function}
-                     */
-                    this.onPointerMove = this.onPointerMove.bind(this);
-                    this.processPointerMove = this.processPointerMove.bind(this);
-
-                    /**
-                     * @private
-                     * @member {Function}
-                     */
-                    this.onPointerOut = this.onPointerOut.bind(this);
-                    this.processPointerOverOut = this.processPointerOverOut.bind(this);
-
-                    /**
-                     * @private
-                     * @member {Function}
-                     */
-                    this.onPointerOver = this.onPointerOver.bind(this);
-
-                    /**
-                     * Dictionary of how different cursor modes are handled. Strings are handled as CSS cursor
-                     * values, objects are handled as dictionaries of CSS values for interactionDOMElement,
-                     * and functions are called instead of changing the CSS.
-                     * Default CSS cursor values are provided for 'default' and 'pointer' modes.
-                     * @member {Object.<string, Object>}
-                     */
-                    this.cursorStyles = {
-                        default: 'inherit',
-                        pointer: 'pointer',
-                    };
-
-                    /**
-                     * The mode of the cursor that is being used.
-                     * The value of this is a key from the cursorStyles dictionary.
-                     *
-                     * @member {string}
-                     */
-                    this.currentCursorMode = null;
-
-                    /**
-                     * Internal cached let.
+                     * The tint applied to the container.
+                     * This is a hex value. A value of 0xFFFFFF will remove any tint effect.
                      *
                      * @private
-                     * @member {string}
-                     */
-                    this.cursor = null;
-
-                    /**
-                     * The current resolution / device pixel ratio.
-                     *
                      * @member {number}
-                     * @default 1
+                     * @default 0xFFFFFF
                      */
-                    this.resolution = 1;
-
-                    /**
-                     * Delayed pointer events. Used to guarantee correct ordering of over/out events.
-                     *
-                     * @private
-                     * @member {Array}
-                     */
-                    this.delayedEvents = [];
-
-                    /**
-                     * TreeSearch component that is used to hitTest stage tree
-                     *
-                     * @private
-                     * @member {PIXI.interaction.TreeSearch}
-                     */
-                    this.search = new TreeSearch();
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is pressed on the display
-                     * object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#mousedown
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
-                     * on the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#rightdown
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is released over the display
-                     * object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#mouseup
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
-                     * over the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#rightup
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is pressed and released on
-                     * the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#click
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
-                     * and released on the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#rightclick
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is released outside the
-                     * display object that initially registered a
-                     * [mousedown]{@link PIXI.interaction.InteractionManager#event:mousedown}.
-                     *
-                     * @event PIXI.interaction.InteractionManager#mouseupoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
-                     * outside the display object that initially registered a
-                     * [rightdown]{@link PIXI.interaction.InteractionManager#event:rightdown}.
-                     *
-                     * @event PIXI.interaction.InteractionManager#rightupoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device (usually a mouse) is moved while over the display object
-                     *
-                     * @event PIXI.interaction.InteractionManager#mousemove
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device (usually a mouse) is moved onto the display object
-                     *
-                     * @event PIXI.interaction.InteractionManager#mouseover
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device (usually a mouse) is moved off the display object
-                     *
-                     * @event PIXI.interaction.InteractionManager#mouseout
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is pressed on the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointerdown
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is released over the display object.
-                     * Not always fired when some buttons are held down while others are released. In those cases,
-                     * use [mousedown]{@link PIXI.interaction.InteractionManager#event:mousedown} and
-                     * [mouseup]{@link PIXI.interaction.InteractionManager#event:mouseup} instead.
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointerup
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when the operating system cancels a pointer event
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointercancel
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is pressed and released on the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointertap
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is released outside the display object that initially
-                     * registered a [pointerdown]{@link PIXI.interaction.InteractionManager#event:pointerdown}.
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointerupoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device is moved while over the display object
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointermove
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device is moved onto the display object
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointerover
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device is moved off the display object
-                     *
-                     * @event PIXI.interaction.InteractionManager#pointerout
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is placed on the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#touchstart
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is removed from the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#touchend
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when the operating system cancels a touch
-                     *
-                     * @event PIXI.interaction.InteractionManager#touchcancel
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is placed and removed from the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#tap
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is removed outside of the display object that initially
-                     * registered a [touchstart]{@link PIXI.interaction.InteractionManager#event:touchstart}.
-                     *
-                     * @event PIXI.interaction.InteractionManager#touchendoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is moved along the display object.
-                     *
-                     * @event PIXI.interaction.InteractionManager#touchmove
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is pressed on the display.
-                     * object. DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#mousedown
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
-                     * on the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#rightdown
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is released over the display
-                     * object. DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#mouseup
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
-                     * over the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#rightup
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is pressed and released on
-                     * the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#click
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is pressed
-                     * and released on the display object. DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#rightclick
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button (usually a mouse left-button) is released outside the
-                     * display object that initially registered a
-                     * [mousedown]{@link PIXI.DisplayObject#event:mousedown}.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#mouseupoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device secondary button (usually a mouse right-button) is released
-                     * outside the display object that initially registered a
-                     * [rightdown]{@link PIXI.DisplayObject#event:rightdown}.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#rightupoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device (usually a mouse) is moved while over the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#mousemove
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device (usually a mouse) is moved onto the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#mouseover
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device (usually a mouse) is moved off the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#mouseout
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is pressed on the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointerdown
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is released over the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointerup
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when the operating system cancels a pointer event.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointercancel
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is pressed and released on the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointertap
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device button is released outside the display object that initially
-                     * registered a [pointerdown]{@link PIXI.DisplayObject#event:pointerdown}.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointerupoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device is moved while over the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointermove
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device is moved onto the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointerover
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a pointer device is moved off the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#pointerout
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is placed on the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#touchstart
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is removed from the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#touchend
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when the operating system cancels a touch.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#touchcancel
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is placed and removed from the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#tap
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is removed outside of the display object that initially
-                     * registered a [touchstart]{@link PIXI.DisplayObject#event:touchstart}.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#touchendoutside
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    /**
-                     * Fired when a touch point is moved along the display object.
-                     * DisplayObject's `interactive` property must be set to `true` to fire event.
-                     *
-                     * @event PIXI.DisplayObject#touchmove
-                     * @param {PIXI.interaction.InteractionEvent} event - Interaction event
-                     */
-
-                    this.setTargetElement(this.renderer.view, this.renderer.resolution);
+                    this._tint = 0;
+                    this.tintRgb = new Float32Array(4);
+                    this.tint = 0xFFFFFF;
                 }
 
-                if ( EventEmitter ) InteractionManager.__proto__ = EventEmitter;
-                InteractionManager.prototype = Object.create( EventEmitter && EventEmitter.prototype );
-                InteractionManager.prototype.constructor = InteractionManager;
+                if ( Container ) ParticleContainer.__proto__ = Container;
+                ParticleContainer.prototype = Object.create( Container && Container.prototype );
+                ParticleContainer.prototype.constructor = ParticleContainer;
+
+                var prototypeAccessors = { tint: { configurable: true } };
 
                 /**
-                 * Hit tests a point against the display tree, returning the first interactive object that is hit.
+                 * Sets the private properties array to dynamic / static based on the passed properties object
                  *
-                 * @param {PIXI.Point} globalPoint - A point to hit test with, in global space.
-                 * @param {PIXI.Container} [root] - The root display object to start from. If omitted, defaults
-                 * to the last rendered root of the associated renderer.
-                 * @return {PIXI.DisplayObject} The hit display object, if any.
+                 * @param {object} properties - The properties to be uploaded
                  */
-                InteractionManager.prototype.hitTest = function hitTest (globalPoint, root)
+                ParticleContainer.prototype.setProperties = function setProperties (properties)
                 {
-                    // clear the target for our hit test
-                    hitTestEvent.target = null;
-                    // assign the global point
-                    hitTestEvent.data.global = globalPoint;
-                    // ensure safety of the root
-                    if (!root)
+                    if (properties)
                     {
-                        root = this.renderer._lastObjectRendered;
+                        this._properties[0] = 'vertices' in properties || 'scale' in properties
+                            ? !!properties.vertices || !!properties.scale : this._properties[0];
+                        this._properties[1] = 'position' in properties ? !!properties.position : this._properties[1];
+                        this._properties[2] = 'rotation' in properties ? !!properties.rotation : this._properties[2];
+                        this._properties[3] = 'uvs' in properties ? !!properties.uvs : this._properties[3];
+                        this._properties[4] = 'tint' in properties || 'alpha' in properties
+                            ? !!properties.tint || !!properties.alpha : this._properties[4];
                     }
-                    // run the hit test
-                    this.processInteractive(hitTestEvent, root, null, true);
-                    // return our found object - it'll be null if we didn't hit anything
-
-                    return hitTestEvent.target;
                 };
 
                 /**
-                 * Sets the DOM element which will receive mouse/touch events. This is useful for when you have
-                 * other DOM elements on top of the renderers Canvas element. With this you'll be bale to delegate
-                 * another DOM element to receive those events.
-                 *
-                 * @param {HTMLElement} element - the DOM element which will receive mouse and touch events.
-                 * @param {number} [resolution=1] - The resolution / device pixel ratio of the new element (relative to the canvas).
-                 */
-                InteractionManager.prototype.setTargetElement = function setTargetElement (element, resolution)
-                {
-                    if ( resolution === void 0 ) resolution = 1;
-
-                    this.removeEvents();
-
-                    this.interactionDOMElement = element;
-
-                    this.resolution = resolution;
-
-                    this.addEvents();
-                };
-
-                /**
-                 * Registers all the DOM events
+                 * Updates the object transform for rendering
                  *
                  * @private
                  */
-                InteractionManager.prototype.addEvents = function addEvents ()
+                ParticleContainer.prototype.updateTransform = function updateTransform ()
                 {
-                    if (!this.interactionDOMElement)
+                    // TODO don't need to!
+                    this.displayObjectUpdateTransform();
+                    //  PIXI.Container.prototype.updateTransform.call( this );
+                };
+
+                /**
+                 * The tint applied to the container. This is a hex value.
+                 * A value of 0xFFFFFF will remove any tint effect.
+                 ** IMPORTANT: This is a WebGL only feature and will be ignored by the canvas renderer.
+                 * @member {number}
+                 * @default 0xFFFFFF
+                 */
+                prototypeAccessors.tint.get = function ()
+                {
+                    return this._tint;
+                };
+
+                prototypeAccessors.tint.set = function (value) // eslint-disable-line require-jsdoc
+                {
+                    this._tint = value;
+                    hex2rgb(value, this.tintRgb);
+                };
+
+                /**
+                 * Renders the container using the WebGL renderer
+                 *
+                 * @private
+                 * @param {PIXI.Renderer} renderer - The webgl renderer
+                 */
+                ParticleContainer.prototype.render = function render (renderer)
+                {
+                    var this$1 = this;
+
+                    if (!this.visible || this.worldAlpha <= 0 || !this.children.length || !this.renderable)
                     {
                         return;
                     }
 
-                    Ticker.system.add(this.update, this, UPDATE_PRIORITY.INTERACTION);
+                    if (!this.baseTexture)
+                    {
+                        this.baseTexture = this.children[0]._texture.baseTexture;
+                        if (!this.baseTexture.valid)
+                        {
+                            this.baseTexture.once('update', function () { return this$1.onChildrenChange(0); });
+                        }
+                    }
 
-                    if (window.navigator.msPointerEnabled)
+                    renderer.batch.setObjectRenderer(renderer.plugins.particle);
+                    renderer.plugins.particle.render(this);
+                };
+
+                /**
+                 * Set the flag that static data should be updated to true
+                 *
+                 * @private
+                 * @param {number} smallestChildIndex - The smallest child index
+                 */
+                ParticleContainer.prototype.onChildrenChange = function onChildrenChange (smallestChildIndex)
+                {
+                    var bufferIndex = Math.floor(smallestChildIndex / this._batchSize);
+
+                    while (this._bufferUpdateIDs.length < bufferIndex)
                     {
-                        this.interactionDOMElement.style['-ms-content-zooming'] = 'none';
-                        this.interactionDOMElement.style['-ms-touch-action'] = 'none';
+                        this._bufferUpdateIDs.push(0);
                     }
-                    else if (this.supportsPointerEvents)
+                    this._bufferUpdateIDs[bufferIndex] = ++this._updateID;
+                };
+
+                ParticleContainer.prototype.dispose = function dispose ()
+                {
+                    if (this._buffers)
                     {
-                        this.interactionDOMElement.style['touch-action'] = 'none';
+                        for (var i = 0; i < this._buffers.length; ++i)
+                        {
+                            this._buffers[i].destroy();
+                        }
+
+                        this._buffers = null;
                     }
+                };
+
+                /**
+                 * Destroys the container
+                 *
+                 * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
+                 *  have been set to that value
+                 * @param {boolean} [options.children=false] - if set to true, all the children will have their
+                 *  destroy method called as well. 'options' will be passed on to those calls.
+                 * @param {boolean} [options.texture=false] - Only used for child Sprites if options.children is set to true
+                 *  Should it destroy the texture of the child sprite
+                 * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true
+                 *  Should it destroy the base texture of the child sprite
+                 */
+                ParticleContainer.prototype.destroy = function destroy (options)
+                {
+                    Container.prototype.destroy.call(this, options);
+
+                    this.dispose();
+
+                    this._properties = null;
+                    this._buffers = null;
+                    this._bufferUpdateIDs = null;
+                };
+
+                Object.defineProperties( ParticleContainer.prototype, prototypeAccessors );
+
+                return ParticleContainer;
+            }(Container));
+
+            /**
+             * @author Mat Groves
+             *
+             * Big thanks to the very clever Matt DesLauriers <mattdesl> https://github.com/mattdesl/
+             * for creating the original PixiJS version!
+             * Also a thanks to https://github.com/bchevalier for tweaking the tint and alpha so that
+             * they now share 4 bytes on the vertex buffer
+             *
+             * Heavily inspired by LibGDX's ParticleBuffer:
+             * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/ParticleBuffer.java
+             */
+
+            /**
+             * The particle buffer manages the static and dynamic buffers for a particle container.
+             *
+             * @class
+             * @private
+             * @memberof PIXI
+             */
+            var ParticleBuffer = function ParticleBuffer(properties, dynamicPropertyFlags, size)
+            {
+                this.geometry = new Geometry();
+
+                this.indexBuffer = null;
+
+                /**
+                 * The number of particles the buffer can hold
+                 *
+                 * @private
+                 * @member {number}
+                 */
+                this.size = size;
+
+                /**
+                 * A list of the properties that are dynamic.
+                 *
+                 * @private
+                 * @member {object[]}
+                 */
+                this.dynamicProperties = [];
+
+                /**
+                 * A list of the properties that are static.
+                 *
+                 * @private
+                 * @member {object[]}
+                 */
+                this.staticProperties = [];
+
+                for (var i = 0; i < properties.length; ++i)
+                {
+                    var property = properties[i];
+
+                    // Make copy of properties object so that when we edit the offset it doesn't
+                    // change all other instances of the object literal
+                    property = {
+                        attributeName: property.attributeName,
+                        size: property.size,
+                        uploadFunction: property.uploadFunction,
+                        type: property.type || TYPES.FLOAT,
+                        offset: property.offset,
+                    };
+
+                    if (dynamicPropertyFlags[i])
+                    {
+                        this.dynamicProperties.push(property);
+                    }
+                    else
+                    {
+                        this.staticProperties.push(property);
+                    }
+                }
+
+                this.staticStride = 0;
+                this.staticBuffer = null;
+                this.staticData = null;
+                this.staticDataUint32 = null;
+
+                this.dynamicStride = 0;
+                this.dynamicBuffer = null;
+                this.dynamicData = null;
+                this.dynamicDataUint32 = null;
+
+                this._updateID = 0;
+
+                this.initBuffers();
+            };
+
+            /**
+             * Sets up the renderer context and necessary buffers.
+             *
+             * @private
+             */
+            ParticleBuffer.prototype.initBuffers = function initBuffers ()
+            {
+                var geometry = this.geometry;
+
+                var dynamicOffset = 0;
+
+                /**
+                 * Holds the indices of the geometry (quads) to draw
+                 *
+                 * @member {Uint16Array}
+                 * @private
+                 */
+                this.indexBuffer = new Buffer$1(createIndicesForQuads(this.size), true, true);
+                geometry.addIndex(this.indexBuffer);
+
+                this.dynamicStride = 0;
+
+                for (var i = 0; i < this.dynamicProperties.length; ++i)
+                {
+                    var property = this.dynamicProperties[i];
+
+                    property.offset = dynamicOffset;
+                    dynamicOffset += property.size;
+                    this.dynamicStride += property.size;
+                }
+
+                var dynBuffer = new ArrayBuffer(this.size * this.dynamicStride * 4 * 4);
+
+                this.dynamicData = new Float32Array(dynBuffer);
+                this.dynamicDataUint32 = new Uint32Array(dynBuffer);
+                this.dynamicBuffer = new Buffer$1(this.dynamicData, false, false);
+
+                // static //
+                var staticOffset = 0;
+
+                this.staticStride = 0;
+
+                for (var i$1 = 0; i$1 < this.staticProperties.length; ++i$1)
+                {
+                    var property$1 = this.staticProperties[i$1];
+
+                    property$1.offset = staticOffset;
+                    staticOffset += property$1.size;
+                    this.staticStride += property$1.size;
+                }
+
+                var statBuffer = new ArrayBuffer(this.size * this.staticStride * 4 * 4);
+
+                this.staticData = new Float32Array(statBuffer);
+                this.staticDataUint32 = new Uint32Array(statBuffer);
+                this.staticBuffer = new Buffer$1(this.staticData, true, false);
+
+                for (var i$2 = 0; i$2 < this.dynamicProperties.length; ++i$2)
+                {
+                    var property$2 = this.dynamicProperties[i$2];
+
+                    geometry.addAttribute(
+                        property$2.attributeName,
+                        this.dynamicBuffer,
+                        0,
+                        property$2.type === TYPES.UNSIGNED_BYTE,
+                        property$2.type,
+                        this.dynamicStride * 4,
+                        property$2.offset * 4
+                    );
+                }
+
+                for (var i$3 = 0; i$3 < this.staticProperties.length; ++i$3)
+                {
+                    var property$3 = this.staticProperties[i$3];
+
+                    geometry.addAttribute(
+                        property$3.attributeName,
+                        this.staticBuffer,
+                        0,
+                        property$3.type === TYPES.UNSIGNED_BYTE,
+                        property$3.type,
+                        this.staticStride * 4,
+                        property$3.offset * 4
+                    );
+                }
+            };
+
+            /**
+             * Uploads the dynamic properties.
+             *
+             * @private
+             * @param {PIXI.DisplayObject[]} children - The children to upload.
+             * @param {number} startIndex - The index to start at.
+             * @param {number} amount - The number to upload.
+             */
+            ParticleBuffer.prototype.uploadDynamic = function uploadDynamic (children, startIndex, amount)
+            {
+                for (var i = 0; i < this.dynamicProperties.length; i++)
+                {
+                    var property = this.dynamicProperties[i];
+
+                    property.uploadFunction(children, startIndex, amount,
+                        property.type === TYPES.UNSIGNED_BYTE ? this.dynamicDataUint32 : this.dynamicData,
+                        this.dynamicStride, property.offset);
+                }
+
+                this.dynamicBuffer._updateID++;
+            };
+
+            /**
+             * Uploads the static properties.
+             *
+             * @private
+             * @param {PIXI.DisplayObject[]} children - The children to upload.
+             * @param {number} startIndex - The index to start at.
+             * @param {number} amount - The number to upload.
+             */
+            ParticleBuffer.prototype.uploadStatic = function uploadStatic (children, startIndex, amount)
+            {
+                for (var i = 0; i < this.staticProperties.length; i++)
+                {
+                    var property = this.staticProperties[i];
+
+                    property.uploadFunction(children, startIndex, amount,
+                        property.type === TYPES.UNSIGNED_BYTE ? this.staticDataUint32 : this.staticData,
+                        this.staticStride, property.offset);
+                }
+
+                this.staticBuffer._updateID++;
+            };
+
+            /**
+             * Destroys the ParticleBuffer.
+             *
+             * @private
+             */
+            ParticleBuffer.prototype.destroy = function destroy ()
+            {
+                this.indexBuffer = null;
+
+                this.dynamicProperties = null;
+                // this.dynamicBuffer.destroy();
+                this.dynamicBuffer = null;
+                this.dynamicData = null;
+                this.dynamicDataUint32 = null;
+
+                this.staticProperties = null;
+                // this.staticBuffer.destroy();
+                this.staticBuffer = null;
+                this.staticData = null;
+                this.staticDataUint32 = null;
+                // all buffers are destroyed inside geometry
+                this.geometry.destroy();
+            };
+
+            var vertex$1 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\n\nattribute vec2 aPositionCoord;\nattribute float aRotation;\n\nuniform mat3 translationMatrix;\nuniform vec4 uColor;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nvoid main(void){\n    float x = (aVertexPosition.x) * cos(aRotation) - (aVertexPosition.y) * sin(aRotation);\n    float y = (aVertexPosition.x) * sin(aRotation) + (aVertexPosition.y) * cos(aRotation);\n\n    vec2 v = vec2(x, y);\n    v = v + aPositionCoord;\n\n    gl_Position = vec4((translationMatrix * vec3(v, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vColor = aColor * uColor;\n}\n";
+
+            var fragment$1 = "varying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void){\n    vec4 color = texture2D(uSampler, vTextureCoord) * vColor;\n    gl_FragColor = color;\n}";
+
+            /**
+             * @author Mat Groves
+             *
+             * Big thanks to the very clever Matt DesLauriers <mattdesl> https://github.com/mattdesl/
+             * for creating the original PixiJS version!
+             * Also a thanks to https://github.com/bchevalier for tweaking the tint and alpha so that they now
+             * share 4 bytes on the vertex buffer
+             *
+             * Heavily inspired by LibGDX's ParticleRenderer:
+             * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/ParticleRenderer.java
+             */
+
+            /**
+             * Renderer for Particles that is designer for speed over feature set.
+             *
+             * @class
+             * @memberof PIXI
+             */
+            var ParticleRenderer = /*@__PURE__*/(function (ObjectRenderer) {
+                function ParticleRenderer(renderer)
+                {
+                    ObjectRenderer.call(this, renderer);
+
+                    // 65535 is max vertex index in the index buffer (see ParticleRenderer)
+                    // so max number of particles is 65536 / 4 = 16384
+                    // and max number of element in the index buffer is 16384 * 6 = 98304
+                    // Creating a full index buffer, overhead is 98304 * 2 = 196Ko
+                    // let numIndices = 98304;
 
                     /**
-                     * These events are added first, so that if pointer events are normalized, they are fired
-                     * in the same order as non-normalized events. ie. pointer event 1st, mouse / touch 2nd
+                     * The default shader that is used if a sprite doesn't have a more specific one.
+                     *
+                     * @member {PIXI.Shader}
                      */
-                    if (this.supportsPointerEvents)
-                    {
-                        window.document.addEventListener('pointermove', this.onPointerMove, true);
-                        this.interactionDOMElement.addEventListener('pointerdown', this.onPointerDown, true);
-                        // pointerout is fired in addition to pointerup (for touch events) and pointercancel
-                        // we already handle those, so for the purposes of what we do in onPointerOut, we only
-                        // care about the pointerleave event
-                        this.interactionDOMElement.addEventListener('pointerleave', this.onPointerOut, true);
-                        this.interactionDOMElement.addEventListener('pointerover', this.onPointerOver, true);
-                        window.addEventListener('pointercancel', this.onPointerCancel, true);
-                        window.addEventListener('pointerup', this.onPointerUp, true);
-                    }
-                    else
-                    {
-                        window.document.addEventListener('mousemove', this.onPointerMove, true);
-                        this.interactionDOMElement.addEventListener('mousedown', this.onPointerDown, true);
-                        this.interactionDOMElement.addEventListener('mouseout', this.onPointerOut, true);
-                        this.interactionDOMElement.addEventListener('mouseover', this.onPointerOver, true);
-                        window.addEventListener('mouseup', this.onPointerUp, true);
-                    }
+                    this.shader = null;
 
-                    // always look directly for touch events so that we can provide original data
-                    // In a future version we should change this to being just a fallback and rely solely on
-                    // PointerEvents whenever available
-                    if (this.supportsTouchEvents)
-                    {
-                        this.interactionDOMElement.addEventListener('touchstart', this.onPointerDown, true);
-                        this.interactionDOMElement.addEventListener('touchcancel', this.onPointerCancel, true);
-                        this.interactionDOMElement.addEventListener('touchend', this.onPointerUp, true);
-                        this.interactionDOMElement.addEventListener('touchmove', this.onPointerMove, true);
-                    }
+                    this.properties = null;
 
-                    this.eventsAdded = true;
-                };
+                    this.tempMatrix = new Matrix();
 
-                /**
-                 * Removes all the DOM events that were previously registered
-                 *
-                 * @private
-                 */
-                InteractionManager.prototype.removeEvents = function removeEvents ()
-                {
-                    if (!this.interactionDOMElement)
-                    {
-                        return;
-                    }
-
-                    Ticker.system.remove(this.update, this);
-
-                    if (window.navigator.msPointerEnabled)
-                    {
-                        this.interactionDOMElement.style['-ms-content-zooming'] = '';
-                        this.interactionDOMElement.style['-ms-touch-action'] = '';
-                    }
-                    else if (this.supportsPointerEvents)
-                    {
-                        this.interactionDOMElement.style['touch-action'] = '';
-                    }
-
-                    if (this.supportsPointerEvents)
-                    {
-                        window.document.removeEventListener('pointermove', this.onPointerMove, true);
-                        this.interactionDOMElement.removeEventListener('pointerdown', this.onPointerDown, true);
-                        this.interactionDOMElement.removeEventListener('pointerleave', this.onPointerOut, true);
-                        this.interactionDOMElement.removeEventListener('pointerover', this.onPointerOver, true);
-                        window.removeEventListener('pointercancel', this.onPointerCancel, true);
-                        window.removeEventListener('pointerup', this.onPointerUp, true);
-                    }
-                    else
-                    {
-                        window.document.removeEventListener('mousemove', this.onPointerMove, true);
-                        this.interactionDOMElement.removeEventListener('mousedown', this.onPointerDown, true);
-                        this.interactionDOMElement.removeEventListener('mouseout', this.onPointerOut, true);
-                        this.interactionDOMElement.removeEventListener('mouseover', this.onPointerOver, true);
-                        window.removeEventListener('mouseup', this.onPointerUp, true);
-                    }
-
-                    if (this.supportsTouchEvents)
-                    {
-                        this.interactionDOMElement.removeEventListener('touchstart', this.onPointerDown, true);
-                        this.interactionDOMElement.removeEventListener('touchcancel', this.onPointerCancel, true);
-                        this.interactionDOMElement.removeEventListener('touchend', this.onPointerUp, true);
-                        this.interactionDOMElement.removeEventListener('touchmove', this.onPointerMove, true);
-                    }
-
-                    this.interactionDOMElement = null;
-
-                    this.eventsAdded = false;
-                };
-
-                /**
-                 * Updates the state of interactive objects.
-                 * Invoked by a throttled ticker update from {@link PIXI.Ticker.system}.
-                 *
-                 * @param {number} deltaTime - time delta since last tick
-                 */
-                InteractionManager.prototype.update = function update (deltaTime)
-                {
-                    this._deltaTime += deltaTime;
-
-                    if (this._deltaTime < this.interactionFrequency)
-                    {
-                        return;
-                    }
-
-                    this._deltaTime = 0;
-
-                    if (!this.interactionDOMElement)
-                    {
-                        return;
-                    }
-
-                    // if the user move the mouse this check has already been done using the mouse move!
-                    if (this.didMove)
-                    {
-                        this.didMove = false;
-
-                        return;
-                    }
-
-                    this.cursor = null;
-
-                    // Resets the flag as set by a stopPropagation call. This flag is usually reset by a user interaction of any kind,
-                    // but there was a scenario of a display object moving under a static mouse cursor.
-                    // In this case, mouseover and mouseevents would not pass the flag test in dispatchEvent function
-                    for (var k in this.activeInteractionData)
-                    {
-                        // eslint-disable-next-line no-prototype-builtins
-                        if (this.activeInteractionData.hasOwnProperty(k))
+                    this.properties = [
+                        // verticesData
                         {
-                            var interactionData = this.activeInteractionData[k];
-
-                            if (interactionData.originalEvent && interactionData.pointerType !== 'touch')
-                            {
-                                var interactionEvent = this.configureInteractionEventForDOMEvent(
-                                    this.eventData,
-                                    interactionData.originalEvent,
-                                    interactionData
-                                );
-
-                                this.processInteractive(
-                                    interactionEvent,
-                                    this.renderer._lastObjectRendered,
-                                    this.processPointerOverOut,
-                                    true
-                                );
-                            }
-                        }
-                    }
-
-                    this.setCursorMode(this.cursor);
-                };
-
-                /**
-                 * Sets the current cursor mode, handling any callbacks or CSS style changes.
-                 *
-                 * @param {string} mode - cursor mode, a key from the cursorStyles dictionary
-                 */
-                InteractionManager.prototype.setCursorMode = function setCursorMode (mode)
-                {
-                    mode = mode || 'default';
-                    // if the mode didn't actually change, bail early
-                    if (this.currentCursorMode === mode)
-                    {
-                        return;
-                    }
-                    this.currentCursorMode = mode;
-                    var style = this.cursorStyles[mode];
-
-                    // only do things if there is a cursor style for it
-                    if (style)
-                    {
-                        switch (typeof style)
+                            attributeName: 'aVertexPosition',
+                            size: 2,
+                            uploadFunction: this.uploadVertices,
+                            offset: 0,
+                        },
+                        // positionData
                         {
-                            case 'string':
-                                // string styles are handled as cursor CSS
-                                this.interactionDOMElement.style.cursor = style;
-                                break;
-                            case 'function':
-                                // functions are just called, and passed the cursor mode
-                                style(mode);
-                                break;
-                            case 'object':
-                                // if it is an object, assume that it is a dictionary of CSS styles,
-                                // apply it to the interactionDOMElement
-                                Object.assign(this.interactionDOMElement.style, style);
-                                break;
-                        }
-                    }
-                    else if (typeof mode === 'string' && !Object.prototype.hasOwnProperty.call(this.cursorStyles, mode))
-                    {
-                        // if it mode is a string (not a Symbol) and cursorStyles doesn't have any entry
-                        // for the mode, then assume that the dev wants it to be CSS for the cursor.
-                        this.interactionDOMElement.style.cursor = mode;
-                    }
-                };
-
-                /**
-                 * Dispatches an event on the display object that was interacted with
-                 *
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the display object in question
-                 * @param {string} eventString - the name of the event (e.g, mousedown)
-                 * @param {object} eventData - the event data object
-                 * @private
-                 */
-                InteractionManager.prototype.dispatchEvent = function dispatchEvent (displayObject, eventString, eventData)
-                {
-                    // Even if the event was stopped, at least dispatch any remaining events
-                    // for the same display object.
-                    if (!eventData.stopPropagationHint || displayObject === eventData.stopsPropagatingAt)
-                    {
-                        eventData.currentTarget = displayObject;
-                        eventData.type = eventString;
-
-                        displayObject.emit(eventString, eventData);
-
-                        if (displayObject[eventString])
+                            attributeName: 'aPositionCoord',
+                            size: 2,
+                            uploadFunction: this.uploadPosition,
+                            offset: 0,
+                        },
+                        // rotationData
                         {
-                            displayObject[eventString](eventData);
-                        }
-                    }
-                };
-
-                /**
-                 * Puts a event on a queue to be dispatched later. This is used to guarantee correct
-                 * ordering of over/out events.
-                 *
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the display object in question
-                 * @param {string} eventString - the name of the event (e.g, mousedown)
-                 * @param {object} eventData - the event data object
-                 * @private
-                 */
-                InteractionManager.prototype.delayDispatchEvent = function delayDispatchEvent (displayObject, eventString, eventData)
-                {
-                    this.delayedEvents.push({ displayObject: displayObject, eventString: eventString, eventData: eventData });
-                };
-
-                /**
-                 * Maps x and y coords from a DOM object and maps them correctly to the PixiJS view. The
-                 * resulting value is stored in the point. This takes into account the fact that the DOM
-                 * element could be scaled and positioned anywhere on the screen.
-                 *
-                 * @param  {PIXI.Point} point - the point that the result will be stored in
-                 * @param  {number} x - the x coord of the position to map
-                 * @param  {number} y - the y coord of the position to map
-                 */
-                InteractionManager.prototype.mapPositionToPoint = function mapPositionToPoint (point, x, y)
-                {
-                    var rect;
-
-                    // IE 11 fix
-                    if (!this.interactionDOMElement.parentElement)
-                    {
-                        rect = { x: 0, y: 0, width: 0, height: 0 };
-                    }
-                    else
-                    {
-                        rect = this.interactionDOMElement.getBoundingClientRect();
-                    }
-
-                    var resolutionMultiplier = 1.0 / this.resolution;
-
-                    point.x = ((x - rect.left) * (this.interactionDOMElement.width / rect.width)) * resolutionMultiplier;
-                    point.y = ((y - rect.top) * (this.interactionDOMElement.height / rect.height)) * resolutionMultiplier;
-                };
-
-                /**
-                 * This function is provides a neat way of crawling through the scene graph and running a
-                 * specified function on all interactive objects it finds. It will also take care of hit
-                 * testing the interactive objects and passes the hit across in the function.
-                 *
-                 * @protected
-                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - event containing the point that
-                 *  is tested for collision
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - the displayObject
-                 *  that will be hit test (recursively crawls its children)
-                 * @param {Function} [func] - the function that will be called on each interactive object. The
-                 *  interactionEvent, displayObject and hit will be passed to the function
-                 * @param {boolean} [hitTest] - indicates whether we want to calculate hits
-                 *  or just iterate through all interactive objects
-                 */
-                InteractionManager.prototype.processInteractive = function processInteractive (interactionEvent, displayObject, func, hitTest)
-                {
-                    var hit = this.search.findHit(interactionEvent, displayObject, func, hitTest);
-
-                    var delayedEvents = this.delayedEvents;
-
-                    if (!delayedEvents.length)
-                    {
-                        return hit;
-                    }
-                    // Reset the propagation hint, because we start deeper in the tree again.
-                    interactionEvent.stopPropagationHint = false;
-
-                    var delayedLen = delayedEvents.length;
-
-                    this.delayedEvents = [];
-
-                    for (var i = 0; i < delayedLen; i++)
-                    {
-                        var ref = delayedEvents[i];
-                        var displayObject$1 = ref.displayObject;
-                        var eventString = ref.eventString;
-                        var eventData = ref.eventData;
-
-                        // When we reach the object we wanted to stop propagating at,
-                        // set the propagation hint.
-                        if (eventData.stopsPropagatingAt === displayObject$1)
+                            attributeName: 'aRotation',
+                            size: 1,
+                            uploadFunction: this.uploadRotation,
+                            offset: 0,
+                        },
+                        // uvsData
                         {
-                            eventData.stopPropagationHint = true;
-                        }
+                            attributeName: 'aTextureCoord',
+                            size: 2,
+                            uploadFunction: this.uploadUvs,
+                            offset: 0,
+                        },
+                        // tintData
+                        {
+                            attributeName: 'aColor',
+                            size: 1,
+                            type: TYPES.UNSIGNED_BYTE,
+                            uploadFunction: this.uploadTint,
+                            offset: 0,
+                        } ];
 
-                        this.dispatchEvent(displayObject$1, eventString, eventData);
-                    }
-
-                    return hit;
-                };
-
-                /**
-                 * Is called when the pointer button is pressed down on the renderer element
-                 *
-                 * @private
-                 * @param {PointerEvent} originalEvent - The DOM event of a pointer button being pressed down
-                 */
-                InteractionManager.prototype.onPointerDown = function onPointerDown (originalEvent)
-                {
-                    // if we support touch events, then only use those for touch events, not pointer events
-                    if (this.supportsTouchEvents && originalEvent.pointerType === 'touch') { return; }
-
-                    var events = this.normalizeToPointerData(originalEvent);
+                    this.shader = Shader.from(vertex$1, fragment$1, {});
 
                     /**
-                     * No need to prevent default on natural pointer events, as there are no side effects
-                     * Normalized events, however, may have the double mousedown/touchstart issue on the native android browser,
-                     * so still need to be prevented.
+                     * The WebGL state in which this renderer will work.
+                     *
+                     * @member {PIXI.State}
+                     * @readonly
                      */
+                    this.state = State.for2d();
+                }
 
-                    // Guaranteed that there will be at least one event in events, and all events must have the same pointer type
+                if ( ObjectRenderer ) ParticleRenderer.__proto__ = ObjectRenderer;
+                ParticleRenderer.prototype = Object.create( ObjectRenderer && ObjectRenderer.prototype );
+                ParticleRenderer.prototype.constructor = ParticleRenderer;
 
-                    if (this.autoPreventDefault && events[0].isNormalized)
+                /**
+                 * Renders the particle container object.
+                 *
+                 * @param {PIXI.ParticleContainer} container - The container to render using this ParticleRenderer
+                 */
+                ParticleRenderer.prototype.render = function render (container)
+                {
+                    var children = container.children;
+                    var maxSize = container._maxSize;
+                    var batchSize = container._batchSize;
+                    var renderer = this.renderer;
+                    var totalChildren = children.length;
+
+                    if (totalChildren === 0)
                     {
-                        var cancelable = originalEvent.cancelable || !('cancelable' in originalEvent);
-
-                        if (cancelable)
-                        {
-                            originalEvent.preventDefault();
-                        }
+                        return;
+                    }
+                    else if (totalChildren > maxSize && !container.autoResize)
+                    {
+                        totalChildren = maxSize;
                     }
 
-                    var eventLen = events.length;
+                    var buffers = container._buffers;
 
-                    for (var i = 0; i < eventLen; i++)
+                    if (!buffers)
                     {
-                        var event = events[i];
+                        buffers = container._buffers = this.generateBuffers(container);
+                    }
 
-                        var interactionData = this.getInteractionDataForPointerId(event);
+                    var baseTexture = children[0]._texture.baseTexture;
 
-                        var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
+                    // if the uvs have not updated then no point rendering just yet!
+                    this.state.blendMode = correctBlendMode(container.blendMode, baseTexture.alphaMode);
+                    renderer.state.set(this.state);
 
-                        interactionEvent.data.originalEvent = originalEvent;
+                    var gl = renderer.gl;
 
-                        this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, this.processPointerDown, true);
+                    var m = container.worldTransform.copyTo(this.tempMatrix);
 
-                        this.emit('pointerdown', interactionEvent);
-                        if (event.pointerType === 'touch')
+                    m.prepend(renderer.globalUniforms.uniforms.projectionMatrix);
+
+                    this.shader.uniforms.translationMatrix = m.toArray(true);
+
+                    this.shader.uniforms.uColor = premultiplyRgba(container.tintRgb,
+                        container.worldAlpha, this.shader.uniforms.uColor, baseTexture.alphaMode);
+
+                    this.shader.uniforms.uSampler = baseTexture;
+
+                    this.renderer.shader.bind(this.shader);
+
+                    var updateStatic = false;
+
+                    // now lets upload and render the buffers..
+                    for (var i = 0, j = 0; i < totalChildren; i += batchSize, j += 1)
+                    {
+                        var amount = (totalChildren - i);
+
+                        if (amount > batchSize)
                         {
-                            this.emit('touchstart', interactionEvent);
+                            amount = batchSize;
                         }
-                        // emit a mouse event for "pen" pointers, the way a browser would emit a fallback event
-                        else if (event.pointerType === 'mouse' || event.pointerType === 'pen')
-                        {
-                            var isRightButton = event.button === 2;
 
-                            this.emit(isRightButton ? 'rightdown' : 'mousedown', this.eventData);
+                        if (j >= buffers.length)
+                        {
+                            buffers.push(this._generateOneMoreBuffer(container));
                         }
+
+                        var buffer = buffers[j];
+
+                        // we always upload the dynamic
+                        buffer.uploadDynamic(children, i, amount);
+
+                        var bid = container._bufferUpdateIDs[j] || 0;
+
+                        updateStatic = updateStatic || (buffer._updateID < bid);
+                        // we only upload the static content when we have to!
+                        if (updateStatic)
+                        {
+                            buffer._updateID = container._updateID;
+                            buffer.uploadStatic(children, i, amount);
+                        }
+
+                        // bind the buffer
+                        renderer.geometry.bind(buffer.geometry);
+                        gl.drawElements(gl.TRIANGLES, amount * 6, gl.UNSIGNED_SHORT, 0);
                     }
                 };
 
                 /**
-                 * Processes the result of the pointer down check and dispatches the event if need be
+                 * Creates one particle buffer for each child in the container we want to render and updates internal properties
                  *
+                 * @param {PIXI.ParticleContainer} container - The container to render using this ParticleRenderer
+                 * @return {PIXI.ParticleBuffer[]} The buffers
                  * @private
-                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
-                 * @param {boolean} hit - the result of the hit test on the display object
                  */
-                InteractionManager.prototype.processPointerDown = function processPointerDown (interactionEvent, displayObject, hit)
+                ParticleRenderer.prototype.generateBuffers = function generateBuffers (container)
                 {
-                    var data = interactionEvent.data;
-                    var id = interactionEvent.data.identifier;
+                    var buffers = [];
+                    var size = container._maxSize;
+                    var batchSize = container._batchSize;
+                    var dynamicPropertyFlags = container._properties;
 
-                    if (hit)
+                    for (var i = 0; i < size; i += batchSize)
                     {
-                        if (!displayObject.trackedPointers[id])
-                        {
-                            displayObject.trackedPointers[id] = new InteractionTrackingData(id);
-                        }
-                        this.dispatchEvent(displayObject, 'pointerdown', interactionEvent);
-
-                        if (data.pointerType === 'touch')
-                        {
-                            this.dispatchEvent(displayObject, 'touchstart', interactionEvent);
-                        }
-                        else if (data.pointerType === 'mouse' || data.pointerType === 'pen')
-                        {
-                            var isRightButton = data.button === 2;
-
-                            if (isRightButton)
-                            {
-                                displayObject.trackedPointers[id].rightDown = true;
-                            }
-                            else
-                            {
-                                displayObject.trackedPointers[id].leftDown = true;
-                            }
-
-                            this.dispatchEvent(displayObject, isRightButton ? 'rightdown' : 'mousedown', interactionEvent);
-                        }
+                        buffers.push(new ParticleBuffer(this.properties, dynamicPropertyFlags, batchSize));
                     }
+
+                    return buffers;
                 };
 
                 /**
-                 * Is called when the pointer button is released on the renderer element
+                 * Creates one more particle buffer, because container has autoResize feature
                  *
+                 * @param {PIXI.ParticleContainer} container - The container to render using this ParticleRenderer
+                 * @return {PIXI.ParticleBuffer} generated buffer
                  * @private
-                 * @param {PointerEvent} originalEvent - The DOM event of a pointer button being released
-                 * @param {boolean} cancelled - true if the pointer is cancelled
-                 * @param {Function} func - Function passed to {@link processInteractive}
                  */
-                InteractionManager.prototype.onPointerComplete = function onPointerComplete (originalEvent, cancelled, func)
+                ParticleRenderer.prototype._generateOneMoreBuffer = function _generateOneMoreBuffer (container)
                 {
-                    var events = this.normalizeToPointerData(originalEvent);
+                    var batchSize = container._batchSize;
+                    var dynamicPropertyFlags = container._properties;
 
-                    var eventLen = events.length;
+                    return new ParticleBuffer(this.properties, dynamicPropertyFlags, batchSize);
+                };
 
-                    // if the event wasn't targeting our canvas, then consider it to be pointerupoutside
-                    // in all cases (unless it was a pointercancel)
-                    var eventAppend = originalEvent.target !== this.interactionDOMElement ? 'outside' : '';
+                /**
+                 * Uploads the vertices.
+                 *
+                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
+                 * @param {number} startIndex - the index to start from in the children array
+                 * @param {number} amount - the amount of children that will have their vertices uploaded
+                 * @param {number[]} array - The vertices to upload.
+                 * @param {number} stride - Stride to use for iteration.
+                 * @param {number} offset - Offset to start at.
+                 */
+                ParticleRenderer.prototype.uploadVertices = function uploadVertices (children, startIndex, amount, array, stride, offset)
+                {
+                    var w0 = 0;
+                    var w1 = 0;
+                    var h0 = 0;
+                    var h1 = 0;
 
-                    for (var i = 0; i < eventLen; i++)
+                    for (var i = 0; i < amount; ++i)
                     {
-                        var event = events[i];
+                        var sprite = children[startIndex + i];
+                        var texture = sprite._texture;
+                        var sx = sprite.scale.x;
+                        var sy = sprite.scale.y;
+                        var trim = texture.trim;
+                        var orig = texture.orig;
 
-                        var interactionData = this.getInteractionDataForPointerId(event);
-
-                        var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
-
-                        interactionEvent.data.originalEvent = originalEvent;
-
-                        // perform hit testing for events targeting our canvas or cancel events
-                        this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, func, cancelled || !eventAppend);
-
-                        this.emit(cancelled ? 'pointercancel' : ("pointerup" + eventAppend), interactionEvent);
-
-                        if (event.pointerType === 'mouse' || event.pointerType === 'pen')
+                        if (trim)
                         {
-                            var isRightButton = event.button === 2;
+                            // if the sprite is trimmed and is not a tilingsprite then we need to add the
+                            // extra space before transforming the sprite coords..
+                            w1 = trim.x - (sprite.anchor.x * orig.width);
+                            w0 = w1 + trim.width;
 
-                            this.emit(isRightButton ? ("rightup" + eventAppend) : ("mouseup" + eventAppend), interactionEvent);
+                            h1 = trim.y - (sprite.anchor.y * orig.height);
+                            h0 = h1 + trim.height;
                         }
-                        else if (event.pointerType === 'touch')
+                        else
                         {
-                            this.emit(cancelled ? 'touchcancel' : ("touchend" + eventAppend), interactionEvent);
-                            this.releaseInteractionDataForPointerId(event.pointerId, interactionData);
+                            w0 = (orig.width) * (1 - sprite.anchor.x);
+                            w1 = (orig.width) * -sprite.anchor.x;
+
+                            h0 = orig.height * (1 - sprite.anchor.y);
+                            h1 = orig.height * -sprite.anchor.y;
                         }
+
+                        array[offset] = w1 * sx;
+                        array[offset + 1] = h1 * sy;
+
+                        array[offset + stride] = w0 * sx;
+                        array[offset + stride + 1] = h1 * sy;
+
+                        array[offset + (stride * 2)] = w0 * sx;
+                        array[offset + (stride * 2) + 1] = h0 * sy;
+
+                        array[offset + (stride * 3)] = w1 * sx;
+                        array[offset + (stride * 3) + 1] = h0 * sy;
+
+                        offset += stride * 4;
                     }
                 };
 
                 /**
-                 * Is called when the pointer button is cancelled
+                 * Uploads the position.
                  *
-                 * @private
-                 * @param {PointerEvent} event - The DOM event of a pointer button being released
+                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
+                 * @param {number} startIndex - the index to start from in the children array
+                 * @param {number} amount - the amount of children that will have their positions uploaded
+                 * @param {number[]} array - The vertices to upload.
+                 * @param {number} stride - Stride to use for iteration.
+                 * @param {number} offset - Offset to start at.
                  */
-                InteractionManager.prototype.onPointerCancel = function onPointerCancel (event)
+                ParticleRenderer.prototype.uploadPosition = function uploadPosition (children, startIndex, amount, array, stride, offset)
                 {
-                    // if we support touch events, then only use those for touch events, not pointer events
-                    if (this.supportsTouchEvents && event.pointerType === 'touch') { return; }
-
-                    this.onPointerComplete(event, true, this.processPointerCancel);
-                };
-
-                /**
-                 * Processes the result of the pointer cancel check and dispatches the event if need be
-                 *
-                 * @private
-                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
-                 */
-                InteractionManager.prototype.processPointerCancel = function processPointerCancel (interactionEvent, displayObject)
-                {
-                    var data = interactionEvent.data;
-
-                    var id = interactionEvent.data.identifier;
-
-                    if (displayObject.trackedPointers[id] !== undefined)
+                    for (var i = 0; i < amount; i++)
                     {
-                        delete displayObject.trackedPointers[id];
-                        this.dispatchEvent(displayObject, 'pointercancel', interactionEvent);
+                        var spritePosition = children[startIndex + i].position;
 
-                        if (data.pointerType === 'touch')
-                        {
-                            this.dispatchEvent(displayObject, 'touchcancel', interactionEvent);
-                        }
+                        array[offset] = spritePosition.x;
+                        array[offset + 1] = spritePosition.y;
+
+                        array[offset + stride] = spritePosition.x;
+                        array[offset + stride + 1] = spritePosition.y;
+
+                        array[offset + (stride * 2)] = spritePosition.x;
+                        array[offset + (stride * 2) + 1] = spritePosition.y;
+
+                        array[offset + (stride * 3)] = spritePosition.x;
+                        array[offset + (stride * 3) + 1] = spritePosition.y;
+
+                        offset += stride * 4;
                     }
                 };
 
                 /**
-                 * Is called when the pointer button is released on the renderer element
+                 * Uploads the rotiation.
                  *
-                 * @private
-                 * @param {PointerEvent} event - The DOM event of a pointer button being released
+                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
+                 * @param {number} startIndex - the index to start from in the children array
+                 * @param {number} amount - the amount of children that will have their rotation uploaded
+                 * @param {number[]} array - The vertices to upload.
+                 * @param {number} stride - Stride to use for iteration.
+                 * @param {number} offset - Offset to start at.
                  */
-                InteractionManager.prototype.onPointerUp = function onPointerUp (event)
+                ParticleRenderer.prototype.uploadRotation = function uploadRotation (children, startIndex, amount, array, stride, offset)
                 {
-                    // if we support touch events, then only use those for touch events, not pointer events
-                    if (this.supportsTouchEvents && event.pointerType === 'touch') { return; }
-
-                    this.onPointerComplete(event, false, this.processPointerUp);
-                };
-
-                /**
-                 * Processes the result of the pointer up check and dispatches the event if need be
-                 *
-                 * @private
-                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
-                 * @param {boolean} hit - the result of the hit test on the display object
-                 */
-                InteractionManager.prototype.processPointerUp = function processPointerUp (interactionEvent, displayObject, hit)
-                {
-                    var data = interactionEvent.data;
-
-                    var id = interactionEvent.data.identifier;
-
-                    var trackingData = displayObject.trackedPointers[id];
-
-                    var isTouch = data.pointerType === 'touch';
-
-                    var isMouse = (data.pointerType === 'mouse' || data.pointerType === 'pen');
-                    // need to track mouse down status in the mouse block so that we can emit
-                    // event in a later block
-                    var isMouseTap = false;
-
-                    // Mouse only
-                    if (isMouse)
+                    for (var i = 0; i < amount; i++)
                     {
-                        var isRightButton = data.button === 2;
+                        var spriteRotation = children[startIndex + i].rotation;
 
-                        var flags = InteractionTrackingData.FLAGS;
+                        array[offset] = spriteRotation;
+                        array[offset + stride] = spriteRotation;
+                        array[offset + (stride * 2)] = spriteRotation;
+                        array[offset + (stride * 3)] = spriteRotation;
 
-                        var test = isRightButton ? flags.RIGHT_DOWN : flags.LEFT_DOWN;
-
-                        var isDown = trackingData !== undefined && (trackingData.flags & test);
-
-                        if (hit)
-                        {
-                            this.dispatchEvent(displayObject, isRightButton ? 'rightup' : 'mouseup', interactionEvent);
-
-                            if (isDown)
-                            {
-                                this.dispatchEvent(displayObject, isRightButton ? 'rightclick' : 'click', interactionEvent);
-                                // because we can confirm that the mousedown happened on this object, flag for later emit of pointertap
-                                isMouseTap = true;
-                            }
-                        }
-                        else if (isDown)
-                        {
-                            this.dispatchEvent(displayObject, isRightButton ? 'rightupoutside' : 'mouseupoutside', interactionEvent);
-                        }
-                        // update the down state of the tracking data
-                        if (trackingData)
-                        {
-                            if (isRightButton)
-                            {
-                                trackingData.rightDown = false;
-                            }
-                            else
-                            {
-                                trackingData.leftDown = false;
-                            }
-                        }
-                    }
-
-                    // Pointers and Touches, and Mouse
-                    if (hit)
-                    {
-                        this.dispatchEvent(displayObject, 'pointerup', interactionEvent);
-                        if (isTouch) { this.dispatchEvent(displayObject, 'touchend', interactionEvent); }
-
-                        if (trackingData)
-                        {
-                            // emit pointertap if not a mouse, or if the mouse block decided it was a tap
-                            if (!isMouse || isMouseTap)
-                            {
-                                this.dispatchEvent(displayObject, 'pointertap', interactionEvent);
-                            }
-                            if (isTouch)
-                            {
-                                this.dispatchEvent(displayObject, 'tap', interactionEvent);
-                                // touches are no longer over (if they ever were) when we get the touchend
-                                // so we should ensure that we don't keep pretending that they are
-                                trackingData.over = false;
-                            }
-                        }
-                    }
-                    else if (trackingData)
-                    {
-                        this.dispatchEvent(displayObject, 'pointerupoutside', interactionEvent);
-                        if (isTouch) { this.dispatchEvent(displayObject, 'touchendoutside', interactionEvent); }
-                    }
-                    // Only remove the tracking data if there is no over/down state still associated with it
-                    if (trackingData && trackingData.none)
-                    {
-                        delete displayObject.trackedPointers[id];
+                        offset += stride * 4;
                     }
                 };
 
                 /**
-                 * Is called when the pointer moves across the renderer element
+                 * Uploads the Uvs
                  *
-                 * @private
-                 * @param {PointerEvent} originalEvent - The DOM event of a pointer moving
+                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
+                 * @param {number} startIndex - the index to start from in the children array
+                 * @param {number} amount - the amount of children that will have their rotation uploaded
+                 * @param {number[]} array - The vertices to upload.
+                 * @param {number} stride - Stride to use for iteration.
+                 * @param {number} offset - Offset to start at.
                  */
-                InteractionManager.prototype.onPointerMove = function onPointerMove (originalEvent)
+                ParticleRenderer.prototype.uploadUvs = function uploadUvs (children, startIndex, amount, array, stride, offset)
                 {
-                    // if we support touch events, then only use those for touch events, not pointer events
-                    if (this.supportsTouchEvents && originalEvent.pointerType === 'touch') { return; }
-
-                    var events = this.normalizeToPointerData(originalEvent);
-
-                    if (events[0].pointerType === 'mouse' || events[0].pointerType === 'pen')
+                    for (var i = 0; i < amount; ++i)
                     {
-                        this.didMove = true;
+                        var textureUvs = children[startIndex + i]._texture._uvs;
 
-                        this.cursor = null;
-                    }
-
-                    var eventLen = events.length;
-
-                    for (var i = 0; i < eventLen; i++)
-                    {
-                        var event = events[i];
-
-                        var interactionData = this.getInteractionDataForPointerId(event);
-
-                        var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
-
-                        interactionEvent.data.originalEvent = originalEvent;
-
-                        this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, this.processPointerMove, true);
-
-                        this.emit('pointermove', interactionEvent);
-                        if (event.pointerType === 'touch') { this.emit('touchmove', interactionEvent); }
-                        if (event.pointerType === 'mouse' || event.pointerType === 'pen') { this.emit('mousemove', interactionEvent); }
-                    }
-
-                    if (events[0].pointerType === 'mouse')
-                    {
-                        this.setCursorMode(this.cursor);
-
-                        // TODO BUG for parents interactive object (border order issue)
-                    }
-                };
-
-                /**
-                 * Processes the result of the pointer move check and dispatches the event if need be
-                 *
-                 * @private
-                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
-                 * @param {boolean} hit - the result of the hit test on the display object
-                 */
-                InteractionManager.prototype.processPointerMove = function processPointerMove (interactionEvent, displayObject, hit)
-                {
-                    var data = interactionEvent.data;
-
-                    var isTouch = data.pointerType === 'touch';
-
-                    var isMouse = (data.pointerType === 'mouse' || data.pointerType === 'pen');
-
-                    if (isMouse)
-                    {
-                        this.processPointerOverOut(interactionEvent, displayObject, hit);
-                    }
-
-                    if (!this.moveWhenInside || hit)
-                    {
-                        this.dispatchEvent(displayObject, 'pointermove', interactionEvent);
-                        if (isTouch) { this.dispatchEvent(displayObject, 'touchmove', interactionEvent); }
-                        if (isMouse) { this.dispatchEvent(displayObject, 'mousemove', interactionEvent); }
-                    }
-                };
-
-                /**
-                 * Is called when the pointer is moved out of the renderer element
-                 *
-                 * @private
-                 * @param {PointerEvent} originalEvent - The DOM event of a pointer being moved out
-                 */
-                InteractionManager.prototype.onPointerOut = function onPointerOut (originalEvent)
-                {
-                    // if we support touch events, then only use those for touch events, not pointer events
-                    if (this.supportsTouchEvents && originalEvent.pointerType === 'touch') { return; }
-
-                    var events = this.normalizeToPointerData(originalEvent);
-
-                    // Only mouse and pointer can call onPointerOut, so events will always be length 1
-                    var event = events[0];
-
-                    if (event.pointerType === 'mouse')
-                    {
-                        this.mouseOverRenderer = false;
-                        this.setCursorMode(null);
-                    }
-
-                    var interactionData = this.getInteractionDataForPointerId(event);
-
-                    var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
-
-                    interactionEvent.data.originalEvent = event;
-
-                    this.processInteractive(interactionEvent, this.renderer._lastObjectRendered, this.processPointerOverOut, false);
-
-                    this.emit('pointerout', interactionEvent);
-                    if (event.pointerType === 'mouse' || event.pointerType === 'pen')
-                    {
-                        this.emit('mouseout', interactionEvent);
-                    }
-                    else
-                    {
-                        // we can get touchleave events after touchend, so we want to make sure we don't
-                        // introduce memory leaks
-                        this.releaseInteractionDataForPointerId(interactionData.identifier);
-                    }
-                };
-
-                /**
-                 * Processes the result of the pointer over/out check and dispatches the event if need be
-                 *
-                 * @private
-                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The interaction event wrapping the DOM event
-                 * @param {PIXI.Container|PIXI.Sprite|PIXI.TilingSprite} displayObject - The display object that was tested
-                 * @param {boolean} hit - the result of the hit test on the display object
-                 */
-                InteractionManager.prototype.processPointerOverOut = function processPointerOverOut (interactionEvent, displayObject, hit)
-                {
-                    var data = interactionEvent.data;
-
-                    var id = interactionEvent.data.identifier;
-
-                    var isMouse = (data.pointerType === 'mouse' || data.pointerType === 'pen');
-
-                    var trackingData = displayObject.trackedPointers[id];
-
-                    // if we just moused over the display object, then we need to track that state
-                    if (hit && !trackingData)
-                    {
-                        trackingData = displayObject.trackedPointers[id] = new InteractionTrackingData(id);
-                    }
-
-                    if (trackingData === undefined) { return; }
-
-                    if (hit && this.mouseOverRenderer)
-                    {
-                        if (!trackingData.over)
+                        if (textureUvs)
                         {
-                            trackingData.over = true;
-                            this.delayDispatchEvent(displayObject, 'pointerover', interactionEvent);
-                            if (isMouse)
-                            {
-                                this.delayDispatchEvent(displayObject, 'mouseover', interactionEvent);
-                            }
+                            array[offset] = textureUvs.x0;
+                            array[offset + 1] = textureUvs.y0;
+
+                            array[offset + stride] = textureUvs.x1;
+                            array[offset + stride + 1] = textureUvs.y1;
+
+                            array[offset + (stride * 2)] = textureUvs.x2;
+                            array[offset + (stride * 2) + 1] = textureUvs.y2;
+
+                            array[offset + (stride * 3)] = textureUvs.x3;
+                            array[offset + (stride * 3) + 1] = textureUvs.y3;
+
+                            offset += stride * 4;
                         }
+                        else
+                        {
+                            // TODO you know this can be easier!
+                            array[offset] = 0;
+                            array[offset + 1] = 0;
 
-                        // only change the cursor if it has not already been changed (by something deeper in the
-                        // display tree)
-                        if (isMouse && this.cursor === null)
-                        {
-                            this.cursor = displayObject.cursor;
-                        }
-                    }
-                    else if (trackingData.over)
-                    {
-                        trackingData.over = false;
-                        this.dispatchEvent(displayObject, 'pointerout', this.eventData);
-                        if (isMouse)
-                        {
-                            this.dispatchEvent(displayObject, 'mouseout', interactionEvent);
-                        }
-                        // if there is no mouse down information for the pointer, then it is safe to delete
-                        if (trackingData.none)
-                        {
-                            delete displayObject.trackedPointers[id];
+                            array[offset + stride] = 0;
+                            array[offset + stride + 1] = 0;
+
+                            array[offset + (stride * 2)] = 0;
+                            array[offset + (stride * 2) + 1] = 0;
+
+                            array[offset + (stride * 3)] = 0;
+                            array[offset + (stride * 3) + 1] = 0;
+
+                            offset += stride * 4;
                         }
                     }
                 };
 
                 /**
-                 * Is called when the pointer is moved into the renderer element
+                 * Uploads the tint.
                  *
-                 * @private
-                 * @param {PointerEvent} originalEvent - The DOM event of a pointer button being moved into the renderer view
+                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
+                 * @param {number} startIndex - the index to start from in the children array
+                 * @param {number} amount - the amount of children that will have their rotation uploaded
+                 * @param {number[]} array - The vertices to upload.
+                 * @param {number} stride - Stride to use for iteration.
+                 * @param {number} offset - Offset to start at.
                  */
-                InteractionManager.prototype.onPointerOver = function onPointerOver (originalEvent)
+                ParticleRenderer.prototype.uploadTint = function uploadTint (children, startIndex, amount, array, stride, offset)
                 {
-                    var events = this.normalizeToPointerData(originalEvent);
-
-                    // Only mouse and pointer can call onPointerOver, so events will always be length 1
-                    var event = events[0];
-
-                    var interactionData = this.getInteractionDataForPointerId(event);
-
-                    var interactionEvent = this.configureInteractionEventForDOMEvent(this.eventData, event, interactionData);
-
-                    interactionEvent.data.originalEvent = event;
-
-                    if (event.pointerType === 'mouse')
+                    for (var i = 0; i < amount; ++i)
                     {
-                        this.mouseOverRenderer = true;
-                    }
+                        var sprite = children[startIndex + i];
+                        var premultiplied = sprite._texture.baseTexture.alphaMode > 0;
+                        var alpha = sprite.alpha;
+                        // we dont call extra function if alpha is 1.0, that's faster
+                        var argb = alpha < 1.0 && premultiplied ? premultiplyTint(sprite._tintRGB, alpha)
+                            : sprite._tintRGB + (alpha * 255 << 24);
 
-                    this.emit('pointerover', interactionEvent);
-                    if (event.pointerType === 'mouse' || event.pointerType === 'pen')
-                    {
-                        this.emit('mouseover', interactionEvent);
+                        array[offset] = argb;
+                        array[offset + stride] = argb;
+                        array[offset + (stride * 2)] = argb;
+                        array[offset + (stride * 3)] = argb;
+
+                        offset += stride * 4;
                     }
                 };
 
                 /**
-                 * Get InteractionData for a given pointerId. Store that data as well
-                 *
-                 * @private
-                 * @param {PointerEvent} event - Normalized pointer event, output from normalizeToPointerData
-                 * @return {PIXI.interaction.InteractionData} - Interaction data for the given pointer identifier
+                 * Destroys the ParticleRenderer.
                  */
-                InteractionManager.prototype.getInteractionDataForPointerId = function getInteractionDataForPointerId (event)
+                ParticleRenderer.prototype.destroy = function destroy ()
                 {
-                    var pointerId = event.pointerId;
+                    ObjectRenderer.prototype.destroy.call(this);
 
-                    var interactionData;
+                    if (this.shader)
+                    {
+                        this.shader.destroy();
+                        this.shader = null;
+                    }
 
-                    if (pointerId === MOUSE_POINTER_ID || event.pointerType === 'mouse')
-                    {
-                        interactionData = this.mouse;
-                    }
-                    else if (this.activeInteractionData[pointerId])
-                    {
-                        interactionData = this.activeInteractionData[pointerId];
-                    }
-                    else
-                    {
-                        interactionData = this.interactionDataPool.pop() || new InteractionData();
-                        interactionData.identifier = pointerId;
-                        this.activeInteractionData[pointerId] = interactionData;
-                    }
-                    // copy properties from the event, so that we can make sure that touch/pointer specific
-                    // data is available
-                    interactionData.copyEvent(event);
-
-                    return interactionData;
+                    this.tempMatrix = null;
                 };
 
-                /**
-                 * Return unused InteractionData to the pool, for a given pointerId
-                 *
-                 * @private
-                 * @param {number} pointerId - Identifier from a pointer event
-                 */
-                InteractionManager.prototype.releaseInteractionDataForPointerId = function releaseInteractionDataForPointerId (pointerId)
-                {
-                    var interactionData = this.activeInteractionData[pointerId];
-
-                    if (interactionData)
-                    {
-                        delete this.activeInteractionData[pointerId];
-                        interactionData.reset();
-                        this.interactionDataPool.push(interactionData);
-                    }
-                };
-
-                /**
-                 * Configure an InteractionEvent to wrap a DOM PointerEvent and InteractionData
-                 *
-                 * @private
-                 * @param {PIXI.interaction.InteractionEvent} interactionEvent - The event to be configured
-                 * @param {PointerEvent} pointerEvent - The DOM event that will be paired with the InteractionEvent
-                 * @param {PIXI.interaction.InteractionData} interactionData - The InteractionData that will be paired
-                 *        with the InteractionEvent
-                 * @return {PIXI.interaction.InteractionEvent} the interaction event that was passed in
-                 */
-                InteractionManager.prototype.configureInteractionEventForDOMEvent = function configureInteractionEventForDOMEvent (interactionEvent, pointerEvent, interactionData)
-                {
-                    interactionEvent.data = interactionData;
-
-                    this.mapPositionToPoint(interactionData.global, pointerEvent.clientX, pointerEvent.clientY);
-
-                    // Not really sure why this is happening, but it's how a previous version handled things
-                    if (pointerEvent.pointerType === 'touch')
-                    {
-                        pointerEvent.globalX = interactionData.global.x;
-                        pointerEvent.globalY = interactionData.global.y;
-                    }
-
-                    interactionData.originalEvent = pointerEvent;
-                    interactionEvent.reset();
-
-                    return interactionEvent;
-                };
-
-                /**
-                 * Ensures that the original event object contains all data that a regular pointer event would have
-                 *
-                 * @private
-                 * @param {TouchEvent|MouseEvent|PointerEvent} event - The original event data from a touch or mouse event
-                 * @return {PointerEvent[]} An array containing a single normalized pointer event, in the case of a pointer
-                 *  or mouse event, or a multiple normalized pointer events if there are multiple changed touches
-                 */
-                InteractionManager.prototype.normalizeToPointerData = function normalizeToPointerData (event)
-                {
-                    var normalizedEvents = [];
-
-                    if (this.supportsTouchEvents && event instanceof TouchEvent)
-                    {
-                        for (var i = 0, li = event.changedTouches.length; i < li; i++)
-                        {
-                            var touch = event.changedTouches[i];
-
-                            if (typeof touch.button === 'undefined') { touch.button = event.touches.length ? 1 : 0; }
-                            if (typeof touch.buttons === 'undefined') { touch.buttons = event.touches.length ? 1 : 0; }
-                            if (typeof touch.isPrimary === 'undefined')
-                            {
-                                touch.isPrimary = event.touches.length === 1 && event.type === 'touchstart';
-                            }
-                            if (typeof touch.width === 'undefined') { touch.width = touch.radiusX || 1; }
-                            if (typeof touch.height === 'undefined') { touch.height = touch.radiusY || 1; }
-                            if (typeof touch.tiltX === 'undefined') { touch.tiltX = 0; }
-                            if (typeof touch.tiltY === 'undefined') { touch.tiltY = 0; }
-                            if (typeof touch.pointerType === 'undefined') { touch.pointerType = 'touch'; }
-                            if (typeof touch.pointerId === 'undefined') { touch.pointerId = touch.identifier || 0; }
-                            if (typeof touch.pressure === 'undefined') { touch.pressure = touch.force || 0.5; }
-                            if (typeof touch.twist === 'undefined') { touch.twist = 0; }
-                            if (typeof touch.tangentialPressure === 'undefined') { touch.tangentialPressure = 0; }
-                            // TODO: Remove these, as layerX/Y is not a standard, is deprecated, has uneven
-                            // support, and the fill ins are not quite the same
-                            // offsetX/Y might be okay, but is not the same as clientX/Y when the canvas's top
-                            // left is not 0,0 on the page
-                            if (typeof touch.layerX === 'undefined') { touch.layerX = touch.offsetX = touch.clientX; }
-                            if (typeof touch.layerY === 'undefined') { touch.layerY = touch.offsetY = touch.clientY; }
-
-                            // mark the touch as normalized, just so that we know we did it
-                            touch.isNormalized = true;
-
-                            normalizedEvents.push(touch);
-                        }
-                    }
-                    // apparently PointerEvent subclasses MouseEvent, so yay
-                    else if (event instanceof MouseEvent && (!this.supportsPointerEvents || !(event instanceof window.PointerEvent)))
-                    {
-                        if (typeof event.isPrimary === 'undefined') { event.isPrimary = true; }
-                        if (typeof event.width === 'undefined') { event.width = 1; }
-                        if (typeof event.height === 'undefined') { event.height = 1; }
-                        if (typeof event.tiltX === 'undefined') { event.tiltX = 0; }
-                        if (typeof event.tiltY === 'undefined') { event.tiltY = 0; }
-                        if (typeof event.pointerType === 'undefined') { event.pointerType = 'mouse'; }
-                        if (typeof event.pointerId === 'undefined') { event.pointerId = MOUSE_POINTER_ID; }
-                        if (typeof event.pressure === 'undefined') { event.pressure = 0.5; }
-                        if (typeof event.twist === 'undefined') { event.twist = 0; }
-                        if (typeof event.tangentialPressure === 'undefined') { event.tangentialPressure = 0; }
-
-                        // mark the mouse event as normalized, just so that we know we did it
-                        event.isNormalized = true;
-
-                        normalizedEvents.push(event);
-                    }
-                    else
-                    {
-                        normalizedEvents.push(event);
-                    }
-
-                    return normalizedEvents;
-                };
-
-                /**
-                 * Destroys the interaction manager
-                 *
-                 */
-                InteractionManager.prototype.destroy = function destroy ()
-                {
-                    this.removeEvents();
-
-                    this.removeAllListeners();
-
-                    this.renderer = null;
-
-                    this.mouse = null;
-
-                    this.eventData = null;
-
-                    this.interactionDOMElement = null;
-
-                    this.onPointerDown = null;
-                    this.processPointerDown = null;
-
-                    this.onPointerUp = null;
-                    this.processPointerUp = null;
-
-                    this.onPointerCancel = null;
-                    this.processPointerCancel = null;
-
-                    this.onPointerMove = null;
-                    this.processPointerMove = null;
-
-                    this.onPointerOut = null;
-                    this.processPointerOverOut = null;
-
-                    this.onPointerOver = null;
-
-                    this.search = null;
-                };
-
-                return InteractionManager;
-            }(eventemitter3));
-
-            var interaction_es = /*#__PURE__*/Object.freeze({
-                        __proto__: null,
-                        InteractionData: InteractionData,
-                        InteractionEvent: InteractionEvent,
-                        InteractionManager: InteractionManager,
-                        InteractionTrackingData: InteractionTrackingData,
-                        interactiveTarget: interactiveTarget
-            });
+                return ParticleRenderer;
+            }(ObjectRenderer));
 
             /*!
-             * @pixi/graphics - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/graphics - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/graphics is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -25772,7 +31907,7 @@
                 {
                     if ( defaultSegments === void 0 ) defaultSegments = 20;
 
-                    if (!this.adaptive)
+                    if (!this.adaptive || !length || Number.isNaN(length))
                     {
                         return defaultSegments;
                     }
@@ -25988,7 +32123,7 @@
 
                     var seg = (Math.PI * 2) / totalSegs;
 
-                    for (var i = 0; i < totalSegs; i++)
+                    for (var i = 0; i < totalSegs - 0.5; i++)
                     {
                         points.push(
                             x + (Math.sin(-seg * i) * width),
@@ -26929,8 +33064,9 @@
             };
 
             /**
-             * A structure to hold interim batch objects.
-             *
+             * A structure to hold interim batch objects for Graphics.
+             * @class
+             * @memberof PIXI.graphicsUtils
              */
             var BatchPart = function BatchPart()
             {
@@ -26982,6 +33118,7 @@
             /**
              * Map of fill commands for each shape type.
              *
+             * @memberof PIXI.graphicsUtils
              * @member {Object}
              */
             var FILL_COMMANDS = {};
@@ -26994,18 +33131,20 @@
             /**
              * Batch pool, stores unused batches for preventing allocations.
              *
-             * @type {Array<BatchPart>}
+             * @memberof PIXI.graphicsUtils
+             * @type {Array<PIXI.graphicsUtils.BatchPart>}
              */
             var BATCH_POOL = [];
 
             /**
              * Draw call pool, stores unused draw calls for preventing allocations.
              *
+             * @memberof PIXI.graphicsUtils
              * @type {Array<PIXI.BatchDrawCall>}
              */
             var DRAW_CALL_POOL = [];
 
-            var index$1 = ({
+            var index$2 = ({
                 buildPoly: buildPoly,
                 buildCircle: buildCircle,
                 buildRectangle: buildRectangle,
@@ -27219,7 +33358,7 @@
                      * Intermediate abstract format sent to batch system.
                      * Can be converted to drawCalls or to batchable objects.
                      *
-                     * @member {BatchPart[]}
+                     * @member {PIXI.graphicsUtils.BatchPart[]}
                      * @protected
                      */
                     this.batches = [];
@@ -27321,12 +33460,10 @@
 
                     for (var i$1 = 0; i$1 < this.batches.length; i$1++)
                     {
-                        var batch =  this.batches[i$1];
+                        var batchPart = this.batches[i$1];
 
-                        batch.start = 0;
-                        batch.attribStart = 0;
-                        batch.style = null;
-                        BATCH_POOL.push(batch);
+                        batchPart.reset();
+                        BATCH_POOL.push(batchPart);
                     }
 
                     this.batches.length = 0;
@@ -27553,32 +33690,10 @@
                             if (!style.visible) { continue; }
 
                             var nextTexture = style.texture.baseTexture;
-                            var index$1 = this.indices.length;
+                            var index = this.indices.length;
                             var attribIndex = this.points.length / 2;
 
                             nextTexture.wrapMode = WRAP_MODES.REPEAT;
-
-                            // close batch if style is different
-                            if (batchPart && !this._compareStyles(currentStyle, style))
-                            {
-                                batchPart.end(index$1, attribIndex);
-
-                                if (batchPart.size > 0)
-                                {
-                                    batchPart = null;
-                                }
-                            }
-                            // spawn new batch if its first batch or previous was closed
-                            if (!batchPart)
-                            {
-                                batchPart = BATCH_POOL.pop() || new BatchPart();
-                                batchPart.begin(style, index$1, attribIndex);
-                                this.batches.push(batchPart);
-
-                                currentStyle = style;
-                            }
-
-                            var start = this.points.length / 2;
 
                             if (j === 0)
                             {
@@ -27589,13 +33704,37 @@
                                 this.processLine(data);
                             }
 
-                            var size = (this.points.length / 2) - start;
+                            var size = (this.points.length / 2) - attribIndex;
 
-                            this.addUvs(this.points, uvs, style.texture, start, size, style.matrix);
+                            if (size === 0) { continue; }
+                            // close batch if style is different
+                            if (batchPart && !this._compareStyles(currentStyle, style))
+                            {
+                                batchPart.end(index, attribIndex);
+                                batchPart = null;
+                            }
+                            // spawn new batch if its first batch or previous was closed
+                            if (!batchPart)
+                            {
+                                batchPart = BATCH_POOL.pop() || new BatchPart();
+                                batchPart.begin(style, index, attribIndex);
+                                this.batches.push(batchPart);
+                                currentStyle = style;
+                            }
+
+                            this.addUvs(this.points, uvs, style.texture, attribIndex, size, style.matrix);
                         }
                     }
 
-                    if (!batchPart)
+                    if (batchPart)
+                    {
+                        var index$1 = this.indices.length;
+                        var attrib = this.points.length / 2;
+
+                        batchPart.end(index$1, attrib);
+                    }
+
+                    if (this.batches.length === 0)
                     {
                         // there are no visible styles in GraphicsData
                         // its possible that someone wants Graphics just for the bounds
@@ -27603,11 +33742,6 @@
 
                         return;
                     }
-
-                    var index = this.indices.length;
-                    var attrib = this.points.length / 2;
-
-                    batchPart.end(index, attrib);
 
                     this.indicesUint16 = new Uint16Array(this.indices);
 
@@ -29547,8 +35681,8 @@
             Graphics._TEMP_POINT = new Point();
 
             /*!
-             * @pixi/sprite - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/sprite - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/sprite is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -29855,9 +35989,11 @@
 
                     if (this._roundPixels)
                     {
-                        for (var i = 0; i < 8; i++)
+                        var resolution = settings.RESOLUTION;
+
+                        for (var i = 0; i < vertexData.length; ++i)
                         {
-                            vertexData[i] = Math.round(vertexData[i]);
+                            vertexData[i] = Math.round((vertexData[i] * resolution | 0) / resolution);
                         }
                     }
                 };
@@ -30056,7 +36192,7 @@
                  * The source can be - frame id, image url, video url, canvas element, video element, base texture
                  *
                  * @static
-                 * @param {number|string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source Source to create texture from
+                 * @param {string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source Source to create texture from
                  * @param {object} [options] See {@link PIXI.BaseTexture}'s constructor for options.
                  * @return {PIXI.Sprite} The newly created sprite
                  */
@@ -30222,8 +36358,8 @@
             }(Container));
 
             /*!
-             * @pixi/text - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/text - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/text is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -31252,7 +37388,7 @@
                         if (TextMetrics.canBreakWords(token, style.breakWords))
                         {
                             // break word into characters
-                            var characters = token.split('');
+                            var characters = TextMetrics.wordWrapSplit(token);
 
                             // loop the characters
                             for (var j = 0; j < characters.length; j++)
@@ -31533,12 +37669,12 @@
             };
 
             /**
-             * This method exists to be easily overridden
+             * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
+             *
              * It allows one to customise which words should break
              * Examples are if the token is CJK or numbers.
              * It must return a boolean.
              *
-             * @private
              * @param  {string}  token   The token
              * @param  {boolean}  breakWords  The style attr break words
              * @return {boolean} whether to break word or not
@@ -31549,13 +37685,13 @@
             };
 
             /**
-             * This method exists to be easily overridden
+             * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
+             *
              * It allows one to determine whether a pair of characters
              * should be broken by newlines
              * For example certain characters in CJK langs or numbers.
              * It must return a boolean.
              *
-             * @private
              * @param  {string}  char  The character
              * @param  {string}  nextChar  The next character
              * @param  {string}  token The token/word the characters are from
@@ -31566,6 +37702,25 @@
             TextMetrics.canBreakChars = function canBreakChars (char, nextChar, token, index, breakWords) // eslint-disable-line no-unused-vars
             {
                 return true;
+            };
+
+            /**
+             * Overridable helper method used internally by TextMetrics, exposed to allow customizing the class's behavior.
+             *
+             * It is called when a token (usually a word) has to be split into separate pieces
+             * in order to determine the point to break a word.
+             * It must return an array of characters.
+             *
+             * @example
+             * // Correctly splits emojis, eg "🤪🤪" will result in two element array, each with one emoji.
+             * TextMetrics.wordWrapSplit = (token) => [...token];
+             *
+             * @param  {string}  token The token to split
+             * @return {string[]} The characters of the token
+             */
+            TextMetrics.wordWrapSplit = function wordWrapSplit (token)
+            {
+                return token.split('');
             };
 
             /**
@@ -31709,8 +37864,14 @@
                 {
                     // OffscreenCanvas2D measureText can be up to 40% faster.
                     var c = new OffscreenCanvas(0, 0);
+                    var context = c.getContext('2d');
 
-                    return c.getContext('2d') ? c : document.createElement('canvas');
+                    if (context && context.measureText)
+                    {
+                        return c;
+                    }
+
+                    return document.createElement('canvas');
                 }
                 catch (ex)
                 {
@@ -32258,8 +38419,12 @@
                     var currentIteration;
                     var stop;
 
-                    var width = Math.ceil(this.canvas.width / this._resolution);
-                    var height = Math.ceil(this.canvas.height / this._resolution);
+                    // a dropshadow will enlarge the canvas and result in the gradient being
+                    // generated with the incorrect dimensions
+                    var dropShadowCorrection = (style.dropShadow) ? style.dropShadowDistance : 0;
+
+                    var width = Math.ceil(this.canvas.width / this._resolution) - dropShadowCorrection;
+                    var height = Math.ceil(this.canvas.height / this._resolution) - dropShadowCorrection;
 
                     // make a copy of the style settings, so we can manipulate them later
                     var fill = style.fill.slice();
@@ -32493,8 +38658,8 @@
             }(Sprite));
 
             /*!
-             * @pixi/prepare - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/prepare - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/prepare is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -32512,11 +38677,11 @@
             settings.UPLOADS_PER_FRAME = 4;
 
             /**
-             * CountLimiter limits the number of items handled by a {@link PIXI.prepare.BasePrepare} to a specified
+             * CountLimiter limits the number of items handled by a {@link PIXI.BasePrepare} to a specified
              * number of items per frame.
              *
              * @class
-             * @memberof PIXI.prepare
+             * @memberof PIXI
              */
             var CountLimiter = function CountLimiter(maxItemsPerFrame)
             {
@@ -32555,7 +38720,7 @@
              * The prepare manager provides functionality to upload content to the GPU.
              *
              * BasePrepare handles basic queuing functionality and is extended by
-             * {@link PIXI.prepare.Prepare} and {@link PIXI.prepare.CanvasPrepare}
+             * {@link PIXI.Prepare} and {@link PIXI.CanvasPrepare}
              * to provide preparation capabilities specific to their respective renderers.
              *
              * @example
@@ -32572,7 +38737,7 @@
              *
              * @abstract
              * @class
-             * @memberof PIXI.prepare
+             * @memberof PIXI
              */
             var BasePrepare = function BasePrepare(renderer)
             {
@@ -32580,7 +38745,7 @@
 
                 /**
                  * The limiter to be used to control how quickly items are prepared.
-                 * @type {PIXI.prepare.CountLimiter|PIXI.prepare.TimeLimiter}
+                 * @type {PIXI.CountLimiter|PIXI.TimeLimiter}
                  */
                 this.limiter = new CountLimiter(settings.UPLOADS_PER_FRAME);
 
@@ -32594,7 +38759,7 @@
                 /**
                  * The only real difference between CanvasPrepare and Prepare is what they pass
                  * to upload hooks. That different parameter is stored here.
-                 * @type {PIXI.prepare.CanvasPrepare|PIXI.Renderer}
+                 * @type {object}
                  * @protected
                  */
                 this.uploadHookHelper = null;
@@ -32773,7 +38938,7 @@
              *
              * @param {Function} addHook - Function call that takes two parameters: `item:*, queue:Array`
              *      function must return `true` if it was able to add item to the queue.
-             * @return {PIXI.prepare.BasePrepare} Instance of plugin for chaining.
+             * @return {this} Instance of plugin for chaining.
              */
             BasePrepare.prototype.registerFindHook = function registerFindHook (addHook)
             {
@@ -32790,7 +38955,7 @@
              *
              * @param {Function} uploadHook - Function call that takes two parameters: `prepare:CanvasPrepare, item:*` and
              *      function must return `true` if it was able to handle upload of item.
-             * @return {PIXI.prepare.BasePrepare} Instance of plugin for chaining.
+             * @return {this} Instance of plugin for chaining.
              */
             BasePrepare.prototype.registerUploadHook = function registerUploadHook (uploadHook)
             {
@@ -32807,7 +38972,7 @@
              *
              * @param {PIXI.DisplayObject|PIXI.Container|PIXI.BaseTexture|PIXI.Texture|PIXI.Graphics|PIXI.Text|*} item - Object to
              *    add to the queue
-             * @return {PIXI.prepare.BasePrepare} Instance of plugin for chaining.
+             * @return {this} Instance of plugin for chaining.
              */
             BasePrepare.prototype.add = function add (item)
             {
@@ -33039,13 +39204,35 @@
             }
 
             /**
-             * The prepare manager provides functionality to upload content to the GPU.
+             * The prepare plugin provides renderer-specific plugins for pre-rendering DisplayObjects. These plugins are useful for
+             * asynchronously preparing and uploading to the GPU assets, textures, graphics waiting to be displayed.
              *
-             * An instance of this class is automatically created by default, and can be found at `renderer.plugins.prepare`
+             * Do not instantiate this plugin directly. It is available from the `renderer.plugins` property.
+             * See {@link PIXI.CanvasRenderer#plugins} or {@link PIXI.Renderer#plugins}.
+             * @example
+             * // Create a new application
+             * const app = new PIXI.Application();
+             * document.body.appendChild(app.view);
+             *
+             * // Don't start rendering right away
+             * app.stop();
+             *
+             * // create a display object
+             * const rect = new PIXI.Graphics()
+             *     .beginFill(0x00ff00)
+             *     .drawRect(40, 40, 200, 200);
+             *
+             * // Add to the stage
+             * app.stage.addChild(rect);
+             *
+             * // Don't start rendering until the graphic is uploaded to the GPU
+             * app.renderer.plugins.prepare.upload(app.stage, () => {
+             *     app.start();
+             * });
              *
              * @class
-             * @extends PIXI.prepare.BasePrepare
-             * @memberof PIXI.prepare
+             * @extends PIXI.BasePrepare
+             * @memberof PIXI
              */
             var Prepare = /*@__PURE__*/(function (BasePrepare) {
                 function Prepare(renderer)
@@ -33161,7 +39348,7 @@
              * number of milliseconds per frame.
              *
              * @class
-             * @memberof PIXI.prepare
+             * @memberof PIXI
              */
             var TimeLimiter = function TimeLimiter(maxMilliseconds)
             {
@@ -33196,4039 +39383,9 @@
                 return Date.now() - this.frameStart < this.maxMilliseconds;
             };
 
-            var prepare_es = /*#__PURE__*/Object.freeze({
-                        __proto__: null,
-                        BasePrepare: BasePrepare,
-                        CountLimiter: CountLimiter,
-                        Prepare: Prepare,
-                        TimeLimiter: TimeLimiter
-            });
-
             /*!
-             * @pixi/app - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
-             *
-             * @pixi/app is licensed under the MIT License.
-             * http://www.opensource.org/licenses/mit-license
-             */
-
-            /**
-             * Convenience class to create a new PIXI application.
-             *
-             * This class automatically creates the renderer, ticker and root container.
-             *
-             * @example
-             * // Create the application
-             * const app = new PIXI.Application();
-             *
-             * // Add the view to the DOM
-             * document.body.appendChild(app.view);
-             *
-             * // ex, add display objects
-             * app.stage.addChild(PIXI.Sprite.from('something.png'));
-             *
-             * @class
-             * @memberof PIXI
-             */
-            var Application = function Application(options)
-            {
-                var this$1 = this;
-
-                // The default options
-                options = Object.assign({
-                    forceCanvas: false,
-                }, options);
-
-                /**
-                 * WebGL renderer if available, otherwise CanvasRenderer.
-                 * @member {PIXI.Renderer|PIXI.CanvasRenderer}
-                 */
-                this.renderer = autoDetectRenderer(options);
-
-                /**
-                 * The root display container that's rendered.
-                 * @member {PIXI.Container}
-                 */
-                this.stage = new Container();
-
-                // install plugins here
-                Application._plugins.forEach(function (plugin) {
-                    plugin.init.call(this$1, options);
-                });
-            };
-
-            var prototypeAccessors$8 = { view: { configurable: true },screen: { configurable: true } };
-
-            /**
-             * Register a middleware plugin for the application
-             * @static
-             * @param {PIXI.Application.Plugin} plugin - Plugin being installed
-             */
-            Application.registerPlugin = function registerPlugin (plugin)
-            {
-                Application._plugins.push(plugin);
-            };
-
-            /**
-             * Render the current stage.
-             */
-            Application.prototype.render = function render ()
-            {
-                this.renderer.render(this.stage);
-            };
-
-            /**
-             * Reference to the renderer's canvas element.
-             * @member {HTMLCanvasElement}
-             * @readonly
-             */
-            prototypeAccessors$8.view.get = function ()
-            {
-                return this.renderer.view;
-            };
-
-            /**
-             * Reference to the renderer's screen rectangle. Its safe to use as `filterArea` or `hitArea` for the whole screen.
-             * @member {PIXI.Rectangle}
-             * @readonly
-             */
-            prototypeAccessors$8.screen.get = function ()
-            {
-                return this.renderer.screen;
-            };
-
-            /**
-             * Destroy and don't use after this.
-             * @param {Boolean} [removeView=false] Automatically remove canvas from DOM.
-             * @param {object|boolean} [stageOptions] - Options parameter. A boolean will act as if all options
-             *  have been set to that value
-             * @param {boolean} [stageOptions.children=false] - if set to true, all the children will have their destroy
-             *  method called as well. 'stageOptions' will be passed on to those calls.
-             * @param {boolean} [stageOptions.texture=false] - Only used for child Sprites if stageOptions.children is set
-             *  to true. Should it destroy the texture of the child sprite
-             * @param {boolean} [stageOptions.baseTexture=false] - Only used for child Sprites if stageOptions.children is set
-             *  to true. Should it destroy the base texture of the child sprite
-             */
-            Application.prototype.destroy = function destroy (removeView, stageOptions)
-            {
-                    var this$1 = this;
-
-                // Destroy plugins in the opposite order
-                // which they were constructed
-                var plugins = Application._plugins.slice(0);
-
-                plugins.reverse();
-                plugins.forEach(function (plugin) {
-                    plugin.destroy.call(this$1);
-                });
-
-                this.stage.destroy(stageOptions);
-                this.stage = null;
-
-                this.renderer.destroy(removeView);
-                this.renderer = null;
-
-                this._options = null;
-            };
-
-            Object.defineProperties( Application.prototype, prototypeAccessors$8 );
-
-            /**
-             * @memberof PIXI.Application
-             * @typedef {object} Plugin
-             * @property {function} init - Called when Application is constructed, scoped to Application instance.
-             *  Passes in `options` as the only argument, which are Application constructor options.
-             * @property {function} destroy - Called when destroying Application, scoped to Application instance
-             */
-
-            /**
-             * Collection of installed plugins.
-             * @static
-             * @private
-             * @type {PIXI.Application.Plugin[]}
-             */
-            Application._plugins = [];
-
-            /**
-             * Middleware for for Application's resize functionality
-             * @private
-             * @class
-             */
-            var ResizePlugin = function ResizePlugin () {};
-
-            ResizePlugin.init = function init (options)
-            {
-                    var this$1 = this;
-
-                /**
-                 * The element or window to resize the application to.
-                 * @type {Window|HTMLElement}
-                 * @name resizeTo
-                 * @memberof PIXI.Application#
-                 */
-                Object.defineProperty(this, 'resizeTo',
-                    {
-                        set: function set(dom)
-                        {
-                            window.removeEventListener('resize', this.resize);
-                            this._resizeTo = dom;
-                            if (dom)
-                            {
-                                window.addEventListener('resize', this.resize);
-                                this.resize();
-                            }
-                        },
-                        get: function get()
-                        {
-                            return this._resizeTo;
-                        },
-                    });
-
-                /**
-                 * If `resizeTo` is set, calling this function
-                 * will resize to the width and height of that element.
-                 * @method PIXI.Application#resize
-                 */
-                this.resize = function () {
-                    if (this$1._resizeTo)
-                    {
-                        // Resize to the window
-                        if (this$1._resizeTo === window)
-                        {
-                            this$1.renderer.resize(
-                                window.innerWidth,
-                                window.innerHeight
-                            );
-                        }
-                        // Resize to other HTML entities
-                        else
-                        {
-                            this$1.renderer.resize(
-                                this$1._resizeTo.clientWidth,
-                                this$1._resizeTo.clientHeight
-                            );
-                        }
-                    }
-                };
-
-                // On resize
-                this._resizeTo = null;
-                this.resizeTo = options.resizeTo || null;
-            };
-
-            /**
-             * Clean up the ticker, scoped to application
-             * @static
-             * @private
-             */
-            ResizePlugin.destroy = function destroy ()
-            {
-                this.resizeTo = null;
-                this.resize = null;
-            };
-
-            Application.registerPlugin(ResizePlugin);
-
-            var parseUri = function parseURI (str, opts) {
-              opts = opts || {};
-
-              var o = {
-                key: ['source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'],
-                q: {
-                  name: 'queryKey',
-                  parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-                },
-                parser: {
-                  strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-                  loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-                }
-              };
-
-              var m = o.parser[opts.strictMode ? 'strict' : 'loose'].exec(str);
-              var uri = {};
-              var i = 14;
-
-              while (i--) uri[o.key[i]] = m[i] || '';
-
-              uri[o.q.name] = {};
-              uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-                if ($1) uri[o.q.name][$1] = $2;
-              });
-
-              return uri
-            };
-
-            var miniSignals = createCommonjsModule(function (module, exports) {
-
-            Object.defineProperty(exports, '__esModule', {
-              value: true
-            });
-
-            var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-            function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-            var MiniSignalBinding = (function () {
-              function MiniSignalBinding(fn, once, thisArg) {
-                if (once === undefined) once = false;
-
-                _classCallCheck(this, MiniSignalBinding);
-
-                this._fn = fn;
-                this._once = once;
-                this._thisArg = thisArg;
-                this._next = this._prev = this._owner = null;
-              }
-
-              _createClass(MiniSignalBinding, [{
-                key: 'detach',
-                value: function detach() {
-                  if (this._owner === null) return false;
-                  this._owner.detach(this);
-                  return true;
-                }
-              }]);
-
-              return MiniSignalBinding;
-            })();
-
-            function _addMiniSignalBinding(self, node) {
-              if (!self._head) {
-                self._head = node;
-                self._tail = node;
-              } else {
-                self._tail._next = node;
-                node._prev = self._tail;
-                self._tail = node;
-              }
-
-              node._owner = self;
-
-              return node;
-            }
-
-            var MiniSignal = (function () {
-              function MiniSignal() {
-                _classCallCheck(this, MiniSignal);
-
-                this._head = this._tail = undefined;
-              }
-
-              _createClass(MiniSignal, [{
-                key: 'handlers',
-                value: function handlers() {
-                  var exists = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
-
-                  var node = this._head;
-
-                  if (exists) return !!node;
-
-                  var ee = [];
-
-                  while (node) {
-                    ee.push(node);
-                    node = node._next;
-                  }
-
-                  return ee;
-                }
-              }, {
-                key: 'has',
-                value: function has(node) {
-                  if (!(node instanceof MiniSignalBinding)) {
-                    throw new Error('MiniSignal#has(): First arg must be a MiniSignalBinding object.');
-                  }
-
-                  return node._owner === this;
-                }
-              }, {
-                key: 'dispatch',
-                value: function dispatch() {
-                  var node = this._head;
-
-                  if (!node) return false;
-
-                  while (node) {
-                    if (node._once) this.detach(node);
-                    node._fn.apply(node._thisArg, arguments);
-                    node = node._next;
-                  }
-
-                  return true;
-                }
-              }, {
-                key: 'add',
-                value: function add(fn) {
-                  var thisArg = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-
-                  if (typeof fn !== 'function') {
-                    throw new Error('MiniSignal#add(): First arg must be a Function.');
-                  }
-                  return _addMiniSignalBinding(this, new MiniSignalBinding(fn, false, thisArg));
-                }
-              }, {
-                key: 'once',
-                value: function once(fn) {
-                  var thisArg = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
-
-                  if (typeof fn !== 'function') {
-                    throw new Error('MiniSignal#once(): First arg must be a Function.');
-                  }
-                  return _addMiniSignalBinding(this, new MiniSignalBinding(fn, true, thisArg));
-                }
-              }, {
-                key: 'detach',
-                value: function detach(node) {
-                  if (!(node instanceof MiniSignalBinding)) {
-                    throw new Error('MiniSignal#detach(): First arg must be a MiniSignalBinding object.');
-                  }
-                  if (node._owner !== this) return this;
-
-                  if (node._prev) node._prev._next = node._next;
-                  if (node._next) node._next._prev = node._prev;
-
-                  if (node === this._head) {
-                    this._head = node._next;
-                    if (node._next === null) {
-                      this._tail = null;
-                    }
-                  } else if (node === this._tail) {
-                    this._tail = node._prev;
-                    this._tail._next = null;
-                  }
-
-                  node._owner = null;
-                  return this;
-                }
-              }, {
-                key: 'detachAll',
-                value: function detachAll() {
-                  var node = this._head;
-                  if (!node) return this;
-
-                  this._head = this._tail = null;
-
-                  while (node) {
-                    node._owner = null;
-                    node = node._next;
-                  }
-                  return this;
-                }
-              }]);
-
-              return MiniSignal;
-            })();
-
-            MiniSignal.MiniSignalBinding = MiniSignalBinding;
-
-            exports['default'] = MiniSignal;
-            module.exports = exports['default'];
-            });
-
-            unwrapExports(miniSignals);
-
-            // main entry point for commonjs, exports MiniSignal
-            var miniSignals$1 = miniSignals;
-
-            /*!
-             * resource-loader - v3.0.1
-             * https://github.com/pixijs/pixi-sound
-             * Compiled Tue, 02 Jul 2019 14:06:18 UTC
-             *
-             * resource-loader is licensed under the MIT license.
-             * http://www.opensource.org/licenses/mit-license
-             */
-
-            /**
-             * Smaller version of the async library constructs.
-             *
-             * @namespace async
-             */
-
-            /**
-             * Noop function
-             *
-             * @ignore
-             * @function
-             * @memberof async
-             */
-            function _noop() {}
-            /* empty */
-
-            /**
-             * Iterates an array in series.
-             *
-             * @memberof async
-             * @function eachSeries
-             * @param {Array.<*>} array - Array to iterate.
-             * @param {function} iterator - Function to call for each element.
-             * @param {function} callback - Function to call when done, or on error.
-             * @param {boolean} [deferNext=false] - Break synchronous each loop by calling next with a setTimeout of 1.
-             */
-
-
-            function eachSeries(array, iterator, callback, deferNext) {
-              var i = 0;
-              var len = array.length;
-
-              (function next(err) {
-                if (err || i === len) {
-                  if (callback) {
-                    callback(err);
-                  }
-
-                  return;
-                }
-
-                if (deferNext) {
-                  setTimeout(function () {
-                    iterator(array[i++], next);
-                  }, 1);
-                } else {
-                  iterator(array[i++], next);
-                }
-              })();
-            }
-            /**
-             * Ensures a function is only called once.
-             *
-             * @ignore
-             * @memberof async
-             * @param {function} fn - The function to wrap.
-             * @return {function} The wrapping function.
-             */
-
-            function onlyOnce(fn) {
-              return function onceWrapper() {
-                if (fn === null) {
-                  throw new Error('Callback was already called.');
-                }
-
-                var callFn = fn;
-                fn = null;
-                callFn.apply(this, arguments);
-              };
-            }
-            /**
-             * Async queue implementation,
-             *
-             * @memberof async
-             * @function queue
-             * @param {function} worker - The worker function to call for each task.
-             * @param {number} concurrency - How many workers to run in parrallel.
-             * @return {*} The async queue object.
-             */
-
-
-            function queue(worker, concurrency) {
-              if (concurrency == null) {
-                // eslint-disable-line no-eq-null,eqeqeq
-                concurrency = 1;
-              } else if (concurrency === 0) {
-                throw new Error('Concurrency must not be zero');
-              }
-
-              var workers = 0;
-              var q = {
-                _tasks: [],
-                concurrency: concurrency,
-                saturated: _noop,
-                unsaturated: _noop,
-                buffer: concurrency / 4,
-                empty: _noop,
-                drain: _noop,
-                error: _noop,
-                started: false,
-                paused: false,
-                push: function push(data, callback) {
-                  _insert(data, false, callback);
-                },
-                kill: function kill() {
-                  workers = 0;
-                  q.drain = _noop;
-                  q.started = false;
-                  q._tasks = [];
-                },
-                unshift: function unshift(data, callback) {
-                  _insert(data, true, callback);
-                },
-                process: function process() {
-                  while (!q.paused && workers < q.concurrency && q._tasks.length) {
-                    var task = q._tasks.shift();
-
-                    if (q._tasks.length === 0) {
-                      q.empty();
-                    }
-
-                    workers += 1;
-
-                    if (workers === q.concurrency) {
-                      q.saturated();
-                    }
-
-                    worker(task.data, onlyOnce(_next(task)));
-                  }
-                },
-                length: function length() {
-                  return q._tasks.length;
-                },
-                running: function running() {
-                  return workers;
-                },
-                idle: function idle() {
-                  return q._tasks.length + workers === 0;
-                },
-                pause: function pause() {
-                  if (q.paused === true) {
-                    return;
-                  }
-
-                  q.paused = true;
-                },
-                resume: function resume() {
-                  if (q.paused === false) {
-                    return;
-                  }
-
-                  q.paused = false; // Need to call q.process once per concurrent
-                  // worker to preserve full concurrency after pause
-
-                  for (var w = 1; w <= q.concurrency; w++) {
-                    q.process();
-                  }
-                }
-              };
-
-              function _insert(data, insertAtFront, callback) {
-                if (callback != null && typeof callback !== 'function') {
-                  // eslint-disable-line no-eq-null,eqeqeq
-                  throw new Error('task callback must be a function');
-                }
-
-                q.started = true;
-
-                if (data == null && q.idle()) {
-                  // eslint-disable-line no-eq-null,eqeqeq
-                  // call drain immediately if there are no tasks
-                  setTimeout(function () {
-                    return q.drain();
-                  }, 1);
-                  return;
-                }
-
-                var item = {
-                  data: data,
-                  callback: typeof callback === 'function' ? callback : _noop
-                };
-
-                if (insertAtFront) {
-                  q._tasks.unshift(item);
-                } else {
-                  q._tasks.push(item);
-                }
-
-                setTimeout(function () {
-                  return q.process();
-                }, 1);
-              }
-
-              function _next(task) {
-                return function next() {
-                  workers -= 1;
-                  task.callback.apply(task, arguments);
-
-                  if (arguments[0] != null) {
-                    // eslint-disable-line no-eq-null,eqeqeq
-                    q.error(arguments[0], task.data);
-                  }
-
-                  if (workers <= q.concurrency - q.buffer) {
-                    q.unsaturated();
-                  }
-
-                  if (q.idle()) {
-                    q.drain();
-                  }
-
-                  q.process();
-                };
-              }
-
-              return q;
-            }
-
-            // a simple in-memory cache for resources
-            var cache = {};
-            /**
-             * A simple in-memory cache for resource.
-             *
-             * @memberof middleware
-             * @function caching
-             * @example
-             * import { Loader, middleware } from 'resource-loader';
-             * const loader = new Loader();
-             * loader.use(middleware.caching);
-             * @param {Resource} resource - Current Resource
-             * @param {function} next - Callback when complete
-             */
-
-            function caching(resource, next) {
-              var _this = this;
-
-              // if cached, then set data and complete the resource
-              if (cache[resource.url]) {
-                resource.data = cache[resource.url];
-                resource.complete(); // marks resource load complete and stops processing before middlewares
-              } // if not cached, wait for complete and store it in the cache.
-              else {
-                  resource.onComplete.once(function () {
-                    return cache[_this.url] = _this.data;
-                  });
-                }
-
-              next();
-            }
-
-            function _defineProperties(target, props) {
-              for (var i = 0; i < props.length; i++) {
-                var descriptor = props[i];
-                descriptor.enumerable = descriptor.enumerable || false;
-                descriptor.configurable = true;
-                if ("value" in descriptor) descriptor.writable = true;
-                Object.defineProperty(target, descriptor.key, descriptor);
-              }
-            }
-
-            function _createClass(Constructor, protoProps, staticProps) {
-              if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-              if (staticProps) _defineProperties(Constructor, staticProps);
-              return Constructor;
-            }
-
-            var useXdr = !!(window.XDomainRequest && !('withCredentials' in new XMLHttpRequest()));
-            var tempAnchor$1 = null; // some status constants
-
-            var STATUS_NONE = 0;
-            var STATUS_OK = 200;
-            var STATUS_EMPTY = 204;
-            var STATUS_IE_BUG_EMPTY = 1223;
-            var STATUS_TYPE_OK = 2; // noop
-
-            function _noop$1() {}
-            /* empty */
-
-            /**
-             * Manages the state and loading of a resource and all child resources.
-             *
-             * @class
-             */
-
-
-            var Resource$1 =
-            /*#__PURE__*/
-            function () {
-              /**
-               * Sets the load type to be used for a specific extension.
-               *
-               * @static
-               * @param {string} extname - The extension to set the type for, e.g. "png" or "fnt"
-               * @param {Resource.LOAD_TYPE} loadType - The load type to set it to.
-               */
-              Resource.setExtensionLoadType = function setExtensionLoadType(extname, loadType) {
-                setExtMap(Resource._loadTypeMap, extname, loadType);
-              }
-              /**
-               * Sets the load type to be used for a specific extension.
-               *
-               * @static
-               * @param {string} extname - The extension to set the type for, e.g. "png" or "fnt"
-               * @param {Resource.XHR_RESPONSE_TYPE} xhrType - The xhr type to set it to.
-               */
-              ;
-
-              Resource.setExtensionXhrType = function setExtensionXhrType(extname, xhrType) {
-                setExtMap(Resource._xhrTypeMap, extname, xhrType);
-              }
-              /**
-               * @param {string} name - The name of the resource to load.
-               * @param {string|string[]} url - The url for this resource, for audio/video loads you can pass
-               *      an array of sources.
-               * @param {object} [options] - The options for the load.
-               * @param {string|boolean} [options.crossOrigin] - Is this request cross-origin? Default is to
-               *      determine automatically.
-               * @param {number} [options.timeout=0] - A timeout in milliseconds for the load. If the load takes
-               *      longer than this time it is cancelled and the load is considered a failure. If this value is
-               *      set to `0` then there is no explicit timeout.
-               * @param {Resource.LOAD_TYPE} [options.loadType=Resource.LOAD_TYPE.XHR] - How should this resource
-               *      be loaded?
-               * @param {Resource.XHR_RESPONSE_TYPE} [options.xhrType=Resource.XHR_RESPONSE_TYPE.DEFAULT] - How
-               *      should the data being loaded be interpreted when using XHR?
-               * @param {Resource.IMetadata} [options.metadata] - Extra configuration for middleware and the Resource object.
-               */
-              ;
-
-              function Resource(name, url, options) {
-                if (typeof name !== 'string' || typeof url !== 'string') {
-                  throw new Error('Both name and url are required for constructing a resource.');
-                }
-
-                options = options || {};
-                /**
-                 * The state flags of this resource.
-                 *
-                 * @private
-                 * @member {number}
-                 */
-
-                this._flags = 0; // set data url flag, needs to be set early for some _determineX checks to work.
-
-                this._setFlag(Resource.STATUS_FLAGS.DATA_URL, url.indexOf('data:') === 0);
-                /**
-                 * The name of this resource.
-                 *
-                 * @readonly
-                 * @member {string}
-                 */
-
-
-                this.name = name;
-                /**
-                 * The url used to load this resource.
-                 *
-                 * @readonly
-                 * @member {string}
-                 */
-
-                this.url = url;
-                /**
-                 * The extension used to load this resource.
-                 *
-                 * @readonly
-                 * @member {string}
-                 */
-
-                this.extension = this._getExtension();
-                /**
-                 * The data that was loaded by the resource.
-                 *
-                 * @member {any}
-                 */
-
-                this.data = null;
-                /**
-                 * Is this request cross-origin? If unset, determined automatically.
-                 *
-                 * @member {string}
-                 */
-
-                this.crossOrigin = options.crossOrigin === true ? 'anonymous' : options.crossOrigin;
-                /**
-                 * A timeout in milliseconds for the load. If the load takes longer than this time
-                 * it is cancelled and the load is considered a failure. If this value is set to `0`
-                 * then there is no explicit timeout.
-                 *
-                 * @member {number}
-                 */
-
-                this.timeout = options.timeout || 0;
-                /**
-                 * The method of loading to use for this resource.
-                 *
-                 * @member {Resource.LOAD_TYPE}
-                 */
-
-                this.loadType = options.loadType || this._determineLoadType();
-                /**
-                 * The type used to load the resource via XHR. If unset, determined automatically.
-                 *
-                 * @member {string}
-                 */
-
-                this.xhrType = options.xhrType;
-                /**
-                 * Extra info for middleware, and controlling specifics about how the resource loads.
-                 *
-                 * Note that if you pass in a `loadElement`, the Resource class takes ownership of it.
-                 * Meaning it will modify it as it sees fit.
-                 *
-                 * @member {Resource.IMetadata}
-                 */
-
-                this.metadata = options.metadata || {};
-                /**
-                 * The error that occurred while loading (if any).
-                 *
-                 * @readonly
-                 * @member {Error}
-                 */
-
-                this.error = null;
-                /**
-                 * The XHR object that was used to load this resource. This is only set
-                 * when `loadType` is `Resource.LOAD_TYPE.XHR`.
-                 *
-                 * @readonly
-                 * @member {XMLHttpRequest}
-                 */
-
-                this.xhr = null;
-                /**
-                 * The child resources this resource owns.
-                 *
-                 * @readonly
-                 * @member {Resource[]}
-                 */
-
-                this.children = [];
-                /**
-                 * The resource type.
-                 *
-                 * @readonly
-                 * @member {Resource.TYPE}
-                 */
-
-                this.type = Resource.TYPE.UNKNOWN;
-                /**
-                 * The progress chunk owned by this resource.
-                 *
-                 * @readonly
-                 * @member {number}
-                 */
-
-                this.progressChunk = 0;
-                /**
-                 * The `dequeue` method that will be used a storage place for the async queue dequeue method
-                 * used privately by the loader.
-                 *
-                 * @private
-                 * @member {function}
-                 */
-
-                this._dequeue = _noop$1;
-                /**
-                 * Used a storage place for the on load binding used privately by the loader.
-                 *
-                 * @private
-                 * @member {function}
-                 */
-
-                this._onLoadBinding = null;
-                /**
-                 * The timer for element loads to check if they timeout.
-                 *
-                 * @private
-                 * @member {number}
-                 */
-
-                this._elementTimer = 0;
-                /**
-                 * The `complete` function bound to this resource's context.
-                 *
-                 * @private
-                 * @member {function}
-                 */
-
-                this._boundComplete = this.complete.bind(this);
-                /**
-                 * The `_onError` function bound to this resource's context.
-                 *
-                 * @private
-                 * @member {function}
-                 */
-
-                this._boundOnError = this._onError.bind(this);
-                /**
-                 * The `_onProgress` function bound to this resource's context.
-                 *
-                 * @private
-                 * @member {function}
-                 */
-
-                this._boundOnProgress = this._onProgress.bind(this);
-                /**
-                 * The `_onTimeout` function bound to this resource's context.
-                 *
-                 * @private
-                 * @member {function}
-                 */
-
-                this._boundOnTimeout = this._onTimeout.bind(this); // xhr callbacks
-
-                this._boundXhrOnError = this._xhrOnError.bind(this);
-                this._boundXhrOnTimeout = this._xhrOnTimeout.bind(this);
-                this._boundXhrOnAbort = this._xhrOnAbort.bind(this);
-                this._boundXhrOnLoad = this._xhrOnLoad.bind(this);
-                /**
-                 * Dispatched when the resource beings to load.
-                 *
-                 * The callback looks like {@link Resource.OnStartSignal}.
-                 *
-                 * @member {Signal<Resource.OnStartSignal>}
-                 */
-
-                this.onStart = new miniSignals$1();
-                /**
-                 * Dispatched each time progress of this resource load updates.
-                 * Not all resources types and loader systems can support this event
-                 * so sometimes it may not be available. If the resource
-                 * is being loaded on a modern browser, using XHR, and the remote server
-                 * properly sets Content-Length headers, then this will be available.
-                 *
-                 * The callback looks like {@link Resource.OnProgressSignal}.
-                 *
-                 * @member {Signal<Resource.OnProgressSignal>}
-                 */
-
-                this.onProgress = new miniSignals$1();
-                /**
-                 * Dispatched once this resource has loaded, if there was an error it will
-                 * be in the `error` property.
-                 *
-                 * The callback looks like {@link Resource.OnCompleteSignal}.
-                 *
-                 * @member {Signal<Resource.OnCompleteSignal>}
-                 */
-
-                this.onComplete = new miniSignals$1();
-                /**
-                 * Dispatched after this resource has had all the *after* middleware run on it.
-                 *
-                 * The callback looks like {@link Resource.OnCompleteSignal}.
-                 *
-                 * @member {Signal<Resource.OnCompleteSignal>}
-                 */
-
-                this.onAfterMiddleware = new miniSignals$1();
-              }
-              /**
-               * When the resource starts to load.
-               *
-               * @memberof Resource
-               * @callback OnStartSignal
-               * @param {Resource} resource - The resource that the event happened on.
-               */
-
-              /**
-               * When the resource reports loading progress.
-               *
-               * @memberof Resource
-               * @callback OnProgressSignal
-               * @param {Resource} resource - The resource that the event happened on.
-               * @param {number} percentage - The progress of the load in the range [0, 1].
-               */
-
-              /**
-               * When the resource finishes loading.
-               *
-               * @memberof Resource
-               * @callback OnCompleteSignal
-               * @param {Resource} resource - The resource that the event happened on.
-               */
-
-              /**
-               * @memberof Resource
-               * @typedef {object} IMetadata
-               * @property {HTMLImageElement|HTMLAudioElement|HTMLVideoElement} [loadElement=null] - The
-               *      element to use for loading, instead of creating one.
-               * @property {boolean} [skipSource=false] - Skips adding source(s) to the load element. This
-               *      is useful if you want to pass in a `loadElement` that you already added load sources to.
-               * @property {string|string[]} [mimeType] - The mime type to use for the source element
-               *      of a video/audio elment. If the urls are an array, you can pass this as an array as well
-               *      where each index is the mime type to use for the corresponding url index.
-               */
-
-              /**
-               * Stores whether or not this url is a data url.
-               *
-               * @readonly
-               * @member {boolean}
-               */
-
-
-              var _proto = Resource.prototype;
-
-              /**
-               * Marks the resource as complete.
-               *
-               */
-              _proto.complete = function complete() {
-                this._clearEvents();
-
-                this._finish();
-              }
-              /**
-               * Aborts the loading of this resource, with an optional message.
-               *
-               * @param {string} message - The message to use for the error
-               */
-              ;
-
-              _proto.abort = function abort(message) {
-                // abort can be called multiple times, ignore subsequent calls.
-                if (this.error) {
-                  return;
-                } // store error
-
-
-                this.error = new Error(message); // clear events before calling aborts
-
-                this._clearEvents(); // abort the actual loading
-
-
-                if (this.xhr) {
-                  this.xhr.abort();
-                } else if (this.xdr) {
-                  this.xdr.abort();
-                } else if (this.data) {
-                  // single source
-                  if (this.data.src) {
-                    this.data.src = Resource.EMPTY_GIF;
-                  } // multi-source
-                  else {
-                      while (this.data.firstChild) {
-                        this.data.removeChild(this.data.firstChild);
-                      }
-                    }
-                } // done now.
-
-
-                this._finish();
-              }
-              /**
-               * Kicks off loading of this resource. This method is asynchronous.
-               *
-               * @param {Resource.OnCompleteSignal} [cb] - Optional callback to call once the resource is loaded.
-               */
-              ;
-
-              _proto.load = function load(cb) {
-                var _this = this;
-
-                if (this.isLoading) {
-                  return;
-                }
-
-                if (this.isComplete) {
-                  if (cb) {
-                    setTimeout(function () {
-                      return cb(_this);
-                    }, 1);
-                  }
-
-                  return;
-                } else if (cb) {
-                  this.onComplete.once(cb);
-                }
-
-                this._setFlag(Resource.STATUS_FLAGS.LOADING, true);
-
-                this.onStart.dispatch(this); // if unset, determine the value
-
-                if (this.crossOrigin === false || typeof this.crossOrigin !== 'string') {
-                  this.crossOrigin = this._determineCrossOrigin(this.url);
-                }
-
-                switch (this.loadType) {
-                  case Resource.LOAD_TYPE.IMAGE:
-                    this.type = Resource.TYPE.IMAGE;
-
-                    this._loadElement('image');
-
-                    break;
-
-                  case Resource.LOAD_TYPE.AUDIO:
-                    this.type = Resource.TYPE.AUDIO;
-
-                    this._loadSourceElement('audio');
-
-                    break;
-
-                  case Resource.LOAD_TYPE.VIDEO:
-                    this.type = Resource.TYPE.VIDEO;
-
-                    this._loadSourceElement('video');
-
-                    break;
-
-                  case Resource.LOAD_TYPE.XHR:
-                  /* falls through */
-
-                  default:
-                    if (useXdr && this.crossOrigin) {
-                      this._loadXdr();
-                    } else {
-                      this._loadXhr();
-                    }
-
-                    break;
-                }
-              }
-              /**
-               * Checks if the flag is set.
-               *
-               * @private
-               * @param {number} flag - The flag to check.
-               * @return {boolean} True if the flag is set.
-               */
-              ;
-
-              _proto._hasFlag = function _hasFlag(flag) {
-                return (this._flags & flag) !== 0;
-              }
-              /**
-               * (Un)Sets the flag.
-               *
-               * @private
-               * @param {number} flag - The flag to (un)set.
-               * @param {boolean} value - Whether to set or (un)set the flag.
-               */
-              ;
-
-              _proto._setFlag = function _setFlag(flag, value) {
-                this._flags = value ? this._flags | flag : this._flags & ~flag;
-              }
-              /**
-               * Clears all the events from the underlying loading source.
-               *
-               * @private
-               */
-              ;
-
-              _proto._clearEvents = function _clearEvents() {
-                clearTimeout(this._elementTimer);
-
-                if (this.data && this.data.removeEventListener) {
-                  this.data.removeEventListener('error', this._boundOnError, false);
-                  this.data.removeEventListener('load', this._boundComplete, false);
-                  this.data.removeEventListener('progress', this._boundOnProgress, false);
-                  this.data.removeEventListener('canplaythrough', this._boundComplete, false);
-                }
-
-                if (this.xhr) {
-                  if (this.xhr.removeEventListener) {
-                    this.xhr.removeEventListener('error', this._boundXhrOnError, false);
-                    this.xhr.removeEventListener('timeout', this._boundXhrOnTimeout, false);
-                    this.xhr.removeEventListener('abort', this._boundXhrOnAbort, false);
-                    this.xhr.removeEventListener('progress', this._boundOnProgress, false);
-                    this.xhr.removeEventListener('load', this._boundXhrOnLoad, false);
-                  } else {
-                    this.xhr.onerror = null;
-                    this.xhr.ontimeout = null;
-                    this.xhr.onprogress = null;
-                    this.xhr.onload = null;
-                  }
-                }
-              }
-              /**
-               * Finalizes the load.
-               *
-               * @private
-               */
-              ;
-
-              _proto._finish = function _finish() {
-                if (this.isComplete) {
-                  throw new Error('Complete called again for an already completed resource.');
-                }
-
-                this._setFlag(Resource.STATUS_FLAGS.COMPLETE, true);
-
-                this._setFlag(Resource.STATUS_FLAGS.LOADING, false);
-
-                this.onComplete.dispatch(this);
-              }
-              /**
-               * Loads this resources using an element that has a single source,
-               * like an HTMLImageElement.
-               *
-               * @private
-               * @param {string} type - The type of element to use.
-               */
-              ;
-
-              _proto._loadElement = function _loadElement(type) {
-                if (this.metadata.loadElement) {
-                  this.data = this.metadata.loadElement;
-                } else if (type === 'image' && typeof window.Image !== 'undefined') {
-                  this.data = new Image();
-                } else {
-                  this.data = document.createElement(type);
-                }
-
-                if (this.crossOrigin) {
-                  this.data.crossOrigin = this.crossOrigin;
-                }
-
-                if (!this.metadata.skipSource) {
-                  this.data.src = this.url;
-                }
-
-                this.data.addEventListener('error', this._boundOnError, false);
-                this.data.addEventListener('load', this._boundComplete, false);
-                this.data.addEventListener('progress', this._boundOnProgress, false);
-
-                if (this.timeout) {
-                  this._elementTimer = setTimeout(this._boundOnTimeout, this.timeout);
-                }
-              }
-              /**
-               * Loads this resources using an element that has multiple sources,
-               * like an HTMLAudioElement or HTMLVideoElement.
-               *
-               * @private
-               * @param {string} type - The type of element to use.
-               */
-              ;
-
-              _proto._loadSourceElement = function _loadSourceElement(type) {
-                if (this.metadata.loadElement) {
-                  this.data = this.metadata.loadElement;
-                } else if (type === 'audio' && typeof window.Audio !== 'undefined') {
-                  this.data = new Audio();
-                } else {
-                  this.data = document.createElement(type);
-                }
-
-                if (this.data === null) {
-                  this.abort("Unsupported element: " + type);
-                  return;
-                }
-
-                if (this.crossOrigin) {
-                  this.data.crossOrigin = this.crossOrigin;
-                }
-
-                if (!this.metadata.skipSource) {
-                  // support for CocoonJS Canvas+ runtime, lacks document.createElement('source')
-                  if (navigator.isCocoonJS) {
-                    this.data.src = Array.isArray(this.url) ? this.url[0] : this.url;
-                  } else if (Array.isArray(this.url)) {
-                    var mimeTypes = this.metadata.mimeType;
-
-                    for (var i = 0; i < this.url.length; ++i) {
-                      this.data.appendChild(this._createSource(type, this.url[i], Array.isArray(mimeTypes) ? mimeTypes[i] : mimeTypes));
-                    }
-                  } else {
-                    var _mimeTypes = this.metadata.mimeType;
-                    this.data.appendChild(this._createSource(type, this.url, Array.isArray(_mimeTypes) ? _mimeTypes[0] : _mimeTypes));
-                  }
-                }
-
-                this.data.addEventListener('error', this._boundOnError, false);
-                this.data.addEventListener('load', this._boundComplete, false);
-                this.data.addEventListener('progress', this._boundOnProgress, false);
-                this.data.addEventListener('canplaythrough', this._boundComplete, false);
-                this.data.load();
-
-                if (this.timeout) {
-                  this._elementTimer = setTimeout(this._boundOnTimeout, this.timeout);
-                }
-              }
-              /**
-               * Loads this resources using an XMLHttpRequest.
-               *
-               * @private
-               */
-              ;
-
-              _proto._loadXhr = function _loadXhr() {
-                // if unset, determine the value
-                if (typeof this.xhrType !== 'string') {
-                  this.xhrType = this._determineXhrType();
-                }
-
-                var xhr = this.xhr = new XMLHttpRequest(); // set the request type and url
-
-                xhr.open('GET', this.url, true);
-                xhr.timeout = this.timeout; // load json as text and parse it ourselves. We do this because some browsers
-                // *cough* safari *cough* can't deal with it.
-
-                if (this.xhrType === Resource.XHR_RESPONSE_TYPE.JSON || this.xhrType === Resource.XHR_RESPONSE_TYPE.DOCUMENT) {
-                  xhr.responseType = Resource.XHR_RESPONSE_TYPE.TEXT;
-                } else {
-                  xhr.responseType = this.xhrType;
-                }
-
-                xhr.addEventListener('error', this._boundXhrOnError, false);
-                xhr.addEventListener('timeout', this._boundXhrOnTimeout, false);
-                xhr.addEventListener('abort', this._boundXhrOnAbort, false);
-                xhr.addEventListener('progress', this._boundOnProgress, false);
-                xhr.addEventListener('load', this._boundXhrOnLoad, false);
-                xhr.send();
-              }
-              /**
-               * Loads this resources using an XDomainRequest. This is here because we need to support IE9 (gross).
-               *
-               * @private
-               */
-              ;
-
-              _proto._loadXdr = function _loadXdr() {
-                // if unset, determine the value
-                if (typeof this.xhrType !== 'string') {
-                  this.xhrType = this._determineXhrType();
-                }
-
-                var xdr = this.xhr = new XDomainRequest(); // eslint-disable-line no-undef
-                // XDomainRequest has a few quirks. Occasionally it will abort requests
-                // A way to avoid this is to make sure ALL callbacks are set even if not used
-                // More info here: http://stackoverflow.com/questions/15786966/xdomainrequest-aborts-post-on-ie-9
-
-                xdr.timeout = this.timeout || 5000; // XDR needs a timeout value or it breaks in IE9
-
-                xdr.onerror = this._boundXhrOnError;
-                xdr.ontimeout = this._boundXhrOnTimeout;
-                xdr.onprogress = this._boundOnProgress;
-                xdr.onload = this._boundXhrOnLoad;
-                xdr.open('GET', this.url, true); // Note: The xdr.send() call is wrapped in a timeout to prevent an
-                // issue with the interface where some requests are lost if multiple
-                // XDomainRequests are being sent at the same time.
-                // Some info here: https://github.com/photonstorm/phaser/issues/1248
-
-                setTimeout(function () {
-                  return xdr.send();
-                }, 1);
-              }
-              /**
-               * Creates a source used in loading via an element.
-               *
-               * @private
-               * @param {string} type - The element type (video or audio).
-               * @param {string} url - The source URL to load from.
-               * @param {string} [mime] - The mime type of the video
-               * @return {HTMLSourceElement} The source element.
-               */
-              ;
-
-              _proto._createSource = function _createSource(type, url, mime) {
-                if (!mime) {
-                  mime = type + "/" + this._getExtension(url);
-                }
-
-                var source = document.createElement('source');
-                source.src = url;
-                source.type = mime;
-                return source;
-              }
-              /**
-               * Called if a load errors out.
-               *
-               * @param {Event} event - The error event from the element that emits it.
-               * @private
-               */
-              ;
-
-              _proto._onError = function _onError(event) {
-                this.abort("Failed to load element using: " + event.target.nodeName);
-              }
-              /**
-               * Called if a load progress event fires for an element or xhr/xdr.
-               *
-               * @private
-               * @param {XMLHttpRequestProgressEvent|Event} event - Progress event.
-               */
-              ;
-
-              _proto._onProgress = function _onProgress(event) {
-                if (event && event.lengthComputable) {
-                  this.onProgress.dispatch(this, event.loaded / event.total);
-                }
-              }
-              /**
-               * Called if a timeout event fires for an element.
-               *
-               * @private
-               */
-              ;
-
-              _proto._onTimeout = function _onTimeout() {
-                this.abort("Load timed out.");
-              }
-              /**
-               * Called if an error event fires for xhr/xdr.
-               *
-               * @private
-               */
-              ;
-
-              _proto._xhrOnError = function _xhrOnError() {
-                var xhr = this.xhr;
-                this.abort(reqType(xhr) + " Request failed. Status: " + xhr.status + ", text: \"" + xhr.statusText + "\"");
-              }
-              /**
-               * Called if an error event fires for xhr/xdr.
-               *
-               * @private
-               */
-              ;
-
-              _proto._xhrOnTimeout = function _xhrOnTimeout() {
-                var xhr = this.xhr;
-                this.abort(reqType(xhr) + " Request timed out.");
-              }
-              /**
-               * Called if an abort event fires for xhr/xdr.
-               *
-               * @private
-               */
-              ;
-
-              _proto._xhrOnAbort = function _xhrOnAbort() {
-                var xhr = this.xhr;
-                this.abort(reqType(xhr) + " Request was aborted by the user.");
-              }
-              /**
-               * Called when data successfully loads from an xhr/xdr request.
-               *
-               * @private
-               * @param {XMLHttpRequestLoadEvent|Event} event - Load event
-               */
-              ;
-
-              _proto._xhrOnLoad = function _xhrOnLoad() {
-                var xhr = this.xhr;
-                var text = '';
-                var status = typeof xhr.status === 'undefined' ? STATUS_OK : xhr.status; // XDR has no `.status`, assume 200.
-                // responseText is accessible only if responseType is '' or 'text' and on older browsers
-
-                if (xhr.responseType === '' || xhr.responseType === 'text' || typeof xhr.responseType === 'undefined') {
-                  text = xhr.responseText;
-                } // status can be 0 when using the `file://` protocol so we also check if a response is set.
-                // If it has a response, we assume 200; otherwise a 0 status code with no contents is an aborted request.
-
-
-                if (status === STATUS_NONE && (text.length > 0 || xhr.responseType === Resource.XHR_RESPONSE_TYPE.BUFFER)) {
-                  status = STATUS_OK;
-                } // handle IE9 bug: http://stackoverflow.com/questions/10046972/msie-returns-status-code-of-1223-for-ajax-request
-                else if (status === STATUS_IE_BUG_EMPTY) {
-                    status = STATUS_EMPTY;
-                  }
-
-                var statusType = status / 100 | 0;
-
-                if (statusType === STATUS_TYPE_OK) {
-                  // if text, just return it
-                  if (this.xhrType === Resource.XHR_RESPONSE_TYPE.TEXT) {
-                    this.data = text;
-                    this.type = Resource.TYPE.TEXT;
-                  } // if json, parse into json object
-                  else if (this.xhrType === Resource.XHR_RESPONSE_TYPE.JSON) {
-                      try {
-                        this.data = JSON.parse(text);
-                        this.type = Resource.TYPE.JSON;
-                      } catch (e) {
-                        this.abort("Error trying to parse loaded json: " + e);
-                        return;
-                      }
-                    } // if xml, parse into an xml document or div element
-                    else if (this.xhrType === Resource.XHR_RESPONSE_TYPE.DOCUMENT) {
-                        try {
-                          if (window.DOMParser) {
-                            var domparser = new DOMParser();
-                            this.data = domparser.parseFromString(text, 'text/xml');
-                          } else {
-                            var div = document.createElement('div');
-                            div.innerHTML = text;
-                            this.data = div;
-                          }
-
-                          this.type = Resource.TYPE.XML;
-                        } catch (e) {
-                          this.abort("Error trying to parse loaded xml: " + e);
-                          return;
-                        }
-                      } // other types just return the response
-                      else {
-                          this.data = xhr.response || text;
-                        }
-                } else {
-                  this.abort("[" + xhr.status + "] " + xhr.statusText + ": " + xhr.responseURL);
-                  return;
-                }
-
-                this.complete();
-              }
-              /**
-               * Sets the `crossOrigin` property for this resource based on if the url
-               * for this resource is cross-origin. If crossOrigin was manually set, this
-               * function does nothing.
-               *
-               * @private
-               * @param {string} url - The url to test.
-               * @param {object} [loc=window.location] - The location object to test against.
-               * @return {string} The crossOrigin value to use (or empty string for none).
-               */
-              ;
-
-              _proto._determineCrossOrigin = function _determineCrossOrigin(url, loc) {
-                // data: and javascript: urls are considered same-origin
-                if (url.indexOf('data:') === 0) {
-                  return '';
-                } // A sandboxed iframe without the 'allow-same-origin' attribute will have a special
-                // origin designed not to match window.location.origin, and will always require
-                // crossOrigin requests regardless of whether the location matches.
-
-
-                if (window.origin !== window.location.origin) {
-                  return 'anonymous';
-                } // default is window.location
-
-
-                loc = loc || window.location;
-
-                if (!tempAnchor$1) {
-                  tempAnchor$1 = document.createElement('a');
-                } // let the browser determine the full href for the url of this resource and then
-                // parse with the node url lib, we can't use the properties of the anchor element
-                // because they don't work in IE9 :(
-
-
-                tempAnchor$1.href = url;
-                url = parseUri(tempAnchor$1.href, {
-                  strictMode: true
-                });
-                var samePort = !url.port && loc.port === '' || url.port === loc.port;
-                var protocol = url.protocol ? url.protocol + ":" : ''; // if cross origin
-
-                if (url.host !== loc.hostname || !samePort || protocol !== loc.protocol) {
-                  return 'anonymous';
-                }
-
-                return '';
-              }
-              /**
-               * Determines the responseType of an XHR request based on the extension of the
-               * resource being loaded.
-               *
-               * @private
-               * @return {Resource.XHR_RESPONSE_TYPE} The responseType to use.
-               */
-              ;
-
-              _proto._determineXhrType = function _determineXhrType() {
-                return Resource._xhrTypeMap[this.extension] || Resource.XHR_RESPONSE_TYPE.TEXT;
-              }
-              /**
-               * Determines the loadType of a resource based on the extension of the
-               * resource being loaded.
-               *
-               * @private
-               * @return {Resource.LOAD_TYPE} The loadType to use.
-               */
-              ;
-
-              _proto._determineLoadType = function _determineLoadType() {
-                return Resource._loadTypeMap[this.extension] || Resource.LOAD_TYPE.XHR;
-              }
-              /**
-               * Extracts the extension (sans '.') of the file being loaded by the resource.
-               *
-               * @private
-               * @return {string} The extension.
-               */
-              ;
-
-              _proto._getExtension = function _getExtension() {
-                var url = this.url;
-                var ext = '';
-
-                if (this.isDataUrl) {
-                  var slashIndex = url.indexOf('/');
-                  ext = url.substring(slashIndex + 1, url.indexOf(';', slashIndex));
-                } else {
-                  var queryStart = url.indexOf('?');
-                  var hashStart = url.indexOf('#');
-                  var index = Math.min(queryStart > -1 ? queryStart : url.length, hashStart > -1 ? hashStart : url.length);
-                  url = url.substring(0, index);
-                  ext = url.substring(url.lastIndexOf('.') + 1);
-                }
-
-                return ext.toLowerCase();
-              }
-              /**
-               * Determines the mime type of an XHR request based on the responseType of
-               * resource being loaded.
-               *
-               * @private
-               * @param {Resource.XHR_RESPONSE_TYPE} type - The type to get a mime type for.
-               * @return {string} The mime type to use.
-               */
-              ;
-
-              _proto._getMimeFromXhrType = function _getMimeFromXhrType(type) {
-                switch (type) {
-                  case Resource.XHR_RESPONSE_TYPE.BUFFER:
-                    return 'application/octet-binary';
-
-                  case Resource.XHR_RESPONSE_TYPE.BLOB:
-                    return 'application/blob';
-
-                  case Resource.XHR_RESPONSE_TYPE.DOCUMENT:
-                    return 'application/xml';
-
-                  case Resource.XHR_RESPONSE_TYPE.JSON:
-                    return 'application/json';
-
-                  case Resource.XHR_RESPONSE_TYPE.DEFAULT:
-                  case Resource.XHR_RESPONSE_TYPE.TEXT:
-                  /* falls through */
-
-                  default:
-                    return 'text/plain';
-                }
-              };
-
-              _createClass(Resource, [{
-                key: "isDataUrl",
-                get: function get() {
-                  return this._hasFlag(Resource.STATUS_FLAGS.DATA_URL);
-                }
-                /**
-                 * Describes if this resource has finished loading. Is true when the resource has completely
-                 * loaded.
-                 *
-                 * @readonly
-                 * @member {boolean}
-                 */
-
-              }, {
-                key: "isComplete",
-                get: function get() {
-                  return this._hasFlag(Resource.STATUS_FLAGS.COMPLETE);
-                }
-                /**
-                 * Describes if this resource is currently loading. Is true when the resource starts loading,
-                 * and is false again when complete.
-                 *
-                 * @readonly
-                 * @member {boolean}
-                 */
-
-              }, {
-                key: "isLoading",
-                get: function get() {
-                  return this._hasFlag(Resource.STATUS_FLAGS.LOADING);
-                }
-              }]);
-
-              return Resource;
-            }();
-            /**
-             * The types of resources a resource could represent.
-             *
-             * @static
-             * @readonly
-             * @enum {number}
-             */
-
-
-            Resource$1.STATUS_FLAGS = {
-              NONE: 0,
-              DATA_URL: 1 << 0,
-              COMPLETE: 1 << 1,
-              LOADING: 1 << 2
-            };
-            /**
-             * The types of resources a resource could represent.
-             *
-             * @static
-             * @readonly
-             * @enum {number}
-             */
-
-            Resource$1.TYPE = {
-              UNKNOWN: 0,
-              JSON: 1,
-              XML: 2,
-              IMAGE: 3,
-              AUDIO: 4,
-              VIDEO: 5,
-              TEXT: 6
-            };
-            /**
-             * The types of loading a resource can use.
-             *
-             * @static
-             * @readonly
-             * @enum {number}
-             */
-
-            Resource$1.LOAD_TYPE = {
-              /** Uses XMLHttpRequest to load the resource. */
-              XHR: 1,
-
-              /** Uses an `Image` object to load the resource. */
-              IMAGE: 2,
-
-              /** Uses an `Audio` object to load the resource. */
-              AUDIO: 3,
-
-              /** Uses a `Video` object to load the resource. */
-              VIDEO: 4
-            };
-            /**
-             * The XHR ready states, used internally.
-             *
-             * @static
-             * @readonly
-             * @enum {string}
-             */
-
-            Resource$1.XHR_RESPONSE_TYPE = {
-              /** string */
-              DEFAULT: 'text',
-
-              /** ArrayBuffer */
-              BUFFER: 'arraybuffer',
-
-              /** Blob */
-              BLOB: 'blob',
-
-              /** Document */
-              DOCUMENT: 'document',
-
-              /** Object */
-              JSON: 'json',
-
-              /** String */
-              TEXT: 'text'
-            };
-            Resource$1._loadTypeMap = {
-              // images
-              gif: Resource$1.LOAD_TYPE.IMAGE,
-              png: Resource$1.LOAD_TYPE.IMAGE,
-              bmp: Resource$1.LOAD_TYPE.IMAGE,
-              jpg: Resource$1.LOAD_TYPE.IMAGE,
-              jpeg: Resource$1.LOAD_TYPE.IMAGE,
-              tif: Resource$1.LOAD_TYPE.IMAGE,
-              tiff: Resource$1.LOAD_TYPE.IMAGE,
-              webp: Resource$1.LOAD_TYPE.IMAGE,
-              tga: Resource$1.LOAD_TYPE.IMAGE,
-              svg: Resource$1.LOAD_TYPE.IMAGE,
-              'svg+xml': Resource$1.LOAD_TYPE.IMAGE,
-              // for SVG data urls
-              // audio
-              mp3: Resource$1.LOAD_TYPE.AUDIO,
-              ogg: Resource$1.LOAD_TYPE.AUDIO,
-              wav: Resource$1.LOAD_TYPE.AUDIO,
-              // videos
-              mp4: Resource$1.LOAD_TYPE.VIDEO,
-              webm: Resource$1.LOAD_TYPE.VIDEO
-            };
-            Resource$1._xhrTypeMap = {
-              // xml
-              xhtml: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-              html: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-              htm: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-              xml: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-              tmx: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-              svg: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-              // This was added to handle Tiled Tileset XML, but .tsx is also a TypeScript React Component.
-              // Since it is way less likely for people to be loading TypeScript files instead of Tiled files,
-              // this should probably be fine.
-              tsx: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-              // images
-              gif: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              png: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              bmp: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              jpg: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              jpeg: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              tif: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              tiff: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              webp: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              tga: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-              // json
-              json: Resource$1.XHR_RESPONSE_TYPE.JSON,
-              // text
-              text: Resource$1.XHR_RESPONSE_TYPE.TEXT,
-              txt: Resource$1.XHR_RESPONSE_TYPE.TEXT,
-              // fonts
-              ttf: Resource$1.XHR_RESPONSE_TYPE.BUFFER,
-              otf: Resource$1.XHR_RESPONSE_TYPE.BUFFER
-            }; // We can't set the `src` attribute to empty string, so on abort we set it to this 1px transparent gif
-
-            Resource$1.EMPTY_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
-            /**
-             * Quick helper to set a value on one of the extension maps. Ensures there is no
-             * dot at the start of the extension.
-             *
-             * @ignore
-             * @param {object} map - The map to set on.
-             * @param {string} extname - The extension (or key) to set.
-             * @param {number} val - The value to set.
-             */
-
-            function setExtMap(map, extname, val) {
-              if (extname && extname.indexOf('.') === 0) {
-                extname = extname.substring(1);
-              }
-
-              if (!extname) {
-                return;
-              }
-
-              map[extname] = val;
-            }
-            /**
-             * Quick helper to get string xhr type.
-             *
-             * @ignore
-             * @param {XMLHttpRequest|XDomainRequest} xhr - The request to check.
-             * @return {string} The type.
-             */
-
-
-            function reqType(xhr) {
-              return xhr.toString().replace('object ', '');
-            }
-
-            var _keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-            /**
-             * Encodes binary into base64.
-             *
-             * @function encodeBinary
-             * @param {string} input The input data to encode.
-             * @returns {string} The encoded base64 string
-             */
-
-            function encodeBinary(input) {
-              var output = '';
-              var inx = 0;
-
-              while (inx < input.length) {
-                // Fill byte buffer array
-                var bytebuffer = [0, 0, 0];
-                var encodedCharIndexes = [0, 0, 0, 0];
-
-                for (var jnx = 0; jnx < bytebuffer.length; ++jnx) {
-                  if (inx < input.length) {
-                    // throw away high-order byte, as documented at:
-                    // https://developer.mozilla.org/En/Using_XMLHttpRequest#Handling_binary_data
-                    bytebuffer[jnx] = input.charCodeAt(inx++) & 0xff;
-                  } else {
-                    bytebuffer[jnx] = 0;
-                  }
-                } // Get each encoded character, 6 bits at a time
-                // index 1: first 6 bits
-
-
-                encodedCharIndexes[0] = bytebuffer[0] >> 2; // index 2: second 6 bits (2 least significant bits from input byte 1 + 4 most significant bits from byte 2)
-
-                encodedCharIndexes[1] = (bytebuffer[0] & 0x3) << 4 | bytebuffer[1] >> 4; // index 3: third 6 bits (4 least significant bits from input byte 2 + 2 most significant bits from byte 3)
-
-                encodedCharIndexes[2] = (bytebuffer[1] & 0x0f) << 2 | bytebuffer[2] >> 6; // index 3: forth 6 bits (6 least significant bits from input byte 3)
-
-                encodedCharIndexes[3] = bytebuffer[2] & 0x3f; // Determine whether padding happened, and adjust accordingly
-
-                var paddingBytes = inx - (input.length - 1);
-
-                switch (paddingBytes) {
-                  case 2:
-                    // Set last 2 characters to padding char
-                    encodedCharIndexes[3] = 64;
-                    encodedCharIndexes[2] = 64;
-                    break;
-
-                  case 1:
-                    // Set last character to padding char
-                    encodedCharIndexes[3] = 64;
-                    break;
-                  // No padding - proceed
-                } // Now we will grab each appropriate character out of our keystring
-                // based on our index array and append it to the output string
-
-
-                for (var _jnx = 0; _jnx < encodedCharIndexes.length; ++_jnx) {
-                  output += _keyStr.charAt(encodedCharIndexes[_jnx]);
-                }
-              }
-
-              return output;
-            }
-
-            var Url$1 = window.URL || window.webkitURL;
-            /**
-             * A middleware for transforming XHR loaded Blobs into more useful objects
-             *
-             * @memberof middleware
-             * @function parsing
-             * @example
-             * import { Loader, middleware } from 'resource-loader';
-             * const loader = new Loader();
-             * loader.use(middleware.parsing);
-             * @param {Resource} resource - Current Resource
-             * @param {function} next - Callback when complete
-             */
-
-            function parsing(resource, next) {
-              if (!resource.data) {
-                next();
-                return;
-              } // if this was an XHR load of a blob
-
-
-              if (resource.xhr && resource.xhrType === Resource$1.XHR_RESPONSE_TYPE.BLOB) {
-                // if there is no blob support we probably got a binary string back
-                if (!window.Blob || typeof resource.data === 'string') {
-                  var type = resource.xhr.getResponseHeader('content-type'); // this is an image, convert the binary string into a data url
-
-                  if (type && type.indexOf('image') === 0) {
-                    resource.data = new Image();
-                    resource.data.src = "data:" + type + ";base64," + encodeBinary(resource.xhr.responseText);
-                    resource.type = Resource$1.TYPE.IMAGE; // wait until the image loads and then callback
-
-                    resource.data.onload = function () {
-                      resource.data.onload = null;
-                      next();
-                    }; // next will be called on load
-
-
-                    return;
-                  }
-                } // if content type says this is an image, then we should transform the blob into an Image object
-                else if (resource.data.type.indexOf('image') === 0) {
-                    var src = Url$1.createObjectURL(resource.data);
-                    resource.blob = resource.data;
-                    resource.data = new Image();
-                    resource.data.src = src;
-                    resource.type = Resource$1.TYPE.IMAGE; // cleanup the no longer used blob after the image loads
-                    // TODO: Is this correct? Will the image be invalid after revoking?
-
-                    resource.data.onload = function () {
-                      Url$1.revokeObjectURL(src);
-                      resource.data.onload = null;
-                      next();
-                    }; // next will be called on load.
-
-
-                    return;
-                  }
-              }
-
-              next();
-            }
-
-            /**
-             * @namespace middleware
-             */
-
-            var index$2 = ({
-                caching: caching,
-                parsing: parsing
-            });
-
-            var MAX_PROGRESS = 100;
-            var rgxExtractUrlHash = /(#[\w-]+)?$/;
-            /**
-             * Manages the state and loading of multiple resources to load.
-             *
-             * @class
-             */
-
-            var Loader =
-            /*#__PURE__*/
-            function () {
-              /**
-               * @param {string} [baseUrl=''] - The base url for all resources loaded by this loader.
-               * @param {number} [concurrency=10] - The number of resources to load concurrently.
-               */
-              function Loader(baseUrl, concurrency) {
-                var _this = this;
-
-                if (baseUrl === void 0) {
-                  baseUrl = '';
-                }
-
-                if (concurrency === void 0) {
-                  concurrency = 10;
-                }
-
-                /**
-                 * The base url for all resources loaded by this loader.
-                 *
-                 * @member {string}
-                 */
-                this.baseUrl = baseUrl;
-                /**
-                 * The progress percent of the loader going through the queue.
-                 *
-                 * @member {number}
-                 * @default 0
-                 */
-
-                this.progress = 0;
-                /**
-                 * Loading state of the loader, true if it is currently loading resources.
-                 *
-                 * @member {boolean}
-                 * @default false
-                 */
-
-                this.loading = false;
-                /**
-                 * A querystring to append to every URL added to the loader.
-                 *
-                 * This should be a valid query string *without* the question-mark (`?`). The loader will
-                 * also *not* escape values for you. Make sure to escape your parameters with
-                 * [`encodeURIComponent`](https://mdn.io/encodeURIComponent) before assigning this property.
-                 *
-                 * @example
-                 * const loader = new Loader();
-                 *
-                 * loader.defaultQueryString = 'user=me&password=secret';
-                 *
-                 * // This will request 'image.png?user=me&password=secret'
-                 * loader.add('image.png').load();
-                 *
-                 * loader.reset();
-                 *
-                 * // This will request 'image.png?v=1&user=me&password=secret'
-                 * loader.add('iamge.png?v=1').load();
-                 *
-                 * @member {string}
-                 * @default ''
-                 */
-
-                this.defaultQueryString = '';
-                /**
-                 * The middleware to run before loading each resource.
-                 *
-                 * @private
-                 * @member {function[]}
-                 */
-
-                this._beforeMiddleware = [];
-                /**
-                 * The middleware to run after loading each resource.
-                 *
-                 * @private
-                 * @member {function[]}
-                 */
-
-                this._afterMiddleware = [];
-                /**
-                 * The tracks the resources we are currently completing parsing for.
-                 *
-                 * @private
-                 * @member {Resource[]}
-                 */
-
-                this._resourcesParsing = [];
-                /**
-                 * The `_loadResource` function bound with this object context.
-                 *
-                 * @private
-                 * @member {function}
-                 * @param {Resource} r - The resource to load
-                 * @param {Function} d - The dequeue function
-                 * @return {undefined}
-                 */
-
-                this._boundLoadResource = function (r, d) {
-                  return _this._loadResource(r, d);
-                };
-                /**
-                 * The resources waiting to be loaded.
-                 *
-                 * @private
-                 * @member {Resource[]}
-                 */
-
-
-                this._queue = queue(this._boundLoadResource, concurrency);
-
-                this._queue.pause();
-                /**
-                 * All the resources for this loader keyed by name.
-                 *
-                 * @member {object<string, Resource>}
-                 */
-
-
-                this.resources = {};
-                /**
-                 * Dispatched once per loaded or errored resource.
-                 *
-                 * The callback looks like {@link Loader.OnProgressSignal}.
-                 *
-                 * @member {Signal<Loader.OnProgressSignal>}
-                 */
-
-                this.onProgress = new miniSignals$1();
-                /**
-                 * Dispatched once per errored resource.
-                 *
-                 * The callback looks like {@link Loader.OnErrorSignal}.
-                 *
-                 * @member {Signal<Loader.OnErrorSignal>}
-                 */
-
-                this.onError = new miniSignals$1();
-                /**
-                 * Dispatched once per loaded resource.
-                 *
-                 * The callback looks like {@link Loader.OnLoadSignal}.
-                 *
-                 * @member {Signal<Loader.OnLoadSignal>}
-                 */
-
-                this.onLoad = new miniSignals$1();
-                /**
-                 * Dispatched when the loader begins to process the queue.
-                 *
-                 * The callback looks like {@link Loader.OnStartSignal}.
-                 *
-                 * @member {Signal<Loader.OnStartSignal>}
-                 */
-
-                this.onStart = new miniSignals$1();
-                /**
-                 * Dispatched when the queued resources all load.
-                 *
-                 * The callback looks like {@link Loader.OnCompleteSignal}.
-                 *
-                 * @member {Signal<Loader.OnCompleteSignal>}
-                 */
-
-                this.onComplete = new miniSignals$1(); // Add default before middleware
-
-                for (var i = 0; i < Loader._defaultBeforeMiddleware.length; ++i) {
-                  this.pre(Loader._defaultBeforeMiddleware[i]);
-                } // Add default after middleware
-
-
-                for (var _i = 0; _i < Loader._defaultAfterMiddleware.length; ++_i) {
-                  this.use(Loader._defaultAfterMiddleware[_i]);
-                }
-              }
-              /**
-               * When the progress changes the loader and resource are disaptched.
-               *
-               * @memberof Loader
-               * @callback OnProgressSignal
-               * @param {Loader} loader - The loader the progress is advancing on.
-               * @param {Resource} resource - The resource that has completed or failed to cause the progress to advance.
-               */
-
-              /**
-               * When an error occurrs the loader and resource are disaptched.
-               *
-               * @memberof Loader
-               * @callback OnErrorSignal
-               * @param {Loader} loader - The loader the error happened in.
-               * @param {Resource} resource - The resource that caused the error.
-               */
-
-              /**
-               * When a load completes the loader and resource are disaptched.
-               *
-               * @memberof Loader
-               * @callback OnLoadSignal
-               * @param {Loader} loader - The loader that laoded the resource.
-               * @param {Resource} resource - The resource that has completed loading.
-               */
-
-              /**
-               * When the loader starts loading resources it dispatches this callback.
-               *
-               * @memberof Loader
-               * @callback OnStartSignal
-               * @param {Loader} loader - The loader that has started loading resources.
-               */
-
-              /**
-               * When the loader completes loading resources it dispatches this callback.
-               *
-               * @memberof Loader
-               * @callback OnCompleteSignal
-               * @param {Loader} loader - The loader that has finished loading resources.
-               */
-
-              /**
-               * Options for a call to `.add()`.
-               *
-               * @see Loader#add
-               *
-               * @typedef {object} IAddOptions
-               * @property {string} [name] - The name of the resource to load, if not passed the url is used.
-               * @property {string} [key] - Alias for `name`.
-               * @property {string} [url] - The url for this resource, relative to the baseUrl of this loader.
-               * @property {string|boolean} [crossOrigin] - Is this request cross-origin? Default is to
-               *      determine automatically.
-               * @property {number} [timeout=0] - A timeout in milliseconds for the load. If the load takes
-               *      longer than this time it is cancelled and the load is considered a failure. If this value is
-               *      set to `0` then there is no explicit timeout.
-               * @property {Resource.LOAD_TYPE} [loadType=Resource.LOAD_TYPE.XHR] - How should this resource
-               *      be loaded?
-               * @property {Resource.XHR_RESPONSE_TYPE} [xhrType=Resource.XHR_RESPONSE_TYPE.DEFAULT] - How
-               *      should the data being loaded be interpreted when using XHR?
-               * @property {Resource.OnCompleteSignal} [onComplete] - Callback to add an an onComplete signal istener.
-               * @property {Resource.OnCompleteSignal} [callback] - Alias for `onComplete`.
-               * @property {Resource.IMetadata} [metadata] - Extra configuration for middleware and the Resource object.
-               */
-
-              /* eslint-disable require-jsdoc,valid-jsdoc */
-
-              /**
-               * Adds a resource (or multiple resources) to the loader queue.
-               *
-               * This function can take a wide variety of different parameters. The only thing that is always
-               * required the url to load. All the following will work:
-               *
-               * ```js
-               * loader
-               *     // normal param syntax
-               *     .add('key', 'http://...', function () {})
-               *     .add('http://...', function () {})
-               *     .add('http://...')
-               *
-               *     // object syntax
-               *     .add({
-               *         name: 'key2',
-               *         url: 'http://...'
-               *     }, function () {})
-               *     .add({
-               *         url: 'http://...'
-               *     }, function () {})
-               *     .add({
-               *         name: 'key3',
-               *         url: 'http://...'
-               *         onComplete: function () {}
-               *     })
-               *     .add({
-               *         url: 'https://...',
-               *         onComplete: function () {},
-               *         crossOrigin: true
-               *     })
-               *
-               *     // you can also pass an array of objects or urls or both
-               *     .add([
-               *         { name: 'key4', url: 'http://...', onComplete: function () {} },
-               *         { url: 'http://...', onComplete: function () {} },
-               *         'http://...'
-               *     ])
-               *
-               *     // and you can use both params and options
-               *     .add('key', 'http://...', { crossOrigin: true }, function () {})
-               *     .add('http://...', { crossOrigin: true }, function () {});
-               * ```
-               *
-               * @function
-               * @variation 1
-               * @param {string} name - The name of the resource to load.
-               * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
-               * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
-               * @return {this} Returns itself.
-               */
-
-              /**
-              * @function
-              * @variation 2
-              * @param {string} name - The name of the resource to load.
-              * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
-              * @param {IAddOptions} [options] - The options for the load.
-              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
-              * @return {this} Returns itself.
-              */
-
-              /**
-              * @function
-              * @variation 3
-              * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
-              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
-              * @return {this} Returns itself.
-              */
-
-              /**
-              * @function
-              * @variation 4
-              * @param {string} url - The url for this resource, relative to the baseUrl of this loader.
-              * @param {IAddOptions} [options] - The options for the load.
-              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
-              * @return {this} Returns itself.
-              */
-
-              /**
-              * @function
-              * @variation 5
-              * @param {IAddOptions} options - The options for the load. This object must contain a `url` property.
-              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
-              * @return {this} Returns itself.
-              */
-
-              /**
-              * @function
-              * @variation 6
-              * @param {Array<IAddOptions|string>} resources - An array of resources to load, where each is
-              *      either an object with the options or a string url. If you pass an object, it must contain a `url` property.
-              * @param {Resource.OnCompleteSignal} [callback] - Function to call when this specific resource completes loading.
-              * @return {this} Returns itself.
-              */
-
-
-              var _proto = Loader.prototype;
-
-              _proto.add = function add(name, url, options, cb) {
-                // special case of an array of objects or urls
-                if (Array.isArray(name)) {
-                  for (var i = 0; i < name.length; ++i) {
-                    this.add(name[i]);
-                  }
-
-                  return this;
-                } // if an object is passed instead of params
-
-
-                if (typeof name === 'object') {
-                  cb = url || name.callback || name.onComplete;
-                  options = name;
-                  url = name.url;
-                  name = name.name || name.key || name.url;
-                } // case where no name is passed shift all args over by one.
-
-
-                if (typeof url !== 'string') {
-                  cb = options;
-                  options = url;
-                  url = name;
-                } // now that we shifted make sure we have a proper url.
-
-
-                if (typeof url !== 'string') {
-                  throw new Error('No url passed to add resource to loader.');
-                } // options are optional so people might pass a function and no options
-
-
-                if (typeof options === 'function') {
-                  cb = options;
-                  options = null;
-                } // if loading already you can only add resources that have a parent.
-
-
-                if (this.loading && (!options || !options.parentResource)) {
-                  throw new Error('Cannot add resources while the loader is running.');
-                } // check if resource already exists.
-
-
-                if (this.resources[name]) {
-                  throw new Error("Resource named \"" + name + "\" already exists.");
-                } // add base url if this isn't an absolute url
-
-
-                url = this._prepareUrl(url); // create the store the resource
-
-                this.resources[name] = new Resource$1(name, url, options);
-
-                if (typeof cb === 'function') {
-                  this.resources[name].onAfterMiddleware.once(cb);
-                } // if actively loading, make sure to adjust progress chunks for that parent and its children
-
-
-                if (this.loading) {
-                  var parent = options.parentResource;
-                  var incompleteChildren = [];
-
-                  for (var _i2 = 0; _i2 < parent.children.length; ++_i2) {
-                    if (!parent.children[_i2].isComplete) {
-                      incompleteChildren.push(parent.children[_i2]);
-                    }
-                  }
-
-                  var fullChunk = parent.progressChunk * (incompleteChildren.length + 1); // +1 for parent
-
-                  var eachChunk = fullChunk / (incompleteChildren.length + 2); // +2 for parent & new child
-
-                  parent.children.push(this.resources[name]);
-                  parent.progressChunk = eachChunk;
-
-                  for (var _i3 = 0; _i3 < incompleteChildren.length; ++_i3) {
-                    incompleteChildren[_i3].progressChunk = eachChunk;
-                  }
-
-                  this.resources[name].progressChunk = eachChunk;
-                } // add the resource to the queue
-
-
-                this._queue.push(this.resources[name]);
-
-                return this;
-              }
-              /* eslint-enable require-jsdoc,valid-jsdoc */
-
-              /**
-               * Sets up a middleware function that will run *before* the
-               * resource is loaded.
-               *
-               * @param {function} fn - The middleware function to register.
-               * @return {this} Returns itself.
-               */
-              ;
-
-              _proto.pre = function pre(fn) {
-                this._beforeMiddleware.push(fn);
-
-                return this;
-              }
-              /**
-               * Sets up a middleware function that will run *after* the
-               * resource is loaded.
-               *
-               * @param {function} fn - The middleware function to register.
-               * @return {this} Returns itself.
-               */
-              ;
-
-              _proto.use = function use(fn) {
-                this._afterMiddleware.push(fn);
-
-                return this;
-              }
-              /**
-               * Resets the queue of the loader to prepare for a new load.
-               *
-               * @return {this} Returns itself.
-               */
-              ;
-
-              _proto.reset = function reset() {
-                this.progress = 0;
-                this.loading = false;
-
-                this._queue.kill();
-
-                this._queue.pause(); // abort all resource loads
-
-
-                for (var k in this.resources) {
-                  var res = this.resources[k];
-
-                  if (res._onLoadBinding) {
-                    res._onLoadBinding.detach();
-                  }
-
-                  if (res.isLoading) {
-                    res.abort();
-                  }
-                }
-
-                this.resources = {};
-                return this;
-              }
-              /**
-               * Starts loading the queued resources.
-               *
-               * @param {function} [cb] - Optional callback that will be bound to the `complete` event.
-               * @return {this} Returns itself.
-               */
-              ;
-
-              _proto.load = function load(cb) {
-                // register complete callback if they pass one
-                if (typeof cb === 'function') {
-                  this.onComplete.once(cb);
-                } // if the queue has already started we are done here
-
-
-                if (this.loading) {
-                  return this;
-                }
-
-                if (this._queue.idle()) {
-                  this._onStart();
-
-                  this._onComplete();
-                } else {
-                  // distribute progress chunks
-                  var numTasks = this._queue._tasks.length;
-                  var chunk = MAX_PROGRESS / numTasks;
-
-                  for (var i = 0; i < this._queue._tasks.length; ++i) {
-                    this._queue._tasks[i].data.progressChunk = chunk;
-                  } // notify we are starting
-
-
-                  this._onStart(); // start loading
-
-
-                  this._queue.resume();
-                }
-
-                return this;
-              }
-              /**
-               * The number of resources to load concurrently.
-               *
-               * @member {number}
-               * @default 10
-               */
-              ;
-
-              /**
-               * Prepares a url for usage based on the configuration of this object
-               *
-               * @private
-               * @param {string} url - The url to prepare.
-               * @return {string} The prepared url.
-               */
-              _proto._prepareUrl = function _prepareUrl(url) {
-                var parsedUrl = parseUri(url, {
-                  strictMode: true
-                });
-                var result; // absolute url, just use it as is.
-
-                if (parsedUrl.protocol || !parsedUrl.path || url.indexOf('//') === 0) {
-                  result = url;
-                } // if baseUrl doesn't end in slash and url doesn't start with slash, then add a slash inbetween
-                else if (this.baseUrl.length && this.baseUrl.lastIndexOf('/') !== this.baseUrl.length - 1 && url.charAt(0) !== '/') {
-                    result = this.baseUrl + "/" + url;
-                  } else {
-                    result = this.baseUrl + url;
-                  } // if we need to add a default querystring, there is a bit more work
-
-
-                if (this.defaultQueryString) {
-                  var hash = rgxExtractUrlHash.exec(result)[0];
-                  result = result.substr(0, result.length - hash.length);
-
-                  if (result.indexOf('?') !== -1) {
-                    result += "&" + this.defaultQueryString;
-                  } else {
-                    result += "?" + this.defaultQueryString;
-                  }
-
-                  result += hash;
-                }
-
-                return result;
-              }
-              /**
-               * Loads a single resource.
-               *
-               * @private
-               * @param {Resource} resource - The resource to load.
-               * @param {function} dequeue - The function to call when we need to dequeue this item.
-               */
-              ;
-
-              _proto._loadResource = function _loadResource(resource, dequeue) {
-                var _this2 = this;
-
-                resource._dequeue = dequeue; // run before middleware
-
-                eachSeries(this._beforeMiddleware, function (fn, next) {
-                  fn.call(_this2, resource, function () {
-                    // if the before middleware marks the resource as complete,
-                    // break and don't process any more before middleware
-                    next(resource.isComplete ? {} : null);
-                  });
-                }, function () {
-                  if (resource.isComplete) {
-                    _this2._onLoad(resource);
-                  } else {
-                    resource._onLoadBinding = resource.onComplete.once(_this2._onLoad, _this2);
-                    resource.load();
-                  }
-                }, true);
-              }
-              /**
-               * Called once loading has started.
-               *
-               * @private
-               */
-              ;
-
-              _proto._onStart = function _onStart() {
-                this.progress = 0;
-                this.loading = true;
-                this.onStart.dispatch(this);
-              }
-              /**
-               * Called once each resource has loaded.
-               *
-               * @private
-               */
-              ;
-
-              _proto._onComplete = function _onComplete() {
-                this.progress = MAX_PROGRESS;
-                this.loading = false;
-                this.onComplete.dispatch(this, this.resources);
-              }
-              /**
-               * Called each time a resources is loaded.
-               *
-               * @private
-               * @param {Resource} resource - The resource that was loaded
-               */
-              ;
-
-              _proto._onLoad = function _onLoad(resource) {
-                var _this3 = this;
-
-                resource._onLoadBinding = null; // remove this resource from the async queue, and add it to our list of resources that are being parsed
-
-                this._resourcesParsing.push(resource);
-
-                resource._dequeue(); // run all the after middleware for this resource
-
-
-                eachSeries(this._afterMiddleware, function (fn, next) {
-                  fn.call(_this3, resource, next);
-                }, function () {
-                  resource.onAfterMiddleware.dispatch(resource);
-                  _this3.progress = Math.min(MAX_PROGRESS, _this3.progress + resource.progressChunk);
-
-                  _this3.onProgress.dispatch(_this3, resource);
-
-                  if (resource.error) {
-                    _this3.onError.dispatch(resource.error, _this3, resource);
-                  } else {
-                    _this3.onLoad.dispatch(_this3, resource);
-                  }
-
-                  _this3._resourcesParsing.splice(_this3._resourcesParsing.indexOf(resource), 1); // do completion check
-
-
-                  if (_this3._queue.idle() && _this3._resourcesParsing.length === 0) {
-                    _this3._onComplete();
-                  }
-                }, true);
-              };
-
-              _createClass(Loader, [{
-                key: "concurrency",
-                get: function get() {
-                  return this._queue.concurrency;
-                } // eslint-disable-next-line require-jsdoc
-                ,
-                set: function set(concurrency) {
-                  this._queue.concurrency = concurrency;
-                }
-              }]);
-
-              return Loader;
-            }();
-            /**
-             * A default array of middleware to run before loading each resource.
-             * Each of these middlewares are added to any new Loader instances when they are created.
-             *
-             * @private
-             * @member {function[]}
-             */
-
-
-            Loader._defaultBeforeMiddleware = [];
-            /**
-             * A default array of middleware to run after loading each resource.
-             * Each of these middlewares are added to any new Loader instances when they are created.
-             *
-             * @private
-             * @member {function[]}
-             */
-
-            Loader._defaultAfterMiddleware = [];
-            /**
-             * Sets up a middleware function that will run *before* the
-             * resource is loaded.
-             *
-             * @static
-             * @param {function} fn - The middleware function to register.
-             * @return {Loader} Returns itself.
-             */
-
-            Loader.pre = function LoaderPreStatic(fn) {
-              Loader._defaultBeforeMiddleware.push(fn);
-
-              return Loader;
-            };
-            /**
-             * Sets up a middleware function that will run *after* the
-             * resource is loaded.
-             *
-             * @static
-             * @param {function} fn - The middleware function to register.
-             * @return {Loader} Returns itself.
-             */
-
-
-            Loader.use = function LoaderUseStatic(fn) {
-              Loader._defaultAfterMiddleware.push(fn);
-
-              return Loader;
-            };
-
-            /*!
-             * @pixi/loaders - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
-             *
-             * @pixi/loaders is licensed under the MIT License.
-             * http://www.opensource.org/licenses/mit-license
-             */
-
-            /**
-             * Loader plugin for handling Texture resources.
-             * @class
-             * @memberof PIXI
-             * @implements PIXI.ILoaderPlugin
-             */
-            var TextureLoader = function TextureLoader () {};
-
-            TextureLoader.use = function use (resource, next)
-            {
-                // create a new texture if the data is an Image object
-                if (resource.data && resource.type === Resource$1.TYPE.IMAGE)
-                {
-                    resource.texture = Texture.fromLoader(
-                        resource.data,
-                        resource.url,
-                        resource.name
-                    );
-                }
-                next();
-            };
-
-            /**
-             * The new loader, extends Resource Loader by Chad Engler: https://github.com/englercj/resource-loader
-             *
-             * ```js
-             * const loader = PIXI.Loader.shared; // PixiJS exposes a premade instance for you to use.
-             * //or
-             * const loader = new PIXI.Loader(); // you can also create your own if you want
-             *
-             * const sprites = {};
-             *
-             * // Chainable `add` to enqueue a resource
-             * loader.add('bunny', 'data/bunny.png')
-             *       .add('spaceship', 'assets/spritesheet.json');
-             * loader.add('scoreFont', 'assets/score.fnt');
-             *
-             * // Chainable `pre` to add a middleware that runs for each resource, *before* loading that resource.
-             * // This is useful to implement custom caching modules (using filesystem, indexeddb, memory, etc).
-             * loader.pre(cachingMiddleware);
-             *
-             * // Chainable `use` to add a middleware that runs for each resource, *after* loading that resource.
-             * // This is useful to implement custom parsing modules (like spritesheet parsers, spine parser, etc).
-             * loader.use(parsingMiddleware);
-             *
-             * // The `load` method loads the queue of resources, and calls the passed in callback called once all
-             * // resources have loaded.
-             * loader.load((loader, resources) => {
-             *     // resources is an object where the key is the name of the resource loaded and the value is the resource object.
-             *     // They have a couple default properties:
-             *     // - `url`: The URL that the resource was loaded from
-             *     // - `error`: The error that happened when trying to load (if any)
-             *     // - `data`: The raw data that was loaded
-             *     // also may contain other properties based on the middleware that runs.
-             *     sprites.bunny = new PIXI.TilingSprite(resources.bunny.texture);
-             *     sprites.spaceship = new PIXI.TilingSprite(resources.spaceship.texture);
-             *     sprites.scoreFont = new PIXI.TilingSprite(resources.scoreFont.texture);
-             * });
-             *
-             * // throughout the process multiple signals can be dispatched.
-             * loader.onProgress.add(() => {}); // called once per loaded/errored file
-             * loader.onError.add(() => {}); // called once per errored file
-             * loader.onLoad.add(() => {}); // called once per loaded file
-             * loader.onComplete.add(() => {}); // called once when the queued resources all load.
-             * ```
-             *
-             * @see https://github.com/englercj/resource-loader
-             *
-             * @class Loader
-             * @memberof PIXI
-             * @param {string} [baseUrl=''] - The base url for all resources loaded by this loader.
-             * @param {number} [concurrency=10] - The number of resources to load concurrently.
-             */
-            var Loader$1 = /*@__PURE__*/(function (ResourceLoader) {
-                function Loader(baseUrl, concurrency)
-                {
-                    var this$1 = this;
-
-                    ResourceLoader.call(this, baseUrl, concurrency);
-                    eventemitter3.call(this);
-
-                    for (var i = 0; i < Loader._plugins.length; ++i)
-                    {
-                        var plugin = Loader._plugins[i];
-                        var pre = plugin.pre;
-                        var use = plugin.use;
-
-                        if (pre)
-                        {
-                            this.pre(pre);
-                        }
-
-                        if (use)
-                        {
-                            this.use(use);
-                        }
-                    }
-
-                    // Compat layer, translate the new v2 signals into old v1 events.
-                    this.onStart.add(function (l) { return this$1.emit('start', l); });
-                    this.onProgress.add(function (l, r) { return this$1.emit('progress', l, r); });
-                    this.onError.add(function (e, l, r) { return this$1.emit('error', e, l, r); });
-                    this.onLoad.add(function (l, r) { return this$1.emit('load', l, r); });
-                    this.onComplete.add(function (l, r) { return this$1.emit('complete', l, r); });
-
-                    /**
-                     * If this loader cannot be destroyed.
-                     * @member {boolean}
-                     * @default false
-                     * @private
-                     */
-                    this._protected = false;
-                }
-
-                if ( ResourceLoader ) Loader.__proto__ = ResourceLoader;
-                Loader.prototype = Object.create( ResourceLoader && ResourceLoader.prototype );
-                Loader.prototype.constructor = Loader;
-
-                var staticAccessors = { shared: { configurable: true } };
-
-                /**
-                 * Destroy the loader, removes references.
-                 * @private
-                 */
-                Loader.prototype.destroy = function destroy ()
-                {
-                    if (!this._protected)
-                    {
-                        this.removeAllListeners();
-                        this.reset();
-                    }
-                };
-
-                /**
-                 * A premade instance of the loader that can be used to load resources.
-                 * @name shared
-                 * @type {PIXI.Loader}
-                 * @static
-                 * @memberof PIXI.Loader
-                 */
-                staticAccessors.shared.get = function ()
-                {
-                    var shared = Loader._shared;
-
-                    if (!shared)
-                    {
-                        shared = new Loader();
-                        shared._protected = true;
-                        Loader._shared = shared;
-                    }
-
-                    return shared;
-                };
-
-                Object.defineProperties( Loader, staticAccessors );
-
-                return Loader;
-            }(Loader));
-
-            // Copy EE3 prototype (mixin)
-            Object.assign(Loader$1.prototype, eventemitter3.prototype);
-
-            /**
-             * Collection of all installed `use` middleware for Loader.
-             *
-             * @static
-             * @member {Array<PIXI.ILoaderPlugin>} _plugins
-             * @memberof PIXI.Loader
-             * @private
-             */
-            Loader$1._plugins = [];
-
-            /**
-             * Adds a Loader plugin for the global shared loader and all
-             * new Loader instances created.
-             *
-             * @static
-             * @method registerPlugin
-             * @memberof PIXI.Loader
-             * @param {PIXI.ILoaderPlugin} plugin - The plugin to add
-             * @return {PIXI.Loader} Reference to PIXI.Loader for chaining
-             */
-            Loader$1.registerPlugin = function registerPlugin(plugin)
-            {
-                Loader$1._plugins.push(plugin);
-
-                if (plugin.add)
-                {
-                    plugin.add();
-                }
-
-                return Loader$1;
-            };
-
-            // parse any blob into more usable objects (e.g. Image)
-            Loader$1.registerPlugin({ use: index$2.parsing });
-
-            // parse any Image objects into textures
-            Loader$1.registerPlugin(TextureLoader);
-
-            /**
-             * Plugin to be installed for handling specific Loader resources.
-             *
-             * @memberof PIXI
-             * @typedef ILoaderPlugin
-             * @property {function} [add] - Function to call immediate after registering plugin.
-             * @property {PIXI.Loader.loaderMiddleware} [pre] - Middleware function to run before load, the
-             *           arguments for this are `(resource, next)`
-             * @property {PIXI.Loader.loaderMiddleware} [use] - Middleware function to run after load, the
-             *           arguments for this are `(resource, next)`
-             */
-
-            /**
-             * @memberof PIXI.Loader
-             * @callback loaderMiddleware
-             * @param {PIXI.LoaderResource} resource
-             * @param {function} next
-             */
-
-            /**
-             * @memberof PIXI.Loader#
-             * @member {object} onStart
-             */
-
-            /**
-             * @memberof PIXI.Loader#
-             * @member {object} onProgress
-             */
-
-            /**
-             * @memberof PIXI.Loader#
-             * @member {object} onError
-             */
-
-            /**
-             * @memberof PIXI.Loader#
-             * @member {object} onLoad
-             */
-
-            /**
-             * @memberof PIXI.Loader#
-             * @member {object} onComplete
-             */
-
-            /**
-             * Application plugin for supporting loader option. Installing the LoaderPlugin
-             * is not necessary if using **pixi.js** or **pixi.js-legacy**.
-             * @example
-             * import {AppLoaderPlugin} from '@pixi/loaders';
-             * import {Application} from '@pixi/app';
-             * Application.registerPlugin(AppLoaderPlugin);
-             * @class
-             * @memberof PIXI
-             */
-            var AppLoaderPlugin = function AppLoaderPlugin () {};
-
-            AppLoaderPlugin.init = function init (options)
-            {
-                options = Object.assign({
-                    sharedLoader: false,
-                }, options);
-
-                /**
-                 * Loader instance to help with asset loading.
-                 * @name PIXI.Application#loader
-                 * @type {PIXI.Loader}
-                 * @readonly
-                 */
-                this.loader = options.sharedLoader ? Loader$1.shared : new Loader$1();
-            };
-
-            /**
-             * Called when application destroyed
-             * @private
-             */
-            AppLoaderPlugin.destroy = function destroy ()
-            {
-                if (this.loader)
-                {
-                    this.loader.destroy();
-                    this.loader = null;
-                }
-            };
-
-            /**
-             * Reference to **{@link https://github.com/englercj/resource-loader
-             * resource-loader}**'s Resource class.
-             * @see http://englercj.github.io/resource-loader/Resource.html
-             * @class LoaderResource
-             * @memberof PIXI
-             */
-            var LoaderResource = Resource$1;
-
-            /*!
-             * @pixi/particles - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
-             *
-             * @pixi/particles is licensed under the MIT License.
-             * http://www.opensource.org/licenses/mit-license
-             */
-
-            /**
-             * The ParticleContainer class is a really fast version of the Container built solely for speed,
-             * so use when you need a lot of sprites or particles.
-             *
-             * The tradeoff of the ParticleContainer is that most advanced functionality will not work.
-             * ParticleContainer implements the basic object transform (position, scale, rotation)
-             * and some advanced functionality like tint (as of v4.5.6).
-             *
-             * Other more advanced functionality like masking, children, filters, etc will not work on sprites in this batch.
-             *
-             * It's extremely easy to use:
-             * ```js
-             * let container = new ParticleContainer();
-             *
-             * for (let i = 0; i < 100; ++i)
-             * {
-             *     let sprite = PIXI.Sprite.from("myImage.png");
-             *     container.addChild(sprite);
-             * }
-             * ```
-             *
-             * And here you have a hundred sprites that will be rendered at the speed of light.
-             *
-             * @class
-             * @extends PIXI.Container
-             * @memberof PIXI
-             */
-            var ParticleContainer = /*@__PURE__*/(function (Container) {
-                function ParticleContainer(maxSize, properties, batchSize, autoResize)
-                {
-                    if ( maxSize === void 0 ) maxSize = 1500;
-                    if ( batchSize === void 0 ) batchSize = 16384;
-                    if ( autoResize === void 0 ) autoResize = false;
-
-                    Container.call(this);
-
-                    // Making sure the batch size is valid
-                    // 65535 is max vertex index in the index buffer (see ParticleRenderer)
-                    // so max number of particles is 65536 / 4 = 16384
-                    var maxBatchSize = 16384;
-
-                    if (batchSize > maxBatchSize)
-                    {
-                        batchSize = maxBatchSize;
-                    }
-
-                    /**
-                     * Set properties to be dynamic (true) / static (false)
-                     *
-                     * @member {boolean[]}
-                     * @private
-                     */
-                    this._properties = [false, true, false, false, false];
-
-                    /**
-                     * @member {number}
-                     * @private
-                     */
-                    this._maxSize = maxSize;
-
-                    /**
-                     * @member {number}
-                     * @private
-                     */
-                    this._batchSize = batchSize;
-
-                    /**
-                     * @member {Array<PIXI.Buffer>}
-                     * @private
-                     */
-                    this._buffers = null;
-
-                    /**
-                     * for every batch stores _updateID corresponding to the last change in that batch
-                     * @member {number[]}
-                     * @private
-                     */
-                    this._bufferUpdateIDs = [];
-
-                    /**
-                     * when child inserted, removed or changes position this number goes up
-                     * @member {number[]}
-                     * @private
-                     */
-                    this._updateID = 0;
-
-                    /**
-                     * @member {boolean}
-                     *
-                     */
-                    this.interactiveChildren = false;
-
-                    /**
-                     * The blend mode to be applied to the sprite. Apply a value of `PIXI.BLEND_MODES.NORMAL`
-                     * to reset the blend mode.
-                     *
-                     * @member {number}
-                     * @default PIXI.BLEND_MODES.NORMAL
-                     * @see PIXI.BLEND_MODES
-                     */
-                    this.blendMode = BLEND_MODES.NORMAL;
-
-                    /**
-                     * If true, container allocates more batches in case there are more than `maxSize` particles.
-                     * @member {boolean}
-                     * @default false
-                     */
-                    this.autoResize = autoResize;
-
-                    /**
-                     * If true PixiJS will Math.floor() x/y values when rendering, stopping pixel interpolation.
-                     * Advantages can include sharper image quality (like text) and faster rendering on canvas.
-                     * The main disadvantage is movement of objects may appear less smooth.
-                     * Default to true here as performance is usually the priority for particles.
-                     *
-                     * @member {boolean}
-                     * @default true
-                     */
-                    this.roundPixels = true;
-
-                    /**
-                     * The texture used to render the children.
-                     *
-                     * @readonly
-                     * @member {PIXI.BaseTexture}
-                     */
-                    this.baseTexture = null;
-
-                    this.setProperties(properties);
-
-                    /**
-                     * The tint applied to the container.
-                     * This is a hex value. A value of 0xFFFFFF will remove any tint effect.
-                     *
-                     * @private
-                     * @member {number}
-                     * @default 0xFFFFFF
-                     */
-                    this._tint = 0;
-                    this.tintRgb = new Float32Array(4);
-                    this.tint = 0xFFFFFF;
-                }
-
-                if ( Container ) ParticleContainer.__proto__ = Container;
-                ParticleContainer.prototype = Object.create( Container && Container.prototype );
-                ParticleContainer.prototype.constructor = ParticleContainer;
-
-                var prototypeAccessors = { tint: { configurable: true } };
-
-                /**
-                 * Sets the private properties array to dynamic / static based on the passed properties object
-                 *
-                 * @param {object} properties - The properties to be uploaded
-                 */
-                ParticleContainer.prototype.setProperties = function setProperties (properties)
-                {
-                    if (properties)
-                    {
-                        this._properties[0] = 'vertices' in properties || 'scale' in properties
-                            ? !!properties.vertices || !!properties.scale : this._properties[0];
-                        this._properties[1] = 'position' in properties ? !!properties.position : this._properties[1];
-                        this._properties[2] = 'rotation' in properties ? !!properties.rotation : this._properties[2];
-                        this._properties[3] = 'uvs' in properties ? !!properties.uvs : this._properties[3];
-                        this._properties[4] = 'tint' in properties || 'alpha' in properties
-                            ? !!properties.tint || !!properties.alpha : this._properties[4];
-                    }
-                };
-
-                /**
-                 * Updates the object transform for rendering
-                 *
-                 * @private
-                 */
-                ParticleContainer.prototype.updateTransform = function updateTransform ()
-                {
-                    // TODO don't need to!
-                    this.displayObjectUpdateTransform();
-                    //  PIXI.Container.prototype.updateTransform.call( this );
-                };
-
-                /**
-                 * The tint applied to the container. This is a hex value.
-                 * A value of 0xFFFFFF will remove any tint effect.
-                 ** IMPORTANT: This is a WebGL only feature and will be ignored by the canvas renderer.
-                 * @member {number}
-                 * @default 0xFFFFFF
-                 */
-                prototypeAccessors.tint.get = function ()
-                {
-                    return this._tint;
-                };
-
-                prototypeAccessors.tint.set = function (value) // eslint-disable-line require-jsdoc
-                {
-                    this._tint = value;
-                    hex2rgb(value, this.tintRgb);
-                };
-
-                /**
-                 * Renders the container using the WebGL renderer
-                 *
-                 * @private
-                 * @param {PIXI.Renderer} renderer - The webgl renderer
-                 */
-                ParticleContainer.prototype.render = function render (renderer)
-                {
-                    var this$1 = this;
-
-                    if (!this.visible || this.worldAlpha <= 0 || !this.children.length || !this.renderable)
-                    {
-                        return;
-                    }
-
-                    if (!this.baseTexture)
-                    {
-                        this.baseTexture = this.children[0]._texture.baseTexture;
-                        if (!this.baseTexture.valid)
-                        {
-                            this.baseTexture.once('update', function () { return this$1.onChildrenChange(0); });
-                        }
-                    }
-
-                    renderer.batch.setObjectRenderer(renderer.plugins.particle);
-                    renderer.plugins.particle.render(this);
-                };
-
-                /**
-                 * Set the flag that static data should be updated to true
-                 *
-                 * @private
-                 * @param {number} smallestChildIndex - The smallest child index
-                 */
-                ParticleContainer.prototype.onChildrenChange = function onChildrenChange (smallestChildIndex)
-                {
-                    var bufferIndex = Math.floor(smallestChildIndex / this._batchSize);
-
-                    while (this._bufferUpdateIDs.length < bufferIndex)
-                    {
-                        this._bufferUpdateIDs.push(0);
-                    }
-                    this._bufferUpdateIDs[bufferIndex] = ++this._updateID;
-                };
-
-                ParticleContainer.prototype.dispose = function dispose ()
-                {
-                    if (this._buffers)
-                    {
-                        for (var i = 0; i < this._buffers.length; ++i)
-                        {
-                            this._buffers[i].destroy();
-                        }
-
-                        this._buffers = null;
-                    }
-                };
-
-                /**
-                 * Destroys the container
-                 *
-                 * @param {object|boolean} [options] - Options parameter. A boolean will act as if all options
-                 *  have been set to that value
-                 * @param {boolean} [options.children=false] - if set to true, all the children will have their
-                 *  destroy method called as well. 'options' will be passed on to those calls.
-                 * @param {boolean} [options.texture=false] - Only used for child Sprites if options.children is set to true
-                 *  Should it destroy the texture of the child sprite
-                 * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true
-                 *  Should it destroy the base texture of the child sprite
-                 */
-                ParticleContainer.prototype.destroy = function destroy (options)
-                {
-                    Container.prototype.destroy.call(this, options);
-
-                    this.dispose();
-
-                    this._properties = null;
-                    this._buffers = null;
-                    this._bufferUpdateIDs = null;
-                };
-
-                Object.defineProperties( ParticleContainer.prototype, prototypeAccessors );
-
-                return ParticleContainer;
-            }(Container));
-
-            /**
-             * @author Mat Groves
-             *
-             * Big thanks to the very clever Matt DesLauriers <mattdesl> https://github.com/mattdesl/
-             * for creating the original PixiJS version!
-             * Also a thanks to https://github.com/bchevalier for tweaking the tint and alpha so that
-             * they now share 4 bytes on the vertex buffer
-             *
-             * Heavily inspired by LibGDX's ParticleBuffer:
-             * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/ParticleBuffer.java
-             */
-
-            /**
-             * The particle buffer manages the static and dynamic buffers for a particle container.
-             *
-             * @class
-             * @private
-             * @memberof PIXI
-             */
-            var ParticleBuffer = function ParticleBuffer(properties, dynamicPropertyFlags, size)
-            {
-                this.geometry = new Geometry();
-
-                this.indexBuffer = null;
-
-                /**
-                 * The number of particles the buffer can hold
-                 *
-                 * @private
-                 * @member {number}
-                 */
-                this.size = size;
-
-                /**
-                 * A list of the properties that are dynamic.
-                 *
-                 * @private
-                 * @member {object[]}
-                 */
-                this.dynamicProperties = [];
-
-                /**
-                 * A list of the properties that are static.
-                 *
-                 * @private
-                 * @member {object[]}
-                 */
-                this.staticProperties = [];
-
-                for (var i = 0; i < properties.length; ++i)
-                {
-                    var property = properties[i];
-
-                    // Make copy of properties object so that when we edit the offset it doesn't
-                    // change all other instances of the object literal
-                    property = {
-                        attributeName: property.attributeName,
-                        size: property.size,
-                        uploadFunction: property.uploadFunction,
-                        type: property.type || TYPES.FLOAT,
-                        offset: property.offset,
-                    };
-
-                    if (dynamicPropertyFlags[i])
-                    {
-                        this.dynamicProperties.push(property);
-                    }
-                    else
-                    {
-                        this.staticProperties.push(property);
-                    }
-                }
-
-                this.staticStride = 0;
-                this.staticBuffer = null;
-                this.staticData = null;
-                this.staticDataUint32 = null;
-
-                this.dynamicStride = 0;
-                this.dynamicBuffer = null;
-                this.dynamicData = null;
-                this.dynamicDataUint32 = null;
-
-                this._updateID = 0;
-
-                this.initBuffers();
-            };
-
-            /**
-             * Sets up the renderer context and necessary buffers.
-             *
-             * @private
-             */
-            ParticleBuffer.prototype.initBuffers = function initBuffers ()
-            {
-                var geometry = this.geometry;
-
-                var dynamicOffset = 0;
-
-                /**
-                 * Holds the indices of the geometry (quads) to draw
-                 *
-                 * @member {Uint16Array}
-                 * @private
-                 */
-                this.indexBuffer = new Buffer(createIndicesForQuads(this.size), true, true);
-                geometry.addIndex(this.indexBuffer);
-
-                this.dynamicStride = 0;
-
-                for (var i = 0; i < this.dynamicProperties.length; ++i)
-                {
-                    var property = this.dynamicProperties[i];
-
-                    property.offset = dynamicOffset;
-                    dynamicOffset += property.size;
-                    this.dynamicStride += property.size;
-                }
-
-                var dynBuffer = new ArrayBuffer(this.size * this.dynamicStride * 4 * 4);
-
-                this.dynamicData = new Float32Array(dynBuffer);
-                this.dynamicDataUint32 = new Uint32Array(dynBuffer);
-                this.dynamicBuffer = new Buffer(this.dynamicData, false, false);
-
-                // static //
-                var staticOffset = 0;
-
-                this.staticStride = 0;
-
-                for (var i$1 = 0; i$1 < this.staticProperties.length; ++i$1)
-                {
-                    var property$1 = this.staticProperties[i$1];
-
-                    property$1.offset = staticOffset;
-                    staticOffset += property$1.size;
-                    this.staticStride += property$1.size;
-                }
-
-                var statBuffer = new ArrayBuffer(this.size * this.staticStride * 4 * 4);
-
-                this.staticData = new Float32Array(statBuffer);
-                this.staticDataUint32 = new Uint32Array(statBuffer);
-                this.staticBuffer = new Buffer(this.staticData, true, false);
-
-                for (var i$2 = 0; i$2 < this.dynamicProperties.length; ++i$2)
-                {
-                    var property$2 = this.dynamicProperties[i$2];
-
-                    geometry.addAttribute(
-                        property$2.attributeName,
-                        this.dynamicBuffer,
-                        0,
-                        property$2.type === TYPES.UNSIGNED_BYTE,
-                        property$2.type,
-                        this.dynamicStride * 4,
-                        property$2.offset * 4
-                    );
-                }
-
-                for (var i$3 = 0; i$3 < this.staticProperties.length; ++i$3)
-                {
-                    var property$3 = this.staticProperties[i$3];
-
-                    geometry.addAttribute(
-                        property$3.attributeName,
-                        this.staticBuffer,
-                        0,
-                        property$3.type === TYPES.UNSIGNED_BYTE,
-                        property$3.type,
-                        this.staticStride * 4,
-                        property$3.offset * 4
-                    );
-                }
-            };
-
-            /**
-             * Uploads the dynamic properties.
-             *
-             * @private
-             * @param {PIXI.DisplayObject[]} children - The children to upload.
-             * @param {number} startIndex - The index to start at.
-             * @param {number} amount - The number to upload.
-             */
-            ParticleBuffer.prototype.uploadDynamic = function uploadDynamic (children, startIndex, amount)
-            {
-                for (var i = 0; i < this.dynamicProperties.length; i++)
-                {
-                    var property = this.dynamicProperties[i];
-
-                    property.uploadFunction(children, startIndex, amount,
-                        property.type === TYPES.UNSIGNED_BYTE ? this.dynamicDataUint32 : this.dynamicData,
-                        this.dynamicStride, property.offset);
-                }
-
-                this.dynamicBuffer._updateID++;
-            };
-
-            /**
-             * Uploads the static properties.
-             *
-             * @private
-             * @param {PIXI.DisplayObject[]} children - The children to upload.
-             * @param {number} startIndex - The index to start at.
-             * @param {number} amount - The number to upload.
-             */
-            ParticleBuffer.prototype.uploadStatic = function uploadStatic (children, startIndex, amount)
-            {
-                for (var i = 0; i < this.staticProperties.length; i++)
-                {
-                    var property = this.staticProperties[i];
-
-                    property.uploadFunction(children, startIndex, amount,
-                        property.type === TYPES.UNSIGNED_BYTE ? this.staticDataUint32 : this.staticData,
-                        this.staticStride, property.offset);
-                }
-
-                this.staticBuffer._updateID++;
-            };
-
-            /**
-             * Destroys the ParticleBuffer.
-             *
-             * @private
-             */
-            ParticleBuffer.prototype.destroy = function destroy ()
-            {
-                this.indexBuffer = null;
-
-                this.dynamicProperties = null;
-                // this.dynamicBuffer.destroy();
-                this.dynamicBuffer = null;
-                this.dynamicData = null;
-                this.dynamicDataUint32 = null;
-
-                this.staticProperties = null;
-                // this.staticBuffer.destroy();
-                this.staticBuffer = null;
-                this.staticData = null;
-                this.staticDataUint32 = null;
-                // all buffers are destroyed inside geometry
-                this.geometry.destroy();
-            };
-
-            var vertex$1 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\n\nattribute vec2 aPositionCoord;\nattribute float aRotation;\n\nuniform mat3 translationMatrix;\nuniform vec4 uColor;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nvoid main(void){\n    float x = (aVertexPosition.x) * cos(aRotation) - (aVertexPosition.y) * sin(aRotation);\n    float y = (aVertexPosition.x) * sin(aRotation) + (aVertexPosition.y) * cos(aRotation);\n\n    vec2 v = vec2(x, y);\n    v = v + aPositionCoord;\n\n    gl_Position = vec4((translationMatrix * vec3(v, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vColor = aColor * uColor;\n}\n";
-
-            var fragment$1 = "varying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void){\n    vec4 color = texture2D(uSampler, vTextureCoord) * vColor;\n    gl_FragColor = color;\n}";
-
-            /**
-             * @author Mat Groves
-             *
-             * Big thanks to the very clever Matt DesLauriers <mattdesl> https://github.com/mattdesl/
-             * for creating the original PixiJS version!
-             * Also a thanks to https://github.com/bchevalier for tweaking the tint and alpha so that they now
-             * share 4 bytes on the vertex buffer
-             *
-             * Heavily inspired by LibGDX's ParticleRenderer:
-             * https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/ParticleRenderer.java
-             */
-
-            /**
-             * Renderer for Particles that is designer for speed over feature set.
-             *
-             * @class
-             * @memberof PIXI
-             */
-            var ParticleRenderer = /*@__PURE__*/(function (ObjectRenderer) {
-                function ParticleRenderer(renderer)
-                {
-                    ObjectRenderer.call(this, renderer);
-
-                    // 65535 is max vertex index in the index buffer (see ParticleRenderer)
-                    // so max number of particles is 65536 / 4 = 16384
-                    // and max number of element in the index buffer is 16384 * 6 = 98304
-                    // Creating a full index buffer, overhead is 98304 * 2 = 196Ko
-                    // let numIndices = 98304;
-
-                    /**
-                     * The default shader that is used if a sprite doesn't have a more specific one.
-                     *
-                     * @member {PIXI.Shader}
-                     */
-                    this.shader = null;
-
-                    this.properties = null;
-
-                    this.tempMatrix = new Matrix();
-
-                    this.properties = [
-                        // verticesData
-                        {
-                            attributeName: 'aVertexPosition',
-                            size: 2,
-                            uploadFunction: this.uploadVertices,
-                            offset: 0,
-                        },
-                        // positionData
-                        {
-                            attributeName: 'aPositionCoord',
-                            size: 2,
-                            uploadFunction: this.uploadPosition,
-                            offset: 0,
-                        },
-                        // rotationData
-                        {
-                            attributeName: 'aRotation',
-                            size: 1,
-                            uploadFunction: this.uploadRotation,
-                            offset: 0,
-                        },
-                        // uvsData
-                        {
-                            attributeName: 'aTextureCoord',
-                            size: 2,
-                            uploadFunction: this.uploadUvs,
-                            offset: 0,
-                        },
-                        // tintData
-                        {
-                            attributeName: 'aColor',
-                            size: 1,
-                            type: TYPES.UNSIGNED_BYTE,
-                            uploadFunction: this.uploadTint,
-                            offset: 0,
-                        } ];
-
-                    this.shader = Shader.from(vertex$1, fragment$1, {});
-                }
-
-                if ( ObjectRenderer ) ParticleRenderer.__proto__ = ObjectRenderer;
-                ParticleRenderer.prototype = Object.create( ObjectRenderer && ObjectRenderer.prototype );
-                ParticleRenderer.prototype.constructor = ParticleRenderer;
-
-                /**
-                 * Renders the particle container object.
-                 *
-                 * @param {PIXI.ParticleContainer} container - The container to render using this ParticleRenderer
-                 */
-                ParticleRenderer.prototype.render = function render (container)
-                {
-                    var children = container.children;
-                    var maxSize = container._maxSize;
-                    var batchSize = container._batchSize;
-                    var renderer = this.renderer;
-                    var totalChildren = children.length;
-
-                    if (totalChildren === 0)
-                    {
-                        return;
-                    }
-                    else if (totalChildren > maxSize && !container.autoResize)
-                    {
-                        totalChildren = maxSize;
-                    }
-
-                    var buffers = container._buffers;
-
-                    if (!buffers)
-                    {
-                        buffers = container._buffers = this.generateBuffers(container);
-                    }
-
-                    var baseTexture = children[0]._texture.baseTexture;
-
-                    // if the uvs have not updated then no point rendering just yet!
-                    this.renderer.state.setBlendMode(correctBlendMode(container.blendMode, baseTexture.alphaMode));
-
-                    var gl = renderer.gl;
-
-                    var m = container.worldTransform.copyTo(this.tempMatrix);
-
-                    m.prepend(renderer.globalUniforms.uniforms.projectionMatrix);
-
-                    this.shader.uniforms.translationMatrix = m.toArray(true);
-
-                    this.shader.uniforms.uColor = premultiplyRgba(container.tintRgb,
-                        container.worldAlpha, this.shader.uniforms.uColor, baseTexture.alphaMode);
-
-                    this.shader.uniforms.uSampler = baseTexture;
-
-                    this.renderer.shader.bind(this.shader);
-
-                    var updateStatic = false;
-
-                    // now lets upload and render the buffers..
-                    for (var i = 0, j = 0; i < totalChildren; i += batchSize, j += 1)
-                    {
-                        var amount = (totalChildren - i);
-
-                        if (amount > batchSize)
-                        {
-                            amount = batchSize;
-                        }
-
-                        if (j >= buffers.length)
-                        {
-                            buffers.push(this._generateOneMoreBuffer(container));
-                        }
-
-                        var buffer = buffers[j];
-
-                        // we always upload the dynamic
-                        buffer.uploadDynamic(children, i, amount);
-
-                        var bid = container._bufferUpdateIDs[j] || 0;
-
-                        updateStatic = updateStatic || (buffer._updateID < bid);
-                        // we only upload the static content when we have to!
-                        if (updateStatic)
-                        {
-                            buffer._updateID = container._updateID;
-                            buffer.uploadStatic(children, i, amount);
-                        }
-
-                        // bind the buffer
-                        renderer.geometry.bind(buffer.geometry);
-                        gl.drawElements(gl.TRIANGLES, amount * 6, gl.UNSIGNED_SHORT, 0);
-                    }
-                };
-
-                /**
-                 * Creates one particle buffer for each child in the container we want to render and updates internal properties
-                 *
-                 * @param {PIXI.ParticleContainer} container - The container to render using this ParticleRenderer
-                 * @return {PIXI.ParticleBuffer[]} The buffers
-                 * @private
-                 */
-                ParticleRenderer.prototype.generateBuffers = function generateBuffers (container)
-                {
-                    var buffers = [];
-                    var size = container._maxSize;
-                    var batchSize = container._batchSize;
-                    var dynamicPropertyFlags = container._properties;
-
-                    for (var i = 0; i < size; i += batchSize)
-                    {
-                        buffers.push(new ParticleBuffer(this.properties, dynamicPropertyFlags, batchSize));
-                    }
-
-                    return buffers;
-                };
-
-                /**
-                 * Creates one more particle buffer, because container has autoResize feature
-                 *
-                 * @param {PIXI.ParticleContainer} container - The container to render using this ParticleRenderer
-                 * @return {PIXI.ParticleBuffer} generated buffer
-                 * @private
-                 */
-                ParticleRenderer.prototype._generateOneMoreBuffer = function _generateOneMoreBuffer (container)
-                {
-                    var batchSize = container._batchSize;
-                    var dynamicPropertyFlags = container._properties;
-
-                    return new ParticleBuffer(this.properties, dynamicPropertyFlags, batchSize);
-                };
-
-                /**
-                 * Uploads the vertices.
-                 *
-                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
-                 * @param {number} startIndex - the index to start from in the children array
-                 * @param {number} amount - the amount of children that will have their vertices uploaded
-                 * @param {number[]} array - The vertices to upload.
-                 * @param {number} stride - Stride to use for iteration.
-                 * @param {number} offset - Offset to start at.
-                 */
-                ParticleRenderer.prototype.uploadVertices = function uploadVertices (children, startIndex, amount, array, stride, offset)
-                {
-                    var w0 = 0;
-                    var w1 = 0;
-                    var h0 = 0;
-                    var h1 = 0;
-
-                    for (var i = 0; i < amount; ++i)
-                    {
-                        var sprite = children[startIndex + i];
-                        var texture = sprite._texture;
-                        var sx = sprite.scale.x;
-                        var sy = sprite.scale.y;
-                        var trim = texture.trim;
-                        var orig = texture.orig;
-
-                        if (trim)
-                        {
-                            // if the sprite is trimmed and is not a tilingsprite then we need to add the
-                            // extra space before transforming the sprite coords..
-                            w1 = trim.x - (sprite.anchor.x * orig.width);
-                            w0 = w1 + trim.width;
-
-                            h1 = trim.y - (sprite.anchor.y * orig.height);
-                            h0 = h1 + trim.height;
-                        }
-                        else
-                        {
-                            w0 = (orig.width) * (1 - sprite.anchor.x);
-                            w1 = (orig.width) * -sprite.anchor.x;
-
-                            h0 = orig.height * (1 - sprite.anchor.y);
-                            h1 = orig.height * -sprite.anchor.y;
-                        }
-
-                        array[offset] = w1 * sx;
-                        array[offset + 1] = h1 * sy;
-
-                        array[offset + stride] = w0 * sx;
-                        array[offset + stride + 1] = h1 * sy;
-
-                        array[offset + (stride * 2)] = w0 * sx;
-                        array[offset + (stride * 2) + 1] = h0 * sy;
-
-                        array[offset + (stride * 3)] = w1 * sx;
-                        array[offset + (stride * 3) + 1] = h0 * sy;
-
-                        offset += stride * 4;
-                    }
-                };
-
-                /**
-                 * Uploads the position.
-                 *
-                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
-                 * @param {number} startIndex - the index to start from in the children array
-                 * @param {number} amount - the amount of children that will have their positions uploaded
-                 * @param {number[]} array - The vertices to upload.
-                 * @param {number} stride - Stride to use for iteration.
-                 * @param {number} offset - Offset to start at.
-                 */
-                ParticleRenderer.prototype.uploadPosition = function uploadPosition (children, startIndex, amount, array, stride, offset)
-                {
-                    for (var i = 0; i < amount; i++)
-                    {
-                        var spritePosition = children[startIndex + i].position;
-
-                        array[offset] = spritePosition.x;
-                        array[offset + 1] = spritePosition.y;
-
-                        array[offset + stride] = spritePosition.x;
-                        array[offset + stride + 1] = spritePosition.y;
-
-                        array[offset + (stride * 2)] = spritePosition.x;
-                        array[offset + (stride * 2) + 1] = spritePosition.y;
-
-                        array[offset + (stride * 3)] = spritePosition.x;
-                        array[offset + (stride * 3) + 1] = spritePosition.y;
-
-                        offset += stride * 4;
-                    }
-                };
-
-                /**
-                 * Uploads the rotiation.
-                 *
-                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
-                 * @param {number} startIndex - the index to start from in the children array
-                 * @param {number} amount - the amount of children that will have their rotation uploaded
-                 * @param {number[]} array - The vertices to upload.
-                 * @param {number} stride - Stride to use for iteration.
-                 * @param {number} offset - Offset to start at.
-                 */
-                ParticleRenderer.prototype.uploadRotation = function uploadRotation (children, startIndex, amount, array, stride, offset)
-                {
-                    for (var i = 0; i < amount; i++)
-                    {
-                        var spriteRotation = children[startIndex + i].rotation;
-
-                        array[offset] = spriteRotation;
-                        array[offset + stride] = spriteRotation;
-                        array[offset + (stride * 2)] = spriteRotation;
-                        array[offset + (stride * 3)] = spriteRotation;
-
-                        offset += stride * 4;
-                    }
-                };
-
-                /**
-                 * Uploads the Uvs
-                 *
-                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
-                 * @param {number} startIndex - the index to start from in the children array
-                 * @param {number} amount - the amount of children that will have their rotation uploaded
-                 * @param {number[]} array - The vertices to upload.
-                 * @param {number} stride - Stride to use for iteration.
-                 * @param {number} offset - Offset to start at.
-                 */
-                ParticleRenderer.prototype.uploadUvs = function uploadUvs (children, startIndex, amount, array, stride, offset)
-                {
-                    for (var i = 0; i < amount; ++i)
-                    {
-                        var textureUvs = children[startIndex + i]._texture._uvs;
-
-                        if (textureUvs)
-                        {
-                            array[offset] = textureUvs.x0;
-                            array[offset + 1] = textureUvs.y0;
-
-                            array[offset + stride] = textureUvs.x1;
-                            array[offset + stride + 1] = textureUvs.y1;
-
-                            array[offset + (stride * 2)] = textureUvs.x2;
-                            array[offset + (stride * 2) + 1] = textureUvs.y2;
-
-                            array[offset + (stride * 3)] = textureUvs.x3;
-                            array[offset + (stride * 3) + 1] = textureUvs.y3;
-
-                            offset += stride * 4;
-                        }
-                        else
-                        {
-                            // TODO you know this can be easier!
-                            array[offset] = 0;
-                            array[offset + 1] = 0;
-
-                            array[offset + stride] = 0;
-                            array[offset + stride + 1] = 0;
-
-                            array[offset + (stride * 2)] = 0;
-                            array[offset + (stride * 2) + 1] = 0;
-
-                            array[offset + (stride * 3)] = 0;
-                            array[offset + (stride * 3) + 1] = 0;
-
-                            offset += stride * 4;
-                        }
-                    }
-                };
-
-                /**
-                 * Uploads the tint.
-                 *
-                 * @param {PIXI.DisplayObject[]} children - the array of display objects to render
-                 * @param {number} startIndex - the index to start from in the children array
-                 * @param {number} amount - the amount of children that will have their rotation uploaded
-                 * @param {number[]} array - The vertices to upload.
-                 * @param {number} stride - Stride to use for iteration.
-                 * @param {number} offset - Offset to start at.
-                 */
-                ParticleRenderer.prototype.uploadTint = function uploadTint (children, startIndex, amount, array, stride, offset)
-                {
-                    for (var i = 0; i < amount; ++i)
-                    {
-                        var sprite = children[startIndex + i];
-                        var premultiplied = sprite._texture.baseTexture.alphaMode > 0;
-                        var alpha = sprite.alpha;
-                        // we dont call extra function if alpha is 1.0, that's faster
-                        var argb = alpha < 1.0 && premultiplied ? premultiplyTint(sprite._tintRGB, alpha)
-                            : sprite._tintRGB + (alpha * 255 << 24);
-
-                        array[offset] = argb;
-                        array[offset + stride] = argb;
-                        array[offset + (stride * 2)] = argb;
-                        array[offset + (stride * 3)] = argb;
-
-                        offset += stride * 4;
-                    }
-                };
-
-                /**
-                 * Destroys the ParticleRenderer.
-                 */
-                ParticleRenderer.prototype.destroy = function destroy ()
-                {
-                    ObjectRenderer.prototype.destroy.call(this);
-
-                    if (this.shader)
-                    {
-                        this.shader.destroy();
-                        this.shader = null;
-                    }
-
-                    this.tempMatrix = null;
-                };
-
-                return ParticleRenderer;
-            }(ObjectRenderer));
-
-            /*!
-             * @pixi/spritesheet - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/spritesheet - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/spritesheet is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37635,8 +39792,8 @@
             };
 
             /*!
-             * @pixi/sprite-tiling - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/sprite-tiling - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/sprite-tiling is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -37902,7 +40059,7 @@
                  * The source can be - frame id, image url, video url, canvas element, video element, base texture
                  *
                  * @static
-                 * @param {number|string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source - Source to create texture from
+                 * @param {string|PIXI.Texture|HTMLCanvasElement|HTMLVideoElement} source - Source to create texture from
                  * @param {number} width - the width of the tiling sprite
                  * @param {number} height - the height of the tiling sprite
                  * @return {PIXI.TilingSprite} The newly created texture
@@ -38023,6 +40180,14 @@
                     this.simpleShader = Shader.from(vertex$2, fragmentSimple, uniforms);
 
                     this.quad = new QuadUv();
+
+                    /**
+                     * The WebGL state in which this renderer will work.
+                     *
+                     * @member {PIXI.State}
+                     * @readonly
+                     */
+                    this.state = State.for2d();
                 }
 
                 if ( ObjectRenderer ) TilingSpriteRenderer.__proto__ = ObjectRenderer;
@@ -38123,7 +40288,8 @@
                     renderer.shader.bind(shader);
                     renderer.geometry.bind(quad);// , renderer.shader.getGLShader());
 
-                    renderer.state.setBlendMode(correctBlendMode(ts.blendMode, baseTex.alphaMode));
+                    this.state.blendMode = correctBlendMode(ts.blendMode, baseTex.alphaMode);
+                    renderer.state.set(this.state);
                     renderer.geometry.draw(this.renderer.gl.TRIANGLES, 6, 0);
                 };
 
@@ -38131,8 +40297,8 @@
             }(ObjectRenderer));
 
             /*!
-             * @pixi/text-bitmap - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/text-bitmap - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/text-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -38820,6 +40986,7 @@
             BitmapFontLoader.dirname = function dirname (url)
             {
                 var dir = url
+                    .replace(/\\/g, '/') // convert windows notation to UNIX notation, URL-safe because it's a forbidden character
                     .replace(/\/$/, '') // replace trailing slash
                     .replace(/\/[^\/]*$/, ''); // remove everything after the last
 
@@ -38956,8 +41123,8 @@
             };
 
             /*!
-             * @pixi/filter-alpha - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/filter-alpha - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/filter-alpha is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39020,8 +41187,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-blur - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/filter-blur - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/filter-blur is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -39204,7 +41371,7 @@
                         var flop = renderTarget;
 
                         this.state.blend = false;
-                        filterManager.applyFilter(this, flip, flop, false);
+                        filterManager.applyFilter(this, flip, flop, true);
 
                         for (var i = 1; i < this.passes - 1; i++)
                         {
@@ -39445,8 +41612,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-color-matrix - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/filter-color-matrix - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/filter-color-matrix is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40043,8 +42210,8 @@
             ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
             /*!
-             * @pixi/filter-displacement - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/filter-displacement - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/filter-displacement is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40160,8 +42327,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-fxaa - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/filter-fxaa - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/filter-fxaa is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40197,8 +42364,8 @@
             }(Filter));
 
             /*!
-             * @pixi/filter-noise - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/filter-noise - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/filter-noise is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40276,8 +42443,8 @@
             }(Filter));
 
             /*!
-             * @pixi/mixin-cache-as-bitmap - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/mixin-cache-as-bitmap - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40701,8 +42868,8 @@
             };
 
             /*!
-             * @pixi/mixin-get-child-by-name - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/mixin-get-child-by-name - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/mixin-get-child-by-name is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40738,8 +42905,8 @@
             };
 
             /*!
-             * @pixi/mixin-get-global-position - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/mixin-get-global-position - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/mixin-get-global-position is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -40775,8 +42942,8 @@
             };
 
             /*!
-             * @pixi/mesh - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/mesh - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/mesh is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -41210,9 +43377,11 @@
 
                     if (this._roundPixels)
                     {
-                        for (var i$1 = 0; i$1 < vertexData.length; i$1++)
+                        var resolution = settings.RESOLUTION;
+
+                        for (var i$1 = 0; i$1 < vertexData.length; ++i$1)
                         {
-                            vertexData[i$1] = Math.round(vertexData[i$1]);
+                            vertexData[i$1] = Math.round((vertexData[i$1] * resolution | 0) / resolution);
                         }
                     }
 
@@ -41511,9 +43680,9 @@
                 {
                     Geometry.call(this);
 
-                    var verticesBuffer = new Buffer(vertices);
-                    var uvsBuffer = new Buffer(uvs, true);
-                    var indexBuffer = new Buffer(index, true, true);
+                    var verticesBuffer = new Buffer$1(vertices);
+                    var uvsBuffer = new Buffer$1(uvs, true);
+                    var indexBuffer = new Buffer$1(index, true, true);
 
                     this.addAttribute('aVertexPosition', verticesBuffer, 2, false, TYPES.FLOAT)
                         .addAttribute('aTextureCoord', uvsBuffer, 2, false, TYPES.FLOAT)
@@ -41553,8 +43722,8 @@
             }(Geometry));
 
             /*!
-             * @pixi/mesh-extras - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/mesh-extras - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/mesh-extras is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42185,8 +44354,7 @@
                 {
                     var vertices = this.vertices;
 
-                    var h = this._topHeight + this._bottomHeight;
-                    var scale = this._height > h ? 1.0 : this._height / h;
+                    var scale = this._getMinScale();
 
                     vertices[9] = vertices[11] = vertices[13] = vertices[15] = this._topHeight * scale;
                     vertices[17] = vertices[19] = vertices[21] = vertices[23] = this._height - (this._bottomHeight * scale);
@@ -42201,12 +44369,30 @@
                 {
                     var vertices = this.vertices;
 
-                    var w = this._leftWidth + this._rightWidth;
-                    var scale = this._width > w ? 1.0 : this._width / w;
+                    var scale = this._getMinScale();
 
                     vertices[2] = vertices[10] = vertices[18] = vertices[26] = this._leftWidth * scale;
                     vertices[4] = vertices[12] = vertices[20] = vertices[28] = this._width - (this._rightWidth * scale);
                     vertices[6] = vertices[14] = vertices[22] = vertices[30] = this._width;
+                };
+
+                /**
+                 * Returns the smaller of a set of vertical and horizontal scale of nine slice corners.
+                 *
+                 * @return {number} Smaller number of vertical and horizontal scale.
+                 * @private
+                 */
+                NineSlicePlane.prototype._getMinScale = function _getMinScale ()
+                {
+                    var w = this._leftWidth + this._rightWidth;
+                    var scaleW = this._width > w ? 1.0 : this._width / w;
+
+                    var h = this._topHeight + this._bottomHeight;
+                    var scaleH = this._height > h ? 1.0 : this._height / h;
+
+                    var scale = Math.min(scaleW, scaleH);
+
+                    return scale;
                 };
 
                 /**
@@ -42343,8 +44529,8 @@
             }(SimplePlane));
 
             /*!
-             * @pixi/sprite-animated - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * @pixi/sprite-animated - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * @pixi/sprite-animated is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42600,7 +44786,8 @@
 
                     if (this._currentTime < 0 && !this.loop)
                     {
-                        this.gotoAndStop(0);
+                        this._currentTime = 0;
+                        this.stop();
 
                         if (this.onComplete)
                         {
@@ -42609,7 +44796,8 @@
                     }
                     else if (this._currentTime >= this._textures.length && !this.loop)
                     {
-                        this.gotoAndStop(this._textures.length - 1);
+                        this._currentTime = this._textures.length - 1;
+                        this.stop();
 
                         if (this.onComplete)
                         {
@@ -42785,8 +44973,8 @@
             }(Sprite));
 
             /*!
-             * pixi.js - v5.2.0
-             * Compiled Wed, 06 Nov 2019 02:32:43 UTC
+             * pixi.js - v5.2.1
+             * Compiled Tue, 28 Jan 2020 23:33:11 UTC
              *
              * pixi.js is licensed under the MIT License.
              * http://www.opensource.org/licenses/mit-license
@@ -42956,6 +45144,91 @@
                             deprecation('5.2.0', 'PIXI.GroupD8 namespace has moved to PIXI.groupD8');
 
                             return PIXI.groupD8;
+                        },
+                    },
+                });
+
+                /**
+                 * @namespace PIXI.prepare
+                 * @see PIXI
+                 * @deprecated since 5.2.1
+                 */
+                PIXI.prepare = {};
+
+                Object.defineProperties(PIXI.prepare, {
+                    /**
+                     * @class PIXI.prepare.BasePrepare
+                     * @deprecated since 5.2.1
+                     * @see PIXI.BasePrepare
+                     */
+                    BasePrepare: {
+                        get: function get()
+                        {
+                            deprecation('5.2.1', 'PIXI.prepare.BasePrepare moved to PIXI.BasePrepare');
+
+                            return PIXI.BasePrepare;
+                        },
+                    },
+                    /**
+                     * @class PIXI.prepare.Prepare
+                     * @deprecated since 5.2.1
+                     * @see PIXI.Prepare
+                     */
+                    Prepare: {
+                        get: function get()
+                        {
+                            deprecation('5.2.1', 'PIXI.prepare.Prepare moved to PIXI.Prepare');
+
+                            return PIXI.Prepare;
+                        },
+                    },
+                    /**
+                     * @class PIXI.prepare.CanvasPrepare
+                     * @deprecated since 5.2.1
+                     * @see PIXI.CanvasPrepare
+                     */
+                    CanvasPrepare: {
+                        get: function get()
+                        {
+                            deprecation('5.2.1', 'PIXI.prepare.CanvasPrepare moved to PIXI.CanvasPrepare');
+
+                            return PIXI.CanvasPrepare;
+                        },
+                    },
+                });
+
+                /**
+                 * @namespace PIXI.extract
+                 * @see PIXI
+                 * @deprecated since 5.2.1
+                 */
+                PIXI.extract = {};
+
+                Object.defineProperties(PIXI.extract, {
+                    /**
+                     * @class PIXI.extract.Extract
+                     * @deprecated since 5.2.1
+                     * @see PIXI.Extract
+                     */
+                    Extract: {
+                        get: function get()
+                        {
+                            deprecation('5.2.1', 'PIXI.extract.Extract moved to PIXI.Extract');
+
+                            return PIXI.Extract;
+                        },
+                    },
+                    /**
+                     * @class PIXI.extract.CanvasExtract
+                     * @deprecated since 5.2.1
+                     * @see PIXI.CanvasExtract
+                     */
+                    CanvasExtract: {
+                        get: function get()
+                        {
+                            deprecation('5.2.1', 'PIXI.extract.CanvasExtract moved to PIXI.CanvasExtract');
+
+                            return PIXI.CanvasExtract;
                         },
                     },
                 });
@@ -43321,28 +45594,28 @@
                 /**
                  * @class PIXI.extract.WebGLExtract
                  * @deprecated since 5.0.0
-                 * @see PIXI.extract.Extract
+                 * @see PIXI.Extract
                  */
                 Object.defineProperty(PIXI.extract, 'WebGLExtract', {
                     get: function get()
                     {
-                        deprecation(v5, 'PIXI.extract.WebGLExtract method has moved to PIXI.extract.Extract');
+                        deprecation(v5, 'PIXI.extract.WebGLExtract method has moved to PIXI.Extract');
 
-                        return PIXI.extract.Extract;
+                        return PIXI.Extract;
                     },
                 });
 
                 /**
                  * @class PIXI.prepare.WebGLPrepare
                  * @deprecated since 5.0.0
-                 * @see PIXI.prepare.Prepare
+                 * @see PIXI.Prepare
                  */
                 Object.defineProperty(PIXI.prepare, 'WebGLPrepare', {
                     get: function get()
                     {
-                        deprecation(v5, 'PIXI.prepare.WebGLPrepare class has moved to PIXI.prepare.Prepare');
+                        deprecation(v5, 'PIXI.prepare.WebGLPrepare class has moved to PIXI.Prepare');
 
-                        return PIXI.prepare.Prepare;
+                        return PIXI.Prepare;
                     },
                 });
 
@@ -43877,6 +46150,28 @@
                     },
                 });
 
+                /**
+                 * @deprecated since 5.0.0
+                 * @member {PIXI.Point[]} PIXI.SimpleRope#points
+                 * @see PIXI.Mesh#geometry
+                 */
+                Object.defineProperty(PIXI.SimpleRope.prototype, 'points', {
+                    get: function get()
+                    {
+                        deprecation(v5, 'PIXI.SimpleRope.points property is deprecated, '
+                            + 'use PIXI.SimpleRope.geometry.points');
+
+                        return this.geometry.points;
+                    },
+                    set: function set(value)
+                    {
+                        deprecation(v5, 'PIXI.SimpleRope.points property is deprecated, '
+                            + 'use PIXI.SimpleRope.geometry.points');
+
+                        this.geometry.points = value;
+                    },
+                });
+
                 // Use these to deprecate all the Sprite from* methods
                 function spriteFrom(name, source, crossorigin, scaleMode)
                 {
@@ -44078,7 +46373,7 @@
              * @name VERSION
              * @type {string}
              */
-            var VERSION$1 = '5.2.0';
+            var VERSION$1 = '5.2.1';
 
             /**
              * @namespace PIXI
@@ -44124,9 +46419,7 @@
             var PIXI = /*#__PURE__*/Object.freeze({
                         __proto__: null,
                         accessibility: accessibility_es,
-                        extract: extract_es,
                         interaction: interaction_es,
-                        prepare: prepare_es,
                         utils: utils_es,
                         VERSION: VERSION$1,
                         filters: filters,
@@ -44143,7 +46436,7 @@
                         BatchRenderer: BatchRenderer,
                         BatchShaderGenerator: BatchShaderGenerator,
                         BatchTextureArray: BatchTextureArray,
-                        Buffer: Buffer,
+                        Buffer: Buffer$1,
                         CubeTexture: CubeTexture,
                         Filter: Filter,
                         Framebuffer: Framebuffer,
@@ -44173,12 +46466,17 @@
                         defaultVertex: _default,
                         resources: index,
                         systems: systems,
+                        Extract: Extract,
                         AppLoaderPlugin: AppLoaderPlugin,
                         Loader: Loader$1,
                         LoaderResource: LoaderResource,
                         TextureLoader: TextureLoader,
                         ParticleContainer: ParticleContainer,
                         ParticleRenderer: ParticleRenderer,
+                        BasePrepare: BasePrepare,
+                        CountLimiter: CountLimiter,
+                        Prepare: Prepare,
+                        TimeLimiter: TimeLimiter,
                         Spritesheet: Spritesheet,
                         SpritesheetLoader: SpritesheetLoader,
                         TilingSprite: TilingSprite,
@@ -44211,7 +46509,7 @@
                         GraphicsData: GraphicsData,
                         GraphicsGeometry: GraphicsGeometry,
                         LineStyle: LineStyle,
-                        graphicsUtils: index$1,
+                        graphicsUtils: index$2,
                         Circle: Circle,
                         DEG_TO_RAD: DEG_TO_RAD,
                         Ellipse: Ellipse,
@@ -44243,8 +46541,8 @@
                         Text: Text,
                         TextMetrics: TextMetrics,
                         TextStyle: TextStyle,
-                        settings: settings,
-                        isMobile: isMobile_min
+                        isMobile: isMobile$1,
+                        settings: settings
             });
 
             /**
@@ -45241,8 +47539,9 @@
                             {
                                 oldPoint = this.parent.toLocal(point);
                             }
-                            const dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
-                            const change = ((dist - last) / this.parent.screenWidth) * this.parent.scale.x * this.options.percent;
+                            let dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
+                            dist = dist === 0 ? dist = 0.0000000001 : dist;
+                            const change = (1 - last / dist) * this.options.percent * this.parent.scale.x;
                             this.parent.scale.x += change;
                             this.parent.scale.y += change;
                             this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch' });
@@ -46794,6 +49093,7 @@
              * @property {boolean} [interrupt=true] stop smoothing with any user input on the viewport
              * @property {boolean} [reverse] reverse the direction of the scroll
              * @property {PIXI.Point} [center] place this point at center during zoom instead of current mouse position
+             * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
              */
 
             const wheelOptions = {
@@ -46801,7 +49101,8 @@
                 smooth: false,
                 interrupt: true,
                 reverse: false,
-                center: null
+                center: null,
+                lineHeight: 20
             };
 
             class Wheel extends Plugin
@@ -46873,7 +49174,7 @@
 
                     let point = this.parent.input.getPointerPosition(e);
                     const sign = this.options.reverse ? -1 : 1;
-                    const step = sign * -e.deltaY * (e.deltaMode ? 120 : 1) / 500;
+                    const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
                     const change = Math.pow(2, (1 + this.options.percent) * step);
                     if (this.options.smooth)
                     {
@@ -47921,6 +50222,11 @@
                  * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
                  * @param {number} [options.friction=0.5] friction to apply to decelerate if active
                  * @param {number} [options.time=150] time in ms to finish bounce
+                 * @param {object} [options.bounceBox] use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
+                 * @param {number} [options.bounceBox.x=0]
+                 * @param {number} [options.bounceBox.y=0]
+                 * @param {number} [options.bounceBox.width=viewport.worldWidth]
+                 * @param {number} [options.bounceBox.height=viewport.worldHeight]
                  * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
                  * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
                  * @return {Viewport} this
