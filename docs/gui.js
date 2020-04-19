@@ -72,7 +72,8 @@ export function gui(viewport, drawWorld, target)
             wheel: true,
             percent: 0.1,
             centerX: 0,
-            centerY: 0
+            centerY: 0,
+            lineHeight: 20
         },
         snapZoom: {
             snapZoom: false,
@@ -418,7 +419,7 @@ function guiWheel()
     function change()
     {
         const center = (options.wheel.centerX || options.wheel.centerY) ? { x: options.wheel.centerX, y: options.wheel.centerY } : null
-        _viewport.wheel({ percent: options.wheel.percent, minWidth: options.wheel.minWidth, maxWidth: options.wheel.maxWidth, minHeight: options.wheel.minHeight, maxHeight: options.wheel.maxHeight, center })
+        _viewport.wheel({ percent: options.wheel.percent, minWidth: options.wheel.minWidth, maxWidth: options.wheel.maxWidth, minHeight: options.wheel.minHeight, maxHeight: options.wheel.maxHeight, center, lineHeight: options.wheel.lineHeight })
     }
 
     function add()
@@ -426,6 +427,7 @@ function guiWheel()
         percent = wheel.add(options.wheel, 'percent').onChange(change)
         centerX = wheel.add(options.wheel, 'centerX').onChange(change)
         centerY = wheel.add(options.wheel, 'centerY').onChange(change)
+        lineHeight = wheel.add(options.wheel, 'lineHeight').onChange(change)
     }
 
     const wheel = _gui.addFolder('wheel')
@@ -443,9 +445,10 @@ function guiWheel()
                 wheel.remove(percent)
                 wheel.remove(centerX)
                 wheel.remove(centerY)
+                wheel.remove(lineHeight)
             }
         })
-    let percent, centerX, centerY
+    let percent, centerX, centerY, lineHeight
     if (options.wheel)
     {
         add()
