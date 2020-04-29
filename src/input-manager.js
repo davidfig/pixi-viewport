@@ -192,8 +192,9 @@ export class InputManager
         }
         else
         {
-            point.x = event.clientX
-            point.y = event.clientY
+            const rect = this.viewport.options.divWheel.getBoundingClientRect();
+            point.x = event.clientX - rect.left;
+            point.y = event.clientY - rect.top;
         }
         return point
     }
