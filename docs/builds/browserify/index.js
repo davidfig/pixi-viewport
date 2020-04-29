@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("pixi.js")):"function"==typeof define&&define.amd?define(["exports","pixi.js"],e):e((t=t||self).Viewport={},t.PIXI)}(this,(function(t,e){"use strict";class i{constructor(t){this.viewport=t,this.touches=[],this.addListeners()}addListeners(){this.viewport.interactive=!0,this.viewport.forceHitArea||(this.viewport.hitArea=new e.Rectangle(0,0,this.viewport.worldWidth,this.viewport.worldHeight)),this.viewport.on("pointerdown",this.down,this),this.viewport.on("pointermove",this.move,this),this.viewport.on("pointerup",this.up,this),this.viewport.on("pointerupoutside",this.up,this),this.viewport.on("pointercancel",this.up,this),this.viewport.on("pointerout",this.up,this),this.wheelFunction=t=>this.handleWheel(t),this.viewport.options.divWheel.addEventListener("wheel",this.wheelFunction,{passive:this.viewport.options.passiveWheel}),this.isMouseDown=!1}destroy(){this.viewport.options.divWheel.removeEventListener("wheel",this.wheelFunction)}down(t){if(this.viewport.pause||!this.viewport.worldVisible)return;if("mouse"===t.data.pointerType?this.isMouseDown=!0:this.get(t.data.pointerId)||this.touches.push({id:t.data.pointerId,last:null}),1===this.count()){this.last=t.data.global.clone();const e=this.viewport.plugins.get("decelerate"),i=this.viewport.plugins.get("bounce");e&&e.isActive()||i&&i.isActive()?this.clickedAvailable=!1:this.clickedAvailable=!0}else this.clickedAvailable=!1;this.viewport.plugins.down(t)&&this.viewport.options.stopPropagation&&t.stopPropagation()}checkThreshold(t){return Math.abs(t)>=this.viewport.threshold}move(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.plugins.move(t);if(this.clickedAvailable){const e=t.data.global.x-this.last.x,i=t.data.global.y-this.last.y;(this.checkThreshold(e)||this.checkThreshold(i))&&(this.clickedAvailable=!1)}e&&this.viewport.options.stopPropagation&&t.stopPropagation()}up(t){if(this.viewport.pause||!this.viewport.worldVisible)return;"mouse"===t.data.pointerType&&(this.isMouseDown=!1),"mouse"!==t.data.pointerType&&this.remove(t.data.pointerId);const e=this.viewport.plugins.up(t);this.clickedAvailable&&0===this.count()&&(this.viewport.emit("clicked",{event:t,screen:this.last,world:this.viewport.toWorld(this.last),viewport:this}),this.clickedAvailable=!1),e&&this.viewport.options.stopPropagation&&t.stopPropagation()}getPointerPosition(t){let i=new e.Point;return this.viewport.options.interaction?this.viewport.options.interaction.mapPositionToPoint(i,t.clientX,t.clientY):(i.x=t.clientX,i.y=t.clientY),i}handleWheel(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.toLocal(this.getPointerPosition(t));if(this.viewport.left<=e.x&&e.x<=this.viewport.right&&this.viewport.top<=e.y&&e.y<=this.viewport.bottom){this.viewport.plugins.wheel(t)&&!this.viewport.options.passiveWheel&&t.preventDefault()}}pause(){this.touches=[],this.isMouseDown=!1}get(t){for(let e of this.touches)if(e.id===t)return e;return null}remove(t){for(let e=0;e<this.touches.length;e++)if(this.touches[e].id===t)return void this.touches.splice(e,1)}count(){return(this.isMouseDown?1:0)+this.touches.length}}const s=["drag","pinch","wheel","follow","mouse-edges","decelerate","bounce","snap-zoom","clamp-zoom","snap","clamp"];class n{constructor(t){this.viewport=t,this.list=[],this.plugins={}}add(t,e,i=s.length){this.plugins[t]=e;const n=s.indexOf(t);-1!==n&&s.splice(n,1),s.splice(i,0,t),this.sort()}get(t){return this.plugins[t]}update(t){for(let e of this.list)e.update(t)}resize(){for(let t of this.list)t.resize()}reset(){for(let t of this.list)t.reset()}remove(t){this.plugins[t]&&(this.plugins[t]=null,this.viewport.emit(t+"-remove"),this.sort())}pause(t){this.plugins[t]&&this.plugins[t].pause()}resume(t){this.plugins[t]&&this.plugins[t].resume()}sort(){this.list=[];for(let t of s)this.plugins[t]&&this.list.push(this.plugins[t])}down(t){let e=!1;for(let i of this.list)i.down(t)&&(e=!0);return e}move(t){let e=!1;for(let i of this.viewport.plugins.list)i.move(t)&&(e=!0);return e}up(t){let e=!1;for(let i of this.list)i.up(t)&&(e=!0);return e}wheel(t){let e=!1;for(let i of this.list)i.wheel(t)&&(e=!0);return e}}class h{constructor(t){this.parent=t,this.paused=!1}destroy(){}down(){return!1}move(){return!1}up(){return!1}wheel(){return!1}update(){}resize(){}reset(){}pause(){this.paused=!0}resume(){this.paused=!1}}const o={direction:"all",pressDrag:!0,wheel:!0,wheelScroll:1,reverse:!1,clampWheel:!1,underflow:"center",factor:1,mouseButtons:"all",keyToPress:null,ignoreKeyToPressOnTouch:!1};class r extends h{constructor(t,e={}){super(t),this.options=Object.assign({},o,e),this.moved=!1,this.reverse=this.options.reverse?1:-1,this.xDirection=!this.options.direction||"all"===this.options.direction||"x"===this.options.direction,this.yDirection=!this.options.direction||"all"===this.options.direction||"y"===this.options.direction,this.keyIsPressed=!1,this.parseUnderflow(),this.mouseButtons(this.options.mouseButtons),this.options.keyToPress&&this.handleKeyPresses(this.options.keyToPress)}handleKeyPresses(t){parent.addEventListener("keydown",e=>{t.includes(e.code)&&(this.keyIsPressed=!0)}),parent.addEventListener("keyup",e=>{t.includes(e.code)&&(this.keyIsPressed=!1)})}mouseButtons(t){this.mouse=t&&"all"!==t?[-1!==t.indexOf("left"),-1!==t.indexOf("middle"),-1!==t.indexOf("right")]:[!0,!0,!0]}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}checkButtons(t){const e="mouse"===t.data.pointerType,i=this.parent.input.count();return!(!(1===i||i>1&&!this.parent.plugins.get("pinch"))||e&&!this.mouse[t.data.button])}checkKeyPress(t){return!!(!this.options.keyToPress||this.keyIsPressed||this.options.ignoreKeyToPressOnTouch&&"touch"===t.data.pointerType)}down(t){if(!this.paused&&this.options.pressDrag)return this.checkButtons(t)&&this.checkKeyPress(t)?(this.last={x:t.data.global.x,y:t.data.global.y},this.current=t.data.pointerId,!0):void(this.last=null)}get active(){return this.moved}move(t){if(!this.paused&&this.options.pressDrag&&this.last&&this.current===t.data.pointerId){const i=t.data.global.x,s=t.data.global.y,n=this.parent.input.count();if(1===n||n>1&&!this.parent.plugins.get("pinch")){const n=i-this.last.x,h=s-this.last.y;if(this.moved||this.xDirection&&this.parent.input.checkThreshold(n)||this.yDirection&&this.parent.input.checkThreshold(h)){const n={x:i,y:s};return this.xDirection&&(this.parent.x+=(n.x-this.last.x)*this.options.factor),this.yDirection&&(this.parent.y+=(n.y-this.last.y)*this.options.factor),this.last=n,this.moved||this.parent.emit("drag-start",{event:t,screen:new e.Point(this.last.x,this.last.y),world:this.parent.toWorld(new e.Point(this.last.x,this.last.y)),viewport:this.parent}),this.moved=!0,this.parent.emit("moved",{viewport:this.parent,type:"drag"}),!0}}else this.moved=!1}}up(t){if(this.paused)return;const i=this.parent.input.touches;if(1===i.length){const t=i[0];return t.last&&(this.last={x:t.last.x,y:t.last.y},this.current=t.id),this.moved=!1,!0}if(this.last&&this.moved){const i=new e.Point(this.last.x,this.last.y);return this.parent.emit("drag-end",{event:t,screen:i,world:this.parent.toWorld(i),viewport:this.parent}),this.last=null,this.moved=!1,!0}}wheel(t){if(!this.paused&&this.options.wheel){if(!this.parent.plugins.get("wheel"))return this.xDirection&&(this.parent.x+=t.deltaX*this.options.wheelScroll*this.reverse),this.yDirection&&(this.parent.y+=t.deltaY*this.options.wheelScroll*this.reverse),this.options.clampWheel&&this.clamp(),this.parent.emit("wheel-scroll",this.parent),this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.options.passiveWheel||t.preventDefault(),!0}}resume(){this.last=null,this.paused=!1}clamp(){const t=this.parent.plugins.get("decelerate")||{};if("y"!==this.options.clampWheel)if(this.parent.screenWorldWidth<this.parent.screenWidth)switch(this.underflowX){case-1:this.parent.x=0;break;case 1:this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}else this.parent.left<0?(this.parent.x=0,t.x=0):this.parent.right>this.parent.worldWidth&&(this.parent.x=-this.parent.worldWidth*this.parent.scale.x+this.parent.screenWidth,t.x=0);if("x"!==this.options.clampWheel)if(this.parent.screenWorldHeight<this.parent.screenHeight)switch(this.underflowY){case-1:this.parent.y=0;break;case 1:this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}else this.parent.top<0&&(this.parent.y=0,t.y=0),this.parent.bottom>this.parent.worldHeight&&(this.parent.y=-this.parent.worldHeight*this.parent.scale.y+this.parent.screenHeight,t.y=0)}}const a={noDrag:!1,percent:1,center:null};class p extends h{constructor(t,e={}){super(t),this.options=Object.assign({},a,e)}down(){if(this.parent.input.count()>=2)return this.active=!0,!0}move(t){if(this.paused||!this.active)return;const e=t.data.global.x,i=t.data.global.y,s=this.parent.input.touches;if(s.length>=2){const n=s[0],h=s[1],o=n.last&&h.last?Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2)):null;if(n.id===t.data.pointerId?n.last={x:e,y:i,data:t.data}:h.id===t.data.pointerId&&(h.last={x:e,y:i,data:t.data}),o){let t;const e={x:n.last.x+(h.last.x-n.last.x)/2,y:n.last.y+(h.last.y-n.last.y)/2};this.options.center||(t=this.parent.toLocal(e));let i=Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2));i=0===i?i=1e-10:i;const s=(1-o/i)*this.options.percent*this.parent.scale.x;this.parent.scale.x+=s,this.parent.scale.y+=s,this.parent.emit("zoomed",{viewport:this.parent,type:"pinch"});const r=this.parent.plugins.get("clamp-zoom");if(r&&r.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})}!this.options.noDrag&&this.lastCenter&&(this.parent.x+=e.x-this.lastCenter.x,this.parent.y+=e.y-this.lastCenter.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})),this.lastCenter=e,this.moved=!0}else this.pinching||(this.parent.emit("pinch-start",this.parent),this.pinching=!0);return!0}}up(){if(this.pinching&&this.parent.input.touches.length<=1)return this.active=!1,this.lastCenter=null,this.pinching=!1,this.moved=!1,this.parent.emit("pinch-end",this.parent),!0}}const l={left:!1,right:!1,top:!1,bottom:!1,direction:null,underflow:"center"};class c extends h{constructor(t,e={}){super(t),this.options=Object.assign({},l,e),this.options.direction&&(this.options.left="x"===this.options.direction||"all"===this.options.direction||null,this.options.right="x"===this.options.direction||"all"===this.options.direction||null,this.options.top="y"===this.options.direction||"all"===this.options.direction||null,this.options.bottom="y"===this.options.direction||"all"===this.options.direction||null),this.parseUnderflow(),this.last={x:null,y:null,scaleX:null,scaleY:null},this.update()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"none"===t?this.noUnderflow=!0:"center"===t?(this.underflowX=this.underflowY=0,this.noUnderflow=!1):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0,this.noUnderflow=!1)}move(){return this.update(),!1}update(){if(this.paused)return;if(this.parent.x===this.last.x&&this.parent.y===this.last.y&&this.parent.scale.x===this.last.scaleX&&this.parent.scale.y===this.last.scaleY)return;const t={x:this.parent.x,y:this.parent.y},e=this.parent.plugins.decelerate||{};if(null!==this.options.left||null!==this.options.right){let i=!1;if(this.parent.screenWorldWidth<this.parent.screenWidth){if(!this.noUnderflow)switch(this.underflowX){case-1:0!==this.parent.x&&(this.parent.x=0,i=!0);break;case 1:this.parent.x!==this.parent.screenWidth-this.parent.screenWorldWidth&&(this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth,i=!0);break;default:this.parent.x!==(this.parent.screenWidth-this.parent.screenWorldWidth)/2&&(this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2,i=!0)}}else null!==this.options.left&&this.parent.left<(!0===this.options.left?0:this.options.left)&&(this.parent.x=-(!0===this.options.left?0:this.options.left)*this.parent.scale.x,e.x=0,i=!0),null!==this.options.right&&this.parent.right>(!0===this.options.right?this.parent.worldWidth:this.options.right)&&(this.parent.x=-(!0===this.options.right?this.parent.worldWidth:this.options.right)*this.parent.scale.x+this.parent.screenWidth,e.x=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-x"})}if(null!==this.options.top||null!==this.options.bottom){let i=!1;if(this.parent.screenWorldHeight<this.parent.screenHeight){if(!this.noUnderflow)switch(this.underflowY){case-1:0!==this.parent.y&&(this.parent.y=0,i=!0);break;case 1:this.parent.y!==this.parent.screenHeight-this.parent.screenWorldHeight&&(this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight,i=!0);break;default:this.parent.y!==(this.parent.screenHeight-this.parent.screenWorldHeight)/2&&(this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2,i=!0)}}else null!==this.options.top&&this.parent.top<(!0===this.options.top?0:this.options.top)&&(this.parent.y=-(!0===this.options.top?0:this.options.top)*this.parent.scale.y,e.y=0,i=!0),null!==this.options.bottom&&this.parent.bottom>(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)&&(this.parent.y=-(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)*this.parent.scale.y+this.parent.screenHeight,e.y=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-y"})}this.last.x=this.parent.x,this.last.y=this.parent.y,this.last.scaleX=this.parent.scale.x,this.last.scaleY=this.parent.scale.y}reset(){this.update()}}const d={minWidth:null,minHeight:null,maxWidth:null,maxHeight:null,minScale:null,maxScale:null};class u extends h{constructor(t,e={}){super(t),this.options=Object.assign({},d,e),this.clamp()}resize(){this.clamp()}clamp(){if(!this.paused)if(this.options.minWidth||this.options.minHeight||this.options.maxWidth||this.options.maxHeight){let t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight;if(null!==this.options.minWidth&&t<this.options.minWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.minWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxWidth&&t>this.options.maxWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.maxWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.minHeight&&e<this.options.minHeight){const i=this.parent.scale.y;this.parent.fitHeight(this.options.minHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxHeight&&e>this.options.maxHeight){const t=this.parent.scale.y;this.parent.fitHeight(this.options.maxHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/t,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}}else{let t=this.parent.scale.x;null!==this.options.minScale&&t<this.options.minScale&&(t=this.options.minScale),null!==this.options.maxScale&&t>this.options.maxScale&&(t=this.options.maxScale),t!==this.parent.scale.x&&(this.parent.scale.set(t),this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"}))}}reset(){this.clamp()}}const g={friction:.95,bounce:.8,minSpeed:.01};class m extends h{constructor(t,e={}){super(t),this.options=Object.assign({},g,e),this.saved=[],this.reset(),this.parent.on("moved",t=>this.moved(t))}destroy(){this.parent}down(){this.saved=[],this.x=this.y=!1}isActive(){return this.x||this.y}move(){if(this.paused)return;const t=this.parent.input.count();(1===t||t>1&&!this.parent.plugins.get("pinch"))&&(this.saved.push({x:this.parent.x,y:this.parent.y,time:performance.now()}),this.saved.length>60&&this.saved.splice(0,30))}moved(t){if(this.saved.length){const e=this.saved[this.saved.length-1];"clamp-x"===t.type?e.x===t.original.x&&(e.x=this.parent.x):"clamp-y"===t.type&&e.y===t.original.y&&(e.y=this.parent.y)}}up(){if(0===this.parent.input.count()&&this.saved.length){const t=performance.now();for(let e of this.saved)if(e.time>=t-100){const i=t-e.time;this.x=(this.parent.x-e.x)/i,this.y=(this.parent.y-e.y)/i,this.percentChangeX=this.percentChangeY=this.options.friction;break}}}activate(t){void 0!==(t=t||{}).x&&(this.x=t.x,this.percentChangeX=this.options.friction),void 0!==t.y&&(this.y=t.y,this.percentChangeY=this.options.friction)}update(t){if(this.paused)return;let e;this.x&&(this.parent.x+=this.x*t,this.x*=this.percentChangeX,Math.abs(this.x)<this.options.minSpeed&&(this.x=0),e=!0),this.y&&(this.parent.y+=this.y*t,this.y*=this.percentChangeY,Math.abs(this.y)<this.options.minSpeed&&(this.y=0),e=!0),e&&this.parent.emit("moved",{viewport:this.parent,type:"decelerate"})}reset(){this.x=this.y=null}}var w="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f=function(t,e){return t(e={exports:{}},e.exports),e.exports}((function(t,e){(function(){var e;(function(e){t.exports=e})(e={linear:function(t,e,i,s){return i*t/s+e},easeInQuad:function(t,e,i,s){return i*(t/=s)*t+e},easeOutQuad:function(t,e,i,s){return-i*(t/=s)*(t-2)+e},easeInOutQuad:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t+e:-i/2*(--t*(t-2)-1)+e},easeInCubic:function(t,e,i,s){return i*(t/=s)*t*t+e},easeOutCubic:function(t,e,i,s){return i*((t=t/s-1)*t*t+1)+e},easeInOutCubic:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t+e:i/2*((t-=2)*t*t+2)+e},easeInQuart:function(t,e,i,s){return i*(t/=s)*t*t*t+e},easeOutQuart:function(t,e,i,s){return-i*((t=t/s-1)*t*t*t-1)+e},easeInOutQuart:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t+e:-i/2*((t-=2)*t*t*t-2)+e},easeInQuint:function(t,e,i,s){return i*(t/=s)*t*t*t*t+e},easeOutQuint:function(t,e,i,s){return i*((t=t/s-1)*t*t*t*t+1)+e},easeInOutQuint:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t*t+e:i/2*((t-=2)*t*t*t*t+2)+e},easeInSine:function(t,e,i,s){return-i*Math.cos(t/s*(Math.PI/2))+i+e},easeOutSine:function(t,e,i,s){return i*Math.sin(t/s*(Math.PI/2))+e},easeInOutSine:function(t,e,i,s){return-i/2*(Math.cos(Math.PI*t/s)-1)+e},easeInExpo:function(t,e,i,s){return 0===t?e:i*Math.pow(2,10*(t/s-1))+e},easeOutExpo:function(t,e,i,s){return t===s?e+i:i*(1-Math.pow(2,-10*t/s))+e},easeInOutExpo:function(t,e,i,s){return(t/=s/2)<1?i/2*Math.pow(2,10*(t-1))+e:i/2*(2-Math.pow(2,-10*--t))+e},easeInCirc:function(t,e,i,s){return-i*(Math.sqrt(1-(t/=s)*t)-1)+e},easeOutCirc:function(t,e,i,s){return i*Math.sqrt(1-(t=t/s-1)*t)+e},easeInOutCirc:function(t,e,i,s){return(t/=s/2)<1?-i/2*(Math.sqrt(1-t*t)-1)+e:i/2*(Math.sqrt(1-(t-=2)*t)+1)+e},easeInElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),-n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)+e},easeOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),n*Math.pow(2,-10*t)*Math.sin((t*s-o)*(2*Math.PI)/h)+i+e},easeInOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s/2),(h=0)||(h=s*(.3*1.5)),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),t<1?n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*-.5+e:n*Math.pow(2,-10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*.5+i+e},easeInBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*(t/=s)*t*((n+1)*t-n)+e},easeOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*((t=t/s-1)*t*((n+1)*t+n)+1)+e},easeInOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),(t/=s/2)<1?i/2*(t*t*((1+(n*=1.525))*t-n))+e:i/2*((t-=2)*t*((1+(n*=1.525))*t+n)+2)+e},easeInBounce:function(t,i,s,n){return s-e.easeOutBounce(n-t,0,s,n)+i},easeOutBounce:function(t,e,i,s){return(t/=s)<1/2.75?i*(7.5625*t*t)+e:t<2/2.75?i*(7.5625*(t-=1.5/2.75)*t+.75)+e:t<2.5/2.75?i*(7.5625*(t-=2.25/2.75)*t+.9375)+e:i*(7.5625*(t-=2.625/2.75)*t+.984375)+e},easeInOutBounce:function(t,i,s,n){return t<n/2?.5*e.easeInBounce(2*t,0,s,n)+i:.5*e.easeOutBounce(2*t-n,0,s,n)+.5*s+i}})}).call(w)}));function y(t,e){return t?"function"==typeof t?t:"string"==typeof t?f[t]:void 0:f[e]}const x={sides:"all",friction:.5,time:150,ease:"easeInOutSine",underflow:"center",bounceBox:null};class v extends h{constructor(t,e={}){super(t),this.options=Object.assign({},x,e),this.ease=y(this.options.ease,"easeInOutSine"),this.options.sides&&("all"===this.options.sides?this.top=this.bottom=this.left=this.right=!0:"horizontal"===this.options.sides?this.right=this.left=!0:"vertical"===this.options.sides?this.top=this.bottom=!0:(this.top=-1!==this.options.sides.indexOf("top"),this.bottom=-1!==this.options.sides.indexOf("bottom"),this.left=-1!==this.options.sides.indexOf("left"),this.right=-1!==this.options.sides.indexOf("right"))),this.parseUnderflow(),this.last={},this.reset()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}isActive(){return null!==this.toX||null!==this.toY}down(){this.toX=this.toY=null}up(){this.bounce()}update(t){if(!this.paused){if(this.bounce(),this.toX){const e=this.toX;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-x"}),e.time>=this.options.time?(this.parent.x=e.end,this.toX=null,this.parent.emit("bounce-x-end",this.parent)):this.parent.x=this.ease(e.time,e.start,e.delta,this.options.time)}if(this.toY){const e=this.toY;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-y"}),e.time>=this.options.time?(this.parent.y=e.end,this.toY=null,this.parent.emit("bounce-y-end",this.parent)):this.parent.y=this.ease(e.time,e.start,e.delta,this.options.time)}}}calcUnderflowX(){let t;switch(this.underflowX){case-1:t=0;break;case 1:t=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:t=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}return t}calcUnderflowY(){let t;switch(this.underflowY){case-1:t=0;break;case 1:t=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:t=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}return t}oob(){const t=this.options.bounceBox;if(t){const i=void 0===t.x?0:t.x,s=void 0===t.y?0:t.y,n=void 0===t.width?this.parent.worldWidth:t.width,h=void 0===t.height?this.parent.worldHeight:t.height;return{left:this.parent.left<i,right:this.parent.right>n,top:this.parent.top<s,bottom:this.parent.bottom>h,topLeft:new e.Point(i*this.parent.scale.x,s*this.parent.scale.y),bottomRight:new e.Point(n*this.parent.scale.x-this.parent.screenWidth,h*this.parent.scale.y-this.parent.screenHeight)}}return{left:this.parent.left<0,right:this.parent.right>this.parent.worldWidth,top:this.parent.top<0,bottom:this.parent.bottom>this.parent.worldHeight,topLeft:new e.Point(0,0),bottomRight:new e.Point(this.parent.worldWidth*this.parent.scale.x-this.parent.screenWidth,this.parent.worldHeight*this.parent.scale.y-this.parent.screenHeight)}}bounce(){if(this.paused)return;let t,e=this.parent.plugins.get("decelerate");e&&(e.x||e.y)&&(e.x&&e.percentChangeX===e.options.friction||e.y&&e.percentChangeY===e.options.friction)&&(t=this.oob(),(t.left&&this.left||t.right&&this.right)&&(e.percentChangeX=this.options.friction),(t.top&&this.top||t.bottom&&this.bottom)&&(e.percentChangeY=this.options.friction));const i=this.parent.plugins.get("drag")||{},s=this.parent.plugins.get("pinch")||{};if(e=e||{},!(i.active||s.active||this.toX&&this.toY||e.x&&e.y)){t=t||this.oob();const i=t.topLeft,s=t.bottomRight;if(!this.toX&&!e.x){let e=null;t.left&&this.left?e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-i.x:t.right&&this.right&&(e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-s.x),null!==e&&this.parent.x!==e&&(this.toX={time:0,start:this.parent.x,delta:e-this.parent.x,end:e},this.parent.emit("bounce-x-start",this.parent))}if(!this.toY&&!e.y){let e=null;t.top&&this.top?e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-i.y:t.bottom&&this.bottom&&(e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-s.y),null!==e&&this.parent.y!==e&&(this.toY={time:0,start:this.parent.y,delta:e-this.parent.y,end:e},this.parent.emit("bounce-y-start",this.parent))}}}reset(){this.toX=this.toY=null,this.bounce()}}const b={topLeft:!1,friction:.8,time:1e3,ease:"easeInOutSine",interrupt:!0,removeOnComplete:!1,removeOnInterrupt:!1,forceStart:!1};class W extends h{constructor(t,e,i,s={}){super(t),this.options=Object.assign({},b,s),this.ease=y(s.ease,"easeInOutSine"),this.x=e,this.y=i,this.options.forceStart&&this.snapStart()}snapStart(){this.percent=0,this.snapping={time:0};const t=this.options.topLeft?this.parent.corner:this.parent.center;this.deltaX=this.x-t.x,this.deltaY=this.y-t.y,this.startX=t.x,this.startY=t.y,this.parent.emit("snap-start",this.parent)}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap"):this.options.interrupt&&(this.snapping=null)}up(){if(0===this.parent.input.count()){const t=this.parent.plugins.get("decelerate");t&&(t.x||t.y)&&(t.percentChangeX=t.percentChangeY=this.options.friction)}}update(t){if(!(this.paused||this.options.interrupt&&0!==this.parent.input.count()))if(this.snapping){const e=this.snapping;let i,s,n;if(e.time+=t,e.time>this.options.time)i=!0,s=this.startX+this.deltaX,n=this.startY+this.deltaY;else{const t=this.ease(e.time,0,1,this.options.time);s=this.startX+this.deltaX*t,n=this.startY+this.deltaY*t}this.options.topLeft?this.parent.moveCorner(s,n):this.parent.moveCenter(s,n),this.parent.emit("moved",{viewport:this.parent,type:"snap"}),i&&(this.options.removeOnComplete&&this.parent.plugins.remove("snap"),this.parent.emit("snap-end",this.parent),this.snapping=null)}else{const t=this.options.topLeft?this.parent.corner:this.parent.center;t.x===this.x&&t.y===this.y||this.snapStart()}}}const H={width:0,height:0,time:1e3,ease:"easeInOutSine",center:null,interrupt:!0,removeOnComplete:!1,removeOnInterrupts:!1,forceStart:!1,noMove:!1};class M extends h{constructor(t,e={}){super(t),this.options=Object.assign({},H,e),this.ease=y(this.options.ease),this.options.width>0&&(this.xScale=t.screenWidth/this.options.width),this.options.height>0&&(this.yScale=t.screenHeight/this.options.height),this.xIndependent=!!this.xScale,this.yIndependent=!!this.yScale,this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale,0===this.options.time?(t.container.scale.x=this.xScale,t.container.scale.y=this.yScale,this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom")):e.forceStart&&this.createSnapping()}createSnapping(){const t=this.parent.scale;this.snapping={time:0,startX:t.x,startY:t.y,deltaX:this.xScale-t.x,deltaY:this.yScale-t.y},this.parent.emit("snap-zoom-start",this.parent)}resize(){this.snapping=null,this.options.width>0&&(this.xScale=this.parent.screenWidth/this.options.width),this.options.height>0&&(this.yScale=this.parent.screenHeight/this.options.height),this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap-zoom")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap-zoom"):this.options.interrupt&&(this.snapping=null)}update(t){if(this.paused)return;if(this.options.interrupt&&0!==this.parent.input.count())return;let e;if(this.options.center||this.options.noMove||(e=this.parent.center),this.snapping){if(this.snapping){const i=this.snapping;if(i.time+=t,i.time>=this.options.time)this.parent.scale.set(this.xScale,this.yScale),this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom"),this.parent.emit("snap-zoom-end",this.parent),this.snapping=null;else{const t=this.snapping;this.parent.scale.x=this.ease(t.time,t.startX,t.deltaX,this.options.time),this.parent.scale.y=this.ease(t.time,t.startY,t.deltaY,this.options.time)}const s=this.parent.plugins.get("clamp-zoom");s&&s.clamp(),this.options.noMove||(this.options.center?this.parent.moveCenter(this.options.center):this.parent.moveCenter(e))}}else this.parent.scale.x===this.xScale&&this.parent.scale.y===this.yScale||this.createSnapping()}resume(){this.snapping=null,super.resume()}}const S={speed:0,acceleration:null,radius:null};class O extends h{constructor(t,e,i={}){super(t),this.target=e,this.options=Object.assign({},S,i),this.velocity={x:0,y:0}}update(t){if(this.paused)return;const e=this.parent.center;let i=this.target.x,s=this.target.y;if(this.options.radius){if(!(Math.sqrt(Math.pow(this.target.y-e.y,2)+Math.pow(this.target.x-e.x,2))>this.options.radius))return;{const t=Math.atan2(this.target.y-e.y,this.target.x-e.x);i=this.target.x-Math.cos(t)*this.options.radius,s=this.target.y-Math.sin(t)*this.options.radius}}const n=i-e.x,h=s-e.y;if(n||h)if(this.options.speed)if(this.options.acceleration){const o=Math.atan2(s-e.y,i-e.x),r=Math.sqrt(Math.pow(n,2)+Math.pow(h,2));if(r){const a=(Math.pow(this.velocity.x,2)+Math.pow(this.velocity.y,2))/(2*this.options.acceleration);this.velocity=r>a?{x:Math.min(this.velocity.x+this.options.acceleration*t,this.options.speed),y:Math.min(this.velocity.y+this.options.acceleration*t,this.options.speed)}:{x:Math.max(this.velocity.x-this.options.acceleration*this.options.speed,0),y:Math.max(this.velocity.y-this.options.acceleration*this.options.speed,0)};const p=Math.cos(o)*this.velocity.x,l=Math.sin(o)*this.velocity.y,c=Math.abs(p)>Math.abs(n)?i:e.x+p,d=Math.abs(l)>Math.abs(h)?s:e.y+l;this.parent.moveCenter(c,d),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}else{const t=Math.atan2(s-e.y,i-e.x),o=Math.cos(t)*this.options.speed,r=Math.sin(t)*this.options.speed,a=Math.abs(o)>Math.abs(n)?i:e.x+o,p=Math.abs(r)>Math.abs(h)?s:e.y+r;this.parent.moveCenter(a,p),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}else this.parent.moveCenter(i,s),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}const z={percent:.1,smooth:!1,interrupt:!0,reverse:!1,center:null,lineHeight:20};class I extends h{constructor(t,e={}){super(t),this.options=Object.assign({},z,e)}down(){this.options.interrupt&&(this.smoothing=null)}update(){if(this.smoothing){const t=this.smoothingCenter,e=this.smoothing;let i;this.options.center||(i=this.parent.toLocal(t)),this.parent.scale.x+=e.x,this.parent.scale.y+=e.y,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const e=this.parent.toGlobal(i);this.parent.x+=t.x-e.x,this.parent.y+=t.y-e.y}this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.smoothingCount++,this.smoothingCount>=this.options.smooth&&(this.smoothing=null)}}wheel(t){if(this.paused)return;let e=this.parent.input.getPointerPosition(t);const i=(this.options.reverse?-1:1)*-t.deltaY*(t.deltaMode?this.options.lineHeight:1)/500,s=Math.pow(2,(1+this.options.percent)*i);if(this.options.smooth){const t={x:this.smoothing?this.smoothing.x*(this.options.smooth-this.smoothingCount):0,y:this.smoothing?this.smoothing.y*(this.options.smooth-this.smoothingCount):0};this.smoothing={x:((this.parent.scale.x+t.x)*s-this.parent.scale.x)/this.options.smooth,y:((this.parent.scale.y+t.y)*s-this.parent.scale.y)/this.options.smooth},this.smoothingCount=0,this.smoothingCenter=e}else{let t;this.options.center||(t=this.parent.toLocal(e)),this.parent.scale.x*=s,this.parent.scale.y*=s,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const i=this.parent.plugins.get("clamp-zoom");if(i&&i.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y}}return this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.emit("wheel",{wheel:{dx:t.deltaX,dy:t.deltaY,dz:t.deltaZ},event:t,viewport:this.parent}),!this.parent.options.passiveWheel||void 0}}const C={radius:null,distance:null,top:null,bottom:null,left:null,right:null,speed:8,reverse:!1,noDecelerate:!1,linear:!1,allowButtons:!1};class k extends h{constructor(t,e={}){super(t),this.options=Object.assign({},C,e),this.reverse=this.options.reverse?1:-1,this.radiusSquared=Math.pow(this.options.radius,2),this.resize()}resize(){const t=this.options.distance;null!==t?(this.left=t,this.top=t,this.right=this.parent.worldScreenWidth-t,this.bottom=this.parent.worldScreenHeight-t):this.radius||(this.left=this.options.left,this.top=this.options.top,this.right=null===this.options.right?null:this.parent.worldScreenWidth-this.options.right,this.bottom=null===this.options.bottom?null:this.parent.worldScreenHeight-this.options.bottom)}down(){this.options.allowButtons||(this.horizontal=this.vertical=null)}move(t){if("mouse"!==t.data.pointerType&&1!==t.data.identifier||!this.options.allowButtons&&0!==t.data.buttons)return;const e=t.data.global.x,i=t.data.global.y;if(this.radiusSquared){const t=this.parent.toScreen(this.parent.center);if(Math.pow(t.x-e,2)+Math.pow(t.y-i,2)>=this.radiusSquared){const s=Math.atan2(t.y-i,t.x-e);this.options.linear?(this.horizontal=Math.round(Math.cos(s))*this.options.speed*this.reverse*.06,this.vertical=Math.round(Math.sin(s))*this.options.speed*this.reverse*.06):(this.horizontal=Math.cos(s)*this.options.speed*this.reverse*.06,this.vertical=Math.sin(s)*this.options.speed*this.reverse*.06)}else this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=0}else null!==this.left&&e<this.left?this.horizontal=1*this.reverse*this.options.speed*.06:null!==this.right&&e>this.right?this.horizontal=-1*this.reverse*this.options.speed*.06:(this.decelerateHorizontal(),this.horizontal=0),null!==this.top&&i<this.top?this.vertical=1*this.reverse*this.options.speed*.06:null!==this.bottom&&i>this.bottom?this.vertical=-1*this.reverse*this.options.speed*.06:(this.decelerateVertical(),this.vertical=0)}decelerateHorizontal(){const t=this.parent.plugins.get("decelerate");this.horizontal&&t&&!this.options.noDecelerate&&t.activate({x:this.horizontal*this.options.speed*this.reverse/(1e3/60)})}decelerateVertical(){const t=this.parent.plugins.get("decelerate");this.vertical&&t&&!this.options.noDecelerate&&t.activate({y:this.vertical*this.options.speed*this.reverse/(1e3/60)})}up(){this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=null}update(){if(!this.paused&&(this.horizontal||this.vertical)){const t=this.parent.center;this.horizontal&&(t.x+=this.horizontal*this.options.speed),this.vertical&&(t.y+=this.vertical*this.options.speed),this.parent.moveCenter(t),this.parent.emit("moved",{viewport:this.parent,type:"mouse-edges"})}}}const P={screenWidth:window.innerWidth,screenHeight:window.innerHeight,worldWidth:null,worldHeight:null,threshold:5,passiveWheel:!0,stopPropagation:!1,forceHitArea:null,noTicker:!1,interaction:null,disableOnContextMenu:!1};class X extends e.Container{constructor(t={}){if(super(),this.options=Object.assign({},P,t),t.ticker)this.options.ticker=t.ticker;else{let i;const s=e;i=parseInt(/^(\d+)\./.exec(e.VERSION)[1])<5?s.ticker.shared:s.Ticker.shared,this.options.ticker=t.ticker||i}this.screenWidth=this.options.screenWidth,this.screenHeight=this.options.screenHeight,this._worldWidth=this.options.worldWidth,this._worldHeight=this.options.worldHeight,this.forceHitArea=this.options.forceHitArea,this.threshold=this.options.threshold,this.options.divWheel=this.options.divWheel||document.body,this.options.disableOnContextMenu&&(this.options.divWheel.oncontextmenu=t=>t.preventDefault()),this.options.noTicker||(this.tickerFunction=()=>this.update(this.options.ticker.elapsedMS),this.options.ticker.add(this.tickerFunction)),this.input=new i(this),this.plugins=new n(this)}destroy(t){this.options.noTicker||this.options.ticker.remove(this.tickerFunction),this.input.destroy(),super.destroy(t)}update(t){this.pause||(this.plugins.update(t),this.lastViewport&&(this.lastViewport.x!==this.x||this.lastViewport.y!==this.y?this.moving=!0:this.moving&&(this.emit("moved-end",this),this.moving=!1),this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y?this.zooming=!0:this.zooming&&(this.emit("zoomed-end",this),this.zooming=!1)),this.forceHitArea||(this._hitAreaDefault=new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight),this.hitArea=this._hitAreaDefault),this._dirty=this._dirty||!this.lastViewport||this.lastViewport.x!==this.x||this.lastViewport.y!==this.y||this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y,this.lastViewport={x:this.x,y:this.y,scaleX:this.scale.x,scaleY:this.scale.y},this.emit("frame-end",this))}resize(t=window.innerWidth,e=window.innerHeight,i,s){this.screenWidth=t,this.screenHeight=e,void 0!==i&&(this._worldWidth=i),void 0!==s&&(this._worldHeight=s),this.plugins.resize()}get worldWidth(){return this._worldWidth?this._worldWidth:this.width/this.scale.x}set worldWidth(t){this._worldWidth=t,this.plugins.resize()}get worldHeight(){return this._worldHeight?this._worldHeight:this.height/this.scale.y}set worldHeight(t){this._worldHeight=t,this.plugins.resize()}getVisibleBounds(){return new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight)}toWorld(t,i){return 2===arguments.length?this.toLocal(new e.Point(t,i)):this.toLocal(t)}toScreen(t,i){return 2===arguments.length?this.toGlobal(new e.Point(t,i)):this.toGlobal(t)}get worldScreenWidth(){return this.screenWidth/this.scale.x}get worldScreenHeight(){return this.screenHeight/this.scale.y}get screenWorldWidth(){return this.worldWidth*this.scale.x}get screenWorldHeight(){return this.worldHeight*this.scale.y}get center(){return new e.Point(this.worldScreenWidth/2-this.x/this.scale.x,this.worldScreenHeight/2-this.y/this.scale.y)}set center(t){this.moveCenter(t)}moveCenter(){let t,e;return isNaN(arguments[0])?(t=arguments[0].x,e=arguments[0].y):(t=arguments[0],e=arguments[1]),this.position.set((this.worldScreenWidth/2-t)*this.scale.x,(this.worldScreenHeight/2-e)*this.scale.y),this.plugins.reset(),this.dirty=!0,this}get corner(){return new e.Point(-this.x/this.scale.x,-this.y/this.scale.y)}set corner(t){this.moveCorner(t)}moveCorner(t,e){return 1===arguments.length?this.position.set(-t.x*this.scale.x,-t.y*this.scale.y):this.position.set(-t*this.scale.x,-e*this.scale.y),this.plugins.reset(),this}fitWidth(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.x=this.screenWidth/t,i&&(this.scale.y=this.scale.x);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitHeight(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.y=this.screenHeight/t,i&&(this.scale.x=this.scale.y);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitWorld(t){let e;t&&(e=this.center),this.scale.x=this.screenWidth/this.worldWidth,this.scale.y=this.screenHeight/this.worldHeight,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const i=this.plugins.get("clamp-zoom");return i&&i.clamp(),t&&this.moveCenter(e),this}fit(t,e=this.worldWidth,i=this.worldHeight){let s;t&&(s=this.center),this.scale.x=this.screenWidth/e,this.scale.y=this.screenHeight/i,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const n=this.plugins.get("clamp-zoom");return n&&n.clamp(),t&&this.moveCenter(s),this}setZoom(t,e){let i;e&&(i=this.center),this.scale.set(t);const s=this.plugins.get("clamp-zoom");return s&&s.clamp(),e&&this.moveCenter(i),this}zoomPercent(t,e){return this.setZoom(this.scale.x+this.scale.x*t,e)}zoom(t,e){return this.fitWidth(t+this.worldScreenWidth,e),this}set scaled(t){this.setZoom(t,!0)}get scaled(){return this.scale.x}snapZoom(t){return this.plugins.add("snap-zoom",new M(this,t)),this}OOB(){return{left:this.left<0,right:this.right>this.worldWidth,top:this.top<0,bottom:this.bottom>this._worldHeight,cornerPoint:new e.Point(this.worldWidth*this.scale.x-this.screenWidth,this.worldHeight*this.scale.y-this.screenHeight)}}get right(){return-this.x/this.scale.x+this.worldScreenWidth}set right(t){this.x=-t*this.scale.x+this.screenWidth,this.plugins.reset()}get left(){return-this.x/this.scale.x}set left(t){this.x=-t*this.scale.x,this.plugins.reset()}get top(){return-this.y/this.scale.y}set top(t){this.y=-t*this.scale.y,this.plugins.reset()}get bottom(){return-this.y/this.scale.y+this.worldScreenHeight}set bottom(t){this.y=-t*this.scale.y+this.screenHeight,this.plugins.reset()}get dirty(){return this._dirty}set dirty(t){this._dirty=t}get forceHitArea(){return this._forceHitArea}set forceHitArea(t){t?(this._forceHitArea=t,this.hitArea=t):(this._forceHitArea=null,this.hitArea=new e.Rectangle(0,0,this.worldWidth,this.worldHeight))}drag(t){return this.plugins.add("drag",new r(this,t)),this}clamp(t){return this.plugins.add("clamp",new c(this,t)),this}decelerate(t){return this.plugins.add("decelerate",new m(this,t)),this}bounce(t){return this.plugins.add("bounce",new v(this,t)),this}pinch(t){return this.plugins.add("pinch",new p(this,t)),this}snap(t,e,i){return this.plugins.add("snap",new W(this,t,e,i)),this}follow(t,e){return this.plugins.add("follow",new O(this,t,e)),this}wheel(t){return this.plugins.add("wheel",new I(this,t)),this}clampZoom(t){return this.plugins.add("clamp-zoom",new u(this,t)),this}mouseEdges(t){return this.plugins.add("mouse-edges",new k(this,t)),this}get pause(){return this._pause}set pause(t){this._pause=t,this.lastViewport=null,this.moving=!1,this.zooming=!1,t&&this.input.pause()}ensureVisible(t,e,i,s,n){n&&(i>this.worldScreenWidth||s>this.worldScreenHeight)&&(this.fit(!0,i,s),this.emit("zoomed",{viewport:this,type:"ensureVisible"}));let h=!1;t<this.left?(this.left=t,h=!0):t+i>this.right&&(this.right=t+i,h=!0),e<this.top?(this.top=e,h=!0):e+s>this.bottom&&(this.bottom=e+s,h=!0),h&&this.emit("moved",{viewport:this,type:"ensureVisible"})}}t.Plugin=h,t.Viewport=X,Object.defineProperty(t,"__esModule",{value:!0})}));
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports,require("pixi.js")):"function"==typeof define&&define.amd?define(["exports","pixi.js"],e):e((t=t||self).Viewport={},t.PIXI)}(this,(function(t,e){"use strict";class i{constructor(t){this.viewport=t,this.touches=[],this.addListeners()}addListeners(){this.viewport.interactive=!0,this.viewport.forceHitArea||(this.viewport.hitArea=new e.Rectangle(0,0,this.viewport.worldWidth,this.viewport.worldHeight)),this.viewport.on("pointerdown",this.down,this),this.viewport.on("pointermove",this.move,this),this.viewport.on("pointerup",this.up,this),this.viewport.on("pointerupoutside",this.up,this),this.viewport.on("pointercancel",this.up,this),this.viewport.on("pointerout",this.up,this),this.wheelFunction=t=>this.handleWheel(t),this.viewport.options.divWheel.addEventListener("wheel",this.wheelFunction,{passive:this.viewport.options.passiveWheel}),this.isMouseDown=!1}destroy(){this.viewport.options.divWheel.removeEventListener("wheel",this.wheelFunction)}down(t){if(this.viewport.pause||!this.viewport.worldVisible)return;if("mouse"===t.data.pointerType?this.isMouseDown=!0:this.get(t.data.pointerId)||this.touches.push({id:t.data.pointerId,last:null}),1===this.count()){this.last=t.data.global.clone();const e=this.viewport.plugins.get("decelerate"),i=this.viewport.plugins.get("bounce");e&&e.isActive()||i&&i.isActive()?this.clickedAvailable=!1:this.clickedAvailable=!0}else this.clickedAvailable=!1;this.viewport.plugins.down(t)&&this.viewport.options.stopPropagation&&t.stopPropagation()}checkThreshold(t){return Math.abs(t)>=this.viewport.threshold}move(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.plugins.move(t);if(this.clickedAvailable){const e=t.data.global.x-this.last.x,i=t.data.global.y-this.last.y;(this.checkThreshold(e)||this.checkThreshold(i))&&(this.clickedAvailable=!1)}e&&this.viewport.options.stopPropagation&&t.stopPropagation()}up(t){if(this.viewport.pause||!this.viewport.worldVisible)return;"mouse"===t.data.pointerType&&(this.isMouseDown=!1),"mouse"!==t.data.pointerType&&this.remove(t.data.pointerId);const e=this.viewport.plugins.up(t);this.clickedAvailable&&0===this.count()&&(this.viewport.emit("clicked",{event:t,screen:this.last,world:this.viewport.toWorld(this.last),viewport:this}),this.clickedAvailable=!1),e&&this.viewport.options.stopPropagation&&t.stopPropagation()}getPointerPosition(t){let i=new e.Point;return this.viewport.options.interaction?this.viewport.options.interaction.mapPositionToPoint(i,t.clientX,t.clientY):(i.x=t.clientX,i.y=t.clientY),i}handleWheel(t){if(this.viewport.pause||!this.viewport.worldVisible)return;const e=this.viewport.toLocal(this.getPointerPosition(t));if(this.viewport.left<=e.x&&e.x<=this.viewport.right&&this.viewport.top<=e.y&&e.y<=this.viewport.bottom){this.viewport.plugins.wheel(t)&&!this.viewport.options.passiveWheel&&t.preventDefault()}}pause(){this.touches=[],this.isMouseDown=!1}get(t){for(let e of this.touches)if(e.id===t)return e;return null}remove(t){for(let e=0;e<this.touches.length;e++)if(this.touches[e].id===t)return void this.touches.splice(e,1)}count(){return(this.isMouseDown?1:0)+this.touches.length}}const s=["drag","pinch","wheel","follow","mouse-edges","decelerate","bounce","snap-zoom","clamp-zoom","snap","clamp"];class n{constructor(t){this.viewport=t,this.list=[],this.plugins={}}add(t,e,i=s.length){this.plugins[t]=e;const n=s.indexOf(t);-1!==n&&s.splice(n,1),s.splice(i,0,t),this.sort()}get(t){return this.plugins[t]}update(t){for(let e of this.list)e.update(t)}resize(){for(let t of this.list)t.resize()}reset(){for(let t of this.list)t.reset()}remove(t){this.plugins[t]&&(this.plugins[t]=null,this.viewport.emit(t+"-remove"),this.sort())}pause(t){this.plugins[t]&&this.plugins[t].pause()}resume(t){this.plugins[t]&&this.plugins[t].resume()}sort(){this.list=[];for(let t of s)this.plugins[t]&&this.list.push(this.plugins[t])}down(t){let e=!1;for(let i of this.list)i.down(t)&&(e=!0);return e}move(t){let e=!1;for(let i of this.viewport.plugins.list)i.move(t)&&(e=!0);return e}up(t){let e=!1;for(let i of this.list)i.up(t)&&(e=!0);return e}wheel(t){let e=!1;for(let i of this.list)i.wheel(t)&&(e=!0);return e}}class h{constructor(t){this.parent=t,this.paused=!1}destroy(){}down(){return!1}move(){return!1}up(){return!1}wheel(){return!1}update(){}resize(){}reset(){}pause(){this.paused=!0}resume(){this.paused=!1}}const o={direction:"all",pressDrag:!0,wheel:!0,wheelScroll:1,reverse:!1,clampWheel:!1,underflow:"center",factor:1,mouseButtons:"all",keyToPress:null,ignoreKeyToPressOnTouch:!1};class r extends h{constructor(t,e={}){super(t),this.options=Object.assign({},o,e),this.moved=!1,this.reverse=this.options.reverse?1:-1,this.xDirection=!this.options.direction||"all"===this.options.direction||"x"===this.options.direction,this.yDirection=!this.options.direction||"all"===this.options.direction||"y"===this.options.direction,this.keyIsPressed=!1,this.parseUnderflow(),this.mouseButtons(this.options.mouseButtons),this.options.keyToPress&&this.handleKeyPresses(this.options.keyToPress)}handleKeyPresses(t){parent.addEventListener("keydown",e=>{t.includes(e.code)&&(this.keyIsPressed=!0)}),parent.addEventListener("keyup",e=>{t.includes(e.code)&&(this.keyIsPressed=!1)})}mouseButtons(t){this.mouse=t&&"all"!==t?[-1!==t.indexOf("left"),-1!==t.indexOf("middle"),-1!==t.indexOf("right")]:[!0,!0,!0]}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}checkButtons(t){const e="mouse"===t.data.pointerType,i=this.parent.input.count();return!(!(1===i||i>1&&!this.parent.plugins.get("pinch"))||e&&!this.mouse[t.data.button])}checkKeyPress(t){return!!(!this.options.keyToPress||this.keyIsPressed||this.options.ignoreKeyToPressOnTouch&&"touch"===t.data.pointerType)}down(t){if(!this.paused&&this.options.pressDrag)return this.checkButtons(t)&&this.checkKeyPress(t)?(this.last={x:t.data.global.x,y:t.data.global.y},this.current=t.data.pointerId,!0):void(this.last=null)}get active(){return this.moved}move(t){if(!this.paused&&this.options.pressDrag&&this.last&&this.current===t.data.pointerId){const i=t.data.global.x,s=t.data.global.y,n=this.parent.input.count();if(1===n||n>1&&!this.parent.plugins.get("pinch")){const n=i-this.last.x,h=s-this.last.y;if(this.moved||this.xDirection&&this.parent.input.checkThreshold(n)||this.yDirection&&this.parent.input.checkThreshold(h)){const n={x:i,y:s};return this.xDirection&&(this.parent.x+=(n.x-this.last.x)*this.options.factor),this.yDirection&&(this.parent.y+=(n.y-this.last.y)*this.options.factor),this.last=n,this.moved||this.parent.emit("drag-start",{event:t,screen:new e.Point(this.last.x,this.last.y),world:this.parent.toWorld(new e.Point(this.last.x,this.last.y)),viewport:this.parent}),this.moved=!0,this.parent.emit("moved",{viewport:this.parent,type:"drag"}),!0}}else this.moved=!1}}up(t){if(this.paused)return;const i=this.parent.input.touches;if(1===i.length){const t=i[0];return t.last&&(this.last={x:t.last.x,y:t.last.y},this.current=t.id),this.moved=!1,!0}if(this.last&&this.moved){const i=new e.Point(this.last.x,this.last.y);return this.parent.emit("drag-end",{event:t,screen:i,world:this.parent.toWorld(i),viewport:this.parent}),this.last=null,this.moved=!1,!0}}wheel(t){if(!this.paused&&this.options.wheel){if(!this.parent.plugins.get("wheel"))return this.xDirection&&(this.parent.x+=t.deltaX*this.options.wheelScroll*this.reverse),this.yDirection&&(this.parent.y+=t.deltaY*this.options.wheelScroll*this.reverse),this.options.clampWheel&&this.clamp(),this.parent.emit("wheel-scroll",this.parent),this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.options.passiveWheel||t.preventDefault(),!0}}resume(){this.last=null,this.paused=!1}clamp(){const t=this.parent.plugins.get("decelerate")||{};if("y"!==this.options.clampWheel)if(this.parent.screenWorldWidth<this.parent.screenWidth)switch(this.underflowX){case-1:this.parent.x=0;break;case 1:this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}else this.parent.left<0?(this.parent.x=0,t.x=0):this.parent.right>this.parent.worldWidth&&(this.parent.x=-this.parent.worldWidth*this.parent.scale.x+this.parent.screenWidth,t.x=0);if("x"!==this.options.clampWheel)if(this.parent.screenWorldHeight<this.parent.screenHeight)switch(this.underflowY){case-1:this.parent.y=0;break;case 1:this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}else this.parent.top<0&&(this.parent.y=0,t.y=0),this.parent.bottom>this.parent.worldHeight&&(this.parent.y=-this.parent.worldHeight*this.parent.scale.y+this.parent.screenHeight,t.y=0)}}const a={noDrag:!1,percent:1,center:null};class p extends h{constructor(t,e={}){super(t),this.options=Object.assign({},a,e)}down(){if(this.parent.input.count()>=2)return this.active=!0,!0}move(t){if(this.paused||!this.active)return;const e=t.data.global.x,i=t.data.global.y,s=this.parent.input.touches;if(s.length>=2){const n=s[0],h=s[1],o=n.last&&h.last?Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2)):null;if(n.id===t.data.pointerId?n.last={x:e,y:i,data:t.data}:h.id===t.data.pointerId&&(h.last={x:e,y:i,data:t.data}),o){let t;const e={x:n.last.x+(h.last.x-n.last.x)/2,y:n.last.y+(h.last.y-n.last.y)/2};this.options.center||(t=this.parent.toLocal(e));let i=Math.sqrt(Math.pow(h.last.x-n.last.x,2)+Math.pow(h.last.y-n.last.y,2));i=0===i?i=1e-10:i;const s=(1-o/i)*this.options.percent*this.parent.scale.x;this.parent.scale.x+=s,this.parent.scale.y+=s,this.parent.emit("zoomed",{viewport:this.parent,type:"pinch"});const r=this.parent.plugins.get("clamp-zoom");if(r&&r.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})}!this.options.noDrag&&this.lastCenter&&(this.parent.x+=e.x-this.lastCenter.x,this.parent.y+=e.y-this.lastCenter.y,this.parent.emit("moved",{viewport:this.parent,type:"pinch"})),this.lastCenter=e,this.moved=!0}else this.pinching||(this.parent.emit("pinch-start",this.parent),this.pinching=!0);return!0}}up(){if(this.pinching&&this.parent.input.touches.length<=1)return this.active=!1,this.lastCenter=null,this.pinching=!1,this.moved=!1,this.parent.emit("pinch-end",this.parent),!0}}const l={left:!1,right:!1,top:!1,bottom:!1,direction:null,underflow:"center"};class c extends h{constructor(t,e={}){super(t),this.options=Object.assign({},l,e),this.options.direction&&(this.options.left="x"===this.options.direction||"all"===this.options.direction||null,this.options.right="x"===this.options.direction||"all"===this.options.direction||null,this.options.top="y"===this.options.direction||"all"===this.options.direction||null,this.options.bottom="y"===this.options.direction||"all"===this.options.direction||null),this.parseUnderflow(),this.last={x:null,y:null,scaleX:null,scaleY:null},this.update()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"none"===t?this.noUnderflow=!0:"center"===t?(this.underflowX=this.underflowY=0,this.noUnderflow=!1):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0,this.noUnderflow=!1)}move(){return this.update(),!1}update(){if(this.paused)return;if(this.parent.x===this.last.x&&this.parent.y===this.last.y&&this.parent.scale.x===this.last.scaleX&&this.parent.scale.y===this.last.scaleY)return;const t={x:this.parent.x,y:this.parent.y},e=this.parent.plugins.decelerate||{};if(null!==this.options.left||null!==this.options.right){let i=!1;if(this.parent.screenWorldWidth<this.parent.screenWidth){if(!this.noUnderflow)switch(this.underflowX){case-1:0!==this.parent.x&&(this.parent.x=0,i=!0);break;case 1:this.parent.x!==this.parent.screenWidth-this.parent.screenWorldWidth&&(this.parent.x=this.parent.screenWidth-this.parent.screenWorldWidth,i=!0);break;default:this.parent.x!==(this.parent.screenWidth-this.parent.screenWorldWidth)/2&&(this.parent.x=(this.parent.screenWidth-this.parent.screenWorldWidth)/2,i=!0)}}else null!==this.options.left&&this.parent.left<(!0===this.options.left?0:this.options.left)&&(this.parent.x=-(!0===this.options.left?0:this.options.left)*this.parent.scale.x,e.x=0,i=!0),null!==this.options.right&&this.parent.right>(!0===this.options.right?this.parent.worldWidth:this.options.right)&&(this.parent.x=-(!0===this.options.right?this.parent.worldWidth:this.options.right)*this.parent.scale.x+this.parent.screenWidth,e.x=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-x"})}if(null!==this.options.top||null!==this.options.bottom){let i=!1;if(this.parent.screenWorldHeight<this.parent.screenHeight){if(!this.noUnderflow)switch(this.underflowY){case-1:0!==this.parent.y&&(this.parent.y=0,i=!0);break;case 1:this.parent.y!==this.parent.screenHeight-this.parent.screenWorldHeight&&(this.parent.y=this.parent.screenHeight-this.parent.screenWorldHeight,i=!0);break;default:this.parent.y!==(this.parent.screenHeight-this.parent.screenWorldHeight)/2&&(this.parent.y=(this.parent.screenHeight-this.parent.screenWorldHeight)/2,i=!0)}}else null!==this.options.top&&this.parent.top<(!0===this.options.top?0:this.options.top)&&(this.parent.y=-(!0===this.options.top?0:this.options.top)*this.parent.scale.y,e.y=0,i=!0),null!==this.options.bottom&&this.parent.bottom>(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)&&(this.parent.y=-(!0===this.options.bottom?this.parent.worldHeight:this.options.bottom)*this.parent.scale.y+this.parent.screenHeight,e.y=0,i=!0);i&&this.parent.emit("moved",{viewport:this.parent,original:t,type:"clamp-y"})}this.last.x=this.parent.x,this.last.y=this.parent.y,this.last.scaleX=this.parent.scale.x,this.last.scaleY=this.parent.scale.y}reset(){this.update()}}const d={minWidth:null,minHeight:null,maxWidth:null,maxHeight:null,minScale:null,maxScale:null};class u extends h{constructor(t,e={}){super(t),this.options=Object.assign({},d,e),this.clamp()}resize(){this.clamp()}clamp(){if(!this.paused)if(this.options.minWidth||this.options.minHeight||this.options.maxWidth||this.options.maxHeight){let t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight;if(null!==this.options.minWidth&&t<this.options.minWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.minWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxWidth&&t>this.options.maxWidth){const i=this.parent.scale.x;this.parent.fitWidth(this.options.maxWidth,!1,!1,!0),this.parent.scale.y*=this.parent.scale.x/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.minHeight&&e<this.options.minHeight){const i=this.parent.scale.y;this.parent.fitHeight(this.options.minHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/i,t=this.parent.worldScreenWidth,e=this.parent.worldScreenHeight,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}if(null!==this.options.maxHeight&&e>this.options.maxHeight){const t=this.parent.scale.y;this.parent.fitHeight(this.options.maxHeight,!1,!1,!0),this.parent.scale.x*=this.parent.scale.y/t,this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"})}}else{let t=this.parent.scale.x;null!==this.options.minScale&&t<this.options.minScale&&(t=this.options.minScale),null!==this.options.maxScale&&t>this.options.maxScale&&(t=this.options.maxScale),t!==this.parent.scale.x&&(this.parent.scale.set(t),this.parent.emit("zoomed",{viewport:this.parent,type:"clamp-zoom"}))}}reset(){this.clamp()}}const g={friction:.95,bounce:.8,minSpeed:.01};class m extends h{constructor(t,e={}){super(t),this.options=Object.assign({},g,e),this.saved=[],this.reset(),this.parent.on("moved",t=>this.moved(t))}destroy(){this.parent}down(){this.saved=[],this.x=this.y=!1}isActive(){return this.x||this.y}move(){if(this.paused)return;const t=this.parent.input.count();(1===t||t>1&&!this.parent.plugins.get("pinch"))&&(this.saved.push({x:this.parent.x,y:this.parent.y,time:performance.now()}),this.saved.length>60&&this.saved.splice(0,30))}moved(t){if(this.saved.length){const e=this.saved[this.saved.length-1];"clamp-x"===t.type?e.x===t.original.x&&(e.x=this.parent.x):"clamp-y"===t.type&&e.y===t.original.y&&(e.y=this.parent.y)}}up(){if(0===this.parent.input.count()&&this.saved.length){const t=performance.now();for(let e of this.saved)if(e.time>=t-100){const i=t-e.time;this.x=(this.parent.x-e.x)/i,this.y=(this.parent.y-e.y)/i,this.percentChangeX=this.percentChangeY=this.options.friction;break}}}activate(t){void 0!==(t=t||{}).x&&(this.x=t.x,this.percentChangeX=this.options.friction),void 0!==t.y&&(this.y=t.y,this.percentChangeY=this.options.friction)}update(t){if(this.paused)return;let e;this.x&&(this.parent.x+=this.x*t,this.x*=this.percentChangeX,Math.abs(this.x)<this.options.minSpeed&&(this.x=0),e=!0),this.y&&(this.parent.y+=this.y*t,this.y*=this.percentChangeY,Math.abs(this.y)<this.options.minSpeed&&(this.y=0),e=!0),e&&this.parent.emit("moved",{viewport:this.parent,type:"decelerate"})}reset(){this.x=this.y=null}}var w="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f=function(t,e){return t(e={exports:{}},e.exports),e.exports}((function(t,e){(function(){var e;(function(e){t.exports=e})(e={linear:function(t,e,i,s){return i*t/s+e},easeInQuad:function(t,e,i,s){return i*(t/=s)*t+e},easeOutQuad:function(t,e,i,s){return-i*(t/=s)*(t-2)+e},easeInOutQuad:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t+e:-i/2*(--t*(t-2)-1)+e},easeInCubic:function(t,e,i,s){return i*(t/=s)*t*t+e},easeOutCubic:function(t,e,i,s){return i*((t=t/s-1)*t*t+1)+e},easeInOutCubic:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t+e:i/2*((t-=2)*t*t+2)+e},easeInQuart:function(t,e,i,s){return i*(t/=s)*t*t*t+e},easeOutQuart:function(t,e,i,s){return-i*((t=t/s-1)*t*t*t-1)+e},easeInOutQuart:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t+e:-i/2*((t-=2)*t*t*t-2)+e},easeInQuint:function(t,e,i,s){return i*(t/=s)*t*t*t*t+e},easeOutQuint:function(t,e,i,s){return i*((t=t/s-1)*t*t*t*t+1)+e},easeInOutQuint:function(t,e,i,s){return(t/=s/2)<1?i/2*t*t*t*t*t+e:i/2*((t-=2)*t*t*t*t+2)+e},easeInSine:function(t,e,i,s){return-i*Math.cos(t/s*(Math.PI/2))+i+e},easeOutSine:function(t,e,i,s){return i*Math.sin(t/s*(Math.PI/2))+e},easeInOutSine:function(t,e,i,s){return-i/2*(Math.cos(Math.PI*t/s)-1)+e},easeInExpo:function(t,e,i,s){return 0===t?e:i*Math.pow(2,10*(t/s-1))+e},easeOutExpo:function(t,e,i,s){return t===s?e+i:i*(1-Math.pow(2,-10*t/s))+e},easeInOutExpo:function(t,e,i,s){return(t/=s/2)<1?i/2*Math.pow(2,10*(t-1))+e:i/2*(2-Math.pow(2,-10*--t))+e},easeInCirc:function(t,e,i,s){return-i*(Math.sqrt(1-(t/=s)*t)-1)+e},easeOutCirc:function(t,e,i,s){return i*Math.sqrt(1-(t=t/s-1)*t)+e},easeInOutCirc:function(t,e,i,s){return(t/=s/2)<1?-i/2*(Math.sqrt(1-t*t)-1)+e:i/2*(Math.sqrt(1-(t-=2)*t)+1)+e},easeInElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),-n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)+e},easeOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s),(h=0)||(h=.3*s),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),n*Math.pow(2,-10*t)*Math.sin((t*s-o)*(2*Math.PI)/h)+i+e},easeInOutElastic:function(t,e,i,s){var n,h,o;return o=1.70158,0===t||(t/=s/2),(h=0)||(h=s*(.3*1.5)),(n=i)<Math.abs(i)?(n=i,o=h/4):o=h/(2*Math.PI)*Math.asin(i/n),t<1?n*Math.pow(2,10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*-.5+e:n*Math.pow(2,-10*(t-=1))*Math.sin((t*s-o)*(2*Math.PI)/h)*.5+i+e},easeInBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*(t/=s)*t*((n+1)*t-n)+e},easeOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),i*((t=t/s-1)*t*((n+1)*t+n)+1)+e},easeInOutBack:function(t,e,i,s,n){return void 0===n&&(n=1.70158),(t/=s/2)<1?i/2*(t*t*((1+(n*=1.525))*t-n))+e:i/2*((t-=2)*t*((1+(n*=1.525))*t+n)+2)+e},easeInBounce:function(t,i,s,n){return s-e.easeOutBounce(n-t,0,s,n)+i},easeOutBounce:function(t,e,i,s){return(t/=s)<1/2.75?i*(7.5625*t*t)+e:t<2/2.75?i*(7.5625*(t-=1.5/2.75)*t+.75)+e:t<2.5/2.75?i*(7.5625*(t-=2.25/2.75)*t+.9375)+e:i*(7.5625*(t-=2.625/2.75)*t+.984375)+e},easeInOutBounce:function(t,i,s,n){return t<n/2?.5*e.easeInBounce(2*t,0,s,n)+i:.5*e.easeOutBounce(2*t-n,0,s,n)+.5*s+i}})}).call(w)}));function y(t,e){return t?"function"==typeof t?t:"string"==typeof t?f[t]:void 0:f[e]}const x={sides:"all",friction:.5,time:150,ease:"easeInOutSine",underflow:"center",bounceBox:null};class v extends h{constructor(t,e={}){super(t),this.options=Object.assign({},x,e),this.ease=y(this.options.ease,"easeInOutSine"),this.options.sides&&("all"===this.options.sides?this.top=this.bottom=this.left=this.right=!0:"horizontal"===this.options.sides?this.right=this.left=!0:"vertical"===this.options.sides?this.top=this.bottom=!0:(this.top=-1!==this.options.sides.indexOf("top"),this.bottom=-1!==this.options.sides.indexOf("bottom"),this.left=-1!==this.options.sides.indexOf("left"),this.right=-1!==this.options.sides.indexOf("right"))),this.parseUnderflow(),this.last={},this.reset()}parseUnderflow(){const t=this.options.underflow.toLowerCase();"center"===t?(this.underflowX=0,this.underflowY=0):(this.underflowX=-1!==t.indexOf("left")?-1:-1!==t.indexOf("right")?1:0,this.underflowY=-1!==t.indexOf("top")?-1:-1!==t.indexOf("bottom")?1:0)}isActive(){return null!==this.toX||null!==this.toY}down(){this.toX=this.toY=null}up(){this.bounce()}update(t){if(!this.paused){if(this.bounce(),this.toX){const e=this.toX;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-x"}),e.time>=this.options.time?(this.parent.x=e.end,this.toX=null,this.parent.emit("bounce-x-end",this.parent)):this.parent.x=this.ease(e.time,e.start,e.delta,this.options.time)}if(this.toY){const e=this.toY;e.time+=t,this.parent.emit("moved",{viewport:this.parent,type:"bounce-y"}),e.time>=this.options.time?(this.parent.y=e.end,this.toY=null,this.parent.emit("bounce-y-end",this.parent)):this.parent.y=this.ease(e.time,e.start,e.delta,this.options.time)}}}calcUnderflowX(){let t;switch(this.underflowX){case-1:t=0;break;case 1:t=this.parent.screenWidth-this.parent.screenWorldWidth;break;default:t=(this.parent.screenWidth-this.parent.screenWorldWidth)/2}return t}calcUnderflowY(){let t;switch(this.underflowY){case-1:t=0;break;case 1:t=this.parent.screenHeight-this.parent.screenWorldHeight;break;default:t=(this.parent.screenHeight-this.parent.screenWorldHeight)/2}return t}oob(){const t=this.options.bounceBox;if(t){const i=void 0===t.x?0:t.x,s=void 0===t.y?0:t.y,n=void 0===t.width?this.parent.worldWidth:t.width,h=void 0===t.height?this.parent.worldHeight:t.height;return{left:this.parent.left<i,right:this.parent.right>n,top:this.parent.top<s,bottom:this.parent.bottom>h,topLeft:new e.Point(i*this.parent.scale.x,s*this.parent.scale.y),bottomRight:new e.Point(n*this.parent.scale.x-this.parent.screenWidth,h*this.parent.scale.y-this.parent.screenHeight)}}return{left:this.parent.left<0,right:this.parent.right>this.parent.worldWidth,top:this.parent.top<0,bottom:this.parent.bottom>this.parent.worldHeight,topLeft:new e.Point(0,0),bottomRight:new e.Point(this.parent.worldWidth*this.parent.scale.x-this.parent.screenWidth,this.parent.worldHeight*this.parent.scale.y-this.parent.screenHeight)}}bounce(){if(this.paused)return;let t,e=this.parent.plugins.get("decelerate");e&&(e.x||e.y)&&(e.x&&e.percentChangeX===e.options.friction||e.y&&e.percentChangeY===e.options.friction)&&(t=this.oob(),(t.left&&this.left||t.right&&this.right)&&(e.percentChangeX=this.options.friction),(t.top&&this.top||t.bottom&&this.bottom)&&(e.percentChangeY=this.options.friction));const i=this.parent.plugins.get("drag")||{},s=this.parent.plugins.get("pinch")||{};if(e=e||{},!(i.active||s.active||this.toX&&this.toY||e.x&&e.y)){t=t||this.oob();const i=t.topLeft,s=t.bottomRight;if(!this.toX&&!e.x){let e=null;t.left&&this.left?e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-i.x:t.right&&this.right&&(e=this.parent.screenWorldWidth<this.parent.screenWidth?this.calcUnderflowX():-s.x),null!==e&&this.parent.x!==e&&(this.toX={time:0,start:this.parent.x,delta:e-this.parent.x,end:e},this.parent.emit("bounce-x-start",this.parent))}if(!this.toY&&!e.y){let e=null;t.top&&this.top?e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-i.y:t.bottom&&this.bottom&&(e=this.parent.screenWorldHeight<this.parent.screenHeight?this.calcUnderflowY():-s.y),null!==e&&this.parent.y!==e&&(this.toY={time:0,start:this.parent.y,delta:e-this.parent.y,end:e},this.parent.emit("bounce-y-start",this.parent))}}}reset(){this.toX=this.toY=null,this.bounce()}}const b={topLeft:!1,friction:.8,time:1e3,ease:"easeInOutSine",interrupt:!0,removeOnComplete:!1,removeOnInterrupt:!1,forceStart:!1};class W extends h{constructor(t,e,i,s={}){super(t),this.options=Object.assign({},b,s),this.ease=y(s.ease,"easeInOutSine"),this.x=e,this.y=i,this.options.forceStart&&this.snapStart()}snapStart(){this.percent=0,this.snapping={time:0};const t=this.options.topLeft?this.parent.corner:this.parent.center;this.deltaX=this.x-t.x,this.deltaY=this.y-t.y,this.startX=t.x,this.startY=t.y,this.parent.emit("snap-start",this.parent)}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap"):this.options.interrupt&&(this.snapping=null)}up(){if(0===this.parent.input.count()){const t=this.parent.plugins.get("decelerate");t&&(t.x||t.y)&&(t.percentChangeX=t.percentChangeY=this.options.friction)}}update(t){if(!(this.paused||this.options.interrupt&&0!==this.parent.input.count()))if(this.snapping){const e=this.snapping;let i,s,n;if(e.time+=t,e.time>this.options.time)i=!0,s=this.startX+this.deltaX,n=this.startY+this.deltaY;else{const t=this.ease(e.time,0,1,this.options.time);s=this.startX+this.deltaX*t,n=this.startY+this.deltaY*t}this.options.topLeft?this.parent.moveCorner(s,n):this.parent.moveCenter(s,n),this.parent.emit("moved",{viewport:this.parent,type:"snap"}),i&&(this.options.removeOnComplete&&this.parent.plugins.remove("snap"),this.parent.emit("snap-end",this.parent),this.snapping=null)}else{const t=this.options.topLeft?this.parent.corner:this.parent.center;t.x===this.x&&t.y===this.y||this.snapStart()}}}const H={width:0,height:0,time:1e3,ease:"easeInOutSine",center:null,interrupt:!0,removeOnComplete:!1,removeOnInterrupts:!1,forceStart:!1,noMove:!1};class M extends h{constructor(t,e={}){super(t),this.options=Object.assign({},H,e),this.ease=y(this.options.ease),this.options.width>0&&(this.xScale=t.screenWidth/this.options.width),this.options.height>0&&(this.yScale=t.screenHeight/this.options.height),this.xIndependent=!!this.xScale,this.yIndependent=!!this.yScale,this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale,0===this.options.time?(t.container.scale.x=this.xScale,t.container.scale.y=this.yScale,this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom")):e.forceStart&&this.createSnapping()}createSnapping(){const t=this.parent.scale;this.snapping={time:0,startX:t.x,startY:t.y,deltaX:this.xScale-t.x,deltaY:this.yScale-t.y},this.parent.emit("snap-zoom-start",this.parent)}resize(){this.snapping=null,this.options.width>0&&(this.xScale=this.parent.screenWidth/this.options.width),this.options.height>0&&(this.yScale=this.parent.screenHeight/this.options.height),this.xScale=this.xIndependent?this.xScale:this.yScale,this.yScale=this.yIndependent?this.yScale:this.xScale}wheel(){this.options.removeOnInterrupt&&this.parent.plugins.remove("snap-zoom")}down(){this.options.removeOnInterrupt?this.parent.plugins.remove("snap-zoom"):this.options.interrupt&&(this.snapping=null)}update(t){if(this.paused)return;if(this.options.interrupt&&0!==this.parent.input.count())return;let e;if(this.options.center||this.options.noMove||(e=this.parent.center),this.snapping){if(this.snapping){const i=this.snapping;if(i.time+=t,i.time>=this.options.time)this.parent.scale.set(this.xScale,this.yScale),this.options.removeOnComplete&&this.parent.plugins.remove("snap-zoom"),this.parent.emit("snap-zoom-end",this.parent),this.snapping=null;else{const t=this.snapping;this.parent.scale.x=this.ease(t.time,t.startX,t.deltaX,this.options.time),this.parent.scale.y=this.ease(t.time,t.startY,t.deltaY,this.options.time)}const s=this.parent.plugins.get("clamp-zoom");s&&s.clamp(),this.options.noMove||(this.options.center?this.parent.moveCenter(this.options.center):this.parent.moveCenter(e))}}else this.parent.scale.x===this.xScale&&this.parent.scale.y===this.yScale||this.createSnapping()}resume(){this.snapping=null,super.resume()}}const S={speed:0,acceleration:null,radius:null};class O extends h{constructor(t,e,i={}){super(t),this.target=e,this.options=Object.assign({},S,i),this.velocity={x:0,y:0}}update(t){if(this.paused)return;const e=this.parent.center;let i=this.target.x,s=this.target.y;if(this.options.radius){if(!(Math.sqrt(Math.pow(this.target.y-e.y,2)+Math.pow(this.target.x-e.x,2))>this.options.radius))return;{const t=Math.atan2(this.target.y-e.y,this.target.x-e.x);i=this.target.x-Math.cos(t)*this.options.radius,s=this.target.y-Math.sin(t)*this.options.radius}}const n=i-e.x,h=s-e.y;if(n||h)if(this.options.speed)if(this.options.acceleration){const o=Math.atan2(s-e.y,i-e.x),r=Math.sqrt(Math.pow(n,2)+Math.pow(h,2));if(r){const a=(Math.pow(this.velocity.x,2)+Math.pow(this.velocity.y,2))/(2*this.options.acceleration);this.velocity=r>a?{x:Math.min(this.velocity.x+this.options.acceleration*t,this.options.speed),y:Math.min(this.velocity.y+this.options.acceleration*t,this.options.speed)}:{x:Math.max(this.velocity.x-this.options.acceleration*this.options.speed,0),y:Math.max(this.velocity.y-this.options.acceleration*this.options.speed,0)};const p=Math.cos(o)*this.velocity.x,l=Math.sin(o)*this.velocity.y,c=Math.abs(p)>Math.abs(n)?i:e.x+p,d=Math.abs(l)>Math.abs(h)?s:e.y+l;this.parent.moveCenter(c,d),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}else{const t=Math.atan2(s-e.y,i-e.x),o=Math.cos(t)*this.options.speed,r=Math.sin(t)*this.options.speed,a=Math.abs(o)>Math.abs(n)?i:e.x+o,p=Math.abs(r)>Math.abs(h)?s:e.y+r;this.parent.moveCenter(a,p),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}else this.parent.moveCenter(i,s),this.parent.emit("moved",{viewport:this.parent,type:"follow"})}}const z={percent:.1,smooth:!1,interrupt:!0,reverse:!1,center:null,lineHeight:20};class I extends h{constructor(t,e={}){super(t),this.options=Object.assign({},z,e)}down(){this.options.interrupt&&(this.smoothing=null)}update(){if(this.smoothing){const t=this.smoothingCenter,e=this.smoothing;let i;this.options.center||(i=this.parent.toLocal(t)),this.parent.scale.x+=e.x,this.parent.scale.y+=e.y,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const s=this.parent.plugins.get("clamp-zoom");if(s&&s.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const e=this.parent.toGlobal(i);this.parent.x+=t.x-e.x,this.parent.y+=t.y-e.y}this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.smoothingCount++,this.smoothingCount>=this.options.smooth&&(this.smoothing=null)}}wheel(t){if(this.paused)return;let e=this.parent.input.getPointerPosition(t);const i=(this.options.reverse?-1:1)*-t.deltaY*(t.deltaMode?this.options.lineHeight:1)/500,s=Math.pow(2,(1+this.options.percent)*i);if(this.options.smooth){const t={x:this.smoothing?this.smoothing.x*(this.options.smooth-this.smoothingCount):0,y:this.smoothing?this.smoothing.y*(this.options.smooth-this.smoothingCount):0};this.smoothing={x:((this.parent.scale.x+t.x)*s-this.parent.scale.x)/this.options.smooth,y:((this.parent.scale.y+t.y)*s-this.parent.scale.y)/this.options.smooth},this.smoothingCount=0,this.smoothingCenter=e}else{let t;this.options.center||(t=this.parent.toLocal(e)),this.parent.scale.x*=s,this.parent.scale.y*=s,this.parent.emit("zoomed",{viewport:this.parent,type:"wheel"});const i=this.parent.plugins.get("clamp-zoom");if(i&&i.clamp(),this.options.center)this.parent.moveCenter(this.options.center);else{const i=this.parent.toGlobal(t);this.parent.x+=e.x-i.x,this.parent.y+=e.y-i.y}}return this.parent.emit("moved",{viewport:this.parent,type:"wheel"}),this.parent.emit("wheel",{wheel:{dx:t.deltaX,dy:t.deltaY,dz:t.deltaZ},event:t,viewport:this.parent}),!this.parent.options.passiveWheel||void 0}}const C={radius:null,distance:null,top:null,bottom:null,left:null,right:null,speed:8,reverse:!1,noDecelerate:!1,linear:!1,allowButtons:!1};class k extends h{constructor(t,e={}){super(t),this.options=Object.assign({},C,e),this.reverse=this.options.reverse?1:-1,this.radiusSquared=Math.pow(this.options.radius,2),this.resize()}resize(){const t=this.options.distance;null!==t?(this.left=t,this.top=t,this.right=this.parent.worldScreenWidth-t,this.bottom=this.parent.worldScreenHeight-t):this.radius||(this.left=this.options.left,this.top=this.options.top,this.right=null===this.options.right?null:this.parent.worldScreenWidth-this.options.right,this.bottom=null===this.options.bottom?null:this.parent.worldScreenHeight-this.options.bottom)}down(){this.options.allowButtons||(this.horizontal=this.vertical=null)}move(t){if("mouse"!==t.data.pointerType&&1!==t.data.identifier||!this.options.allowButtons&&0!==t.data.buttons)return;const e=t.data.global.x,i=t.data.global.y;if(this.radiusSquared){const t=this.parent.toScreen(this.parent.center);if(Math.pow(t.x-e,2)+Math.pow(t.y-i,2)>=this.radiusSquared){const s=Math.atan2(t.y-i,t.x-e);this.options.linear?(this.horizontal=Math.round(Math.cos(s))*this.options.speed*this.reverse*.06,this.vertical=Math.round(Math.sin(s))*this.options.speed*this.reverse*.06):(this.horizontal=Math.cos(s)*this.options.speed*this.reverse*.06,this.vertical=Math.sin(s)*this.options.speed*this.reverse*.06)}else this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=0}else null!==this.left&&e<this.left?this.horizontal=1*this.reverse*this.options.speed*.06:null!==this.right&&e>this.right?this.horizontal=-1*this.reverse*this.options.speed*.06:(this.decelerateHorizontal(),this.horizontal=0),null!==this.top&&i<this.top?this.vertical=1*this.reverse*this.options.speed*.06:null!==this.bottom&&i>this.bottom?this.vertical=-1*this.reverse*this.options.speed*.06:(this.decelerateVertical(),this.vertical=0)}decelerateHorizontal(){const t=this.parent.plugins.get("decelerate");this.horizontal&&t&&!this.options.noDecelerate&&t.activate({x:this.horizontal*this.options.speed*this.reverse/(1e3/60)})}decelerateVertical(){const t=this.parent.plugins.get("decelerate");this.vertical&&t&&!this.options.noDecelerate&&t.activate({y:this.vertical*this.options.speed*this.reverse/(1e3/60)})}up(){this.horizontal&&this.decelerateHorizontal(),this.vertical&&this.decelerateVertical(),this.horizontal=this.vertical=null}update(){if(!this.paused&&(this.horizontal||this.vertical)){const t=this.parent.center;this.horizontal&&(t.x+=this.horizontal*this.options.speed),this.vertical&&(t.y+=this.vertical*this.options.speed),this.parent.moveCenter(t),this.parent.emit("moved",{viewport:this.parent,type:"mouse-edges"})}}}const P={screenWidth:window.innerWidth,screenHeight:window.innerHeight,worldWidth:null,worldHeight:null,threshold:5,passiveWheel:!0,stopPropagation:!1,forceHitArea:null,noTicker:!1,interaction:null,disableOnContextMenu:!1};class X extends e.Container{constructor(t={}){if(super(),this.options=Object.assign({},P,t),t.ticker)this.options.ticker=t.ticker;else{let i;const s=e;i=parseInt(/^(\d+)\./.exec(e.VERSION)[1])<5?s.ticker.shared:s.Ticker.shared,this.options.ticker=t.ticker||i}this.screenWidth=this.options.screenWidth,this.screenHeight=this.options.screenHeight,this._worldWidth=this.options.worldWidth,this._worldHeight=this.options.worldHeight,this.forceHitArea=this.options.forceHitArea,this.threshold=this.options.threshold,this.options.divWheel=this.options.divWheel||document.body,this.options.disableOnContextMenu&&(this.options.divWheel.oncontextmenu=t=>t.preventDefault()),this.options.noTicker||(this.tickerFunction=()=>this.update(this.options.ticker.elapsedMS),this.options.ticker.add(this.tickerFunction)),this.input=new i(this),this.plugins=new n(this)}destroy(t){this.options.noTicker||this.options.ticker.remove(this.tickerFunction),this.input.destroy(),super.destroy(t)}update(t){this.pause||(this.plugins.update(t),this.lastViewport&&(this.lastViewport.x!==this.x||this.lastViewport.y!==this.y?this.moving=!0:this.moving&&(this.emit("moved-end",this),this.moving=!1),this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y?this.zooming=!0:this.zooming&&(this.emit("zoomed-end",this),this.zooming=!1)),this.forceHitArea||(this._hitAreaDefault=new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight),this.hitArea=this._hitAreaDefault),this._dirty=this._dirty||!this.lastViewport||this.lastViewport.x!==this.x||this.lastViewport.y!==this.y||this.lastViewport.scaleX!==this.scale.x||this.lastViewport.scaleY!==this.scale.y,this.lastViewport={x:this.x,y:this.y,scaleX:this.scale.x,scaleY:this.scale.y},this.emit("frame-end",this))}resize(t=window.innerWidth,e=window.innerHeight,i,s){this.screenWidth=t,this.screenHeight=e,void 0!==i&&(this._worldWidth=i),void 0!==s&&(this._worldHeight=s),this.plugins.resize(),this.dirty=!0}get worldWidth(){return this._worldWidth?this._worldWidth:this.width/this.scale.x}set worldWidth(t){this._worldWidth=t,this.plugins.resize()}get worldHeight(){return this._worldHeight?this._worldHeight:this.height/this.scale.y}set worldHeight(t){this._worldHeight=t,this.plugins.resize()}getVisibleBounds(){return new e.Rectangle(this.left,this.top,this.worldScreenWidth,this.worldScreenHeight)}toWorld(t,i){return 2===arguments.length?this.toLocal(new e.Point(t,i)):this.toLocal(t)}toScreen(t,i){return 2===arguments.length?this.toGlobal(new e.Point(t,i)):this.toGlobal(t)}get worldScreenWidth(){return this.screenWidth/this.scale.x}get worldScreenHeight(){return this.screenHeight/this.scale.y}get screenWorldWidth(){return this.worldWidth*this.scale.x}get screenWorldHeight(){return this.worldHeight*this.scale.y}get center(){return new e.Point(this.worldScreenWidth/2-this.x/this.scale.x,this.worldScreenHeight/2-this.y/this.scale.y)}set center(t){this.moveCenter(t)}moveCenter(){let t,e;return isNaN(arguments[0])?(t=arguments[0].x,e=arguments[0].y):(t=arguments[0],e=arguments[1]),this.position.set((this.worldScreenWidth/2-t)*this.scale.x,(this.worldScreenHeight/2-e)*this.scale.y),this.plugins.reset(),this.dirty=!0,this}get corner(){return new e.Point(-this.x/this.scale.x,-this.y/this.scale.y)}set corner(t){this.moveCorner(t)}moveCorner(t,e){return 1===arguments.length?this.position.set(-t.x*this.scale.x,-t.y*this.scale.y):this.position.set(-t*this.scale.x,-e*this.scale.y),this.plugins.reset(),this}fitWidth(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.x=this.screenWidth/t,i&&(this.scale.y=this.scale.x);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitHeight(t,e,i=!0,s){let n;e&&(n=this.center),this.scale.y=this.screenHeight/t,i&&(this.scale.x=this.scale.y);const h=this.plugins.get("clamp-zoom");return!s&&h&&h.clamp(),e&&this.moveCenter(n),this}fitWorld(t){let e;t&&(e=this.center),this.scale.x=this.screenWidth/this.worldWidth,this.scale.y=this.screenHeight/this.worldHeight,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const i=this.plugins.get("clamp-zoom");return i&&i.clamp(),t&&this.moveCenter(e),this}fit(t,e=this.worldWidth,i=this.worldHeight){let s;t&&(s=this.center),this.scale.x=this.screenWidth/e,this.scale.y=this.screenHeight/i,this.scale.x<this.scale.y?this.scale.y=this.scale.x:this.scale.x=this.scale.y;const n=this.plugins.get("clamp-zoom");return n&&n.clamp(),t&&this.moveCenter(s),this}setZoom(t,e){let i;e&&(i=this.center),this.scale.set(t);const s=this.plugins.get("clamp-zoom");return s&&s.clamp(),e&&this.moveCenter(i),this}zoomPercent(t,e){return this.setZoom(this.scale.x+this.scale.x*t,e)}zoom(t,e){return this.fitWidth(t+this.worldScreenWidth,e),this}set scaled(t){this.setZoom(t,!0)}get scaled(){return this.scale.x}snapZoom(t){return this.plugins.add("snap-zoom",new M(this,t)),this}OOB(){return{left:this.left<0,right:this.right>this.worldWidth,top:this.top<0,bottom:this.bottom>this._worldHeight,cornerPoint:new e.Point(this.worldWidth*this.scale.x-this.screenWidth,this.worldHeight*this.scale.y-this.screenHeight)}}get right(){return-this.x/this.scale.x+this.worldScreenWidth}set right(t){this.x=-t*this.scale.x+this.screenWidth,this.plugins.reset()}get left(){return-this.x/this.scale.x}set left(t){this.x=-t*this.scale.x,this.plugins.reset()}get top(){return-this.y/this.scale.y}set top(t){this.y=-t*this.scale.y,this.plugins.reset()}get bottom(){return-this.y/this.scale.y+this.worldScreenHeight}set bottom(t){this.y=-t*this.scale.y+this.screenHeight,this.plugins.reset()}get dirty(){return this._dirty}set dirty(t){this._dirty=t}get forceHitArea(){return this._forceHitArea}set forceHitArea(t){t?(this._forceHitArea=t,this.hitArea=t):(this._forceHitArea=null,this.hitArea=new e.Rectangle(0,0,this.worldWidth,this.worldHeight))}drag(t){return this.plugins.add("drag",new r(this,t)),this}clamp(t){return this.plugins.add("clamp",new c(this,t)),this}decelerate(t){return this.plugins.add("decelerate",new m(this,t)),this}bounce(t){return this.plugins.add("bounce",new v(this,t)),this}pinch(t){return this.plugins.add("pinch",new p(this,t)),this}snap(t,e,i){return this.plugins.add("snap",new W(this,t,e,i)),this}follow(t,e){return this.plugins.add("follow",new O(this,t,e)),this}wheel(t){return this.plugins.add("wheel",new I(this,t)),this}clampZoom(t){return this.plugins.add("clamp-zoom",new u(this,t)),this}mouseEdges(t){return this.plugins.add("mouse-edges",new k(this,t)),this}get pause(){return this._pause}set pause(t){this._pause=t,this.lastViewport=null,this.moving=!1,this.zooming=!1,t&&this.input.pause()}ensureVisible(t,e,i,s,n){n&&(i>this.worldScreenWidth||s>this.worldScreenHeight)&&(this.fit(!0,i,s),this.emit("zoomed",{viewport:this,type:"ensureVisible"}));let h=!1;t<this.left?(this.left=t,h=!0):t+i>this.right&&(this.right=t+i,h=!0),e<this.top?(this.top=e,h=!0):e+s>this.bottom&&(this.bottom=e+s,h=!0),h&&this.emit("moved",{viewport:this,type:"ensureVisible"})}}t.Plugin=h,t.Viewport=X,Object.defineProperty(t,"__esModule",{value:!0})}));
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -37,8 +37,8 @@ window.onload = () =>
 }
 },{"../../../":1,"pixi.js":45}],3:[function(require,module,exports){
 /*!
- * @pixi/accessibility - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/accessibility - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/accessibility is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -271,6 +271,19 @@ var AccessibilityManager = function AccessibilityManager(renderer)
      */
     this.isMobileAccessibility = false;
 
+    /**
+     * count to throttle div updates on android devices
+     * @type number
+     * @private
+     */
+    this.androidUpdateCount = 0;
+
+    /**
+     * the frequency to update the div elements ()
+     * @private
+     */
+    this.androidUpdateFrequency = 500; // 2fps
+
     // let listen for tab.. once pressed we can fire up and show the accessibility layer
     window.addEventListener('keydown', this._onKeyDown, false);
 };
@@ -293,7 +306,7 @@ AccessibilityManager.prototype.createTouchHook = function createTouchHook ()
     hookDiv.style.left = DIV_HOOK_POS_Y + "px";
     hookDiv.style.zIndex = DIV_HOOK_ZINDEX;
     hookDiv.style.backgroundColor = '#FF0000';
-    hookDiv.title = 'HOOK DIV';
+    hookDiv.title = 'select to enable accessability for this content';
 
     hookDiv.addEventListener('focus', function () {
         this$1.isMobileAccessibility = true;
@@ -410,6 +423,19 @@ AccessibilityManager.prototype.updateAccessibleObjects = function updateAccessib
  */
 AccessibilityManager.prototype.update = function update ()
 {
+    /* On Android default web browser, tab order seems to be calculated by position rather than tabIndex,
+    *  moving buttons can cause focus to flicker between two buttons making it hard/impossible to navigate,
+    *  so I am just running update every half a second, seems to fix it.
+    */
+    var now = performance.now();
+
+    if (utils.isMobile.android.device && now < this.androidUpdateCount)
+    {
+        return;
+    }
+
+    this.androidUpdateCount = now + this.androidUpdateFrequency;
+
     if (!this.renderer.renderingToScreen)
     {
         return;
@@ -419,8 +445,11 @@ AccessibilityManager.prototype.update = function update ()
     this.updateAccessibleObjects(this.renderer._lastObjectRendered);
 
     var rect = this.renderer.view.getBoundingClientRect();
-    var sx = rect.width / this.renderer.width;
-    var sy = rect.height / this.renderer.height;
+
+    var resolution = this.renderer.resolution;
+
+    var sx = (rect.width / this.renderer.width) * resolution;
+    var sy = (rect.height / this.renderer.height) * resolution;
 
     var div = this.div;
 
@@ -443,11 +472,6 @@ AccessibilityManager.prototype.update = function update ()
             child._accessibleDiv = null;
 
             i--;
-
-            if (this.children.length === 0)
-            {
-                this.deactivate();
-            }
         }
         else
         {
@@ -742,8 +766,8 @@ exports.accessibleTarget = accessibleTarget;
 
 },{"@pixi/display":7,"@pixi/utils":36}],4:[function(require,module,exports){
 /*!
- * @pixi/app - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/app - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/app is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -977,8 +1001,8 @@ exports.Application = Application;
 
 },{"@pixi/core":6,"@pixi/display":7}],5:[function(require,module,exports){
 /*!
- * @pixi/constants - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/constants - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/constants is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1122,8 +1146,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 },{}],6:[function(require,module,exports){
 /*!
- * @pixi/core - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/core - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/core is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1605,17 +1629,17 @@ var ImageResource = /*@__PURE__*/(function (BaseImageResource) {
     {
         var this$1 = this;
 
-        if (createBitmap !== undefined)
-        {
-            this.createBitmap = createBitmap;
-        }
-
         if (this._load)
         {
             return this._load;
         }
 
-        this._load = new Promise(function (resolve) {
+        if (createBitmap !== undefined)
+        {
+            this.createBitmap = createBitmap;
+        }
+
+        this._load = new Promise(function (resolve, reject) {
             this$1.url = this$1.source.src;
             var ref = this$1;
             var source = ref.source;
@@ -1648,7 +1672,11 @@ var ImageResource = /*@__PURE__*/(function (BaseImageResource) {
             else
             {
                 source.onload = completed;
-                source.onerror = function (event) { return this$1.onError.run(event); };
+                source.onerror = function (event) {
+                    // Avoids Promise freezing when resource broken
+                    reject(event);
+                    this$1.onError.emit(event);
+                };
             }
         });
 
@@ -3190,11 +3218,21 @@ var SVGResource = /*@__PURE__*/(function (BaseImageResource) {
         tempImage.src = this.svg;
 
         tempImage.onerror = function (event) {
+            if (!this$1._resolve)
+            {
+                return;
+            }
+
             tempImage.onerror = null;
             this$1.onError.run(event);
         };
 
         tempImage.onload = function () {
+            if (!this$1._resolve)
+            {
+                return;
+            }
+
             var svgWidth = tempImage.width;
             var svgHeight = tempImage.height;
 
@@ -3357,8 +3395,25 @@ var VideoResource = /*@__PURE__*/(function (BaseImageResource) {
         BaseImageResource.call(this, source);
 
         this.noSubImage = true;
+
+        /**
+         * `true` to use PIXI.Ticker.shared to auto update the base texture.
+         *
+         * @type {boolean}
+         * @default true
+         * @private
+         */
         this._autoUpdate = true;
-        this._isAutoUpdating = false;
+
+        /**
+         * `true` if the instance is currently connected to PIXI.Ticker.shared to auto update the base texture.
+         *
+         * @type {boolean}
+         * @default false
+         * @private
+         */
+        this._isConnectedToTicker = false;
+
         this._updateFPS = options.updateFPS || 0;
         this._msToNextUpdate = 0;
 
@@ -3526,10 +3581,10 @@ var VideoResource = /*@__PURE__*/(function (BaseImageResource) {
             this._onCanPlay();
         }
 
-        if (!this._isAutoUpdating && this.autoUpdate)
+        if (this.autoUpdate && !this._isConnectedToTicker)
         {
             ticker.Ticker.shared.add(this.update, this);
-            this._isAutoUpdating = true;
+            this._isConnectedToTicker = true;
         }
     };
 
@@ -3540,10 +3595,10 @@ var VideoResource = /*@__PURE__*/(function (BaseImageResource) {
      */
     VideoResource.prototype._onPlayStop = function _onPlayStop ()
     {
-        if (this._isAutoUpdating)
+        if (this._isConnectedToTicker)
         {
             ticker.Ticker.shared.remove(this.update, this);
-            this._isAutoUpdating = false;
+            this._isConnectedToTicker = false;
         }
     };
 
@@ -3587,7 +3642,7 @@ var VideoResource = /*@__PURE__*/(function (BaseImageResource) {
      */
     VideoResource.prototype.dispose = function dispose ()
     {
-        if (this._isAutoUpdating)
+        if (this._isConnectedToTicker)
         {
             ticker.Ticker.shared.remove(this.update, this);
         }
@@ -3618,15 +3673,15 @@ var VideoResource = /*@__PURE__*/(function (BaseImageResource) {
         {
             this._autoUpdate = value;
 
-            if (!this._autoUpdate && this._isAutoUpdating)
+            if (!this._autoUpdate && this._isConnectedToTicker)
             {
                 ticker.Ticker.shared.remove(this.update, this);
-                this._isAutoUpdating = false;
+                this._isConnectedToTicker = false;
             }
-            else if (this._autoUpdate && !this._isAutoUpdating)
+            else if (this._autoUpdate && !this._isConnectedToTicker && this._isSourcePlaying())
             {
                 ticker.Ticker.shared.add(this.update, this);
-                this._isAutoUpdating = true;
+                this._isConnectedToTicker = true;
             }
         }
     };
@@ -3796,7 +3851,8 @@ var DepthResource = /*@__PURE__*/(function (BufferResource) {
             gl.texImage2D(
                 baseTexture.target,
                 0,
-                gl.DEPTH_COMPONENT16, // Needed for depth to render properly in webgl2.0
+                //  gl.DEPTH_COMPONENT16 Needed for depth to render properly in webgl2.0
+                renderer.context.webGLVersion === 1 ? gl.DEPTH_COMPONENT : gl.DEPTH_COMPONENT16,
                 baseTexture.width,
                 baseTexture.height,
                 0,
@@ -3862,11 +3918,13 @@ Framebuffer.prototype.addColorTexture = function addColorTexture (index, texture
         if ( index === void 0 ) index = 0;
 
     // TODO add some validation to the texture - same width / height etc?
-    this.colorTextures[index] = texture || new BaseTexture(null, { scaleMode: 0,
+    this.colorTextures[index] = texture || new BaseTexture(null, {
+        scaleMode: constants.SCALE_MODES.NEAREST,
         resolution: 1,
         mipmap: false,
         width: this.width,
-        height: this.height });
+        height: this.height,
+    });
 
     this.dirtyId++;
     this.dirtyFormat++;
@@ -3882,14 +3940,16 @@ Framebuffer.prototype.addColorTexture = function addColorTexture (index, texture
 Framebuffer.prototype.addDepthTexture = function addDepthTexture (texture)
 {
     /* eslint-disable max-len */
-    this.depthTexture = texture || new BaseTexture(new DepthResource(null, { width: this.width, height: this.height }), { scaleMode: 0,
+    this.depthTexture = texture || new BaseTexture(new DepthResource(null, { width: this.width, height: this.height }), {
+        scaleMode: constants.SCALE_MODES.NEAREST,
         resolution: 1,
         width: this.width,
         height: this.height,
         mipmap: false,
         format: constants.FORMATS.DEPTH_COMPONENT,
-        type: constants.TYPES.UNSIGNED_SHORT });
-    /* eslint-disable max-len */
+        type: constants.TYPES.UNSIGNED_SHORT,
+    });
+
     this.dirtyId++;
     this.dirtyFormat++;
 
@@ -4518,6 +4578,7 @@ var Texture = /*@__PURE__*/(function (EventEmitter) {
                 this.baseTexture.destroy();
             }
 
+            this.baseTexture.off('loaded', this.onBaseTextureUpdated, this);
             this.baseTexture.off('update', this.onBaseTextureUpdated, this);
 
             this.baseTexture = null;
@@ -4541,7 +4602,13 @@ var Texture = /*@__PURE__*/(function (EventEmitter) {
      */
     Texture.prototype.clone = function clone ()
     {
-        return new Texture(this.baseTexture, this.frame, this.orig, this.trim, this.rotate, this.defaultAnchor);
+        return new Texture(this.baseTexture,
+            this.frame.clone(),
+            this.orig.clone(),
+            this.trim && this.trim.clone(),
+            this.rotate,
+            this.defaultAnchor
+        );
     };
 
     /**
@@ -4916,7 +4983,7 @@ removeAllHandlers(Texture.WHITE.baseTexture);
  *
  * ```js
  * let renderer = PIXI.autoDetectRenderer();
- * let renderTexture = PIXI.RenderTexture.create(800, 600);
+ * let renderTexture = PIXI.RenderTexture.create({ width: 800, height: 600 });
  * let sprite = PIXI.Sprite.from("spinObj_01.png");
  *
  * sprite.position.x = 800/2;
@@ -6282,8 +6349,19 @@ var FilterSystem = /*@__PURE__*/(function (System) {
             filterClamp: new Float32Array(4),
         }, true);
 
-        this._pixelsWidth = renderer.view.width;
-        this._pixelsHeight = renderer.view.height;
+        /**
+         * Whether to clear output renderTexture in AUTO/BLIT mode. See {@link PIXI.CLEAR_MODES}
+         * @member {boolean}
+         */
+        this.forceClear = false;
+
+        /**
+         * Old padding behavior is to use the max amount instead of sum padding.
+         * Use this flag if you need the old behavior.
+         * @member {boolean}
+         * @default false
+         */
+        this.useMaxPadding = false;
     }
 
     if ( System ) FilterSystem.__proto__ = System;
@@ -6313,8 +6391,12 @@ var FilterSystem = /*@__PURE__*/(function (System) {
 
             // lets use the lowest resolution..
             resolution = Math.min(resolution, filter.resolution);
-            // and the largest amount of padding!
-            padding = Math.max(padding, filter.padding);
+            // figure out the padding required for filters
+            padding = this.useMaxPadding
+                // old behavior: use largest amount of padding!
+                ? Math.max(padding, filter.padding)
+                // new behavior: sum the padding
+                : padding + filter.padding;
             // only auto fit if all filters are autofit
             autoFit = autoFit || filter.autoFit;
 
@@ -7007,7 +7089,7 @@ var ContextSystem = /*@__PURE__*/(function (System) {
         {
             Object.assign(this.extensions, {
                 drawBuffers: gl.getExtension('WEBGL_draw_buffers'),
-                depthTexture: gl.getExtension('WEBKIT_WEBGL_depth_texture'),
+                depthTexture: gl.getExtension('WEBGL_depth_texture'),
                 loseContext: gl.getExtension('WEBGL_lose_context'),
                 vertexArrayObject: gl.getExtension('OES_vertex_array_object')
                     || gl.getExtension('MOZ_OES_vertex_array_object')
@@ -12163,7 +12245,7 @@ var TextureSystem = /*@__PURE__*/(function (System) {
         if (glTexture.mipmap)
         {
             /* eslint-disable max-len */
-            gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode ? gl.LINEAR_MIPMAP_LINEAR : gl.NEAREST_MIPMAP_NEAREST);
+            gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode === constants.SCALE_MODES.LINEAR ? gl.LINEAR_MIPMAP_LINEAR : gl.NEAREST_MIPMAP_NEAREST);
             /* eslint-disable max-len */
 
             var anisotropicExt = this.renderer.context.extensions.anisotropicFiltering;
@@ -12177,10 +12259,10 @@ var TextureSystem = /*@__PURE__*/(function (System) {
         }
         else
         {
-            gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode ? gl.LINEAR : gl.NEAREST);
+            gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode === constants.SCALE_MODES.LINEAR ? gl.LINEAR : gl.NEAREST);
         }
 
-        gl.texParameteri(texture.target, gl.TEXTURE_MAG_FILTER, texture.scaleMode ? gl.LINEAR : gl.NEAREST);
+        gl.texParameteri(texture.target, gl.TEXTURE_MAG_FILTER, texture.scaleMode === constants.SCALE_MODES.LINEAR ? gl.LINEAR : gl.NEAREST);
     };
 
     return TextureSystem;
@@ -12431,7 +12513,7 @@ var AbstractRenderer = /*@__PURE__*/(function (EventEmitter) {
      * This can be quite useful if your displayObject is complicated and needs to be reused multiple times.
      *
      * @param {PIXI.DisplayObject} displayObject - The displayObject the object will be generated from.
-     * @param {number} scaleMode - Should be one of the scaleMode consts.
+     * @param {PIXI.SCALE_MODES} scaleMode - The scale mode of the texture.
      * @param {number} resolution - The resolution / device pixel ratio of the texture being generated.
      * @param {PIXI.Rectangle} [region] - The region of the displayObject, that shall be rendered,
      *        if no region is specified, defaults to the local bounds of the displayObject.
@@ -12445,7 +12527,13 @@ var AbstractRenderer = /*@__PURE__*/(function (EventEmitter) {
         if (region.width === 0) { region.width = 1; }
         if (region.height === 0) { region.height = 1; }
 
-        var renderTexture = RenderTexture.create(region.width | 0, region.height | 0, scaleMode, resolution);
+        var renderTexture = RenderTexture.create(
+            {
+                width: region.width | 0,
+                height: region.height | 0,
+                scaleMode: scaleMode,
+                resolution: resolution,
+            });
 
         tempMatrix.tx = -region.x;
         tempMatrix.ty = -region.y;
@@ -14235,8 +14323,8 @@ exports.systems = systems;
 
 },{"@pixi/constants":5,"@pixi/display":7,"@pixi/math":18,"@pixi/runner":27,"@pixi/settings":28,"@pixi/ticker":35,"@pixi/utils":36}],7:[function(require,module,exports){
 /*!
- * @pixi/display - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/display - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/display is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16149,8 +16237,8 @@ exports.DisplayObject = DisplayObject;
 
 },{"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],8:[function(require,module,exports){
 /*!
- * @pixi/extract - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/extract - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/extract is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16312,8 +16400,15 @@ Extract.prototype.canvas = function canvas (target)
     // pulling pixels
     if (flipY)
     {
-        canvasBuffer.context.scale(1, -1);
-        canvasBuffer.context.drawImage(canvasBuffer.canvas, 0, -height);
+        var target$1 = new utils.CanvasRenderTarget(canvasBuffer.width, canvasBuffer.height, 1);
+
+        target$1.context.scale(1, -1);
+
+        // we can't render to itself because we should be empty before render.
+        target$1.context.drawImage(canvasBuffer.canvas, 0, -height);
+
+        canvasBuffer.destroy();
+        canvasBuffer = target$1;
     }
 
     if (generated)
@@ -16444,8 +16539,8 @@ exports.Extract = Extract;
 
 },{"@pixi/core":6,"@pixi/math":18,"@pixi/utils":36}],9:[function(require,module,exports){
 /*!
- * @pixi/filter-alpha - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/filter-alpha - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/filter-alpha is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16517,8 +16612,8 @@ exports.AlphaFilter = AlphaFilter;
 
 },{"@pixi/core":6}],10:[function(require,module,exports){
 /*!
- * @pixi/filter-blur - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/filter-blur - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/filter-blur is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -16953,8 +17048,8 @@ exports.BlurFilterPass = BlurFilterPass;
 
 },{"@pixi/core":6,"@pixi/settings":28}],11:[function(require,module,exports){
 /*!
- * @pixi/filter-color-matrix - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/filter-color-matrix - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/filter-color-matrix is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17560,8 +17655,8 @@ exports.ColorMatrixFilter = ColorMatrixFilter;
 
 },{"@pixi/core":6}],12:[function(require,module,exports){
 /*!
- * @pixi/filter-displacement - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/filter-displacement - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/filter-displacement is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17687,8 +17782,8 @@ exports.DisplacementFilter = DisplacementFilter;
 
 },{"@pixi/core":6,"@pixi/math":18}],13:[function(require,module,exports){
 /*!
- * @pixi/filter-fxaa - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/filter-fxaa - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/filter-fxaa is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17733,8 +17828,8 @@ exports.FXAAFilter = FXAAFilter;
 
 },{"@pixi/core":6}],14:[function(require,module,exports){
 /*!
- * @pixi/filter-noise - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/filter-noise - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/filter-noise is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17821,8 +17916,8 @@ exports.NoiseFilter = NoiseFilter;
 
 },{"@pixi/core":6}],15:[function(require,module,exports){
 /*!
- * @pixi/graphics - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/graphics - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/graphics is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -17861,7 +17956,7 @@ var GRAPHICS_CURVES = {
     {
         if ( defaultSegments === void 0 ) defaultSegments = 20;
 
-        if (!this.adaptive || !length || Number.isNaN(length))
+        if (!this.adaptive || !length || isNaN(length))
         {
             return defaultSegments;
         }
@@ -18085,10 +18180,7 @@ var buildCircle = {
             );
         }
 
-        points.push(
-            points[0],
-            points[1]
-        );
+        points.push(points[0], points[1]);
     },
 
     triangulate: function triangulate(graphicsData, graphicsGeometry)
@@ -18100,7 +18192,15 @@ var buildCircle = {
         var vertPos = verts.length / 2;
         var center = vertPos;
 
-        verts.push(graphicsData.shape.x, graphicsData.shape.y);
+        var circle = graphicsData.shape;
+        var matrix = graphicsData.matrix;
+        var x = circle.x;
+        var y = circle.y;
+
+        // Push center (special point)
+        verts.push(
+            graphicsData.matrix ? (matrix.a * x) + (matrix.c * y) + matrix.tx : x,
+            graphicsData.matrix ? (matrix.b * x) + (matrix.d * y) + matrix.ty : y);
 
         for (var i = 0; i < points.length; i += 2)
         {
@@ -18185,26 +18285,38 @@ var buildRoundedRectangle = {
         var width = rrectData.width;
         var height = rrectData.height;
 
-        var radius = rrectData.radius;
+        // Don't allow negative radius or greater than half the smallest width
+        var radius = Math.max(0, Math.min(rrectData.radius, Math.min(width, height) / 2));
 
         points.length = 0;
 
-        quadraticBezierCurve(x, y + radius,
-            x, y,
-            x + radius, y,
-            points);
-        quadraticBezierCurve(x + width - radius,
-            y, x + width, y,
-            x + width, y + radius,
-            points);
-        quadraticBezierCurve(x + width, y + height - radius,
-            x + width, y + height,
-            x + width - radius, y + height,
-            points);
-        quadraticBezierCurve(x + radius, y + height,
-            x, y + height,
-            x, y + height - radius,
-            points);
+        // No radius, do a simple rectangle
+        if (!radius)
+        {
+            points.push(x, y,
+                x + width, y,
+                x + width, y + height,
+                x, y + height);
+        }
+        else
+        {
+            quadraticBezierCurve(x, y + radius,
+                x, y,
+                x + radius, y,
+                points);
+            quadraticBezierCurve(x + width - radius,
+                y, x + width, y,
+                x + width, y + radius,
+                points);
+            quadraticBezierCurve(x + width, y + height - radius,
+                x + width, y + height,
+                x + width - radius, y + height,
+                points);
+            quadraticBezierCurve(x + radius, y + height,
+                x, y + height,
+                x, y + height - radius,
+                points);
+        }
 
         // this tiny number deals with the issue that occurs when points overlap and earcut fails to triangulate the item.
         // TODO - fix this properly, this is not very elegant.. but it works for now.
@@ -20312,10 +20424,10 @@ var LineStyle = /*@__PURE__*/(function (FillStyle) {
         this.width = 0;
 
         /**
-         * The alignment of any lines drawn (0.5 = middle, 1 = outter, 0 = inner).
+         * The alignment of any lines drawn (0.5 = middle, 1 = outer, 0 = inner).
          *
          * @member {number}
-         * @default 0
+         * @default 0.5
          */
         this.alignment = 0.5;
 
@@ -21645,8 +21757,8 @@ exports.graphicsUtils = index;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/utils":36}],16:[function(require,module,exports){
 /*!
- * @pixi/interaction - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/interaction - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/interaction is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -24258,8 +24370,8 @@ exports.interactiveTarget = interactiveTarget;
 
 },{"@pixi/display":7,"@pixi/math":18,"@pixi/ticker":35,"@pixi/utils":36}],17:[function(require,module,exports){
 /*!
- * @pixi/loaders - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/loaders - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/loaders is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -24573,8 +24685,8 @@ exports.TextureLoader = TextureLoader;
 
 },{"@pixi/core":6,"@pixi/utils":36,"resource-loader":51}],18:[function(require,module,exports){
 /*!
- * @pixi/math - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/math - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/math is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -26503,8 +26615,8 @@ exports.groupD8 = groupD8;
 
 },{}],19:[function(require,module,exports){
 /*!
- * @pixi/mesh-extras - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/mesh-extras - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/mesh-extras is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -27326,8 +27438,8 @@ exports.SimpleRope = SimpleRope;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/mesh":20}],20:[function(require,module,exports){
 /*!
- * @pixi/mesh - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/mesh - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/mesh is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -28123,8 +28235,8 @@ exports.MeshMaterial = MeshMaterial;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],21:[function(require,module,exports){
 /*!
- * @pixi/mixin-cache-as-bitmap - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/mixin-cache-as-bitmap - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -28315,7 +28427,7 @@ display.DisplayObject.prototype._initCachedDisplayObject = function _initCachedD
     // for now we cache the current renderTarget that the WebGL renderer is currently using.
     // this could be more elegant..
     var cachedRenderTexture = renderer.renderTexture.current;
-    var cachedSourceFrame = renderer.renderTexture.sourceFrame;
+    var cachedSourceFrame = renderer.renderTexture.sourceFrame.clone();
     var cachedProjectionTransform = renderer.projection.transform;
 
     // We also store the filter stack - I will definitely look to change how this works a little later down the line.
@@ -28433,6 +28545,7 @@ display.DisplayObject.prototype._initCachedDisplayObjectCanvas = function _initC
     this.alpha = 1;
 
     var cachedRenderTarget = renderer.context;
+    var cachedProjectionTransform = renderer._projTransform;
 
     bounds.ceil(settings.settings.RESOLUTION);
 
@@ -28458,11 +28571,10 @@ display.DisplayObject.prototype._initCachedDisplayObjectCanvas = function _initC
     // set all properties to there original so we can render to a texture
     this.renderCanvas = this._cacheData.originalRenderCanvas;
 
-    // renderTexture.render(this, m, true);
     renderer.render(this, renderTexture, true, m, false);
-
     // now restore the state be setting the new properties
     renderer.context = cachedRenderTarget;
+    renderer._projTransform = cachedProjectionTransform;
 
     this.renderCanvas = this._renderCachedCanvas;
     // the rest is the same as for WebGL
@@ -28558,8 +28670,8 @@ display.DisplayObject.prototype._cacheAsBitmapDestroy = function _cacheAsBitmapD
 
 },{"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],22:[function(require,module,exports){
 /*!
- * @pixi/mixin-get-child-by-name - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/mixin-get-child-by-name - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/mixin-get-child-by-name is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -28600,8 +28712,8 @@ display.Container.prototype.getChildByName = function getChildByName(name)
 
 },{"@pixi/display":7}],23:[function(require,module,exports){
 /*!
- * @pixi/mixin-get-global-position - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/mixin-get-global-position - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/mixin-get-global-position is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -28643,8 +28755,8 @@ display.DisplayObject.prototype.getGlobalPosition = function getGlobalPosition(p
 
 },{"@pixi/display":7,"@pixi/math":18}],24:[function(require,module,exports){
 /*!
- * @pixi/particles - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/particles - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/particles is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -29635,8 +29747,8 @@ exports.ParticleRenderer = ParticleRenderer;
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/utils":36}],25:[function(require,module,exports){
 (function (global){
 /*!
- * @pixi/polyfill - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/polyfill - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/polyfill is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -29803,8 +29915,8 @@ if (!window.Int32Array)
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"es6-promise-polyfill":38,"object-assign":43}],26:[function(require,module,exports){
 /*!
- * @pixi/prepare - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/prepare - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/prepare is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -30472,7 +30584,7 @@ function uploadGraphics(renderer, item)
     // if its not batchable - update vao for particular shader
     if (!geometry.batchable)
     {
-        renderer.geometry.bind(geometry, item._resolveDirectShader());
+        renderer.geometry.bind(geometry, item._resolveDirectShader(renderer));
     }
 
     return true;
@@ -30546,8 +30658,8 @@ exports.TimeLimiter = TimeLimiter;
 
 },{"@pixi/core":6,"@pixi/display":7,"@pixi/graphics":15,"@pixi/settings":28,"@pixi/text":34,"@pixi/ticker":35}],27:[function(require,module,exports){
 /*!
- * @pixi/runner - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/runner - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/runner is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -30750,8 +30862,8 @@ exports.Runner = Runner;
 
 },{}],28:[function(require,module,exports){
 /*!
- * @pixi/settings - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/settings - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/settings is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -30766,7 +30878,7 @@ var isMobileCall = _interopDefault(require('ismobilejs'));
 
 // The ESM/CJS versions of ismobilejs only
 
-var isMobile = isMobileCall();
+var isMobile = isMobileCall(window.navigator);
 
 /**
  * The maximum recommended texture units to use.
@@ -31078,8 +31190,8 @@ exports.settings = settings;
 
 },{"ismobilejs":40}],29:[function(require,module,exports){
 /*!
- * @pixi/sprite-animated - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/sprite-animated - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/sprite-animated is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -31142,15 +31254,23 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
          */
         this._durations = null;
 
-        this.textures = textures;
-
         /**
          * `true` uses PIXI.Ticker.shared to auto update animation time.
+         *
          * @type {boolean}
          * @default true
          * @private
          */
         this._autoUpdate = autoUpdate !== false;
+
+        /**
+         * `true` if the instance is currently connected to PIXI.Ticker.shared to auto update animation time.
+         *
+         * @type {boolean}
+         * @default false
+         * @private
+         */
+        this._isConnectedToTicker = false;
 
         /**
          * The speed that the AnimatedSprite will play at. Higher is faster, lower is slower.
@@ -31211,20 +31331,24 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
          */
         this._currentTime = 0;
 
+        this._playing = false;
+
         /**
-         * Indicates if the AnimatedSprite is currently playing.
+         * The texture index that was displayed last time
          *
-         * @member {boolean}
-         * @readonly
+         * @member {number}
+         * @private
          */
-        this.playing = false;
+        this._previousFrame = null;
+
+        this.textures = textures;
     }
 
     if ( Sprite ) AnimatedSprite.__proto__ = Sprite;
     AnimatedSprite.prototype = Object.create( Sprite && Sprite.prototype );
     AnimatedSprite.prototype.constructor = AnimatedSprite;
 
-    var prototypeAccessors = { totalFrames: { configurable: true },textures: { configurable: true },currentFrame: { configurable: true } };
+    var prototypeAccessors = { totalFrames: { configurable: true },textures: { configurable: true },currentFrame: { configurable: true },playing: { configurable: true },autoUpdate: { configurable: true } };
 
     /**
      * Stops the AnimatedSprite.
@@ -31237,10 +31361,11 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
             return;
         }
 
-        this.playing = false;
-        if (this._autoUpdate)
+        this._playing = false;
+        if (this._autoUpdate && this._isConnectedToTicker)
         {
             ticker.Ticker.shared.remove(this.update, this);
+            this._isConnectedToTicker = false;
         }
     };
 
@@ -31255,10 +31380,11 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
             return;
         }
 
-        this.playing = true;
-        if (this._autoUpdate)
+        this._playing = true;
+        if (this._autoUpdate && !this._isConnectedToTicker)
         {
             ticker.Ticker.shared.add(this.update, this, ticker.UPDATE_PRIORITY.HIGH);
+            this._isConnectedToTicker = true;
         }
     };
 
@@ -31303,7 +31429,6 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
     /**
      * Updates the object transform for rendering.
      *
-     * @private
      * @param {number} deltaTime - Time since last tick.
      */
     AnimatedSprite.prototype.update = function update (deltaTime)
@@ -31342,8 +31467,7 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
 
         if (this._currentTime < 0 && !this.loop)
         {
-            this._currentTime = 0;
-            this.stop();
+            this.gotoAndStop(0);
 
             if (this.onComplete)
             {
@@ -31352,8 +31476,7 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
         }
         else if (this._currentTime >= this._textures.length && !this.loop)
         {
-            this._currentTime = this._textures.length - 1;
-            this.stop();
+            this.gotoAndStop(this._textures.length - 1);
 
             if (this.onComplete)
             {
@@ -31385,7 +31508,16 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
      */
     AnimatedSprite.prototype.updateTexture = function updateTexture ()
     {
-        this._texture = this._textures[this.currentFrame];
+        var currentFrame = this.currentFrame;
+
+        if (this._previousFrame === currentFrame)
+        {
+            return;
+        }
+
+        this._previousFrame = currentFrame;
+
+        this._texture = this._textures[currentFrame];
         this._textureID = -1;
         this._textureTrimmedID = -1;
         this._cachedTint = 0xFFFFFF;
@@ -31501,6 +31633,7 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
                 this._durations.push(value[i].time);
             }
         }
+        this._previousFrame = null;
         this.gotoAndStop(0);
         this.updateTexture();
     };
@@ -31523,6 +31656,46 @@ var AnimatedSprite = /*@__PURE__*/(function (Sprite) {
         return currentFrame;
     };
 
+    /**
+     * Indicates if the AnimatedSprite is currently playing.
+     *
+     * @member {boolean}
+     * @readonly
+     */
+    prototypeAccessors.playing.get = function ()
+    {
+        return this._playing;
+    };
+
+    /**
+     * Whether to use PIXI.Ticker.shared to auto update animation time
+     *
+     * @member {boolean}
+     */
+    prototypeAccessors.autoUpdate.get = function ()
+    {
+        return this._autoUpdate;
+    };
+
+    prototypeAccessors.autoUpdate.set = function (value) // eslint-disable-line require-jsdoc
+    {
+        if (value !== this._autoUpdate)
+        {
+            this._autoUpdate = value;
+
+            if (!this._autoUpdate && this._isConnectedToTicker)
+            {
+                ticker.Ticker.shared.remove(this.update, this);
+                this._isConnectedToTicker = false;
+            }
+            else if (this._autoUpdate && !this._isConnectedToTicker && this._playing)
+            {
+                ticker.Ticker.shared.add(this.update, this);
+                this._isConnectedToTicker = true;
+            }
+        }
+    };
+
     Object.defineProperties( AnimatedSprite.prototype, prototypeAccessors );
 
     return AnimatedSprite;
@@ -31541,8 +31714,8 @@ exports.AnimatedSprite = AnimatedSprite;
 
 },{"@pixi/core":6,"@pixi/sprite":31,"@pixi/ticker":35}],30:[function(require,module,exports){
 /*!
- * @pixi/sprite-tiling - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/sprite-tiling - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/sprite-tiling is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -32060,8 +32233,8 @@ exports.TilingSpriteRenderer = TilingSpriteRenderer;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/math":18,"@pixi/sprite":31,"@pixi/utils":36}],31:[function(require,module,exports){
 /*!
- * @pixi/sprite - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/sprite - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/sprite is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -32234,8 +32407,6 @@ var Sprite = /*@__PURE__*/(function (Container) {
         // Batchable stuff..
         // TODO could make this a mixin?
         this.indices = indices;
-        this.size = 4;
-        this.start = 0;
 
         /**
          * Plugin that is responsible for rendering this element.
@@ -32751,8 +32922,8 @@ exports.Sprite = Sprite;
 
 },{"@pixi/constants":5,"@pixi/core":6,"@pixi/display":7,"@pixi/math":18,"@pixi/settings":28,"@pixi/utils":36}],32:[function(require,module,exports){
 /*!
- * @pixi/spritesheet - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/spritesheet - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/spritesheet is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -32790,15 +32961,23 @@ var loaders = require('@pixi/loaders');
  * @class
  * @memberof PIXI
  */
-var Spritesheet = function Spritesheet(baseTexture, data, resolutionFilename)
+var Spritesheet = function Spritesheet(texture, data, resolutionFilename)
 {
     if ( resolutionFilename === void 0 ) resolutionFilename = null;
 
     /**
-     * Reference to ths source texture
+     * Reference to original source image from the Loader. This reference is retained so we
+     * can destroy the Texture later on. It is never used internally.
+     * @type {PIXI.Texture}
+     * @private
+     */
+    this._texture = texture instanceof core.Texture ? texture : null;
+
+    /**
+     * Reference to ths source texture.
      * @type {PIXI.BaseTexture}
      */
-    this.baseTexture = baseTexture;
+    this.baseTexture = texture instanceof core.BaseTexture ? texture : this._texture.baseTexture;
 
     /**
      * A map containing all textures of the sprite sheet.
@@ -33083,8 +33262,13 @@ Spritesheet.prototype.destroy = function destroy (destroyBase)
     this.textures = null;
     if (destroyBase)
     {
+        if (this._texture)
+        {
+            this._texture.destroy();
+        }
         this.baseTexture.destroy();
     }
+    this._texture = null;
     this.baseTexture = null;
 };
 
@@ -33137,7 +33321,7 @@ SpritesheetLoader.use = function use (resource, next)
         }
 
         var spritesheet = new Spritesheet(
-            res.texture.baseTexture,
+            res.texture,
             resource.data,
             resource.url
         );
@@ -33172,8 +33356,8 @@ exports.SpritesheetLoader = SpritesheetLoader;
 
 },{"@pixi/core":6,"@pixi/loaders":17,"@pixi/math":18,"@pixi/utils":36}],33:[function(require,module,exports){
 /*!
- * @pixi/text-bitmap - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/text-bitmap - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/text-bitmap is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -33761,7 +33945,7 @@ var BitmapText = /*@__PURE__*/(function (Container) {
         var info = xml.getElementsByTagName('info')[0];
         var common = xml.getElementsByTagName('common')[0];
         var pages = xml.getElementsByTagName('page');
-        var res = utils.getResolutionOfUrl(pages[0].getAttribute('file'), settings.settings.RESOLUTION);
+        var res = utils.getResolutionOfUrl(pages[0].getAttribute('file'));
         var pagesTextures = {};
 
         data.font = info.getAttribute('face');
@@ -34014,8 +34198,8 @@ exports.BitmapText = BitmapText;
 
 },{"@pixi/core":6,"@pixi/display":7,"@pixi/loaders":17,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],34:[function(require,module,exports){
 /*!
- * @pixi/text - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/text - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/text is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -35687,7 +35871,13 @@ var defaultDestroyOptions = {
 var Text = /*@__PURE__*/(function (Sprite) {
     function Text(text, style, canvas)
     {
-        canvas = canvas || document.createElement('canvas');
+        var ownCanvas = false;
+
+        if (!canvas)
+        {
+            canvas = document.createElement('canvas');
+            ownCanvas = true;
+        }
 
         canvas.width = 3;
         canvas.height = 3;
@@ -35698,6 +35888,17 @@ var Text = /*@__PURE__*/(function (Sprite) {
         texture.trim = new math.Rectangle();
 
         Sprite.call(this, texture);
+
+        /**
+         * Keep track if this Text object created it's own canvas
+         * element (`true`) or uses the constructor argument (`false`).
+         * Used to workaround a GC issues with Safari < 13 when
+         * destroying Text. See `destroy` for more info.
+         *
+         * @member {boolean}
+         * @private
+         */
+        this._ownCanvas = ownCanvas;
 
         /**
          * The canvas element that everything is drawn to
@@ -35853,7 +36054,10 @@ var Text = /*@__PURE__*/(function (Sprite) {
             else
             {
                 // set canvas text styles
-                context.fillStyle = this._generateFillStyle(style, lines);
+                context.fillStyle = this._generateFillStyle(style, lines, measured);
+                // TODO: Can't have different types for getter and setter. The getter shouldn't have the number type as
+                //       the setter converts to string. See this thread for more details:
+                //       https://github.com/microsoft/TypeScript/issues/2521
                 context.strokeStyle = style.stroke;
 
                 context.shadowColor = 0;
@@ -36066,7 +36270,7 @@ var Text = /*@__PURE__*/(function (Sprite) {
      * @param {string[]} lines - The lines of text.
      * @return {string|number|CanvasGradient} The fill style
      */
-    Text.prototype._generateFillStyle = function _generateFillStyle (style, lines)
+    Text.prototype._generateFillStyle = function _generateFillStyle (style, lines, metrics)
     {
         if (!Array.isArray(style.fill))
         {
@@ -36080,16 +36284,16 @@ var Text = /*@__PURE__*/(function (Sprite) {
         // the gradient will be evenly spaced out according to how large the array is.
         // ['#FF0000', '#00FF00', '#0000FF'] would created stops at 0.25, 0.5 and 0.75
         var gradient;
-        var totalIterations;
-        var currentIteration;
-        var stop;
 
         // a dropshadow will enlarge the canvas and result in the gradient being
         // generated with the incorrect dimensions
         var dropShadowCorrection = (style.dropShadow) ? style.dropShadowDistance : 0;
 
-        var width = Math.ceil(this.canvas.width / this._resolution) - dropShadowCorrection;
-        var height = Math.ceil(this.canvas.height / this._resolution) - dropShadowCorrection;
+        // should also take padding into account, padding can offset the gradient
+        var padding = style.padding || 0;
+
+        var width = Math.ceil(this.canvas.width / this._resolution) - dropShadowCorrection - (padding * 2);
+        var height = Math.ceil(this.canvas.height / this._resolution) - dropShadowCorrection - (padding * 2);
 
         // make a copy of the style settings, so we can manipulate them later
         var fill = style.fill.slice();
@@ -36117,42 +36321,66 @@ var Text = /*@__PURE__*/(function (Sprite) {
         if (style.fillGradientType === TEXT_GRADIENT.LINEAR_VERTICAL)
         {
             // start the gradient at the top center of the canvas, and end at the bottom middle of the canvas
-            gradient = this.context.createLinearGradient(width / 2, 0, width / 2, height);
+            gradient = this.context.createLinearGradient(width / 2, padding, width / 2, height + padding);
 
             // we need to repeat the gradient so that each individual line of text has the same vertical gradient effect
             // ['#FF0000', '#00FF00', '#0000FF'] over 2 lines would create stops at 0.125, 0.25, 0.375, 0.625, 0.75, 0.875
-            totalIterations = (fill.length + 1) * lines.length;
-            currentIteration = 0;
+
+            // There's potential for floating point precision issues at the seams between gradient repeats.
+            // The loop below generates the stops in order, so track the last generated one to prevent
+            // floating point precision from making us go the teeniest bit backwards, resulting in
+            // the first and last colors getting swapped.
+            var lastIterationStop = 0;
+
+            // Actual height of the text itself, not counting spacing for lineHeight/leading/dropShadow etc
+            var textHeight = metrics.fontProperties.fontSize + style.strokeThickness;
+
+            // textHeight, but as a 0-1 size in global gradient stop space
+            var gradStopLineHeight = textHeight / height;
+
             for (var i$1 = 0; i$1 < lines.length; i$1++)
             {
-                currentIteration += 1;
+                var thisLineTop = metrics.lineHeight * i$1;
+
                 for (var j = 0; j < fill.length; j++)
                 {
+                    // 0-1 stop point for the current line, multiplied to global space afterwards
+                    var lineStop = 0;
+
                     if (typeof fillGradientStops[j] === 'number')
                     {
-                        stop = (fillGradientStops[j] / lines.length) + (i$1 / lines.length);
+                        lineStop = fillGradientStops[j];
                     }
                     else
                     {
-                        stop = currentIteration / totalIterations;
+                        lineStop = j / fill.length;
                     }
-                    gradient.addColorStop(stop, fill[j]);
-                    currentIteration++;
+
+                    var globalStop = (thisLineTop / height) + (lineStop * gradStopLineHeight);
+
+                    // Prevent color stop generation going backwards from floating point imprecision
+                    var clampedStop = Math.max(lastIterationStop, globalStop);
+
+                    clampedStop = Math.min(clampedStop, 1); // Cap at 1 as well for safety's sake to avoid a possible throw.
+                    gradient.addColorStop(clampedStop, fill[j]);
+                    lastIterationStop = clampedStop;
                 }
             }
         }
         else
         {
             // start the gradient at the center left of the canvas, and end at the center right of the canvas
-            gradient = this.context.createLinearGradient(0, height / 2, width, height / 2);
+            gradient = this.context.createLinearGradient(padding, height / 2, width + padding, height / 2);
 
             // can just evenly space out the gradients in this case, as multiple lines makes no difference
             // to an even left to right gradient
-            totalIterations = fill.length + 1;
-            currentIteration = 1;
+            var totalIterations = fill.length + 1;
+            var currentIteration = 1;
 
             for (var i$2 = 0; i$2 < fill.length; i$2++)
             {
+                var stop = (void 0);
+
                 if (typeof fillGradientStops[i$2] === 'number')
                 {
                     stop = fillGradientStops[i$2];
@@ -36191,6 +36419,13 @@ var Text = /*@__PURE__*/(function (Sprite) {
         options = Object.assign({}, defaultDestroyOptions, options);
 
         Sprite.prototype.destroy.call(this, options);
+
+        // set canvas width and height to 0 to workaround memory leak in Safari < 13
+        // https://stackoverflow.com/questions/52532614/total-canvas-memory-use-exceeds-the-maximum-limit-safari-12
+        if (this._ownCanvas)
+        {
+            this.canvas.height = this.canvas.width = 0;
+        }
 
         // make sure to reset the the context and canvas.. dont want this hanging around in memory!
         this.context = null;
@@ -36330,8 +36565,8 @@ exports.TextStyle = TextStyle;
 
 },{"@pixi/core":6,"@pixi/math":18,"@pixi/settings":28,"@pixi/sprite":31,"@pixi/utils":36}],35:[function(require,module,exports){
 /*!
- * @pixi/ticker - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/ticker - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/ticker is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -37181,8 +37416,8 @@ exports.TickerPlugin = TickerPlugin;
 
 },{"@pixi/settings":28}],36:[function(require,module,exports){
 /*!
- * @pixi/utils - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * @pixi/utils - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * @pixi/utils is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -37225,7 +37460,7 @@ settings.settings.RETINA_PREFIX = /@([0-9\.]+)x/;
 settings.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
 
 var saidHello = false;
-var VERSION = '5.2.1';
+var VERSION = '5.2.3';
 /**
  * Skips the hello message of renderers that are created after this is run.
  *
@@ -38243,7 +38478,7 @@ function earcutLinked(ear, triangles, dim, minX, minY, invSize, pass) {
 
             // if this didn't work, try curing all small self-intersections locally
             } else if (pass === 1) {
-                ear = cureLocalIntersections(ear, triangles, dim);
+                ear = cureLocalIntersections(filterPoints(ear), triangles, dim);
                 earcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
 
             // as a last resort, try splitting the remaining polygon into two
@@ -38350,7 +38585,7 @@ function cureLocalIntersections(start, triangles, dim) {
         p = p.next;
     } while (p !== start);
 
-    return p;
+    return filterPoints(p);
 }
 
 // try splitting polygon into two and triangulate them independently
@@ -38412,6 +38647,9 @@ function eliminateHole(hole, outerNode) {
     outerNode = findHoleBridge(hole, outerNode);
     if (outerNode) {
         var b = splitPolygon(outerNode, hole);
+
+        // filter collinear points around the cuts
+        filterPoints(outerNode, outerNode.next);
         filterPoints(b, b.next);
     }
 }
@@ -38443,7 +38681,7 @@ function findHoleBridge(hole, outerNode) {
 
     if (!m) return null;
 
-    if (hx === qx) return m.prev; // hole touches outer segment; pick lower endpoint
+    if (hx === qx) return m; // hole touches outer segment; pick leftmost endpoint
 
     // look for points inside the triangle of hole point, segment intersection and endpoint;
     // if there are no points found, we have a valid connection;
@@ -38455,24 +38693,30 @@ function findHoleBridge(hole, outerNode) {
         tanMin = Infinity,
         tan;
 
-    p = m.next;
+    p = m;
 
-    while (p !== stop) {
+    do {
         if (hx >= p.x && p.x >= mx && hx !== p.x &&
                 pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
 
             tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
 
-            if ((tan < tanMin || (tan === tanMin && p.x > m.x)) && locallyInside(p, hole)) {
+            if (locallyInside(p, hole) &&
+                (tan < tanMin || (tan === tanMin && (p.x > m.x || (p.x === m.x && sectorContainsSector(m, p)))))) {
                 m = p;
                 tanMin = tan;
             }
         }
 
         p = p.next;
-    }
+    } while (p !== stop);
 
     return m;
+}
+
+// whether sector in vertex m contains sector in vertex p in the same coordinates
+function sectorContainsSector(m, p) {
+    return area(m.prev, m, p.prev) < 0 && area(p.next, m, m.next) < 0;
 }
 
 // interlink polygon nodes in z-order
@@ -38584,8 +38828,10 @@ function pointInTriangle(ax, ay, bx, by, cx, cy, px, py) {
 
 // check if a diagonal between two polygon nodes is valid (lies in polygon interior)
 function isValidDiagonal(a, b) {
-    return a.next.i !== b.i && a.prev.i !== b.i && !intersectsPolygon(a, b) &&
-           locallyInside(a, b) && locallyInside(b, a) && middleInside(a, b);
+    return a.next.i !== b.i && a.prev.i !== b.i && !intersectsPolygon(a, b) && // dones't intersect other edges
+           (locallyInside(a, b) && locallyInside(b, a) && middleInside(a, b) && // locally visible
+            (area(a.prev, a, b.prev) || area(a, b.prev, b)) || // does not create opposite-facing sectors
+            equals(a, b) && area(a.prev, a, a.next) > 0 && area(b.prev, b, b.next) > 0); // special zero-length case
 }
 
 // signed area of a triangle
@@ -38600,10 +38846,28 @@ function equals(p1, p2) {
 
 // check if two segments intersect
 function intersects(p1, q1, p2, q2) {
-    if ((equals(p1, q1) && equals(p2, q2)) ||
-        (equals(p1, q2) && equals(p2, q1))) return true;
-    return area(p1, q1, p2) > 0 !== area(p1, q1, q2) > 0 &&
-           area(p2, q2, p1) > 0 !== area(p2, q2, q1) > 0;
+    var o1 = sign(area(p1, q1, p2));
+    var o2 = sign(area(p1, q1, q2));
+    var o3 = sign(area(p2, q2, p1));
+    var o4 = sign(area(p2, q2, q1));
+
+    if (o1 !== o2 && o3 !== o4) return true; // general case
+
+    if (o1 === 0 && onSegment(p1, p2, q1)) return true; // p1, q1 and p2 are collinear and p2 lies on p1q1
+    if (o2 === 0 && onSegment(p1, q2, q1)) return true; // p1, q1 and q2 are collinear and q2 lies on p1q1
+    if (o3 === 0 && onSegment(p2, p1, q2)) return true; // p2, q2 and p1 are collinear and p1 lies on p2q2
+    if (o4 === 0 && onSegment(p2, q1, q2)) return true; // p2, q2 and q1 are collinear and q1 lies on p2q2
+
+    return false;
+}
+
+// for collinear points p, q, r, check if point q lies on segment pr
+function onSegment(p, q, r) {
+    return q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) && q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y);
+}
+
+function sign(num) {
+    return num > 0 ? 1 : num < 0 ? -1 : 0;
 }
 
 // check if a polygon diagonal intersects any polygon segments
@@ -39461,35 +39725,64 @@ if ('undefined' !== typeof module) {
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 __export(require("./isMobile"));
 var isMobile_1 = require("./isMobile");
-exports.default = isMobile_1.default;
+exports["default"] = isMobile_1["default"];
 
 },{"./isMobile":41}],41:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const appleIphone = /iPhone/i;
-const appleIpod = /iPod/i;
-const appleTablet = /iPad/i;
-const androidPhone = /\bAndroid(?:.+)Mobile\b/i;
-const androidTablet = /Android/i;
-const amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
-const amazonTablet = /Silk/i;
-const windowsPhone = /Windows Phone/i;
-const windowsTablet = /\bWindows(?:.+)ARM\b/i;
-const otherBlackBerry = /BlackBerry/i;
-const otherBlackBerry10 = /BB10/i;
-const otherOpera = /Opera Mini/i;
-const otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
-const otherFirefox = /Mobile(?:.+)Firefox\b/i;
-function match(regex, userAgent) {
-    return regex.test(userAgent);
+exports.__esModule = true;
+var appleIphone = /iPhone/i;
+var appleIpod = /iPod/i;
+var appleTablet = /iPad/i;
+var appleUniversal = /\biOS-universal(?:.+)Mac\b/i;
+var androidPhone = /\bAndroid(?:.+)Mobile\b/i;
+var androidTablet = /Android/i;
+var amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
+var amazonTablet = /Silk/i;
+var windowsPhone = /Windows Phone/i;
+var windowsTablet = /\bWindows(?:.+)ARM\b/i;
+var otherBlackBerry = /BlackBerry/i;
+var otherBlackBerry10 = /BB10/i;
+var otherOpera = /Opera Mini/i;
+var otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
+var otherFirefox = /Mobile(?:.+)Firefox\b/i;
+var isAppleTabletOnIos13 = function (navigator) {
+    return (typeof navigator !== 'undefined' &&
+        navigator.platform === 'MacIntel' &&
+        typeof navigator.maxTouchPoints === 'number' &&
+        navigator.maxTouchPoints > 1 &&
+        typeof MSStream === 'undefined');
+};
+function createMatch(userAgent) {
+    return function (regex) { return regex.test(userAgent); };
 }
-function isMobile(userAgent) {
-    userAgent =
-        userAgent || (typeof navigator !== 'undefined' ? navigator.userAgent : '');
-    let tmp = userAgent.split('[FBAN');
+function isMobile(param) {
+    var nav = {
+        userAgent: '',
+        platform: '',
+        maxTouchPoints: 0
+    };
+    if (!param && typeof navigator !== 'undefined') {
+        nav = {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            maxTouchPoints: navigator.maxTouchPoints || 0
+        };
+    }
+    else if (typeof param === 'string') {
+        nav.userAgent = param;
+    }
+    else if (param && param.userAgent) {
+        nav = {
+            userAgent: param.userAgent,
+            platform: param.platform,
+            maxTouchPoints: param.maxTouchPoints || 0
+        };
+    }
+    var userAgent = nav.userAgent;
+    var tmp = userAgent.split('[FBAN');
     if (typeof tmp[1] !== 'undefined') {
         userAgent = tmp[0];
     }
@@ -39497,57 +39790,61 @@ function isMobile(userAgent) {
     if (typeof tmp[1] !== 'undefined') {
         userAgent = tmp[0];
     }
-    const result = {
+    var match = createMatch(userAgent);
+    var result = {
         apple: {
-            phone: match(appleIphone, userAgent) && !match(windowsPhone, userAgent),
-            ipod: match(appleIpod, userAgent),
-            tablet: !match(appleIphone, userAgent) &&
-                match(appleTablet, userAgent) &&
-                !match(windowsPhone, userAgent),
-            device: (match(appleIphone, userAgent) ||
-                match(appleIpod, userAgent) ||
-                match(appleTablet, userAgent)) &&
-                !match(windowsPhone, userAgent),
+            phone: match(appleIphone) && !match(windowsPhone),
+            ipod: match(appleIpod),
+            tablet: !match(appleIphone) &&
+                (match(appleTablet) || isAppleTabletOnIos13(nav)) &&
+                !match(windowsPhone),
+            universal: match(appleUniversal),
+            device: (match(appleIphone) ||
+                match(appleIpod) ||
+                match(appleTablet) ||
+                match(appleUniversal) ||
+                isAppleTabletOnIos13(nav)) &&
+                !match(windowsPhone)
         },
         amazon: {
-            phone: match(amazonPhone, userAgent),
-            tablet: !match(amazonPhone, userAgent) && match(amazonTablet, userAgent),
-            device: match(amazonPhone, userAgent) || match(amazonTablet, userAgent),
+            phone: match(amazonPhone),
+            tablet: !match(amazonPhone) && match(amazonTablet),
+            device: match(amazonPhone) || match(amazonTablet)
         },
         android: {
-            phone: (!match(windowsPhone, userAgent) && match(amazonPhone, userAgent)) ||
-                (!match(windowsPhone, userAgent) && match(androidPhone, userAgent)),
-            tablet: !match(windowsPhone, userAgent) &&
-                !match(amazonPhone, userAgent) &&
-                !match(androidPhone, userAgent) &&
-                (match(amazonTablet, userAgent) || match(androidTablet, userAgent)),
-            device: (!match(windowsPhone, userAgent) &&
-                (match(amazonPhone, userAgent) ||
-                    match(amazonTablet, userAgent) ||
-                    match(androidPhone, userAgent) ||
-                    match(androidTablet, userAgent))) ||
-                match(/\bokhttp\b/i, userAgent),
+            phone: (!match(windowsPhone) && match(amazonPhone)) ||
+                (!match(windowsPhone) && match(androidPhone)),
+            tablet: !match(windowsPhone) &&
+                !match(amazonPhone) &&
+                !match(androidPhone) &&
+                (match(amazonTablet) || match(androidTablet)),
+            device: (!match(windowsPhone) &&
+                (match(amazonPhone) ||
+                    match(amazonTablet) ||
+                    match(androidPhone) ||
+                    match(androidTablet))) ||
+                match(/\bokhttp\b/i)
         },
         windows: {
-            phone: match(windowsPhone, userAgent),
-            tablet: match(windowsTablet, userAgent),
-            device: match(windowsPhone, userAgent) || match(windowsTablet, userAgent),
+            phone: match(windowsPhone),
+            tablet: match(windowsTablet),
+            device: match(windowsPhone) || match(windowsTablet)
         },
         other: {
-            blackberry: match(otherBlackBerry, userAgent),
-            blackberry10: match(otherBlackBerry10, userAgent),
-            opera: match(otherOpera, userAgent),
-            firefox: match(otherFirefox, userAgent),
-            chrome: match(otherChrome, userAgent),
-            device: match(otherBlackBerry, userAgent) ||
-                match(otherBlackBerry10, userAgent) ||
-                match(otherOpera, userAgent) ||
-                match(otherFirefox, userAgent) ||
-                match(otherChrome, userAgent),
+            blackberry: match(otherBlackBerry),
+            blackberry10: match(otherBlackBerry10),
+            opera: match(otherOpera),
+            firefox: match(otherFirefox),
+            chrome: match(otherChrome),
+            device: match(otherBlackBerry) ||
+                match(otherBlackBerry10) ||
+                match(otherOpera) ||
+                match(otherFirefox) ||
+                match(otherChrome)
         },
         any: false,
         phone: false,
-        tablet: false,
+        tablet: false
     };
     result.any =
         result.apple.device ||
@@ -39560,7 +39857,7 @@ function isMobile(userAgent) {
         result.apple.tablet || result.android.tablet || result.windows.tablet;
     return result;
 }
-exports.default = isMobile;
+exports["default"] = isMobile;
 
 },{}],42:[function(require,module,exports){
 'use strict';
@@ -39855,8 +40152,8 @@ module.exports = function parseURI (str, opts) {
 
 },{}],45:[function(require,module,exports){
 /*!
- * pixi.js - v5.2.1
- * Compiled Tue, 28 Jan 2020 23:33:11 UTC
+ * pixi.js - v5.2.3
+ * Compiled Fri, 24 Apr 2020 00:55:22 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -41293,7 +41590,7 @@ app.Application.registerPlugin(loaders.AppLoaderPlugin);
  * @name VERSION
  * @type {string}
  */
-var VERSION = '5.2.1';
+var VERSION = '5.2.3';
 
 /**
  * @namespace PIXI
