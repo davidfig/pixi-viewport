@@ -246,6 +246,7 @@ export class Viewport extends PIXI.Container
             this._worldHeight = worldHeight
         }
         this.plugins.resize()
+        this.dirty = true
     }
 
     /**
