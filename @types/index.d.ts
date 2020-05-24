@@ -12,6 +12,7 @@ type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel'
 type MovedEventType = 'moved'
 type MovedEventSourceType = 'bounce-x' | 'bounce-y' | 'clamp-x' | 'clamp-y' | 'decelerate' | 'drag' | 'wheel' | 'follow' | 'mouse-edges' | 'pinch' | 'snap'
 type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | string
+type KeyCodeType = 'ControlRight' | 'ControlLeft' | 'ShiftRight' | 'ShiftLeft' | 'AltRight' | 'AltLeft' | string
 
 interface ViewportOptions
 {
@@ -41,6 +42,8 @@ interface DragOptions
     underflow?: string
     factor?: number
     mouseButtons?: MouseButtonsType
+    keyToPress?: Array<KeyCodeType>
+    ignoreKeyToPressOnTouch?: boolean
 }
 
 interface PinchOptions
