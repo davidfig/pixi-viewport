@@ -49417,6 +49417,7 @@
             }
 
             /**
+             * the default event listener for 'wheel' event is document.body. Use `Viewport.options.divWheel` to change this default
              * @typedef WheelOptions
              * @property {number} [percent=0.1] percent to scroll with each spin
              * @property {number} [smooth] smooth the zooming by providing the number of frames to zoom between wheel spins
