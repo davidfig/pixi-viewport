@@ -39,7 +39,7 @@ interface DragOptions
     wheelScroll?: number
     reverse?: boolean
     clampWheel?: boolean | string
-    underflow?: string
+    underflow?: UnderflowType
     factor?: number
     mouseButtons?: MouseButtonsType
     keyToPress?: Array<KeyCodeType>
@@ -59,19 +59,6 @@ interface Bounds
     y: number
     width: number
     height: number
-}
-
-
-interface DragOptions
-{
-    direction?: DirectionType
-    wheel?: boolean
-    wheelScroll?: number
-    reverse?: boolean
-    underflow?: UnderflowType
-    clampWheel?: boolean | string
-    factor?: number
-    mouseButtons?: MouseButtonsType
 }
 
 interface ClampOptions
