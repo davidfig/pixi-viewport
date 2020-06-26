@@ -138,7 +138,7 @@ export class PluginManager
     /**
      * handle down for all plugins
      * @private
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     down(event)
@@ -157,7 +157,7 @@ export class PluginManager
     /**
      * handle move for all plugins
      * @private
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     move(event)
@@ -176,7 +176,7 @@ export class PluginManager
     /**
      * handle up for all plugins
      * @private
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     up(event)

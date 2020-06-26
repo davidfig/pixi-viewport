@@ -65,7 +65,7 @@ export class Clamp extends Plugin
 
     /**
      * handle move events
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     move()

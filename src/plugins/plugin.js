@@ -17,7 +17,7 @@ export class Plugin
 
     /**
      * handler for pointerdown PIXI event
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     down()
@@ -27,7 +27,7 @@ export class Plugin
 
     /**
      * handler for pointermove PIXI event
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     move()
@@ -37,7 +37,7 @@ export class Plugin
 
     /**
      * handler for pointerup PIXI event
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     up()
