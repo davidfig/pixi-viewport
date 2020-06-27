@@ -117,7 +117,7 @@ export class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     checkButtons(event)
@@ -135,7 +135,7 @@ export class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     checkKeyPress(event)
@@ -147,7 +147,7 @@ export class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     down(event)
     {
@@ -173,7 +173,7 @@ export class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     move(event)
     {
@@ -219,7 +219,7 @@ export class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     up(event)
