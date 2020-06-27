@@ -58,7 +58,7 @@ class InputManager
 
     /**
      * handle down events for viewport
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     down(event)
     {
@@ -117,7 +117,7 @@ class InputManager
 
     /**
      * handle move events for viewport
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     move(event)
     {
@@ -146,7 +146,7 @@ class InputManager
 
     /**
      * handle up events for viewport
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     up(event)
     {
@@ -270,7 +270,7 @@ class InputManager
     }
 }
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap', 'snap-zoom', 'clamp-zoom', 'clamp'];
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
 
 /**
  * Use this to access current plugins or add user-defined plugins
@@ -410,7 +410,7 @@ class PluginManager
     /**
      * handle down for all plugins
      * @private
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     down(event)
@@ -429,7 +429,7 @@ class PluginManager
     /**
      * handle move for all plugins
      * @private
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     move(event)
@@ -448,7 +448,7 @@ class PluginManager
     /**
      * handle up for all plugins
      * @private
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     up(event)
@@ -503,7 +503,7 @@ class Plugin
 
     /**
      * handler for pointerdown PIXI event
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     down()
@@ -513,7 +513,7 @@ class Plugin
 
     /**
      * handler for pointermove PIXI event
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     move()
@@ -523,7 +523,7 @@ class Plugin
 
     /**
      * handler for pointerup PIXI event
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     up()
@@ -681,7 +681,7 @@ class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     checkButtons(event)
@@ -699,7 +699,7 @@ class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     checkKeyPress(event)
@@ -711,7 +711,7 @@ class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     down(event)
     {
@@ -737,7 +737,7 @@ class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     move(event)
     {
@@ -783,7 +783,7 @@ class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     up(event)
@@ -1120,7 +1120,7 @@ class Clamp extends Plugin
 
     /**
      * handle move events
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
     move()

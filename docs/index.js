@@ -49019,7 +49019,7 @@
 
 	    /**
 	     * handle down events for viewport
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     */
 	    down(event)
 	    {
@@ -49078,7 +49078,7 @@
 
 	    /**
 	     * handle move events for viewport
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     */
 	    move(event)
 	    {
@@ -49107,7 +49107,7 @@
 
 	    /**
 	     * handle up events for viewport
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     */
 	    up(event)
 	    {
@@ -49371,7 +49371,7 @@
 	    /**
 	     * handle down for all plugins
 	     * @private
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    down(event)
@@ -49390,7 +49390,7 @@
 	    /**
 	     * handle move for all plugins
 	     * @private
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    move(event)
@@ -49409,7 +49409,7 @@
 	    /**
 	     * handle up for all plugins
 	     * @private
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    up(event)
@@ -49464,7 +49464,7 @@
 
 	    /**
 	     * handler for pointerdown PIXI event
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    down()
@@ -49474,7 +49474,7 @@
 
 	    /**
 	     * handler for pointermove PIXI event
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    move()
@@ -49484,7 +49484,7 @@
 
 	    /**
 	     * handler for pointerup PIXI event
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    up()
@@ -49642,7 +49642,7 @@
 	    }
 
 	    /**
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    checkButtons(event)
@@ -49660,7 +49660,7 @@
 	    }
 
 	    /**
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    checkKeyPress(event)
@@ -49672,7 +49672,7 @@
 	    }
 
 	    /**
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     */
 	    down(event)
 	    {
@@ -49698,7 +49698,7 @@
 	    }
 
 	    /**
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     */
 	    move(event)
 	    {
@@ -49744,7 +49744,7 @@
 	    }
 
 	    /**
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    up(event)
@@ -50081,7 +50081,7 @@
 
 	    /**
 	     * handle move events
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    move()
@@ -52741,7 +52741,7 @@
 
 	    /**
 	     * handler for pointerdown PIXI event
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    down()
@@ -52751,7 +52751,7 @@
 
 	    /**
 	     * handler for pointermove PIXI event
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    move()
@@ -52761,7 +52761,7 @@
 
 	    /**
 	     * handler for pointerup PIXI event
-	     * @param {PIXI.interaction.InteractionEvent} event
+	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
 	    up()
