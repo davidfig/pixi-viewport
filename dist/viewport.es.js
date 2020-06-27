@@ -270,7 +270,7 @@ class InputManager
     }
 }
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap', 'snap-zoom', 'clamp-zoom', 'clamp'];
 
 /**
  * Use this to access current plugins or add user-defined plugins
