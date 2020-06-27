@@ -18,7 +18,7 @@ interface ViewportOptions
 {
     divWheel?: HTMLElement
     forceHitArea?: PIXI.Rectangle | PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.RoundedRectangle
-    interaction?: PIXI.interaction.InteractionManager
+    interaction?: PIXI.InteractionManager
     screenHeight?: number
     screenWidth?: number
     threshold?: number
@@ -39,7 +39,7 @@ interface DragOptions
     wheelScroll?: number
     reverse?: boolean
     clampWheel?: boolean | string
-    underflow?: string
+    underflow?: UnderflowType
     factor?: number
     mouseButtons?: MouseButtonsType
     keyToPress?: Array<KeyCodeType>
@@ -59,19 +59,6 @@ interface Bounds
     y: number
     width: number
     height: number
-}
-
-
-interface DragOptions
-{
-    direction?: DirectionType
-    wheel?: boolean
-    wheelScroll?: number
-    reverse?: boolean
-    underflow?: UnderflowType
-    clampWheel?: boolean | string
-    factor?: number
-    mouseButtons?: MouseButtonsType
 }
 
 interface ClampOptions
@@ -177,7 +164,7 @@ interface OutOfBounds
 
 interface ClickEventData
 {
-    event: PIXI.interaction.InteractionEvent
+    event: PIXI.InteractionEvent
     screen: PIXI.Point
     viewport: Viewport
     world: PIXI.Point
@@ -243,7 +230,7 @@ export declare class Viewport extends PIXI.Container
     toScreen(p: PIXI.Point): PIXI.Point
     toScreen(x: number, y: number): PIXI.Point
 
-    getPointerPosition(event: PIXI.interaction.InteractionEvent): PIXI.Point
+    getPointerPosition(event: PIXI.InteractionEvent): PIXI.Point
     getPointerPosition(event: WheelEvent): PIXI.Point
 
     moveCenter(p: PIXI.Point): this
@@ -287,8 +274,8 @@ export declare class Viewport extends PIXI.Container
     ): this
     // Events
     on(
-        event: PIXI.interaction.InteractionEventTypes,
-        fn: (event: PIXI.interaction.InteractionEvent) => void,
+        event: PIXI.InteractionEventTypes,
+        fn: (event: PIXI.InteractionEvent) => void,
         context?: any
     ): this
     on(
@@ -341,9 +328,9 @@ export declare class Viewport extends PIXI.Container
 export declare class Plugin
 {
     constructor(viewport: Viewport)
-    down(event: PIXI.interaction.InteractionEvent): void
-    up(event: PIXI.interaction.InteractionEvent): void
-    move(event: PIXI.interaction.InteractionEvent): void
+    down(event: PIXI.InteractionEvent): void
+    up(event: PIXI.InteractionEvent): void
+    move(event: PIXI.InteractionEvent): void
     wheel(event: WheelEvent): void
     update(): void
     resize(): void

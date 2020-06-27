@@ -57,7 +57,7 @@ export class InputManager
 
     /**
      * handle down events for viewport
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     down(event)
     {
@@ -116,7 +116,7 @@ export class InputManager
 
     /**
      * handle move events for viewport
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     move(event)
     {
@@ -145,7 +145,7 @@ export class InputManager
 
     /**
      * handle up events for viewport
-     * @param {PIXI.interaction.InteractionEvent} event
+     * @param {PIXI.InteractionEvent} event
      */
     up(event)
     {
