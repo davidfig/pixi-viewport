@@ -49,6 +49,8 @@ function viewport()
     // test for removeListeners()
     // _viewport.removeListeners()
 
+    // _viewport.clampZoom({ minWidth: 1000 })
+
     _viewport.plugins.add('test', new UserPlugin(_viewport))
 
     // _viewport.ensureVisible(0, 0, 5000, 5000, true)

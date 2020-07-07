@@ -215,6 +215,8 @@ export declare class Viewport extends PIXI.Container
     top: number
     bottom: number
 
+    scaled: number
+
     dirty: boolean
     pause: boolean
 
