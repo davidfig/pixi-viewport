@@ -223,6 +223,8 @@ export declare class Viewport extends PIXI.Container
     constructor(options?: ViewportOptions)
 
     // Public API
+    ensureVisible(x: number, y: number, width: number, height: number, resizeToFit: boolean) : void
+    
     removeListeners(): void
     update(elapsed: number): void
     resize(screenWidth: number, screenHeight: number, worldWidth?: number, worldHeight?: number): void
