@@ -51592,7 +51592,7 @@
 	}
 
 	/**
-	 * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, (3) width and/or height
+	 * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
 	 * @typedef {options} AnimateOptions
 	 * @property {number} [time=1000] to animate
 	 * @property {PIXI.Point} [position=viewport.center] position to move viewport
@@ -51732,6 +51732,7 @@
 	        }
 	        else
 	        {
+	            const originalZoom = new Point(this.parent.scale.x, this.parent.scale.y);
 	            const percent = this.options.ease(this.time, 0, 1, this.options.time);
 	            if (this.width !== null)
 	            {
@@ -51751,8 +51752,16 @@
 	            }
 	            if (!this.keepCenter)
 	            {
+	                const original = new Point(this.parent.x, this.parent.y);
 	                this.parent.moveCenter(this.startX + this.deltaX * percent, this.startY + this.deltaY * percent);
+	                this.parent.emit('moved', { viewport: this.parent, original, type: 'animate'});
 	            }
+	            if (this.width || this.height)
+	            {
+	                this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
+	            }
+	            if (!this.keepCenter)
+	            ;
 	        }
 	    }
 	}
@@ -53970,7 +53979,7 @@
 
 	    // _viewport.drag({ pressDrag: false })
 
-	    // _viewport.setZoom(0.5, { x: 500, y: 500 })
+	    _viewport$1.setZoom(0.5, { x: 500, y: 500 });
 	    // const animate1 = () => _viewport.animate({ scale: 3, ease: 'easeInOutSine', callbackOnComplete: animate2 })
 	    // const animate2 = () => _viewport.animate({ scale: 1, ease: 'easeInOutSine', callbackOnComplete: animate1 })
 	    // const animate1 = () => _viewport.animate({ position: { x: 1000, y: 1000 }, scale: 3, time: 3000, ease: 'linear', callbackOnComplete: animate2 })

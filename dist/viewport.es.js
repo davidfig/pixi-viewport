@@ -2883,7 +2883,7 @@ class MouseEdges extends Plugin
 }
 
 /**
- * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, (3) width and/or height
+ * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
  * @typedef {options} AnimateOptions
  * @property {number} [time=1000] to animate
  * @property {PIXI.Point} [position=viewport.center] position to move viewport
@@ -3023,6 +3023,7 @@ class Animate extends Plugin
         }
         else
         {
+            const originalZoom = new Point(this.parent.scale.x, this.parent.scale.y);
             const percent = this.options.ease(this.time, 0, 1, this.options.time);
             if (this.width !== null)
             {
@@ -3042,8 +3043,16 @@ class Animate extends Plugin
             }
             if (!this.keepCenter)
             {
+                const original = new Point(this.parent.x, this.parent.y);
                 this.parent.moveCenter(this.startX + this.deltaX * percent, this.startY + this.deltaY * percent);
+                this.parent.emit('moved', { viewport: this.parent, original, type: 'animate'});
             }
+            if (this.width || this.height)
+            {
+                this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
+            }
+            if (!this.keepCenter)
+            ;
         }
     }
 }

@@ -8,9 +8,9 @@ type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap
 type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
 type WheelEventType = 'wheel'
 type ZoomedEventType = 'zoomed'
-type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel'
+type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel' | 'animate'
 type MovedEventType = 'moved'
-type MovedEventSourceType = 'bounce-x' | 'bounce-y' | 'clamp-x' | 'clamp-y' | 'decelerate' | 'drag' | 'wheel' | 'follow' | 'mouse-edges' | 'pinch' | 'snap'
+type MovedEventSourceType = 'bounce-x' | 'bounce-y' | 'clamp-x' | 'clamp-y' | 'decelerate' | 'drag' | 'wheel' | 'follow' | 'mouse-edges' | 'pinch' | 'snap' | 'animate'
 type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | (string & {})
 type KeyCodeType = 'ControlRight' | 'ControlLeft' | 'ShiftRight' | 'ShiftLeft' | 'AltRight' | 'AltLeft' | (string & {})
 
