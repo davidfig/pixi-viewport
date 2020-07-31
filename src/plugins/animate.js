@@ -3,7 +3,7 @@ import { Plugin } from './plugin'
 import ease from '../ease'
 
 /**
- * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, (3) width and/or height
+ * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
  * @typedef {options} AnimateOptions
  * @property {number} [time=1000] to animate
  * @property {PIXI.Point} [position=viewport.center] position to move viewport

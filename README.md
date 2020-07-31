@@ -1,7 +1,7 @@
 # pixi-viewport
 A highly configurable viewport/2D camera designed to work with pixi.js.
 
-Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.
+Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, aniamte, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.
 
 All features are configurable and removable, so set up the viewport to be exactly what you need.
 
@@ -10,7 +10,7 @@ Viewport needs to be imported or required as follows:
 ```js
 import { Viewport } from 'pixi-viewport'
 
-// or 
+// or
 
 const Viewport = require('pixi-viewport').Viewport
 ```
@@ -98,7 +98,7 @@ or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/
 
 ## Build Examples
 I've included a bunch of build examples in the docs/builds directory, including: [browserify](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify), [rollup](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup), [standalone (e.g., cdn)](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone), [standalone (pixi.js v4)](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4), and [typescript](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts). You can see the live demos at [https://davidfig.github.io/pixi-viewport/builds/](https://davidfig.github.io/pixi-viewport/builds/).
-  
+
 ## Tests
 
 1. Clone repository
@@ -106,12 +106,21 @@ I've included a bunch of build examples in the docs/builds directory, including:
 3. yarn test (for Mocha test code)
 4. yarn coverage (for Instanbul coverage)
 
+## Development Recipe
+
+1. clone repository
+2. yarn install
+3. yarn dev
+4. open browser to http://localhost:10001
+
+PRs are more than welcome!
+
 ## Other Libraries
 If you liked pixi-viewport, please try my other open source libraries:
 * [pixi-scrollbox](https://github.com/davidfig/pixi-scrollbox) - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)
 * [pixi-ease](https://github.com/davidfig/pixi-ease) - pixi.js animation library using easing functions
 * [intersects](https://github.com/davidfig/intersects) - a simple collection of 2d collision/intersects functions. Supports points, circles, lines, axis-aligned boxes, and polygons
 
-## license  
-MIT License  
-(c) 2019 [YOPEY YOPEY LLC](https://yopeyopey.com/) by [David Figatner](https://twitter.com/yopey_yopey/)
+## license
+MIT License
+(c) 2020 [YOPEY YOPEY LLC](https://yopeyopey.com/) by David Figatner (david@yopeyopey.com)
