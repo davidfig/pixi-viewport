@@ -1,0 +1,137 @@
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .title {
+            font-size: 1.75em;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.2/pixi.min.js"></script>
+    <script src="/settingspanel.js"></script>
+    <script src="/viewport.js"></script>
+    <script>
+        function createViewport()
+        {
+            viewport = renderer.stage.addChild(new Viewport.Viewport(
+            {
+                screenWidth: window.innerWidth,
+                screenHeight: window.innerHeight,
+                worldWidth: width,
+                worldHeight: height
+            }))
+            viewport
+                .drag()
+                .pinch()
+                .decelerate()
+            clamp()
+        }
+
+        function clamp()
+        {
+            viewport.clamp(options)
+        }
+
+        function createWorld()
+        {
+            const size = 20
+            const g = viewport.addChild(new PIXI.Graphics())
+            g.lineStyle(5, 0xff0000).drawRect(0, 0, width, height).lineStyle(0)
+            for (let i = 0; i < stars; i++)
+            {
+                const box = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+                box.tint = Math.floor(Math.random() * 0xffffff)
+                box.width = box.height = size
+                box.position.set(Math.floor(Math.random() * (width - size)), Math.floor(Math.random() * (height - size)))
+            }
+        }
+
+        function createGUI()
+        {
+            var panel = new SettingsPanel({
+                color: 'black',
+                background: 'lightgray',
+                style: {
+                    opacity: 1
+                }
+            })
+            panel.button('clamp.options', () => {})
+            panel.input('direction', value =>
+            {
+                if (value === '')
+                {
+                    delete options.direction
+                }
+                else
+                {
+                    options.direction = value
+                }
+                clamp()
+            }, { original: options.direction === null ? '' : options.direction })
+            panel.input('left', value =>
+            {
+                options.left = value === '' ? null : parseFloatvalue
+                clamp()
+            }, { original: options.left === null ? '' : options.left })
+            panel.input('top', value =>
+            {
+                options.top = value === '' ? null : parseFloatvalue
+                clamp()
+            }, { original: options.top === null ? '' : options.top })
+            panel.input('right', value =>
+            {
+                options.right = value === '' ? null : parseFloatvalue
+                clamp()
+            }, { original: options.right === null ? '' : options.right })
+            panel.input('bottom', value =>
+            {
+                options.bottom = value === '' ? null : parseFloatvalue
+                clamp()
+            }, { original: options.bottom === null ? '' : options.bottom })
+            panel.input('underflow', value =>
+            {
+                options.underflow = value
+                clamp()
+            }, { original: options.underflow })
+        }
+
+        var renderer, viewport, width = window.innerWidth * 1.5,
+            height = window.innerHeight * 1.5,
+            stars = (width + height) / 10
+        var options = {
+            left: null,
+            right: null,
+            top: null,
+            bottom: null,
+            direction: 'all',
+            underflow: 'center'
+        }
+        window.onresize = function()
+        {
+            renderer.renderer.resize(window.innerWidth, window.innerHeight)
+            viewport.resize(window.innerWidth, window.innerHeight)
+        }
+        window.onload = function()
+        {
+            renderer = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
+            document.body.appendChild(renderer.view)
+            renderer.view.style.position = 'fixed'
+            renderer.view.style.width = '100vw'
+            renderer.view.style.height = '100vh'
+            renderer.view.style.top = 0
+            renderer.view.style.left = 0
+            createViewport()
+            createWorld()
+            createGUI()
+
+            PIXI.ticker.shared.add(function() { renderer.render() })
+        }
+    </script>
+</head>
+
+<body>
+    <div class="title">viewport.animate() example for <a href="https://github.com/davidfig/pixi-viewport.git/">github.com/davidfig/pixi-viewport/</a></div>
+</body>

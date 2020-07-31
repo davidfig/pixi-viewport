@@ -1,4 +1,4 @@
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
+const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'aniamte', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp']
 
 /**
  * Use this to access current plugins or add user-defined plugins
@@ -47,7 +47,7 @@ export class PluginManager
 
     /**
      * update all active plugins
-     * @private
+     * @ignore
      * @param {number} elapsed type in milliseconds since last update
      */
     update(elapsed)
@@ -60,7 +60,7 @@ export class PluginManager
 
     /**
      * resize all active plugins
-     * @private
+     * @ignore
      */
     resize()
     {
@@ -121,7 +121,7 @@ export class PluginManager
 
     /**
      * sort plugins according to PLUGIN_ORDER
-     * @private
+     * @ignore
      */
     sort()
     {
@@ -137,7 +137,7 @@ export class PluginManager
 
     /**
      * handle down for all plugins
-     * @private
+     * @ignore
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
@@ -156,7 +156,7 @@ export class PluginManager
 
     /**
      * handle move for all plugins
-     * @private
+     * @ignore
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
@@ -175,7 +175,7 @@ export class PluginManager
 
     /**
      * handle up for all plugins
-     * @private
+     * @ignore
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
@@ -194,7 +194,7 @@ export class PluginManager
 
     /**
      * handle wheel event for all plugins
-     * @private
+     * @ignore
      * @param {WheelEvent} event
      * @returns {boolean}
      */

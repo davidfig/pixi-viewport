@@ -3,8 +3,8 @@ import * as PIXI from 'pixi.js'
 type DirectionType = 'all' | 'x' | 'y'
 type UnderflowType = 'center' | 'top' | 'left' | 'right' | 'bottom' | (string & {})
 type SidesType = 'all' | 'horizontal' | 'vertical' | (string & {})
-type PluginType = 'bounce' | 'clamp-zoom' | 'clamp' | 'decelerate' | 'drag' | 'follow' | 'mouse-edges' | 'pinch' | 'snap' | 'snap-zoom' | 'wheel'
-type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved-end' | 'zoomed-end' | 'frame-end'
+type PluginType = 'bounce' | 'clamp-zoom' | 'clamp' | 'decelerate' | 'drag' | 'follow' | 'mouse-edges' | 'pinch' | 'snap' | 'snap-zoom' | 'wheel' | 'animate'
+type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved-end' | 'zoomed-end' | 'frame-end' | 'animate-end'
 type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
 type WheelEventType = 'wheel'
 type ZoomedEventType = 'zoomed'
@@ -154,6 +154,20 @@ interface SnapZoomOptions
     width?: number
 }
 
+interface AnimateOptions
+{
+    time: number
+    position?: PIXI.Point
+    width?: number
+    height?: number
+    scale?: number
+    scaleX?: number
+    scaleY?: number
+    ease?: string | Function
+    callbackOnComplete?: Function
+    removeOnInterrupt?: boolean
+}
+
 interface OutOfBounds
 {
     bottom: boolean
@@ -231,11 +245,14 @@ export declare class Viewport extends PIXI.Container
     moving: boolean
     lastViewport: any
 
+    screenWidthInWorldPixels: number
+    sceenHeightinWorldPixels: number
+
     constructor(options?: ViewportOptions)
 
     // Public API
     ensureVisible(x: number, y: number, width: number, height: number, resizeToFit: boolean) : void
-    
+
     removeListeners(): void
     update(elapsed: number): void
     resize(screenWidth: number, screenHeight: number, worldWidth?: number, worldHeight?: number): void
@@ -253,6 +270,13 @@ export declare class Viewport extends PIXI.Container
     moveCorner(p: PIXI.Point): this
     moveCorner(x: number, y: number): this
 
+    findWidth(width: number): number
+    findHeight(height: number): number
+    findFitWidth(width: number): number
+    findFitHeight(height: number): number
+    findFit(width: number, height: number): number
+    findCover(width: number, height: number): number
+
     fitWidth(width?: number, center?: boolean, scaleY?: boolean, noClamp?: boolean): this
     fitHeight(height?: number, center?: boolean, scaleX?: boolean, noClamp?: boolean): this
     fitWorld(center?: boolean): this
@@ -266,9 +290,6 @@ export declare class Viewport extends PIXI.Container
 
     // Plugins
     plugins: PluginManager
-    // removePlugin(type: Viewport.PluginType): void
-    // pausePlugin(type: Viewport.PluginType): void
-    // resumePlugin(type: Viewport.PluginType): void
     drag(options?: DragOptions): this
     clamp(options?: ClampOptions): this
     decelerate(options?: DecelerateOptions): this
@@ -280,6 +301,7 @@ export declare class Viewport extends PIXI.Container
     wheel(options?: WheelOptions): this
     clampZoom(options?: ClampZoomOptions): this
     mouseEdges(options?: MouseEdgesOptions): this
+    animate(options?: AnimateOptions): this
 
     // Events
     on(

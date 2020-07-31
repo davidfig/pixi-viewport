@@ -59,6 +59,14 @@ function viewport()
     // _viewport.clampZoom({ minWidth: 1000, minHeight: 1000, maxWidth: 5000, maxHeight: 5000 })
 
     // _viewport.drag({ pressDrag: false })
+
+    // _viewport.setZoom(0.5, { x: 500, y: 500 })
+    // const animate1 = () => _viewport.animate({ scale: 3, ease: 'easeInOutSine', callbackOnComplete: animate2 })
+    // const animate2 = () => _viewport.animate({ scale: 1, ease: 'easeInOutSine', callbackOnComplete: animate1 })
+    // const animate1 = () => _viewport.animate({ position: { x: 1000, y: 1000 }, scale: 3, time: 3000, ease: 'linear', callbackOnComplete: animate2 })
+    // const animate2 = () => _viewport.animate({ position: { x: 500, y: 500 }, scale: 1, time: 3000, ease: 'linear', callbackOnComplete: animate3 })
+    // const animate3 = () => _viewport.animate({ position: { x: 0, y: 0 }, scale: 5, time: 3000, ease: 'linear', callbackOnComplete: animate1 })
+    // animate1()
 }
 
 function resize()

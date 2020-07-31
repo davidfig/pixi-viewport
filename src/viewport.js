@@ -13,6 +13,7 @@ import { SnapZoom } from './plugins/snap-zoom'
 import { Follow } from './plugins/follow'
 import { Wheel } from './plugins/wheel'
 import { MouseEdges } from './plugins/mouse-edges'
+import { Animate } from './plugins/animate'
 export { Plugin } from './plugins/plugin'
 
 /**
@@ -441,6 +442,74 @@ export class Viewport extends PIXI.Container
         }
         this.plugins.reset()
         return this
+    }
+
+    /**
+     * get how many world pixels fit in screen's width
+     * @type {number}
+     */
+    get screenWidthInWorldPixels()
+    {
+        return this.screenWidth / this.scale.x
+    }
+
+    /**
+     * get how many world pixels fit on screen's height
+     * @type {number}
+     */
+    get screenHeightInWorldPixels()
+    {
+        return this.screenHeight / this.scale.y
+    }
+
+    /**
+     * find the scale value that fits a world width on the screen
+     * does not change the viewport (use fit... to change)
+     * @param {number} width in world pixels
+     * @returns {number} scale
+     */
+    findFitWidth(width)
+    {
+        return this.screenWidth / width
+    }
+
+    /**
+     * finds the scale value that fits a world height on the screens
+     * does not change the viewport (use fit... to change)
+     * @param {number} height in world pixels
+     * @returns {number} scale
+     */
+    findFitHeight(height)
+    {
+        return this.screenHeight / height
+    }
+
+    /**
+     * finds the scale value that fits the smaller of a world width and world height on the screen
+     * does not change the viewport (use fit... to change)
+     * @param {number} width in world pixels
+     * @param {number} height in world pixels
+     * @returns {number} scale
+     */
+    findFit(width, height)
+    {
+        const scaleX = this.screenWidth / width
+        const scaleY = this.screenHeight / height
+        return Math.min(scaleX, scaleY)
+    }
+
+    /**
+     * finds the scale value that fits the larger of a world width and world height on the screen
+     * does not change the viewport (use fit... to change)
+     * @param {number} width in world pixels
+     * @param {number} height in world pixels
+     * @returns {number} scale
+     */
+    findCover(width, height)
+    {
+        const scaleX = this.screenWidth / width
+        const scaleY = this.screenHeight / height
+        return Math.max(scaleX, scaleY)
     }
 
     /**
@@ -877,6 +946,17 @@ export class Viewport extends PIXI.Container
     wheel(options)
     {
         this.plugins.add('wheel', new Wheel(this, options))
+        return this
+    }
+
+    /**
+     * animate the position and/or scale of the viewport
+     * @param {AnimateOptions} options
+     * @returns {Viewport} this
+     */
+    animate(options)
+    {
+        this.plugins.add('animate', new Animate(this, options))
         return this
     }
 
