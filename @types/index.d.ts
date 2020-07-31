@@ -156,7 +156,7 @@ interface SnapZoomOptions
 
 interface AnimateOptions
 {
-    time: number
+    time?: number
     position?: PIXI.Point
     width?: number
     height?: number
