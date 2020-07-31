@@ -376,7 +376,7 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Source: src/input-manager.js</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: src/plugins/animate.js</h1>
         
         
 
@@ -385,281 +385,179 @@
     <section>
         <header>
             <div class="header content-size">
-                <h2>src/input-manager.js</h2>
+                <h2>src/plugins/animate.js</h2>
             </div>
         </header>
         <article>
             <pre id="source-code" class="prettyprint source "><code>import * as PIXI from 'pixi.js'
+import { Plugin } from './plugin'
+import ease from '../ease'
 
 /**
- * @typedef ViewportTouch
- * @property {number} id
- * @property {PIXI.Point} last
-*/
-
-/**
- * handles all input for Viewport
- * @private
+ * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, (3) width and/or height
+ * @typedef {options} AnimateOptions
+ * @property {number} [time=1000] to animate
+ * @property {PIXI.Point} [position=viewport.center] position to move viewport
+ * @property {number} [width] desired viewport width in world pixels (use instead of scale; aspect ratio is maintained if height is not provided)
+ * @property {number} [height] desired viewport height in world pixels (use instead of scale; aspect ratio is maintained if width is not provided)
+ * @property {number} [scale] scale to change zoom (scale.x = scale.y)
+ * @property {number} [scaleX] independently change zoom in x-direction
+ * @property {number} [scaleY] independently change zoom in y-direction
+ * @property {(function|string)} [ease=linear] easing function to use
+ * @property {function} [callbackOnComplete]
+ * @property {boolean} [removeOnInterrupt] removes this plugin if interrupted by any user input
  */
-export class InputManager
-{
-    constructor(viewport)
-    {
-        this.viewport = viewport
 
-        /**
-         * list of active touches on viewport
-         * @type {ViewportTouch[]}
-         */
-        this.touches = []
-        this.addListeners()
-    }
-
-    /**
-     * add input listeners
-     * @private
-     */
-    addListeners()
-    {
-        this.viewport.interactive = true
-        if (!this.viewport.forceHitArea)
-        {
-            this.viewport.hitArea = new PIXI.Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight)
-        }
-        this.viewport.on('pointerdown', this.down, this)
-        this.viewport.on('pointermove', this.move, this)
-        this.viewport.on('pointerup', this.up, this)
-        this.viewport.on('pointerupoutside', this.up, this)
-        this.viewport.on('pointercancel', this.up, this)
-        this.viewport.on('pointerout', this.up, this)
-        this.wheelFunction = (e) => this.handleWheel(e)
-        this.viewport.options.divWheel.addEventListener('wheel', this.wheelFunction, { passive: this.viewport.options.passiveWheel })
-        this.isMouseDown = false
-    }
-
-    /**
-     * removes all event listeners from viewport
-     * (useful for cleanup of wheel when removing viewport)
-     */
-    destroy()
-    {
-        this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction)
-    }
-
-    /**
-     * handle down events for viewport
-     * @param {PIXI.InteractionEvent} event
-     */
-    down(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
-            return
-        }
-        if (event.data.pointerType === 'mouse')
-        {
-            this.isMouseDown = true
-        }
-        else if (!this.get(event.data.pointerId))
-        {
-            this.touches.push({ id: event.data.pointerId, last: null })
-        }
-        if (this.count() === 1)
-        {
-            this.last = event.data.global.clone()
-
-            // clicked event does not fire if viewport is decelerating or bouncing
-            const decelerate = this.viewport.plugins.get('decelerate')
-            const bounce = this.viewport.plugins.get('bounce')
-            if ((!decelerate || !decelerate.isActive()) &amp;&amp; (!bounce || !bounce.isActive()))
-            {
-                this.clickedAvailable = true
-            }
-            else
-            {
-                this.clickedAvailable = false
-            }
-        }
-        else
-        {
-            this.clickedAvailable = false
-        }
-
-        const stop = this.viewport.plugins.down(event)
-        if (stop &amp;&amp; this.viewport.options.stopPropagation)
-        {
-            event.stopPropagation()
-        }
-    }
-
-    /**
-     * @param {number} change
-     * @returns whether change exceeds threshold
-     */
-    checkThreshold(change)
-    {
-        if (Math.abs(change) >= this.viewport.threshold)
-        {
-            return true
-        }
-        return false
-    }
-
-    /**
-     * handle move events for viewport
-     * @param {PIXI.InteractionEvent} event
-     */
-    move(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
-            return
-        }
-
-        const stop = this.viewport.plugins.move(event)
-
-        if (this.clickedAvailable)
-        {
-            const distX = event.data.global.x - this.last.x
-            const distY = event.data.global.y - this.last.y
-            if (this.checkThreshold(distX) || this.checkThreshold(distY))
-            {
-                this.clickedAvailable = false
-            }
-        }
-
-        if (stop &amp;&amp; this.viewport.options.stopPropagation)
-        {
-            event.stopPropagation()
-        }
-    }
-
-    /**
-     * handle up events for viewport
-     * @param {PIXI.InteractionEvent} event
-     */
-    up(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
-            return
-        }
-
-        if (event.data.pointerType === 'mouse')
-        {
-            this.isMouseDown = false
-        }
-
-        if (event.data.pointerType !== 'mouse')
-        {
-            this.remove(event.data.pointerId)
-        }
-
-        const stop = this.viewport.plugins.up(event)
-
-        if (this.clickedAvailable &amp;&amp; this.count() === 0)
-        {
-            this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this })
-            this.clickedAvailable = false
-        }
-
-        if (stop &amp;&amp; this.viewport.options.stopPropagation)
-        {
-            event.stopPropagation()
-        }
-    }
-
-    /**
-     * gets pointer position if this.interaction is set
-     * @param {WheelEvent} event
-     * @return {PIXI.Point}
-     */
-    getPointerPosition(event)
-    {
-        let point = new PIXI.Point()
-        if (this.viewport.options.interaction)
-        {
-            this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY)
-        }
-        else
-        {
-            point.x = event.clientX
-            point.y = event.clientY
-        }
-        return point
-    }
-
-    /**
-     * handle wheel events
-     * @param {WheelEvent} event
-     */
-    handleWheel(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
-            return
-        }
-
-        // only handle wheel events where the mouse is over the viewport
-        const point = this.viewport.toLocal(this.getPointerPosition(event))
-        if (this.viewport.left &lt;= point.x &amp;&amp; point.x &lt;= this.viewport.right &amp;&amp; this.viewport.top &lt;= point.y &amp;&amp; point.y &lt;= this.viewport.bottom)
-        {
-            const stop = this.viewport.plugins.wheel(event)
-            if (stop &amp;&amp; !this.viewport.options.passiveWheel)
-            {
-                event.preventDefault()
-            }
-        }
-    }
-
-    pause()
-    {
-        this.touches = []
-        this.isMouseDown = false
-    }
-
-    /**
-     * get touch by id
-     * @param {number} id
-     * @return {ViewportTouch}
-     */
-    get(id)
-    {
-        for (let touch of this.touches)
-        {
-            if (touch.id === id)
-            {
-                return touch
-            }
-        }
-        return null
-    }
-
-    /**
-     * remove touch by number
-     * @param {number} id
-     */
-    remove(id)
-    {
-        for (let i = 0; i &lt; this.touches.length; i++)
-        {
-            if (this.touches[i].id === id)
-            {
-                this.touches.splice(i, 1)
-                return
-            }
-        }
-    }
-
-    /**
-     * @returns {number} count of mouse/touch pointers that are down on the viewport
-     */
-    count()
-    {
-        return (this.isMouseDown ? 1 : 0) + this.touches.length
-    }
+const animateOptions = {
+    removeOnInterrupt: false,
+    ease: 'linear',
+    time: 1000
 }
-</code></pre>
+
+export class Animate extends Plugin
+{
+    /**
+     * @private
+     * @param {Viewport} parent
+     * @param {AnimateOptions} [options]
+     * @fires animate-end
+     */
+    constructor(parent, options={})
+    {
+        super(parent)
+        this.options = Object.assign({}, animateOptions, options)
+        this.options.ease = ease(this.options.ease)
+        this.setupPosition()
+        this.setupZoom()
+    }
+
+    setupPosition()
+    {
+        if (typeof this.options.position !== 'undefined')
+        {
+            this.startX = this.parent.center.x
+            this.startY = this.parent.center.y
+            this.deltaX = this.options.position.x - this.parent.center.x
+            this.deltaY = this.options.position.y - this.parent.center.y
+            this.keepCenter = false
+        }
+        else
+        {
+            this.keepCenter = true
+        }
+    }
+
+    setupZoom()
+    {
+        this.width = null
+        this.height = null
+        if (typeof this.options.scale !== 'undefined')
+        {
+            this.width = this.parent.screenWidth / this.options.scale
+        }
+        else if (typeof this.options.scaleX !== 'undefined' || typeof this.options.scaleY !== 'undefined')
+        {
+            if (typeof this.options.scaleX !== 'undefined')
+            {
+                // screenSizeInWorldPixels = screenWidth / scale
+                this.width = this.parent.screenWidth / this.options.scaleX
+            }
+            if (typeof this.options.scaleY !== 'undefined')
+            {
+                this.height = this.parent.screenHeight / this.options.scaleY
+            }
+        }
+        else
+        {
+            if (typeof this.options.width !== 'undefined')
+            {
+                this.width = this.options.width
+            }
+            if (typeof this.options.height !== 'undefined')
+            {
+                this.height = this.options.height
+            }
+        }
+        if (typeof this.width !== null)
+        {
+            this.startWidth = this.parent.screenWidthInWorldPixels
+            this.deltaWidth = this.width - this.startWidth
+        }
+        if (typeof this.height !== null)
+        {
+            this.startHeight = this.parent.screenHeightInWorldPixels
+            this.deltaHeight = this.height - this.startHeight
+        }
+        this.time = 0
+    }
+
+    down()
+    {
+        if (this.options.removeOnInterrupt)
+        {
+            this.parent.plugins.remove('animate')
+        }
+    }
+
+    complete()
+    {
+        this.parent.plugins.remove('animate')
+        if (this.width !== null)
+        {
+            this.parent.fitWidth(this.width, this.keepCenter, this.height === null)
+        }
+        if (this.height !== null)
+        {
+            this.parent.fitHeight(this.height, this.keepCenter, this.width === null)
+        }
+        if (!this.keepCenter)
+        {
+            this.parent.moveCenter(this.options.position.x, this.options.position.y)
+        }
+        this.parent.emit('animate-end', this.parent)
+        if (this.options.callbackOnComplete)
+        {
+            this.options.callbackOnComplete(this.parent)
+        }
+    }
+
+    update(elapsed)
+    {
+        if (this.paused)
+        {
+            return
+        }
+        this.time += elapsed
+        if (this.time >= this.options.time)
+        {
+            this.complete()
+        }
+        else
+        {
+            const percent = this.options.ease(this.time, 0, 1, this.options.time)
+            if (this.width !== null)
+            {
+                this.parent.fitWidth(this.startWidth + this.deltaWidth * percent, this.keepCenter, this.height === null)
+            }
+            if (this.height !== null)
+            {
+                this.parent.fitHeight(this.startHeight + this.deltaHeight * percent, this.keepCenter, this.width === null)
+            }
+            if (this.width === null)
+            {
+                this.parent.scale.x = this.parent.scale.y
+            }
+            else if (this.height === null)
+            {
+                this.parent.scale.y = this.parent.scale.x
+            }
+            if (!this.keepCenter)
+            {
+                this.parent.moveCenter(this.startX + this.deltaX * percent, this.startY + this.deltaY * percent)
+            }
+        }
+    }
+}</code></pre>
         </article>
     </section>
 

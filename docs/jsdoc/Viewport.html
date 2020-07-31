@@ -61,6 +61,8 @@
             
             <span class="subtitle">Typedefs</span>
             
+                <li class="parent" data-name="AnimateOptions"><a href="global.html#AnimateOptions">AnimateOptions</a></li>
+            
                 <li class="parent" data-name="BounceOptions"><a href="global.html#BounceOptions">BounceOptions</a></li>
             
                 <li class="parent" data-name="ClampOptions"><a href="global.html#ClampOptions">ClampOptions</a></li>
@@ -219,7 +221,11 @@
             
                 <li class="parent " data-name="Viewport#screenHeight"><a href="Viewport.html#screenHeight">screenHeight</a></li>
             
+                <li class="parent " data-name="Viewport#screenHeightInWorldPixels"><a href="Viewport.html#screenHeightInWorldPixels">screenHeightInWorldPixels</a></li>
+            
                 <li class="parent " data-name="Viewport#screenWidth"><a href="Viewport.html#screenWidth">screenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWidthInWorldPixels"><a href="Viewport.html#screenWidthInWorldPixels">screenWidthInWorldPixels</a></li>
             
                 <li class="parent " data-name="Viewport#screenWorldHeight"><a href="Viewport.html#screenWorldHeight">screenWorldHeight</a></li>
             
@@ -248,6 +254,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li class="parent  " data-name="Viewport#animate"><a href="Viewport.html#animate">animate</a></li>
+            
                 <li class="parent  " data-name="Viewport#bounce"><a href="Viewport.html#bounce">bounce</a></li>
             
                 <li class="parent  " data-name="Viewport#clamp"><a href="Viewport.html#clamp">clamp</a></li>
@@ -261,6 +269,14 @@
                 <li class="parent  " data-name="Viewport#drag"><a href="Viewport.html#drag">drag</a></li>
             
                 <li class="parent  " data-name="Viewport#ensureVisible"><a href="Viewport.html#ensureVisible">ensureVisible</a></li>
+            
+                <li class="parent  " data-name="Viewport#findCover"><a href="Viewport.html#findCover">findCover</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFit"><a href="Viewport.html#findFit">findFit</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitHeight"><a href="Viewport.html#findFitHeight">findFitHeight</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitWidth"><a href="Viewport.html#findFitWidth">findFitWidth</a></li>
             
                 <li class="parent  " data-name="Viewport#fit"><a href="Viewport.html#fit">fit</a></li>
             
@@ -400,7 +416,7 @@
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line87">viewport.js:87</a>
+            <a href="src_viewport.js.html#line88">viewport.js:88</a>
         </div>
         
     </div>
@@ -1154,6 +1170,57 @@ NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, View
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="screenHeightInWorldPixels">
+            <a class="share-icon" href="#screenHeightInWorldPixels"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">screenHeightInWorldPixels</span>
+            <span class="type-signature type">number</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>get how many world pixels fit on screen's height</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="screenWidth">
             <a class="share-icon" href="#screenWidth"><span class="glyphicon glyphicon-link"></span></a>
             <span class="">screenWidth</span>
@@ -1168,6 +1235,57 @@ NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, View
     
 </dt>
 <dd>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="screenWidthInWorldPixels">
+            <a class="share-icon" href="#screenWidthInWorldPixels"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">screenWidthInWorldPixels</span>
+            <span class="type-signature type">number</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>get how many world pixels fit in screen's width</p>
+    </div>
     
     
     
@@ -1615,6 +1733,156 @@ NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, View
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="animate">
+            <a class="share-icon" href="#animate"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                animate
+            </span>
+            <span class="signature">(options)</span><span class="type-signature"><a href="Viewport.html">Viewport</a></span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_viewport.js.html#line957">viewport.js:957</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>animate the position and/or scale of the viewport</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#AnimateOptions">AnimateOptions</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        <a href="Viewport.html">Viewport</a>
+                        
+                    
+            </td>
+            <td class="description last">this</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="bounce">
             <a class="share-icon" href="#bounce"><span class="glyphicon glyphicon-link"></span></a>
             <span class="">
@@ -1629,7 +1897,7 @@ NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, View
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line825">viewport.js:825</a>
+            <a href="src_viewport.js.html#line894">viewport.js:894</a>
         </div>
         
     </div>
@@ -2198,7 +2466,7 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line789">viewport.js:789</a>
+            <a href="src_viewport.js.html#line858">viewport.js:858</a>
         </div>
         
     </div>
@@ -2358,7 +2626,7 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line898">viewport.js:898</a>
+            <a href="src_viewport.js.html#line978">viewport.js:978</a>
         </div>
         
     </div>
@@ -2522,7 +2790,7 @@ larger than the screen).</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line801">viewport.js:801</a>
+            <a href="src_viewport.js.html#line870">viewport.js:870</a>
         </div>
         
     </div>
@@ -2680,7 +2948,7 @@ NOTE: this fires 'moved' event during deceleration</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line158">viewport.js:158</a>
+            <a href="src_viewport.js.html#line159">viewport.js:159</a>
         </div>
         
     </div>
@@ -2943,7 +3211,7 @@ NOTE: this fires 'moved' event during deceleration</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line775">viewport.js:775</a>
+            <a href="src_viewport.js.html#line844">viewport.js:844</a>
         </div>
         
     </div>
@@ -3101,7 +3369,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line943">viewport.js:943</a>
+            <a href="src_viewport.js.html#line1023">viewport.js:1023</a>
         </div>
         
     </div>
@@ -3327,6 +3595,656 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
             
 <dt>
     <div class="nameContainer">
+        <h4 class="name" id="findCover">
+            <a class="share-icon" href="#findCover"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                findCover
+            </span>
+            <span class="signature">(width, height)</span><span class="type-signature">number</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_viewport.js.html#line508">viewport.js:508</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>finds the scale value that fits the larger of a world width and world height on the screen
+does not change the viewport (use fit... to change)</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>in world pixels</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>in world pixels</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        number
+                        
+                    
+            </td>
+            <td class="description last">scale</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="findFit">
+            <a class="share-icon" href="#findFit"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                findFit
+            </span>
+            <span class="signature">(width, height)</span><span class="type-signature">number</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_viewport.js.html#line494">viewport.js:494</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>finds the scale value that fits the smaller of a world width and world height on the screen
+does not change the viewport (use fit... to change)</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>in world pixels</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>in world pixels</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        number
+                        
+                    
+            </td>
+            <td class="description last">scale</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="findFitHeight">
+            <a class="share-icon" href="#findFitHeight"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                findFitHeight
+            </span>
+            <span class="signature">(height)</span><span class="type-signature">number</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_viewport.js.html#line482">viewport.js:482</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>finds the scale value that fits a world height on the screens
+does not change the viewport (use fit... to change)</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>in world pixels</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        number
+                        
+                    
+            </td>
+            <td class="description last">scale</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="findFitWidth">
+            <a class="share-icon" href="#findFitWidth"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                findFitWidth
+            </span>
+            <span class="signature">(width)</span><span class="type-signature">number</span>
+            
+            
+            
+            
+        </h4>
+
+        
+        <div class="tag-source">
+            <a href="src_viewport.js.html#line471">viewport.js:471</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>find the scale value that fits a world width on the screen
+does not change the viewport (use fit... to change)</p>
+    </div>
+    
+
+    
+
+    
+
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>in world pixels</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        number
+                        
+                    
+            </td>
+            <td class="description last">scale</td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
         <h4 class="name" id="fit">
             <a class="share-icon" href="#fit"><span class="glyphicon glyphicon-link"></span></a>
             <span class="">
@@ -3341,7 +4259,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line559">viewport.js:559</a>
+            <a href="src_viewport.js.html#line628">viewport.js:628</a>
         </div>
         
     </div>
@@ -3576,7 +4494,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line489">viewport.js:489</a>
+            <a href="src_viewport.js.html#line558">viewport.js:558</a>
         </div>
         
     </div>
@@ -3845,7 +4763,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line454">viewport.js:454</a>
+            <a href="src_viewport.js.html#line523">viewport.js:523</a>
         </div>
         
     </div>
@@ -4114,7 +5032,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line521">viewport.js:521</a>
+            <a href="src_viewport.js.html#line590">viewport.js:590</a>
         </div>
         
     </div>
@@ -4264,7 +5182,7 @@ NOTE: if you expect users to use right-click dragging, you should enable viewpor
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line866">viewport.js:866</a>
+            <a href="src_viewport.js.html#line935">viewport.js:935</a>
         </div>
         
     </div>
@@ -4454,7 +5372,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line298">viewport.js:298</a>
+            <a href="src_viewport.js.html#line299">viewport.js:299</a>
         </div>
         
     </div>
@@ -4559,7 +5477,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line909">viewport.js:909</a>
+            <a href="src_viewport.js.html#line989">viewport.js:989</a>
         </div>
         
     </div>
@@ -4688,7 +5606,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line394">viewport.js:394</a>
+            <a href="src_viewport.js.html#line395">viewport.js:395</a>
         </div>
         
     </div>
@@ -4876,7 +5794,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line432">viewport.js:432</a>
+            <a href="src_viewport.js.html#line433">viewport.js:433</a>
         </div>
         
     </div>
@@ -5064,7 +5982,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line663">viewport.js:663</a>
+            <a href="src_viewport.js.html#line732">viewport.js:732</a>
         </div>
         
     </div>
@@ -5169,7 +6087,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line836">viewport.js:836</a>
+            <a href="src_viewport.js.html#line905">viewport.js:905</a>
         </div>
         
     </div>
@@ -5326,7 +6244,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line236">viewport.js:236</a>
+            <a href="src_viewport.js.html#line237">viewport.js:237</a>
         </div>
         
     </div>
@@ -5566,7 +6484,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line594">viewport.js:594</a>
+            <a href="src_viewport.js.html#line663">viewport.js:663</a>
         </div>
         
     </div>
@@ -5751,7 +6669,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line849">viewport.js:849</a>
+            <a href="src_viewport.js.html#line918">viewport.js:918</a>
         </div>
         
     </div>
@@ -5964,7 +6882,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line653">viewport.js:653</a>
+            <a href="src_viewport.js.html#line722">viewport.js:722</a>
         </div>
         
     </div>
@@ -6081,7 +6999,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line327">viewport.js:327</a>
+            <a href="src_viewport.js.html#line328">viewport.js:328</a>
         </div>
         
     </div>
@@ -6269,7 +7187,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line309">viewport.js:309</a>
+            <a href="src_viewport.js.html#line310">viewport.js:310</a>
         </div>
         
     </div>
@@ -6457,7 +7375,7 @@ NOTE: fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line173">viewport.js:173</a>
+            <a href="src_viewport.js.html#line174">viewport.js:174</a>
         </div>
         
     </div>
@@ -6579,7 +7497,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line877">viewport.js:877</a>
+            <a href="src_viewport.js.html#line946">viewport.js:946</a>
         </div>
         
     </div>
@@ -6736,7 +7654,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line631">viewport.js:631</a>
+            <a href="src_viewport.js.html#line700">viewport.js:700</a>
         </div>
         
     </div>
@@ -6921,7 +7839,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line620">viewport.js:620</a>
+            <a href="src_viewport.js.html#line689">viewport.js:689</a>
         </div>
         
     </div>
@@ -7116,7 +8034,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1047">viewport.js:1047</a>
+            <a href="src_viewport.js.html#line1127">viewport.js:1127</a>
         </div>
         
     </div>
@@ -7202,7 +8120,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1041">viewport.js:1041</a>
+            <a href="src_viewport.js.html#line1121">viewport.js:1121</a>
         </div>
         
     </div>
@@ -7288,7 +8206,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1059">viewport.js:1059</a>
+            <a href="src_viewport.js.html#line1139">viewport.js:1139</a>
         </div>
         
     </div>
@@ -7374,7 +8292,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1053">viewport.js:1053</a>
+            <a href="src_viewport.js.html#line1133">viewport.js:1133</a>
         </div>
         
     </div>
@@ -7460,7 +8378,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line978">viewport.js:978</a>
+            <a href="src_viewport.js.html#line1058">viewport.js:1058</a>
         </div>
         
     </div>
@@ -7643,7 +8561,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line996">viewport.js:996</a>
+            <a href="src_viewport.js.html#line1076">viewport.js:1076</a>
         </div>
         
     </div>
@@ -7826,7 +8744,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line987">viewport.js:987</a>
+            <a href="src_viewport.js.html#line1067">viewport.js:1067</a>
         </div>
         
     </div>
@@ -8009,7 +8927,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1122">viewport.js:1122</a>
+            <a href="src_viewport.js.html#line1202">viewport.js:1202</a>
         </div>
         
     </div>
@@ -8095,7 +9013,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1088">viewport.js:1088</a>
+            <a href="src_viewport.js.html#line1168">viewport.js:1168</a>
         </div>
         
     </div>
@@ -8181,7 +9099,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1082">viewport.js:1082</a>
+            <a href="src_viewport.js.html#line1162">viewport.js:1162</a>
         </div>
         
     </div>
@@ -8267,7 +9185,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1094">viewport.js:1094</a>
+            <a href="src_viewport.js.html#line1174">viewport.js:1174</a>
         </div>
         
     </div>
@@ -8427,7 +9345,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1110">viewport.js:1110</a>
+            <a href="src_viewport.js.html#line1190">viewport.js:1190</a>
         </div>
         
     </div>
@@ -8513,7 +9431,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1011">viewport.js:1011</a>
+            <a href="src_viewport.js.html#line1091">viewport.js:1091</a>
         </div>
         
     </div>
@@ -8599,7 +9517,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1005">viewport.js:1005</a>
+            <a href="src_viewport.js.html#line1085">viewport.js:1085</a>
         </div>
         
     </div>
@@ -8685,7 +9603,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1023">viewport.js:1023</a>
+            <a href="src_viewport.js.html#line1103">viewport.js:1103</a>
         </div>
         
     </div>
@@ -8771,7 +9689,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1017">viewport.js:1017</a>
+            <a href="src_viewport.js.html#line1097">viewport.js:1097</a>
         </div>
         
     </div>
@@ -8857,7 +9775,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1035">viewport.js:1035</a>
+            <a href="src_viewport.js.html#line1115">viewport.js:1115</a>
         </div>
         
     </div>
@@ -8943,7 +9861,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1029">viewport.js:1029</a>
+            <a href="src_viewport.js.html#line1109">viewport.js:1109</a>
         </div>
         
     </div>
@@ -9029,7 +9947,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1065">viewport.js:1065</a>
+            <a href="src_viewport.js.html#line1145">viewport.js:1145</a>
         </div>
         
     </div>
@@ -9282,7 +10200,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1076">viewport.js:1076</a>
+            <a href="src_viewport.js.html#line1156">viewport.js:1156</a>
         </div>
         
     </div>
@@ -9368,7 +10286,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1102">viewport.js:1102</a>
+            <a href="src_viewport.js.html#line1182">viewport.js:1182</a>
         </div>
         
     </div>
@@ -9528,7 +10446,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         
         <div class="tag-source">
-            <a href="src_viewport.js.html#line1116">viewport.js:1116</a>
+            <a href="src_viewport.js.html#line1196">viewport.js:1196</a>
         </div>
         
     </div>
@@ -9610,7 +10528,7 @@ by default, you do not need to call this unless you set options.noTicker=true</p
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Jul 22 2020 16:58:56 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Jul 31 2020 11:56:13 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

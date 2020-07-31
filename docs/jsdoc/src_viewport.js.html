@@ -61,6 +61,8 @@
             
             <span class="subtitle">Typedefs</span>
             
+                <li class="parent" data-name="AnimateOptions"><a href="global.html#AnimateOptions">AnimateOptions</a></li>
+            
                 <li class="parent" data-name="BounceOptions"><a href="global.html#BounceOptions">BounceOptions</a></li>
             
                 <li class="parent" data-name="ClampOptions"><a href="global.html#ClampOptions">ClampOptions</a></li>
@@ -219,7 +221,11 @@
             
                 <li class="parent " data-name="Viewport#screenHeight"><a href="Viewport.html#screenHeight">screenHeight</a></li>
             
+                <li class="parent " data-name="Viewport#screenHeightInWorldPixels"><a href="Viewport.html#screenHeightInWorldPixels">screenHeightInWorldPixels</a></li>
+            
                 <li class="parent " data-name="Viewport#screenWidth"><a href="Viewport.html#screenWidth">screenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWidthInWorldPixels"><a href="Viewport.html#screenWidthInWorldPixels">screenWidthInWorldPixels</a></li>
             
                 <li class="parent " data-name="Viewport#screenWorldHeight"><a href="Viewport.html#screenWorldHeight">screenWorldHeight</a></li>
             
@@ -248,6 +254,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li class="parent  " data-name="Viewport#animate"><a href="Viewport.html#animate">animate</a></li>
+            
                 <li class="parent  " data-name="Viewport#bounce"><a href="Viewport.html#bounce">bounce</a></li>
             
                 <li class="parent  " data-name="Viewport#clamp"><a href="Viewport.html#clamp">clamp</a></li>
@@ -261,6 +269,14 @@
                 <li class="parent  " data-name="Viewport#drag"><a href="Viewport.html#drag">drag</a></li>
             
                 <li class="parent  " data-name="Viewport#ensureVisible"><a href="Viewport.html#ensureVisible">ensureVisible</a></li>
+            
+                <li class="parent  " data-name="Viewport#findCover"><a href="Viewport.html#findCover">findCover</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFit"><a href="Viewport.html#findFit">findFit</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitHeight"><a href="Viewport.html#findFitHeight">findFitHeight</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitWidth"><a href="Viewport.html#findFitWidth">findFitWidth</a></li>
             
                 <li class="parent  " data-name="Viewport#fit"><a href="Viewport.html#fit">fit</a></li>
             
@@ -388,6 +404,7 @@ import { SnapZoom } from './plugins/snap-zoom'
 import { Follow } from './plugins/follow'
 import { Wheel } from './plugins/wheel'
 import { MouseEdges } from './plugins/mouse-edges'
+import { Animate } from './plugins/animate'
 export { Plugin } from './plugins/plugin'
 
 /**
@@ -816,6 +833,74 @@ export class Viewport extends PIXI.Container
         }
         this.plugins.reset()
         return this
+    }
+
+    /**
+     * get how many world pixels fit in screen's width
+     * @type {number}
+     */
+    get screenWidthInWorldPixels()
+    {
+        return this.screenWidth / this.scale.x
+    }
+
+    /**
+     * get how many world pixels fit on screen's height
+     * @type {number}
+     */
+    get screenHeightInWorldPixels()
+    {
+        return this.screenHeight / this.scale.y
+    }
+
+    /**
+     * find the scale value that fits a world width on the screen
+     * does not change the viewport (use fit... to change)
+     * @param {number} width in world pixels
+     * @returns {number} scale
+     */
+    findFitWidth(width)
+    {
+        return this.screenWidth / width
+    }
+
+    /**
+     * finds the scale value that fits a world height on the screens
+     * does not change the viewport (use fit... to change)
+     * @param {number} height in world pixels
+     * @returns {number} scale
+     */
+    findFitHeight(height)
+    {
+        return this.screenHeight / height
+    }
+
+    /**
+     * finds the scale value that fits the smaller of a world width and world height on the screen
+     * does not change the viewport (use fit... to change)
+     * @param {number} width in world pixels
+     * @param {number} height in world pixels
+     * @returns {number} scale
+     */
+    findFit(width, height)
+    {
+        const scaleX = this.screenWidth / width
+        const scaleY = this.screenHeight / height
+        return Math.min(scaleX, scaleY)
+    }
+
+    /**
+     * finds the scale value that fits the larger of a world width and world height on the screen
+     * does not change the viewport (use fit... to change)
+     * @param {number} width in world pixels
+     * @param {number} height in world pixels
+     * @returns {number} scale
+     */
+    findCover(width, height)
+    {
+        const scaleX = this.screenWidth / width
+        const scaleY = this.screenHeight / height
+        return Math.max(scaleX, scaleY)
     }
 
     /**
@@ -1256,6 +1341,17 @@ export class Viewport extends PIXI.Container
     }
 
     /**
+     * animate the position and/or scale of the viewport
+     * @param {AnimateOptions} options
+     * @returns {Viewport} this
+     */
+    animate(options)
+    {
+        this.plugins.add('animate', new Animate(this, options))
+        return this
+    }
+
+    /**
      * enable clamping of zoom to constraints
      * @description
      * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
@@ -1532,7 +1628,7 @@ export class Viewport extends PIXI.Container
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Jul 22 2020 16:58:56 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Jul 31 2020 11:56:13 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

@@ -43522,7 +43522,7 @@
 	    }
 	}
 
-	const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
+	const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'aniamte', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
 
 	/**
 	 * Use this to access current plugins or add user-defined plugins
@@ -43571,7 +43571,7 @@
 
 	    /**
 	     * update all active plugins
-	     * @private
+	     * @ignore
 	     * @param {number} elapsed type in milliseconds since last update
 	     */
 	    update(elapsed)
@@ -43584,7 +43584,7 @@
 
 	    /**
 	     * resize all active plugins
-	     * @private
+	     * @ignore
 	     */
 	    resize()
 	    {
@@ -43645,7 +43645,7 @@
 
 	    /**
 	     * sort plugins according to PLUGIN_ORDER
-	     * @private
+	     * @ignore
 	     */
 	    sort()
 	    {
@@ -43661,7 +43661,7 @@
 
 	    /**
 	     * handle down for all plugins
-	     * @private
+	     * @ignore
 	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
@@ -43680,7 +43680,7 @@
 
 	    /**
 	     * handle move for all plugins
-	     * @private
+	     * @ignore
 	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
@@ -43699,7 +43699,7 @@
 
 	    /**
 	     * handle up for all plugins
-	     * @private
+	     * @ignore
 	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
@@ -43718,7 +43718,7 @@
 
 	    /**
 	     * handle wheel event for all plugins
-	     * @private
+	     * @ignore
 	     * @param {WheelEvent} event
 	     * @returns {boolean}
 	     */
@@ -46135,6 +46135,172 @@
 	}
 
 	/**
+	 * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, (3) width and/or height
+	 * @typedef {options} AnimateOptions
+	 * @property {number} [time=1000] to animate
+	 * @property {PIXI.Point} [position=viewport.center] position to move viewport
+	 * @property {number} [width] desired viewport width in world pixels (use instead of scale; aspect ratio is maintained if height is not provided)
+	 * @property {number} [height] desired viewport height in world pixels (use instead of scale; aspect ratio is maintained if width is not provided)
+	 * @property {number} [scale] scale to change zoom (scale.x = scale.y)
+	 * @property {number} [scaleX] independently change zoom in x-direction
+	 * @property {number} [scaleY] independently change zoom in y-direction
+	 * @property {(function|string)} [ease=linear] easing function to use
+	 * @property {function} [callbackOnComplete]
+	 * @property {boolean} [removeOnInterrupt] removes this plugin if interrupted by any user input
+	 */
+
+	const animateOptions = {
+	    removeOnInterrupt: false,
+	    ease: 'linear',
+	    time: 1000
+	};
+
+	class Animate extends Plugin
+	{
+	    /**
+	     * @private
+	     * @param {Viewport} parent
+	     * @param {AnimateOptions} [options]
+	     * @fires animate-end
+	     */
+	    constructor(parent, options={})
+	    {
+	        super(parent);
+	        this.options = Object.assign({}, animateOptions, options);
+	        this.options.ease = ease(this.options.ease);
+	        this.setupPosition();
+	        this.setupZoom();
+	    }
+
+	    setupPosition()
+	    {
+	        if (typeof this.options.position !== 'undefined')
+	        {
+	            this.startX = this.parent.center.x;
+	            this.startY = this.parent.center.y;
+	            this.deltaX = this.options.position.x - this.parent.center.x;
+	            this.deltaY = this.options.position.y - this.parent.center.y;
+	            this.keepCenter = false;
+	        }
+	        else
+	        {
+	            this.keepCenter = true;
+	        }
+	    }
+
+	    setupZoom()
+	    {
+	        this.width = null;
+	        this.height = null;
+	        if (typeof this.options.scale !== 'undefined')
+	        {
+	            this.width = this.parent.screenWidth / this.options.scale;
+	        }
+	        else if (typeof this.options.scaleX !== 'undefined' || typeof this.options.scaleY !== 'undefined')
+	        {
+	            if (typeof this.options.scaleX !== 'undefined')
+	            {
+	                // screenSizeInWorldPixels = screenWidth / scale
+	                this.width = this.parent.screenWidth / this.options.scaleX;
+	            }
+	            if (typeof this.options.scaleY !== 'undefined')
+	            {
+	                this.height = this.parent.screenHeight / this.options.scaleY;
+	            }
+	        }
+	        else
+	        {
+	            if (typeof this.options.width !== 'undefined')
+	            {
+	                this.width = this.options.width;
+	            }
+	            if (typeof this.options.height !== 'undefined')
+	            {
+	                this.height = this.options.height;
+	            }
+	        }
+	        if (typeof this.width !== null)
+	        {
+	            this.startWidth = this.parent.screenWidthInWorldPixels;
+	            this.deltaWidth = this.width - this.startWidth;
+	        }
+	        if (typeof this.height !== null)
+	        {
+	            this.startHeight = this.parent.screenHeightInWorldPixels;
+	            this.deltaHeight = this.height - this.startHeight;
+	        }
+	        this.time = 0;
+	    }
+
+	    down()
+	    {
+	        if (this.options.removeOnInterrupt)
+	        {
+	            this.parent.plugins.remove('animate');
+	        }
+	    }
+
+	    complete()
+	    {
+	        this.parent.plugins.remove('animate');
+	        if (this.width !== null)
+	        {
+	            this.parent.fitWidth(this.width, this.keepCenter, this.height === null);
+	        }
+	        if (this.height !== null)
+	        {
+	            this.parent.fitHeight(this.height, this.keepCenter, this.width === null);
+	        }
+	        if (!this.keepCenter)
+	        {
+	            this.parent.moveCenter(this.options.position.x, this.options.position.y);
+	        }
+	        this.parent.emit('animate-end', this.parent);
+	        if (this.options.callbackOnComplete)
+	        {
+	            this.options.callbackOnComplete(this.parent);
+	        }
+	    }
+
+	    update(elapsed)
+	    {
+	        if (this.paused)
+	        {
+	            return
+	        }
+	        this.time += elapsed;
+	        if (this.time >= this.options.time)
+	        {
+	            this.complete();
+	        }
+	        else
+	        {
+	            const percent = this.options.ease(this.time, 0, 1, this.options.time);
+	            if (this.width !== null)
+	            {
+	                this.parent.fitWidth(this.startWidth + this.deltaWidth * percent, this.keepCenter, this.height === null);
+	            }
+	            if (this.height !== null)
+	            {
+	                this.parent.fitHeight(this.startHeight + this.deltaHeight * percent, this.keepCenter, this.width === null);
+	            }
+	            if (this.width === null)
+	            {
+	                this.parent.scale.x = this.parent.scale.y;
+	            }
+	            else if (this.height === null)
+	            {
+	                this.parent.scale.y = this.parent.scale.x;
+	            }
+	            if (!this.keepCenter)
+	            {
+	                this.parent.moveCenter(this.startX + this.deltaX * percent, this.startY + this.deltaY * percent);
+	            }
+	        }
+	    }
+	}
+
+	/**
 	 * @typedef {object} ViewportOptions
 	 * @property {number} [screenWidth=window.innerWidth]
 	 * @property {number} [screenHeight=window.innerHeight]
@@ -46560,6 +46726,74 @@
 	        }
 	        this.plugins.reset();
 	        return this
+	    }
+
+	    /**
+	     * get how many world pixels fit in screen's width
+	     * @type {number}
+	     */
+	    get screenWidthInWorldPixels()
+	    {
+	        return this.screenWidth / this.scale.x
+	    }
+
+	    /**
+	     * get how many world pixels fit on screen's height
+	     * @type {number}
+	     */
+	    get screenHeightInWorldPixels()
+	    {
+	        return this.screenHeight / this.scale.y
+	    }
+
+	    /**
+	     * find the scale value that fits a world width on the screen
+	     * does not change the viewport (use fit... to change)
+	     * @param {number} width in world pixels
+	     * @returns {number} scale
+	     */
+	    findFitWidth(width)
+	    {
+	        return this.screenWidth / width
+	    }
+
+	    /**
+	     * finds the scale value that fits a world height on the screens
+	     * does not change the viewport (use fit... to change)
+	     * @param {number} height in world pixels
+	     * @returns {number} scale
+	     */
+	    findFitHeight(height)
+	    {
+	        return this.screenHeight / height
+	    }
+
+	    /**
+	     * finds the scale value that fits the smaller of a world width and world height on the screen
+	     * does not change the viewport (use fit... to change)
+	     * @param {number} width in world pixels
+	     * @param {number} height in world pixels
+	     * @returns {number} scale
+	     */
+	    findFit(width, height)
+	    {
+	        const scaleX = this.screenWidth / width;
+	        const scaleY = this.screenHeight / height;
+	        return Math.min(scaleX, scaleY)
+	    }
+
+	    /**
+	     * finds the scale value that fits the larger of a world width and world height on the screen
+	     * does not change the viewport (use fit... to change)
+	     * @param {number} width in world pixels
+	     * @param {number} height in world pixels
+	     * @returns {number} scale
+	     */
+	    findCover(width, height)
+	    {
+	        const scaleX = this.screenWidth / width;
+	        const scaleY = this.screenHeight / height;
+	        return Math.max(scaleX, scaleY)
 	    }
 
 	    /**
@@ -46996,6 +47230,17 @@
 	    wheel(options)
 	    {
 	        this.plugins.add('wheel', new Wheel(this, options));
+	        return this
+	    }
+
+	    /**
+	     * animate the position and/or scale of the viewport
+	     * @param {AnimateOptions} options
+	     * @returns {Viewport} this
+	     */
+	    animate(options)
+	    {
+	        this.plugins.add('animate', new Animate(this, options));
 	        return this
 	    }
 

@@ -61,6 +61,8 @@
             
             <span class="subtitle">Typedefs</span>
             
+                <li class="parent" data-name="AnimateOptions"><a href="global.html#AnimateOptions">AnimateOptions</a></li>
+            
                 <li class="parent" data-name="BounceOptions"><a href="global.html#BounceOptions">BounceOptions</a></li>
             
                 <li class="parent" data-name="ClampOptions"><a href="global.html#ClampOptions">ClampOptions</a></li>
@@ -219,7 +221,11 @@
             
                 <li class="parent " data-name="Viewport#screenHeight"><a href="Viewport.html#screenHeight">screenHeight</a></li>
             
+                <li class="parent " data-name="Viewport#screenHeightInWorldPixels"><a href="Viewport.html#screenHeightInWorldPixels">screenHeightInWorldPixels</a></li>
+            
                 <li class="parent " data-name="Viewport#screenWidth"><a href="Viewport.html#screenWidth">screenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWidthInWorldPixels"><a href="Viewport.html#screenWidthInWorldPixels">screenWidthInWorldPixels</a></li>
             
                 <li class="parent " data-name="Viewport#screenWorldHeight"><a href="Viewport.html#screenWorldHeight">screenWorldHeight</a></li>
             
@@ -248,6 +254,8 @@
             
             <span class="subtitle">Methods</span>
             
+                <li class="parent  " data-name="Viewport#animate"><a href="Viewport.html#animate">animate</a></li>
+            
                 <li class="parent  " data-name="Viewport#bounce"><a href="Viewport.html#bounce">bounce</a></li>
             
                 <li class="parent  " data-name="Viewport#clamp"><a href="Viewport.html#clamp">clamp</a></li>
@@ -261,6 +269,14 @@
                 <li class="parent  " data-name="Viewport#drag"><a href="Viewport.html#drag">drag</a></li>
             
                 <li class="parent  " data-name="Viewport#ensureVisible"><a href="Viewport.html#ensureVisible">ensureVisible</a></li>
+            
+                <li class="parent  " data-name="Viewport#findCover"><a href="Viewport.html#findCover">findCover</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFit"><a href="Viewport.html#findFit">findFit</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitHeight"><a href="Viewport.html#findFitHeight">findFitHeight</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitWidth"><a href="Viewport.html#findFitWidth">findFitWidth</a></li>
             
                 <li class="parent  " data-name="Viewport#fit"><a href="Viewport.html#fit">fit</a></li>
             
@@ -429,6 +445,448 @@
         <h3 class="subsection-title">Type Definitions</h3>
 
         <dl class="list-definitions">
+                
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="AnimateOptions">
+            <a class="share-icon" href="#AnimateOptions"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">AnimateOptions</span>
+            <span class="type-signature type">options</span>
+            
+            
+            
+            
+        </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>To set the zoom level, use: (1) scale, (2) scaleX and scaleY, (3) width and/or height</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+
+        <h5 class="subsection-title">Properties:</h5>
+
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1000
+                
+                </td>
+            
+            
+            <td class="description last"><p>to animate</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.Point</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    viewport.center
+                
+                </td>
+            
+            
+            <td class="description last"><p>position to move viewport</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>desired viewport width in world pixels (use instead of scale; aspect ratio is maintained if height is not provided)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>desired viewport height in world pixels (use instead of scale; aspect ratio is maintained if width is not provided)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>scale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>scale to change zoom (scale.x = scale.y)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>scaleX</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>independently change zoom in x-direction</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>scaleY</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>independently change zoom in y-direction</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ease</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    linear
+                
+                </td>
+            
+            
+            <td class="description last"><p>easing function to use</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callbackOnComplete</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>removeOnInterrupt</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last"><p>removes this plugin if interrupted by any user input</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+            
                 
 <dt>
     <div class="nameContainer">
@@ -5138,7 +5596,7 @@
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Wed Jul 22 2020 16:58:56 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Jul 31 2020 11:56:13 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>
