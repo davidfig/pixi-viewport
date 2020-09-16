@@ -10,10 +10,8 @@ import * as PIXI from 'pixi.js'
  * handles all input for Viewport
  * @private
  */
-export class InputManager
-{
-    constructor(viewport)
-    {
+export class InputManager {
+    constructor(viewport) {
         this.viewport = viewport
 
         /**
@@ -28,11 +26,9 @@ export class InputManager
      * add input listeners
      * @private
      */
-    addListeners()
-    {
+    addListeners() {
         this.viewport.interactive = true
-        if (!this.viewport.forceHitArea)
-        {
+        if (!this.viewport.forceHitArea) {
             this.viewport.hitArea = new PIXI.Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight)
         }
         this.viewport.on('pointerdown', this.down, this)
@@ -50,8 +46,7 @@ export class InputManager
      * removes all event listeners from viewport
      * (useful for cleanup of wheel when removing viewport)
      */
-    destroy()
-    {
+    destroy() {
         this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction)
     }
 
@@ -59,44 +54,35 @@ export class InputManager
      * handle down events for viewport
      * @param {PIXI.InteractionEvent} event
      */
-    down(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
+    down(event) {
+        if (this.viewport.pause || !this.viewport.worldVisible) {
             return
         }
-        if (event.data.pointerType === 'mouse')
-        {
+        if (event.data.pointerType === 'mouse') {
             this.isMouseDown = true
         }
-        else if (!this.get(event.data.pointerId))
-        {
+        else if (!this.get(event.data.pointerId)) {
             this.touches.push({ id: event.data.pointerId, last: null })
         }
-        if (this.count() === 1)
-        {
+        if (this.count() === 1) {
             this.last = event.data.global.clone()
 
             // clicked event does not fire if viewport is decelerating or bouncing
-            const decelerate = this.viewport.plugins.get('decelerate')
-            const bounce = this.viewport.plugins.get('bounce')
-            if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive()))
-            {
+            const decelerate = this.viewport.plugins.get('decelerate', true)
+            const bounce = this.viewport.plugins.get('bounce', true)
+            if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive())) {
                 this.clickedAvailable = true
             }
-            else
-            {
+            else {
                 this.clickedAvailable = false
             }
         }
-        else
-        {
+        else {
             this.clickedAvailable = false
         }
 
         const stop = this.viewport.plugins.down(event)
-        if (stop && this.viewport.options.stopPropagation)
-        {
+        if (stop && this.viewport.options.stopPropagation) {
             event.stopPropagation()
         }
     }
@@ -105,10 +91,8 @@ export class InputManager
      * @param {number} change
      * @returns whether change exceeds threshold
      */
-    checkThreshold(change)
-    {
-        if (Math.abs(change) >= this.viewport.threshold)
-        {
+    checkThreshold(change) {
+        if (Math.abs(change) >= this.viewport.threshold) {
             return true
         }
         return false
@@ -118,27 +102,22 @@ export class InputManager
      * handle move events for viewport
      * @param {PIXI.InteractionEvent} event
      */
-    move(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
+    move(event) {
+        if (this.viewport.pause || !this.viewport.worldVisible) {
             return
         }
 
         const stop = this.viewport.plugins.move(event)
 
-        if (this.clickedAvailable)
-        {
+        if (this.clickedAvailable) {
             const distX = event.data.global.x - this.last.x
             const distY = event.data.global.y - this.last.y
-            if (this.checkThreshold(distX) || this.checkThreshold(distY))
-            {
+            if (this.checkThreshold(distX) || this.checkThreshold(distY)) {
                 this.clickedAvailable = false
             }
         }
 
-        if (stop && this.viewport.options.stopPropagation)
-        {
+        if (stop && this.viewport.options.stopPropagation) {
             event.stopPropagation()
         }
     }
@@ -147,33 +126,27 @@ export class InputManager
      * handle up events for viewport
      * @param {PIXI.InteractionEvent} event
      */
-    up(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
+    up(event) {
+        if (this.viewport.pause || !this.viewport.worldVisible) {
             return
         }
 
-        if (event.data.pointerType === 'mouse')
-        {
+        if (event.data.pointerType === 'mouse') {
             this.isMouseDown = false
         }
 
-        if (event.data.pointerType !== 'mouse')
-        {
+        if (event.data.pointerType !== 'mouse') {
             this.remove(event.data.pointerId)
         }
 
         const stop = this.viewport.plugins.up(event)
 
-        if (this.clickedAvailable && this.count() === 0)
-        {
+        if (this.clickedAvailable && this.count() === 0) {
             this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this })
             this.clickedAvailable = false
         }
 
-        if (stop && this.viewport.options.stopPropagation)
-        {
+        if (stop && this.viewport.options.stopPropagation) {
             event.stopPropagation()
         }
     }
@@ -183,15 +156,12 @@ export class InputManager
      * @param {WheelEvent} event
      * @return {PIXI.Point}
      */
-    getPointerPosition(event)
-    {
+    getPointerPosition(event) {
         let point = new PIXI.Point()
-        if (this.viewport.options.interaction)
-        {
+        if (this.viewport.options.interaction) {
             this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY)
         }
-        else
-        {
+        else {
             point.x = event.clientX
             point.y = event.clientY
         }
@@ -202,27 +172,22 @@ export class InputManager
      * handle wheel events
      * @param {WheelEvent} event
      */
-    handleWheel(event)
-    {
-        if (this.viewport.pause || !this.viewport.worldVisible)
-        {
+    handleWheel(event) {
+        if (this.viewport.pause || !this.viewport.worldVisible) {
             return
         }
 
         // only handle wheel events where the mouse is over the viewport
         const point = this.viewport.toLocal(this.getPointerPosition(event))
-        if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom)
-        {
+        if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom) {
             const stop = this.viewport.plugins.wheel(event)
-            if (stop && !this.viewport.options.passiveWheel)
-            {
+            if (stop && !this.viewport.options.passiveWheel) {
                 event.preventDefault()
             }
         }
     }
 
-    pause()
-    {
+    pause() {
         this.touches = []
         this.isMouseDown = false
     }
@@ -232,12 +197,9 @@ export class InputManager
      * @param {number} id
      * @return {ViewportTouch}
      */
-    get(id)
-    {
-        for (let touch of this.touches)
-        {
-            if (touch.id === id)
-            {
+    get(id) {
+        for (let touch of this.touches) {
+            if (touch.id === id) {
                 return touch
             }
         }
@@ -248,12 +210,9 @@ export class InputManager
      * remove touch by number
      * @param {number} id
      */
-    remove(id)
-    {
-        for (let i = 0; i < this.touches.length; i++)
-        {
-            if (this.touches[i].id === id)
-            {
+    remove(id) {
+        for (let i = 0; i < this.touches.length; i++) {
+            if (this.touches[i].id === id) {
                 this.touches.splice(i, 1)
                 return
             }
@@ -263,8 +222,7 @@ export class InputManager
     /**
      * @returns {number} count of mouse/touch pointers that are down on the viewport
      */
-    count()
-    {
+    count() {
         return (this.isMouseDown ? 1 : 0) + this.touches.length
     }
 }

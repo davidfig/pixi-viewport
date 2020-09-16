@@ -29,8 +29,7 @@ const mouseEdgesOptions = {
     allowButtons: false
 }
 
-export class MouseEdges extends Plugin
-{
+export class MouseEdges extends Plugin {
     /**
      * Scroll viewport when mouse hovers near one of the edges.
      * @private
@@ -39,8 +38,7 @@ export class MouseEdges extends Plugin
      * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
      * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
-    constructor(parent, options={})
-    {
+    constructor(parent, options = {}) {
         super(parent)
         this.options = Object.assign({}, mouseEdgesOptions, options)
         this.reverse = this.options.reverse ? 1 : -1
@@ -48,18 +46,15 @@ export class MouseEdges extends Plugin
         this.resize()
     }
 
-    resize()
-    {
+    resize() {
         const distance = this.options.distance
-        if (distance !== null)
-        {
+        if (distance !== null) {
             this.left = distance
             this.top = distance
             this.right = this.parent.worldScreenWidth - distance
             this.bottom = this.parent.worldScreenHeight - distance
         }
-        else if (!this.radius)
-        {
+        else if (!this.radius) {
             this.left = this.options.left
             this.top = this.options.top
             this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right
@@ -67,132 +62,102 @@ export class MouseEdges extends Plugin
         }
     }
 
-    down()
-    {
-        if (!this.options.allowButtons)
-        {
+    down() {
+        if (!this.options.allowButtons) {
             this.horizontal = this.vertical = null
         }
     }
 
-    move(event)
-    {
-        if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1) || (!this.options.allowButtons && event.data.buttons !== 0))
-        {
+    move(event) {
+        if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1) || (!this.options.allowButtons && event.data.buttons !== 0)) {
             return
         }
         const x = event.data.global.x
         const y = event.data.global.y
 
-        if (this.radiusSquared)
-        {
+        if (this.radiusSquared) {
             const center = this.parent.toScreen(this.parent.center)
             const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2)
-            if (distance >= this.radiusSquared)
-            {
+            if (distance >= this.radiusSquared) {
                 const angle = Math.atan2(center.y - y, center.x - x)
-                if (this.options.linear)
-                {
+                if (this.options.linear) {
                     this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000)
                     this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000)
                 }
-                else
-                {
+                else {
                     this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000)
                     this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000)
                 }
             }
-            else
-            {
-                if (this.horizontal)
-                {
+            else {
+                if (this.horizontal) {
                     this.decelerateHorizontal()
                 }
-                if (this.vertical)
-                {
+                if (this.vertical) {
                     this.decelerateVertical()
                 }
                 this.horizontal = this.vertical = 0
             }
         }
-        else
-        {
-            if (this.left !== null && x < this.left)
-            {
+        else {
+            if (this.left !== null && x < this.left) {
                 this.horizontal = 1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else if (this.right !== null && x > this.right)
-            {
+            else if (this.right !== null && x > this.right) {
                 this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else
-            {
+            else {
                 this.decelerateHorizontal()
                 this.horizontal = 0
             }
-            if (this.top !== null && y < this.top)
-            {
+            if (this.top !== null && y < this.top) {
                 this.vertical = 1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else if (this.bottom !== null && y > this.bottom)
-            {
+            else if (this.bottom !== null && y > this.bottom) {
                 this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else
-            {
+            else {
                 this.decelerateVertical()
                 this.vertical = 0
             }
         }
     }
 
-    decelerateHorizontal()
-    {
-        const decelerate = this.parent.plugins.get('decelerate')
-        if (this.horizontal && decelerate && !this.options.noDecelerate)
-        {
+    decelerateHorizontal() {
+        const decelerate = this.parent.plugins.get('decelerate', true)
+        if (this.horizontal && decelerate && !this.options.noDecelerate) {
             decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) })
         }
     }
 
-    decelerateVertical()
-    {
-        const decelerate = this.parent.plugins.get('decelerate')
-        if (this.vertical && decelerate && !this.options.noDecelerate)
-        {
-            decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60)})
+    decelerateVertical() {
+        const decelerate = this.parent.plugins.get('decelerate', true)
+        if (this.vertical && decelerate && !this.options.noDecelerate) {
+            decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) })
         }
     }
 
-    up()
-    {
-        if (this.horizontal)
-        {
+    up() {
+        if (this.horizontal) {
             this.decelerateHorizontal()
         }
-        if (this.vertical)
-        {
+        if (this.vertical) {
             this.decelerateVertical()
         }
         this.horizontal = this.vertical = null
     }
 
-    update()
-    {
-        if (this.paused)
-        {
+    update() {
+        if (this.paused) {
             return
         }
 
-        if (this.horizontal || this.vertical)
-        {
+        if (this.horizontal || this.vertical) {
             const center = this.parent.center
-            if (this.horizontal)
-            {
+            if (this.horizontal) {
                 center.x += this.horizontal * this.options.speed
             }
-            if (this.vertical)
-            {
+            if (this.vertical) {
                 center.y += this.vertical * this.options.speed
             }
             this.parent.moveCenter(center)

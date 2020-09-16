@@ -25,8 +25,7 @@ const bounceOptions = {
     bounceBox: null
 }
 
-export class Bounce extends Plugin
-{
+export class Bounce extends Plugin {
     /**
      * @private
      * @param {Viewport} parent
@@ -36,27 +35,21 @@ export class Bounce extends Plugin
      * @fires bounce-start-y
      * @fires bounce-end-y
      */
-    constructor(parent, options={})
-    {
+    constructor(parent, options = {}) {
         super(parent)
         this.options = Object.assign({}, bounceOptions, options)
         this.ease = ease(this.options.ease, 'easeInOutSine')
-        if (this.options.sides)
-        {
-            if (this.options.sides === 'all')
-            {
+        if (this.options.sides) {
+            if (this.options.sides === 'all') {
                 this.top = this.bottom = this.left = this.right = true
             }
-            else if (this.options.sides === 'horizontal')
-            {
+            else if (this.options.sides === 'horizontal') {
                 this.right = this.left = true
             }
-            else if (this.options.sides === 'vertical')
-            {
+            else if (this.options.sides === 'vertical') {
                 this.top = this.bottom = true
             }
-            else
-            {
+            else {
                 this.top = this.options.sides.indexOf('top') !== -1
                 this.bottom = this.options.sides.indexOf('bottom') !== -1
                 this.left = this.options.sides.indexOf('left') !== -1
@@ -68,83 +61,67 @@ export class Bounce extends Plugin
         this.reset()
     }
 
-    parseUnderflow()
-    {
+    parseUnderflow() {
         const clamp = this.options.underflow.toLowerCase()
-        if (clamp === 'center')
-        {
+        if (clamp === 'center') {
             this.underflowX = 0
             this.underflowY = 0
         }
-        else
-        {
+        else {
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
         }
     }
 
-    isActive()
-    {
+    isActive() {
         return this.toX !== null || this.toY !== null
     }
 
-    down()
-    {
+    down() {
         this.toX = this.toY = null
     }
 
-    up()
-    {
+    up() {
         this.bounce()
     }
 
-    update(elapsed)
-    {
-        if (this.paused)
-        {
+    update(elapsed) {
+        if (this.paused) {
             return
         }
 
         this.bounce()
-        if (this.toX)
-        {
+        if (this.toX) {
             const toX = this.toX
             toX.time += elapsed
             this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' })
-            if (toX.time >= this.options.time)
-            {
+            if (toX.time >= this.options.time) {
                 this.parent.x = toX.end
                 this.toX = null
                 this.parent.emit('bounce-x-end', this.parent)
             }
-            else
-            {
+            else {
                 this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.options.time)
             }
         }
-        if (this.toY)
-        {
+        if (this.toY) {
             const toY = this.toY
             toY.time += elapsed
             this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' })
-            if (toY.time >= this.options.time)
-            {
+            if (toY.time >= this.options.time) {
                 this.parent.y = toY.end
                 this.toY = null
                 this.parent.emit('bounce-y-end', this.parent)
             }
-            else
-            {
+            else {
                 this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.options.time)
             }
         }
     }
 
-    calcUnderflowX()
-    {
+    calcUnderflowX() {
         let x
-        switch (this.underflowX)
-        {
+        switch (this.underflowX) {
             case -1:
                 x = 0
                 break
@@ -157,11 +134,9 @@ export class Bounce extends Plugin
         return x
     }
 
-    calcUnderflowY()
-    {
+    calcUnderflowY() {
         let y
-        switch (this.underflowY)
-        {
+        switch (this.underflowY) {
             case -1:
                 y = 0
                 break
@@ -174,8 +149,7 @@ export class Bounce extends Plugin
         return y
     }
 
-    oob()
-    {
+    oob() {
         const box = this.options.bounceBox
         if (box) {
             const x1 = typeof box.x === 'undefined' ? 0 : box.x
@@ -210,68 +184,53 @@ export class Bounce extends Plugin
         }
     }
 
-    bounce()
-    {
-        if (this.paused)
-        {
+    bounce() {
+        if (this.paused) {
             return
         }
 
         let oob
-        let decelerate = this.parent.plugins.get('decelerate')
-        if (decelerate && (decelerate.x || decelerate.y))
-        {
-            if ((decelerate.x && decelerate.percentChangeX === decelerate.options.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.options.friction))
-            {
+        let decelerate = this.parent.plugins.get('decelerate', true)
+        if (decelerate && (decelerate.x || decelerate.y)) {
+            if ((decelerate.x && decelerate.percentChangeX === decelerate.options.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.options.friction)) {
                 oob = this.oob()
-                if ((oob.left && this.left) || (oob.right && this.right))
-                {
+                if ((oob.left && this.left) || (oob.right && this.right)) {
                     decelerate.percentChangeX = this.options.friction
                 }
-                if ((oob.top && this.top) || (oob.bottom && this.bottom))
-                {
+                if ((oob.top && this.top) || (oob.bottom && this.bottom)) {
                     decelerate.percentChangeY = this.options.friction
                 }
             }
         }
-        const drag = this.parent.plugins.get('drag') || {}
-        const pinch = this.parent.plugins.get('pinch') || {}
+        const drag = this.parent.plugins.get('drag', true) || {}
+        const pinch = this.parent.plugins.get('pinch', true) || {}
         decelerate = decelerate || {}
-        if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
-        {
+        if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y))) {
             oob = oob || this.oob()
             const topLeft = oob.topLeft
             const bottomRight = oob.bottomRight
-            if (!this.toX && !decelerate.x)
-            {
+            if (!this.toX && !decelerate.x) {
                 let x = null
-                if (oob.left && this.left)
-                {
+                if (oob.left && this.left) {
                     x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x
                 }
-                else if (oob.right && this.right)
-                {
+                else if (oob.right && this.right) {
                     x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x
                 }
-                if (x !== null && this.parent.x !== x)
-                {
+                if (x !== null && this.parent.x !== x) {
                     this.toX = { time: 0, start: this.parent.x, delta: x - this.parent.x, end: x }
                     this.parent.emit('bounce-x-start', this.parent)
                 }
             }
-            if (!this.toY && !decelerate.y)
-            {
+            if (!this.toY && !decelerate.y) {
                 let y = null
-                if (oob.top && this.top)
-                {
+                if (oob.top && this.top) {
                     y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y
                 }
-                else if (oob.bottom && this.bottom)
-                {
+                else if (oob.bottom && this.bottom) {
                     y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y
                 }
-                if (y !== null && this.parent.y !== y)
-                {
+                if (y !== null && this.parent.y !== y) {
                     this.toY = { time: 0, start: this.parent.y, delta: y - this.parent.y, end: y }
                     this.parent.emit('bounce-y-start', this.parent)
                 }
@@ -279,8 +238,7 @@ export class Bounce extends Plugin
         }
     }
 
-    reset()
-    {
+    reset() {
         this.toX = this.toY = null
         this.bounce()
     }

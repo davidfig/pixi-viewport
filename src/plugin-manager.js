@@ -3,14 +3,12 @@ const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decele
 /**
  * Use this to access current plugins or add user-defined plugins
  */
-export class PluginManager
-{
+export class PluginManager {
     /**
      * instantiated by Viewport
      * @param {Viewport} viewport
      */
-    constructor(viewport)
-    {
+    constructor(viewport) {
         this.viewport = viewport
         this.list = []
         this.plugins = {}
@@ -23,12 +21,10 @@ export class PluginManager
      * @param {Plugin} plugin - instantiated Plugin class
      * @param {number} index to insert userPlugin (otherwise inserts it at the end)
      */
-    add(name, plugin, index = PLUGIN_ORDER.length)
-    {
+    add(name, plugin, index = PLUGIN_ORDER.length) {
         this.plugins[name] = plugin
         const current = PLUGIN_ORDER.indexOf(name)
-        if (current !== -1)
-        {
+        if (current !== -1) {
             PLUGIN_ORDER.splice(current, 1)
         }
         PLUGIN_ORDER.splice(index, 0, name)
@@ -38,10 +34,15 @@ export class PluginManager
     /**
      * get plugin
      * @param {string} name of plugin
+     * @param {boolean} [ignorePaused] return null if plugin is paused
      * @return {Plugin}
      */
-    get(name)
-    {
+    get(name, ignorePaused) {
+        if (ignorePaused) {
+            if (typeof this.plugins[name] !== 'undefined' && this.plugins[name].paused) {
+                return null
+            }
+        }
         return this.plugins[name]
     }
 
@@ -50,10 +51,8 @@ export class PluginManager
      * @ignore
      * @param {number} elapsed type in milliseconds since last update
      */
-    update(elapsed)
-    {
-        for (let plugin of this.list)
-        {
+    update(elapsed) {
+        for (let plugin of this.list) {
             plugin.update(elapsed)
         }
     }
@@ -62,10 +61,8 @@ export class PluginManager
      * resize all active plugins
      * @ignore
      */
-    resize()
-    {
-        for (let plugin of this.list)
-        {
+    resize() {
+        for (let plugin of this.list) {
             plugin.resize()
         }
     }
@@ -73,10 +70,8 @@ export class PluginManager
     /**
      * clamps and resets bounce and decelerate (as needed) after manually moving viewport
      */
-    reset()
-    {
-        for (let plugin of this.list)
-        {
+    reset() {
+        for (let plugin of this.list) {
             plugin.reset()
         }
     }
@@ -85,10 +80,8 @@ export class PluginManager
      * removes installed plugin
      * @param {string} name of plugin (e.g., 'drag', 'pinch')
      */
-    remove(name)
-    {
-        if (this.plugins[name])
-        {
+    remove(name) {
+        if (this.plugins[name]) {
             this.plugins[name] = null
             this.viewport.emit(name + '-remove')
             this.sort()
@@ -99,10 +92,8 @@ export class PluginManager
      * pause plugin
      * @param {string} name of plugin (e.g., 'drag', 'pinch')
      */
-    pause(name)
-    {
-        if (this.plugins[name])
-        {
+    pause(name) {
+        if (this.plugins[name]) {
             this.plugins[name].pause()
         }
     }
@@ -111,10 +102,8 @@ export class PluginManager
      * resume plugin
      * @param {string} name of plugin (e.g., 'drag', 'pinch')
      */
-    resume(name)
-    {
-        if (this.plugins[name])
-        {
+    resume(name) {
+        if (this.plugins[name]) {
             this.plugins[name].resume()
         }
     }
@@ -123,13 +112,10 @@ export class PluginManager
      * sort plugins according to PLUGIN_ORDER
      * @ignore
      */
-    sort()
-    {
+    sort() {
         this.list = []
-        for (let plugin of PLUGIN_ORDER)
-        {
-            if (this.plugins[plugin])
-            {
+        for (let plugin of PLUGIN_ORDER) {
+            if (this.plugins[plugin]) {
                 this.list.push(this.plugins[plugin])
             }
         }
@@ -141,13 +127,10 @@ export class PluginManager
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    down(event)
-    {
+    down(event) {
         let stop = false
-        for (let plugin of this.list)
-        {
-            if (plugin.down(event))
-            {
+        for (let plugin of this.list) {
+            if (plugin.down(event)) {
                 stop = true
             }
         }
@@ -160,13 +143,10 @@ export class PluginManager
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    move(event)
-    {
+    move(event) {
         let stop = false
-        for (let plugin of this.viewport.plugins.list)
-        {
-            if (plugin.move(event))
-            {
+        for (let plugin of this.viewport.plugins.list) {
+            if (plugin.move(event)) {
                 stop = true
             }
         }
@@ -179,13 +159,10 @@ export class PluginManager
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    up(event)
-    {
+    up(event) {
         let stop = false
-        for (let plugin of this.list)
-        {
-            if (plugin.up(event))
-            {
+        for (let plugin of this.list) {
+            if (plugin.up(event)) {
                 stop = true
             }
         }
@@ -198,13 +175,10 @@ export class PluginManager
      * @param {WheelEvent} event
      * @returns {boolean}
      */
-    wheel(e)
-    {
+    wheel(e) {
         let result = false
-        for (let plugin of this.list)
-        {
-            if (plugin.wheel(e))
-            {
+        for (let plugin of this.list) {
+            if (plugin.wheel(e)) {
                 result = true
             }
         }

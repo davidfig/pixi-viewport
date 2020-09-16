@@ -50,8 +50,7 @@ const viewportOptions = {
 /**
  * Main class to use when creating a Viewport
  */
-export class Viewport extends PIXI.Container
-{
+export class Viewport extends PIXI.Container {
     /**
      * @param {ViewportOptions} [options]
      * @fires clicked
@@ -85,29 +84,24 @@ export class Viewport extends PIXI.Container
      * @fires zoomed-end
      * @fires frame-end
      */
-    constructor(options = {})
-    {
+    constructor(options = {}) {
         super()
         this.options = Object.assign({}, viewportOptions, options)
 
         // needed to pull this out of viewportOptions because of pixi.js v4 support (which changed from PIXI.ticker.shared to PIXI.Ticker.shared...sigh)
-        if (options.ticker)
-        {
+        if (options.ticker) {
             this.options.ticker = options.ticker
         }
-        else
-        {
+        else {
             // to avoid Rollup transforming our import, save pixi namespace in a variable
             // from here: https://github.com/pixijs/pixi.js/issues/5757
             let ticker
             const pixiNS = PIXI
-            if (parseInt(/^(\d+)\./.exec(PIXI.VERSION)[1]) < 5)
-            {
-                ticker = pixiNS.ticker.shared;
+            if (parseInt(/^(\d+)\./.exec(PIXI.VERSION)[1]) < 5) {
+                ticker = pixiNS.ticker.shared
             }
-            else
-            {
-                ticker = pixiNS.Ticker.shared;
+            else {
+                ticker = pixiNS.Ticker.shared
             }
             this.options.ticker = options.ticker || ticker
         }
@@ -130,13 +124,11 @@ export class Viewport extends PIXI.Container
 
         this.options.divWheel = this.options.divWheel || document.body
 
-        if (this.options.disableOnContextMenu)
-        {
+        if (this.options.disableOnContextMenu) {
             this.options.divWheel.oncontextmenu = e => e.preventDefault()
         }
 
-        if (!this.options.noTicker)
-        {
+        if (!this.options.noTicker) {
             this.tickerFunction = () => this.update(this.options.ticker.elapsedMS)
             this.options.ticker.add(this.tickerFunction)
         }
@@ -156,10 +148,8 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [options.children=false] - if set to true, all the children will have their destroy method called as well. 'options' will be passed on to those calls.
      * @param {boolean} [options.texture=false] - Only used for child Sprites if options.children is set to true. Should it destroy the texture of the child sprite
      * @param {boolean} [options.baseTexture=false] - Only used for child Sprites if options.children is set to true. Should it destroy the base texture of the child sprite     */
-    destroy(options)
-    {
-        if (!this.options.noTicker)
-        {
+    destroy(options) {
+        if (!this.options.noTicker) {
             this.options.ticker.remove(this.tickerFunction)
         }
         this.input.destroy()
@@ -171,44 +161,34 @@ export class Viewport extends PIXI.Container
      * by default, you do not need to call this unless you set options.noTicker=true
      * @param {number} elapsed time in milliseconds since last update
      */
-    update(elapsed)
-    {
-        if (!this.pause)
-        {
+    update(elapsed) {
+        if (!this.pause) {
             this.plugins.update(elapsed)
 
-            if (this.lastViewport)
-            {
+            if (this.lastViewport) {
                 // check for moved-end event
-                if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y)
-                {
+                if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y) {
                     this.moving = true
                 }
-                else
-                {
-                    if (this.moving)
-                    {
+                else {
+                    if (this.moving) {
                         this.emit('moved-end', this)
                         this.moving = false
                     }
                 }
                 // check for zoomed-end event
-                if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y)
-                {
+                if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y) {
                     this.zooming = true
                 }
-                else
-                {
-                    if (this.zooming)
-                    {
+                else {
+                    if (this.zooming) {
                         this.emit('zoomed-end', this)
                         this.zooming = false
                     }
                 }
             }
 
-            if (!this.forceHitArea)
-            {
+            if (!this.forceHitArea) {
                 this._hitAreaDefault = new PIXI.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight)
                 this.hitArea = this._hitAreaDefault
             }
@@ -234,16 +214,13 @@ export class Viewport extends PIXI.Container
      * @param {number} [worldWidth]
      * @param {number} [worldHeight]
      */
-    resize(screenWidth = window.innerWidth, screenHeight = window.innerHeight, worldWidth, worldHeight)
-    {
+    resize(screenWidth = window.innerWidth, screenHeight = window.innerHeight, worldWidth, worldHeight) {
         this.screenWidth = screenWidth
         this.screenHeight = screenHeight
-        if (typeof worldWidth !== 'undefined')
-        {
+        if (typeof worldWidth !== 'undefined') {
             this._worldWidth = worldWidth
         }
-        if (typeof worldHeight !== 'undefined')
-        {
+        if (typeof worldHeight !== 'undefined') {
             this._worldHeight = worldHeight
         }
         this.plugins.resize()
@@ -254,19 +231,15 @@ export class Viewport extends PIXI.Container
      * world width in pixels
      * @type {number}
      */
-    get worldWidth()
-    {
-        if (this._worldWidth)
-        {
+    get worldWidth() {
+        if (this._worldWidth) {
             return this._worldWidth
         }
-        else
-        {
+        else {
             return this.width / this.scale.x
         }
     }
-    set worldWidth(value)
-    {
+    set worldWidth(value) {
         this._worldWidth = value
         this.plugins.resize()
     }
@@ -275,19 +248,15 @@ export class Viewport extends PIXI.Container
      * world height in pixels
      * @type {number}
      */
-    get worldHeight()
-    {
-        if (this._worldHeight)
-        {
+    get worldHeight() {
+        if (this._worldHeight) {
             return this._worldHeight
         }
-        else
-        {
+        else {
             return this.height / this.scale.y
         }
     }
-    set worldHeight(value)
-    {
+    set worldHeight(value) {
         this._worldHeight = value
         this.plugins.resize()
     }
@@ -296,8 +265,7 @@ export class Viewport extends PIXI.Container
      * get visible bounds of viewport
      * @returns {PIXI.Rectangle}
      */
-    getVisibleBounds()
-    {
+    getVisibleBounds() {
         return new PIXI.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight)
     }
 
@@ -307,14 +275,11 @@ export class Viewport extends PIXI.Container
      * @param {number} [y]
      * @return {PIXI.Point}
      */
-    toWorld(x, y)
-    {
-        if (arguments.length === 2)
-        {
+    toWorld(x, y) {
+        if (arguments.length === 2) {
             return this.toLocal(new PIXI.Point(x, y))
         }
-        else
-        {
+        else {
             return this.toLocal(x)
         }
     }
@@ -325,14 +290,11 @@ export class Viewport extends PIXI.Container
      * @param {number} [y]
      * @return {PIXI.Point}
      */
-    toScreen(x, y)
-    {
-        if (arguments.length === 2)
-        {
+    toScreen(x, y) {
+        if (arguments.length === 2) {
             return this.toGlobal(new PIXI.Point(x, y))
         }
-        else
-        {
+        else {
             return this.toGlobal(x)
         }
     }
@@ -341,8 +303,7 @@ export class Viewport extends PIXI.Container
      * screen width in world coordinates
      * @type {number}
      */
-    get worldScreenWidth()
-    {
+    get worldScreenWidth() {
         return this.screenWidth / this.scale.x
     }
 
@@ -350,8 +311,7 @@ export class Viewport extends PIXI.Container
      * screen height in world coordinates
      * @type {number}
      */
-    get worldScreenHeight()
-    {
+    get worldScreenHeight() {
         return this.screenHeight / this.scale.y
     }
 
@@ -359,8 +319,7 @@ export class Viewport extends PIXI.Container
      * world width in screen coordinates
      * @type {number}
      */
-    get screenWorldWidth()
-    {
+    get screenWorldWidth() {
         return this.worldWidth * this.scale.x
     }
 
@@ -368,8 +327,7 @@ export class Viewport extends PIXI.Container
      * world height in screen coordinates
      * @type {number}
      */
-    get screenWorldHeight()
-    {
+    get screenWorldHeight() {
         return this.worldHeight * this.scale.y
     }
 
@@ -377,12 +335,10 @@ export class Viewport extends PIXI.Container
      * center of screen in world coordinates
      * @type {PIXI.Point}
      */
-    get center()
-    {
+    get center() {
         return new PIXI.Point(this.worldScreenWidth / 2 - this.x / this.scale.x, this.worldScreenHeight / 2 - this.y / this.scale.y)
     }
-    set center(value)
-    {
+    set center(value) {
         this.moveCenter(value)
     }
 
@@ -392,16 +348,13 @@ export class Viewport extends PIXI.Container
      * @param {number} [y]
      * @return {Viewport} this
      */
-    moveCenter()
-    {
+    moveCenter() {
         let x, y
-        if (!isNaN(arguments[0]))
-        {
+        if (!isNaN(arguments[0])) {
             x = arguments[0]
             y = arguments[1]
         }
-        else
-        {
+        else {
             x = arguments[0].x
             y = arguments[0].y
         }
@@ -415,12 +368,10 @@ export class Viewport extends PIXI.Container
      * top-left corner of Viewport
      * @type {PIXI.Point}
      */
-    get corner()
-    {
+    get corner() {
         return new PIXI.Point(-this.x / this.scale.x, -this.y / this.scale.y)
     }
-    set corner(value)
-    {
+    set corner(value) {
         this.moveCorner(value)
     }
 
@@ -430,14 +381,11 @@ export class Viewport extends PIXI.Container
      * @param {number} [y]
      * @return {Viewport} this
      */
-    moveCorner(x, y)
-    {
-        if (arguments.length === 1)
-        {
+    moveCorner(x, y) {
+        if (arguments.length === 1) {
             this.position.set(-x.x * this.scale.x, -x.y * this.scale.y)
         }
-        else
-        {
+        else {
             this.position.set(-x * this.scale.x, -y * this.scale.y)
         }
         this.plugins.reset()
@@ -448,8 +396,7 @@ export class Viewport extends PIXI.Container
      * get how many world pixels fit in screen's width
      * @type {number}
      */
-    get screenWidthInWorldPixels()
-    {
+    get screenWidthInWorldPixels() {
         return this.screenWidth / this.scale.x
     }
 
@@ -457,8 +404,7 @@ export class Viewport extends PIXI.Container
      * get how many world pixels fit on screen's height
      * @type {number}
      */
-    get screenHeightInWorldPixels()
-    {
+    get screenHeightInWorldPixels() {
         return this.screenHeight / this.scale.y
     }
 
@@ -468,8 +414,7 @@ export class Viewport extends PIXI.Container
      * @param {number} width in world pixels
      * @returns {number} scale
      */
-    findFitWidth(width)
-    {
+    findFitWidth(width) {
         return this.screenWidth / width
     }
 
@@ -479,8 +424,7 @@ export class Viewport extends PIXI.Container
      * @param {number} height in world pixels
      * @returns {number} scale
      */
-    findFitHeight(height)
-    {
+    findFitHeight(height) {
         return this.screenHeight / height
     }
 
@@ -491,8 +435,7 @@ export class Viewport extends PIXI.Container
      * @param {number} height in world pixels
      * @returns {number} scale
      */
-    findFit(width, height)
-    {
+    findFit(width, height) {
         const scaleX = this.screenWidth / width
         const scaleY = this.screenHeight / height
         return Math.min(scaleX, scaleY)
@@ -505,8 +448,7 @@ export class Viewport extends PIXI.Container
      * @param {number} height in world pixels
      * @returns {number} scale
      */
-    findCover(width, height)
-    {
+    findCover(width, height) {
         const scaleX = this.screenWidth / width
         const scaleY = this.screenHeight / height
         return Math.max(scaleX, scaleY)
@@ -520,28 +462,23 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [noClamp] whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitWidth(width, center, scaleY = true, noClamp)
-    {
+    fitWidth(width, center, scaleY = true, noClamp) {
         let save
-        if (center)
-        {
+        if (center) {
             save = this.center
         }
         this.scale.x = this.screenWidth / width
 
-        if (scaleY)
-        {
+        if (scaleY) {
             this.scale.y = this.scale.x
         }
 
-        const clampZoom = this.plugins.get('clamp-zoom')
-        if (!noClamp && clampZoom)
-        {
+        const clampZoom = this.plugins.get('clamp-zoom', true)
+        if (!noClamp && clampZoom) {
             clampZoom.clamp()
         }
 
-        if (center)
-        {
+        if (center) {
             this.moveCenter(save)
         }
         return this
@@ -555,28 +492,23 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [noClamp] whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitHeight(height, center, scaleX = true, noClamp)
-    {
+    fitHeight(height, center, scaleX = true, noClamp) {
         let save
-        if (center)
-        {
+        if (center) {
             save = this.center
         }
         this.scale.y = this.screenHeight / height
 
-        if (scaleX)
-        {
+        if (scaleX) {
             this.scale.x = this.scale.y
         }
 
-        const clampZoom = this.plugins.get('clamp-zoom')
-        if (!noClamp && clampZoom)
-        {
+        const clampZoom = this.plugins.get('clamp-zoom', true)
+        if (!noClamp && clampZoom) {
             clampZoom.clamp()
         }
 
-        if (center)
-        {
+        if (center) {
             this.moveCenter(save)
         }
         return this
@@ -587,32 +519,26 @@ export class Viewport extends PIXI.Container
      * @param {boolean} center maintain the same center of the screen after zoom
      * @returns {Viewport} this
      */
-    fitWorld(center)
-    {
+    fitWorld(center) {
         let save
-        if (center)
-        {
+        if (center) {
             save = this.center
         }
         this.scale.x = this.screenWidth / this.worldWidth
         this.scale.y = this.screenHeight / this.worldHeight
-        if (this.scale.x < this.scale.y)
-        {
+        if (this.scale.x < this.scale.y) {
             this.scale.y = this.scale.x
         }
-        else
-        {
+        else {
             this.scale.x = this.scale.y
         }
 
-        const clampZoom = this.plugins.get('clamp-zoom')
-        if (clampZoom)
-        {
+        const clampZoom = this.plugins.get('clamp-zoom', true)
+        if (clampZoom) {
             clampZoom.clamp()
         }
 
-        if (center)
-        {
+        if (center) {
             this.moveCenter(save)
         }
         return this
@@ -625,30 +551,24 @@ export class Viewport extends PIXI.Container
      * @param {number} [height=this.worldHeight] desired height
      * @returns {Viewport} this
      */
-    fit(center, width = this.worldWidth, height = this.worldHeight)
-    {
+    fit(center, width = this.worldWidth, height = this.worldHeight) {
         let save
-        if (center)
-        {
+        if (center) {
             save = this.center
         }
         this.scale.x = this.screenWidth / width
         this.scale.y = this.screenHeight / height
-        if (this.scale.x < this.scale.y)
-        {
+        if (this.scale.x < this.scale.y) {
             this.scale.y = this.scale.x
         }
-        else
-        {
+        else {
             this.scale.x = this.scale.y
         }
-        const clampZoom = this.plugins.get('clamp-zoom')
-        if (clampZoom)
-        {
+        const clampZoom = this.plugins.get('clamp-zoom', true)
+        if (clampZoom) {
             clampZoom.clamp()
         }
-        if (center)
-        {
+        if (center) {
             this.moveCenter(save)
         }
         return this
@@ -660,21 +580,17 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    setZoom(scale, center)
-    {
+    setZoom(scale, center) {
         let save
-        if (center)
-        {
+        if (center) {
             save = this.center
         }
         this.scale.set(scale)
-        const clampZoom = this.plugins.get('clamp-zoom')
-        if (clampZoom)
-        {
+        const clampZoom = this.plugins.get('clamp-zoom', true)
+        if (clampZoom) {
             clampZoom.clamp()
         }
-        if (center)
-        {
+        if (center) {
             this.moveCenter(save)
         }
         return this
@@ -686,8 +602,7 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    zoomPercent(percent, center)
-    {
+    zoomPercent(percent, center) {
         return this.setZoom(this.scale.x + this.scale.x * percent, center)
     }
 
@@ -697,8 +612,7 @@ export class Viewport extends PIXI.Container
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    zoom(change, center)
-    {
+    zoom(change, center) {
         this.fitWidth(change + this.worldScreenWidth, center)
         return this
     }
@@ -707,20 +621,17 @@ export class Viewport extends PIXI.Container
      * changes scale of viewport and maintains center of viewport
      * @type {number}
      */
-    set scaled(scale)
-    {
+    set scaled(scale) {
         this.setZoom(scale, true)
     }
-    get scaled()
-    {
+    get scaled() {
         return this.scale.x
     }
 
     /**
      * @param {SnapZoomOptions} options
      */
-    snapZoom(options)
-    {
+    snapZoom(options) {
         this.plugins.add('snap-zoom', new SnapZoom(this, options))
         return this
     }
@@ -729,8 +640,7 @@ export class Viewport extends PIXI.Container
      * is container out of world bounds
      * @returns {OutOfBounds}
      */
-    OOB()
-    {
+    OOB() {
         return {
             left: this.left < 0,
             right: this.right > this.worldWidth,
@@ -747,12 +657,10 @@ export class Viewport extends PIXI.Container
      * world coordinates of the right edge of the screen
      * @type {number}
      */
-    get right()
-    {
+    get right() {
         return -this.x / this.scale.x + this.worldScreenWidth
     }
-    set right(value)
-    {
+    set right(value) {
         this.x = -value * this.scale.x + this.screenWidth
         this.plugins.reset()
     }
@@ -761,12 +669,10 @@ export class Viewport extends PIXI.Container
      * world coordinates of the left edge of the screen
      * @type { number }
      */
-    get left()
-    {
+    get left() {
         return -this.x / this.scale.x
     }
-    set left(value)
-    {
+    set left(value) {
         this.x = -value * this.scale.x
         this.plugins.reset()
     }
@@ -775,12 +681,10 @@ export class Viewport extends PIXI.Container
      * world coordinates of the top edge of the screen
      * @type {number}
      */
-    get top()
-    {
+    get top() {
         return -this.y / this.scale.y
     }
-    set top(value)
-    {
+    set top(value) {
         this.y = -value * this.scale.y
         this.plugins.reset()
     }
@@ -789,12 +693,10 @@ export class Viewport extends PIXI.Container
      * world coordinates of the bottom edge of the screen
      * @type {number}
      */
-    get bottom()
-    {
+    get bottom() {
         return -this.y / this.scale.y + this.worldScreenHeight
     }
-    set bottom(value)
-    {
+    set bottom(value) {
         this.y = -value * this.scale.y + this.screenHeight
         this.plugins.reset()
     }
@@ -803,12 +705,10 @@ export class Viewport extends PIXI.Container
      * determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
      * @type {boolean}
      */
-    get dirty()
-    {
+    get dirty() {
         return this._dirty
     }
-    set dirty(value)
-    {
+    set dirty(value) {
         this._dirty = value
     }
 
@@ -817,19 +717,15 @@ export class Viewport extends PIXI.Container
      * NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)
      * @returns {HitArea}
      */
-    get forceHitArea()
-    {
+    get forceHitArea() {
         return this._forceHitArea
     }
-    set forceHitArea(value)
-    {
-        if (value)
-        {
+    set forceHitArea(value) {
+        if (value) {
             this._forceHitArea = value
             this.hitArea = value
         }
-        else
-        {
+        else {
             this._forceHitArea = null
             this.hitArea = new PIXI.Rectangle(0, 0, this.worldWidth, this.worldHeight)
         }
@@ -841,8 +737,7 @@ export class Viewport extends PIXI.Container
      * @param {DragOptions} [options]
      * @returns {Viewport} this
      */
-    drag(options)
-    {
+    drag(options) {
         this.plugins.add('drag', new Drag(this, options))
         return this
     }
@@ -855,8 +750,7 @@ export class Viewport extends PIXI.Container
      * @param {ClampOptions} [options]
      * @returns {Viewport} this
      */
-    clamp(options)
-    {
+    clamp(options) {
         this.plugins.add('clamp', new Clamp(this, options))
         return this
     }
@@ -867,8 +761,7 @@ export class Viewport extends PIXI.Container
      * @param {DecelerateOptions} [options]
      * @return {Viewport} this
      */
-    decelerate(options)
-    {
+    decelerate(options) {
         this.plugins.add('decelerate', new Decelerate(this, options))
         return this
     }
@@ -891,8 +784,7 @@ export class Viewport extends PIXI.Container
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
      */
-    bounce(options)
-    {
+    bounce(options) {
         this.plugins.add('bounce', new Bounce(this, options))
         return this
     }
@@ -902,8 +794,7 @@ export class Viewport extends PIXI.Container
      * @param {PinchOptions} [options]
      * @return {Viewport} this
      */
-    pinch(options)
-    {
+    pinch(options) {
         this.plugins.add('pinch', new Pinch(this, options))
         return this
     }
@@ -915,8 +806,7 @@ export class Viewport extends PIXI.Container
      * @param {SnapOptions} [options]
      * @return {Viewport} this
      */
-    snap(x, y, options)
-    {
+    snap(x, y, options) {
         this.plugins.add('snap', new Snap(this, x, y, options))
         return this
     }
@@ -932,8 +822,7 @@ export class Viewport extends PIXI.Container
      * @param {FollowOptions} [options]
      * @returns {Viewport} this
      */
-    follow(target, options)
-    {
+    follow(target, options) {
         this.plugins.add('follow', new Follow(this, target, options))
         return this
     }
@@ -943,8 +832,7 @@ export class Viewport extends PIXI.Container
      * @param {WheelOptions} [options]
      * @return {Viewport} this
      */
-    wheel(options)
-    {
+    wheel(options) {
         this.plugins.add('wheel', new Wheel(this, options))
         return this
     }
@@ -954,8 +842,7 @@ export class Viewport extends PIXI.Container
      * @param {AnimateOptions} options
      * @returns {Viewport} this
      */
-    animate(options)
-    {
+    animate(options) {
         this.plugins.add('animate', new Animate(this, options))
         return this
     }
@@ -975,8 +862,7 @@ export class Viewport extends PIXI.Container
      * @param {ClampZoomOptions} [options]
      * @return {Viewport} this
      */
-    clampZoom(options)
-    {
+    clampZoom(options) {
         this.plugins.add('clamp-zoom', new ClampZoom(this, options))
         return this
     }
@@ -986,8 +872,7 @@ export class Viewport extends PIXI.Container
      * NOTE: fires 'moved' event
      * @param {MouseEdgesOptions} [options]
      */
-    mouseEdges(options)
-    {
+    mouseEdges(options) {
         this.plugins.add('mouse-edges', new MouseEdges(this, options))
         return this
     }
@@ -996,18 +881,15 @@ export class Viewport extends PIXI.Container
      * pause viewport (including animation updates such as decelerate)
      * @type {boolean}
      */
-    get pause()
-    {
+    get pause() {
         return this._pause
     }
-    set pause(value)
-    {
+    set pause(value) {
         this._pause = value
         this.lastViewport = null
         this.moving = false
         this.zooming = false
-        if (value)
-        {
+        if (value) {
             this.input.pause()
         }
     }
@@ -1020,36 +902,29 @@ export class Viewport extends PIXI.Container
      * @param {number} height
      * @param {boolean} [resizeToFit] resize the viewport so the box fits within the viewport
      */
-    ensureVisible(x, y, width, height, resizeToFit)
-    {
-        if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
-        {
+    ensureVisible(x, y, width, height, resizeToFit) {
+        if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight)) {
             this.fit(true, width, height)
             this.emit('zoomed', { viewport: this, type: 'ensureVisible' })
         }
         let moved = false
-        if (x < this.left)
-        {
+        if (x < this.left) {
             this.left = x
             moved = true
         }
-        else if (x + width > this.right)
-        {
+        else if (x + width > this.right) {
             this.right = x + width
             moved = true
         }
-        if (y < this.top)
-        {
+        if (y < this.top) {
             this.top = y
             moved = true
         }
-        else if (y + height > this.bottom)
-        {
+        else if (y + height > this.bottom) {
             this.bottom = y + height
             moved = true
         }
-        if (moved)
-        {
+        if (moved) {
             this.emit('moved', { viewport: this, type: 'ensureVisible' })
         }
     }
@@ -1199,11 +1074,11 @@ export class Viewport extends PIXI.Container
  * @type {Viewport}
  */
 
- /**
- * fires at the end of an update frame
- * @event Viewport#frame-end
- * @type {Viewport}
- */
+/**
+* fires at the end of an update frame
+* @event Viewport#frame-end
+* @type {Viewport}
+*/
 
 /** @typedef HitArea {(PIXI.Rectangle | PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.RoundedRectangle)} */
 
