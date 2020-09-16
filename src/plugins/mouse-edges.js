@@ -63,12 +63,18 @@ export class MouseEdges extends Plugin {
     }
 
     down() {
+        if (this.paused) {
+            return
+        }
         if (!this.options.allowButtons) {
             this.horizontal = this.vertical = null
         }
     }
 
     move(event) {
+        if (this.paused) {
+            return
+        }
         if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1) || (!this.options.allowButtons && event.data.buttons !== 0)) {
             return
         }
@@ -138,6 +144,9 @@ export class MouseEdges extends Plugin {
     }
 
     up() {
+        if (this.paused) {
+            return
+        }
         if (this.horizontal) {
             this.decelerateHorizontal()
         }
