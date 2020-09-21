@@ -247,6 +247,8 @@ export declare class Viewport extends PIXI.Container
 
     screenWidthInWorldPixels: number
     sceenHeightinWorldPixels: number
+    screenWorldWidth: number
+    screenWorldHeight: number
 
     constructor(options?: ViewportOptions)
 
