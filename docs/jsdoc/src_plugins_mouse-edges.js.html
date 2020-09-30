@@ -420,8 +420,7 @@ const mouseEdgesOptions = {
     allowButtons: false
 }
 
-export class MouseEdges extends Plugin
-{
+export class MouseEdges extends Plugin {
     /**
      * Scroll viewport when mouse hovers near one of the edges.
      * @private
@@ -430,8 +429,7 @@ export class MouseEdges extends Plugin
      * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
      * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
-    constructor(parent, options={})
-    {
+    constructor(parent, options = {}) {
         super(parent)
         this.options = Object.assign({}, mouseEdgesOptions, options)
         this.reverse = this.options.reverse ? 1 : -1
@@ -439,18 +437,15 @@ export class MouseEdges extends Plugin
         this.resize()
     }
 
-    resize()
-    {
+    resize() {
         const distance = this.options.distance
-        if (distance !== null)
-        {
+        if (distance !== null) {
             this.left = distance
             this.top = distance
             this.right = this.parent.worldScreenWidth - distance
             this.bottom = this.parent.worldScreenHeight - distance
         }
-        else if (!this.radius)
-        {
+        else if (!this.radius) {
             this.left = this.options.left
             this.top = this.options.top
             this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right
@@ -458,132 +453,111 @@ export class MouseEdges extends Plugin
         }
     }
 
-    down()
-    {
-        if (!this.options.allowButtons)
-        {
+    down() {
+        if (this.paused) {
+            return
+        }
+        if (!this.options.allowButtons) {
             this.horizontal = this.vertical = null
         }
     }
 
-    move(event)
-    {
-        if ((event.data.pointerType !== 'mouse' &amp;&amp; event.data.identifier !== 1) || (!this.options.allowButtons &amp;&amp; event.data.buttons !== 0))
-        {
+    move(event) {
+        if (this.paused) {
+            return
+        }
+        if ((event.data.pointerType !== 'mouse' &amp;&amp; event.data.identifier !== 1) || (!this.options.allowButtons &amp;&amp; event.data.buttons !== 0)) {
             return
         }
         const x = event.data.global.x
         const y = event.data.global.y
 
-        if (this.radiusSquared)
-        {
+        if (this.radiusSquared) {
             const center = this.parent.toScreen(this.parent.center)
             const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2)
-            if (distance >= this.radiusSquared)
-            {
+            if (distance >= this.radiusSquared) {
                 const angle = Math.atan2(center.y - y, center.x - x)
-                if (this.options.linear)
-                {
+                if (this.options.linear) {
                     this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000)
                     this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000)
                 }
-                else
-                {
+                else {
                     this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000)
                     this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000)
                 }
             }
-            else
-            {
-                if (this.horizontal)
-                {
+            else {
+                if (this.horizontal) {
                     this.decelerateHorizontal()
                 }
-                if (this.vertical)
-                {
+                if (this.vertical) {
                     this.decelerateVertical()
                 }
                 this.horizontal = this.vertical = 0
             }
         }
-        else
-        {
-            if (this.left !== null &amp;&amp; x &lt; this.left)
-            {
+        else {
+            if (this.left !== null &amp;&amp; x &lt; this.left) {
                 this.horizontal = 1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else if (this.right !== null &amp;&amp; x > this.right)
-            {
+            else if (this.right !== null &amp;&amp; x > this.right) {
                 this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else
-            {
+            else {
                 this.decelerateHorizontal()
                 this.horizontal = 0
             }
-            if (this.top !== null &amp;&amp; y &lt; this.top)
-            {
+            if (this.top !== null &amp;&amp; y &lt; this.top) {
                 this.vertical = 1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else if (this.bottom !== null &amp;&amp; y > this.bottom)
-            {
+            else if (this.bottom !== null &amp;&amp; y > this.bottom) {
                 this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000)
             }
-            else
-            {
+            else {
                 this.decelerateVertical()
                 this.vertical = 0
             }
         }
     }
 
-    decelerateHorizontal()
-    {
-        const decelerate = this.parent.plugins.get('decelerate')
-        if (this.horizontal &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate)
-        {
+    decelerateHorizontal() {
+        const decelerate = this.parent.plugins.get('decelerate', true)
+        if (this.horizontal &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate) {
             decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) })
         }
     }
 
-    decelerateVertical()
-    {
-        const decelerate = this.parent.plugins.get('decelerate')
-        if (this.vertical &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate)
-        {
-            decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60)})
+    decelerateVertical() {
+        const decelerate = this.parent.plugins.get('decelerate', true)
+        if (this.vertical &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate) {
+            decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) })
         }
     }
 
-    up()
-    {
-        if (this.horizontal)
-        {
+    up() {
+        if (this.paused) {
+            return
+        }
+        if (this.horizontal) {
             this.decelerateHorizontal()
         }
-        if (this.vertical)
-        {
+        if (this.vertical) {
             this.decelerateVertical()
         }
         this.horizontal = this.vertical = null
     }
 
-    update()
-    {
-        if (this.paused)
-        {
+    update() {
+        if (this.paused) {
             return
         }
 
-        if (this.horizontal || this.vertical)
-        {
+        if (this.horizontal || this.vertical) {
             const center = this.parent.center
-            if (this.horizontal)
-            {
+            if (this.horizontal) {
                 center.x += this.horizontal * this.options.speed
             }
-            if (this.vertical)
-            {
+            if (this.vertical) {
                 center.y += this.vertical * this.options.speed
             }
             this.parent.moveCenter(center)
@@ -603,7 +577,7 @@ export class MouseEdges extends Plugin
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Fri Jul 31 2020 18:19:50 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Thu Sep 17 2020 06:37:45 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>
