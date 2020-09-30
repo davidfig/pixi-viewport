@@ -52633,8 +52633,18 @@
 
 	var commonjsGlobal$2 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
 
-	function createCommonjsModule$2(fn, module) {
-		return module = { exports: {} }, fn(module, module.exports), module.exports;
+	function createCommonjsModule$2(fn, basedir, module) {
+		return module = {
+			path: basedir,
+			exports: {},
+			require: function (path, base) {
+				return commonjsRequire$1(path, (base === undefined || base === null) ? module.path : base);
+			}
+		}, fn(module, module.exports), module.exports;
+	}
+
+	function commonjsRequire$1 () {
+		throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 	}
 
 	var penner$2 = createCommonjsModule$2(function (module, exports) {

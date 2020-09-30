@@ -1,10 +1,8 @@
 import * as PIXI from 'pixi.js'
 import { Viewport } from '../../../'
 
-window.onload = () =>
-{
-    function rand(n: number)
-    {
+window.onload = () => {
+    function rand(n: number) {
         return Math.round(Math.random() * n)
     }
 
@@ -17,8 +15,7 @@ window.onload = () =>
 
     const viewport = new Viewport({ screenWidth: app.view.offsetWidth, screenHeight: app.view.offsetHeight })
     app.stage.addChild(viewport)
-    for (let i = 0; i < 10000; i++)
-    {
+    for (let i = 0; i < 10000; i++) {
         const sprite = new PIXI.Sprite(PIXI.Texture.WHITE)
         viewport.addChild(sprite)
         sprite.tint = rand(0xffffff)

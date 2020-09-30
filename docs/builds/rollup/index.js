@@ -3,12 +3,22 @@
 
 	var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-	function unwrapExports (x) {
+	function getDefaultExportFromCjs (x) {
 		return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 	}
 
-	function createCommonjsModule(fn, module) {
-		return module = { exports: {} }, fn(module, module.exports), module.exports;
+	function createCommonjsModule(fn, basedir, module) {
+		return module = {
+			path: basedir,
+			exports: {},
+			require: function (path, base) {
+				return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+			}
+		}, fn(module, module.exports), module.exports;
+	}
+
+	function commonjsRequire () {
+		throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 	}
 
 	var promise = createCommonjsModule(function (module, exports) {
@@ -352,8 +362,6 @@
 
 	})(typeof window != 'undefined' ? window : typeof commonjsGlobal != 'undefined' ? commonjsGlobal : typeof self != 'undefined' ? self : commonjsGlobal);
 	});
-	var promise_1 = promise.Promise;
-	var promise_2 = promise.Polyfill;
 
 	/*
 	object-assign
@@ -445,8 +453,8 @@
 	};
 
 	/*!
-	 * @pixi/polyfill - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/polyfill - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/polyfill is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -454,7 +462,7 @@
 
 	// Support for IE 9 - 11 which does not include Promises
 	if (!window.Promise) {
-	    window.Promise = promise_2;
+	    window.Promise = promise.Polyfill;
 	}
 
 	// References:
@@ -681,8 +689,8 @@
 	}
 
 	/*!
-	 * @pixi/settings - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/settings - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/settings is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -1297,7 +1305,7 @@
 	});
 
 	var earcut_1 = earcut;
-	var default_1 = earcut;
+	var _default = earcut;
 
 	function earcut(data, holeIndices, dim) {
 
@@ -1973,7 +1981,7 @@
 	    }
 	    return result;
 	};
-	earcut_1.default = default_1;
+	earcut_1.default = _default;
 
 	/*! https://mths.be/punycode v1.4.1 by @mathias */
 
@@ -5112,8 +5120,8 @@
 	}
 
 	/*!
-	 * @pixi/constants - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/constants - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/constants is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -5552,8 +5560,8 @@
 	})(MSAA_QUALITY || (MSAA_QUALITY = {}));
 
 	/*!
-	 * @pixi/utils - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/utils - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/utils is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -5584,7 +5592,7 @@
 	settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
 
 	var saidHello = false;
-	var VERSION = '5.3.0';
+	var VERSION = '5.3.3';
 	/**
 	 * Skips the hello message of renderers that are created after this is run.
 	 *
@@ -5709,7 +5717,7 @@
 	 * PIXI.utils.string2hex("#ffffff"); // returns 0xffffff
 	 * @memberof PIXI.utils
 	 * @function string2hex
-	 * @param {string} - The string color (e.g., `"#ffffff"`)
+	 * @param {string} string - The string color (e.g., `"#ffffff"`)
 	 * @return {number} Number in hexadecimal.
 	 */
 	function string2hex(string) {
@@ -6454,8 +6462,8 @@
 	});
 
 	/*!
-	 * @pixi/math - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/math - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/math is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -8363,8 +8371,8 @@
 	}());
 
 	/*!
-	 * @pixi/display - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/display - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/display is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -10030,8 +10038,8 @@
 	Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
 	/*!
-	 * @pixi/accessibility - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/accessibility - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/accessibility is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -10614,8 +10622,8 @@
 	}());
 
 	/*!
-	 * @pixi/ticker - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/ticker - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/ticker is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -11457,8 +11465,8 @@
 	}());
 
 	/*!
-	 * @pixi/interaction - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/interaction - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/interaction is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -13653,8 +13661,8 @@
 	}(eventemitter3));
 
 	/*!
-	 * @pixi/runner - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/runner - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/runner is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -13849,8 +13857,8 @@
 	});
 
 	/*!
-	 * @pixi/core - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/core - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/core is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -15936,7 +15944,7 @@
 	     *
 	     * @private
 	     */
-	    VideoResource.prototype._onError = function () {
+	    VideoResource.prototype._onError = function (event) {
 	        this.source.removeEventListener('error', this._onError, true);
 	        this.onError.emit(event);
 	    };
@@ -18347,8 +18355,11 @@
 	        state.filters = filters;
 	        state.destinationFrame.width = state.renderTexture.width;
 	        state.destinationFrame.height = state.renderTexture.height;
+	        var destinationFrame = this.tempRect;
+	        destinationFrame.width = state.sourceFrame.width;
+	        destinationFrame.height = state.sourceFrame.height;
 	        state.renderTexture.filterFrame = state.sourceFrame;
-	        renderer.renderTexture.bind(state.renderTexture, state.sourceFrame); // /, state.destinationFrame);
+	        renderer.renderTexture.bind(state.renderTexture, state.sourceFrame, destinationFrame);
 	        renderer.renderTexture.clear();
 	    };
 	    /**
@@ -18421,7 +18432,15 @@
 	     */
 	    FilterSystem.prototype.bindAndClear = function (filterTexture, clearMode) {
 	        if (clearMode === void 0) { clearMode = CLEAR_MODES.CLEAR; }
-	        this.renderer.renderTexture.bind(filterTexture, filterTexture ? filterTexture.filterFrame : null);
+	        if (filterTexture && filterTexture.filterFrame) {
+	            var destinationFrame = this.tempRect;
+	            destinationFrame.width = filterTexture.filterFrame.width;
+	            destinationFrame.height = filterTexture.filterFrame.height;
+	            this.renderer.renderTexture.bind(filterTexture, filterTexture.filterFrame, destinationFrame);
+	        }
+	        else {
+	            this.renderer.renderTexture.bind(filterTexture);
+	        }
 	        // TODO: remove in next major version
 	        if (typeof clearMode === 'boolean') {
 	            clearMode = clearMode ? CLEAR_MODES.CLEAR : CLEAR_MODES.BLEND;
@@ -20220,8 +20239,14 @@
 	    FLOAT_MAT3: 'mat3',
 	    FLOAT_MAT4: 'mat4',
 	    SAMPLER_2D: 'sampler2D',
+	    INT_SAMPLER_2D: 'sampler2D',
+	    UNSIGNED_INT_SAMPLER_2D: 'sampler2D',
 	    SAMPLER_CUBE: 'samplerCube',
+	    INT_SAMPLER_CUBE: 'samplerCube',
+	    UNSIGNED_INT_SAMPLER_CUBE: 'samplerCube',
 	    SAMPLER_2D_ARRAY: 'sampler2DArray',
+	    INT_SAMPLER_2D_ARRAY: 'sampler2DArray',
+	    UNSIGNED_INT_SAMPLER_2D_ARRAY: 'sampler2DArray',
 	};
 	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	function mapType(gl, type) {
@@ -21204,7 +21229,13 @@
 	         * @member {number}
 	         * @protected
 	         */
-	        this._updateID = -1;
+	        this._textureID = -1;
+	        /**
+	         * Tracks Texture frame changes
+	         * @member {number}
+	         * @protected
+	         */
+	        this._updateID = 0;
 	        /**
 	         * Changes frame clamping
 	         * Works with TilingSprite and Mesh
@@ -21241,7 +21272,7 @@
 	        },
 	        set: function (value) {
 	            this._texture = value;
-	            this._updateID = -1;
+	            this._textureID = -1;
 	        },
 	        enumerable: false,
 	        configurable: true
@@ -21276,10 +21307,11 @@
 	            return false;
 	        }
 	        if (!forceUpdate
-	            && this._updateID === tex._updateID) {
+	            && this._textureID === tex._updateID) {
 	            return false;
 	        }
-	        this._updateID = tex._updateID;
+	        this._textureID = tex._updateID;
+	        this._updateID++;
 	        var uvs = tex._uvs;
 	        this.mapCoord.set(uvs.x1 - uvs.x0, uvs.y1 - uvs.y0, uvs.x3 - uvs.x0, uvs.y3 - uvs.y0, uvs.x0, uvs.y0);
 	        var orig = tex.orig;
@@ -21842,7 +21874,9 @@
 	        return _this;
 	    }
 	    /**
-	     * Updates the projection matrix based on a projection frame (which is a rectangle)
+	     * Updates the projection matrix based on a projection frame (which is a rectangle).
+	     *
+	     * Make sure to run `renderer.framebuffer.setViewport(destinationFrame)` after calling this.
 	     *
 	     * @param {PIXI.Rectangle} destinationFrame - The destination frame.
 	     * @param {PIXI.Rectangle} sourceFrame - The source frame.
@@ -21852,6 +21886,7 @@
 	    ProjectionSystem.prototype.update = function (destinationFrame, sourceFrame, resolution, root) {
 	        this.destinationFrame = destinationFrame || this.destinationFrame || this.defaultFrame;
 	        this.sourceFrame = sourceFrame || this.sourceFrame || destinationFrame;
+	        // Calculate object-space to clip-space projection
 	        this.calculateProjection(this.destinationFrame, this.sourceFrame, resolution, root);
 	        if (this.transform) {
 	            this.projectionMatrix.append(this.transform);
@@ -21873,13 +21908,12 @@
 	     * @param {Number} resolution - Resolution
 	     * @param {boolean} root - If is root
 	     */
-	    ProjectionSystem.prototype.calculateProjection = function (destinationFrame, sourceFrame, resolution, root) {
+	    ProjectionSystem.prototype.calculateProjection = function (_destinationFrame, sourceFrame, _resolution, root) {
 	        var pm = this.projectionMatrix;
 	        var sign = !root ? 1 : -1;
-	        // I don't think we will need this line..
-	        // pm.identity();
-	        pm.a = (1 / destinationFrame.width * 2) * resolution;
-	        pm.d = sign * (1 / destinationFrame.height * 2) * resolution;
+	        pm.identity();
+	        pm.a = (1 / sourceFrame.width * 2);
+	        pm.d = sign * (1 / sourceFrame.height * 2);
 	        pm.tx = -1 - (sourceFrame.x * pm.a);
 	        pm.ty = -sign - (sourceFrame.y * pm.d);
 	    };
@@ -21894,7 +21928,12 @@
 	    return ProjectionSystem;
 	}(System));
 
+	// Temporary rectangle for assigned sourceFrame or destinationFrame
 	var tempRect = new Rectangle();
+	// Temporary rectangle for renderTexture destinationFrame
+	var tempRect2 = new Rectangle();
+	// Temporary rectangle for passing the framebuffer viewport
+	var viewportFrame = new Rectangle();
 	/**
 	 * System plugin to the renderer to manage render textures.
 	 *
@@ -21946,55 +21985,62 @@
 	    }
 	    /**
 	     * Bind the current render texture
+	     *
 	     * @param {PIXI.RenderTexture} [renderTexture] - RenderTexture to bind, by default its `null`, the screen
 	     * @param {PIXI.Rectangle} [sourceFrame] - part of screen that is mapped to the renderTexture
 	     * @param {PIXI.Rectangle} [destinationFrame] - part of renderTexture, by default it has the same size as sourceFrame
 	     */
 	    RenderTextureSystem.prototype.bind = function (renderTexture, sourceFrame, destinationFrame) {
 	        if (renderTexture === void 0) { renderTexture = null; }
-	        this.current = renderTexture;
 	        var renderer = this.renderer;
+	        this.current = renderTexture;
+	        var baseTexture;
+	        var framebuffer;
 	        var resolution;
 	        if (renderTexture) {
-	            var baseTexture = renderTexture.baseTexture;
+	            baseTexture = renderTexture.baseTexture;
 	            resolution = baseTexture.resolution;
-	            if (!destinationFrame) {
-	                tempRect.width = baseTexture.realWidth;
-	                tempRect.height = baseTexture.realHeight;
-	                destinationFrame = tempRect;
-	            }
 	            if (!sourceFrame) {
-	                sourceFrame = destinationFrame;
+	                tempRect.width = renderTexture.frame.width;
+	                tempRect.height = renderTexture.frame.height;
+	                sourceFrame = tempRect;
 	            }
-	            this.renderer.framebuffer.bind(baseTexture.framebuffer, destinationFrame);
-	            this.renderer.projection.update(destinationFrame, sourceFrame, resolution, false);
+	            if (!destinationFrame) {
+	                tempRect2.x = renderTexture.frame.x;
+	                tempRect2.y = renderTexture.frame.y;
+	                tempRect2.width = sourceFrame.width;
+	                tempRect2.height = sourceFrame.height;
+	                destinationFrame = tempRect2;
+	            }
+	            framebuffer = baseTexture.framebuffer;
+	        }
+	        else {
+	            resolution = renderer.resolution;
+	            if (!sourceFrame) {
+	                tempRect.width = renderer.screen.width;
+	                tempRect.height = renderer.screen.height;
+	                sourceFrame = tempRect;
+	            }
+	            if (!destinationFrame) {
+	                destinationFrame = tempRect;
+	                destinationFrame.width = sourceFrame.width;
+	                destinationFrame.height = sourceFrame.height;
+	            }
+	        }
+	        viewportFrame.x = destinationFrame.x * resolution;
+	        viewportFrame.y = destinationFrame.y * resolution;
+	        viewportFrame.width = destinationFrame.width * resolution;
+	        viewportFrame.height = destinationFrame.height * resolution;
+	        this.renderer.framebuffer.bind(framebuffer, viewportFrame);
+	        this.renderer.projection.update(destinationFrame, sourceFrame, resolution, !framebuffer);
+	        if (renderTexture) {
 	            this.renderer.mask.setMaskStack(baseTexture.maskStack);
 	        }
 	        else {
-	            resolution = this.renderer.resolution;
-	            // TODO these validation checks happen deeper down..
-	            // thing they can be avoided..
-	            if (!destinationFrame) {
-	                tempRect.width = renderer.width;
-	                tempRect.height = renderer.height;
-	                destinationFrame = tempRect;
-	            }
-	            if (!sourceFrame) {
-	                sourceFrame = destinationFrame;
-	            }
-	            renderer.framebuffer.bind(null, destinationFrame);
-	            // TODO store this..
-	            this.renderer.projection.update(destinationFrame, sourceFrame, resolution, true);
 	            this.renderer.mask.setMaskStack(this.defaultMaskStack);
 	        }
 	        this.sourceFrame.copyFrom(sourceFrame);
-	        this.destinationFrame.x = destinationFrame.x / resolution;
-	        this.destinationFrame.y = destinationFrame.y / resolution;
-	        this.destinationFrame.width = destinationFrame.width / resolution;
-	        this.destinationFrame.height = destinationFrame.height / resolution;
-	        if (sourceFrame === destinationFrame) {
-	            this.sourceFrame.copyFrom(this.destinationFrame);
-	        }
+	        this.destinationFrame.copyFrom(destinationFrame);
 	    };
 	    /**
 	     * Erases the render texture and fills the drawing area with a colour
@@ -23761,7 +23807,7 @@
 	    return Renderer.create(options);
 	}
 
-	var _default = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n    vTextureCoord = aTextureCoord;\n}";
+	var _default$1 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n    vTextureCoord = aTextureCoord;\n}";
 
 	var defaultFilter = "attribute vec2 aVertexPosition;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 vTextureCoord;\n\nuniform vec4 inputSize;\nuniform vec4 outputFrame;\n\nvec4 filterVertexPosition( void )\n{\n    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;\n\n    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);\n}\n\nvec2 filterTextureCoord( void )\n{\n    return aVertexPosition * (outputFrame.zw * inputSize.zw);\n}\n\nvoid main(void)\n{\n    gl_Position = filterVertexPosition();\n    vTextureCoord = filterTextureCoord();\n}\n";
 
@@ -24761,8 +24807,8 @@
 	var BatchRenderer = BatchPluginFactory.create();
 
 	/*!
-	 * @pixi/app - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/app - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/app is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -25032,8 +25078,8 @@
 	Application.registerPlugin(ResizePlugin);
 
 	/*!
-	 * @pixi/extract - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/extract - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/extract is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -25248,11 +25294,28 @@
 	    return Extract;
 	}());
 
-	var parseUri = function parseURI (str, opts) {
+	function parseURI (str, opts) {
+	  if (!str) return undefined
+
 	  opts = opts || {};
 
 	  var o = {
-	    key: ['source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'],
+	    key: [
+	      'source',
+	      'protocol',
+	      'authority',
+	      'userInfo',
+	      'user',
+	      'password',
+	      'host',
+	      'port',
+	      'relative',
+	      'path',
+	      'directory',
+	      'file',
+	      'query',
+	      'anchor'
+	    ],
 	    q: {
 	      name: 'queryKey',
 	      parser: /(?:^|&)([^&=]*)=?([^&]*)/g
@@ -25275,7 +25338,9 @@
 	  });
 
 	  return uri
-	};
+	}
+
+	var parseUri = parseURI;
 
 	var miniSignals = createCommonjsModule(function (module, exports) {
 
@@ -25444,7 +25509,7 @@
 	module.exports = exports['default'];
 	});
 
-	var Signal = unwrapExports(miniSignals);
+	var Signal = /*@__PURE__*/getDefaultExportFromCjs(miniSignals);
 
 	/*!
 	 * resource-loader - v3.0.1
@@ -27774,8 +27839,8 @@
 	};
 
 	/*!
-	 * @pixi/loaders - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/loaders - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/loaders is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -28091,8 +28156,8 @@
 	}());
 
 	/*!
-	 * @pixi/particles - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/particles - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/particles is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -28894,8 +28959,8 @@
 	}(ObjectRenderer));
 
 	/*!
-	 * @pixi/graphics - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/graphics - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/graphics is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -29588,36 +29653,6 @@
 	        /* Outer miter point */
 	        var omx = x1 - ((px - x1) * outerWeight);
 	        var omy = y1 - ((py - y1) * outerWeight);
-	        var p0ix = x0 - (perpx * innerWeight);
-	        var p0iy = y0 - (perpy * innerWeight);
-	        var p2ix = x2 - (perp1x * innerWeight);
-	        var p2iy = y2 - (perp1y * innerWeight);
-	        var p0ox = x0 + (perpx * outerWeight);
-	        var p0oy = y0 + (perpy * outerWeight);
-	        var p2ox = x2 + (perp1x * outerWeight);
-	        var p2oy = y2 + (perp1y * outerWeight);
-	        /* Check if inner miter point is on same side as p1 w.r.t vector p02 */
-	        // Take normal to v02
-	        var n02x = y2 - y0;
-	        var n02y = -(x2 - x0);
-	        // Take dot products of p1 and im with normal to v02
-	        var dotp1 = (n02x * (x1 - p0ix)) + (n02y * (y1 - p0iy));
-	        if (clockwise) {
-	            var dotim = (n02x * (imx - p0ix)) + (n02y * (imy - p0iy));
-	            // Not on same side?, make inner miter point the mid-point instead
-	            if (Math.abs(dotp1 - dotim) > 0.1 && Math.sign(dotp1) !== Math.sign(dotim)) {
-	                imx = (p0ix + p2ix) * 0.5;
-	                imy = (p0iy + p2iy) * 0.5;
-	            }
-	        }
-	        else {
-	            var dotom = (n02x * (omx - p0ix)) + (n02y * (omy - p0iy));
-	            // Not on same side?, make outer miter point the mid-point instead
-	            if (Math.abs(dotp1 - dotom) > 0.1 && Math.sign(dotp1) !== Math.sign(dotom)) {
-	                omx = (p0ox + p2ox) * 0.5;
-	                omy = (p0oy + p2oy) * 0.5;
-	            }
-	        }
 	        if (style.join === LINE_JOIN.BEVEL || pdist / widthSquared > miterLimitSquared) {
 	            if (clockwise) /* rotating at inner angle */ {
 	                verts.push(imx, imy); // inner miter point
@@ -32143,8 +32178,8 @@
 	}(Container));
 
 	/*!
-	 * @pixi/sprite - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/sprite - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/sprite is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -32643,14 +32678,14 @@
 	    });
 	    Object.defineProperty(Sprite.prototype, "anchor", {
 	        /**
-	         * The anchor sets the origin point of the text. The default value is taken from the {@link PIXI.Texture|Texture}
+	         * The anchor sets the origin point of the sprite. The default value is taken from the {@link PIXI.Texture|Texture}
 	         * and passed to the constructor.
 	         *
-	         * The default is `(0,0)`, this means the text's origin is the top left.
+	         * The default is `(0,0)`, this means the sprite's origin is the top left.
 	         *
-	         * Setting the anchor to `(0.5,0.5)` means the text's origin is centered.
+	         * Setting the anchor to `(0.5,0.5)` means the sprite's origin is centered.
 	         *
-	         * Setting the anchor to `(1,1)` would mean the text's origin point will be the bottom right corner.
+	         * Setting the anchor to `(1,1)` would mean the sprite's origin point will be the bottom right corner.
 	         *
 	         * If you pass only single parameter, it will set both x and y to the same value as shown in the example below.
 	         *
@@ -32724,8 +32759,8 @@
 	}(Container));
 
 	/*!
-	 * @pixi/text - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/text - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/text is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -34494,6 +34529,8 @@
 	        // call sprite onTextureUpdate to update scale if _width or _height were set
 	        this._onTextureUpdate();
 	        baseTexture.setRealSize(canvas.width, canvas.height, this._resolution);
+	        // Recursively updates transform of all objects from the root to this one
+	        this._recursivePostUpdateTransform();
 	        this.dirty = false;
 	    };
 	    /**
@@ -34768,8 +34805,8 @@
 	}(Sprite));
 
 	/*!
-	 * @pixi/prepare - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/prepare - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/prepare is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -35394,8 +35431,8 @@
 	}());
 
 	/*!
-	 * @pixi/spritesheet - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/spritesheet - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/spritesheet is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -35725,8 +35762,8 @@
 	}());
 
 	/*!
-	 * @pixi/sprite-tiling - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/sprite-tiling - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/sprite-tiling is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -36126,8 +36163,8 @@
 	}(ObjectRenderer));
 
 	/*!
-	 * @pixi/mesh - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/mesh - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/mesh is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -36834,8 +36871,8 @@
 	}(Geometry));
 
 	/*!
-	 * @pixi/text-bitmap - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/text-bitmap - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/text-bitmap is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -37401,13 +37438,13 @@
 	        this.pageTextures = pageTextures;
 	        // Convert the input Texture, Textures or object
 	        // into a page Texture lookup by "id"
-	        for (var i in data.page) {
+	        for (var i = 0; i < data.page.length; i++) {
 	            var _a = data.page[i], id = _a.id, file = _a.file;
 	            pageTextures[id] = textures instanceof Array
 	                ? textures[i] : textures[file];
 	        }
 	        // parse letters
-	        for (var i in data.char) {
+	        for (var i = 0; i < data.char.length; i++) {
 	            var _b = data.char[i], id = _b.id, page_1 = _b.page;
 	            var _c = data.char[i], x = _c.x, y = _c.y, width = _c.width, height = _c.height, xoffset = _c.xoffset, yoffset = _c.yoffset, xadvance = _c.xadvance;
 	            x /= res;
@@ -37428,7 +37465,7 @@
 	            };
 	        }
 	        // parse kernings
-	        for (var i in data.kerning) {
+	        for (var i = 0; i < data.kerning.length; i++) {
 	            var _d = data.kerning[i], first = _d.first, second = _d.second, amount = _d.amount;
 	            first /= res;
 	            second /= res;
@@ -37501,7 +37538,25 @@
 	    };
 	    /**
 	     * Generates a bitmap-font for the given style and character set. This does not support
-	     * kernings yet.
+	     * kernings yet. With `style` properties, only the following non-layout properties are used:
+	     *
+	     * - {@link PIXI.TextStyle#dropShadow|dropShadow}
+	     * - {@link PIXI.TextStyle#dropShadowDistance|dropShadowDistance}
+	     * - {@link PIXI.TextStyle#dropShadowColor|dropShadowColor}
+	     * - {@link PIXI.TextStyle#dropShadowBlur|dropShadowBlur}
+	     * - {@link PIXI.TextStyle#dropShadowAngle|dropShadowAngle}
+	     * - {@link PIXI.TextStyle#fill|fill}
+	     * - {@link PIXI.TextStyle#fillGradientStops|fillGradientStops}
+	     * - {@link PIXI.TextStyle#fillGradientType|fillGradientType}
+	     * - {@link PIXI.TextStyle#fontFamily|fontFamily}
+	     * - {@link PIXI.TextStyle#fontSize|fontSize}
+	     * - {@link PIXI.TextStyle#fontVariant|fontVariant}
+	     * - {@link PIXI.TextStyle#fontWeight|fontWeight}
+	     * - {@link PIXI.TextStyle#lineJoin|lineJoin}
+	     * - {@link PIXI.TextStyle#miterLimit|miterLimit}
+	     * - {@link PIXI.TextStyle#stroke|stroke}
+	     * - {@link PIXI.TextStyle#strokeThickness|strokeThickness}
+	     * - {@link PIXI.TextStyle#textBaseline|textBaseline}
 	     *
 	     * @param {string} name - The name of the custom font to use with BitmapText.
 	     * @param {object|PIXI.TextStyle} [style] - Style options to render with BitmapFont.
@@ -37574,6 +37629,7 @@
 	                    throw new Error("[BitmapFont] textureHeight " + textureHeight + "px is "
 	                        + ("too small for " + style.fontSize + "px fonts"));
 	                }
+	                --i;
 	                // Create new atlas once current has filled up
 	                canvas = null;
 	                context = null;
@@ -37597,7 +37653,7 @@
 	            // Unique (numeric) ID mapping to this glyph
 	            var id = metrics.text.charCodeAt(0);
 	            // Create a texture holding just the glyph
-	            fontData.char[id] = {
+	            fontData.char.push({
 	                id: id,
 	                page: textures.length - 1,
 	                x: positionX / resolution,
@@ -37609,7 +37665,7 @@
 	                xadvance: Math.ceil(width
 	                    - (style.dropShadow ? style.dropShadowDistance : 0)
 	                    - (style.stroke ? style.strokeThickness : 0)),
-	            };
+	            });
 	            positionX += (textureGlyphWidth + (2 * padding)) * resolution;
 	            positionX = Math.ceil(positionX);
 	        }
@@ -38511,8 +38567,8 @@
 	}());
 
 	/*!
-	 * @pixi/filter-alpha - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/filter-alpha - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/filter-alpha is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -38573,7 +38629,7 @@
 	     */
 	    function AlphaFilter(alpha) {
 	        if (alpha === void 0) { alpha = 1.0; }
-	        var _this = _super.call(this, _default, fragment$4, { uAlpha: 1 }) || this;
+	        var _this = _super.call(this, _default$1, fragment$4, { uAlpha: 1 }) || this;
 	        _this.alpha = alpha;
 	        return _this;
 	    }
@@ -38597,8 +38653,8 @@
 	}(Filter));
 
 	/*!
-	 * @pixi/filter-blur - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/filter-blur - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/filter-blur is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -39421,8 +39477,8 @@
 	}(Filter));
 
 	/*!
-	 * @pixi/filter-color-matrix - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/filter-color-matrix - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/filter-color-matrix is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -39950,8 +40006,8 @@
 	ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
 	/*!
-	 * @pixi/filter-displacement - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/filter-displacement - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/filter-displacement is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -40081,8 +40137,8 @@
 	}(Filter));
 
 	/*!
-	 * @pixi/filter-fxaa - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/filter-fxaa - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/filter-fxaa is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -40142,8 +40198,8 @@
 	}(Filter));
 
 	/*!
-	 * @pixi/filter-noise - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/filter-noise - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/filter-noise is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -40243,8 +40299,8 @@
 	}(Filter));
 
 	/*!
-	 * @pixi/mixin-cache-as-bitmap - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/mixin-cache-as-bitmap - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -40395,14 +40451,10 @@
 	    BaseTexture.addToCache(renderTexture.baseTexture, textureCacheId);
 	    Texture.addToCache(renderTexture, textureCacheId);
 	    // need to set //
-	    var m = _tempMatrix;
-	    m.tx = -bounds.x;
-	    m.ty = -bounds.y;
-	    // reset
-	    this.transform.worldTransform.identity();
+	    var m = this.transform.localTransform.copyTo(_tempMatrix).invert().translate(-bounds.x, -bounds.y);
 	    // set all properties to there original so we can render to a texture
 	    this.render = this._cacheData.originalRender;
-	    renderer.render(this, renderTexture, true, m, true);
+	    renderer.render(this, renderTexture, true, m, false);
 	    // now restore the state be setting the new properties
 	    renderer.projection.transform = cachedProjectionTransform;
 	    renderer.renderTexture.bind(cachedRenderTexture, cachedSourceFrame);
@@ -40563,8 +40615,8 @@
 	};
 
 	/*!
-	 * @pixi/mixin-get-child-by-name - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/mixin-get-child-by-name - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/mixin-get-child-by-name is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -40610,8 +40662,8 @@
 	};
 
 	/*!
-	 * @pixi/mixin-get-global-position - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/mixin-get-global-position - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/mixin-get-global-position is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -40642,8 +40694,8 @@
 	};
 
 	/*!
-	 * @pixi/mesh-extras - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/mesh-extras - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/mesh-extras is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -41362,8 +41414,8 @@
 	}(SimplePlane));
 
 	/*!
-	 * @pixi/sprite-animated - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * @pixi/sprite-animated - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * @pixi/sprite-animated is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -41495,20 +41547,33 @@
 	         */
 	        _this.updateAnchor = false;
 	        /**
-	         * Function to call when an AnimatedSprite finishes playing.
+	         * User-assigned function to call when an AnimatedSprite finishes playing.
 	         *
+	         * @example
+	         * animation.onComplete = function () {
+	         *   // finished!
+	         * };
 	         * @member {Function}
 	         */
 	        _this.onComplete = null;
 	        /**
-	         * Function to call when an AnimatedSprite changes which texture is being rendered.
+	         * User-assigned function to call when an AnimatedSprite changes which texture is being rendered.
 	         *
+	         * @example
+	         * animation.onFrameChange = function () {
+	         *   // updated!
+	         * };
 	         * @member {Function}
 	         */
 	        _this.onFrameChange = null;
 	        /**
-	         * Function to call when `loop` is true, and an AnimatedSprite is played and loops around to start again.
+	         * User-assigned function to call when `loop` is true, and an AnimatedSprite is played and
+	         * loops around to start again.
 	         *
+	         * @example
+	         * animation.onLoop = function () {
+	         *   // looped!
+	         * };
 	         * @member {Function}
 	         */
 	        _this.onLoop = null;
@@ -41805,8 +41870,8 @@
 	}(Sprite));
 
 	/*!
-	 * pixi.js - v5.3.0
-	 * Compiled Thu, 18 Jun 2020 23:27:40 UTC
+	 * pixi.js - v5.3.3
+	 * Compiled Tue, 04 Aug 2020 16:23:09 UTC
 	 *
 	 * pixi.js is licensed under the MIT License.
 	 * http://www.opensource.org/licenses/mit-license
@@ -42011,7 +42076,7 @@
 	         */
 	        InteractionManager: {
 	            get: function () {
-	                deprecation('5.3.0', 'PIXI.accessibility.InteractionManager moved to PIXI.InteractionManager');
+	                deprecation('5.3.0', 'PIXI.interaction.InteractionManager moved to PIXI.InteractionManager');
 	                return PIXI.InteractionManager;
 	            },
 	        },
@@ -42022,7 +42087,7 @@
 	         */
 	        InteractionData: {
 	            get: function () {
-	                deprecation('5.3.0', 'PIXI.accessibility.InteractionData moved to PIXI.InteractionData');
+	                deprecation('5.3.0', 'PIXI.interaction.InteractionData moved to PIXI.InteractionData');
 	                return PIXI.InteractionData;
 	            },
 	        },
@@ -42033,7 +42098,7 @@
 	         */
 	        InteractionEvent: {
 	            get: function () {
-	                deprecation('5.3.0', 'PIXI.accessibility.InteractionEvent moved to PIXI.InteractionEvent');
+	                deprecation('5.3.0', 'PIXI.interaction.InteractionEvent moved to PIXI.InteractionEvent');
 	                return PIXI.InteractionEvent;
 	            },
 	        },
@@ -43100,7 +43165,7 @@
 	 * @name VERSION
 	 * @type {string}
 	 */
-	var VERSION$1 = '5.3.0';
+	var VERSION$1 = '5.3.3';
 	/**
 	 * @namespace PIXI
 	 */
@@ -43195,7 +43260,7 @@
 		autoDetectRenderer: autoDetectRenderer,
 		checkMaxIfStatementsInShader: checkMaxIfStatementsInShader,
 		defaultFilterVertex: defaultFilter,
-		defaultVertex: _default,
+		defaultVertex: _default$1,
 		resources: index,
 		systems: systems,
 		uniformParsers: uniformParsers,
@@ -44659,8 +44724,18 @@
 
 	var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
 
-	function createCommonjsModule$1(fn, module) {
-		return module = { exports: {} }, fn(module, module.exports), module.exports;
+	function createCommonjsModule$1(fn, basedir, module) {
+		return module = {
+			path: basedir,
+			exports: {},
+			require: function (path, base) {
+				return commonjsRequire$1(path, (base === undefined || base === null) ? module.path : base);
+			}
+		}, fn(module, module.exports), module.exports;
+	}
+
+	function commonjsRequire$1 () {
+		throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
 	}
 
 	var penner = createCommonjsModule$1(function (module, exports) {
