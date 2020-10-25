@@ -574,6 +574,13 @@ export class Viewport extends PIXI.Container {
         return this
     }
 
+    set visible(value) {
+        if (!value) {
+            this.input.clear()
+        }
+        super.visible = value
+    }
+
     /**
      * zoom viewport to specific value
      * @param {number} scale value (e.g., 1 would be 100%, 0.25 would be 25%)

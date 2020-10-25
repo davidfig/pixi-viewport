@@ -88,6 +88,15 @@ export class InputManager {
     }
 
     /**
+     * clears all pointer events
+     */
+    clear() {
+        this.isMouseDown = false
+        this.touches = []
+        this.last = null
+    }
+
+    /**
      * @param {number} change
      * @returns whether change exceeds threshold
      */

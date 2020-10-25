@@ -14,8 +14,7 @@ type MovedEventSourceType = 'bounce-x' | 'bounce-y' | 'clamp-x' | 'clamp-y' | 'd
 type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | (string & {})
 type KeyCodeType = 'ControlRight' | 'ControlLeft' | 'ShiftRight' | 'ShiftLeft' | 'AltRight' | 'AltLeft' | (string & {})
 
-interface ViewportOptions
-{
+interface ViewportOptions {
     divWheel?: HTMLElement
     forceHitArea?: PIXI.Rectangle | PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.RoundedRectangle
     interaction?: PIXI.InteractionManager
@@ -31,8 +30,7 @@ interface ViewportOptions
     disableOnContextMenu?: boolean
 }
 
-interface DragOptions
-{
+interface DragOptions {
     direction?: DirectionType
     pressDrag?: boolean
     wheel?: boolean
@@ -46,23 +44,21 @@ interface DragOptions
     ignoreKeyToPressOnTouch?: boolean
 }
 
-interface PinchOptions
-{
+interface PinchOptions {
     percent?: number
     noDrag?: boolean
     center?: PIXI.Point
+    factor?: number
 }
 
-interface Bounds
-{
+interface Bounds {
     x: number
     y: number
     width: number
     height: number
 }
 
-interface ClampOptions
-{
+interface ClampOptions {
     left?: boolean | number
     right?: boolean | number
     top?: boolean | number
@@ -71,15 +67,13 @@ interface ClampOptions
     underflow?: UnderflowType
 }
 
-interface DecelerateOptions
-{
+interface DecelerateOptions {
     friction?: number
     bounce?: number
     minSpeed?: number
 }
 
-interface BounceOptions
-{
+interface BounceOptions {
     sides?: SidesType
     friction?: number
     time?: number
@@ -87,8 +81,7 @@ interface BounceOptions
     underflow: UnderflowType
 }
 
-interface SnapOptions
-{
+interface SnapOptions {
     topLeft?: boolean
     friction?: number
     time?: number
@@ -99,15 +92,13 @@ interface SnapOptions
     forceStart?: boolean
 }
 
-interface FollowOptions
-{
+interface FollowOptions {
     speed?: number
     radius?: number
     acceleration?: number
 }
 
-interface WheelOptions
-{
+interface WheelOptions {
     percent?: number
     reverse?: boolean
     center?: PIXI.Point
@@ -116,8 +107,7 @@ interface WheelOptions
     lineHeight?: number
 }
 
-interface ClampZoomOptions
-{
+interface ClampZoomOptions {
     minWidth?: number
     minHeight?: number
     maxWidth?: number
@@ -126,8 +116,7 @@ interface ClampZoomOptions
     maxScale?: number
 }
 
-interface MouseEdgesOptions
-{
+interface MouseEdgesOptions {
     radius?: number
     distance?: number
     top?: number
@@ -141,8 +130,7 @@ interface MouseEdgesOptions
     allowButtons?: boolean
 }
 
-interface SnapZoomOptions
-{
+interface SnapZoomOptions {
     center?: PIXI.Point
     ease?: string | Function
     forceStart?: boolean
@@ -154,8 +142,7 @@ interface SnapZoomOptions
     width?: number
 }
 
-interface AnimateOptions
-{
+interface AnimateOptions {
     time?: number
     position?: PIXI.Point
     width?: number
@@ -168,57 +155,49 @@ interface AnimateOptions
     removeOnInterrupt?: boolean
 }
 
-interface OutOfBounds
-{
+interface OutOfBounds {
     bottom: boolean
     left: boolean
     right: boolean
     top: boolean
 }
 
-interface ClickEventData
-{
+interface ClickEventData {
     event: PIXI.InteractionEvent
     screen: PIXI.Point
     viewport: Viewport
     world: PIXI.Point
 }
 
-interface WheelData
-{
+interface WheelData {
     dx: number
     dy: number
     dz: number
 }
 
-interface MovedEventData
-{
+interface MovedEventData {
     type: MovedEventSourceType
     viewport: Viewport
 }
 
-interface WheelEventData
-{
+interface WheelEventData {
     viewport: Viewport
     wheel: WheelData
 }
 
-interface ZoomedEventData
-{
+interface ZoomedEventData {
     type: ZoomedEventSourceType
     viewport: Viewport
 }
 
-interface lastViewport
-{
+interface lastViewport {
     scaleX: number
     scaleY: number
     x: number
     y: number
 }
 
-export declare class Viewport extends PIXI.Container
-{
+export declare class Viewport extends PIXI.Container {
     screenWidth: number
     screenHeight: number
 
@@ -253,7 +232,7 @@ export declare class Viewport extends PIXI.Container
     constructor(options?: ViewportOptions)
 
     // Public API
-    ensureVisible(x: number, y: number, width: number, height: number, resizeToFit: boolean) : void
+    ensureVisible(x: number, y: number, width: number, height: number, resizeToFit: boolean): void
 
     removeListeners(): void
     update(elapsed: number): void
@@ -364,8 +343,7 @@ export declare class Viewport extends PIXI.Container
     protected _reset(): void
 }
 
-export declare class Plugin
-{
+export declare class Plugin {
     constructor(viewport: Viewport)
     down(event: PIXI.InteractionEvent): void
     up(event: PIXI.InteractionEvent): void
@@ -378,8 +356,7 @@ export declare class Plugin
     resume(): void
 }
 
-declare class PluginManager
-{
+declare class PluginManager {
     constructor(viewport: Viewport)
     add(type: string, plugin: Plugin, index?: number): void
     get(name: string): Plugin

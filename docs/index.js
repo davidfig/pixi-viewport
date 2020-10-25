@@ -49064,6 +49064,15 @@
 	    }
 
 	    /**
+	     * clears all pointer events
+	     */
+	    clear() {
+	        this.isMouseDown = false;
+	        this.touches = [];
+	        this.last = null;
+	    }
+
+	    /**
 	     * @param {number} change
 	     * @returns whether change exceeds threshold
 	     */
@@ -52022,6 +52031,13 @@
 	        return this
 	    }
 
+	    set visible(value) {
+	        if (!value) {
+	            this.input.clear();
+	        }
+	        super.visible = value;
+	    }
+
 	    /**
 	     * zoom viewport to specific value
 	     * @param {number} scale value (e.g., 1 would be 100%, 0.25 would be 25%)
@@ -53569,6 +53585,7 @@
 	    // const animate2 = () => _viewport.animate({ position: { x: 500, y: 500 }, scale: 1, time: 3000, ease: 'linear', callbackOnComplete: animate3 })
 	    // const animate3 = () => _viewport.animate({ position: { x: 0, y: 0 }, scale: 5, time: 3000, ease: 'linear', callbackOnComplete: animate1 })
 	    // animate1()
+	    _viewport$1.input.clear();
 	}
 
 	function resize()

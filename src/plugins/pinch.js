@@ -3,14 +3,16 @@ import { Plugin } from './plugin'
 /**
  * @typedef {object} PinchOptions
  * @property {boolean} [noDrag] disable two-finger dragging
- * @property {number} [percent=1.0] percent to modify pinch speed
+ * @property {number} [percent=1] percent to modify pinch speed
+ * @property {number} [factor=1] factor to multiply two-finger drag to increase the speed of movement
  * @property {PIXI.Point} [center] place this point at center during zoom instead of center of two fingers
  */
 
 const pinchOptions = {
     noDrag: false,
-    percent: 1.0,
-    center: null
+    percent: 1,
+    center: null,
+    factor: 1,
 }
 
 export class Pinch extends Plugin {
@@ -71,13 +73,13 @@ export class Pinch extends Plugin {
                 }
                 else {
                     const newPoint = this.parent.toGlobal(oldPoint)
-                    this.parent.x += point.x - newPoint.x
-                    this.parent.y += point.y - newPoint.y
+                    this.parent.x += (point.x - newPoint.x) * this.options.factor
+                    this.parent.y += (point.y - newPoint.y) * this.options.factor
                     this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
                 }
                 if (!this.options.noDrag && this.lastCenter) {
-                    this.parent.x += point.x - this.lastCenter.x
-                    this.parent.y += point.y - this.lastCenter.y
+                    this.parent.x += (point.x - this.lastCenter.x) * this.options.factor
+                    this.parent.y += (point.y - this.lastCenter.y) * this.options.factor
                     this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
                 }
                 this.lastCenter = point

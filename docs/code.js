@@ -67,6 +67,7 @@ function viewport()
     // const animate2 = () => _viewport.animate({ position: { x: 500, y: 500 }, scale: 1, time: 3000, ease: 'linear', callbackOnComplete: animate3 })
     // const animate3 = () => _viewport.animate({ position: { x: 0, y: 0 }, scale: 5, time: 3000, ease: 'linear', callbackOnComplete: animate1 })
     // animate1()
+    _viewport.input.clear()
 }
 
 function resize()
