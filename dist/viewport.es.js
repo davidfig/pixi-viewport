@@ -2098,7 +2098,18 @@ class SnapZoom extends Plugin {
 
     createSnapping() {
         const scale = this.parent.scale;
-        this.snapping = { time: 0, startX: scale.x, startY: scale.y, deltaX: this.xScale - scale.x, deltaY: this.yScale - scale.y };
+        const startWorldScreenWidth = this.parent.worldScreenWidth;
+        const startWorldScreenHeight = this.parent.worldScreenHeight;
+        const endWorldScreenWidth = this.parent.screenWidth / this.xScale;
+        const endWorldScreenHeight = this.parent.screenHeight / this.yScale;
+        
+        this.snapping = { 
+            time: 0, 
+            startX: startWorldScreenWidth, 
+            startY: startWorldScreenHeight, 
+            deltaX: endWorldScreenWidth - startWorldScreenWidth, 
+            deltaY: endWorldScreenHeight - startWorldScreenHeight 
+        };
         this.parent.emit('snap-zoom-start', this.parent);
     }
 
@@ -2160,8 +2171,11 @@ class SnapZoom extends Plugin {
             }
             else {
                 const snapping = this.snapping;
-                this.parent.scale.x = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
-                this.parent.scale.y = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
+                const worldScreenWidth = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
+                const worldScreenHeight = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
+
+                this.parent.scale.x = this.parent.screenWidth / worldScreenWidth;
+                this.parent.scale.y = this.parent.screenHeight / worldScreenHeight;
             }
             const clamp = this.parent.plugins.get('clamp-zoom', true);
             if (clamp) {
