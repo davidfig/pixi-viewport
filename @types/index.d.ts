@@ -188,6 +188,7 @@ interface WheelEventData {
 interface ZoomedEventData {
     type: ZoomedEventSourceType
     viewport: Viewport
+    center?: PIXI.Point // used with pinch
 }
 
 interface lastViewport {
