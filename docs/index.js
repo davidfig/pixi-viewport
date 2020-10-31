@@ -49852,7 +49852,7 @@
 	                const change = (1 - last / dist) * this.options.percent * this.parent.scale.x;
 	                this.parent.scale.x += change;
 	                this.parent.scale.y += change;
-	                this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch' });
+	                this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point });
 	                const clamp = this.parent.plugins.get('clamp-zoom', true);
 	                if (clamp) {
 	                    clamp.clamp();
