@@ -50231,7 +50231,7 @@
 	 */
 
 	const decelerateOptions = {
-	    friction: 0.95,
+	    friction: 0.98,
 	    bounce: 0.8,
 	    minSpeed: 0.01
 	};
@@ -50337,7 +50337,7 @@
 	        if (this.paused) {
 	            return
 	        }
-	        
+
 	        /*
 	         * See https://github.com/davidfig/pixi-viewport/issues/271 for math.
 	         *
