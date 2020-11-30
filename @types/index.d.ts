@@ -78,7 +78,8 @@ interface BounceOptions {
     friction?: number
     time?: number
     ease?: string | Function
-    underflow: UnderflowType
+    underflow?: UnderflowType
+    bounceBox?: Bounds
 }
 
 interface SnapOptions {
