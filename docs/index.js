@@ -49253,7 +49253,7 @@
 	     */
 	    get(name, ignorePaused) {
 	        if (ignorePaused) {
-	            if (typeof this.plugins[name] !== 'undefined' && this.plugins[name].paused) {
+	            if (this.plugins[name] && this.plugins[name].paused) {
 	                return null
 	            }
 	        }
@@ -49290,13 +49290,19 @@
 	        }
 	    }
 
+	    /** removes all installed plugins */
+	    removeAll() {
+	        this.plugins = {};
+	        this.sort();
+	    }
+
 	    /**
 	     * removes installed plugin
 	     * @param {string} name of plugin (e.g., 'drag', 'pinch')
 	     */
 	    remove(name) {
 	        if (this.plugins[name]) {
-	            this.plugins[name] = null;
+	            delete this.plugins[name];
 	            this.viewport.emit(name + '-remove');
 	            this.sort();
 	        }
