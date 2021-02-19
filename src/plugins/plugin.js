@@ -1,13 +1,11 @@
 /**
  * derive this class to create user-defined plugins
  */
-export class Plugin
-{
+export class Plugin {
     /**
      * @param {Viewport} parent
      */
-    constructor(parent)
-    {
+    constructor(parent) {
         this.parent = parent
         this.paused = false
     }
@@ -20,8 +18,7 @@ export class Plugin
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    down()
-    {
+    down() {
         return false
     }
 
@@ -30,8 +27,7 @@ export class Plugin
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    move()
-    {
+    move() {
         return false
     }
 
@@ -40,8 +36,7 @@ export class Plugin
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    up()
-    {
+    up() {
         return false
     }
 
@@ -50,8 +45,7 @@ export class Plugin
      * @param {WheelEvent} event
      * @returns {boolean}
      */
-    wheel()
-    {
+    wheel() {
         return false
     }
 
@@ -68,14 +62,12 @@ export class Plugin
     reset() { }
 
     /** pause the plugin */
-    pause()
-    {
+    pause() {
         this.paused = true
     }
 
     /** un-pause the plugin */
-    resume()
-    {
+    resume() {
         this.paused = false
     }
 }
