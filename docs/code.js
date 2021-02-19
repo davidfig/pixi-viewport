@@ -24,14 +24,13 @@ const FADE_TIME = 2000
 
 let _fps, _application, _viewport, _object, _stars = [], domEase
 
-function viewport()
-{
+function viewport() {
     _viewport = _application.stage.addChild(new Viewport(
-    {
-        interaction: _application.renderer.plugins.interaction,
-        passiveWheel: false,
-        stopPropagation: true
-    }))
+        {
+            interaction: _application.renderer.plugins.interaction,
+            passiveWheel: false,
+            stopPropagation: true
+        }))
     _viewport
         .drag({ clampWheel: true })
         .wheel({ smooth: 3 })
@@ -70,22 +69,19 @@ function viewport()
     _viewport.input.clear()
 }
 
-function resize()
-{
+function resize() {
     _application.renderer.resize(window.innerWidth, window.innerHeight)
     _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT)
 }
 
-function addCounter(name)
-{
+function addCounter(name) {
     const counter = new Counter({ side: 'top-left' })
     counter.log(name)
     const e = domEase.add(counter.div, { opacity: 0 })
     e.once('complete', () => counter.div.remove())
 }
 
-function events()
-{
+function events() {
     _viewport.on('clicked', () => addCounter('clicked'))
     _viewport.on('drag-start', () => addCounter('drag-start'))
     _viewport.on('drag-end', () => addCounter('drag-end'))
@@ -106,17 +102,14 @@ function events()
     // _viewport.on('moved', (data) => addCounter('moved: ' + data.type))
 }
 
-function border()
-{
+function border() {
     const line = _viewport.addChild(new PIXI.Graphics())
     line.lineStyle(10, 0xff0000).drawRect(0, 0, _viewport.worldWidth, _viewport.worldHeight)
 }
 
-function stars()
-{
+function stars() {
     const stars = (_viewport.worldWidth * _viewport.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1
-    for (let i = 0; i < stars; i++)
-    {
+    for (let i = 0; i < stars; i++) {
         const star = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
         star.anchor.set(0.5)
         star.tint = Random.color()
@@ -127,16 +120,14 @@ function stars()
     }
 }
 
-function createTarget()
-{
+function createTarget() {
     const x = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER)
     const y = Random.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER)
     const target = ease.target(_object, { x, y }, OBJECT_SPEED, { wait: Random.chance(0.75) ? Random.range(500, 3000) : null })
     target.once('complete', createTarget)
 }
 
-function object()
-{
+function object() {
     _object = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
     _object.anchor.set(0.5)
     _object.tint = 0
@@ -146,12 +137,9 @@ function object()
     createTarget()
 }
 
-function click(data)
-{
-    for (let star of _stars)
-    {
-        if (star.containsPoint(data.screen))
-        {
+function click(data) {
+    for (let star of _stars) {
+        if (star.containsPoint(data.screen)) {
             ease.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true })
             return
         }
@@ -164,8 +152,7 @@ function click(data)
     fade.on('done', () => _viewport.removeChild(sprite))
 }
 
-function drawWorld()
-{
+function drawWorld() {
     ease.removeAll()
     _viewport.removeChildren()
     stars()
@@ -174,8 +161,7 @@ function drawWorld()
     _viewport.moveCorner(0, 0)
 }
 
-function API()
-{
+function API() {
     const button = document.createElement('button')
     document.body.appendChild(button)
     button.innerText = 'API Documentation'
@@ -189,8 +175,7 @@ function API()
     clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
 }
 
-window.onload = function()
-{
+window.onload = function() {
     _fps = new FPS({ side: 'bottom-left' })
     _application = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
     document.body.appendChild(_application.view)
@@ -205,8 +190,7 @@ window.onload = function()
     drawWorld()
     events()
 
-    PIXI.Ticker.shared.add(() =>
-    {
+    PIXI.Ticker.shared.add(() => {
         _fps.frame()
         // test dirty
         // if (_viewport.dirty)
