@@ -69,12 +69,12 @@ export class Drag extends Plugin {
      * @param {array} codes - key codes that can be used to trigger drag event
      */
     handleKeyPresses(codes) {
-        this.parent.addEventListener('keydown', e => {
+        window.addEventListener('keydown', e => {
             if (codes.includes(e.code))
                 this.keyIsPressed = true
         })
 
-        this.parent.addEventListener('keyup', e => {
+        window.addEventListener('keyup', e => {
             if (codes.includes(e.code))
                 this.keyIsPressed = false
         })
