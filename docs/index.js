@@ -49500,6 +49500,7 @@
 	 * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
 	 * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
 	 * @property {boolean} [ignoreKeyToPressOnTouch=false] ignore keyToPress for touch events
+	 * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
 	 */
 
 	const dragOptions = {
@@ -49513,7 +49514,8 @@
 	    factor: 1,
 	    mouseButtons: 'all',
 	    keyToPress: null,
-	    ignoreKeyToPressOnTouch: false
+	    ignoreKeyToPressOnTouch: false,
+	    lineHeight: 20,
 	};
 
 	/**
@@ -49705,11 +49707,13 @@
 	        if (this.options.wheel) {
 	            const wheel = this.parent.plugins.get('wheel', true);
 	            if (!wheel) {
+	                const step = event.deltaMode ? this.options.lineHeight : 1;
+	                console.log(step);
 	                if (this.xDirection) {
-	                    this.parent.x += event.deltaX * this.options.wheelScroll * this.reverse;
+	                    this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
 	                }
 	                if (this.yDirection) {
-	                    this.parent.y += event.deltaY * this.options.wheelScroll * this.reverse;
+	                    this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
 	                }
 	                if (this.options.clampWheel) {
 	                    this.clamp();
@@ -53583,7 +53587,7 @@
 	            stopPropagation: true
 	        }));
 	    _viewport$1
-	        .drag({ clampWheel: true })
+	        .drag({ clampWheel: false })
 	        // .wheel({ smooth: 3 })
 	        .pinch()
 	        .decelerate()

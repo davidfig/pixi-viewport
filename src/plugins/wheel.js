@@ -55,8 +55,7 @@ export class Wheel extends Plugin {
             }
             if (this.options.center) {
                 this.parent.moveCenter(this.options.center)
-            }
-            else {
+            } else {
                 const newPoint = this.parent.toGlobal(oldPoint)
                 this.parent.x += point.x - newPoint.x
                 this.parent.y += point.y - newPoint.y
@@ -89,8 +88,7 @@ export class Wheel extends Plugin {
             }
             this.smoothingCount = 0
             this.smoothingCenter = point
-        }
-        else {
+        } else {
             let oldPoint
             if (!this.options.center) {
                 oldPoint = this.parent.toLocal(point)
@@ -104,8 +102,7 @@ export class Wheel extends Plugin {
             }
             if (this.options.center) {
                 this.parent.moveCenter(this.options.center)
-            }
-            else {
+            } else {
                 const newPoint = this.parent.toGlobal(oldPoint)
                 this.parent.x += point.x - newPoint.x
                 this.parent.y += point.y - newPoint.y

@@ -32,7 +32,7 @@ function viewport() {
             stopPropagation: true
         }))
     _viewport
-        .drag({ clampWheel: true })
+        .drag({ clampWheel: false })
         // .wheel({ smooth: 3 })
         .pinch()
         .decelerate()
