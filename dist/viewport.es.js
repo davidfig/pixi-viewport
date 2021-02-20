@@ -278,7 +278,7 @@ class PluginManager {
      */
     get(name, ignorePaused) {
         if (ignorePaused) {
-            if (typeof this.plugins[name] !== 'undefined' && this.plugins[name].paused) {
+            if (this.plugins[name] && this.plugins[name].paused) {
                 return null
             }
         }
@@ -315,13 +315,19 @@ class PluginManager {
         }
     }
 
+    /** removes all installed plugins */
+    removeAll() {
+        this.plugins = {};
+        this.sort();
+    }
+
     /**
      * removes installed plugin
      * @param {string} name of plugin (e.g., 'drag', 'pinch')
      */
     remove(name) {
         if (this.plugins[name]) {
-            this.plugins[name] = null;
+            delete this.plugins[name];
             this.viewport.emit(name + '-remove');
             this.sort();
         }
@@ -428,13 +434,11 @@ class PluginManager {
 /**
  * derive this class to create user-defined plugins
  */
-class Plugin
-{
+class Plugin {
     /**
      * @param {Viewport} parent
      */
-    constructor(parent)
-    {
+    constructor(parent) {
         this.parent = parent;
         this.paused = false;
     }
@@ -447,8 +451,7 @@ class Plugin
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    down()
-    {
+    down() {
         return false
     }
 
@@ -457,8 +460,7 @@ class Plugin
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    move()
-    {
+    move() {
         return false
     }
 
@@ -467,8 +469,7 @@ class Plugin
      * @param {PIXI.InteractionEvent} event
      * @returns {boolean}
      */
-    up()
-    {
+    up() {
         return false
     }
 
@@ -477,8 +478,7 @@ class Plugin
      * @param {WheelEvent} event
      * @returns {boolean}
      */
-    wheel()
-    {
+    wheel() {
         return false
     }
 
@@ -495,14 +495,12 @@ class Plugin
     reset() { }
 
     /** pause the plugin */
-    pause()
-    {
+    pause() {
         this.paused = true;
     }
 
     /** un-pause the plugin */
-    resume()
-    {
+    resume() {
         this.paused = false;
     }
 }
@@ -527,6 +525,7 @@ class Plugin
  * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
  * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
  * @property {boolean} [ignoreKeyToPressOnTouch=false] ignore keyToPress for touch events
+ * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
  */
 
 const dragOptions = {
@@ -540,7 +539,8 @@ const dragOptions = {
     factor: 1,
     mouseButtons: 'all',
     keyToPress: null,
-    ignoreKeyToPressOnTouch: false
+    ignoreKeyToPressOnTouch: false,
+    lineHeight: 20,
 };
 
 /**
@@ -572,12 +572,12 @@ class Drag extends Plugin {
      * @param {array} codes - key codes that can be used to trigger drag event
      */
     handleKeyPresses(codes) {
-        parent.addEventListener("keydown", e => {
+        this.parent.addEventListener('keydown', e => {
             if (codes.includes(e.code))
                 this.keyIsPressed = true;
         });
 
-        parent.addEventListener("keyup", e => {
+        this.parent.addEventListener('keyup', e => {
             if (codes.includes(e.code))
                 this.keyIsPressed = false;
         });
@@ -590,8 +590,7 @@ class Drag extends Plugin {
     mouseButtons(buttons) {
         if (!buttons || buttons === 'all') {
             this.mouse = [true, true, true];
-        }
-        else {
+        } else {
             this.mouse = [
                 buttons.indexOf('left') === -1 ? false : true,
                 buttons.indexOf('middle') === -1 ? false : true,
@@ -605,8 +604,7 @@ class Drag extends Plugin {
         if (clamp === 'center') {
             this.underflowX = 0;
             this.underflowY = 0;
-        }
-        else {
+        } else {
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
         }
@@ -649,8 +647,7 @@ class Drag extends Plugin {
             this.last = { x: event.data.global.x, y: event.data.global.y };
             this.current = event.data.pointerId;
             return true
-        }
-        else {
+        } else {
             this.last = null;
         }
     }
@@ -689,8 +686,7 @@ class Drag extends Plugin {
                     this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
                     return true
                 }
-            }
-            else {
+            } else {
                 this.moved = false;
             }
         }
@@ -713,8 +709,7 @@ class Drag extends Plugin {
             }
             this.moved = false;
             return true
-        }
-        else if (this.last) {
+        } else if (this.last) {
             if (this.moved) {
                 const screen = new Point(this.last.x, this.last.y);
                 this.parent.emit('drag-end', { event: event, screen, world: this.parent.toWorld(screen), viewport: this.parent });
@@ -737,11 +732,12 @@ class Drag extends Plugin {
         if (this.options.wheel) {
             const wheel = this.parent.plugins.get('wheel', true);
             if (!wheel) {
+                const step = event.deltaMode ? this.options.lineHeight : 1;
                 if (this.xDirection) {
-                    this.parent.x += event.deltaX * this.options.wheelScroll * this.reverse;
+                    this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
                 }
                 if (this.yDirection) {
-                    this.parent.y += event.deltaY * this.options.wheelScroll * this.reverse;
+                    this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
                 }
                 if (this.options.clampWheel) {
                     this.clamp();
@@ -766,22 +762,20 @@ class Drag extends Plugin {
         if (this.options.clampWheel !== 'y') {
             if (this.parent.screenWorldWidth < this.parent.screenWidth) {
                 switch (this.underflowX) {
-                    case -1:
-                        this.parent.x = 0;
-                        break
-                    case 1:
-                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth);
-                        break
-                    default:
-                        this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                case -1:
+                    this.parent.x = 0;
+                    break
+                case 1:
+                    this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth);
+                    break
+                default:
+                    this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
                 }
-            }
-            else {
+            } else {
                 if (this.parent.left < 0) {
                     this.parent.x = 0;
                     decelerate.x = 0;
-                }
-                else if (this.parent.right > this.parent.worldWidth) {
+                } else if (this.parent.right > this.parent.worldWidth) {
                     this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth;
                     decelerate.x = 0;
                 }
@@ -790,17 +784,16 @@ class Drag extends Plugin {
         if (this.options.clampWheel !== 'x') {
             if (this.parent.screenWorldHeight < this.parent.screenHeight) {
                 switch (this.underflowY) {
-                    case -1:
-                        this.parent.y = 0;
-                        break
-                    case 1:
-                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                        break
-                    default:
-                        this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                case -1:
+                    this.parent.y = 0;
+                    break
+                case 1:
+                    this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                    break
+                default:
+                    this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
                 }
-            }
-            else {
+            } else {
                 if (this.parent.top < 0) {
                     this.parent.y = 0;
                     decelerate.y = 0;
@@ -2389,8 +2382,7 @@ class Wheel extends Plugin {
             }
             if (this.options.center) {
                 this.parent.moveCenter(this.options.center);
-            }
-            else {
+            } else {
                 const newPoint = this.parent.toGlobal(oldPoint);
                 this.parent.x += point.x - newPoint.x;
                 this.parent.y += point.y - newPoint.y;
@@ -2423,8 +2415,7 @@ class Wheel extends Plugin {
             };
             this.smoothingCount = 0;
             this.smoothingCenter = point;
-        }
-        else {
+        } else {
             let oldPoint;
             if (!this.options.center) {
                 oldPoint = this.parent.toLocal(point);
@@ -2438,8 +2429,7 @@ class Wheel extends Plugin {
             }
             if (this.options.center) {
                 this.parent.moveCenter(this.options.center);
-            }
-            else {
+            } else {
                 const newPoint = this.parent.toGlobal(oldPoint);
                 this.parent.x += point.x - newPoint.x;
                 this.parent.y += point.y - newPoint.y;

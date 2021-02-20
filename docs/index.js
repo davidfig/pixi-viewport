@@ -49708,7 +49708,6 @@
 	            const wheel = this.parent.plugins.get('wheel', true);
 	            if (!wheel) {
 	                const step = event.deltaMode ? this.options.lineHeight : 1;
-	                console.log(step);
 	                if (this.xDirection) {
 	                    this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
 	                }
@@ -51096,8 +51095,7 @@
 	            }
 	            if (this.options.center) {
 	                this.parent.moveCenter(this.options.center);
-	            }
-	            else {
+	            } else {
 	                const newPoint = this.parent.toGlobal(oldPoint);
 	                this.parent.x += point.x - newPoint.x;
 	                this.parent.y += point.y - newPoint.y;
@@ -51130,8 +51128,7 @@
 	            };
 	            this.smoothingCount = 0;
 	            this.smoothingCenter = point;
-	        }
-	        else {
+	        } else {
 	            let oldPoint;
 	            if (!this.options.center) {
 	                oldPoint = this.parent.toLocal(point);
@@ -51145,8 +51142,7 @@
 	            }
 	            if (this.options.center) {
 	                this.parent.moveCenter(this.options.center);
-	            }
-	            else {
+	            } else {
 	                const newPoint = this.parent.toGlobal(oldPoint);
 	                this.parent.x += point.x - newPoint.x;
 	                this.parent.y += point.y - newPoint.y;
@@ -52605,13 +52601,11 @@
 	/**
 	 * derive this class to create user-defined plugins
 	 */
-	class Plugin$1
-	{
+	class Plugin$1 {
 	    /**
 	     * @param {Viewport} parent
 	     */
-	    constructor(parent)
-	    {
+	    constructor(parent) {
 	        this.parent = parent;
 	        this.paused = false;
 	    }
@@ -52624,8 +52618,7 @@
 	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
-	    down()
-	    {
+	    down() {
 	        return false
 	    }
 
@@ -52634,8 +52627,7 @@
 	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
-	    move()
-	    {
+	    move() {
 	        return false
 	    }
 
@@ -52644,8 +52636,7 @@
 	     * @param {PIXI.InteractionEvent} event
 	     * @returns {boolean}
 	     */
-	    up()
-	    {
+	    up() {
 	        return false
 	    }
 
@@ -52654,8 +52645,7 @@
 	     * @param {WheelEvent} event
 	     * @returns {boolean}
 	     */
-	    wheel()
-	    {
+	    wheel() {
 	        return false
 	    }
 
@@ -52672,14 +52662,12 @@
 	    reset() { }
 
 	    /** pause the plugin */
-	    pause()
-	    {
+	    pause() {
 	        this.paused = true;
 	    }
 
 	    /** un-pause the plugin */
-	    resume()
-	    {
+	    resume() {
 	        this.paused = false;
 	    }
 	}
