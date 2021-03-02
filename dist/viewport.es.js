@@ -187,6 +187,11 @@ class InputManager {
             return
         }
 
+        // do not handle events coming from other elements
+        if (this.viewport.options.interaction && this.viewport.options.interaction.interactionDOMElement !== event.target) {
+            return
+        }
+
         // only handle wheel events where the mouse is over the viewport
         const point = this.viewport.toLocal(this.getPointerPosition(event));
         if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom) {
