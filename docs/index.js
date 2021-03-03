@@ -75,7 +75,7 @@
   // other code modifying setTimeout (like sinon.useFakeTimers())
   var setTimeoutFunc = setTimeout;
 
-  function isArray(x) {
+  function isArray$2(x) {
     return Boolean(x && typeof x.length !== 'undefined');
   }
 
@@ -236,7 +236,7 @@
 
   Promise$1.all = function(arr) {
     return new Promise$1(function(resolve, reject) {
-      if (!isArray(arr)) {
+      if (!isArray$2(arr)) {
         return reject(new TypeError('Promise.all accepts an array'));
       }
 
@@ -294,7 +294,7 @@
 
   Promise$1.race = function(arr) {
     return new Promise$1(function(resolve, reject) {
-      if (!isArray(arr)) {
+      if (!isArray$2(arr)) {
         return reject(new TypeError('Promise.race accepts an array'));
       }
 
@@ -329,7 +329,7 @@
   */
   /* eslint-disable no-unused-vars */
   var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-  var hasOwnProperty = Object.prototype.hasOwnProperty;
+  var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
   function toObject(val) {
@@ -393,7 +393,7 @@
   		from = Object(arguments[s]);
 
   		for (var key in from) {
-  			if (hasOwnProperty.call(from, key)) {
+  			if (hasOwnProperty$1.call(from, key)) {
   				to[key] = from[key];
   			}
   		}
@@ -547,7 +547,7 @@
   function createMatch(userAgent) {
       return function (regex) { return regex.test(userAgent); };
   }
-  function isMobile(param) {
+  function isMobile$1(param) {
       var nav = {
           userAgent: '',
           platform: '',
@@ -656,7 +656,7 @@
    */
 
   // The ESM/CJS versions of ismobilejs only
-  var isMobile$1 = isMobile(self.navigator);
+  var isMobile = isMobile$1(self.navigator);
 
   /**
    * The maximum recommended texture units to use.
@@ -673,8 +673,8 @@
    */
   function maxRecommendedTextures(max) {
       var allowMax = true;
-      if (isMobile$1.tablet || isMobile$1.phone) {
-          if (isMobile$1.apple.device) {
+      if (isMobile.tablet || isMobile.phone) {
+          if (isMobile.apple.device) {
               var match = (navigator.userAgent).match(/OS (\d+)_(\d+)?/);
               if (match) {
                   var majorVersion = parseInt(match[1], 10);
@@ -684,7 +684,7 @@
                   }
               }
           }
-          if (isMobile$1.android.device) {
+          if (isMobile.android.device) {
               var match = (navigator.userAgent).match(/Android\s([0-9.]*)/);
               if (match) {
                   var majorVersion = parseInt(match[1], 10);
@@ -707,7 +707,7 @@
    * @returns {boolean}
    */
   function canUploadSameBuffer() {
-      return !isMobile$1.apple.device;
+      return !isMobile.apple.device;
   }
 
   /**
@@ -893,7 +893,7 @@
        * @type {PIXI.PRECISION}
        * @default PIXI.PRECISION.MEDIUM
        */
-      PRECISION_FRAGMENT: isMobile$1.apple.device ? 'highp' : 'mediump',
+      PRECISION_FRAGMENT: isMobile.apple.device ? 'highp' : 'mediump',
       /**
        * Can we upload the same buffer in a single frame?
        *
@@ -927,20 +927,10 @@
       ROUND_PIXELS: false,
   };
 
-  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+  var commonjsGlobal$2 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   function getDefaultExportFromCjs (x) {
   	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-  }
-
-  function createCommonjsModule(fn, basedir, module) {
-  	return module = {
-  		path: basedir,
-  		exports: {},
-  		require: function (path, base) {
-  			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-  		}
-  	}, fn(module, module.exports), module.exports;
   }
 
   function getAugmentedNamespace(n) {
@@ -958,11 +948,12 @@
   	return a;
   }
 
-  function commonjsRequire () {
-  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+  function createCommonjsModule$2(fn) {
+    var module = { exports: {} };
+  	return fn(module, module.exports), module.exports;
   }
 
-  var eventemitter3 = createCommonjsModule(function (module) {
+  var eventemitter3$1 = createCommonjsModule$2(function (module) {
 
   var has = Object.prototype.hasOwnProperty
     , prefix = '~';
@@ -1792,10 +1783,10 @@
 
   // check if two segments intersect
   function intersects(p1, q1, p2, q2) {
-      var o1 = sign(area(p1, q1, p2));
-      var o2 = sign(area(p1, q1, q2));
-      var o3 = sign(area(p2, q2, p1));
-      var o4 = sign(area(p2, q2, q1));
+      var o1 = sign$1(area(p1, q1, p2));
+      var o2 = sign$1(area(p1, q1, q2));
+      var o3 = sign$1(area(p2, q2, p1));
+      var o4 = sign$1(area(p2, q2, q1));
 
       if (o1 !== o2 && o3 !== o4) return true; // general case
 
@@ -1812,7 +1803,7 @@
       return q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) && q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y);
   }
 
-  function sign(num) {
+  function sign$1(num) {
       return num > 0 ? 1 : num < 0 ? -1 : 0;
   }
 
@@ -2029,7 +2020,7 @@
    * item.
    * @returns {Array} A new array of values returned by the callback function.
    */
-  function map(array, fn) {
+  function map$4(array, fn) {
     var length = array.length;
     var result = [];
     while (length--) {
@@ -2060,7 +2051,7 @@
     // Avoid `split(regex)` for IE8 compatibility. See #17.
     string = string.replace(regexSeparators, '\x2E');
     var labels = string.split('.');
-    var encoded = map(labels, fn).join('.');
+    var encoded = map$4(labels, fn).join('.');
     return result + encoded;
   }
 
@@ -2276,7 +2267,7 @@
   var revLookup = [];
   var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
   var inited = false;
-  function init () {
+  function init$1 () {
     inited = true;
     var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
     for (var i = 0, len = code.length; i < len; ++i) {
@@ -2290,7 +2281,7 @@
 
   function toByteArray (b64) {
     if (!inited) {
-      init();
+      init$1();
     }
     var i, j, l, tmp, placeHolders, arr;
     var len = b64.length;
@@ -2349,7 +2340,7 @@
 
   function fromByteArray (uint8) {
     if (!inited) {
-      init();
+      init$1();
     }
     var tmp;
     var len = uint8.length;
@@ -2499,12 +2490,12 @@
    * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
    * get the Object implementation, which is slower but behaves correctly.
    */
-  Buffer.TYPED_ARRAY_SUPPORT = global$1.TYPED_ARRAY_SUPPORT !== undefined
+  Buffer$1.TYPED_ARRAY_SUPPORT = global$1.TYPED_ARRAY_SUPPORT !== undefined
     ? global$1.TYPED_ARRAY_SUPPORT
     : true;
 
   function kMaxLength () {
-    return Buffer.TYPED_ARRAY_SUPPORT
+    return Buffer$1.TYPED_ARRAY_SUPPORT
       ? 0x7fffffff
       : 0x3fffffff
   }
@@ -2513,14 +2504,14 @@
     if (kMaxLength() < length) {
       throw new RangeError('Invalid typed array length')
     }
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       // Return an augmented `Uint8Array` instance, for best performance
       that = new Uint8Array(length);
-      that.__proto__ = Buffer.prototype;
+      that.__proto__ = Buffer$1.prototype;
     } else {
       // Fallback: Return an object instance of the Buffer class
       if (that === null) {
-        that = new Buffer(length);
+        that = new Buffer$1(length);
       }
       that.length = length;
     }
@@ -2538,9 +2529,9 @@
    * The `Uint8Array` prototype remains unmodified.
    */
 
-  function Buffer (arg, encodingOrOffset, length) {
-    if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
-      return new Buffer(arg, encodingOrOffset, length)
+  function Buffer$1 (arg, encodingOrOffset, length) {
+    if (!Buffer$1.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer$1)) {
+      return new Buffer$1(arg, encodingOrOffset, length)
     }
 
     // Common case.
@@ -2555,11 +2546,11 @@
     return from(this, arg, encodingOrOffset, length)
   }
 
-  Buffer.poolSize = 8192; // not used by this implementation
+  Buffer$1.poolSize = 8192; // not used by this implementation
 
   // TODO: Legacy, not needed anymore. Remove in next major version.
-  Buffer._augment = function (arr) {
-    arr.__proto__ = Buffer.prototype;
+  Buffer$1._augment = function (arr) {
+    arr.__proto__ = Buffer$1.prototype;
     return arr
   };
 
@@ -2587,13 +2578,13 @@
    * Buffer.from(buffer)
    * Buffer.from(arrayBuffer[, byteOffset[, length]])
    **/
-  Buffer.from = function (value, encodingOrOffset, length) {
+  Buffer$1.from = function (value, encodingOrOffset, length) {
     return from(null, value, encodingOrOffset, length)
   };
 
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    Buffer.prototype.__proto__ = Uint8Array.prototype;
-    Buffer.__proto__ = Uint8Array;
+  if (Buffer$1.TYPED_ARRAY_SUPPORT) {
+    Buffer$1.prototype.__proto__ = Uint8Array.prototype;
+    Buffer$1.__proto__ = Uint8Array;
   }
 
   function assertSize (size) {
@@ -2624,14 +2615,14 @@
    * Creates a new filled Buffer instance.
    * alloc(size[, fill[, encoding]])
    **/
-  Buffer.alloc = function (size, fill, encoding) {
+  Buffer$1.alloc = function (size, fill, encoding) {
     return alloc(null, size, fill, encoding)
   };
 
   function allocUnsafe (that, size) {
     assertSize(size);
     that = createBuffer(that, size < 0 ? 0 : checked(size) | 0);
-    if (!Buffer.TYPED_ARRAY_SUPPORT) {
+    if (!Buffer$1.TYPED_ARRAY_SUPPORT) {
       for (var i = 0; i < size; ++i) {
         that[i] = 0;
       }
@@ -2642,13 +2633,13 @@
   /**
    * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
    * */
-  Buffer.allocUnsafe = function (size) {
+  Buffer$1.allocUnsafe = function (size) {
     return allocUnsafe(null, size)
   };
   /**
    * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
    */
-  Buffer.allocUnsafeSlow = function (size) {
+  Buffer$1.allocUnsafeSlow = function (size) {
     return allocUnsafe(null, size)
   };
 
@@ -2657,7 +2648,7 @@
       encoding = 'utf8';
     }
 
-    if (!Buffer.isEncoding(encoding)) {
+    if (!Buffer$1.isEncoding(encoding)) {
       throw new TypeError('"encoding" must be a valid string encoding')
     }
 
@@ -2704,10 +2695,10 @@
       array = new Uint8Array(array, byteOffset, length);
     }
 
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       // Return an augmented `Uint8Array` instance, for best performance
       that = array;
-      that.__proto__ = Buffer.prototype;
+      that.__proto__ = Buffer$1.prototype;
     } else {
       // Fallback: Return an object instance of the Buffer class
       that = fromArrayLike(that, array);
@@ -2754,12 +2745,12 @@
     }
     return length | 0
   }
-  Buffer.isBuffer = isBuffer;
+  Buffer$1.isBuffer = isBuffer;
   function internalIsBuffer (b) {
     return !!(b != null && b._isBuffer)
   }
 
-  Buffer.compare = function compare (a, b) {
+  Buffer$1.compare = function compare (a, b) {
     if (!internalIsBuffer(a) || !internalIsBuffer(b)) {
       throw new TypeError('Arguments must be Buffers')
     }
@@ -2782,7 +2773,7 @@
     return 0
   };
 
-  Buffer.isEncoding = function isEncoding (encoding) {
+  Buffer$1.isEncoding = function isEncoding (encoding) {
     switch (String(encoding).toLowerCase()) {
       case 'hex':
       case 'utf8':
@@ -2801,13 +2792,13 @@
     }
   };
 
-  Buffer.concat = function concat (list, length) {
+  Buffer$1.concat = function concat (list, length) {
     if (!isArray$1(list)) {
       throw new TypeError('"list" argument must be an Array of Buffers')
     }
 
     if (list.length === 0) {
-      return Buffer.alloc(0)
+      return Buffer$1.alloc(0)
     }
 
     var i;
@@ -2818,7 +2809,7 @@
       }
     }
 
-    var buffer = Buffer.allocUnsafe(length);
+    var buffer = Buffer$1.allocUnsafe(length);
     var pos = 0;
     for (i = 0; i < list.length; ++i) {
       var buf = list[i];
@@ -2874,7 +2865,7 @@
       }
     }
   }
-  Buffer.byteLength = byteLength;
+  Buffer$1.byteLength = byteLength;
 
   function slowToString (encoding, start, end) {
     var loweredCase = false;
@@ -2948,7 +2939,7 @@
 
   // The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
   // Buffer instances.
-  Buffer.prototype._isBuffer = true;
+  Buffer$1.prototype._isBuffer = true;
 
   function swap (b, n, m) {
     var i = b[n];
@@ -2956,7 +2947,7 @@
     b[m] = i;
   }
 
-  Buffer.prototype.swap16 = function swap16 () {
+  Buffer$1.prototype.swap16 = function swap16 () {
     var len = this.length;
     if (len % 2 !== 0) {
       throw new RangeError('Buffer size must be a multiple of 16-bits')
@@ -2967,7 +2958,7 @@
     return this
   };
 
-  Buffer.prototype.swap32 = function swap32 () {
+  Buffer$1.prototype.swap32 = function swap32 () {
     var len = this.length;
     if (len % 4 !== 0) {
       throw new RangeError('Buffer size must be a multiple of 32-bits')
@@ -2979,7 +2970,7 @@
     return this
   };
 
-  Buffer.prototype.swap64 = function swap64 () {
+  Buffer$1.prototype.swap64 = function swap64 () {
     var len = this.length;
     if (len % 8 !== 0) {
       throw new RangeError('Buffer size must be a multiple of 64-bits')
@@ -2993,20 +2984,20 @@
     return this
   };
 
-  Buffer.prototype.toString = function toString () {
+  Buffer$1.prototype.toString = function toString () {
     var length = this.length | 0;
     if (length === 0) return ''
     if (arguments.length === 0) return utf8Slice(this, 0, length)
     return slowToString.apply(this, arguments)
   };
 
-  Buffer.prototype.equals = function equals (b) {
+  Buffer$1.prototype.equals = function equals (b) {
     if (!internalIsBuffer(b)) throw new TypeError('Argument must be a Buffer')
     if (this === b) return true
-    return Buffer.compare(this, b) === 0
+    return Buffer$1.compare(this, b) === 0
   };
 
-  Buffer.prototype.inspect = function inspect () {
+  Buffer$1.prototype.inspect = function inspect () {
     var str = '';
     var max = INSPECT_MAX_BYTES;
     if (this.length > 0) {
@@ -3016,7 +3007,7 @@
     return '<Buffer ' + str + '>'
   };
 
-  Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+  Buffer$1.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
     if (!internalIsBuffer(target)) {
       throw new TypeError('Argument must be a Buffer')
     }
@@ -3115,7 +3106,7 @@
 
     // Normalize val
     if (typeof val === 'string') {
-      val = Buffer.from(val, encoding);
+      val = Buffer$1.from(val, encoding);
     }
 
     // Finally, search either indexOf (if dir is true) or lastIndexOf
@@ -3127,7 +3118,7 @@
       return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
     } else if (typeof val === 'number') {
       val = val & 0xFF; // Search for a byte value [0-255]
-      if (Buffer.TYPED_ARRAY_SUPPORT &&
+      if (Buffer$1.TYPED_ARRAY_SUPPORT &&
           typeof Uint8Array.prototype.indexOf === 'function') {
         if (dir) {
           return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
@@ -3197,15 +3188,15 @@
     return -1
   }
 
-  Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+  Buffer$1.prototype.includes = function includes (val, byteOffset, encoding) {
     return this.indexOf(val, byteOffset, encoding) !== -1
   };
 
-  Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  Buffer$1.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
     return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
   };
 
-  Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  Buffer$1.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
     return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
   };
 
@@ -3256,7 +3247,7 @@
     return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
   }
 
-  Buffer.prototype.write = function write (string, offset, length, encoding) {
+  Buffer$1.prototype.write = function write (string, offset, length, encoding) {
     // Buffer#write(string)
     if (offset === undefined) {
       encoding = 'utf8';
@@ -3328,7 +3319,7 @@
     }
   };
 
-  Buffer.prototype.toJSON = function toJSON () {
+  Buffer$1.prototype.toJSON = function toJSON () {
     return {
       type: 'Buffer',
       data: Array.prototype.slice.call(this._arr || this, 0)
@@ -3481,7 +3472,7 @@
     return res
   }
 
-  Buffer.prototype.slice = function slice (start, end) {
+  Buffer$1.prototype.slice = function slice (start, end) {
     var len = this.length;
     start = ~~start;
     end = end === undefined ? len : ~~end;
@@ -3503,12 +3494,12 @@
     if (end < start) end = start;
 
     var newBuf;
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       newBuf = this.subarray(start, end);
-      newBuf.__proto__ = Buffer.prototype;
+      newBuf.__proto__ = Buffer$1.prototype;
     } else {
       var sliceLen = end - start;
-      newBuf = new Buffer(sliceLen, undefined);
+      newBuf = new Buffer$1(sliceLen, undefined);
       for (var i = 0; i < sliceLen; ++i) {
         newBuf[i] = this[i + start];
       }
@@ -3525,7 +3516,7 @@
     if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
   }
 
-  Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+  Buffer$1.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
     offset = offset | 0;
     byteLength = byteLength | 0;
     if (!noAssert) checkOffset(offset, byteLength, this.length);
@@ -3540,7 +3531,7 @@
     return val
   };
 
-  Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+  Buffer$1.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
     offset = offset | 0;
     byteLength = byteLength | 0;
     if (!noAssert) {
@@ -3556,22 +3547,22 @@
     return val
   };
 
-  Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+  Buffer$1.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 1, this.length);
     return this[offset]
   };
 
-  Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+  Buffer$1.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 2, this.length);
     return this[offset] | (this[offset + 1] << 8)
   };
 
-  Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+  Buffer$1.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 2, this.length);
     return (this[offset] << 8) | this[offset + 1]
   };
 
-  Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+  Buffer$1.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 4, this.length);
 
     return ((this[offset]) |
@@ -3580,7 +3571,7 @@
         (this[offset + 3] * 0x1000000)
   };
 
-  Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+  Buffer$1.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 4, this.length);
 
     return (this[offset] * 0x1000000) +
@@ -3589,7 +3580,7 @@
       this[offset + 3])
   };
 
-  Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+  Buffer$1.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
     offset = offset | 0;
     byteLength = byteLength | 0;
     if (!noAssert) checkOffset(offset, byteLength, this.length);
@@ -3607,7 +3598,7 @@
     return val
   };
 
-  Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+  Buffer$1.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
     offset = offset | 0;
     byteLength = byteLength | 0;
     if (!noAssert) checkOffset(offset, byteLength, this.length);
@@ -3625,25 +3616,25 @@
     return val
   };
 
-  Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+  Buffer$1.prototype.readInt8 = function readInt8 (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 1, this.length);
     if (!(this[offset] & 0x80)) return (this[offset])
     return ((0xff - this[offset] + 1) * -1)
   };
 
-  Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+  Buffer$1.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 2, this.length);
     var val = this[offset] | (this[offset + 1] << 8);
     return (val & 0x8000) ? val | 0xFFFF0000 : val
   };
 
-  Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+  Buffer$1.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 2, this.length);
     var val = this[offset + 1] | (this[offset] << 8);
     return (val & 0x8000) ? val | 0xFFFF0000 : val
   };
 
-  Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+  Buffer$1.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 4, this.length);
 
     return (this[offset]) |
@@ -3652,7 +3643,7 @@
       (this[offset + 3] << 24)
   };
 
-  Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+  Buffer$1.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 4, this.length);
 
     return (this[offset] << 24) |
@@ -3661,22 +3652,22 @@
       (this[offset + 3])
   };
 
-  Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+  Buffer$1.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 4, this.length);
     return read(this, offset, true, 23, 4)
   };
 
-  Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+  Buffer$1.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 4, this.length);
     return read(this, offset, false, 23, 4)
   };
 
-  Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+  Buffer$1.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 8, this.length);
     return read(this, offset, true, 52, 8)
   };
 
-  Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+  Buffer$1.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
     if (!noAssert) checkOffset(offset, 8, this.length);
     return read(this, offset, false, 52, 8)
   };
@@ -3687,7 +3678,7 @@
     if (offset + ext > buf.length) throw new RangeError('Index out of range')
   }
 
-  Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+  Buffer$1.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
     value = +value;
     offset = offset | 0;
     byteLength = byteLength | 0;
@@ -3706,7 +3697,7 @@
     return offset + byteLength
   };
 
-  Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+  Buffer$1.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
     value = +value;
     offset = offset | 0;
     byteLength = byteLength | 0;
@@ -3725,11 +3716,11 @@
     return offset + byteLength
   };
 
-  Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+  Buffer$1.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0);
-    if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
+    if (!Buffer$1.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
     this[offset] = (value & 0xff);
     return offset + 1
   };
@@ -3742,11 +3733,11 @@
     }
   }
 
-  Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+  Buffer$1.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset] = (value & 0xff);
       this[offset + 1] = (value >>> 8);
     } else {
@@ -3755,11 +3746,11 @@
     return offset + 2
   };
 
-  Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+  Buffer$1.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset] = (value >>> 8);
       this[offset + 1] = (value & 0xff);
     } else {
@@ -3775,11 +3766,11 @@
     }
   }
 
-  Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+  Buffer$1.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset + 3] = (value >>> 24);
       this[offset + 2] = (value >>> 16);
       this[offset + 1] = (value >>> 8);
@@ -3790,11 +3781,11 @@
     return offset + 4
   };
 
-  Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+  Buffer$1.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset] = (value >>> 24);
       this[offset + 1] = (value >>> 16);
       this[offset + 2] = (value >>> 8);
@@ -3805,7 +3796,7 @@
     return offset + 4
   };
 
-  Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+  Buffer$1.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) {
@@ -3828,7 +3819,7 @@
     return offset + byteLength
   };
 
-  Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+  Buffer$1.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) {
@@ -3851,21 +3842,21 @@
     return offset + byteLength
   };
 
-  Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+  Buffer$1.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80);
-    if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
+    if (!Buffer$1.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
     if (value < 0) value = 0xff + value + 1;
     this[offset] = (value & 0xff);
     return offset + 1
   };
 
-  Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+  Buffer$1.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset] = (value & 0xff);
       this[offset + 1] = (value >>> 8);
     } else {
@@ -3874,11 +3865,11 @@
     return offset + 2
   };
 
-  Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+  Buffer$1.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset] = (value >>> 8);
       this[offset + 1] = (value & 0xff);
     } else {
@@ -3887,11 +3878,11 @@
     return offset + 2
   };
 
-  Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+  Buffer$1.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset] = (value & 0xff);
       this[offset + 1] = (value >>> 8);
       this[offset + 2] = (value >>> 16);
@@ -3902,12 +3893,12 @@
     return offset + 4
   };
 
-  Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+  Buffer$1.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
     value = +value;
     offset = offset | 0;
     if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
     if (value < 0) value = 0xffffffff + value + 1;
-    if (Buffer.TYPED_ARRAY_SUPPORT) {
+    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
       this[offset] = (value >>> 24);
       this[offset + 1] = (value >>> 16);
       this[offset + 2] = (value >>> 8);
@@ -3931,11 +3922,11 @@
     return offset + 4
   }
 
-  Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+  Buffer$1.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
     return writeFloat(this, value, offset, true, noAssert)
   };
 
-  Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+  Buffer$1.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
     return writeFloat(this, value, offset, false, noAssert)
   };
 
@@ -3947,16 +3938,16 @@
     return offset + 8
   }
 
-  Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+  Buffer$1.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
     return writeDouble(this, value, offset, true, noAssert)
   };
 
-  Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+  Buffer$1.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
     return writeDouble(this, value, offset, false, noAssert)
   };
 
   // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-  Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+  Buffer$1.prototype.copy = function copy (target, targetStart, start, end) {
     if (!start) start = 0;
     if (!end && end !== 0) end = this.length;
     if (targetStart >= target.length) targetStart = target.length;
@@ -3988,7 +3979,7 @@
       for (i = len - 1; i >= 0; --i) {
         target[i + targetStart] = this[i + start];
       }
-    } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+    } else if (len < 1000 || !Buffer$1.TYPED_ARRAY_SUPPORT) {
       // ascending copy from start
       for (i = 0; i < len; ++i) {
         target[i + targetStart] = this[i + start];
@@ -4008,7 +3999,7 @@
   //    buffer.fill(number[, offset[, end]])
   //    buffer.fill(buffer[, offset[, end]])
   //    buffer.fill(string[, offset[, end]][, encoding])
-  Buffer.prototype.fill = function fill (val, start, end, encoding) {
+  Buffer$1.prototype.fill = function fill (val, start, end, encoding) {
     // Handle string cases:
     if (typeof val === 'string') {
       if (typeof start === 'string') {
@@ -4028,7 +4019,7 @@
       if (encoding !== undefined && typeof encoding !== 'string') {
         throw new TypeError('encoding must be a string')
       }
-      if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+      if (typeof encoding === 'string' && !Buffer$1.isEncoding(encoding)) {
         throw new TypeError('Unknown encoding: ' + encoding)
       }
     } else if (typeof val === 'number') {
@@ -4057,7 +4048,7 @@
     } else {
       var bytes = internalIsBuffer(val)
         ? val
-        : utf8ToBytes(new Buffer(val, encoding).toString());
+        : utf8ToBytes(new Buffer$1(val, encoding).toString());
       var len = bytes.length;
       for (i = 0; i < end - start; ++i) {
         this[i + start] = bytes[i % len];
@@ -4235,8 +4226,7 @@
 
   // from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
   var performance$1 = global$1.performance || {};
-  var performanceNow =
-    performance$1.now        ||
+  performance$1.now        ||
     performance$1.mozNow     ||
     performance$1.msNow      ||
     performance$1.oNow       ||
@@ -4284,10 +4274,10 @@
   // If obj.hasOwnProperty has been overridden, then calling
   // obj.hasOwnProperty(prop) will break.
   // See: https://github.com/joyent/node/issues/1707
-  function hasOwnProperty$1(obj, prop) {
+  function hasOwnProperty(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
   }
-  var isArray$2 = Array.isArray || function (xs) {
+  var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
   };
   function stringifyPrimitive(v) {
@@ -4314,10 +4304,10 @@
     }
 
     if (typeof obj === 'object') {
-      return map$1(objectKeys(obj), function(k) {
+      return map$3(objectKeys(obj), function(k) {
         var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-        if (isArray$2(obj[k])) {
-          return map$1(obj[k], function(v) {
+        if (isArray(obj[k])) {
+          return map$3(obj[k], function(v) {
             return ks + encodeURIComponent(stringifyPrimitive(v));
           }).join(sep);
         } else {
@@ -4331,7 +4321,7 @@
     return encodeURIComponent(stringifyPrimitive(name)) + eq +
            encodeURIComponent(stringifyPrimitive(obj));
   }
-  function map$1 (xs, f) {
+  function map$3 (xs, f) {
     if (xs.map) return xs.map(f);
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -4348,7 +4338,7 @@
     return res;
   };
 
-  function parse(qs, sep, eq, options) {
+  function parse$1(qs, sep, eq, options) {
     sep = sep || '&';
     eq = eq || '=';
     var obj = {};
@@ -4387,9 +4377,9 @@
       k = decodeURIComponent(kstr);
       v = decodeURIComponent(vstr);
 
-      if (!hasOwnProperty$1(obj, k)) {
+      if (!hasOwnProperty(obj, k)) {
         obj[k] = v;
-      } else if (isArray$2(obj[k])) {
+      } else if (isArray(obj[k])) {
         obj[k].push(v);
       } else {
         obj[k] = [obj[k], v];
@@ -4400,7 +4390,7 @@
   }
 
   // Copyright Joyent, Inc. and other Node contributors.
-  function Url() {
+  function Url$1() {
     this.protocol = null;
     this.slashes = null;
     this.auth = null;
@@ -4468,17 +4458,17 @@
     };
 
   function urlParse(url, parseQueryString, slashesDenoteHost) {
-    if (url && isObject(url) && url instanceof Url) return url;
+    if (url && isObject(url) && url instanceof Url$1) return url;
 
-    var u = new Url;
+    var u = new Url$1;
     u.parse(url, parseQueryString, slashesDenoteHost);
     return u;
   }
-  Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
-    return parse$1(this, url, parseQueryString, slashesDenoteHost);
+  Url$1.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+    return parse(this, url, parseQueryString, slashesDenoteHost);
   };
 
-  function parse$1(self, url, parseQueryString, slashesDenoteHost) {
+  function parse(self, url, parseQueryString, slashesDenoteHost) {
     if (!isString(url)) {
       throw new TypeError('Parameter \'url\' must be a string, not ' + typeof url);
     }
@@ -4510,7 +4500,7 @@
         if (simplePath[2]) {
           self.search = simplePath[2];
           if (parseQueryString) {
-            self.query = parse(self.search.substr(1));
+            self.query = parse$1(self.search.substr(1));
           } else {
             self.query = self.search.substr(1);
           }
@@ -4713,7 +4703,7 @@
       self.search = rest.substr(qm);
       self.query = rest.substr(qm + 1);
       if (parseQueryString) {
-        self.query = parse(self.query);
+        self.query = parse$1(self.query);
       }
       rest = rest.slice(0, qm);
     } else if (parseQueryString) {
@@ -4745,7 +4735,7 @@
     // If it's an obj, this is a no-op.
     // this way, you can call url_format() on strings
     // to clean up potentially wonky urls.
-    if (isString(obj)) obj = parse$1({}, obj);
+    if (isString(obj)) obj = parse({}, obj);
     return format(obj);
   }
 
@@ -4805,7 +4795,7 @@
     return protocol + host + pathname + search + hash;
   }
 
-  Url.prototype.format = function() {
+  Url$1.prototype.format = function() {
     return format(this);
   };
 
@@ -4813,18 +4803,18 @@
     return urlParse(source, false, true).resolve(relative);
   }
 
-  Url.prototype.resolve = function(relative) {
+  Url$1.prototype.resolve = function(relative) {
     return this.resolveObject(urlParse(relative, false, true)).format();
   };
 
-  Url.prototype.resolveObject = function(relative) {
+  Url$1.prototype.resolveObject = function(relative) {
     if (isString(relative)) {
-      var rel = new Url();
+      var rel = new Url$1();
       rel.parse(relative, false, true);
       relative = rel;
     }
 
-    var result = new Url();
+    var result = new Url$1();
     var tkeys = Object.keys(this);
     for (var tk = 0; tk < tkeys.length; tk++) {
       var tkey = tkeys[tk];
@@ -5086,7 +5076,7 @@
     return result;
   };
 
-  Url.prototype.parseHost = function() {
+  Url$1.prototype.parseHost = function() {
     return parseHost(this);
   };
 
@@ -5122,12 +5112,12 @@
    * @property {number} WEBGL - Version 1 of WebGL
    * @property {number} WEBGL2 - Version 2 of WebGL
    */
-  var ENV;
+  var ENV$1;
   (function (ENV) {
       ENV[ENV["WEBGL_LEGACY"] = 0] = "WEBGL_LEGACY";
       ENV[ENV["WEBGL"] = 1] = "WEBGL";
       ENV[ENV["WEBGL2"] = 2] = "WEBGL2";
-  })(ENV || (ENV = {}));
+  })(ENV$1 || (ENV$1 = {}));
   /**
    * Constant to identify the Renderer Type.
    *
@@ -5139,12 +5129,12 @@
    * @property {number} WEBGL - WebGL render type.
    * @property {number} CANVAS - Canvas render type.
    */
-  var RENDERER_TYPE;
+  var RENDERER_TYPE$1;
   (function (RENDERER_TYPE) {
       RENDERER_TYPE[RENDERER_TYPE["UNKNOWN"] = 0] = "UNKNOWN";
       RENDERER_TYPE[RENDERER_TYPE["WEBGL"] = 1] = "WEBGL";
       RENDERER_TYPE[RENDERER_TYPE["CANVAS"] = 2] = "CANVAS";
-  })(RENDERER_TYPE || (RENDERER_TYPE = {}));
+  })(RENDERER_TYPE$1 || (RENDERER_TYPE$1 = {}));
   /**
    * Bitwise OR of masks that indicate the buffers to be cleared.
    *
@@ -5156,12 +5146,12 @@
    * @property {number} DEPTH - Indicates the depth buffer.
    * @property {number} STENCIL - Indicates the stencil buffer.
    */
-  var BUFFER_BITS;
+  var BUFFER_BITS$1;
   (function (BUFFER_BITS) {
       BUFFER_BITS[BUFFER_BITS["COLOR"] = 16384] = "COLOR";
       BUFFER_BITS[BUFFER_BITS["DEPTH"] = 256] = "DEPTH";
       BUFFER_BITS[BUFFER_BITS["STENCIL"] = 1024] = "STENCIL";
-  })(BUFFER_BITS || (BUFFER_BITS = {}));
+  })(BUFFER_BITS$1 || (BUFFER_BITS$1 = {}));
   /**
    * Various blend modes supported by PIXI.
    *
@@ -5204,7 +5194,7 @@
    * @property {number} ERASE
    * @property {number} XOR
    */
-  var BLEND_MODES;
+  var BLEND_MODES$1;
   (function (BLEND_MODES) {
       BLEND_MODES[BLEND_MODES["NORMAL"] = 0] = "NORMAL";
       BLEND_MODES[BLEND_MODES["ADD"] = 1] = "ADD";
@@ -5238,7 +5228,7 @@
       BLEND_MODES[BLEND_MODES["ERASE"] = 26] = "ERASE";
       BLEND_MODES[BLEND_MODES["SUBTRACT"] = 28] = "SUBTRACT";
       BLEND_MODES[BLEND_MODES["XOR"] = 29] = "XOR";
-  })(BLEND_MODES || (BLEND_MODES = {}));
+  })(BLEND_MODES$1 || (BLEND_MODES$1 = {}));
   /**
    * Various webgl draw modes. These can be used to specify which GL drawMode to use
    * under certain situations and renderers.
@@ -5255,7 +5245,7 @@
    * @property {number} TRIANGLE_STRIP
    * @property {number} TRIANGLE_FAN
    */
-  var DRAW_MODES;
+  var DRAW_MODES$1;
   (function (DRAW_MODES) {
       DRAW_MODES[DRAW_MODES["POINTS"] = 0] = "POINTS";
       DRAW_MODES[DRAW_MODES["LINES"] = 1] = "LINES";
@@ -5264,7 +5254,7 @@
       DRAW_MODES[DRAW_MODES["TRIANGLES"] = 4] = "TRIANGLES";
       DRAW_MODES[DRAW_MODES["TRIANGLE_STRIP"] = 5] = "TRIANGLE_STRIP";
       DRAW_MODES[DRAW_MODES["TRIANGLE_FAN"] = 6] = "TRIANGLE_FAN";
-  })(DRAW_MODES || (DRAW_MODES = {}));
+  })(DRAW_MODES$1 || (DRAW_MODES$1 = {}));
   /**
    * Various GL texture/resources formats.
    *
@@ -5280,7 +5270,7 @@
    * @property {number} DEPTH_COMPONENT=6402
    * @property {number} DEPTH_STENCIL=34041
    */
-  var FORMATS;
+  var FORMATS$1;
   (function (FORMATS) {
       FORMATS[FORMATS["RGBA"] = 6408] = "RGBA";
       FORMATS[FORMATS["RGB"] = 6407] = "RGB";
@@ -5289,7 +5279,7 @@
       FORMATS[FORMATS["LUMINANCE_ALPHA"] = 6410] = "LUMINANCE_ALPHA";
       FORMATS[FORMATS["DEPTH_COMPONENT"] = 6402] = "DEPTH_COMPONENT";
       FORMATS[FORMATS["DEPTH_STENCIL"] = 34041] = "DEPTH_STENCIL";
-  })(FORMATS || (FORMATS = {}));
+  })(FORMATS$1 || (FORMATS$1 = {}));
   /**
    * Various GL target types.
    *
@@ -5307,7 +5297,7 @@
    * @property {number} TEXTURE_CUBE_MAP_POSITIVE_Z=34073
    * @property {number} TEXTURE_CUBE_MAP_NEGATIVE_Z=34074
    */
-  var TARGETS;
+  var TARGETS$1;
   (function (TARGETS) {
       TARGETS[TARGETS["TEXTURE_2D"] = 3553] = "TEXTURE_2D";
       TARGETS[TARGETS["TEXTURE_CUBE_MAP"] = 34067] = "TEXTURE_CUBE_MAP";
@@ -5318,7 +5308,7 @@
       TARGETS[TARGETS["TEXTURE_CUBE_MAP_NEGATIVE_Y"] = 34072] = "TEXTURE_CUBE_MAP_NEGATIVE_Y";
       TARGETS[TARGETS["TEXTURE_CUBE_MAP_POSITIVE_Z"] = 34073] = "TEXTURE_CUBE_MAP_POSITIVE_Z";
       TARGETS[TARGETS["TEXTURE_CUBE_MAP_NEGATIVE_Z"] = 34074] = "TEXTURE_CUBE_MAP_NEGATIVE_Z";
-  })(TARGETS || (TARGETS = {}));
+  })(TARGETS$1 || (TARGETS$1 = {}));
   /**
    * Various GL data format types.
    *
@@ -5334,7 +5324,7 @@
    * @property {number} FLOAT=5126
    * @property {number} HALF_FLOAT=36193
    */
-  var TYPES;
+  var TYPES$1;
   (function (TYPES) {
       TYPES[TYPES["UNSIGNED_BYTE"] = 5121] = "UNSIGNED_BYTE";
       TYPES[TYPES["UNSIGNED_SHORT"] = 5123] = "UNSIGNED_SHORT";
@@ -5343,7 +5333,7 @@
       TYPES[TYPES["UNSIGNED_SHORT_5_5_5_1"] = 32820] = "UNSIGNED_SHORT_5_5_5_1";
       TYPES[TYPES["FLOAT"] = 5126] = "FLOAT";
       TYPES[TYPES["HALF_FLOAT"] = 36193] = "HALF_FLOAT";
-  })(TYPES || (TYPES = {}));
+  })(TYPES$1 || (TYPES$1 = {}));
   /**
    * The scale modes that are supported by pixi.
    *
@@ -5357,11 +5347,11 @@
    * @property {number} LINEAR Smooth scaling
    * @property {number} NEAREST Pixelating scaling
    */
-  var SCALE_MODES;
+  var SCALE_MODES$1;
   (function (SCALE_MODES) {
       SCALE_MODES[SCALE_MODES["NEAREST"] = 0] = "NEAREST";
       SCALE_MODES[SCALE_MODES["LINEAR"] = 1] = "LINEAR";
-  })(SCALE_MODES || (SCALE_MODES = {}));
+  })(SCALE_MODES$1 || (SCALE_MODES$1 = {}));
   /**
    * The wrap modes that are supported by pixi.
    *
@@ -5380,12 +5370,12 @@
    * @property {number} REPEAT - The texture uvs tile and repeat
    * @property {number} MIRRORED_REPEAT - The texture uvs tile and repeat with mirroring
    */
-  var WRAP_MODES;
+  var WRAP_MODES$1;
   (function (WRAP_MODES) {
       WRAP_MODES[WRAP_MODES["CLAMP"] = 33071] = "CLAMP";
       WRAP_MODES[WRAP_MODES["REPEAT"] = 10497] = "REPEAT";
       WRAP_MODES[WRAP_MODES["MIRRORED_REPEAT"] = 33648] = "MIRRORED_REPEAT";
-  })(WRAP_MODES || (WRAP_MODES = {}));
+  })(WRAP_MODES$1 || (WRAP_MODES$1 = {}));
   /**
    * Mipmap filtering modes that are supported by pixi.
    *
@@ -5406,13 +5396,13 @@
    * @property {number} ON_MANUAL - Use mipmaps, but do not auto-generate them; this is used with a resource
    *   that supports buffering each level-of-detail.
    */
-  var MIPMAP_MODES;
+  var MIPMAP_MODES$1;
   (function (MIPMAP_MODES) {
       MIPMAP_MODES[MIPMAP_MODES["OFF"] = 0] = "OFF";
       MIPMAP_MODES[MIPMAP_MODES["POW2"] = 1] = "POW2";
       MIPMAP_MODES[MIPMAP_MODES["ON"] = 2] = "ON";
       MIPMAP_MODES[MIPMAP_MODES["ON_MANUAL"] = 3] = "ON_MANUAL";
-  })(MIPMAP_MODES || (MIPMAP_MODES = {}));
+  })(MIPMAP_MODES$1 || (MIPMAP_MODES$1 = {}));
   /**
    * How to treat textures with premultiplied alpha
    *
@@ -5430,7 +5420,7 @@
    * @property {number} UNPACK - Default option, alias for PREMULTIPLY_ON_UPLOAD.
    * @property {number} PMA - Alias for PREMULTIPLIED_ALPHA.
    */
-  var ALPHA_MODES;
+  var ALPHA_MODES$1;
   (function (ALPHA_MODES) {
       ALPHA_MODES[ALPHA_MODES["NPM"] = 0] = "NPM";
       ALPHA_MODES[ALPHA_MODES["UNPACK"] = 1] = "UNPACK";
@@ -5438,7 +5428,7 @@
       ALPHA_MODES[ALPHA_MODES["NO_PREMULTIPLIED_ALPHA"] = 0] = "NO_PREMULTIPLIED_ALPHA";
       ALPHA_MODES[ALPHA_MODES["PREMULTIPLY_ON_UPLOAD"] = 1] = "PREMULTIPLY_ON_UPLOAD";
       ALPHA_MODES[ALPHA_MODES["PREMULTIPLY_ALPHA"] = 2] = "PREMULTIPLY_ALPHA";
-  })(ALPHA_MODES || (ALPHA_MODES = {}));
+  })(ALPHA_MODES$1 || (ALPHA_MODES$1 = {}));
   /**
    * Configure whether filter textures are cleared after binding.
    *
@@ -5456,7 +5446,7 @@
    * @property {number} YES - Alias for CLEAR, same as `true` in earlier versions
    * @property {number} AUTO - Alias for BLIT
    */
-  var CLEAR_MODES;
+  var CLEAR_MODES$1;
   (function (CLEAR_MODES) {
       CLEAR_MODES[CLEAR_MODES["NO"] = 0] = "NO";
       CLEAR_MODES[CLEAR_MODES["YES"] = 1] = "YES";
@@ -5464,7 +5454,7 @@
       CLEAR_MODES[CLEAR_MODES["BLEND"] = 0] = "BLEND";
       CLEAR_MODES[CLEAR_MODES["CLEAR"] = 1] = "CLEAR";
       CLEAR_MODES[CLEAR_MODES["BLIT"] = 2] = "BLIT";
-  })(CLEAR_MODES || (CLEAR_MODES = {}));
+  })(CLEAR_MODES$1 || (CLEAR_MODES$1 = {}));
   /**
    * The gc modes that are supported by pixi.
    *
@@ -5484,11 +5474,11 @@
    * @property {number} AUTO - Garbage collection will happen periodically automatically
    * @property {number} MANUAL - Garbage collection will need to be called manually
    */
-  var GC_MODES;
+  var GC_MODES$1;
   (function (GC_MODES) {
       GC_MODES[GC_MODES["AUTO"] = 0] = "AUTO";
       GC_MODES[GC_MODES["MANUAL"] = 1] = "MANUAL";
-  })(GC_MODES || (GC_MODES = {}));
+  })(GC_MODES$1 || (GC_MODES$1 = {}));
   /**
    * Constants that specify float precision in shaders.
    *
@@ -5501,12 +5491,12 @@
    * @property {string} MEDIUM='mediump'
    * @property {string} HIGH='highp'
    */
-  var PRECISION;
+  var PRECISION$1;
   (function (PRECISION) {
       PRECISION["LOW"] = "lowp";
       PRECISION["MEDIUM"] = "mediump";
       PRECISION["HIGH"] = "highp";
-  })(PRECISION || (PRECISION = {}));
+  })(PRECISION$1 || (PRECISION$1 = {}));
   /**
    * Constants for mask implementations.
    * We use `type` suffix because it leads to very different behaviours
@@ -5520,13 +5510,13 @@
    * @property {number} STENCIL - Stencil mask, 1-bit, medium, works only if renderer supports stencil
    * @property {number} SPRITE - Mask that uses SpriteMaskFilter, uses temporary RenderTexture
    */
-  var MASK_TYPES;
+  var MASK_TYPES$1;
   (function (MASK_TYPES) {
       MASK_TYPES[MASK_TYPES["NONE"] = 0] = "NONE";
       MASK_TYPES[MASK_TYPES["SCISSOR"] = 1] = "SCISSOR";
       MASK_TYPES[MASK_TYPES["STENCIL"] = 2] = "STENCIL";
       MASK_TYPES[MASK_TYPES["SPRITE"] = 3] = "SPRITE";
-  })(MASK_TYPES || (MASK_TYPES = {}));
+  })(MASK_TYPES$1 || (MASK_TYPES$1 = {}));
   /**
    * Constants for multi-sampling antialiasing.
    *
@@ -5541,13 +5531,13 @@
    * @property {number} MEDIUM - Try 4 samples
    * @property {number} HIGH - Try 8 samples
    */
-  var MSAA_QUALITY;
+  var MSAA_QUALITY$1;
   (function (MSAA_QUALITY) {
       MSAA_QUALITY[MSAA_QUALITY["NONE"] = 0] = "NONE";
       MSAA_QUALITY[MSAA_QUALITY["LOW"] = 2] = "LOW";
       MSAA_QUALITY[MSAA_QUALITY["MEDIUM"] = 4] = "MEDIUM";
       MSAA_QUALITY[MSAA_QUALITY["HIGH"] = 8] = "HIGH";
-  })(MSAA_QUALITY || (MSAA_QUALITY = {}));
+  })(MSAA_QUALITY$1 || (MSAA_QUALITY$1 = {}));
 
   /*!
    * @pixi/utils - v6.0.0
@@ -5597,7 +5587,7 @@
   settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
 
   var saidHello = false;
-  var VERSION = '6.0.0';
+  var VERSION$1 = '6.0.0';
   /**
    * Skips the hello message of renderers that are created after this is run.
    *
@@ -5624,7 +5614,7 @@
       }
       if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
           var args = [
-              "\n %c %c %c PixiJS " + VERSION + " - \u2730 " + type + " \u2730  %c  %c  http://www.pixijs.com/  %c %c \u2665%c\u2665%c\u2665 \n\n",
+              "\n %c %c %c PixiJS " + VERSION$1 + " - \u2730 " + type + " \u2730  %c  %c  http://www.pixijs.com/  %c %c \u2665%c\u2665%c\u2665 \n\n",
               'background: #ff66a5; padding:5px 0;',
               'background: #ff66a5; padding:5px 0;',
               'color: #ff66a5; background: #030307; padding:5px 0;',
@@ -5637,7 +5627,7 @@
           (_a = self.console).log.apply(_a, args);
       }
       else if (self.console) {
-          self.console.log("PixiJS " + VERSION + " - " + type + " - http://www.pixijs.com/");
+          self.console.log("PixiJS " + VERSION$1 + " - " + type + " - http://www.pixijs.com/");
       }
       saidHello = true;
   }
@@ -6067,12 +6057,12 @@
           pm[i] = i;
           npm[i] = i;
       }
-      pm[BLEND_MODES.NORMAL_NPM] = BLEND_MODES.NORMAL;
-      pm[BLEND_MODES.ADD_NPM] = BLEND_MODES.ADD;
-      pm[BLEND_MODES.SCREEN_NPM] = BLEND_MODES.SCREEN;
-      npm[BLEND_MODES.NORMAL] = BLEND_MODES.NORMAL_NPM;
-      npm[BLEND_MODES.ADD] = BLEND_MODES.ADD_NPM;
-      npm[BLEND_MODES.SCREEN] = BLEND_MODES.SCREEN_NPM;
+      pm[BLEND_MODES$1.NORMAL_NPM] = BLEND_MODES$1.NORMAL;
+      pm[BLEND_MODES$1.ADD_NPM] = BLEND_MODES$1.ADD;
+      pm[BLEND_MODES$1.SCREEN_NPM] = BLEND_MODES$1.SCREEN;
+      npm[BLEND_MODES$1.NORMAL] = BLEND_MODES$1.NORMAL_NPM;
+      npm[BLEND_MODES$1.ADD] = BLEND_MODES$1.ADD_NPM;
+      npm[BLEND_MODES$1.SCREEN] = BLEND_MODES$1.SCREEN_NPM;
       var array = [];
       array.push(npm);
       array.push(pm);
@@ -6201,7 +6191,7 @@
       return outBuffer;
   }
 
-  function getBufferType(array) {
+  function getBufferType$1(array) {
       if (array.BYTES_PER_ELEMENT === 4) {
           if (array instanceof Float32Array) {
               return 'Float32Array';
@@ -6227,7 +6217,7 @@
 
   /* eslint-disable object-shorthand */
   var map$2 = { Float32Array: Float32Array, Uint32Array: Uint32Array, Int32Array: Int32Array, Uint8Array: Uint8Array };
-  function interleaveTypedArrays(arrays, sizes) {
+  function interleaveTypedArrays$1(arrays, sizes) {
       var outSize = 0;
       var stride = 0;
       var views = {};
@@ -6245,7 +6235,7 @@
           @todo This is unsafe casting but consistent with how the code worked previously. Should it stay this way
                 or should and `getBufferTypeUnsafe` function be exposed that throws an Error if unsupported type is passed?
            */
-          var type = getBufferType(array);
+          var type = getBufferType$1(array);
           if (!views[type]) {
               views[type] = new map$2[type](buffer);
           }
@@ -6344,7 +6334,7 @@
    * @param {number} n - the number to check the sign of
    * @returns {number} 0 if `n` is 0, -1 if `n` is negative, 1 if `n` is positive
    */
-  function sign$1(n) {
+  function sign(n) {
       if (n === 0)
           { return 0; }
       return n < 0 ? -1 : 1;
@@ -6665,7 +6655,7 @@
       return undefined;
   }
 
-  var tempAnchor;
+  var tempAnchor$1;
   /**
    * Sets the `crossOrigin` property for this resource based on if the url
    * for this resource is cross-origin. If crossOrigin was manually set, this
@@ -6685,14 +6675,14 @@
       }
       // default is window.location
       loc = loc || self.location;
-      if (!tempAnchor) {
-          tempAnchor = document.createElement('a');
+      if (!tempAnchor$1) {
+          tempAnchor$1 = document.createElement('a');
       }
       // let the browser determine the full href for the url of this resource and then
       // parse with the node url lib, we can't use the properties of the anchor element
       // because they don't work in IE9 :(
-      tempAnchor.href = url;
-      var parsedUrl = urlParse(tempAnchor.href);
+      tempAnchor$1.href = url;
+      var parsedUrl = urlParse(tempAnchor$1.href);
       var samePort = (!parsedUrl.port && loc.port === '') || (parsedUrl.port === loc.port);
       // if cross origin
       if (parsedUrl.hostname !== loc.hostname || !samePort || parsedUrl.protocol !== loc.protocol) {
@@ -6748,7 +6738,7 @@
    */
   var url = { parse: urlParse, format: urlFormat, resolve: urlResolve };
 
-  var utils = /*#__PURE__*/Object.freeze({
+  var utils$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
     BaseTextureCache: BaseTextureCache,
     CanvasRenderTarget: CanvasRenderTarget,
@@ -6762,11 +6752,11 @@
     deprecation: deprecation,
     destroyTextureCache: destroyTextureCache,
     determineCrossOrigin: determineCrossOrigin,
-    getBufferType: getBufferType,
+    getBufferType: getBufferType$1,
     getResolutionOfUrl: getResolutionOfUrl,
     hex2rgb: hex2rgb,
     hex2string: hex2string,
-    interleaveTypedArrays: interleaveTypedArrays,
+    interleaveTypedArrays: interleaveTypedArrays$1,
     isPow2: isPow2,
     isWebGLSupported: isWebGLSupported,
     log2: log2,
@@ -6778,14 +6768,14 @@
     removeItems: removeItems,
     rgb2hex: rgb2hex,
     sayHello: sayHello,
-    sign: sign$1,
+    sign: sign,
     skipHello: skipHello,
     string2hex: string2hex,
     trimCanvas: trimCanvas,
     uid: uid,
     url: url,
-    isMobile: isMobile$1,
-    EventEmitter: eventemitter3,
+    isMobile: isMobile,
+    EventEmitter: eventemitter3$1,
     earcut: earcut_1
   });
 
@@ -8139,7 +8129,7 @@
    * Initializes `rotationCayley` and `rotationMatrices`. It is called
    * only once below.
    */
-  function init$1() {
+  function init() {
       for (var i = 0; i < 16; i++) {
           var row = [];
           rotationCayley.push(row);
@@ -8165,7 +8155,7 @@
           rotationMatrices.push(mat);
       }
   }
-  init$1();
+  init();
   /**
    * @memberof PIXI
    * @typedef {number} GD8Symmetry
@@ -9107,15 +9097,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics = function(d, b) {
-      extendStatics = Object.setPrototypeOf ||
+  var extendStatics$k = function(d, b) {
+      extendStatics$k = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics(d, b);
+      return extendStatics$k(d, b);
   };
 
-  function __extends(d, b) {
-      extendStatics(d, b);
+  function __extends$k(d, b) {
+      extendStatics$k(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -9309,7 +9299,7 @@
    * @memberof PIXI
    */
   var DisplayObject = /** @class */ (function (_super) {
-      __extends(DisplayObject, _super);
+      __extends$k(DisplayObject, _super);
       function DisplayObject() {
           var _this = _super.call(this) || this;
           _this.tempDisplayObjectParent = null;
@@ -9998,9 +9988,9 @@
           configurable: true
       });
       return DisplayObject;
-  }(eventemitter3));
+  }(eventemitter3$1));
   var TemporaryDisplayObject = /** @class */ (function (_super) {
-      __extends(TemporaryDisplayObject, _super);
+      __extends$k(TemporaryDisplayObject, _super);
       function TemporaryDisplayObject() {
           var _this = _super !== null && _super.apply(this, arguments) || this;
           _this.sortDirty = null;
@@ -10061,7 +10051,7 @@
    * @memberof PIXI
    */
   var Container = /** @class */ (function (_super) {
-      __extends(Container, _super);
+      __extends$k(Container, _super);
       function Container() {
           var _this = _super.call(this) || this;
           /**
@@ -10749,7 +10739,7 @@
           /**  The frequency to update the div elements. */
           this.androidUpdateFrequency = 500; // 2fps
           this._hookDiv = null;
-          if (isMobile$1.tablet || isMobile$1.phone) {
+          if (isMobile.tablet || isMobile.phone) {
               this.createTouchHook();
           }
           // first we create a div that will sit over the PixiJS element. This is where the div overlays will go.
@@ -10905,7 +10895,7 @@
           *  so I am just running update every half a second, seems to fix it.
           */
           var now = performance.now();
-          if (isMobile$1.android.device && now < this.androidUpdateCount) {
+          if (isMobile.android.device && now < this.androidUpdateCount) {
               return;
           }
           this.androidUpdateCount = now + this.androidUpdateFrequency;
@@ -12099,15 +12089,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$1 = function(d, b) {
-      extendStatics$1 = Object.setPrototypeOf ||
+  var extendStatics$j = function(d, b) {
+      extendStatics$j = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$1(d, b);
+      return extendStatics$j(d, b);
   };
 
-  function __extends$1(d, b) {
-      extendStatics$1(d, b);
+  function __extends$j(d, b) {
+      extendStatics$j(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -12626,7 +12616,7 @@
    * @memberof PIXI
    */
   var InteractionManager = /** @class */ (function (_super) {
-      __extends$1(InteractionManager, _super);
+      __extends$j(InteractionManager, _super);
       /**
        * @param {PIXI.CanvasRenderer|PIXI.Renderer} renderer - A reference to the current renderer
        * @param {object} [options] - The options for the manager.
@@ -14105,7 +14095,7 @@
           this.search = null;
       };
       return InteractionManager;
-  }(eventemitter3));
+  }(eventemitter3$1));
 
   /*!
    * @pixi/runner - v6.0.0
@@ -14327,7 +14317,7 @@
    * @type {number}
    * @default PIXI.ENV.WEBGL2
    */
-  settings.PREFER_ENV = isMobile$1.any ? ENV.WEBGL : ENV.WEBGL2;
+  settings.PREFER_ENV = isMobile.any ? ENV$1.WEBGL : ENV$1.WEBGL2;
   /**
    * If set to `true`, *only* Textures and BaseTexture objects stored
    * in the caches ({@link PIXI.utils.TextureCache TextureCache} and
@@ -14440,15 +14430,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$2 = function(d, b) {
-      extendStatics$2 = Object.setPrototypeOf ||
+  var extendStatics$i = function(d, b) {
+      extendStatics$i = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$2(d, b);
+      return extendStatics$i(d, b);
   };
 
-  function __extends$2(d, b) {
-      extendStatics$2(d, b);
+  function __extends$i(d, b) {
+      extendStatics$i(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -14461,7 +14451,7 @@
    * @class
    * @memberof PIXI
    */
-  var Resource = /** @class */ (function () {
+  var Resource$1 = /** @class */ (function () {
       /**
        * @param {number} [width=0] - Width of the resource
        * @param {number} [height=0] - Height of the resource
@@ -14672,7 +14662,7 @@
    * @memberof PIXI
    */
   var BufferResource = /** @class */ (function (_super) {
-      __extends$2(BufferResource, _super);
+      __extends$i(BufferResource, _super);
       /**
        * @param {Float32Array|Uint8Array|Uint32Array} source - Source buffer
        * @param {object} options - Options
@@ -14704,7 +14694,7 @@
        */
       BufferResource.prototype.upload = function (renderer, baseTexture, glTexture) {
           var gl = renderer.gl;
-          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES.UNPACK);
+          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES$1.UNPACK);
           if (glTexture.width === baseTexture.width && glTexture.height === baseTexture.height) {
               gl.texSubImage2D(baseTexture.target, 0, 0, 0, baseTexture.width, baseTexture.height, baseTexture.format, baseTexture.type, this.data);
           }
@@ -14735,12 +14725,12 @@
               || source instanceof Uint32Array;
       };
       return BufferResource;
-  }(Resource));
+  }(Resource$1));
 
   var defaultBufferOptions = {
-      scaleMode: SCALE_MODES.NEAREST,
-      format: FORMATS.RGBA,
-      alphaMode: ALPHA_MODES.NPM,
+      scaleMode: SCALE_MODES$1.NEAREST,
+      format: FORMATS$1.RGBA,
+      alphaMode: ALPHA_MODES$1.NPM,
   };
   /**
    * A Texture stores the information that represents an image.
@@ -14754,7 +14744,7 @@
    * @typeParam RO - The options for constructing resource.
    */
   var BaseTexture = /** @class */ (function (_super) {
-      __extends$2(BaseTexture, _super);
+      __extends$i(BaseTexture, _super);
       /**
        * @param {PIXI.Resource|string|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} [resource=null] -
        *        The current resource to use, for things that aren't Resource objects, will be converted
@@ -14781,7 +14771,7 @@
           options = options || {};
           var alphaMode = options.alphaMode, mipmap = options.mipmap, anisotropicLevel = options.anisotropicLevel, scaleMode = options.scaleMode, width = options.width, height = options.height, wrapMode = options.wrapMode, format = options.format, type = options.type, target = options.target, resolution = options.resolution, resourceOptions = options.resourceOptions;
           // Convert the resource to a Resource object
-          if (resource && !(resource instanceof Resource)) {
+          if (resource && !(resource instanceof Resource$1)) {
               resource = autoDetectResource(resource, resourceOptions);
               resource.internal = true;
           }
@@ -14838,28 +14828,28 @@
            * @member {PIXI.FORMATS}
            * @default PIXI.FORMATS.RGBA
            */
-          _this.format = format || FORMATS.RGBA;
+          _this.format = format || FORMATS$1.RGBA;
           /**
            * The type of resource data
            *
            * @member {PIXI.TYPES}
            * @default PIXI.TYPES.UNSIGNED_BYTE
            */
-          _this.type = type || TYPES.UNSIGNED_BYTE;
+          _this.type = type || TYPES$1.UNSIGNED_BYTE;
           /**
            * The target type
            *
            * @member {PIXI.TARGETS}
            * @default PIXI.TARGETS.TEXTURE_2D
            */
-          _this.target = target || TARGETS.TEXTURE_2D;
+          _this.target = target || TARGETS$1.TEXTURE_2D;
           /**
            * How to treat premultiplied alpha, see {@link PIXI.ALPHA_MODES}.
            *
            * @member {PIXI.ALPHA_MODES}
            * @default PIXI.ALPHA_MODES.UNPACK
            */
-          _this.alphaMode = alphaMode !== undefined ? alphaMode : ALPHA_MODES.UNPACK;
+          _this.alphaMode = alphaMode !== undefined ? alphaMode : ALPHA_MODES$1.UNPACK;
           /**
            * Global unique identifier for this BaseTexture
            *
@@ -15246,7 +15236,7 @@
       BaseTexture.fromBuffer = function (buffer, width, height, options) {
           buffer = buffer || new Float32Array(width * height * 4);
           var resource = new BufferResource(buffer, { width: width, height: height });
-          var type = buffer instanceof Float32Array ? TYPES.FLOAT : TYPES.UNSIGNED_BYTE;
+          var type = buffer instanceof Float32Array ? TYPES$1.FLOAT : TYPES$1.UNSIGNED_BYTE;
           return new BaseTexture(resource, Object.assign(defaultBufferOptions, options || { width: width, height: height, type: type }));
       };
       /**
@@ -15304,7 +15294,7 @@
        */
       BaseTexture._globalBatch = 0;
       return BaseTexture;
-  }(eventemitter3));
+  }(eventemitter3$1));
 
   /**
    * Resource that can manage several resource (items) inside.
@@ -15316,7 +15306,7 @@
    * @memberof PIXI
    */
   var AbstractMultiResource = /** @class */ (function (_super) {
-      __extends$2(AbstractMultiResource, _super);
+      __extends$i(AbstractMultiResource, _super);
       /**
        * @param {number} length
        * @param {object} [options] - Options to for Resource constructor
@@ -15383,7 +15373,7 @@
               if (resources[i].castToBaseTexture) {
                   this.addBaseTextureAt(resources[i].castToBaseTexture(), i);
               }
-              else if (resources[i] instanceof Resource) {
+              else if (resources[i] instanceof Resource$1) {
                   this.addResourceAt(resources[i], i);
               }
               else {
@@ -15470,7 +15460,7 @@
           return this._load;
       };
       return AbstractMultiResource;
-  }(Resource));
+  }(Resource$1));
 
   /**
    * A resource that contains a number of sources.
@@ -15480,7 +15470,7 @@
    * @memberof PIXI
    */
   var ArrayResource = /** @class */ (function (_super) {
-      __extends$2(ArrayResource, _super);
+      __extends$i(ArrayResource, _super);
       /**
        * @param {number|Array<*>} source - Number of items in array or the collection
        *        of image URLs to use. Can also be resources, image elements, canvas, etc.
@@ -15530,7 +15520,7 @@
        */
       ArrayResource.prototype.bind = function (baseTexture) {
           _super.prototype.bind.call(this, baseTexture);
-          baseTexture.target = TARGETS.TEXTURE_2D_ARRAY;
+          baseTexture.target = TARGETS$1.TEXTURE_2D_ARRAY;
       };
       /**
        * Upload the resources to the GPU.
@@ -15569,7 +15559,7 @@
    * @memberof PIXI
    */
   var BaseImageResource = /** @class */ (function (_super) {
-      __extends$2(BaseImageResource, _super);
+      __extends$i(BaseImageResource, _super);
       /**
        * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|SVGElement} source
        */
@@ -15623,7 +15613,7 @@
           var width = baseTexture.realWidth;
           var height = baseTexture.realHeight;
           source = source || this.source;
-          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES.UNPACK);
+          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES$1.UNPACK);
           if (!this.noSubImage
               && baseTexture.target === gl.TEXTURE_2D
               && glTexture.width === width
@@ -15659,7 +15649,7 @@
           this.source = null;
       };
       return BaseImageResource;
-  }(Resource));
+  }(Resource$1));
 
   /**
    * @interface OffscreenCanvas
@@ -15671,7 +15661,7 @@
    * @memberof PIXI
    */
   var CanvasResource = /** @class */ (function (_super) {
-      __extends$2(CanvasResource, _super);
+      __extends$i(CanvasResource, _super);
       /**
        * @param {HTMLCanvasElement} source - Canvas element to use
        */
@@ -15705,7 +15695,7 @@
    * @memberof PIXI
    */
   var CubeResource = /** @class */ (function (_super) {
-      __extends$2(CubeResource, _super);
+      __extends$i(CubeResource, _super);
       /**
        * @param {Array<string|PIXI.Resource>} [source] - Collection of URLs or resources
        *        to use as the sides of the cube.
@@ -15724,7 +15714,7 @@
           }
           _this = _super.call(this, 6, { width: width, height: height }) || this;
           for (var i = 0; i < CubeResource.SIDES; i++) {
-              _this.items[i].target = TARGETS.TEXTURE_CUBE_MAP_POSITIVE_X + i;
+              _this.items[i].target = TARGETS$1.TEXTURE_CUBE_MAP_POSITIVE_X + i;
           }
           /**
            * In case BaseTextures are supplied, whether to use same resource or bind baseTexture itself
@@ -15748,7 +15738,7 @@
        */
       CubeResource.prototype.bind = function (baseTexture) {
           _super.prototype.bind.call(this, baseTexture);
-          baseTexture.target = TARGETS.TEXTURE_CUBE_MAP;
+          baseTexture.target = TARGETS$1.TEXTURE_CUBE_MAP;
       };
       CubeResource.prototype.addBaseTextureAt = function (baseTexture, index, linkBaseTexture) {
           if (linkBaseTexture === undefined) {
@@ -15770,7 +15760,7 @@
           }
           else {
               // link mode, the difficult one!
-              baseTexture.target = TARGETS.TEXTURE_CUBE_MAP_POSITIVE_X + index;
+              baseTexture.target = TARGETS$1.TEXTURE_CUBE_MAP_POSITIVE_X + index;
               baseTexture.parentTextureArray = this.baseTexture;
               this.items[index] = baseTexture;
           }
@@ -15833,7 +15823,7 @@
    * @memberof PIXI
    */
   var ImageResource = /** @class */ (function (_super) {
-      __extends$2(ImageResource, _super);
+      __extends$i(ImageResource, _super);
       /**
        * @param {HTMLImageElement|string} source - image source or URL
        * @param {object} [options]
@@ -15974,7 +15964,7 @@
               return Promise.resolve(this);
           }
           this._process = self.createImageBitmap(source, 0, 0, source.width, source.height, {
-              premultiplyAlpha: this.alphaMode === ALPHA_MODES.UNPACK ? 'premultiply' : 'none',
+              premultiplyAlpha: this.alphaMode === ALPHA_MODES$1.UNPACK ? 'premultiply' : 'none',
           })
               .then(function (bitmap) {
               if (_this.destroyed) {
@@ -16066,7 +16056,7 @@
    * @memberof PIXI
    */
   var SVGResource = /** @class */ (function (_super) {
-      __extends$2(SVGResource, _super);
+      __extends$i(SVGResource, _super);
       /**
        * @param {string} source - Base64 encoded SVG element or URL for SVG file.
        * @param {object} [options] - Options to use
@@ -16258,7 +16248,7 @@
    * @memberof PIXI
    */
   var VideoResource = /** @class */ (function (_super) {
-      __extends$2(VideoResource, _super);
+      __extends$i(VideoResource, _super);
       /**
        * @param {HTMLVideoElement|object|string|Array<string|object>} source - Video element to use.
        * @param {object} [options] - Options to use
@@ -16579,7 +16569,7 @@
    * @memberof PIXI
    */
   var ImageBitmapResource = /** @class */ (function (_super) {
-      __extends$2(ImageBitmapResource, _super);
+      __extends$i(ImageBitmapResource, _super);
       /**
        * @param {ImageBitmap} source - Image element to use
        */
@@ -16604,7 +16594,7 @@
 
   var _resources = {
       __proto__: null,
-      Resource: Resource,
+      Resource: Resource$1,
       BaseImageResource: BaseImageResource,
       INSTALLED: INSTALLED,
       autoDetectResource: autoDetectResource,
@@ -16654,7 +16644,7 @@
    * @memberof PIXI
    */
   var DepthResource = /** @class */ (function (_super) {
-      __extends$2(DepthResource, _super);
+      __extends$i(DepthResource, _super);
       function DepthResource() {
           return _super !== null && _super.apply(this, arguments) || this;
       }
@@ -16667,7 +16657,7 @@
        */
       DepthResource.prototype.upload = function (renderer, baseTexture, glTexture) {
           var gl = renderer.gl;
-          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES.UNPACK);
+          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES$1.UNPACK);
           if (glTexture.width === baseTexture.width && glTexture.height === baseTexture.height) {
               gl.texSubImage2D(baseTexture.target, 0, 0, 0, baseTexture.width, baseTexture.height, baseTexture.format, baseTexture.type, this.data);
           }
@@ -16734,7 +16724,7 @@
            * @member {PIXI.MSAA_QUALITY}
            * @default PIXI.MSAA_QUALITY.NONE
            */
-          this.multisample = MSAA_QUALITY.NONE;
+          this.multisample = MSAA_QUALITY$1.NONE;
       }
       Object.defineProperty(Framebuffer.prototype, "colorTexture", {
           /**
@@ -16759,9 +16749,9 @@
           if (index === void 0) { index = 0; }
           // TODO add some validation to the texture - same width / height etc?
           this.colorTextures[index] = texture || new BaseTexture(null, {
-              scaleMode: SCALE_MODES.NEAREST,
+              scaleMode: SCALE_MODES$1.NEAREST,
               resolution: 1,
-              mipmap: MIPMAP_MODES.OFF,
+              mipmap: MIPMAP_MODES$1.OFF,
               width: this.width,
               height: this.height,
           });
@@ -16777,13 +16767,13 @@
       Framebuffer.prototype.addDepthTexture = function (texture) {
           /* eslint-disable max-len */
           this.depthTexture = texture || new BaseTexture(new DepthResource(null, { width: this.width, height: this.height }), {
-              scaleMode: SCALE_MODES.NEAREST,
+              scaleMode: SCALE_MODES$1.NEAREST,
               resolution: 1,
               width: this.width,
               height: this.height,
-              mipmap: MIPMAP_MODES.OFF,
-              format: FORMATS.DEPTH_COMPONENT,
-              type: TYPES.UNSIGNED_SHORT,
+              mipmap: MIPMAP_MODES$1.OFF,
+              format: FORMATS$1.DEPTH_COMPONENT,
+              type: TYPES$1.UNSIGNED_SHORT,
           });
           this.dirtyId++;
           this.dirtyFormat++;
@@ -16894,7 +16884,7 @@
    * @memberof PIXI
    */
   var BaseRenderTexture = /** @class */ (function (_super) {
-      __extends$2(BaseRenderTexture, _super);
+      __extends$i(BaseRenderTexture, _super);
       /**
        * @param {object} [options]
        * @param {number} [options.width=100] - The width of the base render texture.
@@ -17133,7 +17123,7 @@
    * @typeParam R - The BaseTexture's Resource type.
    */
   var Texture = /** @class */ (function (_super) {
-      __extends$2(Texture, _super);
+      __extends$i(Texture, _super);
       /**
        * @param {PIXI.BaseTexture} baseTexture - The base texture source to create the texture from
        * @param {PIXI.Rectangle} [frame] - The rectangle frame of the texture to show
@@ -17615,7 +17605,7 @@
           return this.baseTexture;
       };
       return Texture;
-  }(eventemitter3));
+  }(eventemitter3$1));
   function createWhiteTexture() {
       var canvas = document.createElement('canvas');
       canvas.width = 16;
@@ -17696,7 +17686,7 @@
    * @memberof PIXI
    */
   var RenderTexture = /** @class */ (function (_super) {
-      __extends$2(RenderTexture, _super);
+      __extends$i(RenderTexture, _super);
       /**
        * @param {PIXI.BaseRenderTexture} baseRenderTexture - The base texture object that this texture uses
        * @param {PIXI.Rectangle} [frame] - The rectangle frame of the texture to show
@@ -18019,7 +18009,7 @@
    * @class
    * @memberof PIXI
    */
-  var Buffer$1 = /** @class */ (function () {
+  var Buffer = /** @class */ (function () {
       /**
        * @param {ArrayBuffer| SharedArrayBuffer|ArrayBufferView} data - the data to store in the buffer.
        * @param {boolean} [_static=true] - `true` for static buffer
@@ -18085,7 +18075,7 @@
       return Buffer;
   }());
 
-  function getBufferType$1(array) {
+  function getBufferType(array) {
       if (array.BYTES_PER_ELEMENT === 4) {
           if (array instanceof Float32Array) {
               return 'Float32Array';
@@ -18110,13 +18100,13 @@
   }
 
   /* eslint-disable object-shorthand */
-  var map$3 = {
+  var map = {
       Float32Array: Float32Array,
       Uint32Array: Uint32Array,
       Int32Array: Int32Array,
       Uint8Array: Uint8Array,
   };
-  function interleaveTypedArrays$1(arrays, sizes) {
+  function interleaveTypedArrays(arrays, sizes) {
       var outSize = 0;
       var stride = 0;
       var views = {};
@@ -18130,9 +18120,9 @@
       for (var i = 0; i < arrays.length; i++) {
           var size = sizes[i];
           var array = arrays[i];
-          var type = getBufferType$1(array);
+          var type = getBufferType(array);
           if (!views[type]) {
-              views[type] = new map$3[type](buffer);
+              views[type] = new map[type](buffer);
           }
           out = views[type];
           for (var j = 0; j < array.length; j++) {
@@ -18148,7 +18138,7 @@
   var byteSizeMap = { 5126: 4, 5123: 2, 5121: 1 };
   var UID$1 = 0;
   /* eslint-disable object-shorthand */
-  var map$1$1 = {
+  var map$1 = {
       Float32Array: Float32Array,
       Uint32Array: Uint32Array,
       Int32Array: Int32Array,
@@ -18232,12 +18222,12 @@
               throw new Error('You must pass a buffer when creating an attribute');
           }
           // check if this is a buffer!
-          if (!(buffer instanceof Buffer$1)) {
+          if (!(buffer instanceof Buffer)) {
               // its an array!
               if (buffer instanceof Array) {
                   buffer = new Float32Array(buffer);
               }
-              buffer = new Buffer$1(buffer);
+              buffer = new Buffer(buffer);
           }
           var ids = id.split('|');
           if (ids.length > 1) {
@@ -18283,12 +18273,12 @@
       * @return {PIXI.Geometry} returns self, useful for chaining.
       */
       Geometry.prototype.addIndex = function (buffer) {
-          if (!(buffer instanceof Buffer$1)) {
+          if (!(buffer instanceof Buffer)) {
               // its an array!
               if (buffer instanceof Array) {
                   buffer = new Uint16Array(buffer);
               }
-              buffer = new Buffer$1(buffer);
+              buffer = new Buffer(buffer);
           }
           buffer.index = true;
           this.indexBuffer = buffer;
@@ -18318,7 +18308,7 @@
           // assume already that no buffers are interleaved
           var arrays = [];
           var sizes = [];
-          var interleavedBuffer = new Buffer$1();
+          var interleavedBuffer = new Buffer();
           var i;
           for (i in this.attributes) {
               var attribute = this.attributes[i];
@@ -18327,7 +18317,7 @@
               sizes.push((attribute.size * byteSizeMap[attribute.type]) / 4);
               attribute.buffer = 0;
           }
-          interleavedBuffer.data = interleaveTypedArrays$1(arrays, sizes);
+          interleavedBuffer.data = interleaveTypedArrays(arrays, sizes);
           for (i = 0; i < this.buffers.length; i++) {
               if (this.buffers[i] !== this.indexBuffer) {
                   this.buffers[i].destroy();
@@ -18370,7 +18360,7 @@
       Geometry.prototype.clone = function () {
           var geometry = new Geometry();
           for (var i = 0; i < this.buffers.length; i++) {
-              geometry.buffers[i] = new Buffer$1(this.buffers[i].data.slice(0));
+              geometry.buffers[i] = new Buffer(this.buffers[i].data.slice(0));
           }
           for (var i in this.attributes) {
               var attrib = this.attributes[i];
@@ -18409,8 +18399,8 @@
           // build the correct size arrays..
           for (var i = 0; i < geometry.buffers.length; i++) {
               // TODO types!
-              arrays[i] = new map$1$1[getBufferType$1(geometry.buffers[i].data)](sizes[i]);
-              geometryOut.buffers[i] = new Buffer$1(arrays[i]);
+              arrays[i] = new map$1[getBufferType(geometry.buffers[i].data)](sizes[i]);
+              geometryOut.buffers[i] = new Buffer(arrays[i]);
           }
           // pass to set data..
           for (var i = 0; i < geometries.length; i++) {
@@ -18464,7 +18454,7 @@
    * @memberof PIXI
    */
   var Quad = /** @class */ (function (_super) {
-      __extends$2(Quad, _super);
+      __extends$i(Quad, _super);
       function Quad() {
           var _this = _super.call(this) || this;
           _this.addAttribute('aVertexPosition', new Float32Array([
@@ -18486,7 +18476,7 @@
    * @extends PIXI.Geometry
    */
   var QuadUv = /** @class */ (function (_super) {
-      __extends$2(QuadUv, _super);
+      __extends$i(QuadUv, _super);
       function QuadUv() {
           var _this = _super.call(this) || this;
           /**
@@ -18509,8 +18499,8 @@
               1, 0,
               1, 1,
               0, 1 ]);
-          _this.vertexBuffer = new Buffer$1(_this.vertices);
-          _this.uvBuffer = new Buffer$1(_this.uvs);
+          _this.vertexBuffer = new Buffer(_this.vertices);
+          _this.uvBuffer = new Buffer(_this.uvs);
           _this.addAttribute('aVertexPosition', _this.vertexBuffer)
               .addAttribute('aTextureCoord', _this.uvBuffer)
               .addIndex([0, 1, 2, 0, 2, 3]);
@@ -18727,7 +18717,7 @@
    * @extends PIXI.System
    */
   var FilterSystem = /** @class */ (function (_super) {
-      __extends$2(FilterSystem, _super);
+      __extends$i(FilterSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -18912,7 +18902,7 @@
               this.renderer.framebuffer.blit();
           }
           if (filters.length === 1) {
-              filters[0].apply(this, state.renderTexture, lastState.renderTexture, CLEAR_MODES.BLEND, state);
+              filters[0].apply(this, state.renderTexture, lastState.renderTexture, CLEAR_MODES$1.BLEND, state);
               this.returnFilterTexture(state.renderTexture);
           }
           else {
@@ -18921,12 +18911,12 @@
               flop.filterFrame = flip.filterFrame;
               var i = 0;
               for (i = 0; i < filters.length - 1; ++i) {
-                  filters[i].apply(this, flip, flop, CLEAR_MODES.CLEAR, state);
+                  filters[i].apply(this, flip, flop, CLEAR_MODES$1.CLEAR, state);
                   var t = flip;
                   flip = flop;
                   flop = t;
               }
-              filters[i].apply(this, flip, lastState.renderTexture, CLEAR_MODES.BLEND, state);
+              filters[i].apply(this, flip, lastState.renderTexture, CLEAR_MODES$1.BLEND, state);
               this.returnFilterTexture(flip);
               this.returnFilterTexture(flop);
           }
@@ -18940,7 +18930,7 @@
        * @param {PIXI.CLEAR_MODES} [clearMode] - clearMode, by default its CLEAR/YES. See {@link PIXI.CLEAR_MODES}
        */
       FilterSystem.prototype.bindAndClear = function (filterTexture, clearMode) {
-          if (clearMode === void 0) { clearMode = CLEAR_MODES.CLEAR; }
+          if (clearMode === void 0) { clearMode = CLEAR_MODES$1.CLEAR; }
           var _a = this.renderer, renderTextureSystem = _a.renderTexture, stateSystem = _a.state;
           if (filterTexture === this.defaultFilterStack[this.defaultFilterStack.length - 1].renderTexture) {
               // Restore projection transform if rendering into the output render-target.
@@ -18968,8 +18958,8 @@
           // Clear the texture in BLIT mode if blending is disabled or the forceClear flag is set. The blending
           // is stored in the 0th bit of the state.
           var autoClear = (stateSystem.stateId & 1) || this.forceClear;
-          if (clearMode === CLEAR_MODES.CLEAR
-              || (clearMode === CLEAR_MODES.BLIT && autoClear)) {
+          if (clearMode === CLEAR_MODES$1.CLEAR
+              || (clearMode === CLEAR_MODES$1.BLIT && autoClear)) {
               // Use framebuffer.clear because we want to clear the whole filter texture, not just the filtering
               // area over which the shaders are run. This is because filters may sampling outside of it (e.g. blur)
               // instead of clamping their arithmetic.
@@ -18999,11 +18989,11 @@
           if (filter.legacy) {
               this.quadUv.map(input._frame, input.filterFrame);
               renderer.geometry.bind(this.quadUv);
-              renderer.geometry.draw(DRAW_MODES.TRIANGLES);
+              renderer.geometry.draw(DRAW_MODES$1.TRIANGLES);
           }
           else {
               renderer.geometry.bind(this.quad);
-              renderer.geometry.draw(DRAW_MODES.TRIANGLE_STRIP);
+              renderer.geometry.draw(DRAW_MODES$1.TRIANGLE_STRIP);
           }
       };
       /**
@@ -19206,7 +19196,7 @@
    * @memberof PIXI
    */
   var BatchSystem = /** @class */ (function (_super) {
-      __extends$2(BatchSystem, _super);
+      __extends$i(BatchSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -19315,7 +19305,7 @@
    * @memberof PIXI
    */
   var ContextSystem = /** @class */ (function (_super) {
-      __extends$2(ContextSystem, _super);
+      __extends$i(ContextSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -19416,7 +19406,7 @@
        */
       ContextSystem.prototype.createContext = function (canvas, options) {
           var gl;
-          if (settings.PREFER_ENV >= ENV.WEBGL2) {
+          if (settings.PREFER_ENV >= ENV$1.WEBGL2) {
               gl = canvas.getContext('webgl2', options);
           }
           if (gl) {
@@ -19583,7 +19573,7 @@
            * Detected AA samples number
            * @member {PIXI.MSAA_QUALITY}
            */
-          this.multisample = MSAA_QUALITY.NONE;
+          this.multisample = MSAA_QUALITY$1.NONE;
           /**
            * In case MSAA, we use this Renderbuffer instead of colorTextures[0] when we write info
            * @member {WebGLRenderbuffer}
@@ -19608,7 +19598,7 @@
    * @memberof PIXI
    */
   var FramebufferSystem = /** @class */ (function (_super) {
-      __extends$2(FramebufferSystem, _super);
+      __extends$i(FramebufferSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -19645,7 +19635,7 @@
               // webgl 1!
               var nativeDrawBuffersExtension_1 = this.renderer.context.extensions.drawBuffers;
               var nativeDepthTextureExtension = this.renderer.context.extensions.depthTexture;
-              if (settings.PREFER_ENV === ENV.WEBGL_LEGACY) {
+              if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
                   nativeDrawBuffersExtension_1 = null;
                   nativeDepthTextureExtension = null;
               }
@@ -19771,7 +19761,7 @@
        *  that indicate the buffers to be cleared, by default COLOR and DEPTH buffers.
        */
       FramebufferSystem.prototype.clear = function (r, g, b, a, mask) {
-          if (mask === void 0) { mask = BUFFER_BITS.COLOR | BUFFER_BITS.DEPTH; }
+          if (mask === void 0) { mask = BUFFER_BITS$1.COLOR | BUFFER_BITS$1.DEPTH; }
           var gl = this.gl;
           // TODO clear color can be set only one right?
           gl.clearColor(r, g, b, a);
@@ -19875,7 +19865,7 @@
        */
       FramebufferSystem.prototype.detectSamples = function (samples) {
           var msaaSamples = this.msaaSamples;
-          var res = MSAA_QUALITY.NONE;
+          var res = MSAA_QUALITY$1.NONE;
           if (samples <= 1 || msaaSamples === null) {
               return res;
           }
@@ -19886,7 +19876,7 @@
               }
           }
           if (res === 1) {
-              res = MSAA_QUALITY.NONE;
+              res = MSAA_QUALITY$1.NONE;
           }
           return res;
       };
@@ -20032,7 +20022,7 @@
    * @memberof PIXI
    */
   var GeometrySystem = /** @class */ (function (_super) {
-      __extends$2(GeometrySystem, _super);
+      __extends$i(GeometrySystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -20084,7 +20074,7 @@
           if (context.webGLVersion !== 2) {
               // webgl 1!
               var nativeVaoExtension_1 = this.renderer.context.extensions.vertexArrayObject;
-              if (settings.PREFER_ENV === ENV.WEBGL_LEGACY) {
+              if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
                   nativeVaoExtension_1 = null;
               }
               if (nativeVaoExtension_1) {
@@ -20510,7 +20500,7 @@
            * Mask type
            * @member {PIXI.MASK_TYPES}
            */
-          this.type = MASK_TYPES.NONE;
+          this.type = MASK_TYPES$1.NONE;
           /**
            * Whether we know the mask type beforehand
            * @member {boolean}
@@ -20563,7 +20553,7 @@
       MaskData.prototype.reset = function () {
           if (this.pooled) {
               this.maskObject = null;
-              this.type = MASK_TYPES.NONE;
+              this.type = MASK_TYPES$1.NONE;
               this.autoDetect = true;
           }
           this._target = null;
@@ -20727,7 +20717,7 @@
       if (context === unknownContext || (context && context.isContextLost())) {
           var canvas = document.createElement('canvas');
           var gl = void 0;
-          if (settings.PREFER_ENV >= ENV.WEBGL2) {
+          if (settings.PREFER_ENV >= ENV$1.WEBGL2) {
               gl = canvas.getContext('webgl2', {});
           }
           if (!gl) {
@@ -20750,12 +20740,12 @@
   var maxFragmentPrecision;
   function getMaxFragmentPrecision() {
       if (!maxFragmentPrecision) {
-          maxFragmentPrecision = PRECISION.MEDIUM;
+          maxFragmentPrecision = PRECISION$1.MEDIUM;
           var gl = getTestContext();
           if (gl) {
               if (gl.getShaderPrecisionFormat) {
                   var shaderFragment = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT);
-                  maxFragmentPrecision = shaderFragment.precision ? PRECISION.HIGH : PRECISION.MEDIUM;
+                  maxFragmentPrecision = shaderFragment.precision ? PRECISION$1.HIGH : PRECISION$1.MEDIUM;
               }
           }
       }
@@ -20778,12 +20768,12 @@
           // no precision supplied, so PixiJS will add the requested level.
           var precision = requestedPrecision;
           // If highp is requested but not supported, downgrade precision to a level all devices support.
-          if (requestedPrecision === PRECISION.HIGH && maxSupportedPrecision !== PRECISION.HIGH) {
-              precision = PRECISION.MEDIUM;
+          if (requestedPrecision === PRECISION$1.HIGH && maxSupportedPrecision !== PRECISION$1.HIGH) {
+              precision = PRECISION$1.MEDIUM;
           }
           return "precision " + precision + " float;\n" + src;
       }
-      else if (maxSupportedPrecision !== PRECISION.HIGH && src.substring(0, 15) === 'precision highp') {
+      else if (maxSupportedPrecision !== PRECISION$1.HIGH && src.substring(0, 15) === 'precision highp') {
           // precision was supplied, but at a level this device does not support, so downgrading to mediump.
           return src.replace('precision highp', 'precision mediump');
       }
@@ -21034,7 +21024,7 @@
       return new Function('ud', 'uv', 'renderer', 'syncData', funcFragments.join('\n'));
   }
 
-  var fragTemplate = [
+  var fragTemplate$1 = [
       'precision mediump float;',
       'void main(void){',
       'float test = 0.1;',
@@ -21060,7 +21050,7 @@
       var shader = gl.createShader(gl.FRAGMENT_SHADER);
       while (true) // eslint-disable-line no-constant-condition
        {
-          var fragmentSrc = fragTemplate.replace(/%forloop%/gi, generateIfTestSrc(maxIfs));
+          var fragmentSrc = fragTemplate$1.replace(/%forloop%/gi, generateIfTestSrc(maxIfs));
           gl.shaderSource(shader, fragmentSrc);
           gl.compileShader(shader);
           if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -21145,7 +21135,7 @@
               }
               this.vertexSrc = "#define SHADER_NAME " + name + "\n" + this.vertexSrc;
               this.fragmentSrc = "#define SHADER_NAME " + name + "\n" + this.fragmentSrc;
-              this.vertexSrc = setPrecision(this.vertexSrc, settings.PRECISION_VERTEX, PRECISION.HIGH);
+              this.vertexSrc = setPrecision(this.vertexSrc, settings.PRECISION_VERTEX, PRECISION$1.HIGH);
               this.fragmentSrc = setPrecision(this.fragmentSrc, settings.PRECISION_FRAGMENT, getMaxFragmentPrecision());
           }
           // currently this does not extract structs only default types
@@ -21395,7 +21385,7 @@
   var State = /** @class */ (function () {
       function State() {
           this.data = 0;
-          this.blendMode = BLEND_MODES.NORMAL;
+          this.blendMode = BLEND_MODES$1.NORMAL;
           this.polygonOffset = 0;
           this.blend = true;
           this.depthMask = true;
@@ -21520,7 +21510,7 @@
               return this._blendMode;
           },
           set: function (value) {
-              this.blend = (value !== BLEND_MODES.NONE);
+              this.blend = (value !== BLEND_MODES$1.NONE);
               this._blendMode = value;
           },
           enumerable: false,
@@ -21738,7 +21728,7 @@
    * @extends PIXI.Shader
    */
   var Filter = /** @class */ (function (_super) {
-      __extends$2(Filter, _super);
+      __extends$i(Filter, _super);
       /**
        * @param {string} [vertexSrc] - The source of the vertex shader.
        * @param {string} [fragmentSrc] - The source of the fragment shader.
@@ -21852,11 +21842,11 @@
       return Filter;
   }(Shader));
 
-  var vertex = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 otherMatrix;\n\nvarying vec2 vMaskCoord;\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vMaskCoord = ( otherMatrix * vec3( aTextureCoord, 1.0)  ).xy;\n}\n";
+  var vertex$5 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 otherMatrix;\n\nvarying vec2 vMaskCoord;\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vMaskCoord = ( otherMatrix * vec3( aTextureCoord, 1.0)  ).xy;\n}\n";
 
-  var fragment = "varying vec2 vMaskCoord;\nvarying vec2 vTextureCoord;\n\nuniform sampler2D uSampler;\nuniform sampler2D mask;\nuniform float alpha;\nuniform float npmAlpha;\nuniform vec4 maskClamp;\n\nvoid main(void)\n{\n    float clip = step(3.5,\n        step(maskClamp.x, vMaskCoord.x) +\n        step(maskClamp.y, vMaskCoord.y) +\n        step(vMaskCoord.x, maskClamp.z) +\n        step(vMaskCoord.y, maskClamp.w));\n\n    vec4 original = texture2D(uSampler, vTextureCoord);\n    vec4 masky = texture2D(mask, vMaskCoord);\n    float alphaMul = 1.0 - npmAlpha * (1.0 - masky.a);\n\n    original *= (alphaMul * masky.r * alpha * clip);\n\n    gl_FragColor = original;\n}\n";
+  var fragment$8 = "varying vec2 vMaskCoord;\nvarying vec2 vTextureCoord;\n\nuniform sampler2D uSampler;\nuniform sampler2D mask;\nuniform float alpha;\nuniform float npmAlpha;\nuniform vec4 maskClamp;\n\nvoid main(void)\n{\n    float clip = step(3.5,\n        step(maskClamp.x, vMaskCoord.x) +\n        step(maskClamp.y, vMaskCoord.y) +\n        step(vMaskCoord.x, maskClamp.z) +\n        step(vMaskCoord.y, maskClamp.w));\n\n    vec4 original = texture2D(uSampler, vTextureCoord);\n    vec4 masky = texture2D(mask, vMaskCoord);\n    float alphaMul = 1.0 - npmAlpha * (1.0 - masky.a);\n\n    original *= (alphaMul * masky.r * alpha * clip);\n\n    gl_FragColor = original;\n}\n";
 
-  var tempMat = new Matrix();
+  var tempMat$1 = new Matrix();
   /**
    * Class controls uv mapping from Texture normal space to BaseTexture normal space.
    *
@@ -21996,8 +21986,8 @@
           var orig = tex.orig;
           var trim = tex.trim;
           if (trim) {
-              tempMat.set(orig.width / trim.width, 0, 0, orig.height / trim.height, -trim.x / trim.width, -trim.y / trim.height);
-              this.mapCoord.append(tempMat);
+              tempMat$1.set(orig.width / trim.width, 0, 0, orig.height / trim.height, -trim.x / trim.width, -trim.y / trim.height);
+              this.mapCoord.append(tempMat$1);
           }
           var texBase = tex.baseTexture;
           var frame = this.uClampFrame;
@@ -22027,14 +22017,14 @@
    * @memberof PIXI
    */
   var SpriteMaskFilter = /** @class */ (function (_super) {
-      __extends$2(SpriteMaskFilter, _super);
+      __extends$i(SpriteMaskFilter, _super);
       /**
        * @param {PIXI.Sprite} sprite - the target sprite
        */
       function SpriteMaskFilter(sprite) {
           var _this = this;
           var maskMatrix = new Matrix();
-          _this = _super.call(this, vertex, fragment) || this;
+          _this = _super.call(this, vertex$5, fragment$8) || this;
           sprite.renderable = false;
           /**
            * Sprite mask
@@ -22107,7 +22097,7 @@
    * @memberof PIXI
    */
   var MaskSystem = /** @class */ (function (_super) {
-      __extends$2(MaskSystem, _super);
+      __extends$i(MaskSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -22174,15 +22164,15 @@
           maskData.copyCountersOrReset(this.maskStack[this.maskStack.length - 1]);
           maskData._target = target;
           switch (maskData.type) {
-              case MASK_TYPES.SCISSOR:
+              case MASK_TYPES$1.SCISSOR:
                   this.maskStack.push(maskData);
                   this.renderer.scissor.push(maskData);
                   break;
-              case MASK_TYPES.STENCIL:
+              case MASK_TYPES$1.STENCIL:
                   this.maskStack.push(maskData);
                   this.renderer.stencil.push(maskData);
                   break;
-              case MASK_TYPES.SPRITE:
+              case MASK_TYPES$1.SPRITE:
                   maskData.copyCountersOrReset(null);
                   this.pushSpriteMask(maskData);
                   this.maskStack.push(maskData);
@@ -22203,13 +22193,13 @@
               return;
           }
           switch (maskData.type) {
-              case MASK_TYPES.SCISSOR:
+              case MASK_TYPES$1.SCISSOR:
                   this.renderer.scissor.pop();
                   break;
-              case MASK_TYPES.STENCIL:
+              case MASK_TYPES$1.STENCIL:
                   this.renderer.stencil.pop(maskData.maskObject);
                   break;
-              case MASK_TYPES.SPRITE:
+              case MASK_TYPES$1.SPRITE:
                   this.popSpriteMask();
                   break;
           }
@@ -22225,10 +22215,10 @@
       MaskSystem.prototype.detect = function (maskData) {
           var maskObject = maskData.maskObject;
           if (maskObject.isSprite) {
-              maskData.type = MASK_TYPES.SPRITE;
+              maskData.type = MASK_TYPES$1.SPRITE;
               return;
           }
-          maskData.type = MASK_TYPES.STENCIL;
+          maskData.type = MASK_TYPES$1.STENCIL;
           // detect scissor in graphics
           if (this.enableScissor
               && maskObject.isFastRect
@@ -22244,7 +22234,7 @@
               rotX = ((rotX % 9000) + 9000) % 9000;
               rotXY = ((rotXY % 18000) + 18000) % 18000;
               if (rotX === 0 && rotXY === 9000) {
-                  maskData.type = MASK_TYPES.SCISSOR;
+                  maskData.type = MASK_TYPES$1.SCISSOR;
               }
           }
       };
@@ -22286,7 +22276,7 @@
    * @memberof PIXI
    */
   var AbstractMaskSystem = /** @class */ (function (_super) {
-      __extends$2(AbstractMaskSystem, _super);
+      __extends$i(AbstractMaskSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -22362,7 +22352,7 @@
    * @memberof PIXI
    */
   var ScissorSystem = /** @class */ (function (_super) {
-      __extends$2(ScissorSystem, _super);
+      __extends$i(ScissorSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -22452,7 +22442,7 @@
    * @memberof PIXI
    */
   var StencilSystem = /** @class */ (function (_super) {
-      __extends$2(StencilSystem, _super);
+      __extends$i(StencilSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -22550,7 +22540,7 @@
    * @memberof PIXI
    */
   var ProjectionSystem = /** @class */ (function (_super) {
-      __extends$2(ProjectionSystem, _super);
+      __extends$i(ProjectionSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -22709,7 +22699,7 @@
    * @memberof PIXI
    */
   var RenderTextureSystem = /** @class */ (function (_super) {
-      __extends$2(RenderTextureSystem, _super);
+      __extends$i(RenderTextureSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -22929,7 +22919,7 @@
    * @extends PIXI.System
    */
   var ShaderSystem = /** @class */ (function (_super) {
-      __extends$2(ShaderSystem, _super);
+      __extends$i(ShaderSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -23126,39 +23116,39 @@
       if (array === void 0) { array = []; }
       // TODO - premultiply alpha would be different.
       // add a boolean for that!
-      array[BLEND_MODES.NORMAL] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.ADD] = [gl.ONE, gl.ONE];
-      array[BLEND_MODES.MULTIPLY] = [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.SCREEN] = [gl.ONE, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.OVERLAY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.DARKEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.LIGHTEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.COLOR_DODGE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.COLOR_BURN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.HARD_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.SOFT_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.DIFFERENCE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.EXCLUSION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.NONE] = [0, 0];
+      array[BLEND_MODES$1.NORMAL] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.ADD] = [gl.ONE, gl.ONE];
+      array[BLEND_MODES$1.MULTIPLY] = [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.SCREEN] = [gl.ONE, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.OVERLAY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.DARKEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.LIGHTEN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.COLOR_DODGE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.COLOR_BURN] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.HARD_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.SOFT_LIGHT] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.DIFFERENCE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.EXCLUSION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.NONE] = [0, 0];
       // not-premultiplied blend modes
-      array[BLEND_MODES.NORMAL_NPM] = [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.ADD_NPM] = [gl.SRC_ALPHA, gl.ONE, gl.ONE, gl.ONE];
-      array[BLEND_MODES.SCREEN_NPM] = [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.NORMAL_NPM] = [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.ADD_NPM] = [gl.SRC_ALPHA, gl.ONE, gl.ONE, gl.ONE];
+      array[BLEND_MODES$1.SCREEN_NPM] = [gl.SRC_ALPHA, gl.ONE_MINUS_SRC_COLOR, gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
       // composite operations
-      array[BLEND_MODES.SRC_IN] = [gl.DST_ALPHA, gl.ZERO];
-      array[BLEND_MODES.SRC_OUT] = [gl.ONE_MINUS_DST_ALPHA, gl.ZERO];
-      array[BLEND_MODES.SRC_ATOP] = [gl.DST_ALPHA, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.DST_OVER] = [gl.ONE_MINUS_DST_ALPHA, gl.ONE];
-      array[BLEND_MODES.DST_IN] = [gl.ZERO, gl.SRC_ALPHA];
-      array[BLEND_MODES.DST_OUT] = [gl.ZERO, gl.ONE_MINUS_SRC_ALPHA];
-      array[BLEND_MODES.DST_ATOP] = [gl.ONE_MINUS_DST_ALPHA, gl.SRC_ALPHA];
-      array[BLEND_MODES.XOR] = [gl.ONE_MINUS_DST_ALPHA, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.SRC_IN] = [gl.DST_ALPHA, gl.ZERO];
+      array[BLEND_MODES$1.SRC_OUT] = [gl.ONE_MINUS_DST_ALPHA, gl.ZERO];
+      array[BLEND_MODES$1.SRC_ATOP] = [gl.DST_ALPHA, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.DST_OVER] = [gl.ONE_MINUS_DST_ALPHA, gl.ONE];
+      array[BLEND_MODES$1.DST_IN] = [gl.ZERO, gl.SRC_ALPHA];
+      array[BLEND_MODES$1.DST_OUT] = [gl.ZERO, gl.ONE_MINUS_SRC_ALPHA];
+      array[BLEND_MODES$1.DST_ATOP] = [gl.ONE_MINUS_DST_ALPHA, gl.SRC_ALPHA];
+      array[BLEND_MODES$1.XOR] = [gl.ONE_MINUS_DST_ALPHA, gl.ONE_MINUS_SRC_ALPHA];
       // SUBTRACT from flash
-      array[BLEND_MODES.SUBTRACT] = [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_REVERSE_SUBTRACT, gl.FUNC_ADD];
+      array[BLEND_MODES$1.SUBTRACT] = [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_REVERSE_SUBTRACT, gl.FUNC_ADD];
       return array;
   }
 
@@ -23176,7 +23166,7 @@
    * @memberof PIXI
    */
   var StateSystem = /** @class */ (function (_super) {
-      __extends$2(StateSystem, _super);
+      __extends$i(StateSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -23206,7 +23196,7 @@
            * @default PIXI.BLEND_MODES.NONE
            * @readonly
            */
-          _this.blendMode = BLEND_MODES.NONE;
+          _this.blendMode = BLEND_MODES$1.NONE;
           /**
            * Whether current blend equation is different
            * @member {boolean}
@@ -23440,7 +23430,7 @@
    * @extends PIXI.System
    */
   var TextureGCSystem = /** @class */ (function (_super) {
-      __extends$2(TextureGCSystem, _super);
+      __extends$i(TextureGCSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -23487,7 +23477,7 @@
               return;
           }
           this.count++;
-          if (this.mode === GC_MODES.MANUAL) {
+          if (this.mode === GC_MODES$1.MANUAL) {
               return;
           }
           this.checkCount++;
@@ -23606,7 +23596,7 @@
    * @memberof PIXI
    */
   var TextureSystem = /** @class */ (function (_super) {
-      __extends$2(TextureSystem, _super);
+      __extends$i(TextureSystem, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this System works for.
        */
@@ -23788,7 +23778,7 @@
           }
           // that's WebGL1 HALF_FLOAT_OES
           // we have to convert it to WebGL HALF_FLOAT
-          if (texture.type === TYPES.HALF_FLOAT) {
+          if (texture.type === TYPES$1.HALF_FLOAT) {
               glTexture.type = gl.HALF_FLOAT;
           }
           if (glTexture.type === gl.HALF_FLOAT
@@ -23863,14 +23853,14 @@
           if (!glTexture) {
               return;
           }
-          if ((texture.mipmap === MIPMAP_MODES.POW2 || this.webGLVersion !== 2) && !texture.isPowerOfTwo) {
+          if ((texture.mipmap === MIPMAP_MODES$1.POW2 || this.webGLVersion !== 2) && !texture.isPowerOfTwo) {
               glTexture.mipmap = false;
           }
           else {
               glTexture.mipmap = texture.mipmap >= 1;
           }
           if (this.webGLVersion !== 2 && !texture.isPowerOfTwo) {
-              glTexture.wrapMode = WRAP_MODES.CLAMP;
+              glTexture.wrapMode = WRAP_MODES$1.CLAMP;
           }
           else {
               glTexture.wrapMode = texture.wrapMode;
@@ -23890,25 +23880,25 @@
        */
       TextureSystem.prototype.setStyle = function (texture, glTexture) {
           var gl = this.gl;
-          if (glTexture.mipmap && texture.mipmap !== MIPMAP_MODES.ON_MANUAL) {
+          if (glTexture.mipmap && texture.mipmap !== MIPMAP_MODES$1.ON_MANUAL) {
               gl.generateMipmap(texture.target);
           }
           gl.texParameteri(texture.target, gl.TEXTURE_WRAP_S, glTexture.wrapMode);
           gl.texParameteri(texture.target, gl.TEXTURE_WRAP_T, glTexture.wrapMode);
           if (glTexture.mipmap) {
               /* eslint-disable max-len */
-              gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode === SCALE_MODES.LINEAR ? gl.LINEAR_MIPMAP_LINEAR : gl.NEAREST_MIPMAP_NEAREST);
+              gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode === SCALE_MODES$1.LINEAR ? gl.LINEAR_MIPMAP_LINEAR : gl.NEAREST_MIPMAP_NEAREST);
               /* eslint-disable max-len */
               var anisotropicExt = this.renderer.context.extensions.anisotropicFiltering;
-              if (anisotropicExt && texture.anisotropicLevel > 0 && texture.scaleMode === SCALE_MODES.LINEAR) {
+              if (anisotropicExt && texture.anisotropicLevel > 0 && texture.scaleMode === SCALE_MODES$1.LINEAR) {
                   var level = Math.min(texture.anisotropicLevel, gl.getParameter(anisotropicExt.MAX_TEXTURE_MAX_ANISOTROPY_EXT));
                   gl.texParameterf(texture.target, anisotropicExt.TEXTURE_MAX_ANISOTROPY_EXT, level);
               }
           }
           else {
-              gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode === SCALE_MODES.LINEAR ? gl.LINEAR : gl.NEAREST);
+              gl.texParameteri(texture.target, gl.TEXTURE_MIN_FILTER, texture.scaleMode === SCALE_MODES$1.LINEAR ? gl.LINEAR : gl.NEAREST);
           }
-          gl.texParameteri(texture.target, gl.TEXTURE_MAG_FILTER, texture.scaleMode === SCALE_MODES.LINEAR ? gl.LINEAR : gl.NEAREST);
+          gl.texParameteri(texture.target, gl.TEXTURE_MAG_FILTER, texture.scaleMode === SCALE_MODES$1.LINEAR ? gl.LINEAR : gl.NEAREST);
       };
       return TextureSystem;
   }(System));
@@ -23944,7 +23934,7 @@
    * @memberof PIXI
    */
   var AbstractRenderer = /** @class */ (function (_super) {
-      __extends$2(AbstractRenderer, _super);
+      __extends$i(AbstractRenderer, _super);
       /**
        * @param system - The name of the system this renderer is for.
        * @param [options] - The optional renderer parameters.
@@ -23968,7 +23958,7 @@
        * @param {number} [options.backgroundAlpha=1] - Value from 0 (fully transparent) to 1 (fully opaque).
        */
       function AbstractRenderer(type, options) {
-          if (type === void 0) { type = RENDERER_TYPE.UNKNOWN; }
+          if (type === void 0) { type = RENDERER_TYPE$1.UNKNOWN; }
           var _this = _super.call(this) || this;
           // Add the default render options
           options = Object.assign({}, settings.RENDER_OPTIONS, options);
@@ -24197,7 +24187,7 @@
           var thisAny = this;
           // null-ing all objects, that's a tradition!
           thisAny.plugins = null;
-          thisAny.type = RENDERER_TYPE.UNKNOWN;
+          thisAny.type = RENDERER_TYPE$1.UNKNOWN;
           thisAny.view = null;
           thisAny.screen = null;
           thisAny._tempDisplayObjectParent = null;
@@ -24239,7 +24229,7 @@
           configurable: true
       });
       return AbstractRenderer;
-  }(eventemitter3));
+  }(eventemitter3$1));
 
   /**
    * The Renderer draws the scene and all its content onto a WebGL enabled canvas.
@@ -24276,7 +24266,7 @@
    * @extends PIXI.AbstractRenderer
    */
   var Renderer = /** @class */ (function (_super) {
-      __extends$2(Renderer, _super);
+      __extends$i(Renderer, _super);
       /**
        * @param [options] - The optional renderer parameters.
        * @param {number} [options.width=800] - The width of the screen.
@@ -24305,7 +24295,7 @@
        * @public
        */
       function Renderer(options) {
-          var _this = _super.call(this, RENDERER_TYPE.WEBGL, options) || this;
+          var _this = _super.call(this, RENDERER_TYPE$1.WEBGL, options) || this;
           // the options will have been modified here in the super constructor with pixi's default settings..
           options = _this.options;
           /**
@@ -24723,7 +24713,7 @@
       function BatchDrawCall() {
           this.texArray = null;
           this.blend = 0;
-          this.type = DRAW_MODES.TRIANGLES;
+          this.type = DRAW_MODES$1.TRIANGLES;
           this.start = 0;
           this.size = 0;
           /**
@@ -24936,7 +24926,7 @@
    * @extends PIXI.ObjectRenderer
    */
   var AbstractBatchRenderer = /** @class */ (function (_super) {
-      __extends$2(AbstractBatchRenderer, _super);
+      __extends$i(AbstractBatchRenderer, _super);
       /**
        * This will hook onto the renderer's `contextChange`
        * and `prerender` signals.
@@ -25139,7 +25129,7 @@
        */
       AbstractBatchRenderer.prototype.contextChange = function () {
           var gl = this.renderer.gl;
-          if (settings.PREFER_ENV === ENV.WEBGL_LEGACY) {
+          if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
               this.MAX_TEXTURES = 1;
           }
           else {
@@ -25584,7 +25574,7 @@
    * @memberof PIXI
    */
   var BatchGeometry = /** @class */ (function (_super) {
-      __extends$2(BatchGeometry, _super);
+      __extends$i(BatchGeometry, _super);
       /**
        * @param {boolean} [_static=false] - Optimization flag, where `false`
        *        is updated every frame, `true` doesn't change frame-to-frame.
@@ -25598,18 +25588,18 @@
            * @member {PIXI.Buffer}
            * @protected
            */
-          _this._buffer = new Buffer$1(null, _static, false);
+          _this._buffer = new Buffer(null, _static, false);
           /**
            * Index buffer data
            *
            * @member {PIXI.Buffer}
            * @protected
            */
-          _this._indexBuffer = new Buffer$1(null, _static, true);
-          _this.addAttribute('aVertexPosition', _this._buffer, 2, false, TYPES.FLOAT)
-              .addAttribute('aTextureCoord', _this._buffer, 2, false, TYPES.FLOAT)
-              .addAttribute('aColor', _this._buffer, 4, true, TYPES.UNSIGNED_BYTE)
-              .addAttribute('aTextureId', _this._buffer, 1, true, TYPES.FLOAT)
+          _this._indexBuffer = new Buffer(null, _static, true);
+          _this.addAttribute('aVertexPosition', _this._buffer, 2, false, TYPES$1.FLOAT)
+              .addAttribute('aTextureCoord', _this._buffer, 2, false, TYPES$1.FLOAT)
+              .addAttribute('aColor', _this._buffer, 4, true, TYPES$1.UNSIGNED_BYTE)
+              .addAttribute('aTextureId', _this._buffer, 1, true, TYPES$1.FLOAT)
               .addIndex(_this._indexBuffer);
           return _this;
       }
@@ -25665,7 +25655,7 @@
               vertexSize: 6,
           }, options), vertex = _a.vertex, fragment = _a.fragment, vertexSize = _a.vertexSize, geometryClass = _a.geometryClass;
           return /** @class */ (function (_super) {
-              __extends$2(BatchPlugin, _super);
+              __extends$i(BatchPlugin, _super);
               function BatchPlugin(renderer) {
                   var _this = _super.call(this, renderer) || this;
                   _this.shaderGenerator = new BatchShaderGenerator(vertex, fragment);
@@ -26267,7 +26257,7 @@
 
   var parseUri = parseURI;
 
-  var miniSignals = createCommonjsModule(function (module, exports) {
+  var miniSignals = createCommonjsModule$2(function (module, exports) {
 
   Object.defineProperty(exports, '__esModule', {
     value: true
@@ -26705,14 +26695,14 @@
     }
   }
 
-  function _createClass(Constructor, protoProps, staticProps) {
+  function _createClass$8(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
   }
 
   var useXdr = !!(window.XDomainRequest && !('withCredentials' in new XMLHttpRequest()));
-  var tempAnchor$1 = null; // some status constants
+  var tempAnchor = null; // some status constants
 
   var STATUS_NONE = 0;
   var STATUS_OK = 200;
@@ -26730,7 +26720,7 @@
    */
 
 
-  var Resource$1 =
+  var Resource =
   /*#__PURE__*/
   function () {
     /**
@@ -27582,15 +27572,15 @@
 
       loc = loc || window.location;
 
-      if (!tempAnchor$1) {
-        tempAnchor$1 = document.createElement('a');
+      if (!tempAnchor) {
+        tempAnchor = document.createElement('a');
       } // let the browser determine the full href for the url of this resource and then
       // parse with the node url lib, we can't use the properties of the anchor element
       // because they don't work in IE9 :(
 
 
-      tempAnchor$1.href = url;
-      url = parseUri(tempAnchor$1.href, {
+      tempAnchor.href = url;
+      url = parseUri(tempAnchor.href, {
         strictMode: true
       });
       var samePort = !url.port && loc.port === '' || url.port === loc.port;
@@ -27684,7 +27674,7 @@
       }
     };
 
-    _createClass(Resource, [{
+    _createClass$8(Resource, [{
       key: "isDataUrl",
       get: function get() {
         return this._hasFlag(Resource.STATUS_FLAGS.DATA_URL);
@@ -27728,7 +27718,7 @@
    */
 
 
-  Resource$1.STATUS_FLAGS = {
+  Resource.STATUS_FLAGS = {
     NONE: 0,
     DATA_URL: 1 << 0,
     COMPLETE: 1 << 1,
@@ -27742,7 +27732,7 @@
    * @enum {number}
    */
 
-  Resource$1.TYPE = {
+  Resource.TYPE = {
     UNKNOWN: 0,
     JSON: 1,
     XML: 2,
@@ -27759,7 +27749,7 @@
    * @enum {number}
    */
 
-  Resource$1.LOAD_TYPE = {
+  Resource.LOAD_TYPE = {
     /** Uses XMLHttpRequest to load the resource. */
     XHR: 1,
 
@@ -27780,7 +27770,7 @@
    * @enum {string}
    */
 
-  Resource$1.XHR_RESPONSE_TYPE = {
+  Resource.XHR_RESPONSE_TYPE = {
     /** string */
     DEFAULT: 'text',
 
@@ -27799,61 +27789,61 @@
     /** String */
     TEXT: 'text'
   };
-  Resource$1._loadTypeMap = {
+  Resource._loadTypeMap = {
     // images
-    gif: Resource$1.LOAD_TYPE.IMAGE,
-    png: Resource$1.LOAD_TYPE.IMAGE,
-    bmp: Resource$1.LOAD_TYPE.IMAGE,
-    jpg: Resource$1.LOAD_TYPE.IMAGE,
-    jpeg: Resource$1.LOAD_TYPE.IMAGE,
-    tif: Resource$1.LOAD_TYPE.IMAGE,
-    tiff: Resource$1.LOAD_TYPE.IMAGE,
-    webp: Resource$1.LOAD_TYPE.IMAGE,
-    tga: Resource$1.LOAD_TYPE.IMAGE,
-    svg: Resource$1.LOAD_TYPE.IMAGE,
-    'svg+xml': Resource$1.LOAD_TYPE.IMAGE,
+    gif: Resource.LOAD_TYPE.IMAGE,
+    png: Resource.LOAD_TYPE.IMAGE,
+    bmp: Resource.LOAD_TYPE.IMAGE,
+    jpg: Resource.LOAD_TYPE.IMAGE,
+    jpeg: Resource.LOAD_TYPE.IMAGE,
+    tif: Resource.LOAD_TYPE.IMAGE,
+    tiff: Resource.LOAD_TYPE.IMAGE,
+    webp: Resource.LOAD_TYPE.IMAGE,
+    tga: Resource.LOAD_TYPE.IMAGE,
+    svg: Resource.LOAD_TYPE.IMAGE,
+    'svg+xml': Resource.LOAD_TYPE.IMAGE,
     // for SVG data urls
     // audio
-    mp3: Resource$1.LOAD_TYPE.AUDIO,
-    ogg: Resource$1.LOAD_TYPE.AUDIO,
-    wav: Resource$1.LOAD_TYPE.AUDIO,
+    mp3: Resource.LOAD_TYPE.AUDIO,
+    ogg: Resource.LOAD_TYPE.AUDIO,
+    wav: Resource.LOAD_TYPE.AUDIO,
     // videos
-    mp4: Resource$1.LOAD_TYPE.VIDEO,
-    webm: Resource$1.LOAD_TYPE.VIDEO
+    mp4: Resource.LOAD_TYPE.VIDEO,
+    webm: Resource.LOAD_TYPE.VIDEO
   };
-  Resource$1._xhrTypeMap = {
+  Resource._xhrTypeMap = {
     // xml
-    xhtml: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-    html: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-    htm: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-    xml: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-    tmx: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
-    svg: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+    xhtml: Resource.XHR_RESPONSE_TYPE.DOCUMENT,
+    html: Resource.XHR_RESPONSE_TYPE.DOCUMENT,
+    htm: Resource.XHR_RESPONSE_TYPE.DOCUMENT,
+    xml: Resource.XHR_RESPONSE_TYPE.DOCUMENT,
+    tmx: Resource.XHR_RESPONSE_TYPE.DOCUMENT,
+    svg: Resource.XHR_RESPONSE_TYPE.DOCUMENT,
     // This was added to handle Tiled Tileset XML, but .tsx is also a TypeScript React Component.
     // Since it is way less likely for people to be loading TypeScript files instead of Tiled files,
     // this should probably be fine.
-    tsx: Resource$1.XHR_RESPONSE_TYPE.DOCUMENT,
+    tsx: Resource.XHR_RESPONSE_TYPE.DOCUMENT,
     // images
-    gif: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    png: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    bmp: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    jpg: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    jpeg: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    tif: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    tiff: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    webp: Resource$1.XHR_RESPONSE_TYPE.BLOB,
-    tga: Resource$1.XHR_RESPONSE_TYPE.BLOB,
+    gif: Resource.XHR_RESPONSE_TYPE.BLOB,
+    png: Resource.XHR_RESPONSE_TYPE.BLOB,
+    bmp: Resource.XHR_RESPONSE_TYPE.BLOB,
+    jpg: Resource.XHR_RESPONSE_TYPE.BLOB,
+    jpeg: Resource.XHR_RESPONSE_TYPE.BLOB,
+    tif: Resource.XHR_RESPONSE_TYPE.BLOB,
+    tiff: Resource.XHR_RESPONSE_TYPE.BLOB,
+    webp: Resource.XHR_RESPONSE_TYPE.BLOB,
+    tga: Resource.XHR_RESPONSE_TYPE.BLOB,
     // json
-    json: Resource$1.XHR_RESPONSE_TYPE.JSON,
+    json: Resource.XHR_RESPONSE_TYPE.JSON,
     // text
-    text: Resource$1.XHR_RESPONSE_TYPE.TEXT,
-    txt: Resource$1.XHR_RESPONSE_TYPE.TEXT,
+    text: Resource.XHR_RESPONSE_TYPE.TEXT,
+    txt: Resource.XHR_RESPONSE_TYPE.TEXT,
     // fonts
-    ttf: Resource$1.XHR_RESPONSE_TYPE.BUFFER,
-    otf: Resource$1.XHR_RESPONSE_TYPE.BUFFER
+    ttf: Resource.XHR_RESPONSE_TYPE.BUFFER,
+    otf: Resource.XHR_RESPONSE_TYPE.BUFFER
   }; // We can't set the `src` attribute to empty string, so on abort we set it to this 1px transparent gif
 
-  Resource$1.EMPTY_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+  Resource.EMPTY_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
   /**
    * Quick helper to set a value on one of the extension maps. Ensures there is no
    * dot at the start of the extension.
@@ -27952,7 +27942,7 @@
     return output;
   }
 
-  var Url$1 = window.URL || window.webkitURL;
+  var Url = window.URL || window.webkitURL;
   /**
    * A middleware for transforming XHR loaded Blobs into more useful objects
    *
@@ -27973,7 +27963,7 @@
     } // if this was an XHR load of a blob
 
 
-    if (resource.xhr && resource.xhrType === Resource$1.XHR_RESPONSE_TYPE.BLOB) {
+    if (resource.xhr && resource.xhrType === Resource.XHR_RESPONSE_TYPE.BLOB) {
       // if there is no blob support we probably got a binary string back
       if (!window.Blob || typeof resource.data === 'string') {
         var type = resource.xhr.getResponseHeader('content-type'); // this is an image, convert the binary string into a data url
@@ -27981,7 +27971,7 @@
         if (type && type.indexOf('image') === 0) {
           resource.data = new Image();
           resource.data.src = "data:" + type + ";base64," + encodeBinary(resource.xhr.responseText);
-          resource.type = Resource$1.TYPE.IMAGE; // wait until the image loads and then callback
+          resource.type = Resource.TYPE.IMAGE; // wait until the image loads and then callback
 
           resource.data.onload = function () {
             resource.data.onload = null;
@@ -27993,15 +27983,15 @@
         }
       } // if content type says this is an image, then we should transform the blob into an Image object
       else if (resource.data.type.indexOf('image') === 0) {
-          var src = Url$1.createObjectURL(resource.data);
+          var src = Url.createObjectURL(resource.data);
           resource.blob = resource.data;
           resource.data = new Image();
           resource.data.src = src;
-          resource.type = Resource$1.TYPE.IMAGE; // cleanup the no longer used blob after the image loads
+          resource.type = Resource.TYPE.IMAGE; // cleanup the no longer used blob after the image loads
           // TODO: Is this correct? Will the image be invalid after revoking?
 
           resource.data.onload = function () {
-            Url$1.revokeObjectURL(src);
+            Url.revokeObjectURL(src);
             resource.data.onload = null;
             next();
           }; // next will be called on load.
@@ -28031,7 +28021,7 @@
    * @class
    */
 
-  var Loader =
+  var Loader$1 =
   /*#__PURE__*/
   function () {
     /**
@@ -28423,7 +28413,7 @@
 
       url = this._prepareUrl(url); // create the store the resource
 
-      this.resources[name] = new Resource$1(name, url, options);
+      this.resources[name] = new Resource(name, url, options);
 
       if (typeof cb === 'function') {
         this.resources[name].onAfterMiddleware.once(cb);
@@ -28701,7 +28691,7 @@
       }, true);
     };
 
-    _createClass(Loader, [{
+    _createClass$8(Loader, [{
       key: "concurrency",
       get: function get() {
         return this._queue.concurrency;
@@ -28723,7 +28713,7 @@
    */
 
 
-  Loader._defaultBeforeMiddleware = [];
+  Loader$1._defaultBeforeMiddleware = [];
   /**
    * A default array of middleware to run after loading each resource.
    * Each of these middlewares are added to any new Loader instances when they are created.
@@ -28732,7 +28722,7 @@
    * @member {function[]}
    */
 
-  Loader._defaultAfterMiddleware = [];
+  Loader$1._defaultAfterMiddleware = [];
   /**
    * Sets up a middleware function that will run *before* the
    * resource is loaded.
@@ -28742,10 +28732,10 @@
    * @return {Loader} Returns itself.
    */
 
-  Loader.pre = function LoaderPreStatic(fn) {
-    Loader._defaultBeforeMiddleware.push(fn);
+  Loader$1.pre = function LoaderPreStatic(fn) {
+    Loader$1._defaultBeforeMiddleware.push(fn);
 
-    return Loader;
+    return Loader$1;
   };
   /**
    * Sets up a middleware function that will run *after* the
@@ -28757,10 +28747,10 @@
    */
 
 
-  Loader.use = function LoaderUseStatic(fn) {
-    Loader._defaultAfterMiddleware.push(fn);
+  Loader$1.use = function LoaderUseStatic(fn) {
+    Loader$1._defaultAfterMiddleware.push(fn);
 
-    return Loader;
+    return Loader$1;
   };
 
   /*!
@@ -28787,15 +28777,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$3 = function(d, b) {
-      extendStatics$3 = Object.setPrototypeOf ||
+  var extendStatics$h = function(d, b) {
+      extendStatics$h = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$3(d, b);
+      return extendStatics$h(d, b);
   };
 
-  function __extends$3(d, b) {
-      extendStatics$3(d, b);
+  function __extends$h(d, b) {
+      extendStatics$h(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -28813,8 +28803,8 @@
        * Handle SVG elements a text, render with SVGResource.
        */
       TextureLoader.add = function () {
-          Resource$1.setExtensionLoadType('svg', Resource$1.LOAD_TYPE.XHR);
-          Resource$1.setExtensionXhrType('svg', Resource$1.XHR_RESPONSE_TYPE.TEXT);
+          Resource.setExtensionLoadType('svg', Resource.LOAD_TYPE.XHR);
+          Resource.setExtensionXhrType('svg', Resource.XHR_RESPONSE_TYPE.TEXT);
       };
       /**
        * Called after a resource is loaded.
@@ -28824,7 +28814,7 @@
        */
       TextureLoader.use = function (resource, next) {
           // create a new texture if the data is an Image object
-          if (resource.data && (resource.type === Resource$1.TYPE.IMAGE || resource.extension === 'svg')) {
+          if (resource.data && (resource.type === Resource.TYPE.IMAGE || resource.extension === 'svg')) {
               var data = resource.data, url = resource.url, name = resource.name, metadata = resource.metadata;
               Texture.fromLoader(data, url, name, metadata).then(function (texture) {
                   resource.texture = texture;
@@ -28890,8 +28880,8 @@
    * @class Loader
    * @memberof PIXI
    */
-  var Loader$1 = /** @class */ (function (_super) {
-      __extends$3(Loader, _super);
+  var Loader = /** @class */ (function (_super) {
+      __extends$h(Loader, _super);
       /**
        * @param {string} [baseUrl=''] - The base url for all resources loaded by this loader.
        * @param {number} [concurrency=10] - The number of resources to load concurrently.
@@ -28975,11 +28965,11 @@
        */
       Loader._plugins = [];
       return Loader;
-  }(Loader));
+  }(Loader$1));
   // parse any blob into more usable objects (e.g. Image)
-  Loader$1.registerPlugin({ use: index.parsing });
+  Loader.registerPlugin({ use: index.parsing });
   // parse any Image objects into textures
-  Loader$1.registerPlugin(TextureLoader);
+  Loader.registerPlugin(TextureLoader);
   /**
    * Plugin to be installed for handling specific Loader resources.
    *
@@ -29080,7 +29070,7 @@
            * @type {PIXI.Loader}
            * @readonly
            */
-          this.loader = options.sharedLoader ? Loader$1.shared : new Loader$1();
+          this.loader = options.sharedLoader ? Loader.shared : new Loader();
       };
       /**
        * Called when application destroyed
@@ -29102,7 +29092,7 @@
   * @class LoaderResource
   * @memberof PIXI
   */
-  var LoaderResource = Resource$1;
+  var LoaderResource = Resource;
 
   /*!
    * @pixi/compressed-textures - v6.0.0
@@ -29112,7 +29102,7 @@
    * http://www.opensource.org/licenses/mit-license
    */
 
-  var _a;
+  var _a$1;
   /**
    * WebGL internal formats, including compressed texture formats provided by extensions
    *
@@ -29190,41 +29180,41 @@
    * @static
    * @ignore
    */
-  var INTERNAL_FORMAT_TO_BYTES_PER_PIXEL = (_a = {},
+  var INTERNAL_FORMAT_TO_BYTES_PER_PIXEL = (_a$1 = {},
       // WEBGL_compressed_texture_s3tc
-      _a[INTERNAL_FORMATS.COMPRESSED_RGB_S3TC_DXT1_EXT] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT1_EXT] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT3_EXT] = 1,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT5_EXT] = 1,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGB_S3TC_DXT1_EXT] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT1_EXT] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT3_EXT] = 1,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT5_EXT] = 1,
       // WEBGL_compressed_texture_s3tc
-      _a[INTERNAL_FORMATS.COMPRESSED_SRGB_S3TC_DXT1_EXT] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT] = 1,
-      _a[INTERNAL_FORMATS.COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT] = 1,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB_S3TC_DXT1_EXT] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB_ALPHA_S3TC_DXT1_EXT] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB_ALPHA_S3TC_DXT3_EXT] = 1,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT] = 1,
       // WEBGL_compressed_texture_etc
-      _a[INTERNAL_FORMATS.COMPRESSED_R11_EAC] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_SIGNED_R11_EAC] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RG11_EAC] = 1,
-      _a[INTERNAL_FORMATS.COMPRESSED_SIGNED_RG11_EAC] = 1,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGB8_ETC2] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA8_ETC2_EAC] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_SRGB8_ETC2] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_R11_EAC] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SIGNED_R11_EAC] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RG11_EAC] = 1,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SIGNED_RG11_EAC] = 1,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGB8_ETC2] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA8_ETC2_EAC] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB8_ETC2] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2] = 0.5,
       // WEBGL_compressed_texture_pvrtc
-      _a[INTERNAL_FORMATS.COMPRESSED_RGB_PVRTC_4BPPV1_IMG] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGB_PVRTC_2BPPV1_IMG] = 0.25,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG] = 0.25,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGB_PVRTC_4BPPV1_IMG] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA_PVRTC_4BPPV1_IMG] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGB_PVRTC_2BPPV1_IMG] = 0.25,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA_PVRTC_2BPPV1_IMG] = 0.25,
       // WEBGL_compressed_texture_etc1
-      _a[INTERNAL_FORMATS.COMPRESSED_RGB_ETC1_WEBGL] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGB_ETC1_WEBGL] = 0.5,
       // @see https://www.khronos.org/registry/OpenGL/extensions/AMD/AMD_compressed_ATC_texture.txt
       // WEBGL_compressed_texture_atc
-      _a[INTERNAL_FORMATS.COMPRESSED_RGB_ATC_WEBGL] = 0.5,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL] = 1,
-      _a[INTERNAL_FORMATS.COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL] = 1,
-      _a);
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGB_ATC_WEBGL] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA_ATC_EXPLICIT_ALPHA_WEBGL] = 1,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA_ATC_INTERPOLATED_ALPHA_WEBGL] = 1,
+      _a$1);
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -29242,15 +29232,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$4 = function(d, b) {
-      extendStatics$4 = Object.setPrototypeOf ||
+  var extendStatics$g = function(d, b) {
+      extendStatics$g = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$4(d, b);
+      return extendStatics$g(d, b);
   };
 
-  function __extends$4(d, b) {
-      extendStatics$4(d, b);
+  function __extends$g(d, b) {
+      extendStatics$g(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -29300,7 +29290,7 @@
    * @memberof PIXI
    */
   var BlobResource = /** @class */ (function (_super) {
-      __extends$4(BlobResource, _super);
+      __extends$g(BlobResource, _super);
       /**
        * @param {string} url - the URL of the texture file
        * @param {boolean}[autoLoad] - whether to fetch the data immediately;
@@ -29424,7 +29414,7 @@
    * @memberof PIXI
    */
   var CompressedTextureResource = /** @class */ (function (_super) {
-      __extends$4(CompressedTextureResource, _super);
+      __extends$g(CompressedTextureResource, _super);
       /**
        * @param source - the buffer/URL holding the compressed texture data
        * @param options
@@ -29690,8 +29680,8 @@
       }
       resources.forEach(function (resource, i) {
           var baseTexture = new BaseTexture(resource, {
-              mipmap: MIPMAP_MODES.OFF,
-              alphaMode: ALPHA_MODES.NO_PREMULTIPLIED_ALPHA
+              mipmap: MIPMAP_MODES$1.OFF,
+              alphaMode: ALPHA_MODES$1.NO_PREMULTIPLIED_ALPHA
           });
           var cacheID = url + "-" + (i + 1);
           BaseTexture.addToCache(baseTexture, cacheID);
@@ -29703,7 +29693,7 @@
       });
   }
 
-  var _a$1, _b;
+  var _a$1$1, _b;
   // Set DDS files to be loaded as an ArrayBuffer
   LoaderResource.setExtensionXhrType('dds', LoaderResource.XHR_RESPONSE_TYPE.BUFFER);
   var DDS_MAGIC_SIZE = 4;
@@ -29913,11 +29903,11 @@
    *
    * @ignore
    */
-  var FOURCC_TO_FORMAT = (_a$1 = {},
-      _a$1[FOURCC_DXT1] = INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT1_EXT,
-      _a$1[FOURCC_DXT3] = INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT3_EXT,
-      _a$1[FOURCC_DXT5] = INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT5_EXT,
-      _a$1);
+  var FOURCC_TO_FORMAT = (_a$1$1 = {},
+      _a$1$1[FOURCC_DXT1] = INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT1_EXT,
+      _a$1$1[FOURCC_DXT3] = INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT3_EXT,
+      _a$1$1[FOURCC_DXT5] = INTERNAL_FORMATS.COMPRESSED_RGBA_S3TC_DXT5_EXT,
+      _a$1$1);
   /**
    * Maps {@link DXGI_FORMAT} to types/internal-formats (see {@link PIXI.TYPES}, {@link PIXI.INTERNAL_FORMATS})
    *
@@ -30114,10 +30104,10 @@
    * @ignore
    */
   var TYPES_TO_BYTES_PER_COMPONENT = (_a$2 = {},
-      _a$2[TYPES.UNSIGNED_BYTE] = 1,
-      _a$2[TYPES.UNSIGNED_SHORT] = 2,
-      _a$2[TYPES.FLOAT] = 4,
-      _a$2[TYPES.HALF_FLOAT] = 8,
+      _a$2[TYPES$1.UNSIGNED_BYTE] = 1,
+      _a$2[TYPES$1.UNSIGNED_SHORT] = 2,
+      _a$2[TYPES$1.FLOAT] = 4,
+      _a$2[TYPES$1.HALF_FLOAT] = 8,
       _a$2);
   /**
    * Number of components in each {@link PIXI.FORMATS}
@@ -30125,11 +30115,11 @@
    * @ignore
    */
   var FORMATS_TO_COMPONENTS = (_b$1 = {},
-      _b$1[FORMATS.RGBA] = 4,
-      _b$1[FORMATS.RGB] = 3,
-      _b$1[FORMATS.LUMINANCE] = 1,
-      _b$1[FORMATS.LUMINANCE_ALPHA] = 2,
-      _b$1[FORMATS.ALPHA] = 1,
+      _b$1[FORMATS$1.RGBA] = 4,
+      _b$1[FORMATS$1.RGB] = 3,
+      _b$1[FORMATS$1.LUMINANCE] = 1,
+      _b$1[FORMATS$1.LUMINANCE_ALPHA] = 2,
+      _b$1[FORMATS$1.ALPHA] = 1,
       _b$1);
   /**
    * Number of bytes per pixel in bit-field types in {@link PIXI.TYPES}
@@ -30137,9 +30127,9 @@
    * @ignore
    */
   var TYPES_TO_BYTES_PER_PIXEL = (_c = {},
-      _c[TYPES.UNSIGNED_SHORT_4_4_4_4] = 2,
-      _c[TYPES.UNSIGNED_SHORT_5_5_5_1] = 2,
-      _c[TYPES.UNSIGNED_SHORT_5_6_5] = 2,
+      _c[TYPES$1.UNSIGNED_SHORT_4_4_4_4] = 2,
+      _c[TYPES$1.UNSIGNED_SHORT_5_5_5_1] = 2,
+      _c[TYPES$1.UNSIGNED_SHORT_5_6_5] = 2,
       _c);
   /**
    * Loader plugin for handling KTX texture container files.
@@ -30332,15 +30322,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$5 = function(d, b) {
-      extendStatics$5 = Object.setPrototypeOf ||
+  var extendStatics$f = function(d, b) {
+      extendStatics$f = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$5(d, b);
+      return extendStatics$f(d, b);
   };
 
-  function __extends$5(d, b) {
-      extendStatics$5(d, b);
+  function __extends$f(d, b) {
+      extendStatics$f(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -30373,7 +30363,7 @@
    * @memberof PIXI
    */
   var ParticleContainer = /** @class */ (function (_super) {
-      __extends$5(ParticleContainer, _super);
+      __extends$f(ParticleContainer, _super);
       /**
        * @param {number} [maxSize=1500] - The maximum number of particles that can be rendered by the container.
        *  Affects size of allocated buffers.
@@ -30447,7 +30437,7 @@
            * @default PIXI.BLEND_MODES.NORMAL
            * @see PIXI.BLEND_MODES
            */
-          _this.blendMode = BLEND_MODES.NORMAL;
+          _this.blendMode = BLEND_MODES$1.NORMAL;
           /**
            * If true, container allocates more batches in case there are more than `maxSize` particles.
            * @member {boolean}
@@ -30648,7 +30638,7 @@
                   attributeName: property.attributeName,
                   size: property.size,
                   uploadFunction: property.uploadFunction,
-                  type: property.type || TYPES.FLOAT,
+                  type: property.type || TYPES$1.FLOAT,
                   offset: property.offset,
               };
               if (dynamicPropertyFlags[i]) {
@@ -30683,7 +30673,7 @@
            * @member {Uint16Array}
            * @private
            */
-          this.indexBuffer = new Buffer$1(createIndicesForQuads(this.size), true, true);
+          this.indexBuffer = new Buffer(createIndicesForQuads(this.size), true, true);
           geometry.addIndex(this.indexBuffer);
           this.dynamicStride = 0;
           for (var i = 0; i < this.dynamicProperties.length; ++i) {
@@ -30695,7 +30685,7 @@
           var dynBuffer = new ArrayBuffer(this.size * this.dynamicStride * 4 * 4);
           this.dynamicData = new Float32Array(dynBuffer);
           this.dynamicDataUint32 = new Uint32Array(dynBuffer);
-          this.dynamicBuffer = new Buffer$1(this.dynamicData, false, false);
+          this.dynamicBuffer = new Buffer(this.dynamicData, false, false);
           // static //
           var staticOffset = 0;
           this.staticStride = 0;
@@ -30708,14 +30698,14 @@
           var statBuffer = new ArrayBuffer(this.size * this.staticStride * 4 * 4);
           this.staticData = new Float32Array(statBuffer);
           this.staticDataUint32 = new Uint32Array(statBuffer);
-          this.staticBuffer = new Buffer$1(this.staticData, true, false);
+          this.staticBuffer = new Buffer(this.staticData, true, false);
           for (var i = 0; i < this.dynamicProperties.length; ++i) {
               var property = this.dynamicProperties[i];
-              geometry.addAttribute(property.attributeName, this.dynamicBuffer, 0, property.type === TYPES.UNSIGNED_BYTE, property.type, this.dynamicStride * 4, property.offset * 4);
+              geometry.addAttribute(property.attributeName, this.dynamicBuffer, 0, property.type === TYPES$1.UNSIGNED_BYTE, property.type, this.dynamicStride * 4, property.offset * 4);
           }
           for (var i = 0; i < this.staticProperties.length; ++i) {
               var property = this.staticProperties[i];
-              geometry.addAttribute(property.attributeName, this.staticBuffer, 0, property.type === TYPES.UNSIGNED_BYTE, property.type, this.staticStride * 4, property.offset * 4);
+              geometry.addAttribute(property.attributeName, this.staticBuffer, 0, property.type === TYPES$1.UNSIGNED_BYTE, property.type, this.staticStride * 4, property.offset * 4);
           }
       };
       /**
@@ -30729,7 +30719,7 @@
       ParticleBuffer.prototype.uploadDynamic = function (children, startIndex, amount) {
           for (var i = 0; i < this.dynamicProperties.length; i++) {
               var property = this.dynamicProperties[i];
-              property.uploadFunction(children, startIndex, amount, property.type === TYPES.UNSIGNED_BYTE ? this.dynamicDataUint32 : this.dynamicData, this.dynamicStride, property.offset);
+              property.uploadFunction(children, startIndex, amount, property.type === TYPES$1.UNSIGNED_BYTE ? this.dynamicDataUint32 : this.dynamicData, this.dynamicStride, property.offset);
           }
           this.dynamicBuffer._updateID++;
       };
@@ -30744,7 +30734,7 @@
       ParticleBuffer.prototype.uploadStatic = function (children, startIndex, amount) {
           for (var i = 0; i < this.staticProperties.length; i++) {
               var property = this.staticProperties[i];
-              property.uploadFunction(children, startIndex, amount, property.type === TYPES.UNSIGNED_BYTE ? this.staticDataUint32 : this.staticData, this.staticStride, property.offset);
+              property.uploadFunction(children, startIndex, amount, property.type === TYPES$1.UNSIGNED_BYTE ? this.staticDataUint32 : this.staticData, this.staticStride, property.offset);
           }
           this.staticBuffer._updateID++;
       };
@@ -30769,9 +30759,9 @@
       return ParticleBuffer;
   }());
 
-  var fragment$1 = "varying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void){\n    vec4 color = texture2D(uSampler, vTextureCoord) * vColor;\n    gl_FragColor = color;\n}";
+  var fragment$7 = "varying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void){\n    vec4 color = texture2D(uSampler, vTextureCoord) * vColor;\n    gl_FragColor = color;\n}";
 
-  var vertex$1 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\n\nattribute vec2 aPositionCoord;\nattribute float aRotation;\n\nuniform mat3 translationMatrix;\nuniform vec4 uColor;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nvoid main(void){\n    float x = (aVertexPosition.x) * cos(aRotation) - (aVertexPosition.y) * sin(aRotation);\n    float y = (aVertexPosition.x) * sin(aRotation) + (aVertexPosition.y) * cos(aRotation);\n\n    vec2 v = vec2(x, y);\n    v = v + aPositionCoord;\n\n    gl_Position = vec4((translationMatrix * vec3(v, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vColor = aColor * uColor;\n}\n";
+  var vertex$4 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aColor;\n\nattribute vec2 aPositionCoord;\nattribute float aRotation;\n\nuniform mat3 translationMatrix;\nuniform vec4 uColor;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nvoid main(void){\n    float x = (aVertexPosition.x) * cos(aRotation) - (aVertexPosition.y) * sin(aRotation);\n    float y = (aVertexPosition.x) * sin(aRotation) + (aVertexPosition.y) * cos(aRotation);\n\n    vec2 v = vec2(x, y);\n    v = v + aPositionCoord;\n\n    gl_Position = vec4((translationMatrix * vec3(v, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = aTextureCoord;\n    vColor = aColor * uColor;\n}\n";
 
   /*
    * @author Mat Groves
@@ -30791,7 +30781,7 @@
    * @memberof PIXI
    */
   var ParticleRenderer = /** @class */ (function (_super) {
-      __extends$5(ParticleRenderer, _super);
+      __extends$f(ParticleRenderer, _super);
       /**
        * @param {PIXI.Renderer} renderer - The renderer this sprite batch works for.
        */
@@ -30843,11 +30833,11 @@
               {
                   attributeName: 'aColor',
                   size: 1,
-                  type: TYPES.UNSIGNED_BYTE,
+                  type: TYPES$1.UNSIGNED_BYTE,
                   uploadFunction: _this.uploadTint,
                   offset: 0,
               } ];
-          _this.shader = Shader.from(vertex$1, fragment$1, {});
+          _this.shader = Shader.from(vertex$4, fragment$7, {});
           /**
            * The WebGL state in which this renderer will work.
            *
@@ -31290,15 +31280,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$6 = function(d, b) {
-      extendStatics$6 = Object.setPrototypeOf ||
+  var extendStatics$e = function(d, b) {
+      extendStatics$e = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$6(d, b);
+      return extendStatics$e(d, b);
   };
 
-  function __extends$6(d, b) {
-      extendStatics$6(d, b);
+  function __extends$e(d, b) {
+      extendStatics$e(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -32272,20 +32262,20 @@
    * @namespace graphicsUtils
    * @memberof PIXI
    */
-  var _a$3;
+  var _a;
   /**
    * Map of fill commands for each shape type.
    *
    * @memberof PIXI.graphicsUtils
    * @member {Object} FILL_COMMANDS
    */
-  var FILL_COMMANDS = (_a$3 = {},
-      _a$3[SHAPES.POLY] = buildPoly,
-      _a$3[SHAPES.CIRC] = buildCircle,
-      _a$3[SHAPES.ELIP] = buildCircle,
-      _a$3[SHAPES.RECT] = buildRectangle,
-      _a$3[SHAPES.RREC] = buildRoundedRectangle,
-      _a$3);
+  var FILL_COMMANDS = (_a = {},
+      _a[SHAPES.POLY] = buildPoly,
+      _a[SHAPES.CIRC] = buildCircle,
+      _a[SHAPES.ELIP] = buildCircle,
+      _a[SHAPES.RECT] = buildRectangle,
+      _a[SHAPES.RREC] = buildRoundedRectangle,
+      _a);
   /**
    * Batch pool, stores unused batches for preventing allocations.
    *
@@ -32393,7 +32383,7 @@
    * @memberof PIXI
    */
   var GraphicsGeometry = /** @class */ (function (_super) {
-      __extends$6(GraphicsGeometry, _super);
+      __extends$e(GraphicsGeometry, _super);
       function GraphicsGeometry() {
           var _this = _super.call(this) || this;
           _this.uvsFloat32 = null;
@@ -32726,7 +32716,7 @@
                   var nextTexture = style.texture.baseTexture;
                   var index_1 = this.indices.length;
                   var attribIndex = this.points.length / 2;
-                  nextTexture.wrapMode = WRAP_MODES.REPEAT;
+                  nextTexture.wrapMode = WRAP_MODES$1.REPEAT;
                   if (j === 0) {
                       this.processFill(data);
                   }
@@ -32878,12 +32868,12 @@
           currentGroup.texArray.count = 0;
           currentGroup.start = 0;
           currentGroup.size = 0;
-          currentGroup.type = DRAW_MODES.TRIANGLES;
+          currentGroup.type = DRAW_MODES$1.TRIANGLES;
           var textureCount = 0;
           var currentTexture = null;
           var textureId = 0;
           var native = false;
-          var drawMode = DRAW_MODES.TRIANGLES;
+          var drawMode = DRAW_MODES$1.TRIANGLES;
           var index = 0;
           this.drawCalls.push(currentGroup);
           // TODO - this can be simplified
@@ -32896,7 +32886,7 @@
               var nextTexture = style.texture.baseTexture;
               if (native !== !!style.native) {
                   native = !!style.native;
-                  drawMode = native ? DRAW_MODES.LINES : DRAW_MODES.TRIANGLES;
+                  drawMode = native ? DRAW_MODES$1.LINES : DRAW_MODES$1.TRIANGLES;
                   // force the batch to break!
                   currentTexture = null;
                   textureCount = MAX_TEXTURES;
@@ -33199,7 +33189,7 @@
    * @extends PIXI.FillStyle
    */
   var LineStyle = /** @class */ (function (_super) {
-      __extends$6(LineStyle, _super);
+      __extends$e(LineStyle, _super);
       function LineStyle() {
           var _this = _super !== null && _super.apply(this, arguments) || this;
           /**
@@ -33305,7 +33295,7 @@
    * @memberof PIXI
    */
   var Graphics = /** @class */ (function (_super) {
-      __extends$6(Graphics, _super);
+      __extends$e(Graphics, _super);
       /**
        * @param {PIXI.GraphicsGeometry} [geometry=null] - Geometry to use, if omitted
        *        will create a new GraphicsGeometry instance.
@@ -33417,7 +33407,7 @@
           _this._transformID = -1;
           // Set default
           _this.tint = 0xFFFFFF;
-          _this.blendMode = BLEND_MODES.NORMAL;
+          _this.blendMode = BLEND_MODES$1.NORMAL;
           return _this;
       }
       Object.defineProperty(Graphics.prototype, "geometry", {
@@ -34300,20 +34290,20 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$7 = function(d, b) {
-      extendStatics$7 = Object.setPrototypeOf ||
+  var extendStatics$d = function(d, b) {
+      extendStatics$d = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$7(d, b);
+      return extendStatics$d(d, b);
   };
 
-  function __extends$7(d, b) {
-      extendStatics$7(d, b);
+  function __extends$d(d, b) {
+      extendStatics$d(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
-  var tempPoint = new Point();
+  var tempPoint$2 = new Point();
   var indices = new Uint16Array([0, 1, 2, 0, 2, 3]);
   /**
    * The Sprite object is the base for all textured objects that are rendered to the screen
@@ -34342,7 +34332,7 @@
    * @memberof PIXI
    */
   var Sprite = /** @class */ (function (_super) {
-      __extends$7(Sprite, _super);
+      __extends$d(Sprite, _super);
       /**
        * @param {PIXI.Texture} [texture] - The texture for this sprite.
        */
@@ -34412,7 +34402,7 @@
            * @default PIXI.BLEND_MODES.NORMAL
            * @see PIXI.BLEND_MODES
            */
-          _this.blendMode = BLEND_MODES.NORMAL;
+          _this.blendMode = BLEND_MODES$1.NORMAL;
           /**
            * Cached tint value so we can tell when the tint is changed.
            * Value is used for 2d CanvasRenderer.
@@ -34486,10 +34476,10 @@
           this._cachedTint = 0xFFFFFF;
           // so if _width is 0 then width was not set..
           if (this._width) {
-              this.scale.x = sign$1(this.scale.x) * this._width / this._texture.orig.width;
+              this.scale.x = sign(this.scale.x) * this._width / this._texture.orig.width;
           }
           if (this._height) {
-              this.scale.y = sign$1(this.scale.y) * this._height / this._texture.orig.height;
+              this.scale.y = sign(this.scale.y) * this._height / this._texture.orig.height;
           }
       };
       /**
@@ -34669,14 +34659,14 @@
        * @return {boolean} the result of the test
        */
       Sprite.prototype.containsPoint = function (point) {
-          this.worldTransform.applyInverse(point, tempPoint);
+          this.worldTransform.applyInverse(point, tempPoint$2);
           var width = this._texture.orig.width;
           var height = this._texture.orig.height;
           var x1 = -width * this.anchor.x;
           var y1 = 0;
-          if (tempPoint.x >= x1 && tempPoint.x < x1 + width) {
+          if (tempPoint$2.x >= x1 && tempPoint$2.x < x1 + width) {
               y1 = -height * this.anchor.y;
-              if (tempPoint.y >= y1 && tempPoint.y < y1 + height) {
+              if (tempPoint$2.y >= y1 && tempPoint$2.y < y1 + height) {
                   return true;
               }
           }
@@ -34751,7 +34741,7 @@
               return Math.abs(this.scale.x) * this._texture.orig.width;
           },
           set: function (value) {
-              var s = sign$1(this.scale.x) || 1;
+              var s = sign(this.scale.x) || 1;
               this.scale.x = s * value / this._texture.orig.width;
               this._width = value;
           },
@@ -34768,7 +34758,7 @@
               return Math.abs(this.scale.y) * this._texture.orig.height;
           },
           set: function (value) {
-              var s = sign$1(this.scale.y) || 1;
+              var s = sign(this.scale.y) || 1;
               this.scale.y = s * value / this._texture.orig.height;
               this._height = value;
           },
@@ -34881,15 +34871,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$8 = function(d, b) {
-      extendStatics$8 = Object.setPrototypeOf ||
+  var extendStatics$c = function(d, b) {
+      extendStatics$c = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$8(d, b);
+      return extendStatics$c(d, b);
   };
 
-  function __extends$8(d, b) {
-      extendStatics$8(d, b);
+  function __extends$c(d, b) {
+      extendStatics$c(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -36387,7 +36377,7 @@
    * @memberof PIXI
    */
   var Text = /** @class */ (function (_super) {
-      __extends$8(Text, _super);
+      __extends$c(Text, _super);
       /**
        * @param {string} text - The string that you would like the text to display
        * @param {object|PIXI.TextStyle} [style] - The style parameters
@@ -36815,7 +36805,7 @@
           },
           set: function (value) {
               this.updateText(true);
-              var s = sign$1(this.scale.x) || 1;
+              var s = sign(this.scale.x) || 1;
               this.scale.x = s * value / this._texture.orig.width;
               this._width = value;
           },
@@ -36834,7 +36824,7 @@
           },
           set: function (value) {
               this.updateText(true);
-              var s = sign$1(this.scale.y) || 1;
+              var s = sign(this.scale.y) || 1;
               this.scale.y = s * value / this._texture.orig.height;
               this._height = value;
           },
@@ -36947,15 +36937,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$9 = function(d, b) {
-      extendStatics$9 = Object.setPrototypeOf ||
+  var extendStatics$b = function(d, b) {
+      extendStatics$b = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$9(d, b);
+      return extendStatics$b(d, b);
   };
 
-  function __extends$9(d, b) {
-      extendStatics$9(d, b);
+  function __extends$b(d, b) {
+      extendStatics$b(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -37481,7 +37471,7 @@
    * @memberof PIXI
    */
   var Prepare = /** @class */ (function (_super) {
-      __extends$9(Prepare, _super);
+      __extends$b(Prepare, _super);
       /**
        * @param {PIXI.Renderer} renderer - A reference to the current renderer
        */
@@ -38206,13 +38196,13 @@
       return TilingSprite;
   }(Sprite));
 
-  var vertex$2 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform mat3 uTransform;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;\n}\n";
+  var vertex$3 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform mat3 uTransform;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = (uTransform * vec3(aTextureCoord, 1.0)).xy;\n}\n";
 
-  var fragment$2 = "varying vec2 vTextureCoord;\n\nuniform sampler2D uSampler;\nuniform vec4 uColor;\nuniform mat3 uMapCoord;\nuniform vec4 uClampFrame;\nuniform vec2 uClampOffset;\n\nvoid main(void)\n{\n    vec2 coord = vTextureCoord + ceil(uClampOffset - vTextureCoord);\n    coord = (uMapCoord * vec3(coord, 1.0)).xy;\n    coord = clamp(coord, uClampFrame.xy, uClampFrame.zw);\n\n    vec4 texSample = texture2D(uSampler, coord);\n    gl_FragColor = texSample * uColor;\n}\n";
+  var fragment$6 = "varying vec2 vTextureCoord;\n\nuniform sampler2D uSampler;\nuniform vec4 uColor;\nuniform mat3 uMapCoord;\nuniform vec4 uClampFrame;\nuniform vec2 uClampOffset;\n\nvoid main(void)\n{\n    vec2 coord = vTextureCoord + ceil(uClampOffset - vTextureCoord);\n    coord = (uMapCoord * vec3(coord, 1.0)).xy;\n    coord = clamp(coord, uClampFrame.xy, uClampFrame.zw);\n\n    vec4 texSample = texture2D(uSampler, coord);\n    gl_FragColor = texSample * uColor;\n}\n";
 
   var fragmentSimple = "varying vec2 vTextureCoord;\n\nuniform sampler2D uSampler;\nuniform vec4 uColor;\n\nvoid main(void)\n{\n    vec4 sample = texture2D(uSampler, vTextureCoord);\n    gl_FragColor = sample * uColor;\n}\n";
 
-  var tempMat$1 = new Matrix();
+  var tempMat = new Matrix();
   /**
    * WebGL renderer plugin for tiling sprites
    *
@@ -38230,8 +38220,8 @@
       function TilingSpriteRenderer(renderer) {
           var _this = _super.call(this, renderer) || this;
           var uniforms = { globals: _this.renderer.globalUniforms };
-          _this.shader = Shader.from(vertex$2, fragment$2, uniforms);
-          _this.simpleShader = Shader.from(vertex$2, fragmentSimple, uniforms);
+          _this.shader = Shader.from(vertex$3, fragment$6, uniforms);
+          _this.simpleShader = Shader.from(vertex$3, fragmentSimple, uniforms);
           _this.quad = new QuadUv();
           /**
            * The WebGL state in which this renderer will work.
@@ -38271,12 +38261,12 @@
           // auto, force repeat wrapMode for big tiling textures
           if (isSimple) {
               if (!baseTex._glTextures[renderer.CONTEXT_UID]) {
-                  if (baseTex.wrapMode === WRAP_MODES.CLAMP) {
-                      baseTex.wrapMode = WRAP_MODES.REPEAT;
+                  if (baseTex.wrapMode === WRAP_MODES$1.CLAMP) {
+                      baseTex.wrapMode = WRAP_MODES$1.REPEAT;
                   }
               }
               else {
-                  isSimple = baseTex.wrapMode !== WRAP_MODES.CLAMP;
+                  isSimple = baseTex.wrapMode !== WRAP_MODES$1.CLAMP;
               }
           }
           var shader = isSimple ? this.simpleShader : this.shader;
@@ -38284,22 +38274,22 @@
           var h = tex.height;
           var W = ts._width;
           var H = ts._height;
-          tempMat$1.set(lt.a * w / W, lt.b * w / H, lt.c * h / W, lt.d * h / H, lt.tx / W, lt.ty / H);
+          tempMat.set(lt.a * w / W, lt.b * w / H, lt.c * h / W, lt.d * h / H, lt.tx / W, lt.ty / H);
           // that part is the same as above:
           // tempMat.identity();
           // tempMat.scale(tex.width, tex.height);
           // tempMat.prepend(lt);
           // tempMat.scale(1.0 / ts._width, 1.0 / ts._height);
-          tempMat$1.invert();
+          tempMat.invert();
           if (isSimple) {
-              tempMat$1.prepend(uv.mapCoord);
+              tempMat.prepend(uv.mapCoord);
           }
           else {
               shader.uniforms.uMapCoord = uv.mapCoord.toArray(true);
               shader.uniforms.uClampFrame = uv.uClampFrame;
               shader.uniforms.uClampOffset = uv.uClampOffset;
           }
-          shader.uniforms.uTransform = tempMat$1.toArray(true);
+          shader.uniforms.uTransform = tempMat.toArray(true);
           shader.uniforms.uColor = premultiplyTintToRgba(ts.tint, ts.worldAlpha, shader.uniforms.uColor, baseTex.alphaMode);
           shader.uniforms.translationMatrix = ts.transform.worldTransform.toArray(true);
           shader.uniforms.uSampler = tex;
@@ -38336,15 +38326,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$b = function(d, b) {
-      extendStatics$b = Object.setPrototypeOf ||
+  var extendStatics$9 = function(d, b) {
+      extendStatics$9 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$b(d, b);
+      return extendStatics$9(d, b);
   };
 
-  function __extends$b(d, b) {
-      extendStatics$b(d, b);
+  function __extends$9(d, b) {
+      extendStatics$9(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -38404,7 +38394,7 @@
       return MeshBatchUvs;
   }());
 
-  var tempPoint$2 = new Point();
+  var tempPoint = new Point();
   var tempPolygon = new Polygon();
   /**
    * Base mesh class.
@@ -38425,7 +38415,7 @@
    * @memberof PIXI
    */
   var Mesh = /** @class */ (function (_super) {
-      __extends$b(Mesh, _super);
+      __extends$9(Mesh, _super);
       /**
        * @param {PIXI.Geometry} geometry - the geometry the mesh will use
        * @param {PIXI.MeshMaterial} shader - the shader the mesh will use
@@ -38434,7 +38424,7 @@
        * @param {number} [drawMode=PIXI.DRAW_MODES.TRIANGLES] - the drawMode, can be any of the PIXI.DRAW_MODES consts
        */
       function Mesh(geometry, shader, state, drawMode) {
-          if (drawMode === void 0) { drawMode = DRAW_MODES.TRIANGLES; }
+          if (drawMode === void 0) { drawMode = DRAW_MODES$1.TRIANGLES; }
           var _this = _super.call(this) || this;
           /**
            * Includes vertex positions, face indices, normals, colors, UVs, and
@@ -38642,7 +38632,7 @@
           var shader = this.shader;
           // TODO benchmark check for attribute size..
           if (shader.batchable
-              && this.drawMode === DRAW_MODES.TRIANGLES
+              && this.drawMode === DRAW_MODES$1.TRIANGLES
               && vertices.length < Mesh.BATCHABLE_SIZE * 2) {
               this._renderToBatch(renderer);
           }
@@ -38767,7 +38757,7 @@
           if (!this.getBounds().contains(point.x, point.y)) {
               return false;
           }
-          this.worldTransform.applyInverse(point, tempPoint$2);
+          this.worldTransform.applyInverse(point, tempPoint);
           var vertices = this.geometry.getBuffer('aVertexPosition').data;
           var points = tempPolygon.points;
           var indices = this.geometry.getIndex().data;
@@ -38783,7 +38773,7 @@
               points[3] = vertices[ind1 + 1];
               points[4] = vertices[ind2];
               points[5] = vertices[ind2 + 1];
-              if (tempPolygon.contains(tempPoint$2.x, tempPoint$2.y)) {
+              if (tempPolygon.contains(tempPoint.x, tempPoint.y)) {
                   return true;
               }
           }
@@ -38825,9 +38815,9 @@
       return Mesh;
   }(Container));
 
-  var fragment$3 = "varying vec2 vTextureCoord;\nuniform vec4 uColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void)\n{\n    gl_FragColor = texture2D(uSampler, vTextureCoord) * uColor;\n}\n";
+  var fragment$5 = "varying vec2 vTextureCoord;\nuniform vec4 uColor;\n\nuniform sampler2D uSampler;\n\nvoid main(void)\n{\n    gl_FragColor = texture2D(uSampler, vTextureCoord) * uColor;\n}\n";
 
-  var vertex$3 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform mat3 uTextureMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = (uTextureMatrix * vec3(aTextureCoord, 1.0)).xy;\n}\n";
+  var vertex$2 = "attribute vec2 aVertexPosition;\nattribute vec2 aTextureCoord;\n\nuniform mat3 projectionMatrix;\nuniform mat3 translationMatrix;\nuniform mat3 uTextureMatrix;\n\nvarying vec2 vTextureCoord;\n\nvoid main(void)\n{\n    gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);\n\n    vTextureCoord = (uTextureMatrix * vec3(aTextureCoord, 1.0)).xy;\n}\n";
 
   /**
    * Slightly opinionated default shader for PixiJS 2D objects.
@@ -38836,7 +38826,7 @@
    * @extends PIXI.Shader
    */
   var MeshMaterial = /** @class */ (function (_super) {
-      __extends$b(MeshMaterial, _super);
+      __extends$9(MeshMaterial, _super);
       /**
        * @param {PIXI.Texture} uSampler - Texture that material uses to render.
        * @param {object} [options] - Additional options
@@ -38863,7 +38853,7 @@
           if (options.uniforms) {
               Object.assign(uniforms, options.uniforms);
           }
-          _this = _super.call(this, options.program || Program.from(vertex$3, fragment$3), uniforms) || this;
+          _this = _super.call(this, options.program || Program.from(vertex$2, fragment$5), uniforms) || this;
           /**
            * Only do update if tint or alpha changes.
            * @member {boolean}
@@ -38985,7 +38975,7 @@
    * @extends PIXI.Geometry
    */
   var MeshGeometry = /** @class */ (function (_super) {
-      __extends$b(MeshGeometry, _super);
+      __extends$9(MeshGeometry, _super);
       /**
        * @param {Float32Array|number[]} [vertices] - Positional data on geometry.
        * @param {Float32Array|number[]} [uvs] - Texture UVs.
@@ -38993,11 +38983,11 @@
        */
       function MeshGeometry(vertices, uvs, index) {
           var _this = _super.call(this) || this;
-          var verticesBuffer = new Buffer$1(vertices);
-          var uvsBuffer = new Buffer$1(uvs, true);
-          var indexBuffer = new Buffer$1(index, true, true);
-          _this.addAttribute('aVertexPosition', verticesBuffer, 2, false, TYPES.FLOAT)
-              .addAttribute('aTextureCoord', uvsBuffer, 2, false, TYPES.FLOAT)
+          var verticesBuffer = new Buffer(vertices);
+          var uvsBuffer = new Buffer(uvs, true);
+          var indexBuffer = new Buffer(index, true, true);
+          _this.addAttribute('aVertexPosition', verticesBuffer, 2, false, TYPES$1.FLOAT)
+              .addAttribute('aTextureCoord', uvsBuffer, 2, false, TYPES$1.FLOAT)
               .addIndex(indexBuffer);
           /**
            * Dirty flag to limit update calls on Mesh. For example,
@@ -39050,15 +39040,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$c = function(d, b) {
-      extendStatics$c = Object.setPrototypeOf ||
+  var extendStatics$8 = function(d, b) {
+      extendStatics$8 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$c(d, b);
+      return extendStatics$8(d, b);
   };
 
-  function __extends$c(d, b) {
-      extendStatics$c(d, b);
+  function __extends$8(d, b) {
+      extendStatics$8(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -39993,7 +39983,7 @@
    * @memberof PIXI
    */
   var BitmapText = /** @class */ (function (_super) {
-      __extends$c(BitmapText, _super);
+      __extends$8(BitmapText, _super);
       /**
        * @param {string} text - A string that you would like the text to display.
        * @param {object} style - The style parameters.
@@ -40813,15 +40803,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$d = function(d, b) {
-      extendStatics$d = Object.setPrototypeOf ||
+  var extendStatics$7 = function(d, b) {
+      extendStatics$7 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$d(d, b);
+      return extendStatics$7(d, b);
   };
 
-  function __extends$d(d, b) {
-      extendStatics$d(d, b);
+  function __extends$7(d, b) {
+      extendStatics$7(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -40846,7 +40836,7 @@
    * @memberof PIXI.filters
    */
   var AlphaFilter = /** @class */ (function (_super) {
-      __extends$d(AlphaFilter, _super);
+      __extends$7(AlphaFilter, _super);
       /**
        * @param {number} [alpha=1] - Amount of alpha from 0 to 1, where 0 is transparent
        */
@@ -40899,15 +40889,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$e = function(d, b) {
-      extendStatics$e = Object.setPrototypeOf ||
+  var extendStatics$6 = function(d, b) {
+      extendStatics$6 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$e(d, b);
+      return extendStatics$6(d, b);
   };
 
-  function __extends$e(d, b) {
-      extendStatics$e(d, b);
+  function __extends$6(d, b) {
+      extendStatics$6(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -40943,7 +40933,7 @@
       13: [0.002406, 0.009255, 0.027867, 0.065666, 0.121117, 0.174868, 0.197641],
       15: [0.000489, 0.002403, 0.009246, 0.02784, 0.065602, 0.120999, 0.174697, 0.197448],
   };
-  var fragTemplate$1 = [
+  var fragTemplate = [
       'varying vec2 vBlurTexCoords[%size%];',
       'uniform sampler2D uSampler;',
       'void main(void)',
@@ -40954,7 +40944,7 @@
   function generateBlurFragSource(kernelSize) {
       var kernel = GAUSSIAN_VALUES[kernelSize];
       var halfLength = kernel.length;
-      var fragSource = fragTemplate$1;
+      var fragSource = fragTemplate;
       var blurLoop = '';
       var template = 'gl_FragColor += texture2D(uSampler, vBlurTexCoords[%index%]) * %value%;';
       var value;
@@ -40985,12 +40975,12 @@
    * @property {number} WEBGL - Version 1 of WebGL
    * @property {number} WEBGL2 - Version 2 of WebGL
    */
-  var ENV$1;
+  var ENV;
   (function (ENV) {
       ENV[ENV["WEBGL_LEGACY"] = 0] = "WEBGL_LEGACY";
       ENV[ENV["WEBGL"] = 1] = "WEBGL";
       ENV[ENV["WEBGL2"] = 2] = "WEBGL2";
-  })(ENV$1 || (ENV$1 = {}));
+  })(ENV || (ENV = {}));
   /**
    * Constant to identify the Renderer Type.
    *
@@ -41002,12 +40992,12 @@
    * @property {number} WEBGL - WebGL render type.
    * @property {number} CANVAS - Canvas render type.
    */
-  var RENDERER_TYPE$1;
+  var RENDERER_TYPE;
   (function (RENDERER_TYPE) {
       RENDERER_TYPE[RENDERER_TYPE["UNKNOWN"] = 0] = "UNKNOWN";
       RENDERER_TYPE[RENDERER_TYPE["WEBGL"] = 1] = "WEBGL";
       RENDERER_TYPE[RENDERER_TYPE["CANVAS"] = 2] = "CANVAS";
-  })(RENDERER_TYPE$1 || (RENDERER_TYPE$1 = {}));
+  })(RENDERER_TYPE || (RENDERER_TYPE = {}));
   /**
    * Bitwise OR of masks that indicate the buffers to be cleared.
    *
@@ -41019,12 +41009,12 @@
    * @property {number} DEPTH - Indicates the depth buffer.
    * @property {number} STENCIL - Indicates the stencil buffer.
    */
-  var BUFFER_BITS$1;
+  var BUFFER_BITS;
   (function (BUFFER_BITS) {
       BUFFER_BITS[BUFFER_BITS["COLOR"] = 16384] = "COLOR";
       BUFFER_BITS[BUFFER_BITS["DEPTH"] = 256] = "DEPTH";
       BUFFER_BITS[BUFFER_BITS["STENCIL"] = 1024] = "STENCIL";
-  })(BUFFER_BITS$1 || (BUFFER_BITS$1 = {}));
+  })(BUFFER_BITS || (BUFFER_BITS = {}));
   /**
    * Various blend modes supported by PIXI.
    *
@@ -41067,7 +41057,7 @@
    * @property {number} ERASE
    * @property {number} XOR
    */
-  var BLEND_MODES$1;
+  var BLEND_MODES;
   (function (BLEND_MODES) {
       BLEND_MODES[BLEND_MODES["NORMAL"] = 0] = "NORMAL";
       BLEND_MODES[BLEND_MODES["ADD"] = 1] = "ADD";
@@ -41101,7 +41091,7 @@
       BLEND_MODES[BLEND_MODES["ERASE"] = 26] = "ERASE";
       BLEND_MODES[BLEND_MODES["SUBTRACT"] = 28] = "SUBTRACT";
       BLEND_MODES[BLEND_MODES["XOR"] = 29] = "XOR";
-  })(BLEND_MODES$1 || (BLEND_MODES$1 = {}));
+  })(BLEND_MODES || (BLEND_MODES = {}));
   /**
    * Various webgl draw modes. These can be used to specify which GL drawMode to use
    * under certain situations and renderers.
@@ -41118,7 +41108,7 @@
    * @property {number} TRIANGLE_STRIP
    * @property {number} TRIANGLE_FAN
    */
-  var DRAW_MODES$1;
+  var DRAW_MODES;
   (function (DRAW_MODES) {
       DRAW_MODES[DRAW_MODES["POINTS"] = 0] = "POINTS";
       DRAW_MODES[DRAW_MODES["LINES"] = 1] = "LINES";
@@ -41127,7 +41117,7 @@
       DRAW_MODES[DRAW_MODES["TRIANGLES"] = 4] = "TRIANGLES";
       DRAW_MODES[DRAW_MODES["TRIANGLE_STRIP"] = 5] = "TRIANGLE_STRIP";
       DRAW_MODES[DRAW_MODES["TRIANGLE_FAN"] = 6] = "TRIANGLE_FAN";
-  })(DRAW_MODES$1 || (DRAW_MODES$1 = {}));
+  })(DRAW_MODES || (DRAW_MODES = {}));
   /**
    * Various GL texture/resources formats.
    *
@@ -41143,7 +41133,7 @@
    * @property {number} DEPTH_COMPONENT=6402
    * @property {number} DEPTH_STENCIL=34041
    */
-  var FORMATS$1;
+  var FORMATS;
   (function (FORMATS) {
       FORMATS[FORMATS["RGBA"] = 6408] = "RGBA";
       FORMATS[FORMATS["RGB"] = 6407] = "RGB";
@@ -41152,7 +41142,7 @@
       FORMATS[FORMATS["LUMINANCE_ALPHA"] = 6410] = "LUMINANCE_ALPHA";
       FORMATS[FORMATS["DEPTH_COMPONENT"] = 6402] = "DEPTH_COMPONENT";
       FORMATS[FORMATS["DEPTH_STENCIL"] = 34041] = "DEPTH_STENCIL";
-  })(FORMATS$1 || (FORMATS$1 = {}));
+  })(FORMATS || (FORMATS = {}));
   /**
    * Various GL target types.
    *
@@ -41170,7 +41160,7 @@
    * @property {number} TEXTURE_CUBE_MAP_POSITIVE_Z=34073
    * @property {number} TEXTURE_CUBE_MAP_NEGATIVE_Z=34074
    */
-  var TARGETS$1;
+  var TARGETS;
   (function (TARGETS) {
       TARGETS[TARGETS["TEXTURE_2D"] = 3553] = "TEXTURE_2D";
       TARGETS[TARGETS["TEXTURE_CUBE_MAP"] = 34067] = "TEXTURE_CUBE_MAP";
@@ -41181,7 +41171,7 @@
       TARGETS[TARGETS["TEXTURE_CUBE_MAP_NEGATIVE_Y"] = 34072] = "TEXTURE_CUBE_MAP_NEGATIVE_Y";
       TARGETS[TARGETS["TEXTURE_CUBE_MAP_POSITIVE_Z"] = 34073] = "TEXTURE_CUBE_MAP_POSITIVE_Z";
       TARGETS[TARGETS["TEXTURE_CUBE_MAP_NEGATIVE_Z"] = 34074] = "TEXTURE_CUBE_MAP_NEGATIVE_Z";
-  })(TARGETS$1 || (TARGETS$1 = {}));
+  })(TARGETS || (TARGETS = {}));
   /**
    * Various GL data format types.
    *
@@ -41197,7 +41187,7 @@
    * @property {number} FLOAT=5126
    * @property {number} HALF_FLOAT=36193
    */
-  var TYPES$1;
+  var TYPES;
   (function (TYPES) {
       TYPES[TYPES["UNSIGNED_BYTE"] = 5121] = "UNSIGNED_BYTE";
       TYPES[TYPES["UNSIGNED_SHORT"] = 5123] = "UNSIGNED_SHORT";
@@ -41206,7 +41196,7 @@
       TYPES[TYPES["UNSIGNED_SHORT_5_5_5_1"] = 32820] = "UNSIGNED_SHORT_5_5_5_1";
       TYPES[TYPES["FLOAT"] = 5126] = "FLOAT";
       TYPES[TYPES["HALF_FLOAT"] = 36193] = "HALF_FLOAT";
-  })(TYPES$1 || (TYPES$1 = {}));
+  })(TYPES || (TYPES = {}));
   /**
    * The scale modes that are supported by pixi.
    *
@@ -41220,11 +41210,11 @@
    * @property {number} LINEAR Smooth scaling
    * @property {number} NEAREST Pixelating scaling
    */
-  var SCALE_MODES$1;
+  var SCALE_MODES;
   (function (SCALE_MODES) {
       SCALE_MODES[SCALE_MODES["NEAREST"] = 0] = "NEAREST";
       SCALE_MODES[SCALE_MODES["LINEAR"] = 1] = "LINEAR";
-  })(SCALE_MODES$1 || (SCALE_MODES$1 = {}));
+  })(SCALE_MODES || (SCALE_MODES = {}));
   /**
    * The wrap modes that are supported by pixi.
    *
@@ -41243,12 +41233,12 @@
    * @property {number} REPEAT - The texture uvs tile and repeat
    * @property {number} MIRRORED_REPEAT - The texture uvs tile and repeat with mirroring
    */
-  var WRAP_MODES$1;
+  var WRAP_MODES;
   (function (WRAP_MODES) {
       WRAP_MODES[WRAP_MODES["CLAMP"] = 33071] = "CLAMP";
       WRAP_MODES[WRAP_MODES["REPEAT"] = 10497] = "REPEAT";
       WRAP_MODES[WRAP_MODES["MIRRORED_REPEAT"] = 33648] = "MIRRORED_REPEAT";
-  })(WRAP_MODES$1 || (WRAP_MODES$1 = {}));
+  })(WRAP_MODES || (WRAP_MODES = {}));
   /**
    * Mipmap filtering modes that are supported by pixi.
    *
@@ -41269,13 +41259,13 @@
    * @property {number} ON_MANUAL - Use mipmaps, but do not auto-generate them; this is used with a resource
    *   that supports buffering each level-of-detail.
    */
-  var MIPMAP_MODES$1;
+  var MIPMAP_MODES;
   (function (MIPMAP_MODES) {
       MIPMAP_MODES[MIPMAP_MODES["OFF"] = 0] = "OFF";
       MIPMAP_MODES[MIPMAP_MODES["POW2"] = 1] = "POW2";
       MIPMAP_MODES[MIPMAP_MODES["ON"] = 2] = "ON";
       MIPMAP_MODES[MIPMAP_MODES["ON_MANUAL"] = 3] = "ON_MANUAL";
-  })(MIPMAP_MODES$1 || (MIPMAP_MODES$1 = {}));
+  })(MIPMAP_MODES || (MIPMAP_MODES = {}));
   /**
    * How to treat textures with premultiplied alpha
    *
@@ -41293,7 +41283,7 @@
    * @property {number} UNPACK - Default option, alias for PREMULTIPLY_ON_UPLOAD.
    * @property {number} PMA - Alias for PREMULTIPLIED_ALPHA.
    */
-  var ALPHA_MODES$1;
+  var ALPHA_MODES;
   (function (ALPHA_MODES) {
       ALPHA_MODES[ALPHA_MODES["NPM"] = 0] = "NPM";
       ALPHA_MODES[ALPHA_MODES["UNPACK"] = 1] = "UNPACK";
@@ -41301,7 +41291,7 @@
       ALPHA_MODES[ALPHA_MODES["NO_PREMULTIPLIED_ALPHA"] = 0] = "NO_PREMULTIPLIED_ALPHA";
       ALPHA_MODES[ALPHA_MODES["PREMULTIPLY_ON_UPLOAD"] = 1] = "PREMULTIPLY_ON_UPLOAD";
       ALPHA_MODES[ALPHA_MODES["PREMULTIPLY_ALPHA"] = 2] = "PREMULTIPLY_ALPHA";
-  })(ALPHA_MODES$1 || (ALPHA_MODES$1 = {}));
+  })(ALPHA_MODES || (ALPHA_MODES = {}));
   /**
    * Configure whether filter textures are cleared after binding.
    *
@@ -41319,7 +41309,7 @@
    * @property {number} YES - Alias for CLEAR, same as `true` in earlier versions
    * @property {number} AUTO - Alias for BLIT
    */
-  var CLEAR_MODES$1;
+  var CLEAR_MODES;
   (function (CLEAR_MODES) {
       CLEAR_MODES[CLEAR_MODES["NO"] = 0] = "NO";
       CLEAR_MODES[CLEAR_MODES["YES"] = 1] = "YES";
@@ -41327,7 +41317,7 @@
       CLEAR_MODES[CLEAR_MODES["BLEND"] = 0] = "BLEND";
       CLEAR_MODES[CLEAR_MODES["CLEAR"] = 1] = "CLEAR";
       CLEAR_MODES[CLEAR_MODES["BLIT"] = 2] = "BLIT";
-  })(CLEAR_MODES$1 || (CLEAR_MODES$1 = {}));
+  })(CLEAR_MODES || (CLEAR_MODES = {}));
   /**
    * The gc modes that are supported by pixi.
    *
@@ -41347,11 +41337,11 @@
    * @property {number} AUTO - Garbage collection will happen periodically automatically
    * @property {number} MANUAL - Garbage collection will need to be called manually
    */
-  var GC_MODES$1;
+  var GC_MODES;
   (function (GC_MODES) {
       GC_MODES[GC_MODES["AUTO"] = 0] = "AUTO";
       GC_MODES[GC_MODES["MANUAL"] = 1] = "MANUAL";
-  })(GC_MODES$1 || (GC_MODES$1 = {}));
+  })(GC_MODES || (GC_MODES = {}));
   /**
    * Constants that specify float precision in shaders.
    *
@@ -41364,12 +41354,12 @@
    * @property {string} MEDIUM='mediump'
    * @property {string} HIGH='highp'
    */
-  var PRECISION$1;
+  var PRECISION;
   (function (PRECISION) {
       PRECISION["LOW"] = "lowp";
       PRECISION["MEDIUM"] = "mediump";
       PRECISION["HIGH"] = "highp";
-  })(PRECISION$1 || (PRECISION$1 = {}));
+  })(PRECISION || (PRECISION = {}));
   /**
    * Constants for mask implementations.
    * We use `type` suffix because it leads to very different behaviours
@@ -41383,13 +41373,13 @@
    * @property {number} STENCIL - Stencil mask, 1-bit, medium, works only if renderer supports stencil
    * @property {number} SPRITE - Mask that uses SpriteMaskFilter, uses temporary RenderTexture
    */
-  var MASK_TYPES$1;
+  var MASK_TYPES;
   (function (MASK_TYPES) {
       MASK_TYPES[MASK_TYPES["NONE"] = 0] = "NONE";
       MASK_TYPES[MASK_TYPES["SCISSOR"] = 1] = "SCISSOR";
       MASK_TYPES[MASK_TYPES["STENCIL"] = 2] = "STENCIL";
       MASK_TYPES[MASK_TYPES["SPRITE"] = 3] = "SPRITE";
-  })(MASK_TYPES$1 || (MASK_TYPES$1 = {}));
+  })(MASK_TYPES || (MASK_TYPES = {}));
   /**
    * Constants for multi-sampling antialiasing.
    *
@@ -41404,13 +41394,13 @@
    * @property {number} MEDIUM - Try 4 samples
    * @property {number} HIGH - Try 8 samples
    */
-  var MSAA_QUALITY$1;
+  var MSAA_QUALITY;
   (function (MSAA_QUALITY) {
       MSAA_QUALITY[MSAA_QUALITY["NONE"] = 0] = "NONE";
       MSAA_QUALITY[MSAA_QUALITY["LOW"] = 2] = "LOW";
       MSAA_QUALITY[MSAA_QUALITY["MEDIUM"] = 4] = "MEDIUM";
       MSAA_QUALITY[MSAA_QUALITY["HIGH"] = 8] = "HIGH";
-  })(MSAA_QUALITY$1 || (MSAA_QUALITY$1 = {}));
+  })(MSAA_QUALITY || (MSAA_QUALITY = {}));
 
   /**
    * The BlurFilterPass applies a horizontal or vertical Gaussian blur to an object.
@@ -41420,7 +41410,7 @@
    * @memberof PIXI.filters
    */
   var BlurFilterPass = /** @class */ (function (_super) {
-      __extends$e(BlurFilterPass, _super);
+      __extends$6(BlurFilterPass, _super);
       /**
        * @param {boolean} horizontal - Do pass along the x-axis (`true`) or y-axis (`false`).
        * @param {number} [strength=8] - The strength of the blur filter.
@@ -41486,9 +41476,9 @@
               var flip = input;
               var flop = renderTarget;
               this.state.blend = false;
-              filterManager.applyFilter(this, flip, flop, CLEAR_MODES$1.CLEAR);
+              filterManager.applyFilter(this, flip, flop, CLEAR_MODES.CLEAR);
               for (var i = 1; i < this.passes - 1; i++) {
-                  filterManager.bindAndClear(flip, CLEAR_MODES$1.BLIT);
+                  filterManager.bindAndClear(flip, CLEAR_MODES.BLIT);
                   this.uniforms.uSampler = flop;
                   var temp = flop;
                   flop = flip;
@@ -41549,7 +41539,7 @@
    * @memberof PIXI.filters
    */
   var BlurFilter = /** @class */ (function (_super) {
-      __extends$e(BlurFilter, _super);
+      __extends$6(BlurFilter, _super);
       /**
        * @param {number} [strength=8] - The strength of the blur filter.
        * @param {number} [quality=4] - The quality of the blur filter.
@@ -41583,7 +41573,7 @@
           var yStrength = Math.abs(this.blurYFilter.strength);
           if (xStrength && yStrength) {
               var renderTarget = filterManager.getFilterTexture();
-              this.blurXFilter.apply(filterManager, input, renderTarget, CLEAR_MODES$1.CLEAR);
+              this.blurXFilter.apply(filterManager, input, renderTarget, CLEAR_MODES.CLEAR);
               this.blurYFilter.apply(filterManager, renderTarget, output, clearMode);
               filterManager.returnFilterTexture(renderTarget);
           }
@@ -41729,20 +41719,20 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$f = function(d, b) {
-      extendStatics$f = Object.setPrototypeOf ||
+  var extendStatics$5 = function(d, b) {
+      extendStatics$5 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$f(d, b);
+      return extendStatics$5(d, b);
   };
 
-  function __extends$f(d, b) {
-      extendStatics$f(d, b);
+  function __extends$5(d, b) {
+      extendStatics$5(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
-  var fragment$5 = "varying vec2 vTextureCoord;\nuniform sampler2D uSampler;\nuniform float m[20];\nuniform float uAlpha;\n\nvoid main(void)\n{\n    vec4 c = texture2D(uSampler, vTextureCoord);\n\n    if (uAlpha == 0.0) {\n        gl_FragColor = c;\n        return;\n    }\n\n    // Un-premultiply alpha before applying the color matrix. See issue #3539.\n    if (c.a > 0.0) {\n      c.rgb /= c.a;\n    }\n\n    vec4 result;\n\n    result.r = (m[0] * c.r);\n        result.r += (m[1] * c.g);\n        result.r += (m[2] * c.b);\n        result.r += (m[3] * c.a);\n        result.r += m[4];\n\n    result.g = (m[5] * c.r);\n        result.g += (m[6] * c.g);\n        result.g += (m[7] * c.b);\n        result.g += (m[8] * c.a);\n        result.g += m[9];\n\n    result.b = (m[10] * c.r);\n       result.b += (m[11] * c.g);\n       result.b += (m[12] * c.b);\n       result.b += (m[13] * c.a);\n       result.b += m[14];\n\n    result.a = (m[15] * c.r);\n       result.a += (m[16] * c.g);\n       result.a += (m[17] * c.b);\n       result.a += (m[18] * c.a);\n       result.a += m[19];\n\n    vec3 rgb = mix(c.rgb, result.rgb, uAlpha);\n\n    // Premultiply alpha again.\n    rgb *= result.a;\n\n    gl_FragColor = vec4(rgb, result.a);\n}\n";
+  var fragment$3 = "varying vec2 vTextureCoord;\nuniform sampler2D uSampler;\nuniform float m[20];\nuniform float uAlpha;\n\nvoid main(void)\n{\n    vec4 c = texture2D(uSampler, vTextureCoord);\n\n    if (uAlpha == 0.0) {\n        gl_FragColor = c;\n        return;\n    }\n\n    // Un-premultiply alpha before applying the color matrix. See issue #3539.\n    if (c.a > 0.0) {\n      c.rgb /= c.a;\n    }\n\n    vec4 result;\n\n    result.r = (m[0] * c.r);\n        result.r += (m[1] * c.g);\n        result.r += (m[2] * c.b);\n        result.r += (m[3] * c.a);\n        result.r += m[4];\n\n    result.g = (m[5] * c.r);\n        result.g += (m[6] * c.g);\n        result.g += (m[7] * c.b);\n        result.g += (m[8] * c.a);\n        result.g += m[9];\n\n    result.b = (m[10] * c.r);\n       result.b += (m[11] * c.g);\n       result.b += (m[12] * c.b);\n       result.b += (m[13] * c.a);\n       result.b += m[14];\n\n    result.a = (m[15] * c.r);\n       result.a += (m[16] * c.g);\n       result.a += (m[17] * c.b);\n       result.a += (m[18] * c.a);\n       result.a += m[19];\n\n    vec3 rgb = mix(c.rgb, result.rgb, uAlpha);\n\n    // Premultiply alpha again.\n    rgb *= result.a;\n\n    gl_FragColor = vec4(rgb, result.a);\n}\n";
 
   /**
    * The ColorMatrixFilter class lets you apply a 5x4 matrix transformation on the RGBA
@@ -41760,7 +41750,7 @@
    * @memberof PIXI.filters
    */
   var ColorMatrixFilter = /** @class */ (function (_super) {
-      __extends$f(ColorMatrixFilter, _super);
+      __extends$5(ColorMatrixFilter, _super);
       function ColorMatrixFilter() {
           var _this = this;
           var uniforms = {
@@ -41770,7 +41760,7 @@
                   0, 0, 0, 1, 0]),
               uAlpha: 1,
           };
-          _this = _super.call(this, defaultFilterVertex, fragment$5, uniforms) || this;
+          _this = _super.call(this, defaultFilterVertex, fragment$3, uniforms) || this;
           _this.alpha = 1;
           return _this;
       }
@@ -42258,22 +42248,22 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$g = function(d, b) {
-      extendStatics$g = Object.setPrototypeOf ||
+  var extendStatics$4 = function(d, b) {
+      extendStatics$4 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$g(d, b);
+      return extendStatics$4(d, b);
   };
 
-  function __extends$g(d, b) {
-      extendStatics$g(d, b);
+  function __extends$4(d, b) {
+      extendStatics$4(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
-  var fragment$6 = "varying vec2 vFilterCoord;\nvarying vec2 vTextureCoord;\n\nuniform vec2 scale;\nuniform mat2 rotation;\nuniform sampler2D uSampler;\nuniform sampler2D mapSampler;\n\nuniform highp vec4 inputSize;\nuniform vec4 inputClamp;\n\nvoid main(void)\n{\n  vec4 map =  texture2D(mapSampler, vFilterCoord);\n\n  map -= 0.5;\n  map.xy = scale * inputSize.zw * (rotation * map.xy);\n\n  gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), inputClamp.xy, inputClamp.zw));\n}\n";
+  var fragment$2 = "varying vec2 vFilterCoord;\nvarying vec2 vTextureCoord;\n\nuniform vec2 scale;\nuniform mat2 rotation;\nuniform sampler2D uSampler;\nuniform sampler2D mapSampler;\n\nuniform highp vec4 inputSize;\nuniform vec4 inputClamp;\n\nvoid main(void)\n{\n  vec4 map =  texture2D(mapSampler, vFilterCoord);\n\n  map -= 0.5;\n  map.xy = scale * inputSize.zw * (rotation * map.xy);\n\n  gl_FragColor = texture2D(uSampler, clamp(vec2(vTextureCoord.x + map.x, vTextureCoord.y + map.y), inputClamp.xy, inputClamp.zw));\n}\n";
 
-  var vertex$4 = "attribute vec2 aVertexPosition;\n\nuniform mat3 projectionMatrix;\nuniform mat3 filterMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec2 vFilterCoord;\n\nuniform vec4 inputSize;\nuniform vec4 outputFrame;\n\nvec4 filterVertexPosition( void )\n{\n    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;\n\n    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);\n}\n\nvec2 filterTextureCoord( void )\n{\n    return aVertexPosition * (outputFrame.zw * inputSize.zw);\n}\n\nvoid main(void)\n{\n\tgl_Position = filterVertexPosition();\n\tvTextureCoord = filterTextureCoord();\n\tvFilterCoord = ( filterMatrix * vec3( vTextureCoord, 1.0)  ).xy;\n}\n";
+  var vertex$1 = "attribute vec2 aVertexPosition;\n\nuniform mat3 projectionMatrix;\nuniform mat3 filterMatrix;\n\nvarying vec2 vTextureCoord;\nvarying vec2 vFilterCoord;\n\nuniform vec4 inputSize;\nuniform vec4 outputFrame;\n\nvec4 filterVertexPosition( void )\n{\n    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;\n\n    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);\n}\n\nvec2 filterTextureCoord( void )\n{\n    return aVertexPosition * (outputFrame.zw * inputSize.zw);\n}\n\nvoid main(void)\n{\n\tgl_Position = filterVertexPosition();\n\tvTextureCoord = filterTextureCoord();\n\tvFilterCoord = ( filterMatrix * vec3( vTextureCoord, 1.0)  ).xy;\n}\n";
 
   /**
    * The DisplacementFilter class uses the pixel values from the specified texture
@@ -42294,7 +42284,7 @@
    * @memberof PIXI.filters
    */
   var DisplacementFilter = /** @class */ (function (_super) {
-      __extends$g(DisplacementFilter, _super);
+      __extends$4(DisplacementFilter, _super);
       /**
        * @param {PIXI.Sprite} sprite - The sprite used for the displacement map. (make sure its added to the scene!)
        * @param {number} [scale] - The scale of the displacement
@@ -42303,7 +42293,7 @@
           var _this = this;
           var maskMatrix = new Matrix();
           sprite.renderable = false;
-          _this = _super.call(this, vertex$4, fragment$6, {
+          _this = _super.call(this, vertex$1, fragment$2, {
               mapSampler: sprite._texture,
               filterMatrix: maskMatrix,
               scale: { x: 1, y: 1 },
@@ -42389,22 +42379,22 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$h = function(d, b) {
-      extendStatics$h = Object.setPrototypeOf ||
+  var extendStatics$3 = function(d, b) {
+      extendStatics$3 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$h(d, b);
+      return extendStatics$3(d, b);
   };
 
-  function __extends$h(d, b) {
-      extendStatics$h(d, b);
+  function __extends$3(d, b) {
+      extendStatics$3(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
-  var vertex$5 = "\nattribute vec2 aVertexPosition;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\n\nuniform vec4 inputPixel;\nuniform vec4 outputFrame;\n\nvec4 filterVertexPosition( void )\n{\n    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;\n\n    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);\n}\n\nvoid texcoords(vec2 fragCoord, vec2 inverseVP,\n               out vec2 v_rgbNW, out vec2 v_rgbNE,\n               out vec2 v_rgbSW, out vec2 v_rgbSE,\n               out vec2 v_rgbM) {\n    v_rgbNW = (fragCoord + vec2(-1.0, -1.0)) * inverseVP;\n    v_rgbNE = (fragCoord + vec2(1.0, -1.0)) * inverseVP;\n    v_rgbSW = (fragCoord + vec2(-1.0, 1.0)) * inverseVP;\n    v_rgbSE = (fragCoord + vec2(1.0, 1.0)) * inverseVP;\n    v_rgbM = vec2(fragCoord * inverseVP);\n}\n\nvoid main(void) {\n\n   gl_Position = filterVertexPosition();\n\n   vFragCoord = aVertexPosition * outputFrame.zw;\n\n   texcoords(vFragCoord, inputPixel.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n}\n";
+  var vertex = "\nattribute vec2 aVertexPosition;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\n\nuniform vec4 inputPixel;\nuniform vec4 outputFrame;\n\nvec4 filterVertexPosition( void )\n{\n    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;\n\n    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);\n}\n\nvoid texcoords(vec2 fragCoord, vec2 inverseVP,\n               out vec2 v_rgbNW, out vec2 v_rgbNE,\n               out vec2 v_rgbSW, out vec2 v_rgbSE,\n               out vec2 v_rgbM) {\n    v_rgbNW = (fragCoord + vec2(-1.0, -1.0)) * inverseVP;\n    v_rgbNE = (fragCoord + vec2(1.0, -1.0)) * inverseVP;\n    v_rgbSW = (fragCoord + vec2(-1.0, 1.0)) * inverseVP;\n    v_rgbSE = (fragCoord + vec2(1.0, 1.0)) * inverseVP;\n    v_rgbM = vec2(fragCoord * inverseVP);\n}\n\nvoid main(void) {\n\n   gl_Position = filterVertexPosition();\n\n   vFragCoord = aVertexPosition * outputFrame.zw;\n\n   texcoords(vFragCoord, inputPixel.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n}\n";
 
-  var fragment$7 = "varying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\nuniform sampler2D uSampler;\nuniform highp vec4 inputPixel;\n\n\n/**\n Basic FXAA implementation based on the code on geeks3d.com with the\n modification that the texture2DLod stuff was removed since it's\n unsupported by WebGL.\n\n --\n\n From:\n https://github.com/mitsuhiko/webgl-meincraft\n\n Copyright (c) 2011 by Armin Ronacher.\n\n Some rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions are\n met:\n\n * Redistributions of source code must retain the above copyright\n notice, this list of conditions and the following disclaimer.\n\n * Redistributions in binary form must reproduce the above\n copyright notice, this list of conditions and the following\n disclaimer in the documentation and/or other materials provided\n with the distribution.\n\n * The names of the contributors may not be used to endorse or\n promote products derived from this software without specific\n prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\n\n#ifndef FXAA_REDUCE_MIN\n#define FXAA_REDUCE_MIN   (1.0/ 128.0)\n#endif\n#ifndef FXAA_REDUCE_MUL\n#define FXAA_REDUCE_MUL   (1.0 / 8.0)\n#endif\n#ifndef FXAA_SPAN_MAX\n#define FXAA_SPAN_MAX     8.0\n#endif\n\n//optimized version for mobile, where dependent\n//texture reads can be a bottleneck\nvec4 fxaa(sampler2D tex, vec2 fragCoord, vec2 inverseVP,\n          vec2 v_rgbNW, vec2 v_rgbNE,\n          vec2 v_rgbSW, vec2 v_rgbSE,\n          vec2 v_rgbM) {\n    vec4 color;\n    vec3 rgbNW = texture2D(tex, v_rgbNW).xyz;\n    vec3 rgbNE = texture2D(tex, v_rgbNE).xyz;\n    vec3 rgbSW = texture2D(tex, v_rgbSW).xyz;\n    vec3 rgbSE = texture2D(tex, v_rgbSE).xyz;\n    vec4 texColor = texture2D(tex, v_rgbM);\n    vec3 rgbM  = texColor.xyz;\n    vec3 luma = vec3(0.299, 0.587, 0.114);\n    float lumaNW = dot(rgbNW, luma);\n    float lumaNE = dot(rgbNE, luma);\n    float lumaSW = dot(rgbSW, luma);\n    float lumaSE = dot(rgbSE, luma);\n    float lumaM  = dot(rgbM,  luma);\n    float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n    float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n\n    mediump vec2 dir;\n    dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n    dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n\n    float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) *\n                          (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n\n    float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\n    dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),\n              max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),\n                  dir * rcpDirMin)) * inverseVP;\n\n    vec3 rgbA = 0.5 * (\n                       texture2D(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz +\n                       texture2D(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);\n    vec3 rgbB = rgbA * 0.5 + 0.25 * (\n                                     texture2D(tex, fragCoord * inverseVP + dir * -0.5).xyz +\n                                     texture2D(tex, fragCoord * inverseVP + dir * 0.5).xyz);\n\n    float lumaB = dot(rgbB, luma);\n    if ((lumaB < lumaMin) || (lumaB > lumaMax))\n        color = vec4(rgbA, texColor.a);\n    else\n        color = vec4(rgbB, texColor.a);\n    return color;\n}\n\nvoid main() {\n\n      vec4 color;\n\n      color = fxaa(uSampler, vFragCoord, inputPixel.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n\n      gl_FragColor = color;\n}\n";
+  var fragment$1 = "varying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\nuniform sampler2D uSampler;\nuniform highp vec4 inputPixel;\n\n\n/**\n Basic FXAA implementation based on the code on geeks3d.com with the\n modification that the texture2DLod stuff was removed since it's\n unsupported by WebGL.\n\n --\n\n From:\n https://github.com/mitsuhiko/webgl-meincraft\n\n Copyright (c) 2011 by Armin Ronacher.\n\n Some rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions are\n met:\n\n * Redistributions of source code must retain the above copyright\n notice, this list of conditions and the following disclaimer.\n\n * Redistributions in binary form must reproduce the above\n copyright notice, this list of conditions and the following\n disclaimer in the documentation and/or other materials provided\n with the distribution.\n\n * The names of the contributors may not be used to endorse or\n promote products derived from this software without specific\n prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\n\n#ifndef FXAA_REDUCE_MIN\n#define FXAA_REDUCE_MIN   (1.0/ 128.0)\n#endif\n#ifndef FXAA_REDUCE_MUL\n#define FXAA_REDUCE_MUL   (1.0 / 8.0)\n#endif\n#ifndef FXAA_SPAN_MAX\n#define FXAA_SPAN_MAX     8.0\n#endif\n\n//optimized version for mobile, where dependent\n//texture reads can be a bottleneck\nvec4 fxaa(sampler2D tex, vec2 fragCoord, vec2 inverseVP,\n          vec2 v_rgbNW, vec2 v_rgbNE,\n          vec2 v_rgbSW, vec2 v_rgbSE,\n          vec2 v_rgbM) {\n    vec4 color;\n    vec3 rgbNW = texture2D(tex, v_rgbNW).xyz;\n    vec3 rgbNE = texture2D(tex, v_rgbNE).xyz;\n    vec3 rgbSW = texture2D(tex, v_rgbSW).xyz;\n    vec3 rgbSE = texture2D(tex, v_rgbSE).xyz;\n    vec4 texColor = texture2D(tex, v_rgbM);\n    vec3 rgbM  = texColor.xyz;\n    vec3 luma = vec3(0.299, 0.587, 0.114);\n    float lumaNW = dot(rgbNW, luma);\n    float lumaNE = dot(rgbNE, luma);\n    float lumaSW = dot(rgbSW, luma);\n    float lumaSE = dot(rgbSE, luma);\n    float lumaM  = dot(rgbM,  luma);\n    float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n    float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n\n    mediump vec2 dir;\n    dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n    dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n\n    float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) *\n                          (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n\n    float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\n    dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),\n              max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),\n                  dir * rcpDirMin)) * inverseVP;\n\n    vec3 rgbA = 0.5 * (\n                       texture2D(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz +\n                       texture2D(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);\n    vec3 rgbB = rgbA * 0.5 + 0.25 * (\n                                     texture2D(tex, fragCoord * inverseVP + dir * -0.5).xyz +\n                                     texture2D(tex, fragCoord * inverseVP + dir * 0.5).xyz);\n\n    float lumaB = dot(rgbB, luma);\n    if ((lumaB < lumaMin) || (lumaB > lumaMax))\n        color = vec4(rgbA, texColor.a);\n    else\n        color = vec4(rgbB, texColor.a);\n    return color;\n}\n\nvoid main() {\n\n      vec4 color;\n\n      color = fxaa(uSampler, vFragCoord, inputPixel.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n\n      gl_FragColor = color;\n}\n";
 
   /**
    * Basic FXAA (Fast Approximate Anti-Aliasing) implementation based on the code on geeks3d.com
@@ -42418,10 +42408,10 @@
    *
    */
   var FXAAFilter = /** @class */ (function (_super) {
-      __extends$h(FXAAFilter, _super);
+      __extends$3(FXAAFilter, _super);
       function FXAAFilter() {
           // TODO - needs work
-          return _super.call(this, vertex$5, fragment$7) || this;
+          return _super.call(this, vertex, fragment$1) || this;
       }
       return FXAAFilter;
   }(Filter));
@@ -42450,20 +42440,20 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$i = function(d, b) {
-      extendStatics$i = Object.setPrototypeOf ||
+  var extendStatics$2 = function(d, b) {
+      extendStatics$2 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$i(d, b);
+      return extendStatics$2(d, b);
   };
 
-  function __extends$i(d, b) {
-      extendStatics$i(d, b);
+  function __extends$2(d, b) {
+      extendStatics$2(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
-  var fragment$8 = "precision highp float;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nuniform float uNoise;\nuniform float uSeed;\nuniform sampler2D uSampler;\n\nfloat rand(vec2 co)\n{\n    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);\n}\n\nvoid main()\n{\n    vec4 color = texture2D(uSampler, vTextureCoord);\n    float randomValue = rand(gl_FragCoord.xy * uSeed);\n    float diff = (randomValue - 0.5) * uNoise;\n\n    // Un-premultiply alpha before applying the color matrix. See issue #3539.\n    if (color.a > 0.0) {\n        color.rgb /= color.a;\n    }\n\n    color.r += diff;\n    color.g += diff;\n    color.b += diff;\n\n    // Premultiply alpha again.\n    color.rgb *= color.a;\n\n    gl_FragColor = color;\n}\n";
+  var fragment = "precision highp float;\n\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\n\nuniform float uNoise;\nuniform float uSeed;\nuniform sampler2D uSampler;\n\nfloat rand(vec2 co)\n{\n    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);\n}\n\nvoid main()\n{\n    vec4 color = texture2D(uSampler, vTextureCoord);\n    float randomValue = rand(gl_FragCoord.xy * uSeed);\n    float diff = (randomValue - 0.5) * uNoise;\n\n    // Un-premultiply alpha before applying the color matrix. See issue #3539.\n    if (color.a > 0.0) {\n        color.rgb /= color.a;\n    }\n\n    color.r += diff;\n    color.g += diff;\n    color.b += diff;\n\n    // Premultiply alpha again.\n    color.rgb *= color.a;\n\n    gl_FragColor = color;\n}\n";
 
   /**
    * A Noise effect filter.
@@ -42476,7 +42466,7 @@
    * @author Vico @vicocotea
    */
   var NoiseFilter = /** @class */ (function (_super) {
-      __extends$i(NoiseFilter, _super);
+      __extends$2(NoiseFilter, _super);
       /**
        * @param {number} [noise=0.5] - The noise intensity, should be a normalized value in the range [0, 1].
        * @param {number} [seed] - A random seed for the noise generation. Default is `Math.random()`.
@@ -42484,7 +42474,7 @@
       function NoiseFilter(noise, seed) {
           if (noise === void 0) { noise = 0.5; }
           if (seed === void 0) { seed = Math.random(); }
-          var _this = _super.call(this, defaultFilterVertex, fragment$8, {
+          var _this = _super.call(this, defaultFilterVertex, fragment, {
               uNoise: 0,
               uSeed: 0,
           }) || this;
@@ -42981,21 +42971,21 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$j = function(d, b) {
-      extendStatics$j = Object.setPrototypeOf ||
+  var extendStatics$1 = function(d, b) {
+      extendStatics$1 = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$j(d, b);
+      return extendStatics$1(d, b);
   };
 
-  function __extends$j(d, b) {
-      extendStatics$j(d, b);
+  function __extends$1(d, b) {
+      extendStatics$1(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
   var PlaneGeometry = /** @class */ (function (_super) {
-      __extends$j(PlaneGeometry, _super);
+      __extends$1(PlaneGeometry, _super);
       function PlaneGeometry(width, height, segWidth, segHeight) {
           if (width === void 0) { width = 100; }
           if (height === void 0) { height = 100; }
@@ -43065,7 +43055,7 @@
    *
    */
   var RopeGeometry = /** @class */ (function (_super) {
-      __extends$j(RopeGeometry, _super);
+      __extends$1(RopeGeometry, _super);
       /**
        * @param {number} [width=200] - The width (i.e., thickness) of the rope.
        * @param {PIXI.Point[]} [points] - An array of {@link PIXI.Point} objects to construct this rope.
@@ -43245,7 +43235,7 @@
    *
    */
   var SimpleRope = /** @class */ (function (_super) {
-      __extends$j(SimpleRope, _super);
+      __extends$1(SimpleRope, _super);
       /**
        * @param {PIXI.Texture} texture - The texture to use on the rope.
        * @param {PIXI.Point[]} points - An array of {@link PIXI.Point} objects to construct this rope.
@@ -43260,7 +43250,7 @@
           var meshMaterial = new MeshMaterial(texture);
           if (textureScale > 0) {
               // attempt to set UV wrapping, will fail on non-power of two textures
-              texture.baseTexture.wrapMode = WRAP_MODES.REPEAT;
+              texture.baseTexture.wrapMode = WRAP_MODES$1.REPEAT;
           }
           _this = _super.call(this, ropeGeometry, meshMaterial) || this;
           /**
@@ -43298,7 +43288,7 @@
    *
    */
   var SimplePlane = /** @class */ (function (_super) {
-      __extends$j(SimplePlane, _super);
+      __extends$1(SimplePlane, _super);
       /**
        * @param {PIXI.Texture} texture - The texture to use on the SimplePlane.
        * @param {number} verticesX - The number of vertices in the x-axis
@@ -43369,7 +43359,7 @@
    * @memberof PIXI
    */
   var SimpleMesh = /** @class */ (function (_super) {
-      __extends$j(SimpleMesh, _super);
+      __extends$1(SimpleMesh, _super);
       /**
        * @param {PIXI.Texture} [texture=Texture.EMPTY] - The texture to use
        * @param {Float32Array} [vertices] - if you want to specify the vertices
@@ -43447,7 +43437,7 @@
    *
    */
   var NineSlicePlane = /** @class */ (function (_super) {
-      __extends$j(NineSlicePlane, _super);
+      __extends$1(NineSlicePlane, _super);
       /**
        * @param {PIXI.Texture} texture - The texture to use on the NineSlicePlane.
        * @param {number} [leftWidth=10] - size of the left vertical bar (A)
@@ -43705,15 +43695,15 @@
   ***************************************************************************** */
   /* global Reflect, Promise */
 
-  var extendStatics$k = function(d, b) {
-      extendStatics$k = Object.setPrototypeOf ||
+  var extendStatics = function(d, b) {
+      extendStatics = Object.setPrototypeOf ||
           ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
           function (d, b) { for (var p in b) { if (b.hasOwnProperty(p)) { d[p] = b[p]; } } };
-      return extendStatics$k(d, b);
+      return extendStatics(d, b);
   };
 
-  function __extends$k(d, b) {
-      extendStatics$k(d, b);
+  function __extends(d, b) {
+      extendStatics(d, b);
       function __() { this.constructor = d; }
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
@@ -43752,7 +43742,7 @@
    * @memberof PIXI
    */
   var AnimatedSprite = /** @class */ (function (_super) {
-      __extends$k(AnimatedSprite, _super);
+      __extends(AnimatedSprite, _super);
       /**
        * @param {PIXI.Texture[]|PIXI.AnimatedSprite.FrameObject[]} textures - An array of {@link PIXI.Texture} or frame
        *  objects that make up the animation.
@@ -44157,11 +44147,11 @@
   Renderer.registerPlugin('batch', BatchRenderer);
   Renderer.registerPlugin('tilingSprite', TilingSpriteRenderer);
   // Install loader plugins
-  Loader$1.registerPlugin(BitmapFontLoader);
-  Loader$1.registerPlugin(CompressedTextureLoader);
-  Loader$1.registerPlugin(DDSLoader);
-  Loader$1.registerPlugin(KTXLoader);
-  Loader$1.registerPlugin(SpritesheetLoader);
+  Loader.registerPlugin(BitmapFontLoader);
+  Loader.registerPlugin(CompressedTextureLoader);
+  Loader.registerPlugin(DDSLoader);
+  Loader.registerPlugin(KTXLoader);
+  Loader.registerPlugin(SpritesheetLoader);
   // Install application plugins
   Application.registerPlugin(TickerPlugin);
   Application.registerPlugin(AppLoaderPlugin);
@@ -44174,7 +44164,7 @@
    * @name VERSION
    * @type {string}
    */
-  var VERSION$1 = '6.0.0';
+  var VERSION = '6.0.0';
   /**
    * @namespace PIXI
    */
@@ -44217,8 +44207,8 @@
 
   var PIXI = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    utils: utils,
-    VERSION: VERSION$1,
+    utils: utils$1,
+    VERSION: VERSION,
     filters: filters,
     AccessibilityManager: AccessibilityManager,
     accessibleTarget: accessibleTarget,
@@ -44243,7 +44233,7 @@
     BatchShaderGenerator: BatchShaderGenerator,
     BatchSystem: BatchSystem,
     BatchTextureArray: BatchTextureArray,
-    Buffer: Buffer$1,
+    Buffer: Buffer,
     BufferResource: BufferResource,
     CanvasResource: CanvasResource,
     ContextSystem: ContextSystem,
@@ -44273,7 +44263,7 @@
     RenderTexturePool: RenderTexturePool,
     RenderTextureSystem: RenderTextureSystem,
     Renderer: Renderer,
-    Resource: Resource,
+    Resource: Resource$1,
     SVGResource: SVGResource,
     ScissorSystem: ScissorSystem,
     Shader: Shader,
@@ -44301,7 +44291,7 @@
     uniformParsers: uniformParsers,
     Extract: Extract,
     AppLoaderPlugin: AppLoaderPlugin,
-    Loader: Loader$1,
+    Loader: Loader,
     LoaderResource: LoaderResource,
     TextureLoader: TextureLoader,
     BlobResource: BlobResource,
@@ -44331,23 +44321,23 @@
     Ticker: Ticker,
     TickerPlugin: TickerPlugin,
     get UPDATE_PRIORITY () { return UPDATE_PRIORITY; },
-    get ALPHA_MODES () { return ALPHA_MODES; },
-    get BLEND_MODES () { return BLEND_MODES; },
-    get BUFFER_BITS () { return BUFFER_BITS; },
-    get CLEAR_MODES () { return CLEAR_MODES; },
-    get DRAW_MODES () { return DRAW_MODES; },
-    get ENV () { return ENV; },
-    get FORMATS () { return FORMATS; },
-    get GC_MODES () { return GC_MODES; },
-    get MASK_TYPES () { return MASK_TYPES; },
-    get MIPMAP_MODES () { return MIPMAP_MODES; },
-    get MSAA_QUALITY () { return MSAA_QUALITY; },
-    get PRECISION () { return PRECISION; },
-    get RENDERER_TYPE () { return RENDERER_TYPE; },
-    get SCALE_MODES () { return SCALE_MODES; },
-    get TARGETS () { return TARGETS; },
-    get TYPES () { return TYPES; },
-    get WRAP_MODES () { return WRAP_MODES; },
+    get ALPHA_MODES () { return ALPHA_MODES$1; },
+    get BLEND_MODES () { return BLEND_MODES$1; },
+    get BUFFER_BITS () { return BUFFER_BITS$1; },
+    get CLEAR_MODES () { return CLEAR_MODES$1; },
+    get DRAW_MODES () { return DRAW_MODES$1; },
+    get ENV () { return ENV$1; },
+    get FORMATS () { return FORMATS$1; },
+    get GC_MODES () { return GC_MODES$1; },
+    get MASK_TYPES () { return MASK_TYPES$1; },
+    get MIPMAP_MODES () { return MIPMAP_MODES$1; },
+    get MSAA_QUALITY () { return MSAA_QUALITY$1; },
+    get PRECISION () { return PRECISION$1; },
+    get RENDERER_TYPE () { return RENDERER_TYPE$1; },
+    get SCALE_MODES () { return SCALE_MODES$1; },
+    get TARGETS () { return TARGETS$1; },
+    get TYPES () { return TYPES$1; },
+    get WRAP_MODES () { return WRAP_MODES$1; },
     Bounds: Bounds,
     Container: Container,
     DisplayObject: DisplayObject,
@@ -44392,7 +44382,7 @@
     Text: Text,
     TextMetrics: TextMetrics,
     TextStyle: TextStyle,
-    isMobile: isMobile$1,
+    isMobile: isMobile,
     settings: settings
   });
 
@@ -44402,7 +44392,7 @@
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
 
-  var penner = createCommonjsModule$1(function (module, exports) {
+  var penner$1 = createCommonjsModule$1(function (module, exports) {
   /*
   	Copyright © 2001 Robert Penner
   	All rights reserved.
@@ -44648,7 +44638,7 @@
   }).call(commonjsGlobal$1);
   });
 
-  var eventemitter3$1 = createCommonjsModule$1(function (module) {
+  var eventemitter3 = createCommonjsModule$1(function (module) {
 
   var has = Object.prototype.hasOwnProperty
     , prefix = '~';
@@ -44990,7 +44980,7 @@
    * Controls a group of easings added by Ease.add()
    * @extends EventEmitter
    */
-  class Easing extends eventemitter3$1
+  class Easing extends eventemitter3
   {
       /**
        * an easing that acts on an element or an array of elements
@@ -45428,7 +45418,7 @@
 
   const easeOptions = {
       duration: 1000,
-      ease: penner.easeInOutSine,
+      ease: penner$1.easeInOutSine,
       maxFrame: 1000 / 60,
       ticker: null,
       useRAF: true
@@ -45456,7 +45446,7 @@
    * test2.tint = 0x0000ff
    * secondEase.add(test2, { blend: [0xff0000, 0x00ff00], scale: 2 })
    */
-  class Ease extends eventemitter3$1
+  class Ease$1 extends eventemitter3
   {
       /**
        * @param {object} [options]
@@ -45537,7 +45527,7 @@
           options.ease = options.ease || this.options.ease;
           if (typeof options.ease === 'string')
           {
-              options.ease = penner[options.ease];
+              options.ease = penner$1[options.ease];
           }
           const easing = new Easing(element, params, options);
           this.easings.push(easing);
@@ -45735,17 +45725,17 @@
   }
 
   // manages the ids used to define the DisplayObject ease variable (enabled multiple eases attached to the same object)
-  Ease.id = 0;
+  Ease$1.id = 0;
 
   /**
    * default instantiated Ease class
    * @type {Ease}
    */
-  let ease = new Ease();
+  let ease$2 = new Ease$1();
 
-  Ease.ease = ease;
+  Ease$1.ease = ease$2;
 
-  var alea = createCommonjsModule(function (module) {
+  var alea = createCommonjsModule$2(function (module) {
   // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
   // http://baagoe.com/en/RandomMusings/javascript/
   // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -45854,13 +45844,13 @@
   }
 
   })(
-    commonjsGlobal,
-     module,    // present in node.js
+    commonjsGlobal$2,
+    module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xor128 = createCommonjsModule(function (module) {
+  var xor128 = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "xor128" prng algorithm by
   // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -45936,13 +45926,13 @@
   }
 
   })(
-    commonjsGlobal,
-     module,    // present in node.js
+    commonjsGlobal$2,
+    module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xorwow = createCommonjsModule(function (module) {
+  var xorwow = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "xorwow" prng algorithm by
   // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -46023,13 +46013,13 @@
   }
 
   })(
-    commonjsGlobal,
-     module,    // present in node.js
+    commonjsGlobal$2,
+    module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xorshift7 = createCommonjsModule(function (module) {
+  var xorshift7 = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "xorshift7" algorithm by
   // François Panneton and Pierre L'ecuyer:
   // "On the Xorgshift Random Number Generators"
@@ -46055,11 +46045,11 @@
     };
 
     function init(me, seed) {
-      var j, w, X = [];
+      var j, X = [];
 
       if (seed === (seed | 0)) {
         // Seed state array using a 32-bit integer.
-        w = X[0] = seed;
+        X[0] = seed;
       } else {
         // Seed state using a string.
         seed = '' + seed;
@@ -46071,7 +46061,7 @@
       // Enforce an array length of 8, not all zeroes.
       while (X.length < 8) X.push(0);
       for (j = 0; j < 8 && X[j] === 0; ++j);
-      if (j == 8) w = X[7] = -1; else w = X[j];
+      if (j == 8) X[7] = -1;
 
       me.x = X;
       me.i = 0;
@@ -46122,13 +46112,13 @@
   }
 
   })(
-    commonjsGlobal,
-     module,    // present in node.js
+    commonjsGlobal$2,
+    module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xor4096 = createCommonjsModule(function (module) {
+  var xor4096 = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
   //
   // This fast non-cryptographic random number generator is designed for
@@ -46270,13 +46260,13 @@
   }
 
   })(
-    commonjsGlobal,                                     // window object or global
-     module,    // present in node.js
+    commonjsGlobal$2,                                     // window object or global
+    module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var tychei = createCommonjsModule(function (module) {
+  var tychei = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "Tyche-i" prng algorithm by
   // Samuel Neves and Filipe Araujo.
   // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -46373,8 +46363,8 @@
   }
 
   })(
-    commonjsGlobal,
-     module,    // present in node.js
+    commonjsGlobal$2,
+    module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
@@ -46388,7 +46378,6 @@
 
   var require$$0 = /*@__PURE__*/getAugmentedNamespace(empty$1);
 
-  var seedrandom = createCommonjsModule(function (module) {
   /*
   Copyright 2019 David Bau.
 
@@ -46413,6 +46402,7 @@
 
   */
 
+  var seedrandom$1 = createCommonjsModule$2(function (module) {
   (function (global, pool, math) {
   //
   // The following constants are related to IEEE 754 limits.
@@ -46619,7 +46609,7 @@
   // Nodejs and AMD support: export the implementation as a module using
   // either convention.
   //
-  if ( module.exports) {
+  if (module.exports) {
     module.exports = seedrandom;
     // When in node.js, try using crypto package for autoseeding.
     try {
@@ -46635,7 +46625,7 @@
   })(
     // global: `self` in browsers (including strict mode and web workers),
     // otherwise `this` in Node and other environments
-    (typeof self !== 'undefined') ? self : commonjsGlobal,
+    (typeof self !== 'undefined') ? self : commonjsGlobal$2,
     [],     // pool: entropy pool starts empty
     Math    // math: package containing random, pow, and seedrandom
   );
@@ -46693,18 +46683,20 @@
   // Period: ~2^1600
 
 
-  seedrandom.alea = alea;
-  seedrandom.xor128 = xor128;
-  seedrandom.xorwow = xorwow;
-  seedrandom.xorshift7 = xorshift7;
-  seedrandom.xor4096 = xor4096;
-  seedrandom.tychei = tychei;
+  seedrandom$1.alea = alea;
+  seedrandom$1.xor128 = xor128;
+  seedrandom$1.xorwow = xorwow;
+  seedrandom$1.xorshift7 = xorshift7;
+  seedrandom$1.xor4096 = xor4096;
+  seedrandom$1.tychei = tychei;
 
-  var seedrandom$1 = seedrandom;
+  var seedrandom = seedrandom$1;
 
-  var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass$7 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+  function _classCallCheck$7(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   // yy-random
   // by David Figatner
@@ -46716,7 +46708,7 @@
 
   var Random = function () {
       function Random() {
-          _classCallCheck(this, Random);
+          _classCallCheck$7(this, Random);
 
           this.generator = Math.random;
       }
@@ -46730,11 +46722,11 @@
        */
 
 
-      _createClass$1(Random, [{
+      _createClass$7(Random, [{
           key: 'seed',
           value: function seed(_seed, options) {
               options = options || {};
-              this.generator = seedrandom$1[options.PRNG || 'alea'](_seed, { state: options.state });
+              this.generator = seedrandom[options.PRNG || 'alea'](_seed, { state: options.state });
               this.options = options;
           }
 
@@ -46760,7 +46752,7 @@
       }, {
           key: 'restore',
           value: function restore(state) {
-              this.generator = seedrandom$1[this.options.PRNG || 'alea']('', { state: state });
+              this.generator = seedrandom[this.options.PRNG || 'alea']('', { state: state });
           }
 
           /**
@@ -47015,6 +47007,25 @@
           }
 
           /**
+           * select a random collection of elements from an array
+           * @param {Array} array
+           * @param {number} count
+           * @param {Array} array of selected items
+           */
+
+      }, {
+          key: 'select',
+          value: function select(array, count) {
+              var select = [].concat(_toConsumableArray(array));
+              var selected = [];
+              for (var i = 0; i < count; i++) {
+                  var index = this.get(select.length);
+                  selected.push.apply(selected, _toConsumableArray(select.splice(index, 1)));
+              }
+              return selected;
+          }
+
+          /**
            * returns a random property from an object
            * from http://stackoverflow.com/questions/2532218/pick-random-property-from-a-javascript-object
            * @param {object} obj
@@ -47125,6 +47136,29 @@
                   }
               } else {
                   return this.range(min, max);
+              }
+          }
+
+          /**
+           * returns a random number within a circle with a normal distribution
+           * from https://stackoverflow.com/a/5838055/1955997
+           * @param {number} x
+           * @param {number} y
+           * @param {number} radius
+           * @param {bool} [float]
+           * @returns {number[]} [x, y]
+           */
+
+      }, {
+          key: 'circle',
+          value: function circle(x, y, radius, float) {
+              var t = this.angle();
+              var u = this.get(1, true) + this.get(1, true);
+              var r = u > 1 ? 2 - u : u;
+              if (float) {
+                  return [x + r * Math.cos(t) * radius, y + r * Math.sin(t) * radius];
+              } else {
+                  return [Math.round(x + r * Math.cos(t) * radius), Math.round(y + r * Math.sin(t) * radius)];
               }
           }
 
@@ -47263,7 +47297,7 @@
       }
   };
 
-  var tinycolor = createCommonjsModule(function (module) {
+  var tinycolor = createCommonjsModule$2(function (module) {
   // TinyColor v1.4.2
   // https://github.com/bgrins/TinyColor
   // Brian Grinstead, MIT License
@@ -48446,7 +48480,7 @@
   }
 
   // Node: Export function
-  if ( module.exports) {
+  if (module.exports) {
       module.exports = tinycolor;
   }
   // AMD/requirejs: Define the module
@@ -48457,9 +48491,9 @@
   })(Math);
   });
 
-  var _createClass$2 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass$6 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck$6(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
 
@@ -48491,7 +48525,7 @@
        * @param {string} [options.text=" FPS"] change the text to the right of the FPS
        */
       function FPS(options) {
-          _classCallCheck$1(this, FPS);
+          _classCallCheck$6(this, FPS);
 
           this.options = options || {};
           this.tolerance = this.options.tolerance || 1;
@@ -48516,7 +48550,7 @@
        */
 
 
-      _createClass$2(FPS, [{
+      _createClass$6(FPS, [{
           key: 'remove',
 
 
@@ -48879,7 +48913,7 @@
       }
   }
 
-  var penner$1 = createCommonjsModule(function (module, exports) {
+  var penner = createCommonjsModule$2(function (module, exports) {
   /*
   	Copyright © 2001 Robert Penner
   	All rights reserved.
@@ -49122,12 +49156,12 @@
 
     umd(penner);
 
-  }).call(commonjsGlobal);
+  }).call(commonjsGlobal$2);
   });
 
-  var _createClass$3 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck$5(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   /**
    * create number entry
@@ -49139,7 +49173,7 @@
    */
   var number = function () {
       function Number(element, entry, start, to, units) {
-          _classCallCheck$2(this, Number);
+          _classCallCheck$5(this, Number);
 
           this.element = element;
           this.entry = entry;
@@ -49149,7 +49183,7 @@
           this.units = units || '';
       }
 
-      _createClass$3(Number, [{
+      _createClass$5(Number, [{
           key: 'update',
           value: function update(percent) {
               this.element.style[this.entry] = this.start + this.delta * percent + this.units;
@@ -49169,11 +49203,11 @@
 
   var _createClass$4 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck$3(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   var color = function () {
       function Color(element, style, colors, interval) {
-          _classCallCheck$3(this, Color);
+          _classCallCheck$4(this, Color);
 
           this.element = element;
           this.style = style;
@@ -49214,13 +49248,13 @@
       return Color;
   }();
 
-  var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass$3 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck$4(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck$3(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   var transform = function () {
       function Transform(element, entry, to) {
-          _classCallCheck$4(this, Transform);
+          _classCallCheck$3(this, Transform);
 
           this.element = element;
           this.transforms = [];
@@ -49250,7 +49284,7 @@
           this.add(entry, to);
       }
 
-      _createClass$5(Transform, [{
+      _createClass$3(Transform, [{
           key: 'add',
           value: function add(entry, to) {
               var _iteratorNormalCompletion = true;
@@ -49381,13 +49415,13 @@
       return document.defaultView.getComputedStyle(el, '').getPropertyValue(style);
   }
 
-  var utils$1 = {
+  var utils = {
       getComputed: getComputed
   };
 
-  var _createClass$6 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass$2 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck$5(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 
 
@@ -49395,19 +49429,19 @@
 
   var margin = function () {
       function Margin(element, entry, to) {
-          _classCallCheck$5(this, Margin);
+          _classCallCheck$2(this, Margin);
 
           this.element = element;
           this.margins = {
-              marginTop: { start: parseInt(utils$1.getComputed(element, 'margin-top')) },
-              marginRight: { start: parseInt(utils$1.getComputed(element, 'margin-right')) },
-              marginBottom: { start: parseInt(utils$1.getComputed(element, 'margin-bottom')) },
-              marginLeft: { start: parseInt(utils$1.getComputed(element, 'margin-left')) }
+              marginTop: { start: parseInt(utils.getComputed(element, 'margin-top')) },
+              marginRight: { start: parseInt(utils.getComputed(element, 'margin-right')) },
+              marginBottom: { start: parseInt(utils.getComputed(element, 'margin-bottom')) },
+              marginLeft: { start: parseInt(utils.getComputed(element, 'margin-left')) }
           };
           this.add(entry, to);
       }
 
-      _createClass$6(Margin, [{
+      _createClass$2(Margin, [{
           key: 'add',
           value: function add(entry, to) {
               var margin = this.margins[entry];
@@ -49490,15 +49524,13 @@
       return Margin;
   }();
 
-  var _createClass$7 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck$6(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+  function _possibleConstructorReturn$1(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
+  function _inherits$1(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 
 
@@ -49506,8 +49538,10 @@
 
 
 
-  var Ease$1 = function (_EventEmitter) {
-      _inherits(Ease, _EventEmitter);
+
+
+  var Ease = function (_EventEmitter) {
+      _inherits$1(Ease, _EventEmitter);
 
       /**
        * Ease class returned by DomEase.add()
@@ -49544,9 +49578,9 @@
        * @hideconstructor
        */
       function Ease(element, params, options) {
-          _classCallCheck$6(this, Ease);
+          _classCallCheck$1(this, Ease);
 
-          var _this = _possibleConstructorReturn(this, (Ease.__proto__ || Object.getPrototypeOf(Ease)).call(this));
+          var _this = _possibleConstructorReturn$1(this, (Ease.__proto__ || Object.getPrototypeOf(Ease)).call(this));
 
           _this.element = element;
           _this.list = [];
@@ -49603,7 +49637,7 @@
                       break;
 
                   case 'opacity':
-                      _this.list.push(new number(element, entry, parseFloat(utils$1.getComputed(element, 'opacity')), params[entry]));
+                      _this.list.push(new number(element, entry, parseFloat(utils.getComputed(element, 'opacity')), params[entry]));
                       break;
 
                   case 'width':
@@ -49633,7 +49667,7 @@
           return _this;
       }
 
-      _createClass$7(Ease, [{
+      _createClass$1(Ease, [{
           key: 'update',
           value: function update(elapsed) {
               if (this.wait) {
@@ -49693,7 +49727,7 @@
       }]);
 
       return Ease;
-  }(eventemitter3);
+  }(eventemitter3$1);
 
   /**
    * fires when eases are complete
@@ -49713,15 +49747,15 @@
    * @type {Ease}
    */
 
-  var ease$1 = Ease$1;
+  var ease$1 = Ease;
 
-  var _createClass$8 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  function _classCallCheck$7(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  function _possibleConstructorReturn$1(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+  function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-  function _inherits$1(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+  function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 
 
@@ -49740,7 +49774,7 @@
    */
 
   var DomEase = function (_EventEmitter) {
-      _inherits$1(DomEase, _EventEmitter);
+      _inherits(DomEase, _EventEmitter);
 
       /**
        * @param {object} [options]
@@ -49753,13 +49787,13 @@
        * @fires DomEase#complete
        */
       function DomEase(options) {
-          _classCallCheck$7(this, DomEase);
+          _classCallCheck(this, DomEase);
 
-          var _this = _possibleConstructorReturn$1(this, (DomEase.__proto__ || Object.getPrototypeOf(DomEase)).call(this));
+          var _this = _possibleConstructorReturn(this, (DomEase.__proto__ || Object.getPrototypeOf(DomEase)).call(this));
 
           _this.options = options || {};
           _this.options.duration = _this.options.duration || 1000;
-          _this.options.ease = _this.options.ease || penner$1.linear;
+          _this.options.ease = _this.options.ease || penner.linear;
           _this.options.maximumFrameRate = _this.options.maximumFrameRate || 16.667;
           _this.list = [];
           _this.empty = true;
@@ -49782,7 +49816,7 @@
        */
 
 
-      _createClass$8(DomEase, [{
+      _createClass(DomEase, [{
           key: 'start',
           value: function start() {
               if (!this._requested) {
@@ -49870,7 +49904,7 @@
               options.duration = typeof options.duration !== 'undefined' ? options.duration : this.options.duration;
               options.ease = options.ease || this.options.ease;
               if (typeof options.ease === 'string') {
-                  options.ease = penner$1[options.ease];
+                  options.ease = penner[options.ease];
               }
               if (Array.isArray(element)) {
                   var eases = [];
@@ -49990,7 +50024,7 @@
       }]);
 
       return DomEase;
-  }(eventemitter3);
+  }(eventemitter3$1);
 
   /**
    * fires when there are no more animations for a DOM element
@@ -50004,7 +50038,7 @@
    * @type {DomEase}
    */
 
-  var domEase = DomEase;
+  var domEase$1 = DomEase;
 
   /**
    * @typedef ViewportTouch
@@ -50444,7 +50478,7 @@
   /**
    * derive this class to create user-defined plugins
    */
-  class Plugin {
+  class Plugin$1 {
       /**
        * @param {Viewport} parent
        */
@@ -50556,7 +50590,7 @@
   /**
    * @private
    */
-  class Drag extends Plugin {
+  class Drag extends Plugin$1 {
       /**
        * @param {Viewport} parent
        * @param {DragOptions} options
@@ -50832,7 +50866,7 @@
       factor: 1,
   };
 
-  class Pinch extends Plugin {
+  class Pinch extends Plugin$1 {
       /**
        * @private
        * @param {Viewport} parent
@@ -50946,7 +50980,7 @@
       underflow: 'center'
   };
 
-  class Clamp extends Plugin
+  class Clamp extends Plugin$1
   {
       /**
        * @private
@@ -51162,7 +51196,7 @@
       maxScale: null
   };
 
-  class ClampZoom extends Plugin
+  class ClampZoom extends Plugin$1
   {
       /**
        * @private
@@ -51269,7 +51303,7 @@
    */
   const TP = 16;
 
-  class Decelerate extends Plugin {
+  class Decelerate extends Plugin$1 {
       /**
        * @private
        * @param {Viewport} parent
@@ -51418,11 +51452,11 @@
    * @param {(function|string)} [ease]
    * @param {defaults} default penner equation to use if none is provided
    */
-  function ease$2(ease, defaults)
+  function ease(ease, defaults)
   {
       if (!ease)
       {
-          return penner$1[defaults]
+          return penner[defaults]
       }
       else if (typeof ease === 'function')
       {
@@ -51430,7 +51464,7 @@
       }
       else if (typeof ease === 'string')
       {
-          return penner$1[ease]
+          return penner[ease]
       }
   }
 
@@ -51457,7 +51491,7 @@
       bounceBox: null
   };
 
-  class Bounce extends Plugin {
+  class Bounce extends Plugin$1 {
       /**
        * @private
        * @param {Viewport} parent
@@ -51470,7 +51504,7 @@
       constructor(parent, options = {}) {
           super(parent);
           this.options = Object.assign({}, bounceOptions, options);
-          this.ease = ease$2(this.options.ease, 'easeInOutSine');
+          this.ease = ease(this.options.ease, 'easeInOutSine');
           if (this.options.sides) {
               if (this.options.sides === 'all') {
                   this.top = this.bottom = this.left = this.right = true;
@@ -51699,7 +51733,7 @@
       forceStart: false
   };
 
-  class Snap extends Plugin {
+  class Snap extends Plugin$1 {
       /**
        * @private
        * @param {Viewport} parent
@@ -51714,7 +51748,7 @@
       constructor(parent, x, y, options = {}) {
           super(parent);
           this.options = Object.assign({}, snapOptions, options);
-          this.ease = ease$2(options.ease, 'easeInOutSine');
+          this.ease = ease(options.ease, 'easeInOutSine');
           this.x = x;
           this.y = y;
           if (this.options.forceStart) {
@@ -51829,7 +51863,7 @@
       noMove: false
   };
 
-  class SnapZoom extends Plugin {
+  class SnapZoom extends Plugin$1 {
       /**
        * @param {Viewport} parent
        * @param {SnapZoomOptions} options
@@ -51840,7 +51874,7 @@
       constructor(parent, options = {}) {
           super(parent);
           this.options = Object.assign({}, snapZoomOptions, options);
-          this.ease = ease$2(this.options.ease);
+          this.ease = ease(this.options.ease);
           if (this.options.width > 0) {
               this.xScale = parent.screenWidth / this.options.width;
           }
@@ -51865,7 +51899,7 @@
       }
 
       createSnapping() {
-          const scale = this.parent.scale;
+          this.parent.scale;
           const startWorldScreenWidth = this.parent.worldScreenWidth;
           const startWorldScreenHeight = this.parent.worldScreenHeight;
           const endWorldScreenWidth = this.parent.screenWidth / this.xScale;
@@ -51979,7 +52013,7 @@
       radius: null
   };
 
-  class Follow extends Plugin
+  class Follow extends Plugin$1
   {
       /**
        * @private
@@ -52095,7 +52129,7 @@
       lineHeight: 20
   };
 
-  class Wheel extends Plugin {
+  class Wheel extends Plugin$1 {
       /**
        * @private
        * @param {Viewport} parent
@@ -52220,7 +52254,7 @@
       allowButtons: false
   };
 
-  class MouseEdges extends Plugin {
+  class MouseEdges extends Plugin$1 {
       /**
        * Scroll viewport when mouse hovers near one of the edges.
        * @private
@@ -52387,7 +52421,7 @@
       time: 1000
   };
 
-  class Animate extends Plugin
+  class Animate extends Plugin$1
   {
       /**
        * @private
@@ -52399,7 +52433,7 @@
       {
           super(parent);
           this.options = Object.assign({}, animateOptions, options);
-          this.options.ease = ease$2(this.options.ease);
+          this.options.ease = ease(this.options.ease);
           this.setupPosition();
           this.setupZoom();
       }
@@ -52622,7 +52656,7 @@
               // from here: https://github.com/pixijs/pixi.js/issues/5757
               let ticker;
               const pixiNS = PIXI;
-              if (parseInt(/^(\d+)\./.exec(VERSION$1)[1]) < 5) {
+              if (parseInt(/^(\d+)\./.exec(VERSION)[1]) < 5) {
                   ticker = pixiNS.ticker.shared;
               }
               else {
@@ -53636,7 +53670,7 @@
   /**
    * derive this class to create user-defined plugins
    */
-  class Plugin$1 {
+  class Plugin {
       /**
        * @param {Viewport} parent
        */
@@ -53707,23 +53741,14 @@
       }
   }
 
-  var commonjsGlobal$2 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
+  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
 
-  function createCommonjsModule$2(fn, basedir, module) {
-  	return module = {
-  		path: basedir,
-  		exports: {},
-  		require: function (path, base) {
-  			return commonjsRequire$1(path, (base === undefined || base === null) ? module.path : base);
-  		}
-  	}, fn(module, module.exports), module.exports;
+  function createCommonjsModule(fn) {
+    var module = { exports: {} };
+  	return fn(module, module.exports), module.exports;
   }
 
-  function commonjsRequire$1 () {
-  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-  }
-
-  var penner$2 = createCommonjsModule$2(function (module, exports) {
+  createCommonjsModule(function (module, exports) {
   /*
   	Copyright © 2001 Robert Penner
   	All rights reserved.
@@ -53966,10 +53991,10 @@
 
     umd(penner);
 
-  }).call(commonjsGlobal$2);
+  }).call(commonjsGlobal);
   });
 
-  class UserPlugin extends Plugin$1
+  class UserPlugin extends Plugin
   {
       constructor(parent)
       {
@@ -53977,13 +54002,13 @@
       }
   }
 
-  let _viewport, _drawWorld, _gui, _world;
+  let _viewport$1, _drawWorld, _gui, _world;
 
   let options;
 
   function gui(viewport, drawWorld, target)
   {
-      _viewport = viewport;
+      _viewport$1 = viewport;
       _drawWorld = drawWorld;
       _gui = new dat.GUI({ autoPlace: false });
       document.body.appendChild(_gui.domElement);
@@ -54092,8 +54117,8 @@
 
   function guiWorld()
   {
-      _world.add(_viewport, 'worldWidth').onChange(_drawWorld);
-      _world.add(_viewport, 'worldHeight').onChange(_drawWorld);
+      _world.add(_viewport$1, 'worldWidth').onChange(_drawWorld);
+      _world.add(_viewport$1, 'worldHeight').onChange(_drawWorld);
   }
 
   function guiDrag()
@@ -54103,11 +54128,11 @@
           {
               if (value)
               {
-                  _viewport.drag({ clampWheel: true });
+                  _viewport$1.drag({ clampWheel: true });
               }
               else
               {
-                  _viewport.plugins.remove('drag');
+                  _viewport$1.plugins.remove('drag');
               }
           });
   }
@@ -54116,7 +54141,7 @@
   {
       function change()
       {
-          _viewport.clamp({ direction: options.clamp.x && options.clamp.y ? 'all' : options.clamp.x ? 'x' : 'y', underflow: options.clamp.underflow });
+          _viewport$1.clamp({ direction: options.clamp.x && options.clamp.y ? 'all' : options.clamp.x ? 'x' : 'y', underflow: options.clamp.underflow });
       }
 
       function add()
@@ -54138,7 +54163,7 @@
               }
               else
               {
-                  _viewport.plugins.remove('clamp');
+                  _viewport$1.plugins.remove('clamp');
                   clamp.remove(clampX);
                   clamp.remove(clampY);
                   clamp.remove(underflow);
@@ -54155,7 +54180,7 @@
       function change()
       {
           const center = (options.pinch.centerX || options.pinch.centerY) ? { x: options.pinch.centerX, y: options.pinch.centerY } : null;
-          _viewport.pinch({ noDrag: options.pinch.noDrag, center, percent: options.pinch.percent });
+          _viewport$1.pinch({ noDrag: options.pinch.noDrag, center, percent: options.pinch.percent });
       }
 
       function add()
@@ -54177,7 +54202,7 @@
               }
               else
               {
-                  _viewport.plugins.remove('pinch');
+                  _viewport$1.plugins.remove('pinch');
                   pinch.remove(noDrag);
                   pinch.remove(centerX);
                   pinch.remove(centerY);
@@ -54199,7 +54224,7 @@
   {
       function change()
       {
-          _viewport.bounce({ sides: options.bounce.sides, time: options.bounce.time, ease: options.bounce.ease, friction: options.bounce.friction, underflow: options.bounce.underflow });
+          _viewport$1.bounce({ sides: options.bounce.sides, time: options.bounce.time, ease: options.bounce.ease, friction: options.bounce.friction, underflow: options.bounce.underflow });
       }
 
       function add()
@@ -54225,7 +54250,7 @@
               }
               else
               {
-                  _viewport.plugins.remove('bounce');
+                  _viewport$1.plugins.remove('bounce');
                   if (time)
                   {
                       bounce.remove(sides);
@@ -54251,7 +54276,7 @@
   {
       function change()
       {
-          _viewport.decelerate({ friction: options.decelerate.friction, minSpeed: options.decelerate.minSpeed });
+          _viewport$1.decelerate({ friction: options.decelerate.friction, minSpeed: options.decelerate.minSpeed });
       }
 
       function add()
@@ -54299,7 +54324,7 @@
   {
       function change()
       {
-          _viewport.snap(options.snap.x, options.snap.y, { interrupt: options.snap.interrupt, time: options.snap.time, ease: options.snap.ease, friction: options.snap.friction, topLeft: options.snap.topLeft });
+          _viewport$1.snap(options.snap.x, options.snap.y, { interrupt: options.snap.interrupt, time: options.snap.time, ease: options.snap.ease, friction: options.snap.friction, topLeft: options.snap.topLeft });
       }
 
       function add()
@@ -54333,7 +54358,7 @@
                   snap.remove(friction);
                   snap.remove(interrupt);
                   snap.remove(topLeft);
-                  _viewport.plugins.remove('snap');
+                  _viewport$1.plugins.remove('snap');
               }
           }
       );
@@ -54351,7 +54376,7 @@
   {
       function change()
       {
-          _viewport.follow(target, { speed: options.follow.speed, radius: options.follow.radius, acceleration: options.follow.acceleration });
+          _viewport$1.follow(target, { speed: options.follow.speed, radius: options.follow.radius, acceleration: options.follow.acceleration });
       }
 
       function add()
@@ -54376,7 +54401,7 @@
                   follow.remove(speed);
                   follow.remove(radius);
                   follow.remove(acceleration);
-                  _viewport.plugins.remove('follow');
+                  _viewport$1.plugins.remove('follow');
               }
           }
       );
@@ -54395,7 +54420,7 @@
       function change()
       {
           const center = (options.wheel.centerX || options.wheel.centerY) ? { x: options.wheel.centerX, y: options.wheel.centerY } : null;
-          _viewport.wheel({ percent: options.wheel.percent, minWidth: options.wheel.minWidth, maxWidth: options.wheel.maxWidth, minHeight: options.wheel.minHeight, maxHeight: options.wheel.maxHeight, center, lineHeight: options.wheel.lineHeight });
+          _viewport$1.wheel({ percent: options.wheel.percent, minWidth: options.wheel.minWidth, maxWidth: options.wheel.maxWidth, minHeight: options.wheel.minHeight, maxHeight: options.wheel.maxHeight, center, lineHeight: options.wheel.lineHeight });
       }
 
       function add()
@@ -54417,7 +54442,7 @@
               }
               else
               {
-                  _viewport.plugins.remove('wheel');
+                  _viewport$1.plugins.remove('wheel');
                   wheel.remove(percent);
                   wheel.remove(centerX);
                   wheel.remove(centerY);
@@ -54439,7 +54464,7 @@
   {
       function change()
       {
-          _viewport.clampZoom({ minWidth: options.clampZoom.minWidth, maxWidth: options.clampZoom.maxWidth, minHeight: options.clampZoom.minHeight, maxHeight: options.clampZoom.maxHeight });
+          _viewport$1.clampZoom({ minWidth: options.clampZoom.minWidth, maxWidth: options.clampZoom.maxWidth, minHeight: options.clampZoom.minHeight, maxHeight: options.clampZoom.maxHeight });
       }
 
       function add()
@@ -54461,7 +54486,7 @@
               }
               else
               {
-                  _viewport.plugins.remove('clamp-zoom');
+                  _viewport$1.plugins.remove('clamp-zoom');
                   clampZoom.remove(minWidth);
                   clampZoom.remove(maxWidth);
                   clampZoom.remove(minHeight);
@@ -54484,7 +54509,7 @@
       function change()
       {
           options.snapZoom.center = (options.snapZoom.centerX || options.snapZoom.centerY) ? { x: options.snapZoom.centerX, y: options.snapZoom.centerY } : null;
-          _viewport.snapZoom(options.snapZoom);
+          _viewport$1.snapZoom(options.snapZoom);
       }
 
       function add()
@@ -54510,7 +54535,7 @@
               }
               else
               {
-                  _viewport.plugins.remove('snap-zoom');
+                  _viewport$1.plugins.remove('snap-zoom');
                   snapZoom.remove(width);
                   snapZoom.remove(height);
                   snapZoom.remove(time);
@@ -54537,7 +54562,7 @@
       function change()
       {
           const me = options.mouseEdges;
-          _viewport.mouseEdges({ radius: me.radius !== 0 ? me.radius : null, distance: me.distance !== 0 ? me.distance : null, top: me.top !== 0 ? me.top : null, bottom: me.bottom !== 0 ? me.bottom : null, left: me.left !== 0 ? me.left : null, right: me.right !== 0 ? me.right : null, speed: me.speed, reverse: me.reverse, noDecelerate: me.noDecelerate, linear: me.linear });
+          _viewport$1.mouseEdges({ radius: me.radius !== 0 ? me.radius : null, distance: me.distance !== 0 ? me.distance : null, top: me.top !== 0 ? me.top : null, bottom: me.bottom !== 0 ? me.bottom : null, left: me.left !== 0 ? me.left : null, right: me.right !== 0 ? me.right : null, speed: me.speed, reverse: me.reverse, noDecelerate: me.noDecelerate, linear: me.linear });
       }
 
       function add()
@@ -54565,7 +54590,7 @@
               }
               else
               {
-                  _viewport.plugins.remove('mouse-edges');
+                  _viewport$1.plugins.remove('mouse-edges');
                   mouseEdges.remove(radius);
                   mouseEdges.remove(distance);
                   mouseEdges.remove(top);
@@ -54600,16 +54625,16 @@
   const OBJECT_SPEED = 0.25;
   const FADE_TIME = 2000;
 
-  let _fps, _application, _viewport$1, _object, _stars = [], domEase$1;
+  let _fps, _application, _viewport, _object, _stars = [], domEase;
 
   function viewport() {
-      _viewport$1 = _application.stage.addChild(new Viewport(
+      _viewport = _application.stage.addChild(new Viewport(
           {
               interaction: _application.renderer.plugins.interaction,
               passiveWheel: false,
               stopPropagation: true
           }));
-      _viewport$1
+      _viewport
           .drag({ clampWheel: false })
           // .wheel({ smooth: 3 })
           .pinch()
@@ -54617,8 +54642,8 @@
           .on('clicked', click);
       resize();
 
-      domEase$1 = new domEase({ duration: FADE_TIME });
-      ease.duration = FADE_TIME;
+      domEase = new domEase$1({ duration: FADE_TIME });
+      ease$2.duration = FADE_TIME;
 
       // test for x/y independent scaling
       // _viewport.scale.y = 1.5
@@ -54628,7 +54653,7 @@
 
       // _viewport.clampZoom({ minWidth: 1000 })
 
-      _viewport$1.plugins.add('test', new UserPlugin(_viewport$1));
+      _viewport.plugins.add('test', new UserPlugin(_viewport));
 
       // _viewport.ensureVisible(0, 0, 5000, 5000, true)
 
@@ -54637,106 +54662,106 @@
 
       // _viewport.drag({ pressDrag: false })
 
-      _viewport$1.setZoom(0.5, { x: 500, y: 500 });
+      _viewport.setZoom(0.5, { x: 500, y: 500 });
       // const animate1 = () => _viewport.animate({ scale: 3, ease: 'easeInOutSine', callbackOnComplete: animate2 })
       // const animate2 = () => _viewport.animate({ scale: 1, ease: 'easeInOutSine', callbackOnComplete: animate1 })
       // const animate1 = () => _viewport.animate({ position: { x: 1000, y: 1000 }, scale: 3, time: 3000, ease: 'linear', callbackOnComplete: animate2 })
       // const animate2 = () => _viewport.animate({ position: { x: 500, y: 500 }, scale: 1, time: 3000, ease: 'linear', callbackOnComplete: animate3 })
       // const animate3 = () => _viewport.animate({ position: { x: 0, y: 0 }, scale: 5, time: 3000, ease: 'linear', callbackOnComplete: animate1 })
       // animate1()
-      _viewport$1.input.clear();
+      _viewport.input.clear();
   }
 
   function resize() {
       _application.renderer.resize(window.innerWidth, window.innerHeight);
-      _viewport$1.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT);
+      _viewport.resize(window.innerWidth, window.innerHeight, WIDTH, HEIGHT);
   }
 
   function addCounter(name) {
       const counter$1 = new counter({ side: 'top-left' });
       counter$1.log(name);
-      const e = domEase$1.add(counter$1.div, { opacity: 0 });
+      const e = domEase.add(counter$1.div, { opacity: 0 });
       e.once('complete', () => counter$1.div.remove());
   }
 
   function events() {
-      _viewport$1.on('clicked', () => addCounter('clicked'));
-      _viewport$1.on('drag-start', () => addCounter('drag-start'));
-      _viewport$1.on('drag-end', () => addCounter('drag-end'));
-      _viewport$1.on('pinch-start', () => addCounter('pinch-start'));
-      _viewport$1.on('pinch-end', () => addCounter('pinch-end'));
-      _viewport$1.on('bounce-start-x', () => addCounter('bounce-start-x'));
-      _viewport$1.on('bounce-end-x', () => addCounter('bounce-end-x'));
-      _viewport$1.on('bounce-start-y', () => addCounter('bounce-start-y'));
-      _viewport$1.on('bounce-end-y', () => addCounter('bounce-end-y'));
-      _viewport$1.on('snap-start', () => addCounter('snap-start'));
-      _viewport$1.on('snap-end', () => addCounter('snap-end'));
-      _viewport$1.on('snap-zoom-start', () => addCounter('snap-zoom-start'));
-      _viewport$1.on('snap-zoom-end', () => addCounter('snap-zoom-end'));
-      _viewport$1.on('mouse-edges-start', () => addCounter('mouse-edges-start'));
-      _viewport$1.on('mouse-edges-end', () => addCounter('mouse-edges-end'));
-      _viewport$1.on('moved-end', () => addCounter('moved-end'));
-      _viewport$1.on('zoomed-end', () => addCounter('zoomed-end'));
+      _viewport.on('clicked', () => addCounter('clicked'));
+      _viewport.on('drag-start', () => addCounter('drag-start'));
+      _viewport.on('drag-end', () => addCounter('drag-end'));
+      _viewport.on('pinch-start', () => addCounter('pinch-start'));
+      _viewport.on('pinch-end', () => addCounter('pinch-end'));
+      _viewport.on('bounce-start-x', () => addCounter('bounce-start-x'));
+      _viewport.on('bounce-end-x', () => addCounter('bounce-end-x'));
+      _viewport.on('bounce-start-y', () => addCounter('bounce-start-y'));
+      _viewport.on('bounce-end-y', () => addCounter('bounce-end-y'));
+      _viewport.on('snap-start', () => addCounter('snap-start'));
+      _viewport.on('snap-end', () => addCounter('snap-end'));
+      _viewport.on('snap-zoom-start', () => addCounter('snap-zoom-start'));
+      _viewport.on('snap-zoom-end', () => addCounter('snap-zoom-end'));
+      _viewport.on('mouse-edges-start', () => addCounter('mouse-edges-start'));
+      _viewport.on('mouse-edges-end', () => addCounter('mouse-edges-end'));
+      _viewport.on('moved-end', () => addCounter('moved-end'));
+      _viewport.on('zoomed-end', () => addCounter('zoomed-end'));
       // _viewport.on('moved', (data) => addCounter('moved: ' + data.type))
   }
 
   function border() {
-      const line = _viewport$1.addChild(new Graphics());
-      line.lineStyle(10, 0xff0000).drawRect(0, 0, _viewport$1.worldWidth, _viewport$1.worldHeight);
+      const line = _viewport.addChild(new Graphics());
+      line.lineStyle(10, 0xff0000).drawRect(0, 0, _viewport.worldWidth, _viewport.worldHeight);
   }
 
   function stars() {
-      const stars = (_viewport$1.worldWidth * _viewport$1.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1;
+      const stars = (_viewport.worldWidth * _viewport.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1;
       for (let i = 0; i < stars; i++) {
-          const star = _viewport$1.addChild(new Sprite(Texture.WHITE));
+          const star = _viewport.addChild(new Sprite(Texture.WHITE));
           star.anchor.set(0.5);
           star.tint = yyRandom.color();
           star.width = star.height = STAR_SIZE;
           star.alpha = yyRandom.range(0.25, 1, true);
-          star.position.set(yyRandom.range(STAR_SIZE / 2 + BORDER, _viewport$1.worldWidth - STAR_SIZE - BORDER), yyRandom.range(BORDER, _viewport$1.worldHeight - BORDER - STAR_SIZE));
+          star.position.set(yyRandom.range(STAR_SIZE / 2 + BORDER, _viewport.worldWidth - STAR_SIZE - BORDER), yyRandom.range(BORDER, _viewport.worldHeight - BORDER - STAR_SIZE));
           _stars.push(star);
       }
   }
 
   function createTarget() {
-      const x = yyRandom.range(OBJECT_SIZE / 2 + BORDER, _viewport$1.worldWidth - OBJECT_SIZE / 2 - BORDER);
-      const y = yyRandom.range(OBJECT_SIZE / 2 + BORDER, _viewport$1.worldHeight - OBJECT_SIZE / 2 - BORDER);
-      const target = ease.target(_object, { x, y }, OBJECT_SPEED, { wait: yyRandom.chance(0.75) ? yyRandom.range(500, 3000) : null });
+      const x = yyRandom.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER);
+      const y = yyRandom.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER);
+      const target = ease$2.target(_object, { x, y }, OBJECT_SPEED, { wait: yyRandom.chance(0.75) ? yyRandom.range(500, 3000) : null });
       target.once('complete', createTarget);
   }
 
   function object() {
-      _object = _viewport$1.addChild(new Sprite(Texture.WHITE));
+      _object = _viewport.addChild(new Sprite(Texture.WHITE));
       _object.anchor.set(0.5);
       _object.tint = 0;
       _object.width = _object.height = OBJECT_SIZE;
       _object.position.set(100, 100);
-      ease.add(_object, { rotation: Math.PI * 2 }, { duration: OBJECT_ROTATION_TIME, repeat: true, ease: 'linear' });
+      ease$2.add(_object, { rotation: Math.PI * 2 }, { duration: OBJECT_ROTATION_TIME, repeat: true, ease: 'linear' });
       createTarget();
   }
 
   function click(data) {
       for (let star of _stars) {
           if (star.containsPoint(data.screen)) {
-              ease.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true });
+              ease$2.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true });
               return
           }
       }
-      const sprite = _viewport$1.addChild(new Text('click', { fill: 0xff0000 }));
+      const sprite = _viewport.addChild(new Text('click', { fill: 0xff0000 }));
       sprite.anchor.set(0.5);
       sprite.rotation = yyRandom.range(-0.1, 0.1);
       sprite.position = data.world;
-      const fade = ease.add(sprite, { alpha: 0 });
-      fade.on('done', () => _viewport$1.removeChild(sprite));
+      const fade = ease$2.add(sprite, { alpha: 0 });
+      fade.on('done', () => _viewport.removeChild(sprite));
   }
 
   function drawWorld() {
-      ease.removeAll();
-      _viewport$1.removeChildren();
+      ease$2.removeAll();
+      _viewport.removeChildren();
       stars();
       object();
       border();
-      _viewport$1.moveCorner(0, 0);
+      _viewport.moveCorner(0, 0);
   }
 
   function API() {
@@ -54753,9 +54778,9 @@
       clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/');
   }
 
-  window.onload = function() {
+  window.onload = function () {
       _fps = new yyFps({ side: 'bottom-left' });
-      _application = new Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio });
+      _application = new Application({ backgroundAlpha: 0, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio });
       document.body.appendChild(_application.view);
       _application.view.style.position = 'fixed';
       _application.view.style.width = '100vw';
@@ -54778,7 +54803,7 @@
           // _viewport.dirty = false
       });
 
-      gui(_viewport$1, drawWorld, _object);
+      gui(_viewport, drawWorld, _object);
 
       API();
 
