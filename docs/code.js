@@ -175,9 +175,9 @@ function API() {
     clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
 }
 
-window.onload = function() {
+window.onload = function () {
     _fps = new FPS({ side: 'bottom-left' })
-    _application = new PIXI.Application({ transparent: true, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
+    _application = new PIXI.Application({ backgroundAlpha: 0, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
     document.body.appendChild(_application.view)
     _application.view.style.position = 'fixed'
     _application.view.style.width = '100vw'
