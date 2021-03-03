@@ -7,7 +7,7 @@ import typescript from '@rollup/plugin-typescript'
 export default {
     input: 'docs/builds/ts/code.ts',
     plugins: [
-        typescript({ module: 'CommonJS' }),
+        typescript(),
         builtins(),
         resolve({
             preferBuiltins: false,

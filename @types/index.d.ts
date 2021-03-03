@@ -294,7 +294,7 @@ export declare class Viewport extends PIXI.Container {
     ): this
     // Events
     on(
-        event: PIXI.InteractionEventTypes,
+        event: PIXI.InteractionEvent,
         fn: (event: PIXI.InteractionEvent) => void,
         context?: any
     ): this
@@ -324,13 +324,13 @@ export declare class Viewport extends PIXI.Container {
         context?: any
     ): this
 
-    listeners(event: string | symbol): Function[]
-    listeners(event: string | symbol, exists: boolean): boolean
+    // listeners(event: string | symbol): Function[]
+    // listeners(event: string | symbol, exists: boolean): boolean
 
     /**
     * Do not use. This is in fact a protected method.
     */
-    listeners(div: HTMLElement): void
+    // listeners(div: HTMLElement): void
 
     // Protected/Private methods
     protected resizePlugins(): void
