@@ -269,7 +269,7 @@ export declare class Viewport extends PIXI.Container {
     zoomPercent(percent: number, center?: boolean): this
     zoom(change: number, center?: boolean): this
 
-    getVisibleBounds(): Bounds
+    getVisibleBounds(): PIXI.Rectangle
 
     // Plugins
     plugins: PluginManager
@@ -294,7 +294,7 @@ export declare class Viewport extends PIXI.Container {
     ): this
     // Events
     on(
-        event: PIXI.InteractionEvent,
+        event: string,
         fn: (event: PIXI.InteractionEvent) => void,
         context?: any
     ): this
