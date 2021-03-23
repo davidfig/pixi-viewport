@@ -3131,9 +3131,13 @@ class Viewport extends Container {
             x = arguments[0].x;
             y = arguments[0].y;
         }
-        this.position.set((this.worldScreenWidth / 2 - x) * this.scale.x, (this.worldScreenHeight / 2 - y) * this.scale.y);
-        this.plugins.reset();
-        this.dirty = true;
+        const newX = (this.worldScreenWidth / 2 - x) * this.scale.x;
+        const newY = (this.worldScreenHeight / 2 - y) * this.scale.y;
+        if (this.x !== newX || this.y !== newY) {
+            this.position.set(newX, newY);
+            this.plugins.reset();
+            this.dirty = true;
+        }
         return this
     }
 
@@ -3154,14 +3158,20 @@ class Viewport extends Container {
      * @param {number} [y]
      * @return {Viewport} this
      */
-    moveCorner(x, y) {
+    moveCorner() {
+        let x, y;
         if (arguments.length === 1) {
-            this.position.set(-x.x * this.scale.x, -x.y * this.scale.y);
+            x = -arguments[0].x * this.scale.x;
+            y = -arguments[0].y * this.scale.y;
+        } else {
+            x = -arguments[0] * this.scale.x;
+            y = -arguments[1] * this.scale.y;
         }
-        else {
-            this.position.set(-x * this.scale.x, -y * this.scale.y);
+        if (x !== this.x || y !== this.y) {
+            this.position.set(x, y);
+            this.plugins.reset();
+            this.dirty = true;
         }
-        this.plugins.reset();
         return this
     }
 
