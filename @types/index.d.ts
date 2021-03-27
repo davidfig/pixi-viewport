@@ -240,7 +240,7 @@ export declare class Viewport extends PIXI.Container {
     update(elapsed: number): void
     resize(screenWidth: number, screenHeight: number, worldWidth?: number, worldHeight?: number): void
 
-    toWorld(p: PIXI.Point): PIXI.Point
+    toWorld(p: PIXI.IPointData): PIXI.Point
     toWorld(x: number, y: number): PIXI.Point
     toScreen(p: PIXI.Point): PIXI.Point
     toScreen(x: number, y: number): PIXI.Point
