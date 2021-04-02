@@ -347,6 +347,7 @@ export declare class Viewport extends PIXI.Container {
 
 export declare class Plugin {
     constructor(viewport: Viewport)
+    paused: boolean
     down(event: PIXI.InteractionEvent): void
     up(event: PIXI.InteractionEvent): void
     move(event: PIXI.InteractionEvent): void
