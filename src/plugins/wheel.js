@@ -9,6 +9,7 @@ import { Plugin } from './plugin'
  * @property {boolean} [reverse] reverse the direction of the scroll
  * @property {PIXI.Point} [center] place this point at center during zoom instead of current mouse position
  * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
+ * @property {('all'|'x'|'y')} [axis=all] axis to zoom
  */
 
 const wheelOptions = {
@@ -17,7 +18,8 @@ const wheelOptions = {
     interrupt: true,
     reverse: false,
     center: null,
-    lineHeight: 20
+    lineHeight: 20,
+    axis: 'all',
 }
 
 export class Wheel extends Plugin {
@@ -38,6 +40,14 @@ export class Wheel extends Plugin {
         }
     }
 
+    isAxisX() {
+        return ['all', 'x'].includes(this.options.axis)
+    }
+
+    isAxisY() {
+        return ['all', 'y'].includes(this.options.axis)
+    }
+
     update() {
         if (this.smoothing) {
             const point = this.smoothingCenter
@@ -46,8 +56,12 @@ export class Wheel extends Plugin {
             if (!this.options.center) {
                 oldPoint = this.parent.toLocal(point)
             }
-            this.parent.scale.x += change.x
-            this.parent.scale.y += change.y
+            if (this.isAxisX()) {
+                this.parent.scale.x += change.x
+            }
+            if (this.isAxisY()) {
+                this.parent.scale.y += change.y
+            }
             this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
             const clamp = this.parent.plugins.get('clamp-zoom', true)
             if (clamp) {
@@ -72,7 +86,6 @@ export class Wheel extends Plugin {
         if (this.paused) {
             return
         }
-
         let point = this.parent.input.getPointerPosition(e)
         const sign = this.options.reverse ? -1 : 1
         const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500
@@ -93,8 +106,12 @@ export class Wheel extends Plugin {
             if (!this.options.center) {
                 oldPoint = this.parent.toLocal(point)
             }
-            this.parent.scale.x *= change
-            this.parent.scale.y *= change
+            if (this.isAxisX()) {
+                this.parent.scale.x *= change
+            }
+            if (this.isAxisY()) {
+                this.parent.scale.y *= change
+            }
             this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
             const clamp = this.parent.plugins.get('clamp-zoom', true)
             if (clamp) {

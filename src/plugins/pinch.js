@@ -6,6 +6,7 @@ import { Plugin } from './plugin'
  * @property {number} [percent=1] percent to modify pinch speed
  * @property {number} [factor=1] factor to multiply two-finger drag to increase the speed of movement
  * @property {PIXI.Point} [center] place this point at center during zoom instead of center of two fingers
+ * @property {('all'|'x'|'y')} [axis=all] axis to zoom
  */
 
 const pinchOptions = {
@@ -13,6 +14,7 @@ const pinchOptions = {
     percent: 1,
     center: null,
     factor: 1,
+    axis: 'all',
 }
 
 export class Pinch extends Plugin {
@@ -31,6 +33,14 @@ export class Pinch extends Plugin {
             this.active = true
             return true
         }
+    }
+
+    isAxisX() {
+        return ['all', 'x'].includes(this.options.axis)
+    }
+
+    isAxisY() {
+        return ['all', 'y'].includes(this.options.axis)
     }
 
     move(e) {
@@ -60,9 +70,13 @@ export class Pinch extends Plugin {
                 }
                 let dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
                 dist = dist === 0 ? dist = 0.0000000001 : dist
-                const change = (1 - last / dist) * this.options.percent * this.parent.scale.x
-                this.parent.scale.x += change
-                this.parent.scale.y += change
+                const change = (1 - last / dist) * this.options.percent * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y)
+                if (this.isAxisX()) {
+                    this.parent.scale.x += change
+                }
+                if (this.isAxisY()) {
+                    this.parent.scale.y += change
+                }
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point })
                 const clamp = this.parent.plugins.get('clamp-zoom', true)
                 if (clamp) {

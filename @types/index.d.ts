@@ -49,6 +49,7 @@ interface PinchOptions {
     noDrag?: boolean
     center?: PIXI.Point
     factor?: number
+    axis?: DirectionType
 }
 
 interface Bounds {
@@ -106,6 +107,7 @@ interface WheelOptions {
     smooth?: number
     interrupt?: boolean
     lineHeight?: number
+    axis?: DirectionType
 }
 
 interface ClampZoomOptions {
