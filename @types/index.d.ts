@@ -4,11 +4,12 @@ type DirectionType = 'all' | 'x' | 'y'
 type UnderflowType = 'center' | 'top' | 'left' | 'right' | 'bottom' | string
 type SidesType = 'all' | 'horizontal' | 'vertical' | string
 type PluginType = 'bounce' | 'clamp-zoom' | 'clamp' | 'decelerate' | 'drag' | 'follow' | 'mouse-edges' | 'pinch' | 'snap' | 'snap-zoom' | 'wheel'
-type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved' | 'moved-end' | 'zoomed-end'
+type EventType = 'pinch-start' | 'pinch-end' | 'snap-start' | 'snap-end' | 'snap-zoom-start' | 'snap-zoom-end' | 'bounce-x-start' | 'bounce-x-end' | 'bounce-y-start' | 'bounce-y-end' | 'wheel-scroll' | 'mouse-edge-start' | 'mouse-edge-end' | 'moved' | 'moved-end' | 'zoomed-end' | 'frame-end'
 type ClickEventType = 'clicked' | 'drag-start' | 'drag-end'
 type WheelEventType = 'wheel'
 type ZoomedEventType = 'zoomed'
 type ZoomedEventSourceType = 'clamp-zoom' | 'pinch' | 'wheel'
+type MovedEventType = 'moved'
 type MovedEventSourceType = 'bounce-x' | 'bounce-y' | 'clamp-x' | 'clamp-y' | 'decelerate' | 'drag' | 'wheel' | 'follow' | 'mouse-edges' | 'pinch' | 'snap'
 type MouseButtonsType = 'all' | 'left' | 'middle' | 'right' | string
 
@@ -123,6 +124,8 @@ interface WheelOptions
     reverse?: boolean
     center?: PIXI.Point
     smooth?: number
+    interrupt?: boolean
+    lineHeight?: number
 }
 
 interface ClampZoomOptions
@@ -147,6 +150,7 @@ interface MouseEdgesOptions
     reverse?: boolean
     noDecelerate?: boolean
     linear?: boolean
+    allowButtons?: boolean
 }
 
 interface SnapZoomOptions
@@ -304,6 +308,11 @@ export declare class Viewport extends PIXI.Container
     on(
         event: ZoomedEventType,
         fn: (data: ZoomedEventData) => void,
+        context?: any
+    ): this
+    on(
+        event: MovedEventType,
+        fn: (data: MovedEventData) => void,
         context?: any
     ): this
 

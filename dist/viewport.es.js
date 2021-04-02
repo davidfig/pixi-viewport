@@ -2611,6 +2611,7 @@ class Follow extends Plugin
  * @property {boolean} [interrupt=true] stop smoothing with any user input on the viewport
  * @property {boolean} [reverse] reverse the direction of the scroll
  * @property {PIXI.Point} [center] place this point at center during zoom instead of current mouse position
+ * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
  */
 
 const wheelOptions = {
@@ -2618,7 +2619,8 @@ const wheelOptions = {
     smooth: false,
     interrupt: true,
     reverse: false,
-    center: null
+    center: null,
+    lineHeight: 20
 };
 
 class Wheel extends Plugin
@@ -2690,7 +2692,7 @@ class Wheel extends Plugin
 
         let point = this.parent.input.getPointerPosition(e);
         const sign = this.options.reverse ? -1 : 1;
-        const step = sign * -e.deltaY * (e.deltaMode ? 120 : 1) / 500;
+        const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
         const change = Math.pow(2, (1 + this.options.percent) * step);
         if (this.options.smooth)
         {
@@ -3172,6 +3174,7 @@ class Viewport extends Container
             this._worldHeight = worldHeight;
         }
         this.plugins.resize();
+        this.dirty = true;
     }
 
     /**
@@ -3738,6 +3741,11 @@ class Viewport extends Container
      * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
      * @param {number} [options.friction=0.5] friction to apply to decelerate if active
      * @param {number} [options.time=150] time in ms to finish bounce
+     * @param {object} [options.bounceBox] use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
+     * @param {number} [options.bounceBox.x=0]
+     * @param {number} [options.bounceBox.y=0]
+     * @param {number} [options.bounceBox.width=viewport.worldWidth]
+     * @param {number} [options.bounceBox.height=viewport.worldHeight]
      * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
      * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
      * @return {Viewport} this
