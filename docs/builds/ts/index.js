@@ -929,18 +929,18 @@
       ROUND_PIXELS: false,
   };
 
-  var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   function getDefaultExportFromCjs (x) {
   	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
   }
 
-  function createCommonjsModule$1(fn) {
+  function createCommonjsModule(fn) {
     var module = { exports: {} };
   	return fn(module, module.exports), module.exports;
   }
 
-  var eventemitter3 = createCommonjsModule$1(function (module) {
+  var eventemitter3 = createCommonjsModule(function (module) {
 
   var has = Object.prototype.hasOwnProperty
     , prefix = '~';
@@ -1959,7 +1959,7 @@
 
   /*! https://mths.be/punycode v1.3.2 by @mathias */
 
-  var punycode = createCommonjsModule$1(function (module, exports) {
+  var punycode = createCommonjsModule(function (module, exports) {
   (function(root) {
 
   	/** Detect free variables */
@@ -1967,7 +1967,7 @@
   		!exports.nodeType && exports;
   	var freeModule = module &&
   		!module.nodeType && module;
-  	var freeGlobal = typeof commonjsGlobal$1 == 'object' && commonjsGlobal$1;
+  	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal;
   	if (
   		freeGlobal.global === freeGlobal ||
   		freeGlobal.window === freeGlobal ||
@@ -2480,7 +2480,7 @@
   		root.punycode = punycode;
   	}
 
-  }(commonjsGlobal$1));
+  }(commonjsGlobal));
   });
 
   var util = {
@@ -2602,7 +2602,7 @@
            encodeURIComponent(stringifyPrimitive(obj));
   };
 
-  var querystring = createCommonjsModule$1(function (module, exports) {
+  var querystring = createCommonjsModule(function (module, exports) {
 
   exports.decode = exports.parse = decode;
   exports.encode = exports.stringify = encode;
@@ -24470,7 +24470,7 @@
 
   var parseUri = parseURI;
 
-  var miniSignals = createCommonjsModule$1(function (module, exports) {
+  var miniSignals = createCommonjsModule(function (module, exports) {
 
   Object.defineProperty(exports, '__esModule', {
     value: true
@@ -42599,10 +42599,6 @@
     settings: settings
   });
 
-  var global$1 = (typeof global !== "undefined" ? global :
-              typeof self !== "undefined" ? self :
-              typeof window !== "undefined" ? window : {});
-
   /**
    * @typedef ViewportTouch
    * @property {number} id
@@ -43420,6 +43416,7 @@
    * @property {number} [percent=1] percent to modify pinch speed
    * @property {number} [factor=1] factor to multiply two-finger drag to increase the speed of movement
    * @property {PIXI.Point} [center] place this point at center during zoom instead of center of two fingers
+   * @property {('all'|'x'|'y')} [axis=all] axis to zoom
    */
 
   const pinchOptions = {
@@ -43427,6 +43424,7 @@
       percent: 1,
       center: null,
       factor: 1,
+      axis: 'all',
   };
 
   class Pinch extends Plugin {
@@ -43445,6 +43443,14 @@
               this.active = true;
               return true
           }
+      }
+
+      isAxisX() {
+          return ['all', 'x'].includes(this.options.axis)
+      }
+
+      isAxisY() {
+          return ['all', 'y'].includes(this.options.axis)
       }
 
       move(e) {
@@ -43474,9 +43480,13 @@
                   }
                   let dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
                   dist = dist === 0 ? dist = 0.0000000001 : dist;
-                  const change = (1 - last / dist) * this.options.percent * this.parent.scale.x;
-                  this.parent.scale.x += change;
-                  this.parent.scale.y += change;
+                  const change = (1 - last / dist) * this.options.percent * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
+                  if (this.isAxisX()) {
+                      this.parent.scale.x += change;
+                  }
+                  if (this.isAxisY()) {
+                      this.parent.scale.y += change;
+                  }
                   this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point });
                   const clamp = this.parent.plugins.get('clamp-zoom', true);
                   if (clamp) {
@@ -44008,13 +44018,6 @@
       reset() {
           this.x = this.y = null;
       }
-  }
-
-  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
-
-  function createCommonjsModule(fn) {
-    var module = { exports: {} };
-  	return fn(module, module.exports), module.exports;
   }
 
   var penner = createCommonjsModule(function (module, exports) {
@@ -44934,6 +44937,7 @@
    * @property {boolean} [reverse] reverse the direction of the scroll
    * @property {PIXI.Point} [center] place this point at center during zoom instead of current mouse position
    * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
+   * @property {('all'|'x'|'y')} [axis=all] axis to zoom
    */
 
   const wheelOptions = {
@@ -44942,7 +44946,8 @@
       interrupt: true,
       reverse: false,
       center: null,
-      lineHeight: 20
+      lineHeight: 20,
+      axis: 'all',
   };
 
   class Wheel extends Plugin {
@@ -44963,6 +44968,14 @@
           }
       }
 
+      isAxisX() {
+          return ['all', 'x'].includes(this.options.axis)
+      }
+
+      isAxisY() {
+          return ['all', 'y'].includes(this.options.axis)
+      }
+
       update() {
           if (this.smoothing) {
               const point = this.smoothingCenter;
@@ -44971,8 +44984,12 @@
               if (!this.options.center) {
                   oldPoint = this.parent.toLocal(point);
               }
-              this.parent.scale.x += change.x;
-              this.parent.scale.y += change.y;
+              if (this.isAxisX()) {
+                  this.parent.scale.x += change.x;
+              }
+              if (this.isAxisY()) {
+                  this.parent.scale.y += change.y;
+              }
               this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
               const clamp = this.parent.plugins.get('clamp-zoom', true);
               if (clamp) {
@@ -44997,7 +45014,6 @@
           if (this.paused) {
               return
           }
-
           let point = this.parent.input.getPointerPosition(e);
           const sign = this.options.reverse ? -1 : 1;
           const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
@@ -45018,8 +45034,12 @@
               if (!this.options.center) {
                   oldPoint = this.parent.toLocal(point);
               }
-              this.parent.scale.x *= change;
-              this.parent.scale.y *= change;
+              if (this.isAxisX()) {
+                  this.parent.scale.x *= change;
+              }
+              if (this.isAxisY()) {
+                  this.parent.scale.y *= change;
+              }
               this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
               const clamp = this.parent.plugins.get('clamp-zoom', true);
               if (clamp) {
@@ -46321,6 +46341,177 @@
           }
       }
   }
+
+  /**
+   * fires after a mouse or touch click
+   * @event Viewport#clicked
+   * @type {object}
+   * @property {PIXI.Point} screen
+   * @property {PIXI.Point} world
+   * @property {Viewport} viewport
+   */
+
+  /**
+   * fires when a drag starts
+   * @event Viewport#drag-start
+   * @type {object}
+   * @property {PIXI.Point} screen
+   * @property {PIXI.Point} world
+   * @property {Viewport} viewport
+   */
+
+  /**
+   * fires when a drag ends
+   * @event Viewport#drag-end
+   * @type {object}
+   * @property {PIXI.Point} screen
+   * @property {PIXI.Point} world
+   * @property {Viewport} viewport
+   */
+
+  /**
+   * fires when a pinch starts
+   * @event Viewport#pinch-start
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a pinch end
+   * @event Viewport#pinch-end
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a snap starts
+   * @event Viewport#snap-start
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a snap ends
+   * @event Viewport#snap-end
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a snap-zoom starts
+   * @event Viewport#snap-zoom-start
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a snap-zoom ends
+   * @event Viewport#snap-zoom-end
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a bounce starts in the x direction
+   * @event Viewport#bounce-x-start
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a bounce ends in the x direction
+   * @event Viewport#bounce-x-end
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a bounce starts in the y direction
+   * @event Viewport#bounce-y-start
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a bounce ends in the y direction
+   * @event Viewport#bounce-y-end
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when for a mouse wheel event
+   * @event Viewport#wheel
+   * @type {object}
+   * @property {object} wheel
+   * @property {number} wheel.dx
+   * @property {number} wheel.dy
+   * @property {number} wheel.dz
+   * @property {Viewport} viewport
+   */
+
+  /**
+   * fires when a wheel-scroll occurs
+   * @event Viewport#wheel-scroll
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when a mouse-edge starts to scroll
+   * @event Viewport#mouse-edge-start
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when the mouse-edge scrolling ends
+   * @event Viewport#mouse-edge-end
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
+   * @event Viewport#moved
+   * @type {object}
+   * @property {Viewport} viewport
+   * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
+   */
+
+  /**
+   * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
+   * @event Viewport#zoomed
+   * @type {object}
+   * @property {Viewport} viewport
+   * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom, ensureVisible)
+   */
+
+  /**
+   * fires when viewport stops moving
+   * @event Viewport#moved-end
+   * @type {Viewport}
+   */
+
+  /**
+   * fires when viewport stops zooming
+   * @event Viewport#zoomed-end
+   * @type {Viewport}
+   */
+
+  /**
+  * fires at the end of an update frame
+  * @event Viewport#frame-end
+  * @type {Viewport}
+  */
+
+  /** @typedef HitArea {(PIXI.Rectangle | PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.RoundedRectangle)} */
+
+  /**
+   * @typedef {Object} OutOfBounds
+   * @private
+   * @property {boolean} left
+   * @property {boolean} right
+   * @property {boolean} top
+   * @property {boolean} bottom
+   * @property {PIXI.Point} cornerPoint
+   */
+
+  /**
+   * @typedef {Object} LastViewport
+   * @private
+   * @property {number} x
+   * @property {number} y
+   * @property {number} scaleX
+   * @property {number} scaleY
+   */
 
   window.onload = function () {
       function rand(n) {
