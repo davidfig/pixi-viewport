@@ -115,8 +115,13 @@ interface ClampZoomOptions {
     minHeight?: number
     maxWidth?: number
     maxHeight?: number
+    independent?: boolean
     minScale?: number
     maxScale?: number
+    minScaleX?: number
+    maxScaleX?: number
+    minScaleY?: number
+    maxScaleY?: number
 }
 
 interface MouseEdgesOptions {
