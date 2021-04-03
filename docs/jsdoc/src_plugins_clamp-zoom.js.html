@@ -398,14 +398,29 @@
             <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './plugin'
 
 /**
- * use either minimum width/height or minimum scale
+ * There are a few ways to use clampZoom
+ * 1. minWidth, maxWidth, minHeight, maxHeight = this clamps the zoom to in world-screen-sized pixels;
+ *    maxWidth/Height is used to clamp the zoom out; ie, the minimum size of the world in screen pixels;
+ *    minWidth/Height is used to clamp the zoom in; ie, the maximum size of the world in screen pixels;
+ *    if you set independent=true, then the aspect ratio is not maintained (it is by default)
+ * 2. minScale, maxScale = the minimum and maximum scale the viewport can zoom to; scale.x always equals scale.y
+ * 3. minScaleX, maxScaleX, minScaleY, maxScaleY = the minimum and maximum scale the viewport can zoom to;
+ *    scale.x and scale.y are independent
+ *
  * @typedef {object} ClampZoomOptions
  * @property {number} [minWidth] minimum width
- * @property {number} [minHeight] minimum height
  * @property {number} [maxWidth] maximum width
+ * @property {number} [minHeight] minimum height
  * @property {number} [maxHeight] maximum height
+ * @property {boolean} [independent] x and y scale are independent (only used for minimum/maximum width/height)
+ *
  * @property {number} [minScale] minimum scale
  * @property {number} [maxScale] minimum scale
+ *
+ * @property {number} [minScaleX] minimum scale for x-axis
+ * @property {number} [maxScaleX] maximum scale for x-axis
+ * @property {number} [minScaleY] minimum scale for y-axis
+ * @property {number} [maxScaleY] maximum scale for y-axis
  */
 
 const clampZoomOptions = {
@@ -414,7 +429,8 @@ const clampZoomOptions = {
     maxWidth: null,
     maxHeight: null,
     minScale: null,
-    maxScale: null
+    maxScale: null,
+    independent: false,
 }
 
 export class ClampZoom extends Plugin
@@ -436,72 +452,86 @@ export class ClampZoom extends Plugin
         this.clamp()
     }
 
-    clamp()
-    {
-        if (this.paused)
-        {
+    clamp() {
+        if (this.paused) {
             return
         }
 
-        if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
-        {
+        if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight) {
             let width = this.parent.worldScreenWidth
             let height = this.parent.worldScreenHeight
-            if (this.options.minWidth !== null &amp;&amp; width &lt; this.options.minWidth)
-            {
+            if (this.options.minWidth !== null &amp;&amp; width &lt; this.options.minWidth) {
                 const original = this.parent.scale.x
                 this.parent.fitWidth(this.options.minWidth, false, false, true)
-                this.parent.scale.y *= this.parent.scale.x / original
+                if (!this.options.independent) {
+                    this.parent.scale.y *= this.parent.scale.x / original
+                }
                 width = this.parent.worldScreenWidth
                 height = this.parent.worldScreenHeight
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
             }
-            if (this.options.maxWidth !== null &amp;&amp; width > this.options.maxWidth)
-            {
+            if (this.options.maxWidth !== null &amp;&amp; width > this.options.maxWidth) {
                 const original = this.parent.scale.x
                 this.parent.fitWidth(this.options.maxWidth, false, false, true)
-                this.parent.scale.y *= this.parent.scale.x / original
+                if (!this.options.independent) {
+                    this.parent.scale.y *= this.parent.scale.x / original
+                }
                 width = this.parent.worldScreenWidth
                 height = this.parent.worldScreenHeight
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
             }
-            if (this.options.minHeight !== null &amp;&amp; height &lt; this.options.minHeight)
-            {
+            if (this.options.minHeight !== null &amp;&amp; height &lt; this.options.minHeight) {
                 const original = this.parent.scale.y
                 this.parent.fitHeight(this.options.minHeight, false, false, true)
-                this.parent.scale.x *= this.parent.scale.y / original
+                if (!this.options.independent) {
+                    this.parent.scale.x *= this.parent.scale.y / original
+                }
                 width = this.parent.worldScreenWidth
                 height = this.parent.worldScreenHeight
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
             }
-            if (this.options.maxHeight !== null &amp;&amp; height > this.options.maxHeight)
-            {
+            if (this.options.maxHeight !== null &amp;&amp; height > this.options.maxHeight) {
                 const original = this.parent.scale.y
                 this.parent.fitHeight(this.options.maxHeight, false, false, true)
-                this.parent.scale.x *= this.parent.scale.y / original
+                if (!this.options.independent) {
+                    this.parent.scale.x *= this.parent.scale.y / original
+                }
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
             }
         }
-        else
-        {
+        else if (this.options.minScale || this.options.maxScale) {
             let scale = this.parent.scale.x
-            if (this.options.minScale !== null &amp;&amp; scale &lt; this.options.minScale)
-            {
+            if (this.options.minScale !== null &amp;&amp; scale &lt; this.options.minScale) {
                 scale = this.options.minScale
             }
-            if (this.options.maxScale !== null &amp;&amp; scale > this.options.maxScale)
-            {
+            if (this.options.maxScale !== null &amp;&amp; scale > this.options.maxScale) {
                 scale = this.options.maxScale
             }
             if (scale !== this.parent.scale.x) {
                 this.parent.scale.set(scale)
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
             }
+        } else {
+            if (this.options.minScaleX || this.options.maxScaleX) {
+                let scaleX = this.parent.scale.x
+                if (this.options.minScaleX !== null &amp;&amp; scaleX &lt; this.options.minScaleX) {
+                    scaleX = this.options.minScaleX
+                } else if (this.options.maxScaleX !== null &amp;&amp; scaleX > this.options.maxScaleX) {
+                    scaleX = this.options.maxScaleX
+                }
+            }
+            if (this.options.minScaleY || this.options.maxScaleY) {
+                let scaleY = this.parent.scale.Y
+                if (this.options.minScaleY !== null &amp;&amp; scaleY &lt; this.options.minScaleY) {
+                    scaleY = this.options.minScaleY
+                } else if (this.options.maxScaleY !== null &amp;&amp; scaleY > this.options.maxScaleY) {
+                    scaleY = this.options.maxScaleY
+                }
+            }
         }
     }
 
-    reset()
-    {
+    reset() {
         this.clamp()
     }
 }
@@ -518,7 +548,7 @@ export class ClampZoom extends Plugin
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Apr 04 2021 07:23:25 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Apr 04 2021 07:53:19 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

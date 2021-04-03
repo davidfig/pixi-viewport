@@ -1773,7 +1773,16 @@ eg: to allow the world to be completely dragged offscreen, set [-viewport.worldW
 <dd>
     
     <div class="description">
-        <p>use either minimum width/height or minimum scale</p>
+        <p>There are a few ways to use clampZoom</p>
+<ol>
+<li>minWidth, maxWidth, minHeight, maxHeight = this clamps the zoom to in world-screen-sized pixels;
+maxWidth/Height is used to clamp the zoom out; ie, the minimum size of the world in screen pixels;
+minWidth/Height is used to clamp the zoom in; ie, the maximum size of the world in screen pixels;
+if you set independent=true, then the aspect ratio is not maintained (it is by default)</li>
+<li>minScale, maxScale = the minimum and maximum scale the viewport can zoom to; scale.x always equals scale.y</li>
+<li>minScaleX, maxScaleX, minScaleY, maxScaleY = the minimum and maximum scale the viewport can zoom to;
+scale.x and scale.y are independent</li>
+</ol>
     </div>
     
     
@@ -1840,37 +1849,6 @@ eg: to allow the world to be completely dragged offscreen, set [-viewport.worldW
 	
         <tr>
             
-                <td class="name"><code>minHeight</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-                    
-                
-                </td>
-            
-            
-            
-            
-            <td class="description last"><p>minimum height</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
                 <td class="name"><code>maxWidth</code></td>
             
             
@@ -1902,6 +1880,37 @@ eg: to allow the world to be completely dragged offscreen, set [-viewport.worldW
 	
         <tr>
             
+                <td class="name"><code>minHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>minimum height</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
                 <td class="name"><code>maxHeight</code></td>
             
             
@@ -1927,6 +1936,37 @@ eg: to allow the world to be completely dragged offscreen, set [-viewport.worldW
             
             
             <td class="description last"><p>maximum height</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>independent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>x and y scale are independent (only used for minimum/maximum width/height)</p></td>
         </tr>
 	
 	
@@ -1989,6 +2029,130 @@ eg: to allow the world to be completely dragged offscreen, set [-viewport.worldW
             
             
             <td class="description last"><p>minimum scale</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>minScaleX</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>minimum scale for x-axis</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxScaleX</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>maximum scale for x-axis</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>minScaleY</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>minimum scale for y-axis</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxScaleY</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last"><p>maximum scale for y-axis</p></td>
         </tr>
 	
 	
@@ -5834,7 +5998,7 @@ eg: to allow the world to be completely dragged offscreen, set [-viewport.worldW
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Apr 04 2021 07:23:25 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Apr 04 2021 07:53:19 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

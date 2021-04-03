@@ -43534,6 +43534,18 @@
   }
 
   /**
+   * There are three ways to clamp:
+   * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of the world offscreen
+   *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
+   * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
+   *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
+   *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+   *
+   * Underflow determines what happens when the world is smaller than the viewport
+   * 1. none = the world is clamped but there is no special behavior
+   * 2. center = the world is centered on the viewport
+   * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
+   *
    * @typedef ClampOptions
    * @property {(number|boolean)} [left=false] clamp left; true = 0
    * @property {(number|boolean)} [right=false] clamp right; true = viewport.worldWidth
@@ -43624,33 +43636,30 @@
           if (this.options.left !== null || this.options.right !== null)
           {
               let moved = false;
-              if (this.parent.screenWorldWidth < this.parent.screenWidth)
+              if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth)
               {
-                  if (!this.noUnderflow)
+                  switch (this.underflowX)
                   {
-                      switch (this.underflowX)
-                      {
-                          case -1:
-                              if (this.parent.x !== 0)
-                              {
-                                  this.parent.x = 0;
-                                  moved = true;
-                              }
-                              break
-                          case 1:
-                              if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
-                              {
-                                  this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
-                                  moved = true;
-                              }
-                              break
-                          default:
-                              if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
-                              {
-                                  this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                                  moved = true;
-                              }
-                      }
+                      case -1:
+                          if (this.parent.x !== 0)
+                          {
+                              this.parent.x = 0;
+                              moved = true;
+                          }
+                          break
+                      case 1:
+                          if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
+                          {
+                              this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
+                              moved = true;
+                          }
+                          break
+                      default:
+                          if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
+                          {
+                              this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                              moved = true;
+                          }
                   }
               }
               else
@@ -43682,33 +43691,30 @@
           if (this.options.top !== null || this.options.bottom !== null)
           {
               let moved = false;
-              if (this.parent.screenWorldHeight < this.parent.screenHeight)
+              if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight)
               {
-                  if (!this.noUnderflow)
+                  switch (this.underflowY)
                   {
-                      switch (this.underflowY)
-                      {
-                          case -1:
-                              if (this.parent.y !== 0)
-                              {
-                                  this.parent.y = 0;
-                                  moved = true;
-                              }
-                              break
-                          case 1:
-                              if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
-                              {
-                                  this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                                  moved = true;
-                              }
-                              break
-                          default:
-                              if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
-                              {
-                                  this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                                  moved = true;
-                              }
-                      }
+                      case -1:
+                          if (this.parent.y !== 0)
+                          {
+                              this.parent.y = 0;
+                              moved = true;
+                          }
+                          break
+                      case 1:
+                          if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
+                          {
+                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                              moved = true;
+                          }
+                          break
+                      default:
+                          if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
+                          {
+                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                              moved = true;
+                          }
                   }
               }
               else
@@ -43743,21 +43749,36 @@
           this.last.scaleY = this.parent.scale.y;
       }
 
-      reset() 
+      reset()
       {
           this.update();
       }
   }
 
   /**
-   * use either minimum width/height or minimum scale
+   * There are a few ways to use clampZoom
+   * 1. minWidth, maxWidth, minHeight, maxHeight = this clamps the zoom to in world-screen-sized pixels;
+   *    maxWidth/Height is used to clamp the zoom out; ie, the minimum size of the world in screen pixels;
+   *    minWidth/Height is used to clamp the zoom in; ie, the maximum size of the world in screen pixels;
+   *    if you set independent=true, then the aspect ratio is not maintained (it is by default)
+   * 2. minScale, maxScale = the minimum and maximum scale the viewport can zoom to; scale.x always equals scale.y
+   * 3. minScaleX, maxScaleX, minScaleY, maxScaleY = the minimum and maximum scale the viewport can zoom to;
+   *    scale.x and scale.y are independent
+   *
    * @typedef {object} ClampZoomOptions
    * @property {number} [minWidth] minimum width
-   * @property {number} [minHeight] minimum height
    * @property {number} [maxWidth] maximum width
+   * @property {number} [minHeight] minimum height
    * @property {number} [maxHeight] maximum height
+   * @property {boolean} [independent] x and y scale are independent (only used for minimum/maximum width/height)
+   *
    * @property {number} [minScale] minimum scale
    * @property {number} [maxScale] minimum scale
+   *
+   * @property {number} [minScaleX] minimum scale for x-axis
+   * @property {number} [maxScaleX] maximum scale for x-axis
+   * @property {number} [minScaleY] minimum scale for y-axis
+   * @property {number} [maxScaleY] maximum scale for y-axis
    */
 
   const clampZoomOptions = {
@@ -43766,7 +43787,8 @@
       maxWidth: null,
       maxHeight: null,
       minScale: null,
-      maxScale: null
+      maxScale: null,
+      independent: false,
   };
 
   class ClampZoom extends Plugin
@@ -43788,72 +43810,86 @@
           this.clamp();
       }
 
-      clamp()
-      {
-          if (this.paused)
-          {
+      clamp() {
+          if (this.paused) {
               return
           }
 
-          if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
-          {
+          if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight) {
               let width = this.parent.worldScreenWidth;
               let height = this.parent.worldScreenHeight;
-              if (this.options.minWidth !== null && width < this.options.minWidth)
-              {
+              if (this.options.minWidth !== null && width < this.options.minWidth) {
                   const original = this.parent.scale.x;
                   this.parent.fitWidth(this.options.minWidth, false, false, true);
-                  this.parent.scale.y *= this.parent.scale.x / original;
+                  if (!this.options.independent) {
+                      this.parent.scale.y *= this.parent.scale.x / original;
+                  }
                   width = this.parent.worldScreenWidth;
                   height = this.parent.worldScreenHeight;
                   this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
               }
-              if (this.options.maxWidth !== null && width > this.options.maxWidth)
-              {
+              if (this.options.maxWidth !== null && width > this.options.maxWidth) {
                   const original = this.parent.scale.x;
                   this.parent.fitWidth(this.options.maxWidth, false, false, true);
-                  this.parent.scale.y *= this.parent.scale.x / original;
+                  if (!this.options.independent) {
+                      this.parent.scale.y *= this.parent.scale.x / original;
+                  }
                   width = this.parent.worldScreenWidth;
                   height = this.parent.worldScreenHeight;
                   this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
               }
-              if (this.options.minHeight !== null && height < this.options.minHeight)
-              {
+              if (this.options.minHeight !== null && height < this.options.minHeight) {
                   const original = this.parent.scale.y;
                   this.parent.fitHeight(this.options.minHeight, false, false, true);
-                  this.parent.scale.x *= this.parent.scale.y / original;
+                  if (!this.options.independent) {
+                      this.parent.scale.x *= this.parent.scale.y / original;
+                  }
                   width = this.parent.worldScreenWidth;
                   height = this.parent.worldScreenHeight;
                   this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
               }
-              if (this.options.maxHeight !== null && height > this.options.maxHeight)
-              {
+              if (this.options.maxHeight !== null && height > this.options.maxHeight) {
                   const original = this.parent.scale.y;
                   this.parent.fitHeight(this.options.maxHeight, false, false, true);
-                  this.parent.scale.x *= this.parent.scale.y / original;
+                  if (!this.options.independent) {
+                      this.parent.scale.x *= this.parent.scale.y / original;
+                  }
                   this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
               }
           }
-          else
-          {
+          else if (this.options.minScale || this.options.maxScale) {
               let scale = this.parent.scale.x;
-              if (this.options.minScale !== null && scale < this.options.minScale)
-              {
+              if (this.options.minScale !== null && scale < this.options.minScale) {
                   scale = this.options.minScale;
               }
-              if (this.options.maxScale !== null && scale > this.options.maxScale)
-              {
+              if (this.options.maxScale !== null && scale > this.options.maxScale) {
                   scale = this.options.maxScale;
               }
               if (scale !== this.parent.scale.x) {
                   this.parent.scale.set(scale);
                   this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
               }
+          } else {
+              if (this.options.minScaleX || this.options.maxScaleX) {
+                  let scaleX = this.parent.scale.x;
+                  if (this.options.minScaleX !== null && scaleX < this.options.minScaleX) {
+                      scaleX = this.options.minScaleX;
+                  } else if (this.options.maxScaleX !== null && scaleX > this.options.maxScaleX) {
+                      scaleX = this.options.maxScaleX;
+                  }
+              }
+              if (this.options.minScaleY || this.options.maxScaleY) {
+                  let scaleY = this.parent.scale.Y;
+                  if (this.options.minScaleY !== null && scaleY < this.options.minScaleY) {
+                      scaleY = this.options.minScaleY;
+                  } else if (this.options.maxScaleY !== null && scaleY > this.options.maxScaleY) {
+                      scaleY = this.options.maxScaleY;
+                  }
+              }
           }
       }
 
-      reset()
-      {
+      reset() {
           this.clamp();
       }
   }
