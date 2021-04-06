@@ -929,18 +929,18 @@
       ROUND_PIXELS: false,
   };
 
-  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+  var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   function getDefaultExportFromCjs (x) {
   	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
   }
 
-  function createCommonjsModule(fn) {
+  function createCommonjsModule$1(fn) {
     var module = { exports: {} };
   	return fn(module, module.exports), module.exports;
   }
 
-  var eventemitter3 = createCommonjsModule(function (module) {
+  var eventemitter3 = createCommonjsModule$1(function (module) {
 
   var has = Object.prototype.hasOwnProperty
     , prefix = '~';
@@ -1959,7 +1959,7 @@
 
   /*! https://mths.be/punycode v1.3.2 by @mathias */
 
-  var punycode = createCommonjsModule(function (module, exports) {
+  var punycode = createCommonjsModule$1(function (module, exports) {
   (function(root) {
 
   	/** Detect free variables */
@@ -1967,7 +1967,7 @@
   		!exports.nodeType && exports;
   	var freeModule = module &&
   		!module.nodeType && module;
-  	var freeGlobal = typeof commonjsGlobal == 'object' && commonjsGlobal;
+  	var freeGlobal = typeof commonjsGlobal$1 == 'object' && commonjsGlobal$1;
   	if (
   		freeGlobal.global === freeGlobal ||
   		freeGlobal.window === freeGlobal ||
@@ -2480,7 +2480,7 @@
   		root.punycode = punycode;
   	}
 
-  }(commonjsGlobal));
+  }(commonjsGlobal$1));
   });
 
   var util = {
@@ -2602,7 +2602,7 @@
            encodeURIComponent(stringifyPrimitive(obj));
   };
 
-  var querystring = createCommonjsModule(function (module, exports) {
+  var querystring = createCommonjsModule$1(function (module, exports) {
 
   exports.decode = exports.parse = decode;
   exports.encode = exports.stringify = encode;
@@ -24470,7 +24470,7 @@
 
   var parseUri = parseURI;
 
-  var miniSignals = createCommonjsModule(function (module, exports) {
+  var miniSignals = createCommonjsModule$1(function (module, exports) {
 
   Object.defineProperty(exports, '__esModule', {
     value: true
@@ -42599,6 +42599,10 @@
     settings: settings
   });
 
+  var global$1 = (typeof global !== "undefined" ? global :
+              typeof self !== "undefined" ? self :
+              typeof window !== "undefined" ? window : {});
+
   /**
    * @typedef ViewportTouch
    * @property {number} id
@@ -43534,6 +43538,18 @@
   }
 
   /**
+   * There are three ways to clamp:
+   * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of the world offscreen
+   *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
+   * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
+   *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
+   *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+   *
+   * Underflow determines what happens when the world is smaller than the viewport
+   * 1. none = the world is clamped but there is no special behavior
+   * 2. center = the world is centered on the viewport
+   * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
+   *
    * @typedef ClampOptions
    * @property {(number|boolean)} [left=false] clamp left; true = 0
    * @property {(number|boolean)} [right=false] clamp right; true = viewport.worldWidth
@@ -43624,33 +43640,30 @@
           if (this.options.left !== null || this.options.right !== null)
           {
               let moved = false;
-              if (this.parent.screenWorldWidth < this.parent.screenWidth)
+              if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth)
               {
-                  if (!this.noUnderflow)
+                  switch (this.underflowX)
                   {
-                      switch (this.underflowX)
-                      {
-                          case -1:
-                              if (this.parent.x !== 0)
-                              {
-                                  this.parent.x = 0;
-                                  moved = true;
-                              }
-                              break
-                          case 1:
-                              if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
-                              {
-                                  this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
-                                  moved = true;
-                              }
-                              break
-                          default:
-                              if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
-                              {
-                                  this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                                  moved = true;
-                              }
-                      }
+                      case -1:
+                          if (this.parent.x !== 0)
+                          {
+                              this.parent.x = 0;
+                              moved = true;
+                          }
+                          break
+                      case 1:
+                          if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
+                          {
+                              this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
+                              moved = true;
+                          }
+                          break
+                      default:
+                          if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
+                          {
+                              this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                              moved = true;
+                          }
                   }
               }
               else
@@ -43682,33 +43695,30 @@
           if (this.options.top !== null || this.options.bottom !== null)
           {
               let moved = false;
-              if (this.parent.screenWorldHeight < this.parent.screenHeight)
+              if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight)
               {
-                  if (!this.noUnderflow)
+                  switch (this.underflowY)
                   {
-                      switch (this.underflowY)
-                      {
-                          case -1:
-                              if (this.parent.y !== 0)
-                              {
-                                  this.parent.y = 0;
-                                  moved = true;
-                              }
-                              break
-                          case 1:
-                              if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
-                              {
-                                  this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                                  moved = true;
-                              }
-                              break
-                          default:
-                              if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
-                              {
-                                  this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                                  moved = true;
-                              }
-                      }
+                      case -1:
+                          if (this.parent.y !== 0)
+                          {
+                              this.parent.y = 0;
+                              moved = true;
+                          }
+                          break
+                      case 1:
+                          if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
+                          {
+                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                              moved = true;
+                          }
+                          break
+                      default:
+                          if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
+                          {
+                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                              moved = true;
+                          }
                   }
               }
               else
@@ -43743,7 +43753,7 @@
           this.last.scaleY = this.parent.scale.y;
       }
 
-      reset() 
+      reset()
       {
           this.update();
       }
@@ -44018,6 +44028,13 @@
       reset() {
           this.x = this.y = null;
       }
+  }
+
+  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
+
+  function createCommonjsModule(fn) {
+    var module = { exports: {} };
+  	return fn(module, module.exports), module.exports;
   }
 
   var penner = createCommonjsModule(function (module, exports) {
@@ -46341,177 +46358,6 @@
           }
       }
   }
-
-  /**
-   * fires after a mouse or touch click
-   * @event Viewport#clicked
-   * @type {object}
-   * @property {PIXI.Point} screen
-   * @property {PIXI.Point} world
-   * @property {Viewport} viewport
-   */
-
-  /**
-   * fires when a drag starts
-   * @event Viewport#drag-start
-   * @type {object}
-   * @property {PIXI.Point} screen
-   * @property {PIXI.Point} world
-   * @property {Viewport} viewport
-   */
-
-  /**
-   * fires when a drag ends
-   * @event Viewport#drag-end
-   * @type {object}
-   * @property {PIXI.Point} screen
-   * @property {PIXI.Point} world
-   * @property {Viewport} viewport
-   */
-
-  /**
-   * fires when a pinch starts
-   * @event Viewport#pinch-start
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a pinch end
-   * @event Viewport#pinch-end
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a snap starts
-   * @event Viewport#snap-start
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a snap ends
-   * @event Viewport#snap-end
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a snap-zoom starts
-   * @event Viewport#snap-zoom-start
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a snap-zoom ends
-   * @event Viewport#snap-zoom-end
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a bounce starts in the x direction
-   * @event Viewport#bounce-x-start
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a bounce ends in the x direction
-   * @event Viewport#bounce-x-end
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a bounce starts in the y direction
-   * @event Viewport#bounce-y-start
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a bounce ends in the y direction
-   * @event Viewport#bounce-y-end
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when for a mouse wheel event
-   * @event Viewport#wheel
-   * @type {object}
-   * @property {object} wheel
-   * @property {number} wheel.dx
-   * @property {number} wheel.dy
-   * @property {number} wheel.dz
-   * @property {Viewport} viewport
-   */
-
-  /**
-   * fires when a wheel-scroll occurs
-   * @event Viewport#wheel-scroll
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when a mouse-edge starts to scroll
-   * @event Viewport#mouse-edge-start
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when the mouse-edge scrolling ends
-   * @event Viewport#mouse-edge-end
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
-   * @event Viewport#moved
-   * @type {object}
-   * @property {Viewport} viewport
-   * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
-   */
-
-  /**
-   * fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
-   * @event Viewport#zoomed
-   * @type {object}
-   * @property {Viewport} viewport
-   * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom, ensureVisible)
-   */
-
-  /**
-   * fires when viewport stops moving
-   * @event Viewport#moved-end
-   * @type {Viewport}
-   */
-
-  /**
-   * fires when viewport stops zooming
-   * @event Viewport#zoomed-end
-   * @type {Viewport}
-   */
-
-  /**
-  * fires at the end of an update frame
-  * @event Viewport#frame-end
-  * @type {Viewport}
-  */
-
-  /** @typedef HitArea {(PIXI.Rectangle | PIXI.Circle | PIXI.Ellipse | PIXI.Polygon | PIXI.RoundedRectangle)} */
-
-  /**
-   * @typedef {Object} OutOfBounds
-   * @private
-   * @property {boolean} left
-   * @property {boolean} right
-   * @property {boolean} top
-   * @property {boolean} bottom
-   * @property {PIXI.Point} cornerPoint
-   */
-
-  /**
-   * @typedef {Object} LastViewport
-   * @private
-   * @property {number} x
-   * @property {number} y
-   * @property {number} scaleX
-   * @property {number} scaleY
-   */
 
   window.onload = function () {
       function rand(n) {

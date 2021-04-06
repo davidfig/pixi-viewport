@@ -936,6 +936,18 @@ class Pinch extends Plugin {
 }
 
 /**
+ * There are three ways to clamp:
+ * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of the world offscreen
+ *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
+ * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
+ *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
+ *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+ *
+ * Underflow determines what happens when the world is smaller than the viewport
+ * 1. none = the world is clamped but there is no special behavior
+ * 2. center = the world is centered on the viewport
+ * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
+ *
  * @typedef ClampOptions
  * @property {(number|boolean)} [left=false] clamp left; true = 0
  * @property {(number|boolean)} [right=false] clamp right; true = viewport.worldWidth
@@ -1026,33 +1038,30 @@ class Clamp extends Plugin
         if (this.options.left !== null || this.options.right !== null)
         {
             let moved = false;
-            if (this.parent.screenWorldWidth < this.parent.screenWidth)
+            if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth)
             {
-                if (!this.noUnderflow)
+                switch (this.underflowX)
                 {
-                    switch (this.underflowX)
-                    {
-                        case -1:
-                            if (this.parent.x !== 0)
-                            {
-                                this.parent.x = 0;
-                                moved = true;
-                            }
-                            break
-                        case 1:
-                            if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
-                            {
-                                this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
-                                moved = true;
-                            }
-                            break
-                        default:
-                            if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
-                            {
-                                this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                                moved = true;
-                            }
-                    }
+                    case -1:
+                        if (this.parent.x !== 0)
+                        {
+                            this.parent.x = 0;
+                            moved = true;
+                        }
+                        break
+                    case 1:
+                        if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
+                        {
+                            this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
+                            moved = true;
+                        }
+                        break
+                    default:
+                        if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
+                        {
+                            this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                            moved = true;
+                        }
                 }
             }
             else
@@ -1084,33 +1093,30 @@ class Clamp extends Plugin
         if (this.options.top !== null || this.options.bottom !== null)
         {
             let moved = false;
-            if (this.parent.screenWorldHeight < this.parent.screenHeight)
+            if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight)
             {
-                if (!this.noUnderflow)
+                switch (this.underflowY)
                 {
-                    switch (this.underflowY)
-                    {
-                        case -1:
-                            if (this.parent.y !== 0)
-                            {
-                                this.parent.y = 0;
-                                moved = true;
-                            }
-                            break
-                        case 1:
-                            if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
-                            {
-                                this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                                moved = true;
-                            }
-                            break
-                        default:
-                            if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
-                            {
-                                this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                                moved = true;
-                            }
-                    }
+                    case -1:
+                        if (this.parent.y !== 0)
+                        {
+                            this.parent.y = 0;
+                            moved = true;
+                        }
+                        break
+                    case 1:
+                        if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
+                        {
+                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                            moved = true;
+                        }
+                        break
+                    default:
+                        if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
+                        {
+                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                            moved = true;
+                        }
                 }
             }
             else
@@ -1145,7 +1151,7 @@ class Clamp extends Plugin
         this.last.scaleY = this.parent.scale.y;
     }
 
-    reset() 
+    reset()
     {
         this.update();
     }
