@@ -3,7 +3,7 @@ import { Point, Rectangle } from '@pixi/math';
 import { Ticker } from '@pixi/ticker';
 
 import { InputManager } from './input-manager';
-import { PluginManager } from './plugin-manager';
+import { PluginManager } from './PluginManager';
 import { Drag } from './plugins/drag';
 import { Pinch } from './plugins/pinch';
 import { Clamp } from './plugins/clamp';
@@ -89,6 +89,8 @@ const DEFAULT_VIEWPORT_OPTIONS: ICompleteViewportOptions = {
 
 /**
  * Main class to use when creating a Viewport
+ *
+ * @public
  */
 export class Viewport extends Container
 {
@@ -781,10 +783,7 @@ export class Viewport extends Container
         return this;
     }
 
-    /**
-     * is container out of world bounds
-     * @returns {OutOfBounds}
-     */
+    /** Is container out of world bounds */
     OOB(): {
         left: boolean;
         right: boolean;
@@ -806,44 +805,44 @@ export class Viewport extends Container
     }
 
     /** World coordinates of the right edge of the screen */
-    get right()
+    get right(): number
     {
         return -this.x / this.scale.x + this.worldScreenWidth;
     }
-    set right(value)
+    set right(value: number)
     {
         this.x = -value * this.scale.x + this.screenWidth;
         this.plugins.reset();
     }
 
     /** World coordinates of the left edge of the screen */
-    get left()
+    get left(): number
     {
         return -this.x / this.scale.x;
     }
-    set left(value)
+    set left(value: number)
     {
         this.x = -value * this.scale.x;
         this.plugins.reset();
     }
 
     /** World coordinates of the top edge of the screen */
-    get top()
+    get top(): number
     {
         return -this.y / this.scale.y;
     }
-    set top(value)
+    set top(value: number)
     {
         this.y = -value * this.scale.y;
         this.plugins.reset();
     }
 
     /** World coordinates of the bottom edge of the screen */
-    get bottom()
+    get bottom(): number
     {
         return -this.y / this.scale.y + this.worldScreenHeight;
     }
-    set bottom(value)
+    set bottom(value: number)
     {
         this.y = -value * this.scale.y + this.screenHeight;
         this.plugins.reset();
@@ -1252,7 +1251,8 @@ export class Viewport extends Container
  * @event Viewport#moved
  * @type {object}
  * @property {Viewport} viewport
- * @property {string} type (drag, snap, pinch, follow, bounce-x, bounce-y, clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
+ * @property {string} type - (drag, snap, pinch, follow, bounce-x, bounce-y,
+ *  clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
  */
 
 /**
