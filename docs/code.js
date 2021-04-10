@@ -8,7 +8,7 @@ import { clicked } from 'clicked'
 // import highlight from 'highlight.js'
 import DomEase from 'dom-ease'
 
-import { Viewport } from '../src/viewport'
+import { Viewport } from '../src/Viewport'
 import { UserPlugin } from './user-plugin'
 
 import { gui } from './gui'

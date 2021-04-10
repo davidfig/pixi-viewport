@@ -6,7 +6,7 @@ import commonjs from '@rollup/plugin-commonjs'
 
 export default [
     {
-        input: 'src/viewport.js',
+        input: 'src/Viewport.ts',
         plugins: [
             peerDepsExternal(),
             resolve(
@@ -22,7 +22,7 @@ export default [
         ],
         output:
         {
-            file: 'dist/viewport.js',
+            file: 'dist/Viewport.ts',
             globals:
             {
                 'pixi.js': 'PIXI'
@@ -33,7 +33,7 @@ export default [
         }
     },
     {
-        input: 'src/viewport.js',
+        input: 'src/Viewport.ts',
         plugins: [
             peerDepsExternal(),
             resolve(

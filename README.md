@@ -89,7 +89,7 @@ or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/
 
 ```html
 <script src="/directory-to-file/pixi.js"></script>
-<script src="/directory-to-file/pixi-viewport.js"></script>
+<script src="/directory-to-file/pixi-Viewport.ts"></script>
 <!-- or <script type="module" src="/directory-to-file/pixi-viewport.es.js"></script> -->
 <script>
     const Viewport = new Viewport.Viewport(options)
