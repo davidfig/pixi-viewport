@@ -4,54 +4,93 @@ import { Ticker } from '@pixi/ticker';
 
 import { InputManager } from './InputManager';
 import { PluginManager } from './PluginManager';
-import { Drag } from './plugins/Drag';
-import { Pinch } from './plugins/Pinch';
-import { Clamp } from './plugins/Clamp';
-import { ClampZoom } from './plugins/ClampZoom';
-import { Decelerate } from './plugins/Decelerate';
-import { Bounce } from './plugins/Bounce';
-import { Snap } from './plugins/Snap';
-import { SnapZoom } from './plugins/SnapZoom';
-import { Follow } from './plugins/Follow';
-import { Wheel } from './plugins/Wheel';
-import { MouseEdges } from './plugins/MouseEdges';
-import { Animate } from './plugins/Animate';
+import {
+    Animate,
+    Bounce,
+    Clamp,
+    ClampZoom,
+    Decelerate,
+    Drag,
+    Follow,
+    MouseEdges,
+    Pinch,
+    Snap,
+    SnapZoom,
+    Wheel
+} from './plugins';
 
 import type { DisplayObject, IDestroyOptions } from '@pixi/display';
 import type { IHitArea, InteractionManager } from '@pixi/interaction';
 
-export { Plugin } from './plugins/Plugin';
-
-/**
- * @typedef {object} ViewportOptions
- * @property {number} [screenWidth=window.innerWidth]
- * @property {number} [screenHeight=window.innerHeight]
- * @property {number} [worldWidth=this.width]
- * @property {number} [worldHeight=this.height]
- * @property {number} [threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
- * @property {boolean} [passiveWheel=true] whether the 'wheel' event is set to passive (note: if false, e.preventDefault() will be called when wheel is used over the viewport)
- * @property {boolean} [stopPropagation=false] whether to stopPropagation of events that impact the viewport (except wheel events, see options.passiveWheel)
- * @property {HitArea} [forceHitArea] change the default hitArea from world size to a new value
- * @property {boolean} [noTicker] set this if you want to manually call update() function on each frame
- * @property {PIXI.Ticker} [ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
- * @property {PIXI.InteractionManager} [interaction=null] InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer postion relative to canvas location on screen
- * @property {HTMLElement} [divWheel=document.body] div to attach the wheel event
- * @property {boolean} [disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
- */
-
+/** Options for {@link Viewport}. */
 export interface IViewportOptions {
+    /** @default window.innerWidth */
     screenWidth?: number;
+
+    /** @default window.innerHeight */
     screenHeight?: number;
+
+    /** @default this.width */
     worldWidth?: number | null;
+
+    /** @default this.height */
     worldHeight?: number | null;
+
+    /**
+     * Number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
+     *
+     * @default 5
+     */
     threshold?: number;
+
+    /**
+     * Whether the 'wheel' event is set to passive (note: if false, e.preventDefault() will be called when wheel is used over the viewport)
+     *
+     * @default true
+     */
     passiveWheel?: boolean;
+
+    /**
+     * Whether to stopPropagation of events that impact the viewport (except wheel events, see options.passiveWheel)
+     */
     stopPropagation?: boolean;
+
+    /**
+     * Change the default hitArea from world size to a new value
+     */
     forceHitArea?: Rectangle | null;
+
+    /**
+     * Set this if you want to manually call update() function on each frame
+     *
+     * @default false
+     */
     noTicker?: boolean;
+
+    /**
+     * InteractionManager, available from instantiated `WebGLRenderer/CanvasRenderer.plugins.interaction`
+     *
+     * It's used to calculate pointer postion relative to canvas location on screen
+     */
     interaction?: InteractionManager | null;
+
+    /**
+     * Remove oncontextmenu=() => {} from the divWheel element
+     */
     disableOnContextMenu?: boolean;
+
+    /**
+     * div to attach the wheel event
+     *
+     * @default document.body
+     */
     divWheel?: HTMLElement;
+
+    /**
+     * Use this PIXI.ticker for updates
+     *
+     * @default PIXI.Ticker.shared
+     */
     ticker?: Ticker;
 }
 
@@ -91,6 +130,36 @@ const DEFAULT_VIEWPORT_OPTIONS: ICompleteViewportOptions = {
  * Main class to use when creating a Viewport
  *
  * @public
+ * @fires clicked
+ * @fires drag-start
+ * @fires drag-end
+ * @fires drag-remove
+ * @fires pinch-start
+ * @fires pinch-end
+ * @fires pinch-remove
+ * @fires snap-start
+ * @fires snap-end
+ * @fires snap-remove
+ * @fires snap-zoom-start
+ * @fires snap-zoom-end
+ * @fires snap-zoom-remove
+ * @fires bounce-x-start
+ * @fires bounce-x-end
+ * @fires bounce-y-start
+ * @fires bounce-y-end
+ * @fires bounce-remove
+ * @fires wheel
+ * @fires wheel-remove
+ * @fires wheel-scroll
+ * @fires wheel-scroll-remove
+ * @fires mouse-edge-start
+ * @fires mouse-edge-end
+ * @fires mouse-edge-remove
+ * @fires moved
+ * @fires moved-end
+ * @fires zoomed
+ * @fires zoomed-end
+ * @fires frame-end
  */
 export class Viewport extends Container
 {
@@ -125,39 +194,9 @@ export class Viewport extends Container
     private _worldHeight?: number | null;
 
     /**
-     * @param {ViewportOptions} [options]
-     * @fires clicked
-     * @fires drag-start
-     * @fires drag-end
-     * @fires drag-remove
-     * @fires pinch-start
-     * @fires pinch-end
-     * @fires pinch-remove
-     * @fires snap-start
-     * @fires snap-end
-     * @fires snap-remove
-     * @fires snap-zoom-start
-     * @fires snap-zoom-end
-     * @fires snap-zoom-remove
-     * @fires bounce-x-start
-     * @fires bounce-x-end
-     * @fires bounce-y-start
-     * @fires bounce-y-end
-     * @fires bounce-remove
-     * @fires wheel
-     * @fires wheel-remove
-     * @fires wheel-scroll
-     * @fires wheel-scroll-remove
-     * @fires mouse-edge-start
-     * @fires mouse-edge-end
-     * @fires mouse-edge-remove
-     * @fires moved
-     * @fires moved-end
-     * @fires zoomed
-     * @fires zoomed-end
-     * @fires frame-end
+     * @param options
      */
-    constructor(options = {})
+    constructor(options: IViewportOptions = {})
     {
         super();
         this.options = Object.assign(
@@ -398,13 +437,13 @@ export class Viewport extends Container
 
     public moveCenter(...args: [number, number] | [Point]): this
     {
-        let x;
-        let y;
+        let x: number;
+        let y: number;
 
         if (typeof args[0] === 'number')
         {
             x = args[0];
-            y = args[1];
+            y = args[1] as number;
         }
         else
         {
@@ -697,6 +736,8 @@ export class Viewport extends Container
         return this;
     }
 
+    // eslint-disable-next-line
+    // @ts-ignore
     set visible(value: boolean)
     {
         if (!value)
