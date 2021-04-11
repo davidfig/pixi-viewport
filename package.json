@@ -2,21 +2,22 @@
     "name": "pixi-viewport",
     "version": "4.23.1",
     "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
-    "main": "dist/viewport.js",
-    "module": "dist/viewport.es.js",
+    "main": "dist/cjs/viewport.js",
+    "module": "dist/esm/viewport.es.js",
+    "bundle": "dist/viewport.js",
     "types": "@types/index.d.ts",
     "directories": {
         "doc": "docs"
     },
     "files": [
         "dist",
-        "@types"
+        "index.d.ts"
     ],
     "scripts": {
-        "dev": "rollup -c rollup.dev.js --watch",
         "test": "mocha",
         "coverage": "nyc mocha",
         "build": "rollup -c",
+        "build:types": "rimraf ./compile && tsc -p ./tsconfig.json && api-extractor run",
         "docs": "jsdoc -c .jsdoc.json",
         "upgrade": "yarn upgrade-interactive --latest",
         "prepublishOnly": "yarn run build && yarn run builds && yarn run docs",
@@ -61,6 +62,8 @@
         "@babel/core": "^7.13.8",
         "@babel/preset-env": "^7.13.9",
         "@joseph184/rollup-plugin-node-builtins": "^2.1.4",
+        "@microsoft/api-extractor": "^7.13.4",
+        "@pixi-build-tools/rollup-configurator": "^1.0.12",
         "@pixi/display": "^6.0.0",
         "@pixi/eslint-config": "^2.0.1",
         "@pixi/interaction": "^6.0.0",
