@@ -1,6 +1,6 @@
 require('./node-shim')
 const assert = require('chai').assert
-const Viewport = require('../dist/viewport.js').Viewport
+const Viewport = require('../').Viewport
 
 describe('pixi-viewport', () =>
 {

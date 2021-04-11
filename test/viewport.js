@@ -1,6 +1,6 @@
 require('./node-shim')
 const assert = require('chai').assert
-const Viewport = require('../dist/viewport.js').Viewport
+const Viewport = require('../').Viewport
 
 describe('pixi-viewport', () =>
 {
@@ -18,7 +18,7 @@ describe('pixi-viewport', () =>
         assert.isTrue(viewport.options.passiveWheel)
         assert.isFunction(viewport.tickerFunction)
         assert.isUndefined(viewport.interaction)
-        assert.isUndefined(document.body.oncontextmenu)
+        assert.isNull(document.body.oncontextmenu)
         viewport.destroy()
     })
 

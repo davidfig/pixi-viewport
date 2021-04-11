@@ -1,6 +1,6 @@
 require('./node-shim')
 const assert = require('chai').assert
-const Viewport = require('../dist/viewport.js').Viewport
+const Viewport = require('../').Viewport
 
 describe('follow', () =>
 {
@@ -87,7 +87,7 @@ describe('follow', () =>
         viewport.follow(target, { acceleration: 0.1, speed: 5 })
         viewport.once('frame-end', () =>
         {
-            assert.equal(Math.floor(viewport.center.x), 49)
+            assert.equal(Math.floor(viewport.center.x), 48)
             assert.closeTo(Math.floor(viewport.center.y), 99, 2)
         })
         setTimeout(() =>
