@@ -14,13 +14,14 @@
         "index.d.ts"
     ],
     "scripts": {
+        "dev": "live-server ./docs",
         "test": "mocha",
         "coverage": "nyc mocha",
         "build": "rollup -c",
         "build:types": "rimraf ./compile && tsc -p ./tsconfig.json --emitDeclarationOnly --outDir compile && api-extractor run",
         "docs": "jsdoc -c .jsdoc.json",
         "upgrade": "yarn upgrade-interactive --latest",
-        "prepublishOnly": "yarn run build && yarn run builds && yarn run docs",
+        "prepublishOnly": "yarn run build && yarn run builds",
         "builds-rollup": "rollup -c docs/builds/rollup/rollup.config.js",
         "builds-browserify": "browserify docs/builds/browserify/code.js -o docs/builds/browserify/index.js",
         "builds-standalone": "cp dist/viewport.js* docs/",
