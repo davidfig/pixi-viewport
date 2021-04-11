@@ -1,4 +1,4 @@
-import { Plugin } from './plugin'
+import { Plugin } from './Plugin'
 
 /**
  * @typedef {object} FollowOptions

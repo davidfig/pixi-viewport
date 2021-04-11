@@ -1,4 +1,4 @@
-import { Plugin } from './plugin'
+import { Plugin } from './Plugin'
 
 /**
  * use either minimum width/height or minimum scale

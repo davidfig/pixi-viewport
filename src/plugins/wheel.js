@@ -1,4 +1,4 @@
-import { Plugin } from './plugin'
+import { Plugin } from './Plugin'
 
 /**
  * the default event listener for 'wheel' event is document.body. Use `Viewport.options.divWheel` to change this default

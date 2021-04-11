@@ -1,5 +1,5 @@
 import type { InteractionEvent } from '@pixi/interaction';
-import type { Plugin } from './plugins/plugin';
+import type { Plugin } from './plugins/Plugin';
 import type { Viewport } from './Viewport';
 
 const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'aniamte', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];

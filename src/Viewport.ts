@@ -15,12 +15,12 @@ import { SnapZoom } from './plugins/snap-zoom';
 import { Follow } from './plugins/follow';
 import { Wheel } from './plugins/wheel';
 import { MouseEdges } from './plugins/mouse-edges';
-import { Animate } from './plugins/animate';
+import { Animate } from './plugins/Animate';
 
 import type { DisplayObject, IDestroyOptions } from '@pixi/display';
 import type { IHitArea, InteractionManager } from '@pixi/interaction';
 
-export { Plugin } from './plugins/plugin';
+export { Plugin } from './plugins/Plugin';
 
 /**
  * @typedef {object} ViewportOptions

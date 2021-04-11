@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 
-import { Plugin } from './plugin'
+import { Plugin } from './Plugin'
 
 /**
  * @typedef {object} LastDrag

@@ -1,4 +1,4 @@
-import { Plugin } from './plugin'
+import { Plugin } from './Plugin'
 import ease from '../ease'
 
 /**
@@ -69,13 +69,13 @@ export class SnapZoom extends Plugin {
         const startWorldScreenHeight = this.parent.worldScreenHeight
         const endWorldScreenWidth = this.parent.screenWidth / this.xScale
         const endWorldScreenHeight = this.parent.screenHeight / this.yScale
-        
-        this.snapping = { 
-            time: 0, 
-            startX: startWorldScreenWidth, 
-            startY: startWorldScreenHeight, 
-            deltaX: endWorldScreenWidth - startWorldScreenWidth, 
-            deltaY: endWorldScreenHeight - startWorldScreenHeight 
+
+        this.snapping = {
+            time: 0,
+            startX: startWorldScreenWidth,
+            startY: startWorldScreenHeight,
+            deltaX: endWorldScreenWidth - startWorldScreenWidth,
+            deltaY: endWorldScreenHeight - startWorldScreenHeight
         }
         this.parent.emit('snap-zoom-start', this.parent)
     }

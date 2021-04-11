@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { Plugin } from './plugin'
+import { Plugin } from './Plugin'
 import ease from '../ease'
 
 /**

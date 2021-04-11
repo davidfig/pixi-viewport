@@ -10,7 +10,7 @@ import Penner from 'penner';
  * @param {(function|string)} [ease]
  * @param {defaults} default penner equation to use if none is provided
  */
-export default function ease(ease: any, defaults: any): any
+export default function ease(ease: any, defaults?: any): any
 {
     if (!ease)
     {
