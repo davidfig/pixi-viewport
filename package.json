@@ -17,7 +17,7 @@
         "dev": "live-server ./docs",
         "test": "floss --path test",
         "coverage": "nyc mocha",
-        "build": "rollup -c",
+        "build": "rollup -c && yarn build:types",
         "build:types": "rimraf ./compile && tsc -p ./tsconfig.json --emitDeclarationOnly --outDir compile && api-extractor run",
         "docs": "jsdoc -c .jsdoc.json",
         "upgrade": "yarn upgrade-interactive --latest",
