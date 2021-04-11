@@ -45,13 +45,13 @@ export class Plugin
     }
 
     /** Handler for pointerup PIXI event */
-    up(_e: InteractionEvent): boolean
+    public up(_e: InteractionEvent): boolean
     {
         return false;
     }
 
     /** Handler for wheel event on div */
-    wheel(_e: WheelEvent): boolean
+    public wheel(_e: WheelEvent): boolean
     {
         return false;
     }

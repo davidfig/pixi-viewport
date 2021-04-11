@@ -1,5 +1,5 @@
+import type { Animate, Bounce, Decelerate, Plugin } from './plugins';
 import type { InteractionEvent } from '@pixi/interaction';
-import type { Plugin } from './plugins/Plugin';
 import type { Viewport } from './Viewport';
 
 const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'aniamte', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
@@ -12,10 +12,10 @@ const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decele
 export class PluginManager
 {
     /** Maps mounted plugins by their type */
-    public readonly plugins: Partial<Record<string, Plugin>>;
+    public plugins: Partial<Record<string, Plugin>>;
 
     /** List of plugins mounted */
-    public readonly list: Array<Plugin>;
+    public list: Array<Plugin>;
 
     /** The viewport using the plugins managed by `this`. */
     public readonly viewport: Viewport;
@@ -30,7 +30,8 @@ export class PluginManager
 
     /**
      * Inserts a named plugin or a user plugin into the viewport
-     * default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
+     * default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce',
+     * 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
      *
      * @param {string} name of plugin
      * @param {Plugin} plugin - instantiated Plugin class
@@ -51,24 +52,28 @@ export class PluginManager
         this.sort();
     }
 
+    public get(name: 'animate', ignorePaused?: boolean): Animate | undefined | null;
+    public get(name: 'bounce', ignorePaused?: boolean): Bounce | undefined | null;
+    public get(name: 'decelerate', ignorePaused?: boolean): Decelerate | undefined | null;
+    public get<T extends Plugin = Plugin>(name: string, ignorePaused?: boolean): T | undefined | null;
+
     /**
      * Get plugin
      *
      * @param {string} name of plugin
      * @param {boolean} [ignorePaused] return null if plugin is paused
-     * @return {Plugin}
      */
-    public get(name: string, ignorePaused?: boolean): Plugin | undefined
+    public get<T extends Plugin = Plugin>(name: string, ignorePaused?: boolean): T | undefined | null
     {
         if (ignorePaused)
         {
-            if (this.plugins[name] && this.plugins[name].paused)
+            if (this.plugins[name]?.paused)
             {
                 return null;
             }
         }
 
-        return this.plugins[name];
+        return this.plugins[name] as T;
     }
 
     /**
@@ -138,10 +143,7 @@ export class PluginManager
      */
     public pause(name: string): void
     {
-        if (this.plugins[name])
-        {
-            this.plugins[name].pause();
-        }
+        this.plugins[name]?.pause();
     }
 
     /**
@@ -151,10 +153,7 @@ export class PluginManager
      */
     public resume(name: string): void
     {
-        if (this.plugins[name])
-        {
-            this.plugins[name].resume();
-        }
+        this.plugins[name]?.resume();
     }
 
     /**
@@ -166,11 +165,12 @@ export class PluginManager
     public sort()
     {
         this.list = [];
+
         for (const plugin of PLUGIN_ORDER)
         {
             if (this.plugins[plugin])
             {
-                this.list.push(this.plugins[plugin]);
+                this.list.push(this.plugins[plugin] as Plugin);
             }
         }
     }

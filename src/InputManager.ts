@@ -1,11 +1,12 @@
 import { Point, Rectangle } from '@pixi/math';
 
+import type { IPointData } from '@pixi/math';
 import type { InteractionEvent } from '@pixi/interaction';
 import type { Viewport } from './Viewport';
 
 export interface IViewportTouch {
     id: number;
-    last: Point | null;
+    last: IPointData | null;
 }
 
 /**
