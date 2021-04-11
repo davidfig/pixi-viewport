@@ -12,6 +12,13 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
+  "ignorePatterns": [
+    "index.d.ts",
+    "dist",
+    "docs",
+    "compile",
+    "node_modules"
+  ],
   "rules": {
     "@typescript-eslint/triple-slash-reference": [
       "off"

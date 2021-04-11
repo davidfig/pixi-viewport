@@ -4,7 +4,7 @@
   "mainEntryPointFilePath": "<projectFolder>/compile/index.d.ts",
   "bundledPackages": [],
   "compiler": {
-    "tsconfigFilePath": "<projectFolder>/tsconfig.compile.json",
+    "tsconfigFilePath": "<projectFolder>/tsconfig.json",
     "overrideTsconfig": {
       "compilerOptions": {
         "outDir": "compile"

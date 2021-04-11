@@ -1,4 +1,4 @@
-import { Plugin } from '../dist/viewport.es'
+import { Plugin } from '../dist/esm/viewport.es'
 
 export class UserPlugin extends Plugin
 {
