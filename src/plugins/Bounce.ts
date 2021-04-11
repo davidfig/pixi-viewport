@@ -2,7 +2,9 @@ import { Point, Rectangle } from '@pixi/math';
 import { Plugin } from './Plugin';
 import ease from '../ease';
 
+import type { Drag } from './Drag';
 import type { IDecelerateOptions } from './Decelerate';
+import type { Pinch } from './Pinch';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Bounce}. */
@@ -293,7 +295,7 @@ export class Bounce extends Plugin
         };
     }
 
-    public bounce()
+    public bounce(): void
     {
         if (this.paused)
         {
@@ -307,7 +309,7 @@ export class Bounce extends Plugin
             x?: number;
             y?: number;
             options?: IDecelerateOptions
-        } = this.parent.plugins.get('decelerate', true);
+        } = this.parent.plugins.get('decelerate', true) as any;
 
         if (decelerate && (decelerate.x || decelerate.y))
         {
@@ -324,12 +326,12 @@ export class Bounce extends Plugin
                 }
             }
         }
-        const drag = this.parent.plugins.get('drag', true) || {};
-        const pinch = this.parent.plugins.get('pinch', true) || {};
+        const drag: Partial<Drag> = this.parent.plugins.get('drag', true) || {};
+        const pinch: Partial<Pinch> = this.parent.plugins.get('pinch', true) || {};
 
         decelerate = decelerate || {};
 
-        if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
+        if (!drag?.active && !pinch?.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
         {
             oob = oob || this.oob();
             const topLeft = oob.topLeft;

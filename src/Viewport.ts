@@ -7,13 +7,13 @@ import { PluginManager } from './PluginManager';
 import { Drag } from './plugins/Drag';
 import { Pinch } from './plugins/Pinch';
 import { Clamp } from './plugins/Clamp';
-import { ClampZoom } from './plugins/clamp-zoom';
+import { ClampZoom } from './plugins/ClampZoom';
 import { Decelerate } from './plugins/Decelerate';
 import { Bounce } from './plugins/Bounce';
-import { Snap } from './plugins/snap';
-import { SnapZoom } from './plugins/snap-zoom';
+import { Snap } from './plugins/Snap';
+import { SnapZoom } from './plugins/SnapZoom';
 import { Follow } from './plugins/Follow';
-import { Wheel } from './plugins/wheel';
+import { Wheel } from './plugins/Wheel';
 import { MouseEdges } from './plugins/MouseEdges';
 import { Animate } from './plugins/Animate';
 

@@ -51,7 +51,7 @@ export class Plugin
     }
 
     /** Handler for wheel event on div */
-    public wheel(_e: WheelEvent): boolean
+    public wheel(_e: WheelEvent): boolean | undefined
     {
         return false;
     }

@@ -1,8 +1,35 @@
-import type { Animate, Bounce, Decelerate, Plugin } from './plugins';
+import type {
+    Animate,
+    Bounce,
+    Clamp,
+    ClampZoom,
+    Decelerate,
+    Drag,
+    Follow,
+    MouseEdges,
+    Pinch,
+    Plugin,
+    Snap,
+    SnapZoom,
+    Wheel,
+} from './plugins';
 import type { InteractionEvent } from '@pixi/interaction';
 import type { Viewport } from './Viewport';
 
-const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'aniamte', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
+const PLUGIN_ORDER = [
+    'drag',
+    'pinch',
+    'wheel',
+    'follow',
+    'mouse-edges',
+    'decelerate',
+    'aniamte',
+    'bounce',
+    'snap-zoom',
+    'clamp-zoom',
+    'snap',
+    'clamp',
+];
 
 /**
  * Use this to access current plugins or add user-defined plugins
@@ -14,7 +41,11 @@ export class PluginManager
     /** Maps mounted plugins by their type */
     public plugins: Partial<Record<string, Plugin>>;
 
-    /** List of plugins mounted */
+    /**
+     * List of plugins mounted
+     *
+     * This list is kept sorted by the internal priority of plugins (hard-coded).
+     */
     public list: Array<Plugin>;
 
     /** The viewport using the plugins managed by `this`. */
@@ -54,7 +85,16 @@ export class PluginManager
 
     public get(name: 'animate', ignorePaused?: boolean): Animate | undefined | null;
     public get(name: 'bounce', ignorePaused?: boolean): Bounce | undefined | null;
+    public get(name: 'clamp', ignorePaused?: boolean): Clamp | undefined | null;
+    public get(name: 'clamp-zoom', ignorePaused?: boolean): ClampZoom | undefined | null;
     public get(name: 'decelerate', ignorePaused?: boolean): Decelerate | undefined | null;
+    public get(name: 'drag', ignorePaused?: boolean): Drag | undefined | null;
+    public get(name: 'follow', ignorePaused?: boolean): Follow | undefined | null;
+    public get(name: 'mouse-edges', ignorePaused?: boolean): MouseEdges | undefined | null;
+    public get(name: 'pinch', ignorePaused?: boolean): Pinch | undefined | null;
+    public get(name: 'snap', ignorePaused?: boolean): Snap | undefined | null;
+    public get(name: 'snap-zoom', ignorePaused?: boolean): SnapZoom | undefined | null;
+    public get(name: 'wheel', ignorePaused?: boolean): Wheel | undefined | null;
     public get<T extends Plugin = Plugin>(name: string, ignorePaused?: boolean): T | undefined | null;
 
     /**
