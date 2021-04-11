@@ -2,7 +2,7 @@ import { Container } from '@pixi/display';
 import { Point, Rectangle } from '@pixi/math';
 import { Ticker } from '@pixi/ticker';
 
-import { InputManager } from './input-manager';
+import { InputManager } from './InputManager';
 import { PluginManager } from './PluginManager';
 import { Drag } from './plugins/drag';
 import { Pinch } from './plugins/pinch';
@@ -114,7 +114,7 @@ export class Viewport extends Container
     public lastViewport?: IViewportTransformState | null;
 
     /** The options passed when creating this viewport, merged with the default values */
-    protected options: ICompleteViewportOptions & { divWheel: HTMLElement };
+    public readonly options: ICompleteViewportOptions & { divWheel: HTMLElement };
 
     private _dirty?: boolean;
     private _forceHitArea?: IHitArea | null;

@@ -244,7 +244,7 @@ export class PluginManager
      * @internal
      * @ignore
      */
-    public wheel(e: InteractionEvent): boolean
+    public wheel(e: WheelEvent): boolean
     {
         let result = false;
 
