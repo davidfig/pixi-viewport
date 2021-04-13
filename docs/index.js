@@ -57540,15 +57540,36 @@
       line.lineStyle(10, 0xff0000).drawRect(0, 0, _viewport.worldWidth, _viewport.worldHeight);
   }
 
+  function overlap(x, y) {
+      const size = STAR_SIZE;
+      for (const child of _viewport.children) {
+          if (x < child.x + size &&
+              x + size > child.x &&
+              y < child.y + size &&
+              y + size > child.y) {
+              console.log('overlap');
+              return true
+          }
+      }
+      console.log('no overlap');
+      return false
+  }
+
   function stars() {
       const stars = (_viewport.worldWidth * _viewport.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1;
       for (let i = 0; i < stars; i++) {
-          const star = _viewport.addChild(new Sprite(Texture.WHITE));
+          const star = new Sprite(Texture.WHITE);
           star.anchor.set(0.5);
           star.tint = yyRandom.color();
           star.width = star.height = STAR_SIZE;
           star.alpha = yyRandom.range(0.25, 1, true);
-          star.position.set(yyRandom.range(STAR_SIZE / 2 + BORDER, _viewport.worldWidth - STAR_SIZE - BORDER), yyRandom.range(BORDER, _viewport.worldHeight - BORDER - STAR_SIZE));
+          let x, y;
+          do {
+              x = yyRandom.range(STAR_SIZE / 2 + BORDER, _viewport.worldWidth - STAR_SIZE - BORDER);
+              y = yyRandom.range(BORDER, _viewport.worldHeight - BORDER - STAR_SIZE);
+          } while (overlap(x, y))
+          star.position.set(x, y);
+          _viewport.addChild(star);
           _stars.push(star);
       }
   }
@@ -57639,6 +57660,8 @@
 
       // highlight()
   };
+
+  console.log("HUH???");
 
 }());
 //# sourceMappingURL=index.js.map

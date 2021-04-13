@@ -14,7 +14,7 @@
         "index.d.ts"
     ],
     "scripts": {
-        "dev": "live-server ./docs",
+        "dev": "rollup -c docs/rollup.dev.js",
         "test": "floss --path test",
         "coverage": "nyc mocha",
         "build": "rollup -c && yarn build:types",
@@ -85,6 +85,7 @@
         "floss": "^5.0.0",
         "fork-me-github": "^1.2.0",
         "jsdoc": "^3.6.3",
+        "live-server": "^1.2.1",
         "pixi-ease": "^3.0.7",
         "pixi.js": "^6.0.0",
         "raf": "^3.4.1",
