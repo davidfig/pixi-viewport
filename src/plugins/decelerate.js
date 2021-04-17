@@ -34,7 +34,7 @@ export class Decelerate extends Plugin {
     }
 
     destroy() {
-        this.parent
+        this.parent.destroy()
     }
 
     down() {
