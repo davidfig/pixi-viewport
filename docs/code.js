@@ -112,11 +112,9 @@ function overlap(x, y) {
             x + size > child.x &&
             y < child.y + size &&
             y + size > child.y) {
-            console.log('overlap')
             return true
         }
     }
-    console.log('no overlap')
     return false
 }
 
@@ -222,8 +220,4 @@ window.onload = function () {
     gui(_viewport, drawWorld, _object)
 
     API()
-
-    // highlight()
 }
-
-console.log("HUH???")

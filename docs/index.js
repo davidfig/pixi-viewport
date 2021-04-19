@@ -57547,11 +57547,9 @@
               x + size > child.x &&
               y < child.y + size &&
               y + size > child.y) {
-              console.log('overlap');
               return true
           }
       }
-      console.log('no overlap');
       return false
   }
 
@@ -57657,11 +57655,7 @@
       gui(_viewport, drawWorld, _object);
 
       API();
-
-      // highlight()
   };
-
-  console.log("HUH???");
 
 }());
 //# sourceMappingURL=index.js.map
