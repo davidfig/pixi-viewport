@@ -1,34 +1,34 @@
 /* eslint-disable */
- 
+
 /*!
  * pixi-viewport - v4.23.1
- * Compiled Sun, 11 Apr 2021 17:59:38 UTC
+ * Compiled Tue, 13 Apr 2021 11:39:44 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
- * 
+ *
  * Copyright 2019-2020, David Figatner, All Rights Reserved
  */
 this.PIXI = this.PIXI || {};
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@pixi/math'), require('penner'), require('@pixi/display'), require('@pixi/ticker')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@pixi/math', 'penner', '@pixi/display', '@pixi/ticker'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.pixi_viewport = {}, global.PIXI, global.Penner, global.PIXI, global.PIXI));
-}(this, (function (exports, math, Penner, display, ticker) { 'use strict';
+        typeof define === 'function' && define.amd ? define(['exports', '@pixi/math', 'penner', '@pixi/display', '@pixi/ticker'], factory) :
+            (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.pixi_viewport = {}, global.PIXI, global.Penner, global.PIXI, global.PIXI))
+}(this, (function (exports, math, Penner, display, ticker) {
+    'use strict'
 
-    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+    function _interopDefaultLegacy(e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e } }
 
-    var Penner__default = /*#__PURE__*/_interopDefaultLegacy(Penner);
+    var Penner__default = /*#__PURE__*/_interopDefaultLegacy(Penner)
 
     /**
      * Derive this class to create user-defined plugins
      *
      * @public
      */
-    class Plugin
-    {
+    class Plugin {
         /** The viewport to which this plugin is attached. */
-        
+
 
         /**
          * Flags whether this plugin has been "paused".
@@ -36,76 +36,65 @@ this.PIXI = this.PIXI || {};
          * @see Plugin#pause
          * @see Plugin#resume
          */
-        
+
 
         /** @param {Viewport} parent */
-        constructor(parent)
-        {
-            this.parent = parent;
-            this.paused = false;
+        constructor(parent) {
+            this.parent = parent
+            this.paused = false
         }
 
         /** Called when plugin is removed */
-         destroy()
-        {
+        destroy() {
             // Override for implementation
         }
 
         /** Handler for pointerdown PIXI event */
-         down(_e)
-        {
-            return false;
+        down(_e) {
+            return false
         }
 
         /** Handler for pointermove PIXI event */
-         move(_e)
-        {
-            return false;
+        move(_e) {
+            return false
         }
 
         /** Handler for pointerup PIXI event */
-         up(_e)
-        {
-            return false;
+        up(_e) {
+            return false
         }
 
         /** Handler for wheel event on div */
-         wheel(_e)
-        {
-            return false;
+        wheel(_e) {
+            return false
         }
 
         /**
          * Called on each tick
          * @param {number} elapsed time in millisecond since last update
          */
-         update(_delta)
-        {
+        update(_delta) {
             // Override for implementation
         }
 
         /** Called when the viewport is resized */
-         resize()
-        {
+        resize() {
             // Override for implementation
         }
 
         /** Called when the viewport is manually moved */
-         reset()
-        {
+        reset() {
             // Override for implementation
         }
 
         /** Pause the plugin */
-         pause()
-        {
-            this.paused = true;
+        pause() {
+            this.paused = true
         }
 
         /** Un-pause the plugin */
-         resume()
-        {
-            this.paused = false;
+        resume() {
+            this.paused = false
         }
     }
 
@@ -119,18 +108,14 @@ this.PIXI = this.PIXI || {};
      * @param {(function|string)} [ease]
      * @param {defaults} default penner equation to use if none is provided
      */
-    function ease(ease, defaults)
-    {
-        if (!ease)
-        {
+    function ease(ease, defaults) {
+        if (!ease) {
             return Penner__default['default'][defaults]
         }
-        else if (typeof ease === 'function')
-        {
+        else if (typeof ease === 'function') {
             return ease
         }
-        else if (typeof ease === 'string')
-        {
+        else if (typeof ease === 'string') {
             return Penner__default['default'][ease]
         }
     }
@@ -180,7 +165,7 @@ this.PIXI = this.PIXI || {};
         removeOnInterrupt: false,
         ease: 'linear',
         time: 1000,
-    };
+    }
 
     /**
      * Animation plugin.
@@ -188,45 +173,44 @@ this.PIXI = this.PIXI || {};
      * @see Viewport#animate
      * @fires animate-end
      */
-    class Animate extends Plugin
-    {
-        
+    class Animate extends Plugin {
+
 
         /** The starting x-coordinate of the viewport. */
-        
+
 
         /** The starting y-coordinate of the viewport. */
-        
+
 
         /** The change in the x-coordinate of the viewport through the animation.*/
-        
+
 
         /** The change in the y-coordinate of the viewport through the animation. */
-        
+
 
         /** Marks whether the center of the viewport is preserved in the animation. */
-        
+
 
         /** The starting viewport width. */
-         __init() {this.startWidth = null;}
+        __init() { this.startWidth = null }
 
         /** The starting viewport height. */
-         __init2() {this.startHeight = null;}
+        __init2() { this.startHeight = null }
 
         /** The change in the viewport's width through the animation. */
-         __init3() {this.deltaWidth = null;}
+        __init3() { this.deltaWidth = null }
 
         /** The change in the viewport's height through the animation. */
-         __init4() {this.deltaHeight = null;}
+        __init4() { this.deltaHeight = null }
 
         /** The viewport's width post-animation. */
-         __init5() {this.width = null;}
+        __init5() { this.width = null }
 
         /** The viewport's height post-animation. */
-         __init6() {this.height = null;}
+        __init6() { this.height = null }
 
         /** The time since the animation started. */
-         __init7() {this.time = 0;}
+        __init7() { this.time = 0 }
 
         /**
          * This is called by {@link Viewport.animate}.
@@ -234,17 +218,16 @@ this.PIXI = this.PIXI || {};
          * @param parent
          * @param options
          */
-        constructor(parent, options = {})
-        {
-            super(parent);Animate.prototype.__init.call(this);Animate.prototype.__init2.call(this);Animate.prototype.__init3.call(this);Animate.prototype.__init4.call(this);Animate.prototype.__init5.call(this);Animate.prototype.__init6.call(this);Animate.prototype.__init7.call(this);;
+        constructor(parent, options = {}) {
+            super(parent); Animate.prototype.__init.call(this); Animate.prototype.__init2.call(this); Animate.prototype.__init3.call(this); Animate.prototype.__init4.call(this); Animate.prototype.__init5.call(this); Animate.prototype.__init6.call(this); Animate.prototype.__init7.call(this);;
 
-            this.options = Object.assign({}, DEFAULT_ANIMATE_OPTIONS, options);
-            this.options.ease = ease(this.options.ease);
+            this.options = Object.assign({}, DEFAULT_ANIMATE_OPTIONS, options)
+            this.options.ease = ease(this.options.ease)
 
-            this.setupPosition();
-            this.setupZoom();
+            this.setupPosition()
+            this.setupZoom()
 
-            this.time = 0;
+            this.time = 0
         }
 
         /**
@@ -252,19 +235,16 @@ this.PIXI = this.PIXI || {};
          *
          * This is called during construction.
          */
-         setupPosition()
-        {
-            if (typeof this.options.position !== 'undefined')
-            {
-                this.startX = this.parent.center.x;
-                this.startY = this.parent.center.y;
-                this.deltaX = this.options.position.x - this.parent.center.x;
-                this.deltaY = this.options.position.y - this.parent.center.y;
-                this.keepCenter = false;
+        setupPosition() {
+            if (typeof this.options.position !== 'undefined') {
+                this.startX = this.parent.center.x
+                this.startY = this.parent.center.y
+                this.deltaX = this.options.position.x - this.parent.center.x
+                this.deltaY = this.options.position.y - this.parent.center.y
+                this.keepCenter = false
             }
-            else
-            {
-                this.keepCenter = true;
+            else {
+                this.keepCenter = true
             }
         }
 
@@ -273,150 +253,123 @@ this.PIXI = this.PIXI || {};
          *
          * This is called during construction.
          */
-         setupZoom()
-        {
-            this.width = null;
-            this.height = null;
+        setupZoom() {
+            this.width = null
+            this.height = null
 
-            if (typeof this.options.scale !== 'undefined')
-            {
-                this.width = this.parent.screenWidth / this.options.scale;
+            if (typeof this.options.scale !== 'undefined') {
+                this.width = this.parent.screenWidth / this.options.scale
             }
-            else if (typeof this.options.scaleX !== 'undefined' || typeof this.options.scaleY !== 'undefined')
-            {
-                if (typeof this.options.scaleX !== 'undefined')
-                {
+            else if (typeof this.options.scaleX !== 'undefined' || typeof this.options.scaleY !== 'undefined') {
+                if (typeof this.options.scaleX !== 'undefined') {
                     // screenSizeInWorldPixels = screenWidth / scale
-                    this.width = this.parent.screenWidth / this.options.scaleX;
+                    this.width = this.parent.screenWidth / this.options.scaleX
                 }
-                if (typeof this.options.scaleY !== 'undefined')
-                {
-                    this.height = this.parent.screenHeight / this.options.scaleY;
+                if (typeof this.options.scaleY !== 'undefined') {
+                    this.height = this.parent.screenHeight / this.options.scaleY
                 }
             }
-            else
-            {
-                if (typeof this.options.width !== 'undefined')
-                {
-                    this.width = this.options.width;
+            else {
+                if (typeof this.options.width !== 'undefined') {
+                    this.width = this.options.width
                 }
-                if (typeof this.options.height !== 'undefined')
-                {
-                    this.height = this.options.height;
+                if (typeof this.options.height !== 'undefined') {
+                    this.height = this.options.height
                 }
             }
 
-            if (this.width !== null)
-            {
-                this.startWidth = this.parent.screenWidthInWorldPixels;
-                this.deltaWidth = this.width - this.startWidth;
+            if (this.width !== null) {
+                this.startWidth = this.parent.screenWidthInWorldPixels
+                this.deltaWidth = this.width - this.startWidth
             }
-            if (this.height !== null)
-            {
-                this.startHeight = this.parent.screenHeightInWorldPixels;
-                this.deltaHeight = this.height - this.startHeight;
+            if (this.height !== null) {
+                this.startHeight = this.parent.screenHeightInWorldPixels
+                this.deltaHeight = this.height - this.startHeight
             }
         }
 
-         down()
-        {
-            if (this.options.removeOnInterrupt)
-            {
-                this.parent.plugins.remove('animate');
+        down() {
+            if (this.options.removeOnInterrupt) {
+                this.parent.plugins.remove('animate')
             }
 
-            return false;
+            return false
         }
 
-         complete()
-        {
-            this.parent.plugins.remove('animate');
-            if (this.width !== null)
-            {
-                this.parent.fitWidth(this.width, this.keepCenter, this.height === null);
+        complete() {
+            this.parent.plugins.remove('animate')
+            if (this.width !== null) {
+                this.parent.fitWidth(this.width, this.keepCenter, this.height === null)
             }
-            if (this.height !== null)
-            {
-                this.parent.fitHeight(this.height, this.keepCenter, this.width === null);
+            if (this.height !== null) {
+                this.parent.fitHeight(this.height, this.keepCenter, this.width === null)
             }
-            if (!this.keepCenter)
-            {
-                this.parent.moveCenter(this.options.position );
+            if (!this.keepCenter) {
+                this.parent.moveCenter(this.options.position)
             }
 
-            this.parent.emit('animate-end', this.parent);
+            this.parent.emit('animate-end', this.parent)
 
-            if (this.options.callbackOnComplete)
-            {
-                this.options.callbackOnComplete(this.parent);
+            if (this.options.callbackOnComplete) {
+                this.options.callbackOnComplete(this.parent)
             }
         }
 
-         update(elapsed)
-        {
-            if (this.paused)
-            {
-                return;
+        update(elapsed) {
+            if (this.paused) {
+                return
             }
-            this.time += elapsed;
+            this.time += elapsed
 
-            if (this.time >= this.options.time)
-            {
-                this.complete();
+            if (this.time >= this.options.time) {
+                this.complete()
             }
-            else
-            {
-                const originalZoom = new math.Point(this.parent.scale.x, this.parent.scale.y);
-                const percent = this.options.ease(this.time, 0, 1, this.options.time);
+            else {
+                const originalZoom = new math.Point(this.parent.scale.x, this.parent.scale.y)
+                const percent = this.options.ease(this.time, 0, 1, this.options.time)
 
-                if (this.width !== null)
-                {
-                    const startWidth = this.startWidth ;
-                    const deltaWidth = this.deltaWidth ;
+                if (this.width !== null) {
+                    const startWidth = this.startWidth
+                    const deltaWidth = this.deltaWidth
 
                     this.parent.fitWidth(
                         startWidth + (deltaWidth * percent),
                         this.keepCenter,
-                        this.height === null);
+                        this.height === null)
                 }
-                if (this.height !== null)
-                {
-                    const startHeight = this.startHeight ;
-                    const deltaHeight = this.deltaHeight ;
+                if (this.height !== null) {
+                    const startHeight = this.startHeight
+                    const deltaHeight = this.deltaHeight
 
                     this.parent.fitHeight(
                         startHeight + (deltaHeight * percent),
                         this.keepCenter,
-                        this.width === null);
+                        this.width === null)
                 }
-                if (this.width === null)
-                {
-                    this.parent.scale.x = this.parent.scale.y;
+                if (this.width === null) {
+                    this.parent.scale.x = this.parent.scale.y
                 }
-                else if (this.height === null)
-                {
-                    this.parent.scale.y = this.parent.scale.x;
+                else if (this.height === null) {
+                    this.parent.scale.y = this.parent.scale.x
                 }
-                if (!this.keepCenter)
-                {
-                    const startX = this.startX ;
-                    const startY = this.startY ;
-                    const deltaX = this.deltaX ;
-                    const deltaY = this.deltaY ;
-                    const original = new math.Point(this.parent.x, this.parent.y);
+                if (!this.keepCenter) {
+                    const startX = this.startX
+                    const startY = this.startY
+                    const deltaX = this.deltaX
+                    const deltaY = this.deltaY
+                    const original = new math.Point(this.parent.x, this.parent.y)
 
-                    this.parent.moveCenter(startX + (deltaX * percent), startY + (deltaY * percent));
-                    this.parent.emit('moved', { viewport: this.parent, original, type: 'animate' });
+                    this.parent.moveCenter(startX + (deltaX * percent), startY + (deltaY * percent))
+                    this.parent.emit('moved', { viewport: this.parent, original, type: 'animate' })
                 }
-                if (this.width || this.height)
-                {
-                    this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
+                if (this.width || this.height) {
+                    this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' })
                 }
             }
         }
     }
 
-    function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+    function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value) } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined } } return value }
 
 
 
@@ -469,7 +422,7 @@ this.PIXI = this.PIXI || {};
         ease: 'easeInOutSine',
         underflow: 'center',
         bounceBox: null
-    };
+    }
 
     /**
      * @fires bounce-start-x
@@ -478,208 +431,182 @@ this.PIXI = this.PIXI || {};
      * @fires bounce-end-y
      * @public
      */
-    class Bounce extends Plugin
-    {
+    class Bounce extends Plugin {
         /** The options passed to initialize this plugin, cannot be modified again. */
-        
+
 
         /** Holds whether to bounce from left side. */
-         
+
 
         /** Holds whether to bounce from top side. */
-        
+
 
         /** Holds whether to bounce from right side. */
-        
+
 
         /** Holds whether to bounce from bottom side. */
-        
+
 
         /** Direction of underflow along x-axis. */
-        
+
 
         /** Direction of underflow along y-axis. */
-        
+
 
         /** Easing */
-        
+
 
         /** Bounce state along x-axis */
-        
+
 
         /** Bounce state along y-axis */
-        
+
 
         /**
          * This is called by {@link Viewport.bounce}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);
+        constructor(parent, options = {}) {
+            super(parent)
 
-            this.options = Object.assign({}, DEFAULT_BOUNCE_OPTIONS, options);
-            this.ease = ease(this.options.ease, 'easeInOutSine');
+            this.options = Object.assign({}, DEFAULT_BOUNCE_OPTIONS, options)
+            this.ease = ease(this.options.ease, 'easeInOutSine')
 
-            if (this.options.sides)
-            {
-                if (this.options.sides === 'all')
-                {
-                    this.top = this.bottom = this.left = this.right = true;
+            if (this.options.sides) {
+                if (this.options.sides === 'all') {
+                    this.top = this.bottom = this.left = this.right = true
                 }
-                else if (this.options.sides === 'horizontal')
-                {
-                    this.right = this.left = true;
-                    this.top = this.bottom = false;
+                else if (this.options.sides === 'horizontal') {
+                    this.right = this.left = true
+                    this.top = this.bottom = false
                 }
-                else if (this.options.sides === 'vertical')
-                {
-                    this.left = this.right = false;
-                    this.top = this.bottom = true;
+                else if (this.options.sides === 'vertical') {
+                    this.left = this.right = false
+                    this.top = this.bottom = true
                 }
-                else
-                {
-                    this.top = this.options.sides.indexOf('top') !== -1;
-                    this.bottom = this.options.sides.indexOf('bottom') !== -1;
-                    this.left = this.options.sides.indexOf('left') !== -1;
-                    this.right = this.options.sides.indexOf('right') !== -1;
+                else {
+                    this.top = this.options.sides.indexOf('top') !== -1
+                    this.bottom = this.options.sides.indexOf('bottom') !== -1
+                    this.left = this.options.sides.indexOf('left') !== -1
+                    this.right = this.options.sides.indexOf('right') !== -1
                 }
             } else {
-                this.left = this.top = this.right = this.bottom = false;
+                this.left = this.top = this.right = this.bottom = false
             }
 
-            const clamp = this.options.underflow.toLowerCase();
+            const clamp = this.options.underflow.toLowerCase()
 
-            if (clamp === 'center')
-            {
-                this.underflowX = 0;
-                this.underflowY = 0;
+            if (clamp === 'center') {
+                this.underflowX = 0
+                this.underflowY = 0
             }
-            else
-            {
-                this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-                this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
+            else {
+                this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+                this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
             }
 
-            this.reset();
+            this.reset()
         }
 
-         isActive()
-        {
-            return this.toX !== null || this.toY !== null;
+        isActive() {
+            return this.toX !== null || this.toY !== null
         }
 
-         down()
-        {
-            this.toX = this.toY = null;
+        down() {
+            this.toX = this.toY = null
 
-            return false;
+            return false
         }
 
-         up()
-        {
-            this.bounce();
+        up() {
+            this.bounce()
 
-            return false;
+            return false
         }
 
-         update(elapsed)
-        {
-            if (this.paused)
-            {
-                return;
+        update(elapsed) {
+            if (this.paused) {
+                return
             }
 
-            this.bounce();
+            this.bounce()
 
-            if (this.toX)
-            {
-                const toX = this.toX;
+            if (this.toX) {
+                const toX = this.toX
 
-                toX.time += elapsed;
-                this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' });
+                toX.time += elapsed
+                this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' })
 
-                if (toX.time >= this.options.time)
-                {
-                    this.parent.x = toX.end;
-                    this.toX = null;
-                    this.parent.emit('bounce-x-end', this.parent);
+                if (toX.time >= this.options.time) {
+                    this.parent.x = toX.end
+                    this.toX = null
+                    this.parent.emit('bounce-x-end', this.parent)
                 }
-                else
-                {
-                    this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.options.time);
+                else {
+                    this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.options.time)
                 }
             }
 
-            if (this.toY)
-            {
-                const toY = this.toY;
+            if (this.toY) {
+                const toY = this.toY
 
-                toY.time += elapsed;
-                this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' });
+                toY.time += elapsed
+                this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' })
 
-                if (toY.time >= this.options.time)
-                {
-                    this.parent.y = toY.end;
-                    this.toY = null;
-                    this.parent.emit('bounce-y-end', this.parent);
+                if (toY.time >= this.options.time) {
+                    this.parent.y = toY.end
+                    this.toY = null
+                    this.parent.emit('bounce-y-end', this.parent)
                 }
-                else
-                {
-                    this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.options.time);
+                else {
+                    this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.options.time)
                 }
             }
         }
 
         /** @internal */
-         calcUnderflowX()
-        {
-            let x;
+        calcUnderflowX() {
+            let x
 
-            switch (this.underflowX)
-            {
+            switch (this.underflowX) {
                 case -1:
-                    x = 0;
-                    break;
+                    x = 0
+                    break
                 case 1:
-                    x = (this.parent.screenWidth - this.parent.screenWorldWidth);
-                    break;
+                    x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                    break
                 default:
-                    x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                    x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
             }
 
-            return x;
+            return x
         }
 
         /** @internal */
-         calcUnderflowY()
-        {
-            let y;
+        calcUnderflowY() {
+            let y
 
-            switch (this.underflowY)
-            {
+            switch (this.underflowY) {
                 case -1:
-                    y = 0;
-                    break;
+                    y = 0
+                    break
                 case 1:
-                    y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                    break;
+                    y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                    break
                 default:
-                    y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                    y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
             }
 
-            return y;
+            return y
         }
 
-         oob()
-        {
-            const box = this.options.bounceBox;
+        oob() {
+            const box = this.options.bounceBox
 
-            if (box)
-            {
-                const x1 = typeof box.x === 'undefined' ? 0 : box.x;
-                const y1 = typeof box.y === 'undefined' ? 0 : box.y;
-                const width = typeof box.width === 'undefined' ? this.parent.worldWidth : box.width;
-                const height = typeof box.height === 'undefined' ? this.parent.worldHeight : box.height;
+            if (box) {
+                const x1 = typeof box.x === 'undefined' ? 0 : box.x
+                const y1 = typeof box.y === 'undefined' ? 0 : box.y
+                const width = typeof box.width === 'undefined' ? this.parent.worldWidth : box.width
+                const height = typeof box.height === 'undefined' ? this.parent.worldHeight : box.height
 
                 return {
                     left: this.parent.left < x1,
@@ -694,7 +621,7 @@ this.PIXI = this.PIXI || {};
                         width * this.parent.scale.x - this.parent.screenWidth,
                         height * this.parent.scale.y - this.parent.screenHeight
                     )
-                };
+                }
             }
 
             return {
@@ -707,94 +634,78 @@ this.PIXI = this.PIXI || {};
                     this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
                     this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
                 )
-            };
+            }
         }
 
-         bounce()
-        {
-            if (this.paused)
-            {
-                return;
+        bounce() {
+            if (this.paused) {
+                return
             }
 
-            let oob;
+            let oob
             let decelerate
 
 
 
 
 
-     = this.parent.plugins.get('decelerate', true) ;
+                = this.parent.plugins.get('decelerate', true)
 
-            if (decelerate && (decelerate.x || decelerate.y))
-            {
-                if ((decelerate.x && decelerate.percentChangeX === _optionalChain$1([decelerate, 'access', _ => _.options, 'optionalAccess', _2 => _2.friction])) || (decelerate.y && decelerate.percentChangeY === _optionalChain$1([decelerate, 'access', _3 => _3.options, 'optionalAccess', _4 => _4.friction])))
-                {
-                    oob = this.oob();
-                    if ((oob.left && this.left) || (oob.right && this.right))
-                    {
-                        decelerate.percentChangeX = this.options.friction;
+            if (decelerate && (decelerate.x || decelerate.y)) {
+                if ((decelerate.x && decelerate.percentChangeX === _optionalChain$1([decelerate, 'access', _ => _.options, 'optionalAccess', _2 => _2.friction])) || (decelerate.y && decelerate.percentChangeY === _optionalChain$1([decelerate, 'access', _3 => _3.options, 'optionalAccess', _4 => _4.friction]))) {
+                    oob = this.oob()
+                    if ((oob.left && this.left) || (oob.right && this.right)) {
+                        decelerate.percentChangeX = this.options.friction
                     }
-                    if ((oob.top && this.top) || (oob.bottom && this.bottom))
-                    {
-                        decelerate.percentChangeY = this.options.friction;
+                    if ((oob.top && this.top) || (oob.bottom && this.bottom)) {
+                        decelerate.percentChangeY = this.options.friction
                     }
                 }
             }
-            const drag = this.parent.plugins.get('drag', true) || {};
-            const pinch = this.parent.plugins.get('pinch', true) || {};
+            const drag = this.parent.plugins.get('drag', true) || {}
+            const pinch = this.parent.plugins.get('pinch', true) || {}
 
-            decelerate = decelerate || {};
+            decelerate = decelerate || {}
 
-            if (!_optionalChain$1([drag, 'optionalAccess', _5 => _5.active]) && !_optionalChain$1([pinch, 'optionalAccess', _6 => _6.active]) && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
-            {
-                oob = oob || this.oob();
-                const topLeft = oob.topLeft;
-                const bottomRight = oob.bottomRight;
+            if (!_optionalChain$1([drag, 'optionalAccess', _5 => _5.active]) && !_optionalChain$1([pinch, 'optionalAccess', _6 => _6.active]) && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y))) {
+                oob = oob || this.oob()
+                const topLeft = oob.topLeft
+                const bottomRight = oob.bottomRight
 
-                if (!this.toX && !decelerate.x)
-                {
-                    let x = null;
+                if (!this.toX && !decelerate.x) {
+                    let x = null
 
-                    if (oob.left && this.left)
-                    {
-                        x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x;
+                    if (oob.left && this.left) {
+                        x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x
                     }
-                    else if (oob.right && this.right)
-                    {
-                        x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x;
+                    else if (oob.right && this.right) {
+                        x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x
                     }
-                    if (x !== null && this.parent.x !== x)
-                    {
-                        this.toX = { time: 0, start: this.parent.x, delta: x - this.parent.x, end: x };
-                        this.parent.emit('bounce-x-start', this.parent);
+                    if (x !== null && this.parent.x !== x) {
+                        this.toX = { time: 0, start: this.parent.x, delta: x - this.parent.x, end: x }
+                        this.parent.emit('bounce-x-start', this.parent)
                     }
                 }
-                if (!this.toY && !decelerate.y)
-                {
-                    let y = null;
+                if (!this.toY && !decelerate.y) {
+                    let y = null
 
-                    if (oob.top && this.top)
-                    {
-                        y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y;
+                    if (oob.top && this.top) {
+                        y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y
                     }
-                    else if (oob.bottom && this.bottom)
-                    {
-                        y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y;
+                    else if (oob.bottom && this.bottom) {
+                        y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y
                     }
-                    if (y !== null && this.parent.y !== y)
-                    {
-                        this.toY = { time: 0, start: this.parent.y, delta: y - this.parent.y, end: y };
-                        this.parent.emit('bounce-y-start', this.parent);
+                    if (y !== null && this.parent.y !== y) {
+                        this.toY = { time: 0, start: this.parent.y, delta: y - this.parent.y, end: y }
+                        this.parent.emit('bounce-y-start', this.parent)
                     }
                 }
             }
         }
 
-         reset()
-        {
-            this.toX = this.toY = null;
-            this.bounce();
+        reset() {
+            this.toX = this.toY = null
+            this.bounce()
         }
     }
 
@@ -864,221 +775,185 @@ this.PIXI = this.PIXI || {};
         bottom: false,
         direction: null,
         underflow: 'center'
-    };
+    }
 
     /**
      * Plugin to clamp the viewport to a specific world bounding box.
      *
      * @public
      */
-    class Clamp extends Plugin
-    {
+    class Clamp extends Plugin {
         /** Options used to initialize this plugin, cannot be modified later. */
-        
+
 
         /** Last state of viewport */
-        
 
 
 
 
 
 
-        
-        
-        
+
+
+
+
 
         /**
          * This is called by {@link Viewport.clamp}.
          */
-        constructor(parent, options  = {})
-        {
-            super(parent);
-            this.options = Object.assign({}, DEFAULT_CLAMP_OPTIONS, options);
+        constructor(parent, options = {}) {
+            super(parent)
+            this.options = Object.assign({}, DEFAULT_CLAMP_OPTIONS, options)
 
-            if (this.options.direction)
-            {
-                this.options.left = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
-                this.options.right = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
-                this.options.top = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
-                this.options.bottom = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
+            if (this.options.direction) {
+                this.options.left = this.options.direction === 'x' || this.options.direction === 'all' ? true : null
+                this.options.right = this.options.direction === 'x' || this.options.direction === 'all' ? true : null
+                this.options.top = this.options.direction === 'y' || this.options.direction === 'all' ? true : null
+                this.options.bottom = this.options.direction === 'y' || this.options.direction === 'all' ? true : null
             }
 
-            this.parseUnderflow();
-            this.last = { x: null, y: null, scaleX: null, scaleY: null };
-            this.update();
+            this.parseUnderflow()
+            this.last = { x: null, y: null, scaleX: null, scaleY: null }
+            this.update()
         }
 
-         parseUnderflow()
-        {
-            const clamp = this.options.underflow.toLowerCase();
+        parseUnderflow() {
+            const clamp = this.options.underflow.toLowerCase()
 
-            if (clamp === 'none')
-            {
-                this.noUnderflow = true;
+            if (clamp === 'none') {
+                this.noUnderflow = true
             }
-            else if (clamp === 'center')
-            {
-                this.underflowX = this.underflowY = 0;
-                this.noUnderflow = false;
+            else if (clamp === 'center') {
+                this.underflowX = this.underflowY = 0
+                this.noUnderflow = false
             }
-            else
-            {
-                this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-                this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
-                this.noUnderflow = false;
+            else {
+                this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+                this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
+                this.noUnderflow = false
             }
         }
 
-         move()
-        {
-            this.update();
+        move() {
+            this.update()
 
-            return false;
+            return false
         }
 
-         update()
-        {
-            if (this.paused)
-            {
-                return;
+        update() {
+            if (this.paused) {
+                return
             }
 
             // only clamp on change
             if (this.parent.x === this.last.x
                 && this.parent.y === this.last.y
                 && this.parent.scale.x === this.last.scaleX
-                && this.parent.scale.y === this.last.scaleY)
-            {
-                return;
+                && this.parent.scale.y === this.last.scaleY) {
+                return
             }
-            const original = { x: this.parent.x, y: this.parent.y };
+            const original = { x: this.parent.x, y: this.parent.y }
             // TODO: Fix
-            const decelerate = (this.parent.plugins ).decelerate || {};
+            const decelerate = (this.parent.plugins).decelerate || {}
 
-            if (this.options.left !== null || this.options.right !== null)
-            {
-                let moved = false;
+            if (this.options.left !== null || this.options.right !== null) {
+                let moved = false
 
-                if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth)
-                {
-                    switch (this.underflowX)
-                    {
+                if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth) {
+                    switch (this.underflowX) {
                         case -1:
-                            if (this.parent.x !== 0)
-                            {
-                                this.parent.x = 0;
-                                moved = true;
+                            if (this.parent.x !== 0) {
+                                this.parent.x = 0
+                                moved = true
                             }
-                            break;
+                            break
                         case 1:
-                            if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
-                            {
-                                this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
-                                moved = true;
+                            if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth) {
+                                this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth
+                                moved = true
                             }
-                            break;
+                            break
                         default:
-                            if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
-                            {
-                                this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                                moved = true;
+                            if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2) {
+                                this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
+                                moved = true
                             }
                     }
                 }
-                else
-                {
-                    if (this.options.left !== null)
-                    {
-                        if (this.parent.left < (this.options.left === true ? 0 : this.options.left))
-                        {
-                            this.parent.x = -(this.options.left === true ? 0 : this.options.left) * this.parent.scale.x;
-                            decelerate.x = 0;
-                            moved = true;
+                else {
+                    if (this.options.left !== null) {
+                        if (this.parent.left < (this.options.left === true ? 0 : this.options.left)) {
+                            this.parent.x = -(this.options.left === true ? 0 : this.options.left) * this.parent.scale.x
+                            decelerate.x = 0
+                            moved = true
                         }
                     }
-                    if (this.options.right !== null)
-                    {
-                        if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right))
-                        {
-                            this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth;
-                            decelerate.x = 0;
-                            moved = true;
+                    if (this.options.right !== null) {
+                        if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right)) {
+                            this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth
+                            decelerate.x = 0
+                            moved = true
                         }
                     }
                 }
-                if (moved)
-                {
-                    this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' });
+                if (moved) {
+                    this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' })
                 }
             }
-            if (this.options.top !== null || this.options.bottom !== null)
-            {
-                let moved = false;
+            if (this.options.top !== null || this.options.bottom !== null) {
+                let moved = false
 
-                if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight)
-                {
-                    switch (this.underflowY)
-                    {
+                if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight) {
+                    switch (this.underflowY) {
                         case -1:
-                            if (this.parent.y !== 0)
-                            {
-                                this.parent.y = 0;
-                                moved = true;
+                            if (this.parent.y !== 0) {
+                                this.parent.y = 0
+                                moved = true
                             }
-                            break;
+                            break
                         case 1:
-                            if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
-                            {
-                                this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                                moved = true;
+                            if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight) {
+                                this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                                moved = true
                             }
-                            break;
+                            break
                         default:
-                            if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
-                            {
-                                this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                                moved = true;
+                            if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2) {
+                                this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
+                                moved = true
                             }
                     }
                 }
-                else
-                {
-                    if (this.options.top !== null)
-                    {
-                        if (this.parent.top < (this.options.top === true ? 0 : this.options.top))
-                        {
+                else {
+                    if (this.options.top !== null) {
+                        if (this.parent.top < (this.options.top === true ? 0 : this.options.top)) {
                             this.parent.y = -(this.options.top === true ? 0 : this.options.top)
-                                * this.parent.scale.y;
-                            decelerate.y = 0;
-                            moved = true;
+                                * this.parent.scale.y
+                            decelerate.y = 0
+                            moved = true
                         }
                     }
-                    if (this.options.bottom !== null)
-                    {
-                        if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom))
-                        {
+                    if (this.options.bottom !== null) {
+                        if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)) {
                             this.parent.y = -(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
-                                * this.parent.scale.y + this.parent.screenHeight;
-                            decelerate.y = 0;
-                            moved = true;
+                                * this.parent.scale.y + this.parent.screenHeight
+                            decelerate.y = 0
+                            moved = true
                         }
                     }
                 }
-                if (moved)
-                {
-                    this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' });
+                if (moved) {
+                    this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' })
                 }
             }
-            this.last.x = this.parent.x;
-            this.last.y = this.parent.y;
-            this.last.scaleX = this.parent.scale.x;
-            this.last.scaleY = this.parent.scale.y;
+            this.last.x = this.parent.x
+            this.last.y = this.parent.y
+            this.last.scaleX = this.parent.scale.x
+            this.last.scaleY = this.parent.scale.y
         }
 
-         reset()
-        {
-            this.update();
+        reset() {
+            this.update()
         }
     }
 
@@ -1115,108 +990,93 @@ this.PIXI = this.PIXI || {};
         maxHeight: null,
         minScale: null,
         maxScale: null
-    };
+    }
 
     /**
      * Plugin to clamp the viewport's zoom to a specific range.
      *
      * @public
      */
-    class ClampZoom extends Plugin
-    {
-        
+    class ClampZoom extends Plugin {
+
 
         /**
          * This is called by {@link Viewport.clampZoom}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);
-            this.options = Object.assign({}, DEFAULT_CLAMP_ZOOM_OPTIONS, options);
+        constructor(parent, options = {}) {
+            super(parent)
+            this.options = Object.assign({}, DEFAULT_CLAMP_ZOOM_OPTIONS, options)
 
-            this.clamp();
+            this.clamp()
         }
 
-         resize()
-        {
-            this.clamp();
+        resize() {
+            this.clamp()
         }
 
         /** Clamp the viewport's zoom immediately. */
-         clamp()
-        {
-            if (this.paused)
-            {
-                return;
+        clamp() {
+            if (this.paused) {
+                return
             }
 
-            if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
-            {
-                let width = this.parent.worldScreenWidth;
-                let height = this.parent.worldScreenHeight;
+            if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight) {
+                let width = this.parent.worldScreenWidth
+                let height = this.parent.worldScreenHeight
 
-                if (this.options.minWidth !== null && width < this.options.minWidth)
-                {
-                    const original = this.parent.scale.x;
+                if (this.options.minWidth !== null && width < this.options.minWidth) {
+                    const original = this.parent.scale.x
 
-                    this.parent.fitWidth(this.options.minWidth, false, false, true);
-                    this.parent.scale.y *= this.parent.scale.x / original;
-                    width = this.parent.worldScreenWidth;
-                    height = this.parent.worldScreenHeight;
-                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                    this.parent.fitWidth(this.options.minWidth, false, false, true)
+                    this.parent.scale.y *= this.parent.scale.x / original
+                    width = this.parent.worldScreenWidth
+                    height = this.parent.worldScreenHeight
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
                 }
-                if (this.options.maxWidth !== null && width > this.options.maxWidth)
-                {
-                    const original = this.parent.scale.x;
+                if (this.options.maxWidth !== null && width > this.options.maxWidth) {
+                    const original = this.parent.scale.x
 
-                    this.parent.fitWidth(this.options.maxWidth, false, false, true);
-                    this.parent.scale.y *= this.parent.scale.x / original;
-                    width = this.parent.worldScreenWidth;
-                    height = this.parent.worldScreenHeight;
-                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                    this.parent.fitWidth(this.options.maxWidth, false, false, true)
+                    this.parent.scale.y *= this.parent.scale.x / original
+                    width = this.parent.worldScreenWidth
+                    height = this.parent.worldScreenHeight
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
                 }
-                if (this.options.minHeight !== null && height < this.options.minHeight)
-                {
-                    const original = this.parent.scale.y;
+                if (this.options.minHeight !== null && height < this.options.minHeight) {
+                    const original = this.parent.scale.y
 
-                    this.parent.fitHeight(this.options.minHeight, false, false, true);
-                    this.parent.scale.x *= this.parent.scale.y / original;
-                    width = this.parent.worldScreenWidth;
-                    height = this.parent.worldScreenHeight;
-                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                    this.parent.fitHeight(this.options.minHeight, false, false, true)
+                    this.parent.scale.x *= this.parent.scale.y / original
+                    width = this.parent.worldScreenWidth
+                    height = this.parent.worldScreenHeight
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
                 }
-                if (this.options.maxHeight !== null && height > this.options.maxHeight)
-                {
-                    const original = this.parent.scale.y;
+                if (this.options.maxHeight !== null && height > this.options.maxHeight) {
+                    const original = this.parent.scale.y
 
-                    this.parent.fitHeight(this.options.maxHeight, false, false, true);
-                    this.parent.scale.x *= this.parent.scale.y / original;
-                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                    this.parent.fitHeight(this.options.maxHeight, false, false, true)
+                    this.parent.scale.x *= this.parent.scale.y / original
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
                 }
             }
-            else
-            {
-                let scale = this.parent.scale.x;
+            else {
+                let scale = this.parent.scale.x
 
-                if (this.options.minScale !== null && scale < this.options.minScale)
-                {
-                    scale = this.options.minScale;
+                if (this.options.minScale !== null && scale < this.options.minScale) {
+                    scale = this.options.minScale
                 }
-                if (this.options.maxScale !== null && scale > this.options.maxScale)
-                {
-                    scale = this.options.maxScale;
+                if (this.options.maxScale !== null && scale > this.options.maxScale) {
+                    scale = this.options.maxScale
                 }
-                if (scale !== this.parent.scale.x)
-                {
-                    this.parent.scale.set(scale);
-                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                if (scale !== this.parent.scale.x) {
+                    this.parent.scale.set(scale)
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' })
                 }
             }
         }
 
-         reset()
-        {
-            this.clamp();
+        reset() {
+            this.clamp()
         }
     }
 
@@ -1224,7 +1084,7 @@ this.PIXI = this.PIXI || {};
         friction: 0.98,
         bounce: 0.8,
         minSpeed: 0.01
-    };
+    }
 
     /**
      * Time period of decay (1 frame)
@@ -1232,149 +1092,131 @@ this.PIXI = this.PIXI || {};
      * @internal
      * @ignore
      */
-    const TP = 16;
+    const TP = 16
 
     /**
      * Plugin to decelerate viewport velocity smoothly after panning ends.
      *
      * @public
      */
-    class Decelerate extends Plugin
-    {
+    class Decelerate extends Plugin {
         /** Options used to initialize this plugin. */
-        
+
 
         /**
          * x-component of the velocity of viewport provided by this plugin, at the current time.
          *
          * This is measured in px/frame, where a frame is normalized to 16 milliseconds.
          */
-        
+
 
         /**
          * y-component of the velocity of the viewport provided by this plugin, at the current time.
          *
          * This is measured in px/frame, where a frame is normalized to 16 milliseconds.
          */
-        
+
 
         /**
          * The decay factor for the x-component of the viewport.
          *
          * The viewport's velocity decreased by this amount each 16 milliseconds.
          */
-        
+
 
         /**
          * The decay factor for the y-component of the viewport.
          *
          * The viewport's velocity decreased by this amount each 16 milliseconds.
          */
-        
+
 
         /** Saved list of recent viewport position snapshots, to estimate velocity. */
-        
+
 
         /** The time since the user released panning of the viewport. */
-        
+
 
         /**
          * This is called by {@link Viewport.decelerate}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);
+        constructor(parent, options = {}) {
+            super(parent)
 
-            this.options = Object.assign({}, DEFAULT_DECELERATE_OPTIONS, options);
-            this.saved = [];
-            this.timeSinceRelease = 0;
+            this.options = Object.assign({}, DEFAULT_DECELERATE_OPTIONS, options)
+            this.saved = []
+            this.timeSinceRelease = 0
 
-            this.reset();
-            this.parent.on('moved', (data) => this.moved(data));
+            this.reset()
+            this.parent.on('moved', (data) => this.moved(data))
         }
 
-         down()
-        {
-            this.saved = [];
-            this.x = this.y = null;
+        down() {
+            this.saved = []
+            this.x = this.y = null
 
-            return false;
+            return false
         }
 
-         isActive()
-        {
-            return !!(this.x || this.y);
+        isActive() {
+            return !!(this.x || this.y)
         }
 
-         move()
-        {
-            if (this.paused)
-            {
-                return false;
+        move() {
+            if (this.paused) {
+                return false
             }
 
-            const count = this.parent.input.count();
+            const count = this.parent.input.count()
 
-            if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
-            {
-                this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() });
+            if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true))) {
+                this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() })
 
-                if (this.saved.length > 60)
-                {
-                    this.saved.splice(0, 30);
+                if (this.saved.length > 60) {
+                    this.saved.splice(0, 30)
                 }
             }
 
             // Silently recording viewport positions
-            return false;
+            return false
         }
 
         /** Listener to viewport's "moved" event. */
-         moved(data)
-        {
-            if (this.saved.length)
-            {
-                const last = this.saved[this.saved.length - 1];
+        moved(data) {
+            if (this.saved.length) {
+                const last = this.saved[this.saved.length - 1]
 
-                if (data.type === 'clamp-x')
-                {
-                    if (last.x === data.original.x)
-                    {
-                        last.x = this.parent.x;
+                if (data.type === 'clamp-x') {
+                    if (last.x === data.original.x) {
+                        last.x = this.parent.x
                     }
                 }
-                else if (data.type === 'clamp-y')
-                {
-                    if (last.y === data.original.y)
-                    {
-                        last.y = this.parent.y;
+                else if (data.type === 'clamp-y') {
+                    if (last.y === data.original.y) {
+                        last.y = this.parent.y
                     }
                 }
             }
         }
 
-         up()
-        {
-            if (this.parent.input.count() === 0 && this.saved.length)
-            {
-                const now = performance.now();
+        up() {
+            if (this.parent.input.count() === 0 && this.saved.length) {
+                const now = performance.now()
 
-                for (const save of this.saved)
-                {
-                    if (save.time >= now - 100)
-                    {
-                        const time = now - save.time;
+                for (const save of this.saved) {
+                    if (save.time >= now - 100) {
+                        const time = now - save.time
 
-                        this.x = (this.parent.x - save.x) / time;
-                        this.y = (this.parent.y - save.y) / time;
-                        this.percentChangeX = this.percentChangeY = this.options.friction;
-                        this.timeSinceRelease = 0;
-                        break;
+                        this.x = (this.parent.x - save.x) / time
+                        this.y = (this.parent.y - save.y) / time
+                        this.percentChangeX = this.percentChangeY = this.options.friction
+                        this.timeSinceRelease = 0
+                        break
                     }
                 }
             }
 
-            return false;
+            return false
         }
 
         /**
@@ -1384,27 +1226,22 @@ this.PIXI = this.PIXI || {};
          * @param {number} [options.x] - Specify x-component of initial velocity.
          * @param {number} [options.y] - Specify y-component of initial velocity.
          */
-         activate(options)
-        {
-            options = options || {};
+        activate(options) {
+            options = options || {}
 
-            if (typeof options.x !== 'undefined')
-            {
-                this.x = options.x;
-                this.percentChangeX = this.options.friction;
+            if (typeof options.x !== 'undefined') {
+                this.x = options.x
+                this.percentChangeX = this.options.friction
             }
-            if (typeof options.y !== 'undefined')
-            {
-                this.y = options.y;
-                this.percentChangeY = this.options.friction;
+            if (typeof options.y !== 'undefined') {
+                this.y = options.y
+                this.percentChangeY = this.options.friction
             }
         }
 
-         update(elapsed)
-        {
-            if (this.paused)
-            {
-                return;
+        update(elapsed) {
+            if (this.paused) {
+                return
             }
 
             /*
@@ -1415,55 +1252,49 @@ this.PIXI = this.PIXI || {};
              * to calculate the displacement.
              */
 
-            const moved = this.x || this.y;
+            const moved = this.x || this.y
 
-            const ti = this.timeSinceRelease;
-            const tf = this.timeSinceRelease + elapsed;
+            const ti = this.timeSinceRelease
+            const tf = this.timeSinceRelease + elapsed
 
-            if (this.x)
-            {
-                const k = this.percentChangeX;
-                const lnk = Math.log(k);
+            if (this.x) {
+                const k = this.percentChangeX
+                const lnk = Math.log(k)
 
                 // Apply velocity delta on the viewport x-coordinate.
-                this.parent.x += ((this.x * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
+                this.parent.x += ((this.x * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP))
 
                 // Apply decay on x-component of velocity
-                this.x *= Math.pow(this.percentChangeX, elapsed / TP);
+                this.x *= Math.pow(this.percentChangeX, elapsed / TP)
             }
-            if (this.y)
-            {
-                const k = this.percentChangeY;
-                const lnk = Math.log(k);
+            if (this.y) {
+                const k = this.percentChangeY
+                const lnk = Math.log(k)
 
                 // Apply velocity delta on the viewport y-coordinate.
-                this.parent.y += ((this.y * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
+                this.parent.y += ((this.y * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP))
 
                 // Apply decay on y-component of velocity
-                this.y *= Math.pow(this.percentChangeY, elapsed / TP);
+                this.y *= Math.pow(this.percentChangeY, elapsed / TP)
             }
 
-            this.timeSinceRelease += elapsed;
+            this.timeSinceRelease += elapsed
 
             // End decelerate velocity once it goes under a certain amount of precision.
-            if (Math.abs(this.x || 0) < this.options.minSpeed)
-            {
-                this.x = 0;
+            if (Math.abs(this.x || 0) < this.options.minSpeed) {
+                this.x = 0
             }
-            if (Math.abs(this.y || 0) < this.options.minSpeed)
-            {
-                this.y = 0;
+            if (Math.abs(this.y || 0) < this.options.minSpeed) {
+                this.y = 0
             }
 
-            if (moved)
-            {
-                this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' });
+            if (moved) {
+                this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' })
             }
         }
 
-         reset()
-        {
-            this.x = this.y = null;
+        reset() {
+            this.x = this.y = null
         }
     }
 
@@ -1571,68 +1402,65 @@ this.PIXI = this.PIXI || {};
         keyToPress: null,
         ignoreKeyToPressOnTouch: false,
         lineHeight: 20,
-    };
+    }
 
     /**
      * Plugin to enable panning/dragging of the viewport to move around.
      *
      * @public
      */
-    class Drag extends Plugin
-    {
+    class Drag extends Plugin {
         /** Options used to initialize this plugin, cannot be modified later. */
-        
+
 
         /** Flags when viewport is moving. */
-        
+
 
         /** Factor to apply from {@link IDecelerateOptions}'s reverse. */
-        
+
 
         /** Holds whether dragging is enabled along the x-axis. */
-        
+
 
         /** Holds whether dragging is enabled along the y-axis. */
-        
+
 
         /** Flags whether the keys required to drag are pressed currently. */
-        
+
 
         /** Holds whether the left, center, and right buttons are required to pan. */
-        
+
 
         /** Underflow factor along x-axis */
-        
+
 
         /** Underflow factor along y-axis */
-        
+
 
         /** Last pointer position while panning. */
-        
+
 
         /** The ID of the pointer currently panning the viewport. */
-        
+
 
         /**
          * This is called by {@link Viewport.drag}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);
+        constructor(parent, options = {}) {
+            super(parent)
 
-            this.options = Object.assign({}, DEFAULT_DRAG_OPTIONS, options);
-            this.moved = false;
-            this.reverse = this.options.reverse ? 1 : -1;
-            this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x';
-            this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y';
-            this.keyIsPressed = false;
+            this.options = Object.assign({}, DEFAULT_DRAG_OPTIONS, options)
+            this.moved = false
+            this.reverse = this.options.reverse ? 1 : -1
+            this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x'
+            this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y'
+            this.keyIsPressed = false
 
-            this.parseUnderflow();
-            this.mouseButtons(this.options.mouseButtons);
+            this.parseUnderflow()
+            this.mouseButtons(this.options.mouseButtons)
 
-            if (this.options.keyToPress)
-            {
-                this.handleKeyPresses(this.options.keyToPress);
+            if (this.options.keyToPress) {
+                this.handleKeyPresses(this.options.keyToPress)
             }
         }
 
@@ -1641,54 +1469,43 @@ this.PIXI = this.PIXI || {};
          *
          * @param {array} codes - key codes that can be used to trigger drag event
          */
-         handleKeyPresses(codes)
-        {
-            window.addEventListener('keydown', (e) =>
-            {
-                if (codes.includes(e.code))
-                { this.keyIsPressed = true; }
-            });
+        handleKeyPresses(codes) {
+            window.addEventListener('keydown', (e) => {
+                if (codes.includes(e.code)) { this.keyIsPressed = true }
+            })
 
-            window.addEventListener('keyup', (e) =>
-            {
-                if (codes.includes(e.code))
-                { this.keyIsPressed = false; }
-            });
+            window.addEventListener('keyup', (e) => {
+                if (codes.includes(e.code)) { this.keyIsPressed = false }
+            })
         }
 
         /**
          * initialize mousebuttons array
          * @param {string} buttons
          */
-         mouseButtons(buttons)
-        {
-            if (!buttons || buttons === 'all')
-            {
-                this.mouse = [true, true, true];
+        mouseButtons(buttons) {
+            if (!buttons || buttons === 'all') {
+                this.mouse = [true, true, true]
             }
-            else
-            {
+            else {
                 this.mouse = [
                     buttons.indexOf('left') !== -1,
                     buttons.indexOf('middle') !== -1,
                     buttons.indexOf('right') !== -1
-                ];
+                ]
             }
         }
 
-         parseUnderflow()
-        {
-            const clamp = this.options.underflow.toLowerCase();
+        parseUnderflow() {
+            const clamp = this.options.underflow.toLowerCase()
 
-            if (clamp === 'center')
-            {
-                this.underflowX = 0;
-                this.underflowY = 0;
+            if (clamp === 'center') {
+                this.underflowX = 0
+                this.underflowY = 0
             }
-            else
-            {
-                this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-                this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
+            else {
+                this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0
+                this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0
             }
         }
 
@@ -1696,261 +1513,217 @@ this.PIXI = this.PIXI || {};
          * @param {PIXI.InteractionEvent} event
          * @returns {boolean}
          */
-         checkButtons(event)
-        {
-            const isMouse = event.data.pointerType === 'mouse';
-            const count = this.parent.input.count();
+        checkButtons(event) {
+            const isMouse = event.data.pointerType === 'mouse'
+            const count = this.parent.input.count()
 
-            if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch', true)))
-            {
-                if (!isMouse || this.mouse[event.data.button])
-                {
-                    return true;
+            if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch', true))) {
+                if (!isMouse || this.mouse[event.data.button]) {
+                    return true
                 }
             }
 
-            return false;
+            return false
         }
 
         /**
          * @param {PIXI.InteractionEvent} event
          * @returns {boolean}
          */
-         checkKeyPress(event)
-        {
+        checkKeyPress(event) {
             return (!this.options.keyToPress
                 || this.keyIsPressed
-                || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'));
+                || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'))
         }
 
-         down(event)
-        {
-            if (this.paused || !this.options.pressDrag)
-            {
-                return false;
+        down(event) {
+            if (this.paused || !this.options.pressDrag) {
+                return false
             }
-            if (this.checkButtons(event) && this.checkKeyPress(event))
-            {
-                this.last = { x: event.data.global.x, y: event.data.global.y };
-                this.current = event.data.pointerId;
+            if (this.checkButtons(event) && this.checkKeyPress(event)) {
+                this.last = { x: event.data.global.x, y: event.data.global.y }
+                this.current = event.data.pointerId
 
-                return true;
+                return true
             }
-            this.last = null;
+            this.last = null
 
-            return false;
+            return false
         }
 
-        get active()
-        {
-            return this.moved;
+        get active() {
+            return this.moved
         }
 
-         move(event)
-        {
-            if (this.paused || !this.options.pressDrag)
-            {
-                return false;
+        move(event) {
+            if (this.paused || !this.options.pressDrag) {
+                return false
             }
-            if (this.last && this.current === event.data.pointerId)
-            {
-                const x = event.data.global.x;
-                const y = event.data.global.y;
-                const count = this.parent.input.count();
+            if (this.last && this.current === event.data.pointerId) {
+                const x = event.data.global.x
+                const y = event.data.global.y
+                const count = this.parent.input.count()
 
-                if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
-                {
-                    const distX = x - this.last.x;
-                    const distY = y - this.last.y;
+                if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true))) {
+                    const distX = x - this.last.x
+                    const distY = y - this.last.y
 
                     if (this.moved
                         || ((this.xDirection && this.parent.input.checkThreshold(distX))
-                        || (this.yDirection && this.parent.input.checkThreshold(distY))))
-                    {
-                        const newPoint = { x, y };
+                            || (this.yDirection && this.parent.input.checkThreshold(distY)))) {
+                        const newPoint = { x, y }
 
-                        if (this.xDirection)
-                        {
-                            this.parent.x += (newPoint.x - this.last.x) * this.options.factor;
+                        if (this.xDirection) {
+                            this.parent.x += (newPoint.x - this.last.x) * this.options.factor
                         }
-                        if (this.yDirection)
-                        {
-                            this.parent.y += (newPoint.y - this.last.y) * this.options.factor;
+                        if (this.yDirection) {
+                            this.parent.y += (newPoint.y - this.last.y) * this.options.factor
                         }
-                        this.last = newPoint;
-                        if (!this.moved)
-                        {
+                        this.last = newPoint
+                        if (!this.moved) {
                             this.parent.emit('drag-start', {
                                 event,
                                 screen: new math.Point(this.last.x, this.last.y),
                                 world: this.parent.toWorld(new math.Point(this.last.x, this.last.y)),
                                 viewport: this.parent
-                            });
+                            })
                         }
-                        this.moved = true;
-                        this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
+                        this.moved = true
+                        this.parent.emit('moved', { viewport: this.parent, type: 'drag' })
 
-                        return true;
+                        return true
                     }
                 }
-                else
-                {
-                    this.moved = false;
+                else {
+                    this.moved = false
                 }
             }
 
-            return false;
+            return false
         }
 
-         up(event)
-        {
-            if (this.paused)
-            {
-                return false;
+        up(event) {
+            if (this.paused) {
+                return false
             }
 
-            const touches = this.parent.input.touches;
+            const touches = this.parent.input.touches
 
-            if (touches.length === 1)
-            {
-                const pointer = touches[0];
+            if (touches.length === 1) {
+                const pointer = touches[0]
 
-                if (pointer.last)
-                {
-                    this.last = { x: pointer.last.x, y: pointer.last.y };
-                    this.current = pointer.id;
+                if (pointer.last) {
+                    this.last = { x: pointer.last.x, y: pointer.last.y }
+                    this.current = pointer.id
                 }
-                this.moved = false;
+                this.moved = false
 
-                return true;
+                return true
             }
-            else if (this.last)
-            {
-                if (this.moved)
-                {
-                    const screen = new math.Point(this.last.x, this.last.y);
+            else if (this.last) {
+                if (this.moved) {
+                    const screen = new math.Point(this.last.x, this.last.y)
 
                     this.parent.emit('drag-end', {
                         event, screen,
                         world: this.parent.toWorld(screen),
                         viewport: this.parent,
-                    });
-                    this.last = null;
-                    this.moved = false;
+                    })
+                    this.last = null
+                    this.moved = false
 
-                    return true;
+                    return true
                 }
             }
 
-            return false;
+            return false
         }
 
-         wheel(event)
-        {
-            if (this.paused)
-            {
-                return false;
+        wheel(event) {
+            if (this.paused) {
+                return false
             }
 
-            if (this.options.wheel)
-            {
-                const wheel = this.parent.plugins.get('wheel', true);
+            if (this.options.wheel) {
+                const wheel = this.parent.plugins.get('wheel', true)
 
-                if (!wheel)
-                {
-                    const step = event.deltaMode ? this.options.lineHeight : 1;
+                if (!wheel) {
+                    const step = event.deltaMode ? this.options.lineHeight : 1
 
-                    if (this.xDirection)
-                    {
-                        this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
+                    if (this.xDirection) {
+                        this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse
                     }
-                    if (this.yDirection)
-                    {
-                        this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
+                    if (this.yDirection) {
+                        this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse
                     }
-                    if (this.options.clampWheel)
-                    {
-                        this.clamp();
+                    if (this.options.clampWheel) {
+                        this.clamp()
                     }
-                    this.parent.emit('wheel-scroll', this.parent);
-                    this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-                    if (!this.parent.options.passiveWheel)
-                    {
-                        event.preventDefault();
+                    this.parent.emit('wheel-scroll', this.parent)
+                    this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
+                    if (!this.parent.options.passiveWheel) {
+                        event.preventDefault()
                     }
 
-                    return true;
+                    return true
                 }
             }
 
-            return false;
+            return false
         }
 
-         resume()
-        {
-            this.last = null;
-            this.paused = false;
+        resume() {
+            this.last = null
+            this.paused = false
         }
 
-         clamp()
-        {
-            const decelerate = this.parent.plugins.get('decelerate', true) || {};
+        clamp() {
+            const decelerate = this.parent.plugins.get('decelerate', true) || {}
 
-            if (this.options.clampWheel !== 'y')
-            {
-                if (this.parent.screenWorldWidth < this.parent.screenWidth)
-                {
-                    switch (this.underflowX)
-                    {
+            if (this.options.clampWheel !== 'y') {
+                if (this.parent.screenWorldWidth < this.parent.screenWidth) {
+                    switch (this.underflowX) {
                         case -1:
-                            this.parent.x = 0;
-                            break;
+                            this.parent.x = 0
+                            break
                         case 1:
-                            this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth);
-                            break;
+                            this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth)
+                            break
                         default:
-                            this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                            this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2
                     }
                 }
                 else
-                if (this.parent.left < 0)
-                {
-                    this.parent.x = 0;
-                    decelerate.x = 0;
-                }
-                else if (this.parent.right > this.parent.worldWidth)
-                {
-                    this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth;
-                    decelerate.x = 0;
-                }
+                    if (this.parent.left < 0) {
+                        this.parent.x = 0
+                        decelerate.x = 0
+                    }
+                    else if (this.parent.right > this.parent.worldWidth) {
+                        this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth
+                        decelerate.x = 0
+                    }
             }
-            if (this.options.clampWheel !== 'x')
-            {
-                if (this.parent.screenWorldHeight < this.parent.screenHeight)
-                {
-                    switch (this.underflowY)
-                    {
+            if (this.options.clampWheel !== 'x') {
+                if (this.parent.screenWorldHeight < this.parent.screenHeight) {
+                    switch (this.underflowY) {
                         case -1:
-                            this.parent.y = 0;
-                            break;
+                            this.parent.y = 0
+                            break
                         case 1:
-                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                            break;
+                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight)
+                            break
                         default:
-                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2
                     }
                 }
-                else
-                {
-                    if (this.parent.top < 0)
-                    {
-                        this.parent.y = 0;
-                        decelerate.y = 0;
+                else {
+                    if (this.parent.top < 0) {
+                        this.parent.y = 0
+                        decelerate.y = 0
                     }
-                    if (this.parent.bottom > this.parent.worldHeight)
-                    {
-                        this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight;
-                        decelerate.y = 0;
+                    if (this.parent.bottom > this.parent.worldHeight) {
+                        this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight
+                        decelerate.y = 0
                     }
                 }
             }
@@ -1986,7 +1759,7 @@ this.PIXI = this.PIXI || {};
         speed: 0,
         acceleration: null,
         radius: null
-    };
+    }
 
     /**
      * Plugin to follow a display-object.
@@ -1994,16 +1767,15 @@ this.PIXI = this.PIXI || {};
      * @see Viewport.follow
      * @public
      */
-    class Follow extends Plugin
-    {
+    class Follow extends Plugin {
         /** The options used to initialize this plugin. */
-        
+
 
         /** The target this plugin will make the viewport follow. */
-        
+
 
         /** The velocity provided the viewport by following, at the current time. */
-        
+
 
         /**
          * This is called by {@link Viewport.follow}.
@@ -2012,98 +1784,84 @@ this.PIXI = this.PIXI || {};
          * @param target - target to follow
          * @param options
          */
-        constructor(parent, target, options = {})
-        {
-            super(parent);
+        constructor(parent, target, options = {}) {
+            super(parent)
 
-            this.target = target;
-            this.options = Object.assign({}, DEFAULT_FOLLOW_OPTIONS, options);
-            this.velocity = { x: 0, y: 0 };
+            this.target = target
+            this.options = Object.assign({}, DEFAULT_FOLLOW_OPTIONS, options)
+            this.velocity = { x: 0, y: 0 }
         }
 
-         update(elapsed)
-        {
-            if (this.paused)
-            {
-                return;
+        update(elapsed) {
+            if (this.paused) {
+                return
             }
 
-            const center = this.parent.center;
-            let toX = this.target.x;
-            let toY = this.target.y;
+            const center = this.parent.center
+            let toX = this.target.x
+            let toY = this.target.y
 
-            if (this.options.radius)
-            {
-                const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
+            if (this.options.radius) {
+                const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2))
 
-                if (distance > this.options.radius)
-                {
-                    const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x);
+                if (distance > this.options.radius) {
+                    const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x)
 
-                    toX = this.target.x - (Math.cos(angle) * this.options.radius);
-                    toY = this.target.y - (Math.sin(angle) * this.options.radius);
+                    toX = this.target.x - (Math.cos(angle) * this.options.radius)
+                    toY = this.target.y - (Math.sin(angle) * this.options.radius)
                 }
-                else
-                {
-                    return;
+                else {
+                    return
                 }
             }
 
-            const deltaX = toX - center.x;
-            const deltaY = toY - center.y;
+            const deltaX = toX - center.x
+            const deltaY = toY - center.y
 
-            if (deltaX || deltaY)
-            {
-                if (this.options.speed)
-                {
-                    if (this.options.acceleration)
-                    {
-                        const angle = Math.atan2(toY - center.y, toX - center.x);
-                        const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+            if (deltaX || deltaY) {
+                if (this.options.speed) {
+                    if (this.options.acceleration) {
+                        const angle = Math.atan2(toY - center.y, toX - center.x)
+                        const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
 
-                        if (distance)
-                        {
-                            const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.options.acceleration);
+                        if (distance) {
+                            const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.options.acceleration)
 
-                            if (distance > decelerationDistance)
-                            {
+                            if (distance > decelerationDistance) {
                                 this.velocity = {
                                     x: Math.min(this.velocity.x + this.options.acceleration * elapsed, this.options.speed),
                                     y: Math.min(this.velocity.y + this.options.acceleration * elapsed, this.options.speed)
-                                };
+                                }
                             }
-                            else
-                            {
+                            else {
                                 this.velocity = {
                                     x: Math.max(this.velocity.x - this.options.acceleration * this.options.speed, 0),
                                     y: Math.max(this.velocity.y - this.options.acceleration * this.options.speed, 0)
-                                };
+                                }
                             }
-                            const changeX = Math.cos(angle) * this.velocity.x;
-                            const changeY = Math.sin(angle) * this.velocity.y;
-                            const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
-                            const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
+                            const changeX = Math.cos(angle) * this.velocity.x
+                            const changeY = Math.sin(angle) * this.velocity.y
+                            const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
+                            const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
 
-                            this.parent.moveCenter(x, y);
-                            this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                            this.parent.moveCenter(x, y)
+                            this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
                         }
                     }
-                    else
-                    {
-                        const angle = Math.atan2(toY - center.y, toX - center.x);
-                        const changeX = Math.cos(angle) * this.options.speed;
-                        const changeY = Math.sin(angle) * this.options.speed;
-                        const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
-                        const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
+                    else {
+                        const angle = Math.atan2(toY - center.y, toX - center.x)
+                        const changeX = Math.cos(angle) * this.options.speed
+                        const changeY = Math.sin(angle) * this.options.speed
+                        const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX
+                        const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY
 
-                        this.parent.moveCenter(x, y);
-                        this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                        this.parent.moveCenter(x, y)
+                        this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
                     }
                 }
-                else
-                {
-                    this.parent.moveCenter(toX, toY);
-                    this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                else {
+                    this.parent.moveCenter(toX, toY)
+                    this.parent.emit('moved', { viewport: this.parent, type: 'follow' })
                 }
             }
         }
@@ -2164,7 +1922,7 @@ this.PIXI = this.PIXI || {};
         noDecelerate: false,
         linear: false,
         allowButtons: false,
-    };
+    }
 
     /**
      * Scroll viewport when mouse hovers near one of the edges.
@@ -2172,224 +1930,186 @@ this.PIXI = this.PIXI || {};
      * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
      * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
      */
-    class MouseEdges extends Plugin
-    {
+    class MouseEdges extends Plugin {
         /** Options used to initialize this plugin, cannot be modified later. */
-        
+
 
         /** Factor from reverse option. */
-        
+
 
         /** Radius squared */
-        
+
 
         /** Scroll region size on the left side. */
-        
+
 
         /** Scroll region size on the top size. */
-        
+
 
         /** Scroll region size on the right side. */
-        
+
 
         /** Scroll region size on the bottom side. */
-        
 
-        
 
-        
+
+
+
 
         /**
          * This is called by {@link Viewport.mouseEdges}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);
+        constructor(parent, options = {}) {
+            super(parent)
 
-            this.options = Object.assign({}, MOUSE_EDGES_OPTIONS, options);
-            this.reverse = this.options.reverse ? 1 : -1;
-            this.radiusSquared = typeof this.options.radius === 'number' ? Math.pow(this.options.radius, 2) : null;
+            this.options = Object.assign({}, MOUSE_EDGES_OPTIONS, options)
+            this.reverse = this.options.reverse ? 1 : -1
+            this.radiusSquared = typeof this.options.radius === 'number' ? Math.pow(this.options.radius, 2) : null
 
-            this.resize();
+            this.resize()
         }
 
-         resize()
-        {
-            const distance = this.options.distance;
+        resize() {
+            const distance = this.options.distance
 
-            if (distance !== null)
-            {
-                this.left = distance;
-                this.top = distance;
-                this.right = this.parent.worldScreenWidth - distance;
-                this.bottom = this.parent.worldScreenHeight - distance;
+            if (distance !== null) {
+                this.left = distance
+                this.top = distance
+                this.right = this.parent.worldScreenWidth - distance
+                this.bottom = this.parent.worldScreenHeight - distance
             }
-            else if (!this.options.radius)
-            {
-                this.left = this.options.left;
-                this.top = this.options.top;
-                this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right;
-                this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom;
+            else if (!this.options.radius) {
+                this.left = this.options.left
+                this.top = this.options.top
+                this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right
+                this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom
             }
         }
 
-         down()
-        {
-            if (this.paused)
-            {
-                return false;
+        down() {
+            if (this.paused) {
+                return false
             }
-            if (!this.options.allowButtons)
-            {
-                this.horizontal = this.vertical = null;
+            if (!this.options.allowButtons) {
+                this.horizontal = this.vertical = null
             }
 
-            return false;
+            return false
         }
 
-         move(event)
-        {
-            if (this.paused)
-            {
-                return false;
+        move(event) {
+            if (this.paused) {
+                return false
             }
             if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1)
-                || (!this.options.allowButtons && event.data.buttons !== 0))
-            {
-                return false;
+                || (!this.options.allowButtons && event.data.buttons !== 0)) {
+                return false
             }
 
-            const x = event.data.global.x;
-            const y = event.data.global.y;
+            const x = event.data.global.x
+            const y = event.data.global.y
 
-            if (this.radiusSquared)
-            {
-                const center = this.parent.toScreen(this.parent.center);
-                const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2);
+            if (this.radiusSquared) {
+                const center = this.parent.toScreen(this.parent.center)
+                const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2)
 
-                if (distance >= this.radiusSquared)
-                {
-                    const angle = Math.atan2(center.y - y, center.x - x);
+                if (distance >= this.radiusSquared) {
+                    const angle = Math.atan2(center.y - y, center.x - x)
 
-                    if (this.options.linear)
-                    {
-                        this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000);
-                        this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000);
+                    if (this.options.linear) {
+                        this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000)
+                        this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000)
                     }
-                    else
-                    {
-                        this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000);
-                        this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000);
+                    else {
+                        this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000)
+                        this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000)
                     }
                 }
-                else
-                {
-                    if (this.horizontal)
-                    {
-                        this.decelerateHorizontal();
+                else {
+                    if (this.horizontal) {
+                        this.decelerateHorizontal()
                     }
-                    if (this.vertical)
-                    {
-                        this.decelerateVertical();
+                    if (this.vertical) {
+                        this.decelerateVertical()
                     }
 
-                    this.horizontal = this.vertical = 0;
+                    this.horizontal = this.vertical = 0
                 }
             }
-            else
-            {
-                if (this.left !== null && x < this.left)
-                {
-                    this.horizontal = Number(this.reverse) * this.options.speed * (60 / 1000);
+            else {
+                if (this.left !== null && x < this.left) {
+                    this.horizontal = Number(this.reverse) * this.options.speed * (60 / 1000)
                 }
-                else if (this.right !== null && x > this.right)
-                {
-                    this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000);
+                else if (this.right !== null && x > this.right) {
+                    this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000)
                 }
-                else
-                {
-                    this.decelerateHorizontal();
-                    this.horizontal = 0;
+                else {
+                    this.decelerateHorizontal()
+                    this.horizontal = 0
                 }
-                if (this.top !== null && y < this.top)
-                {
-                    this.vertical = Number(this.reverse) * this.options.speed * (60 / 1000);
+                if (this.top !== null && y < this.top) {
+                    this.vertical = Number(this.reverse) * this.options.speed * (60 / 1000)
                 }
-                else if (this.bottom !== null && y > this.bottom)
-                {
-                    this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000);
+                else if (this.bottom !== null && y > this.bottom) {
+                    this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000)
                 }
-                else
-                {
-                    this.decelerateVertical();
-                    this.vertical = 0;
+                else {
+                    this.decelerateVertical()
+                    this.vertical = 0
                 }
             }
 
-            return false;
+            return false
         }
 
-         decelerateHorizontal()
-        {
-            const decelerate = this.parent.plugins.get('decelerate', true);
+        decelerateHorizontal() {
+            const decelerate = this.parent.plugins.get('decelerate', true)
 
-            if (this.horizontal && decelerate && !this.options.noDecelerate)
-            {
-                decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) });
+            if (this.horizontal && decelerate && !this.options.noDecelerate) {
+                decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) })
             }
         }
 
-         decelerateVertical()
-        {
-            const decelerate = this.parent.plugins.get('decelerate', true);
+        decelerateVertical() {
+            const decelerate = this.parent.plugins.get('decelerate', true)
 
-            if (this.vertical && decelerate && !this.options.noDecelerate)
-            {
-                decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) });
+            if (this.vertical && decelerate && !this.options.noDecelerate) {
+                decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) })
             }
         }
 
-         up()
-        {
-            if (this.paused)
-            {
-                return false;
+        up() {
+            if (this.paused) {
+                return false
             }
-            if (this.horizontal)
-            {
-                this.decelerateHorizontal();
+            if (this.horizontal) {
+                this.decelerateHorizontal()
             }
-            if (this.vertical)
-            {
-                this.decelerateVertical();
+            if (this.vertical) {
+                this.decelerateVertical()
             }
-            this.horizontal = this.vertical = null;
+            this.horizontal = this.vertical = null
 
-            return false;
+            return false
         }
 
-         update()
-        {
-            if (this.paused)
-            {
-                return;
+        update() {
+            if (this.paused) {
+                return
             }
 
-            if (this.horizontal || this.vertical)
-            {
-                const center = this.parent.center;
+            if (this.horizontal || this.vertical) {
+                const center = this.parent.center
 
-                if (this.horizontal)
-                {
-                    center.x += this.horizontal * this.options.speed;
+                if (this.horizontal) {
+                    center.x += this.horizontal * this.options.speed
                 }
-                if (this.vertical)
-                {
-                    center.y += this.vertical * this.options.speed;
+                if (this.vertical) {
+                    center.y += this.vertical * this.options.speed
                 }
 
-                this.parent.moveCenter(center);
-                this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' });
+                this.parent.moveCenter(center)
+                this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' })
             }
         }
     }
@@ -2427,177 +2147,154 @@ this.PIXI = this.PIXI || {};
         center: null,
         factor: 1,
         axis: 'all',
-    };
+    }
 
     /**
      * Plugin for enabling two-finger pinching (or dragging).
      *
      * @public
      */
-    class Pinch extends Plugin
-    {
+    class Pinch extends Plugin {
         /** Options used to initialize this plugin. */
-        
+
 
         /** Flags whether this plugin is active, i.e. a pointer is down on the viewport. */
-         __init() {this.active = false;}
+        __init() { this.active = false }
 
         /** Flags whether the viewport is being pinched. */
-         __init2() {this.pinching = false;}
+        __init2() { this.pinching = false }
 
-         __init3() {this.moved = false;}
-        
+        __init3() { this.moved = false }
+
 
         /**
          * This is called by {@link Viewport.pinch}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);Pinch.prototype.__init.call(this);Pinch.prototype.__init2.call(this);Pinch.prototype.__init3.call(this);;
-            this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options);
+        constructor(parent, options = {}) {
+            super(parent); Pinch.prototype.__init.call(this); Pinch.prototype.__init2.call(this); Pinch.prototype.__init3.call(this);;
+            this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options)
         }
 
-         down()
-        {
-            if (this.parent.input.count() >= 2)
-            {
-                this.active = true;
-                return true;
+        down() {
+            if (this.parent.input.count() >= 2) {
+                this.active = true
+                return true
             }
 
-            return false;
+            return false
         }
 
-         isAxisX()
-        {
-            return ['all', 'x'].includes(this.options.axis);
+        isAxisX() {
+            return ['all', 'x'].includes(this.options.axis)
         }
 
-         isAxisY()
-        {
-            return ['all', 'y'].includes(this.options.axis);
+        isAxisY() {
+            return ['all', 'y'].includes(this.options.axis)
         }
 
-         move(e)
-        {
-            if (this.paused || !this.active)
-            {
-                return false;
+        move(e) {
+            if (this.paused || !this.active) {
+                return false
             }
 
-            const x = e.data.global.x;
-            const y = e.data.global.y;
+            const x = e.data.global.x
+            const y = e.data.global.y
 
-            const pointers = this.parent.input.touches;
+            const pointers = this.parent.input.touches
 
-            if (pointers.length >= 2)
-            {
-                const first = pointers[0] ;
-                const second = pointers[1] ;
+            if (pointers.length >= 2) {
+                const first = pointers[0]
+                const second = pointers[1]
                 const last = (first.last && second.last)
                     ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                    : null;
+                    : null
 
-                if (first.id === e.data.pointerId)
-                {
-                    first.last = { x, y, data: e.data } ;
+                if (first.id === e.data.pointerId) {
+                    first.last = { x, y, data: e.data }
                 }
-                else if (second.id === e.data.pointerId)
-                {
-                    second.last = { x, y, data: e.data } ;
+                else if (second.id === e.data.pointerId) {
+                    second.last = { x, y, data: e.data }
                 }
-                if (last)
-                {
-                    let oldPoint;
+                if (last) {
+                    let oldPoint
 
                     const point = {
-                        x: (first.last ).x +
-                            ((second.last ).x - (first.last ).x) / 2,
-                        y: (first.last ).y +
-                            ((second.last ).y - (first.last ).y) / 2,
-                    };
+                        x: (first.last).x +
+                            ((second.last).x - (first.last).x) / 2,
+                        y: (first.last).y +
+                            ((second.last).y - (first.last).y) / 2,
+                    }
 
-                    if (!this.options.center)
-                    {
-                        oldPoint = this.parent.toLocal(point);
+                    if (!this.options.center) {
+                        oldPoint = this.parent.toLocal(point)
                     }
                     let dist = Math.sqrt(Math.pow(
-                        (second.last ).x - (first.last ).x, 2) +
-                        Math.pow((second.last ).y - (first.last ).y, 2));
+                        (second.last).x - (first.last).x, 2) +
+                        Math.pow((second.last).y - (first.last).y, 2))
 
-                    dist = dist === 0 ? dist = 0.0000000001 : dist;
+                    dist = dist === 0 ? dist = 0.0000000001 : dist
 
                     const change = (1 - last / dist) * this.options.percent
-                        * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
+                        * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y)
 
-                    if (this.isAxisX())
-                    {
-                        this.parent.scale.x += change;
+                    if (this.isAxisX()) {
+                        this.parent.scale.x += change
                     }
-                    if (this.isAxisY())
-                    {
-                        this.parent.scale.y += change;
+                    if (this.isAxisY()) {
+                        this.parent.scale.y += change
                     }
 
-                    this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point });
+                    this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point })
 
-                    const clamp = this.parent.plugins.get('clamp-zoom', true);
+                    const clamp = this.parent.plugins.get('clamp-zoom', true)
 
-                    if (clamp)
-                    {
-                        clamp.clamp();
+                    if (clamp) {
+                        clamp.clamp()
                     }
-                    if (this.options.center)
-                    {
-                        this.parent.moveCenter(this.options.center);
+                    if (this.options.center) {
+                        this.parent.moveCenter(this.options.center)
                     }
-                    else
-                    {
-                        const newPoint = this.parent.toGlobal(oldPoint );
+                    else {
+                        const newPoint = this.parent.toGlobal(oldPoint)
 
-                        this.parent.x += (point.x - newPoint.x) * this.options.factor;
-                        this.parent.y += (point.y - newPoint.y) * this.options.factor;
-                        this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
+                        this.parent.x += (point.x - newPoint.x) * this.options.factor
+                        this.parent.y += (point.y - newPoint.y) * this.options.factor
+                        this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
                     }
-                    if (!this.options.noDrag && this.lastCenter)
-                    {
-                        this.parent.x += (point.x - this.lastCenter.x) * this.options.factor;
-                        this.parent.y += (point.y - this.lastCenter.y) * this.options.factor;
-                        this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
+                    if (!this.options.noDrag && this.lastCenter) {
+                        this.parent.x += (point.x - this.lastCenter.x) * this.options.factor
+                        this.parent.y += (point.y - this.lastCenter.y) * this.options.factor
+                        this.parent.emit('moved', { viewport: this.parent, type: 'pinch' })
                     }
 
-                    this.lastCenter = point;
-                    this.moved = true;
+                    this.lastCenter = point
+                    this.moved = true
                 }
-                else if (!this.pinching)
-                {
-                    this.parent.emit('pinch-start', this.parent);
-                    this.pinching = true;
+                else if (!this.pinching) {
+                    this.parent.emit('pinch-start', this.parent)
+                    this.pinching = true
                 }
 
-                return true;
+                return true
             }
 
-            return false;
+            return false
         }
 
-         up()
-        {
-            if (this.pinching)
-            {
-                if (this.parent.input.touches.length <= 1)
-                {
-                    this.active = false;
-                    this.lastCenter = null;
-                    this.pinching = false;
-                    this.moved = false;
-                    this.parent.emit('pinch-end', this.parent);
+        up() {
+            if (this.pinching) {
+                if (this.parent.input.touches.length <= 1) {
+                    this.active = false
+                    this.lastCenter = null
+                    this.pinching = false
+                    this.moved = false
+                    this.parent.emit('pinch-end', this.parent)
 
-                    return true;
+                    return true
                 }
             }
 
-            return false;
+            return false
         }
     }
 
@@ -2610,7 +2307,7 @@ this.PIXI = this.PIXI || {};
         removeOnComplete: false,
         removeOnInterrupt: false,
         forceStart: false
-    };
+    }
 
     /**
      * @event snap-start(Viewport) emitted each time a snap animation starts
@@ -2618,154 +2315,130 @@ this.PIXI = this.PIXI || {};
      * @event snap-end(Viewport) emitted each time snap reaches its target
      * @event snap-remove(Viewport) emitted if snap plugin is removed
      */
-    class Snap extends Plugin
-    {
-        
-        
-        
-        
+    class Snap extends Plugin {
 
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
 
         /**
          * This is called by {@link Viewport.snap}.
          */
-        constructor(parent, x, y, options = {})
-        {
-            super(parent);
-            this.options = Object.assign({}, DEFAULT_SNAP_OPTIONS, options);
-            this.ease = ease(options.ease, 'easeInOutSine');
-            this.x = x;
-            this.y = y;
+        constructor(parent, x, y, options = {}) {
+            super(parent)
+            this.options = Object.assign({}, DEFAULT_SNAP_OPTIONS, options)
+            this.ease = ease(options.ease, 'easeInOutSine')
+            this.x = x
+            this.y = y
 
-            if (this.options.forceStart)
-            {
-                this.snapStart();
+            if (this.options.forceStart) {
+                this.snapStart()
             }
         }
 
-         snapStart()
-        {
-            this.percent = 0;
-            this.snapping = { time: 0 };
-            const current = this.options.topLeft ? this.parent.corner : this.parent.center;
+        snapStart() {
+            this.percent = 0
+            this.snapping = { time: 0 }
+            const current = this.options.topLeft ? this.parent.corner : this.parent.center
 
-            this.deltaX = this.x - current.x;
-            this.deltaY = this.y - current.y;
-            this.startX = current.x;
-            this.startY = current.y;
-            this.parent.emit('snap-start', this.parent);
+            this.deltaX = this.x - current.x
+            this.deltaY = this.y - current.y
+            this.startX = current.x
+            this.startY = current.y
+            this.parent.emit('snap-start', this.parent)
         }
 
-         wheel()
-        {
-            if (this.options.removeOnInterrupt)
-            {
-                this.parent.plugins.remove('snap');
+        wheel() {
+            if (this.options.removeOnInterrupt) {
+                this.parent.plugins.remove('snap')
             }
 
-            return false;
+            return false
         }
 
-         down()
-        {
-            if (this.options.removeOnInterrupt)
-            {
-                this.parent.plugins.remove('snap');
+        down() {
+            if (this.options.removeOnInterrupt) {
+                this.parent.plugins.remove('snap')
             }
-            else if (this.options.interrupt)
-            {
-                this.snapping = null;
+            else if (this.options.interrupt) {
+                this.snapping = null
             }
 
-            return false;
+            return false
         }
 
-         up()
-        {
-            if (this.parent.input.count() === 0)
-            {
-                const decelerate = this.parent.plugins.get('decelerate', true);
+        up() {
+            if (this.parent.input.count() === 0) {
+                const decelerate = this.parent.plugins.get('decelerate', true)
 
-                if (decelerate && (decelerate.x || decelerate.y))
-                {
-                    decelerate.percentChangeX = decelerate.percentChangeY = this.options.friction;
+                if (decelerate && (decelerate.x || decelerate.y)) {
+                    decelerate.percentChangeX = decelerate.percentChangeY = this.options.friction
                 }
             }
 
-            return false;
+            return false
         }
 
-         update(elapsed)
-        {
-            if (this.paused)
-            {
-                return;
+        update(elapsed) {
+            if (this.paused) {
+                return
             }
-            if (this.options.interrupt && this.parent.input.count() !== 0)
-            {
-                return;
+            if (this.options.interrupt && this.parent.input.count() !== 0) {
+                return
             }
-            if (!this.snapping)
-            {
-                const current = this.options.topLeft ? this.parent.corner : this.parent.center;
+            if (!this.snapping) {
+                const current = this.options.topLeft ? this.parent.corner : this.parent.center
 
-                if (current.x !== this.x || current.y !== this.y)
-                {
-                    this.snapStart();
+                if (current.x !== this.x || current.y !== this.y) {
+                    this.snapStart()
                 }
             }
-            else
-            {
-                const snapping = this.snapping;
+            else {
+                const snapping = this.snapping
 
-                snapping.time += elapsed;
-                let finished;
-                let x;
-                let y;
+                snapping.time += elapsed
+                let finished
+                let x
+                let y
 
-                const startX = this.startX ;
-                const startY = this.startY ;
-                const deltaX = this.deltaX ;
-                const deltaY = this.deltaY ;
+                const startX = this.startX
+                const startY = this.startY
+                const deltaX = this.deltaX
+                const deltaY = this.deltaY
 
-                if (snapping.time > this.options.time)
-                {
-                    finished = true;
-                    x = startX + deltaX;
-                    y = startY + deltaY;
+                if (snapping.time > this.options.time) {
+                    finished = true
+                    x = startX + deltaX
+                    y = startY + deltaY
                 }
-                else
-                {
-                    const percent = this.ease(snapping.time, 0, 1, this.options.time);
+                else {
+                    const percent = this.ease(snapping.time, 0, 1, this.options.time)
 
-                    x = startX + (deltaX * percent);
-                    y = startY + (deltaY * percent);
+                    x = startX + (deltaX * percent)
+                    y = startY + (deltaY * percent)
                 }
-                if (this.options.topLeft)
-                {
-                    this.parent.moveCorner(x, y);
+                if (this.options.topLeft) {
+                    this.parent.moveCorner(x, y)
                 }
-                else
-                {
-                    this.parent.moveCenter(x, y);
+                else {
+                    this.parent.moveCenter(x, y)
                 }
 
-                this.parent.emit('moved', { viewport: this.parent, type: 'snap' });
+                this.parent.emit('moved', { viewport: this.parent, type: 'snap' })
 
-                if (finished)
-                {
-                    if (this.options.removeOnComplete)
-                    {
-                        this.parent.plugins.remove('snap');
+                if (finished) {
+                    if (this.options.removeOnComplete) {
+                        this.parent.plugins.remove('snap')
                     }
-                    this.parent.emit('snap-end', this.parent);
-                    this.snapping = null;
+                    this.parent.emit('snap-end', this.parent)
+                    this.snapping = null
                 }
             }
         }
@@ -2840,23 +2513,22 @@ this.PIXI = this.PIXI || {};
         removeOnInterrupt: false,
         forceStart: false,
         noMove: false
-    };
+    }
 
     /**
      * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
      */
-    class SnapZoom extends Plugin
-    {
-        
+    class SnapZoom extends Plugin {
 
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
 
 
 
@@ -2867,60 +2539,53 @@ this.PIXI = this.PIXI || {};
         /**
          * This is called by {@link Viewport.snapZoom}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);
+        constructor(parent, options = {}) {
+            super(parent)
 
-            this.options = Object.assign({}, DEFAULT_SNAP_ZOOM_OPTIONS, options);
-            this.ease = ease(this.options.ease);
+            this.options = Object.assign({}, DEFAULT_SNAP_ZOOM_OPTIONS, options)
+            this.ease = ease(this.options.ease)
 
             // Assign defaults for typescript.
-            this.xIndependent = false;
-            this.yIndependent = false;
-            this.xScale = 0;
-            this.yScale = 0;
+            this.xIndependent = false
+            this.yIndependent = false
+            this.xScale = 0
+            this.yScale = 0
 
-            if (this.options.width > 0)
-            {
-                this.xScale = parent.screenWidth / this.options.width;
-                this.xIndependent = true;
+            if (this.options.width > 0) {
+                this.xScale = parent.screenWidth / this.options.width
+                this.xIndependent = true
             }
-            if (this.options.height > 0)
-            {
-                this.yScale = parent.screenHeight / this.options.height;
-                this.yIndependent = true;
+            if (this.options.height > 0) {
+                this.yScale = parent.screenHeight / this.options.height
+                this.yIndependent = true
             }
 
-            this.xScale = this.xIndependent ? (this.xScale ) : (this.yScale );
-            this.yScale = this.yIndependent ? (this.yScale ) : this.xScale;
+            this.xScale = this.xIndependent ? (this.xScale) : (this.yScale)
+            this.yScale = this.yIndependent ? (this.yScale) : this.xScale
 
-            if (this.options.time === 0)
-            {
+            if (this.options.time === 0) {
                 // TODO: Fix this
                 // @ts-expect-error todo
-                parent.container.scale.x = this.xScale;
+                parent.container.scale.x = this.xScale
 
                 // TODO: Fix this
                 // @ts-expect-error todo
-                parent.container.scale.y = this.yScale;
+                parent.container.scale.y = this.yScale
 
-                if (this.options.removeOnComplete)
-                {
-                    this.parent.plugins.remove('snap-zoom');
+                if (this.options.removeOnComplete) {
+                    this.parent.plugins.remove('snap-zoom')
                 }
             }
-            else if (options.forceStart)
-            {
-                this.createSnapping();
+            else if (options.forceStart) {
+                this.createSnapping()
             }
         }
 
-         createSnapping()
-        {
-            const startWorldScreenWidth = this.parent.worldScreenWidth;
-            const startWorldScreenHeight = this.parent.worldScreenHeight;
-            const endWorldScreenWidth = this.parent.screenWidth / this.xScale;
-            const endWorldScreenHeight = this.parent.screenHeight / this.yScale;
+        createSnapping() {
+            const startWorldScreenWidth = this.parent.worldScreenWidth
+            const startWorldScreenHeight = this.parent.worldScreenHeight
+            const endWorldScreenWidth = this.parent.screenWidth / this.xScale
+            const endWorldScreenHeight = this.parent.screenHeight / this.yScale
 
             this.snapping = {
                 time: 0,
@@ -2928,124 +2593,101 @@ this.PIXI = this.PIXI || {};
                 startY: startWorldScreenHeight,
                 deltaX: endWorldScreenWidth - startWorldScreenWidth,
                 deltaY: endWorldScreenHeight - startWorldScreenHeight
-            };
+            }
 
-            this.parent.emit('snap-zoom-start', this.parent);
+            this.parent.emit('snap-zoom-start', this.parent)
         }
 
-         resize()
-        {
-            this.snapping = null;
+        resize() {
+            this.snapping = null
 
-            if (this.options.width > 0)
-            {
-                this.xScale = this.parent.screenWidth / this.options.width;
+            if (this.options.width > 0) {
+                this.xScale = this.parent.screenWidth / this.options.width
             }
-            if (this.options.height > 0)
-            {
-                this.yScale = this.parent.screenHeight / this.options.height;
+            if (this.options.height > 0) {
+                this.yScale = this.parent.screenHeight / this.options.height
             }
-            this.xScale = this.xIndependent ? this.xScale : this.yScale;
-            this.yScale = this.yIndependent ? this.yScale : this.xScale;
+            this.xScale = this.xIndependent ? this.xScale : this.yScale
+            this.yScale = this.yIndependent ? this.yScale : this.xScale
         }
 
-         wheel()
-        {
-            if (this.options.removeOnInterrupt)
-            {
-                this.parent.plugins.remove('snap-zoom');
+        wheel() {
+            if (this.options.removeOnInterrupt) {
+                this.parent.plugins.remove('snap-zoom')
             }
 
-            return false;
+            return false
         }
 
-         down()
-        {
-            if (this.options.removeOnInterrupt)
-            {
-                this.parent.plugins.remove('snap-zoom');
+        down() {
+            if (this.options.removeOnInterrupt) {
+                this.parent.plugins.remove('snap-zoom')
             }
-            else if (this.options.interrupt)
-            {
-                this.snapping = null;
+            else if (this.options.interrupt) {
+                this.snapping = null
             }
 
-            return false;
+            return false
         }
 
-         update(elapsed)
-        {
-            if (this.paused)
-            {
-                return;
+        update(elapsed) {
+            if (this.paused) {
+                return
             }
-            if (this.options.interrupt && this.parent.input.count() !== 0)
-            {
-                return;
+            if (this.options.interrupt && this.parent.input.count() !== 0) {
+                return
             }
 
-            let oldCenter;
+            let oldCenter
 
-            if (!this.options.center && !this.options.noMove)
-            {
-                oldCenter = this.parent.center;
+            if (!this.options.center && !this.options.noMove) {
+                oldCenter = this.parent.center
             }
-            if (!this.snapping)
-            {
-                if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale)
-                {
-                    this.createSnapping();
+            if (!this.snapping) {
+                if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale) {
+                    this.createSnapping()
                 }
             }
-            else if (this.snapping)
-            {
-                const snapping = this.snapping;
+            else if (this.snapping) {
+                const snapping = this.snapping
 
-                snapping.time += elapsed;
+                snapping.time += elapsed
 
-                if (snapping.time >= this.options.time)
-                {
-                    this.parent.scale.set(this.xScale, this.yScale);
-                    if (this.options.removeOnComplete)
-                    {
-                        this.parent.plugins.remove('snap-zoom');
+                if (snapping.time >= this.options.time) {
+                    this.parent.scale.set(this.xScale, this.yScale)
+                    if (this.options.removeOnComplete) {
+                        this.parent.plugins.remove('snap-zoom')
                     }
-                    this.parent.emit('snap-zoom-end', this.parent);
-                    this.snapping = null;
+                    this.parent.emit('snap-zoom-end', this.parent)
+                    this.snapping = null
                 }
-                else
-                {
-                    const snapping = this.snapping;
-                    const worldScreenWidth = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
-                    const worldScreenHeight = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
+                else {
+                    const snapping = this.snapping
+                    const worldScreenWidth = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time)
+                    const worldScreenHeight = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time)
 
-                    this.parent.scale.x = this.parent.screenWidth / worldScreenWidth;
-                    this.parent.scale.y = this.parent.screenHeight / worldScreenHeight;
+                    this.parent.scale.x = this.parent.screenWidth / worldScreenWidth
+                    this.parent.scale.y = this.parent.screenHeight / worldScreenHeight
                 }
-                const clamp = this.parent.plugins.get('clamp-zoom', true);
+                const clamp = this.parent.plugins.get('clamp-zoom', true)
 
-                if (clamp)
-                {
-                    clamp.clamp();
+                if (clamp) {
+                    clamp.clamp()
                 }
-                if (!this.options.noMove)
-                {
-                    if (!this.options.center)
-                    {
-                        this.parent.moveCenter(oldCenter );
+                if (!this.options.noMove) {
+                    if (!this.options.center) {
+                        this.parent.moveCenter(oldCenter)
                     }
-                    else
-                    {
-                        this.parent.moveCenter(this.options.center);
+                    else {
+                        this.parent.moveCenter(this.options.center)
                     }
                 }
             }
         }
 
-         resume()
-        {
-            this.snapping = null;
-            super.resume();
+        resume() {
+            this.snapping = null
+            super.resume()
         }
     }
 
@@ -3110,168 +2752,142 @@ this.PIXI = this.PIXI || {};
         center: null,
         lineHeight: 20,
         axis: 'all',
-    };
+    }
 
     /**
      * Plugin for handling wheel scrolling for viewport zoom.
      *
      * @event wheel({wheel: {dx, dy, dz}, event, viewport})
      */
-    class Wheel extends Plugin
-    {
-        
+    class Wheel extends Plugin {
 
-        
-        
-        
+
+
+
+
 
         /**
          * This is called by {@link Viewport.wheel}.
          */
-        constructor(parent, options = {})
-        {
-            super(parent);
-            this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options);
+        constructor(parent, options = {}) {
+            super(parent)
+            this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options)
         }
 
-         down()
-        {
-            if (this.options.interrupt)
-            {
-                this.smoothing = null;
+        down() {
+            if (this.options.interrupt) {
+                this.smoothing = null
             }
 
-            return false;
+            return false
         }
 
-         isAxisX()
-        {
-            return ['all', 'x'].includes(this.options.axis);
+        isAxisX() {
+            return ['all', 'x'].includes(this.options.axis)
         }
 
-         isAxisY()
-        {
-            return ['all', 'y'].includes(this.options.axis);
+        isAxisY() {
+            return ['all', 'y'].includes(this.options.axis)
         }
 
-         update()
-        {
-            if (this.smoothing)
-            {
-                const point = this.smoothingCenter;
-                const change = this.smoothing;
-                let oldPoint;
+        update() {
+            if (this.smoothing) {
+                const point = this.smoothingCenter
+                const change = this.smoothing
+                let oldPoint
 
-                if (!this.options.center)
-                {
-                    oldPoint = this.parent.toLocal(point );
+                if (!this.options.center) {
+                    oldPoint = this.parent.toLocal(point)
                 }
-                if (this.isAxisX())
-                {
-                    this.parent.scale.x += change.x;
+                if (this.isAxisX()) {
+                    this.parent.scale.x += change.x
                 }
-                if (this.isAxisY())
-                {
-                    this.parent.scale.y += change.y;
+                if (this.isAxisY()) {
+                    this.parent.scale.y += change.y
                 }
 
-                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-                const clamp = this.parent.plugins.get('clamp-zoom', true);
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
+                const clamp = this.parent.plugins.get('clamp-zoom', true)
 
-                if (clamp)
-                {
-                    clamp.clamp();
+                if (clamp) {
+                    clamp.clamp()
                 }
-                if (this.options.center)
-                {
-                    this.parent.moveCenter(this.options.center);
+                if (this.options.center) {
+                    this.parent.moveCenter(this.options.center)
                 }
-                else
-                {
-                    const newPoint = this.parent.toGlobal(oldPoint );
+                else {
+                    const newPoint = this.parent.toGlobal(oldPoint)
 
-                    this.parent.x += (point ).x - newPoint.x;
-                    this.parent.y += (point ).y - newPoint.y;
+                    this.parent.x += (point).x - newPoint.x
+                    this.parent.y += (point).y - newPoint.y
                 }
 
                 this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-                (this.smoothingCount )++;
+                (this.smoothingCount)++
 
-                if (this.smoothingCount  >= this.options.smooth)
-                {
-                    this.smoothing = null;
+                if (this.smoothingCount >= this.options.smooth) {
+                    this.smoothing = null
                 }
             }
         }
 
-         wheel(e)
-        {
-            if (this.paused)
-            {
-                return;
+        wheel(e) {
+            if (this.paused) {
+                return
             }
 
-            const point = this.parent.input.getPointerPosition(e);
-            const sign = this.options.reverse ? -1 : 1;
-            const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
-            const change = Math.pow(2, (1 + this.options.percent) * step);
+            const point = this.parent.input.getPointerPosition(e)
+            const sign = this.options.reverse ? -1 : 1
+            const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500
+            const change = Math.pow(2, (1 + this.options.percent) * step)
 
-            if (this.options.smooth)
-            {
+            if (this.options.smooth) {
                 const original = {
-                    x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount )) : 0,
-                    y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount )) : 0
-                };
+                    x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount)) : 0,
+                    y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount)) : 0
+                }
 
                 this.smoothing = {
                     x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
                     y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
-                };
-                this.smoothingCount = 0;
-                this.smoothingCenter = point;
+                }
+                this.smoothingCount = 0
+                this.smoothingCenter = point
             }
-            else
-            {
-                let oldPoint;
+            else {
+                let oldPoint
 
-                if (!this.options.center)
-                {
-                    oldPoint = this.parent.toLocal(point);
+                if (!this.options.center) {
+                    oldPoint = this.parent.toLocal(point)
                 }
-                if (this.isAxisX())
-                {
-                    this.parent.scale.x *= change;
+                if (this.isAxisX()) {
+                    this.parent.scale.x *= change
                 }
-                if (this.isAxisY())
-                {
-                    this.parent.scale.y *= change;
+                if (this.isAxisY()) {
+                    this.parent.scale.y *= change
                 }
-                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-                const clamp = this.parent.plugins.get('clamp-zoom', true);
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' })
+                const clamp = this.parent.plugins.get('clamp-zoom', true)
 
-                if (clamp)
-                {
-                    clamp.clamp();
+                if (clamp) {
+                    clamp.clamp()
                 }
-                if (this.options.center)
-                {
-                    this.parent.moveCenter(this.options.center);
+                if (this.options.center) {
+                    this.parent.moveCenter(this.options.center)
                 }
-                else
-                {
-                    const newPoint = this.parent.toGlobal(oldPoint );
+                else {
+                    const newPoint = this.parent.toGlobal(oldPoint)
 
-                    this.parent.x += point.x - newPoint.x;
-                    this.parent.y += point.y - newPoint.y;
+                    this.parent.x += point.x - newPoint.x
+                    this.parent.y += point.y - newPoint.y
                 }
             }
 
-            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-            this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' })
+            this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent })
 
-            if (!this.parent.options.passiveWheel)
-            {
-                return true;
+            if (!this.parent.options.passiveWheel) {
+                return true
             }
         }
     }
@@ -3283,54 +2899,49 @@ this.PIXI = this.PIXI || {};
      * @ignore
      * @private
      */
-    class InputManager
-    {
-        
+    class InputManager {
 
-        
-        
-        
-        
+
+
+
+
+
         /** List of active touches on viewport */
-        
 
-        constructor(viewport)
-        {
-            this.viewport = viewport;
-            this.touches = [];
 
-            this.addListeners();
+        constructor(viewport) {
+            this.viewport = viewport
+            this.touches = []
+
+            this.addListeners()
         }
 
         /** Add input listeners */
-         addListeners()
-        {
-            this.viewport.interactive = true;
-            if (!this.viewport.forceHitArea)
-            {
-                this.viewport.hitArea = new math.Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
+        addListeners() {
+            this.viewport.interactive = true
+            if (!this.viewport.forceHitArea) {
+                this.viewport.hitArea = new math.Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight)
             }
-            this.viewport.on('pointerdown', this.down, this);
-            this.viewport.on('pointermove', this.move, this);
-            this.viewport.on('pointerup', this.up, this);
-            this.viewport.on('pointerupoutside', this.up, this);
-            this.viewport.on('pointercancel', this.up, this);
-            this.viewport.on('pointerout', this.up, this);
-            this.wheelFunction = (e) => this.handleWheel(e);
+            this.viewport.on('pointerdown', this.down, this)
+            this.viewport.on('pointermove', this.move, this)
+            this.viewport.on('pointerup', this.up, this)
+            this.viewport.on('pointerupoutside', this.up, this)
+            this.viewport.on('pointercancel', this.up, this)
+            this.viewport.on('pointerout', this.up, this)
+            this.wheelFunction = (e) => this.handleWheel(e)
             this.viewport.options.divWheel.addEventListener(
                 'wheel',
-                this.wheelFunction ,
-                { passive: this.viewport.options.passiveWheel });
-            this.isMouseDown = false;
+                this.wheelFunction,
+                { passive: this.viewport.options.passiveWheel })
+            this.isMouseDown = false
         }
 
         /**
          * Removes all event listeners from viewport
          * (useful for cleanup of wheel when removing viewport)
          */
-         destroy()
-        {
-            this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction );
+        destroy() {
+            this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction)
         }
 
         /**
@@ -3338,216 +2949,178 @@ this.PIXI = this.PIXI || {};
          *
          * @param {PIXI.InteractionEvent} event
          */
-         down(event)
-        {
-            if (this.viewport.pause || !this.viewport.worldVisible)
-            {
-                return;
+        down(event) {
+            if (this.viewport.pause || !this.viewport.worldVisible) {
+                return
             }
-            if (event.data.pointerType === 'mouse')
-            {
-                this.isMouseDown = true;
+            if (event.data.pointerType === 'mouse') {
+                this.isMouseDown = true
             }
-            else if (!this.get(event.data.pointerId))
-            {
-                this.touches.push({ id: event.data.pointerId, last: null });
+            else if (!this.get(event.data.pointerId)) {
+                this.touches.push({ id: event.data.pointerId, last: null })
             }
-            if (this.count() === 1)
-            {
-                this.last = event.data.global.clone();
+            if (this.count() === 1) {
+                this.last = event.data.global.clone()
 
                 // clicked event does not fire if viewport is decelerating or bouncing
-                const decelerate = this.viewport.plugins.get('decelerate', true);
-                const bounce = this.viewport.plugins.get('bounce', true);
+                const decelerate = this.viewport.plugins.get('decelerate', true)
+                const bounce = this.viewport.plugins.get('bounce', true)
 
-                if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive()))
-                {
-                    this.clickedAvailable = true;
+                if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive())) {
+                    this.clickedAvailable = true
                 }
-                else
-                {
-                    this.clickedAvailable = false;
+                else {
+                    this.clickedAvailable = false
                 }
             }
-            else
-            {
-                this.clickedAvailable = false;
+            else {
+                this.clickedAvailable = false
             }
 
-            const stop = this.viewport.plugins.down(event);
+            const stop = this.viewport.plugins.down(event)
 
-            if (stop && this.viewport.options.stopPropagation)
-            {
-                event.stopPropagation();
+            if (stop && this.viewport.options.stopPropagation) {
+                event.stopPropagation()
             }
         }
 
         /** Clears all pointer events */
-         clear()
-        {
-            this.isMouseDown = false;
-            this.touches = [];
-            this.last = null;
+        clear() {
+            this.isMouseDown = false
+            this.touches = []
+            this.last = null
         }
 
         /**
          * @param {number} change
          * @returns whether change exceeds threshold
          */
-         checkThreshold(change)
-        {
-            if (Math.abs(change) >= this.viewport.threshold)
-            {
-                return true;
+        checkThreshold(change) {
+            if (Math.abs(change) >= this.viewport.threshold) {
+                return true
             }
 
-            return false;
+            return false
         }
 
         /** Handle move events for viewport */
-         move(event)
-        {
-            if (this.viewport.pause || !this.viewport.worldVisible)
-            {
-                return;
+        move(event) {
+            if (this.viewport.pause || !this.viewport.worldVisible) {
+                return
             }
 
-            const stop = this.viewport.plugins.move(event);
+            const stop = this.viewport.plugins.move(event)
 
-            if (this.clickedAvailable && this.last)
-            {
-                const distX = event.data.global.x - this.last.x;
-                const distY = event.data.global.y - this.last.y;
+            if (this.clickedAvailable && this.last) {
+                const distX = event.data.global.x - this.last.x
+                const distY = event.data.global.y - this.last.y
 
-                if (this.checkThreshold(distX) || this.checkThreshold(distY))
-                {
-                    this.clickedAvailable = false;
+                if (this.checkThreshold(distX) || this.checkThreshold(distY)) {
+                    this.clickedAvailable = false
                 }
             }
 
-            if (stop && this.viewport.options.stopPropagation)
-            {
-                event.stopPropagation();
+            if (stop && this.viewport.options.stopPropagation) {
+                event.stopPropagation()
             }
         }
 
         /** Handle up events for viewport */
-         up(event)
-        {
-            if (this.viewport.pause || !this.viewport.worldVisible)
-            {
-                return;
+        up(event) {
+            if (this.viewport.pause || !this.viewport.worldVisible) {
+                return
             }
 
-            if (event.data.pointerType === 'mouse')
-            {
-                this.isMouseDown = false;
+            if (event.data.pointerType === 'mouse') {
+                this.isMouseDown = false
             }
 
-            if (event.data.pointerType !== 'mouse')
-            {
-                this.remove(event.data.pointerId);
+            if (event.data.pointerType !== 'mouse') {
+                this.remove(event.data.pointerId)
             }
 
-            const stop = this.viewport.plugins.up(event);
+            const stop = this.viewport.plugins.up(event)
 
-            if (this.clickedAvailable && this.count() === 0 && this.last)
-            {
+            if (this.clickedAvailable && this.count() === 0 && this.last) {
                 this.viewport.emit('clicked', {
                     event,
                     screen: this.last,
                     world: this.viewport.toWorld(this.last),
                     viewport: this
-                });
-                this.clickedAvailable = false;
+                })
+                this.clickedAvailable = false
             }
 
-            if (stop && this.viewport.options.stopPropagation)
-            {
-                event.stopPropagation();
+            if (stop && this.viewport.options.stopPropagation) {
+                event.stopPropagation()
             }
         }
 
         /** Gets pointer position if this.interaction is set */
-         getPointerPosition(event)
-        {
-            const point = new math.Point();
+        getPointerPosition(event) {
+            const point = new math.Point()
 
-            if (this.viewport.options.interaction)
-            {
-                this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY);
+            if (this.viewport.options.interaction) {
+                this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY)
             }
-            else
-            {
-                point.x = event.clientX;
-                point.y = event.clientY;
+            else {
+                point.x = event.clientX
+                point.y = event.clientY
             }
 
-            return point;
+            return point
         }
 
         /** Handle wheel events */
-         handleWheel(event)
-        {
-            if (this.viewport.pause || !this.viewport.worldVisible)
-            {
-                return;
+        handleWheel(event) {
+            if (this.viewport.pause || !this.viewport.worldVisible) {
+                return
             }
 
             // do not handle events coming from other elements
             if (this.viewport.options.interaction
-                && (this.viewport.options.interaction ).interactionDOMElement !== event.target)
-            {
-                return;
+                && (this.viewport.options.interaction).interactionDOMElement !== event.target) {
+                return
             }
 
             // only handle wheel events where the mouse is over the viewport
-            const point = this.viewport.toLocal(this.getPointerPosition(event));
+            const point = this.viewport.toLocal(this.getPointerPosition(event))
 
             if (this.viewport.left <= point.x
                 && point.x <= this.viewport.right
                 && this.viewport.top <= point.y
-                && point.y <= this.viewport.bottom)
-            {
-                const stop = this.viewport.plugins.wheel(event);
+                && point.y <= this.viewport.bottom) {
+                const stop = this.viewport.plugins.wheel(event)
 
-                if (stop && !this.viewport.options.passiveWheel)
-                {
-                    event.preventDefault();
+                if (stop && !this.viewport.options.passiveWheel) {
+                    event.preventDefault()
                 }
             }
         }
 
-         pause()
-        {
-            this.touches = [];
-            this.isMouseDown = false;
+        pause() {
+            this.touches = []
+            this.isMouseDown = false
         }
 
         /** Get touch by id */
-         get(id)
-        {
-            for (const touch of this.touches)
-            {
-                if (touch.id === id)
-                {
-                    return touch;
+        get(id) {
+            for (const touch of this.touches) {
+                if (touch.id === id) {
+                    return touch
                 }
             }
 
-            return null;
+            return null
         }
 
         /** Remove touch by number */
-        remove(id)
-        {
-            for (let i = 0; i < this.touches.length; i++)
-            {
-                if (this.touches[i].id === id)
-                {
-                    this.touches.splice(i, 1);
+        remove(id) {
+            for (let i = 0; i < this.touches.length; i++) {
+                if (this.touches[i].id === id) {
+                    this.touches.splice(i, 1)
 
-                    return;
+                    return
                 }
             }
         }
@@ -3555,13 +3128,12 @@ this.PIXI = this.PIXI || {};
         /**
          * @returns {number} count of mouse/touch pointers that are down on the viewport
          */
-        count()
-        {
-            return (this.isMouseDown ? 1 : 0) + this.touches.length;
+        count() {
+            return (this.isMouseDown ? 1 : 0) + this.touches.length
         }
     }
 
-    function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+    function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value) } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined } } return value }
 
 
 
@@ -3592,34 +3164,32 @@ this.PIXI = this.PIXI || {};
         'clamp-zoom',
         'snap',
         'clamp',
-    ];
+    ]
 
     /**
      * Use this to access current plugins or add user-defined plugins
      *
      * @public
      */
-    class PluginManager
-    {
+    class PluginManager {
         /** Maps mounted plugins by their type */
-        
+
 
         /**
          * List of plugins mounted
          *
          * This list is kept sorted by the internal priority of plugins (hard-coded).
          */
-        
+
 
         /** The viewport using the plugins managed by `this`. */
-        
+
 
         /** This is called by {@link Viewport} to initialize the {@link Viewport.plugins plugins}. */
-        constructor(viewport)
-        {
-            this.viewport = viewport;
-            this.list = [];
-            this.plugins = {};
+        constructor(viewport) {
+            this.viewport = viewport
+            this.list = []
+            this.plugins = {}
         }
 
         /**
@@ -3631,22 +3201,20 @@ this.PIXI = this.PIXI || {};
          * @param {Plugin} plugin - instantiated Plugin class
          * @param {number} index to insert userPlugin (otherwise inserts it at the end)
          */
-         add(name, plugin, index = PLUGIN_ORDER.length)
-        {
-            this.plugins[name] = plugin;
+        add(name, plugin, index = PLUGIN_ORDER.length) {
+            this.plugins[name] = plugin
 
-            const current = PLUGIN_ORDER.indexOf(name);
+            const current = PLUGIN_ORDER.indexOf(name)
 
-            if (current !== -1)
-            {
-                PLUGIN_ORDER.splice(current, 1);
+            if (current !== -1) {
+                PLUGIN_ORDER.splice(current, 1)
             }
 
-            PLUGIN_ORDER.splice(index, 0, name);
-            this.sort();
+            PLUGIN_ORDER.splice(index, 0, name)
+            this.sort()
         }
 
-        
+
 
 
 
@@ -3666,17 +3234,14 @@ this.PIXI = this.PIXI || {};
          * @param {string} name of plugin
          * @param {boolean} [ignorePaused] return null if plugin is paused
          */
-         get(name, ignorePaused)
-        {
-            if (ignorePaused)
-            {
-                if (_optionalChain([this, 'access', _ => _.plugins, 'access', _2 => _2[name], 'optionalAccess', _3 => _3.paused]))
-                {
-                    return null;
+        get(name, ignorePaused) {
+            if (ignorePaused) {
+                if (_optionalChain([this, 'access', _ => _.plugins, 'access', _2 => _2[name], 'optionalAccess', _3 => _3.paused])) {
+                    return null
                 }
             }
 
-            return this.plugins[name] ;
+            return this.plugins[name]
         }
 
         /**
@@ -3686,11 +3251,9 @@ this.PIXI = this.PIXI || {};
          * @ignore
          * @param {number} elapsed type in milliseconds since last update
          */
-         update(elapsed)
-        {
-            for (const plugin of this.list)
-            {
-                plugin.update(elapsed);
+        update(elapsed) {
+            for (const plugin of this.list) {
+                plugin.update(elapsed)
             }
         }
 
@@ -3700,28 +3263,23 @@ this.PIXI = this.PIXI || {};
          * @internal
          * @ignore
          */
-         resize()
-        {
-            for (const plugin of this.list)
-            {
-                plugin.resize();
+        resize() {
+            for (const plugin of this.list) {
+                plugin.resize()
             }
         }
 
         /** Clamps and resets bounce and decelerate (as needed) after manually moving viewport */
-         reset()
-        {
-            for (const plugin of this.list)
-            {
-                plugin.reset();
+        reset() {
+            for (const plugin of this.list) {
+                plugin.reset()
             }
         }
 
         /** removes all installed plugins */
-         removeAll()
-        {
-            this.plugins = {};
-            this.sort();
+        removeAll() {
+            this.plugins = {}
+            this.sort()
         }
 
         /**
@@ -3729,13 +3287,11 @@ this.PIXI = this.PIXI || {};
          *
          * @param {string} name of plugin (e.g., 'drag', 'pinch')
          */
-         remove(name)
-        {
-            if (this.plugins[name])
-            {
-                delete this.plugins[name];
-                this.viewport.emit(`${name}-remove`);
-                this.sort();
+        remove(name) {
+            if (this.plugins[name]) {
+                delete this.plugins[name]
+                this.viewport.emit(`${name}-remove`)
+                this.sort()
             }
         }
 
@@ -3744,9 +3300,8 @@ this.PIXI = this.PIXI || {};
          *
          * @param {string} name of plugin (e.g., 'drag', 'pinch')
          */
-         pause(name)
-        {
-            _optionalChain([this, 'access', _4 => _4.plugins, 'access', _5 => _5[name], 'optionalAccess', _6 => _6.pause, 'call', _7 => _7()]);
+        pause(name) {
+            _optionalChain([this, 'access', _4 => _4.plugins, 'access', _5 => _5[name], 'optionalAccess', _6 => _6.pause, 'call', _7 => _7()])
         }
 
         /**
@@ -3754,9 +3309,8 @@ this.PIXI = this.PIXI || {};
          *
          * @param {string} name of plugin (e.g., 'drag', 'pinch')
          */
-         resume(name)
-        {
-            _optionalChain([this, 'access', _8 => _8.plugins, 'access', _9 => _9[name], 'optionalAccess', _10 => _10.resume, 'call', _11 => _11()]);
+        resume(name) {
+            _optionalChain([this, 'access', _8 => _8.plugins, 'access', _9 => _9[name], 'optionalAccess', _10 => _10.resume, 'call', _11 => _11()])
         }
 
         /**
@@ -3765,15 +3319,12 @@ this.PIXI = this.PIXI || {};
          * @internal
          * @ignore
          */
-         sort()
-        {
-            this.list = [];
+        sort() {
+            this.list = []
 
-            for (const plugin of PLUGIN_ORDER)
-            {
-                if (this.plugins[plugin])
-                {
-                    this.list.push(this.plugins[plugin] );
+            for (const plugin of PLUGIN_ORDER) {
+                if (this.plugins[plugin]) {
+                    this.list.push(this.plugins[plugin])
                 }
             }
         }
@@ -3784,19 +3335,16 @@ this.PIXI = this.PIXI || {};
          * @internal
          * @ignore
          */
-         down(event)
-        {
-            let stop = false;
+        down(event) {
+            let stop = false
 
-            for (const plugin of this.list)
-            {
-                if (plugin.down(event))
-                {
-                    stop = true;
+            for (const plugin of this.list) {
+                if (plugin.down(event)) {
+                    stop = true
                 }
             }
 
-            return stop;
+            return stop
         }
 
         /**
@@ -3805,19 +3353,16 @@ this.PIXI = this.PIXI || {};
          * @internal
          * @ignore
          */
-         move(event)
-        {
-            let stop = false;
+        move(event) {
+            let stop = false
 
-            for (const plugin of this.viewport.plugins.list)
-            {
-                if (plugin.move(event))
-                {
-                    stop = true;
+            for (const plugin of this.viewport.plugins.list) {
+                if (plugin.move(event)) {
+                    stop = true
                 }
             }
 
-            return stop;
+            return stop
         }
 
         /**
@@ -3826,19 +3371,16 @@ this.PIXI = this.PIXI || {};
          * @internal
          * @ignore
          */
-         up(event)
-        {
-            let stop = false;
+        up(event) {
+            let stop = false
 
-            for (const plugin of this.list)
-            {
-                if (plugin.up(event))
-                {
-                    stop = true;
+            for (const plugin of this.list) {
+                if (plugin.up(event)) {
+                    stop = true
                 }
             }
 
-            return stop;
+            return stop
         }
 
         /**
@@ -3847,19 +3389,16 @@ this.PIXI = this.PIXI || {};
          * @internal
          * @ignore
          */
-         wheel(e)
-        {
-            let result = false;
+        wheel(e) {
+            let result = false
 
-            for (const plugin of this.list)
-            {
-                if (plugin.wheel(e))
-                {
-                    result = true;
+            for (const plugin of this.list) {
+                if (plugin.wheel(e)) {
+                    result = true
                 }
             }
 
-            return result;
+            return result
         }
     }
 
@@ -3965,7 +3504,7 @@ this.PIXI = this.PIXI || {};
         interaction: null,
         disableOnContextMenu: false,
         ticker: ticker.Ticker.shared,
-    };
+    }
 
     /**
      * Main class to use when creating a Viewport
@@ -4002,85 +3541,79 @@ this.PIXI = this.PIXI || {};
      * @fires zoomed-end
      * @fires frame-end
      */
-    class Viewport extends display.Container
-    {
+    class Viewport extends display.Container {
         /** Flags whether the viewport is being panned */
-        
 
-        
-        
+
+
+
 
         /** Number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event */
-        
 
-        
+
+
 
         /** Use this to add user plugins or access existing plugins (e.g., to pause, resume, or remove them) */
-        
+
 
         /** Flags whether the viewport zoom is being changed. */
-        
 
-        
+
+
 
         /** The options passed when creating this viewport, merged with the default values */
-        
 
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
 
         /**
          * @param options
          */
-        constructor(options = {})
-        {
-            super();
+        constructor(options = {}) {
+            super()
             this.options = Object.assign(
                 {},
                 { divWheel: document.body },
                 DEFAULT_VIEWPORT_OPTIONS,
                 options
-            );
+            )
 
-            this.screenWidth = this.options.screenWidth;
-            this.screenHeight = this.options.screenHeight;
+            this.screenWidth = this.options.screenWidth
+            this.screenHeight = this.options.screenHeight
 
-            this._worldWidth = this.options.worldWidth;
-            this._worldHeight = this.options.worldHeight;
-            this.forceHitArea = this.options.forceHitArea;
-            this.threshold = this.options.threshold;
+            this._worldWidth = this.options.worldWidth
+            this._worldHeight = this.options.worldHeight
+            this.forceHitArea = this.options.forceHitArea
+            this.threshold = this.options.threshold
 
-            this.options.divWheel = this.options.divWheel || document.body;
+            this.options.divWheel = this.options.divWheel || document.body
 
-            if (this.options.disableOnContextMenu)
-            {
-                this.options.divWheel.oncontextmenu = (e) => e.preventDefault();
+            if (this.options.disableOnContextMenu) {
+                this.options.divWheel.oncontextmenu = (e) => e.preventDefault()
             }
-            if (!this.options.noTicker)
-            {
-                this.tickerFunction = () => this.update(this.options.ticker.elapsedMS);
-                this.options.ticker.add(this.tickerFunction);
+            if (!this.options.noTicker) {
+                this.tickerFunction = () => this.update(this.options.ticker.elapsedMS)
+                this.options.ticker.add(this.tickerFunction)
             }
 
-            this.input = new InputManager(this);
-            this.plugins = new PluginManager(this);
+            this.input = new InputManager(this)
+            this.plugins = new PluginManager(this)
         }
 
         /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */
-        destroy(options)
-        {
-            if (!this.options.noTicker && this.tickerFunction)
-            {
-                this.options.ticker.remove(this.tickerFunction);
+        destroy(options) {
+            if (!this.options.noTicker && this.tickerFunction) {
+                this.options.ticker.remove(this.tickerFunction)
             }
 
-            this.input.destroy();
-            super.destroy(options);
+            this.input.destroy()
+            super.destroy(options)
         }
 
         /**
@@ -4090,54 +3623,46 @@ this.PIXI = this.PIXI || {};
          *
          * @param {number} elapsed time in milliseconds since last update
          */
-        update(elapsed)
-        {
-            if (!this.pause)
-            {
-                this.plugins.update(elapsed);
+        update(elapsed) {
+            if (!this.pause) {
+                this.plugins.update(elapsed)
 
-                if (this.lastViewport)
-                {
+                if (this.lastViewport) {
                     // Check for moved-end event
-                    if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y)
-                    {
-                        this.moving = true;
+                    if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y) {
+                        this.moving = true
                     }
-                    else if (this.moving)
-                    {
-                        this.emit('moved-end', this);
-                        this.moving = false;
+                    else if (this.moving) {
+                        this.emit('moved-end', this)
+                        this.moving = false
                     }
 
                     // Check for zoomed-end event
-                    if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y)
-                    {
-                        this.zooming = true;
+                    if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y) {
+                        this.zooming = true
                     }
-                    else  if (this.zooming)
-                    {
-                        this.emit('zoomed-end', this);
-                        this.zooming = false;
+                    else if (this.zooming) {
+                        this.emit('zoomed-end', this)
+                        this.zooming = false
                     }
                 }
 
-                if (!this.forceHitArea)
-                {
-                    this._hitAreaDefault = new math.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
-                    this.hitArea = this._hitAreaDefault;
+                if (!this.forceHitArea) {
+                    this._hitAreaDefault = new math.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight)
+                    this.hitArea = this._hitAreaDefault
                 }
 
                 this._dirty = this._dirty || !this.lastViewport
                     || this.lastViewport.x !== this.x || this.lastViewport.y !== this.y
-                    || this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y;
+                    || this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y
 
                 this.lastViewport = {
                     x: this.x,
                     y: this.y,
                     scaleX: this.scale.x,
                     scaleY: this.scale.y
-                };
-                this.emit('frame-end', this);
+                }
+                this.emit('frame-end', this)
             }
         }
 
@@ -4147,216 +3672,184 @@ this.PIXI = this.PIXI || {};
             screenHeight = window.innerHeight,
             worldWidth,
             worldHeight
-        )
-        {
-            this.screenWidth = screenWidth;
-            this.screenHeight = screenHeight;
+        ) {
+            this.screenWidth = screenWidth
+            this.screenHeight = screenHeight
 
-            if (typeof worldWidth !== 'undefined')
-            {
-                this._worldWidth = worldWidth;
+            if (typeof worldWidth !== 'undefined') {
+                this._worldWidth = worldWidth
             }
-            if (typeof worldHeight !== 'undefined')
-            {
-                this._worldHeight = worldHeight;
+            if (typeof worldHeight !== 'undefined') {
+                this._worldHeight = worldHeight
             }
 
-            this.plugins.resize();
-            this.dirty = true;
+            this.plugins.resize()
+            this.dirty = true
         }
 
         /** World width, in pixels */
-        get worldWidth()
-        {
-            if (this._worldWidth)
-            {
-                return this._worldWidth;
+        get worldWidth() {
+            if (this._worldWidth) {
+                return this._worldWidth
             }
 
-            return this.width / this.scale.x;
+            return this.width / this.scale.x
         }
-        set worldWidth(value)
-        {
-            this._worldWidth = value;
-            this.plugins.resize();
+        set worldWidth(value) {
+            this._worldWidth = value
+            this.plugins.resize()
         }
 
         /** World height, in pixels */
-        get worldHeight()
-        {
-            if (this._worldHeight)
-            {
-                return this._worldHeight;
+        get worldHeight() {
+            if (this._worldHeight) {
+                return this._worldHeight
             }
 
-            return this.height / this.scale.y;
+            return this.height / this.scale.y
         }
-        set worldHeight(value)
-        {
-            this._worldHeight = value;
-            this.plugins.resize();
+        set worldHeight(value) {
+            this._worldHeight = value
+            this.plugins.resize()
         }
 
         /** Get visible world bounds of viewport */
-         getVisibleBounds()
-        {
-            return new math.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
+        getVisibleBounds() {
+            return new math.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight)
         }
 
         /** Change coordinates from screen to world */
-        
 
 
 
-         toWorld(x, y)
-        {
-            if (arguments.length === 2)
-            {
-                return this.toLocal(new math.Point(x , y));
+
+        toWorld(x, y) {
+            if (arguments.length === 2) {
+                return this.toLocal(new math.Point(x, y))
             }
 
-            return this.toLocal(x );
+            return this.toLocal(x)
         }
 
         /** Change coordinates from world to screen */
-        
 
 
 
-         toScreen(x, y)
-        {
-            if (arguments.length === 2)
-            {
-                return this.toGlobal(new math.Point(x , y));
+
+        toScreen(x, y) {
+            if (arguments.length === 2) {
+                return this.toGlobal(new math.Point(x, y))
             }
 
-            return this.toGlobal(x );
+            return this.toGlobal(x)
         }
 
         /** Screen width in world coordinates */
-        get worldScreenWidth()
-        {
-            return this.screenWidth / this.scale.x;
+        get worldScreenWidth() {
+            return this.screenWidth / this.scale.x
         }
 
         /** Screen height in world coordinates */
-        get worldScreenHeight()
-        {
-            return this.screenHeight / this.scale.y;
+        get worldScreenHeight() {
+            return this.screenHeight / this.scale.y
         }
 
         /** World width in screen coordinates */
-        get screenWorldWidth()
-        {
-            return this.worldWidth * this.scale.x;
+        get screenWorldWidth() {
+            return this.worldWidth * this.scale.x
         }
 
         /** World height in screen coordinates */
-        get screenWorldHeight()
-        {
-            return this.worldHeight * this.scale.y;
+        get screenWorldHeight() {
+            return this.worldHeight * this.scale.y
         }
 
         /** Center of screen in world coordinates */
-        get center()
-        {
+        get center() {
             return new math.Point(
                 this.worldScreenWidth / 2 - this.x / this.scale.x,
                 this.worldScreenHeight / 2 - this.y / this.scale.y,
-            );
+            )
         }
-        set center(value)
-        {
-            this.moveCenter(value);
+        set center(value) {
+            this.moveCenter(value)
         }
 
         /** Move center of viewport to (x, y) */
-        
 
 
 
 
-         moveCenter(...args)
-        {
-            let x;
-            let y;
 
-            if (typeof args[0] === 'number')
-            {
-                x = args[0];
-                y = args[1] ;
+        moveCenter(...args) {
+            let x
+            let y
+
+            if (typeof args[0] === 'number') {
+                x = args[0]
+                y = args[1]
             }
-            else
-            {
-                x = args[0].x;
-                y = args[0].y;
+            else {
+                x = args[0].x
+                y = args[0].y
             }
 
-            const newX = (this.worldScreenWidth / 2 - x) * this.scale.x;
-            const newY = (this.worldScreenHeight / 2 - y) * this.scale.y;
+            const newX = (this.worldScreenWidth / 2 - x) * this.scale.x
+            const newY = (this.worldScreenHeight / 2 - y) * this.scale.y
 
-            if (this.x !== newX || this.y !== newY)
-            {
-                this.position.set(newX, newY);
-                this.plugins.reset();
-                this.dirty = true;
+            if (this.x !== newX || this.y !== newY) {
+                this.position.set(newX, newY)
+                this.plugins.reset()
+                this.dirty = true
             }
 
-            return this;
+            return this
         }
 
         /** Top-left corner of Viewport */
-        get corner()
-        {
-            return new math.Point(-this.x / this.scale.x, -this.y / this.scale.y);
+        get corner() {
+            return new math.Point(-this.x / this.scale.x, -this.y / this.scale.y)
         }
-        set corner(value)
-        {
-            this.moveCorner(value);
+        set corner(value) {
+            this.moveCorner(value)
         }
 
         /** Move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed) */
-        
 
 
 
 
-         moveCorner(...args)
-        {
-            let x;
-            let y;
 
-            if (args.length === 1)
-            {
-                x = -args[0].x * this.scale.x;
-                y = -args[0].y * this.scale.y;
+        moveCorner(...args) {
+            let x
+            let y
+
+            if (args.length === 1) {
+                x = -args[0].x * this.scale.x
+                y = -args[0].y * this.scale.y
             }
-            else
-            {
-                x = -args[0] * this.scale.x;
-                y = -args[1] * this.scale.y;
+            else {
+                x = -args[0] * this.scale.x
+                y = -args[1] * this.scale.y
             }
 
-            if (x !== this.x || y !== this.y)
-            {
-                this.position.set(x, y);
-                this.plugins.reset();
-                this.dirty = true;
+            if (x !== this.x || y !== this.y) {
+                this.position.set(x, y)
+                this.plugins.reset()
+                this.dirty = true
             }
 
-            return this;
+            return this
         }
 
         /** Get how many world pixels fit in screen's width */
-        get screenWidthInWorldPixels()
-        {
-            return this.screenWidth / this.scale.x;
+        get screenWidthInWorldPixels() {
+            return this.screenWidth / this.scale.x
         }
 
         /** Get how many world pixels fit on screen's height */
-        get screenHeightInWorldPixels()
-        {
-            return this.screenHeight / this.scale.y;
+        get screenHeightInWorldPixels() {
+            return this.screenHeight / this.scale.y
         }
 
         /**
@@ -4366,9 +3859,8 @@ this.PIXI = this.PIXI || {};
          * @param width - Width in world pixels
          * @return - scale
          */
-        findFitWidth(width)
-        {
-            return this.screenWidth / width;
+        findFitWidth(width) {
+            return this.screenWidth / width
         }
 
         /**
@@ -4378,9 +3870,8 @@ this.PIXI = this.PIXI || {};
          * @param height - Height in world pixels
          * @return - scale
          */
-        findFitHeight(height)
-        {
-            return this.screenHeight / height;
+        findFitHeight(height) {
+            return this.screenHeight / height
         }
 
         /**
@@ -4391,12 +3882,11 @@ this.PIXI = this.PIXI || {};
          * @param {number} height in world pixels
          * @returns {number} scale
          */
-        findFit(width, height)
-        {
-            const scaleX = this.screenWidth / width;
-            const scaleY = this.screenHeight / height;
+        findFit(width, height) {
+            const scaleX = this.screenWidth / width
+            const scaleY = this.screenHeight / height
 
-            return Math.min(scaleX, scaleY);
+            return Math.min(scaleX, scaleY)
         }
 
         /**
@@ -4407,12 +3897,11 @@ this.PIXI = this.PIXI || {};
          * @param {number} height in world pixels
          * @returns {number} scale
          */
-        findCover(width, height)
-        {
-            const scaleX = this.screenWidth / width;
-            const scaleY = this.screenHeight / height;
+        findCover(width, height) {
+            const scaleX = this.screenWidth / width
+            const scaleY = this.screenHeight / height
 
-            return Math.max(scaleX, scaleY);
+            return Math.max(scaleX, scaleY)
         }
 
         /**
@@ -4424,34 +3913,29 @@ this.PIXI = this.PIXI || {};
          * @param noClamp - whether to disable clamp-zoom
          * @returns {Viewport} this
          */
-        fitWidth(width = this.worldWidth, center, scaleY = true, noClamp)
-        {
-            let save;
+        fitWidth(width = this.worldWidth, center, scaleY = true, noClamp) {
+            let save
 
-            if (center)
-            {
-                save = this.center;
+            if (center) {
+                save = this.center
             }
-            this.scale.x = this.screenWidth / width;
+            this.scale.x = this.screenWidth / width
 
-            if (scaleY)
-            {
-                this.scale.y = this.scale.x;
+            if (scaleY) {
+                this.scale.y = this.scale.x
             }
 
-            const clampZoom = this.plugins.get('clamp-zoom', true);
+            const clampZoom = this.plugins.get('clamp-zoom', true)
 
-            if (!noClamp && clampZoom)
-            {
-                clampZoom.clamp();
+            if (!noClamp && clampZoom) {
+                clampZoom.clamp()
             }
 
-            if (center && save)
-            {
-                this.moveCenter(save);
+            if (center && save) {
+                this.moveCenter(save)
             }
 
-            return this;
+            return this
         }
 
         /**
@@ -4463,34 +3947,29 @@ this.PIXI = this.PIXI || {};
          * @param {boolean} [noClamp] whether to disable clamp-zoom
          * @returns {Viewport} this
          */
-        fitHeight(height = this.worldHeight, center, scaleX = true, noClamp)
-        {
-            let save;
+        fitHeight(height = this.worldHeight, center, scaleX = true, noClamp) {
+            let save
 
-            if (center)
-            {
-                save = this.center;
+            if (center) {
+                save = this.center
             }
-            this.scale.y = this.screenHeight / height;
+            this.scale.y = this.screenHeight / height
 
-            if (scaleX)
-            {
-                this.scale.x = this.scale.y;
+            if (scaleX) {
+                this.scale.x = this.scale.y
             }
 
-            const clampZoom = this.plugins.get('clamp-zoom', true);
+            const clampZoom = this.plugins.get('clamp-zoom', true)
 
-            if (!noClamp && clampZoom)
-            {
-                clampZoom.clamp();
+            if (!noClamp && clampZoom) {
+                clampZoom.clamp()
             }
 
-            if (center && save)
-            {
-                this.moveCenter(save);
+            if (center && save) {
+                this.moveCenter(save)
             }
 
-            return this;
+            return this
         }
 
         /**
@@ -4499,40 +3978,34 @@ this.PIXI = this.PIXI || {};
          * @param {boolean} center maintain the same center of the screen after zoom
          * @returns {Viewport} this
          */
-        fitWorld(center)
-        {
-            let save;
+        fitWorld(center) {
+            let save
 
-            if (center)
-            {
-                save = this.center;
+            if (center) {
+                save = this.center
             }
 
-            this.scale.x = this.screenWidth / this.worldWidth;
-            this.scale.y = this.screenHeight / this.worldHeight;
+            this.scale.x = this.screenWidth / this.worldWidth
+            this.scale.y = this.screenHeight / this.worldHeight
 
-            if (this.scale.x < this.scale.y)
-            {
-                this.scale.y = this.scale.x;
+            if (this.scale.x < this.scale.y) {
+                this.scale.y = this.scale.x
             }
-            else
-            {
-                this.scale.x = this.scale.y;
+            else {
+                this.scale.x = this.scale.y
             }
 
-            const clampZoom = this.plugins.get('clamp-zoom', true);
+            const clampZoom = this.plugins.get('clamp-zoom', true)
 
-            if (clampZoom)
-            {
-                clampZoom.clamp();
+            if (clampZoom) {
+                clampZoom.clamp()
             }
 
-            if (center && save)
-            {
-                this.moveCenter(save);
+            if (center && save) {
+                this.moveCenter(save)
             }
 
-            return this;
+            return this
         }
 
         /**
@@ -4543,50 +4016,42 @@ this.PIXI = this.PIXI || {};
          * @param {number} [height=this.worldHeight] desired height
          * @returns {Viewport} this
          */
-        fit(center, width = this.worldWidth, height = this.worldHeight)
-        {
-            let save;
+        fit(center, width = this.worldWidth, height = this.worldHeight) {
+            let save
 
-            if (center)
-            {
-                save = this.center;
+            if (center) {
+                save = this.center
             }
 
-            this.scale.x = this.screenWidth / width;
-            this.scale.y = this.screenHeight / height;
+            this.scale.x = this.screenWidth / width
+            this.scale.y = this.screenHeight / height
 
-            if (this.scale.x < this.scale.y)
-            {
-                this.scale.y = this.scale.x;
+            if (this.scale.x < this.scale.y) {
+                this.scale.y = this.scale.x
             }
-            else
-            {
-                this.scale.x = this.scale.y;
+            else {
+                this.scale.x = this.scale.y
             }
-            const clampZoom = this.plugins.get('clamp-zoom', true);
+            const clampZoom = this.plugins.get('clamp-zoom', true)
 
-            if (clampZoom)
-            {
-                clampZoom.clamp();
+            if (clampZoom) {
+                clampZoom.clamp()
             }
-            if (center && save)
-            {
-                this.moveCenter(save);
+            if (center && save) {
+                this.moveCenter(save)
             }
 
-            return this;
+            return this
         }
 
         // eslint-disable-next-line
         // @ts-ignore
-        set visible(value)
-        {
-            if (!value)
-            {
-                this.input.clear();
+        set visible(value) {
+            if (!value) {
+                this.input.clear()
             }
 
-            super.visible = value;
+            super.visible = value
         }
 
         /**
@@ -4596,27 +4061,23 @@ this.PIXI = this.PIXI || {};
          * @param {boolean} [center] maintain the same center of the screen after zoom
          * @return {Viewport} this
          */
-        setZoom(scale, center)
-        {
-            let save;
+        setZoom(scale, center) {
+            let save
 
-            if (center)
-            {
-                save = this.center;
+            if (center) {
+                save = this.center
             }
-            this.scale.set(scale);
-            const clampZoom = this.plugins.get('clamp-zoom', true);
+            this.scale.set(scale)
+            const clampZoom = this.plugins.get('clamp-zoom', true)
 
-            if (clampZoom)
-            {
-                clampZoom.clamp();
+            if (clampZoom) {
+                clampZoom.clamp()
             }
-            if (center && save)
-            {
-                this.moveCenter(save);
+            if (center && save) {
+                this.moveCenter(save)
             }
 
-            return this;
+            return this
         }
 
         /**
@@ -4626,9 +4087,8 @@ this.PIXI = this.PIXI || {};
          * @param {boolean} [center] maintain the same center of the screen after zoom
          * @return {Viewport} this
          */
-        zoomPercent(percent, center)
-        {
-            return this.setZoom(this.scale.x + this.scale.x * percent, center);
+        zoomPercent(percent, center) {
+            return this.setZoom(this.scale.x + this.scale.x * percent, center)
         }
 
         /**
@@ -4638,42 +4098,31 @@ this.PIXI = this.PIXI || {};
          * @param {boolean} [center] maintain the same center of the screen after zoom
          * @return {Viewport} this
          */
-        zoom(change, center)
-        {
-            this.fitWidth(change + this.worldScreenWidth, center);
+        zoom(change, center) {
+            this.fitWidth(change + this.worldScreenWidth, center)
 
-            return this;
+            return this
         }
 
         /** Changes scale of viewport and maintains center of viewport */
-        get scaled()
-        {
-            return this.scale.x;
+        get scaled() {
+            return this.scale.x
         }
-        set scaled(scale)
-        {
-            this.setZoom(scale, true);
+        set scaled(scale) {
+            this.setZoom(scale, true)
         }
 
         /**
          * @param {SnapZoomOptions} options
          */
-        snapZoom(options)
-        {
-            this.plugins.add('snap-zoom', new SnapZoom(this, options));
+        snapZoom(options) {
+            this.plugins.add('snap-zoom', new SnapZoom(this, options))
 
-            return this;
+            return this
         }
 
         /** Is container out of world bounds */
-        OOB()
-
-
-
-
-
-
-        {
+        OOB() {
             return {
                 left: this.left < 0,
                 right: this.right > this.worldWidth,
@@ -4683,63 +4132,53 @@ this.PIXI = this.PIXI || {};
                     this.worldWidth * this.scale.x - this.screenWidth,
                     this.worldHeight * this.scale.y - this.screenHeight
                 )
-            };
+            }
         }
 
         /** World coordinates of the right edge of the screen */
-        get right()
-        {
-            return -this.x / this.scale.x + this.worldScreenWidth;
+        get right() {
+            return -this.x / this.scale.x + this.worldScreenWidth
         }
-        set right(value)
-        {
-            this.x = -value * this.scale.x + this.screenWidth;
-            this.plugins.reset();
+        set right(value) {
+            this.x = -value * this.scale.x + this.screenWidth
+            this.plugins.reset()
         }
 
         /** World coordinates of the left edge of the screen */
-        get left()
-        {
-            return -this.x / this.scale.x;
+        get left() {
+            return -this.x / this.scale.x
         }
-        set left(value)
-        {
-            this.x = -value * this.scale.x;
-            this.plugins.reset();
+        set left(value) {
+            this.x = -value * this.scale.x
+            this.plugins.reset()
         }
 
         /** World coordinates of the top edge of the screen */
-        get top()
-        {
-            return -this.y / this.scale.y;
+        get top() {
+            return -this.y / this.scale.y
         }
-        set top(value)
-        {
-            this.y = -value * this.scale.y;
-            this.plugins.reset();
+        set top(value) {
+            this.y = -value * this.scale.y
+            this.plugins.reset()
         }
 
         /** World coordinates of the bottom edge of the screen */
-        get bottom()
-        {
-            return -this.y / this.scale.y + this.worldScreenHeight;
+        get bottom() {
+            return -this.y / this.scale.y + this.worldScreenHeight
         }
-        set bottom(value)
-        {
-            this.y = -value * this.scale.y + this.screenHeight;
-            this.plugins.reset();
+        set bottom(value) {
+            this.y = -value * this.scale.y + this.screenHeight
+            this.plugins.reset()
         }
 
         /**
          * Determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
          */
-        get dirty()
-        {
-            return !!this._dirty;
+        get dirty() {
+            return !!this._dirty
         }
-        set dirty(value)
-        {
-            this._dirty = value;
+        set dirty(value) {
+            this._dirty = value
         }
 
         /**
@@ -4747,21 +4186,17 @@ this.PIXI = this.PIXI || {};
          *
          * NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)
          */
-        get forceHitArea()
-        {
-            return this._forceHitArea;
+        get forceHitArea() {
+            return this._forceHitArea
         }
-        set forceHitArea(value)
-        {
-            if (value)
-            {
-                this._forceHitArea = value;
-                this.hitArea = value;
+        set forceHitArea(value) {
+            if (value) {
+                this._forceHitArea = value
+                this.hitArea = value
             }
-            else
-            {
-                this._forceHitArea = null;
-                this.hitArea = new math.Rectangle(0, 0, this.worldWidth, this.worldHeight);
+            else {
+                this._forceHitArea = null
+                this.hitArea = new math.Rectangle(0, 0, this.worldWidth, this.worldHeight)
             }
         }
 
@@ -4774,11 +4209,10 @@ this.PIXI = this.PIXI || {};
          * @param {DragOptions} [options]
          * @returns {Viewport} this
          */
-         drag(options)
-        {
-            this.plugins.add('drag', new Drag(this, options));
+        drag(options) {
+            this.plugins.add('drag', new Drag(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4791,11 +4225,10 @@ this.PIXI = this.PIXI || {};
          * @param {ClampOptions} [options]
          * @returns {Viewport} this
          */
-         clamp(options)
-        {
-            this.plugins.add('clamp', new Clamp(this, options));
+        clamp(options) {
+            this.plugins.add('clamp', new Clamp(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4806,11 +4239,10 @@ this.PIXI = this.PIXI || {};
          * @param {DecelerateOptions} [options]
          * @return {Viewport} this
          */
-         decelerate(options)
-        {
-            this.plugins.add('decelerate', new Decelerate(this, options));
+        decelerate(options) {
+            this.plugins.add('decelerate', new Decelerate(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4831,11 +4263,10 @@ this.PIXI = this.PIXI || {};
          * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
          * @return {Viewport} this
          */
-         bounce(options)
-        {
-            this.plugins.add('bounce', new Bounce(this, options));
+        bounce(options) {
+            this.plugins.add('bounce', new Bounce(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4844,11 +4275,10 @@ this.PIXI = this.PIXI || {};
          * @param {PinchOptions} [options]
          * @return {Viewport} this
          */
-         pinch(options)
-        {
-            this.plugins.add('pinch', new Pinch(this, options));
+        pinch(options) {
+            this.plugins.add('pinch', new Pinch(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4859,11 +4289,10 @@ this.PIXI = this.PIXI || {};
          * @param {SnapOptions} [options]
          * @return {Viewport} this
          */
-         snap(x, y, options)
-        {
-            this.plugins.add('snap', new Snap(this, x, y, options));
+        snap(x, y, options) {
+            this.plugins.add('snap', new Snap(this, x, y, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4878,11 +4307,10 @@ this.PIXI = this.PIXI || {};
          * @param {FollowOptions} [options]
          * @returns {Viewport} this
          */
-         follow(target, options)
-        {
-            this.plugins.add('follow', new Follow(this, target, options));
+        follow(target, options) {
+            this.plugins.add('follow', new Follow(this, target, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4891,11 +4319,10 @@ this.PIXI = this.PIXI || {};
          * @param {WheelOptions} [options]
          * @return {Viewport} this
          */
-         wheel(options)
-        {
-            this.plugins.add('wheel', new Wheel(this, options));
+        wheel(options) {
+            this.plugins.add('wheel', new Wheel(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4904,11 +4331,10 @@ this.PIXI = this.PIXI || {};
          * @param {AnimateOptions} options
          * @returns {Viewport} this
          */
-         animate(options)
-        {
-            this.plugins.add('animate', new Animate(this, options));
+        animate(options) {
+            this.plugins.add('animate', new Animate(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4927,11 +4353,10 @@ this.PIXI = this.PIXI || {};
          * @param {ClampZoomOptions} [options]
          * @return {Viewport} this
          */
-         clampZoom(options)
-        {
-            this.plugins.add('clamp-zoom', new ClampZoom(this, options));
+        clampZoom(options) {
+            this.plugins.add('clamp-zoom', new ClampZoom(this, options))
 
-            return this;
+            return this
         }
 
         /**
@@ -4941,29 +4366,25 @@ this.PIXI = this.PIXI || {};
          *
          * @param {MouseEdgesOptions} [options]
          */
-         mouseEdges(options)
-        {
-            this.plugins.add('mouse-edges', new MouseEdges(this, options));
+        mouseEdges(options) {
+            this.plugins.add('mouse-edges', new MouseEdges(this, options))
 
-            return this;
+            return this
         }
 
         /** Pause viewport (including animation updates such as decelerate) */
-        get pause()
-        {
-            return !!this._pause;
+        get pause() {
+            return !!this._pause
         }
-        set pause(value)
-        {
-            this._pause = value;
+        set pause(value) {
+            this._pause = value
 
-            this.lastViewport = null;
-            this.moving = false;
-            this.zooming = false;
+            this.lastViewport = null
+            this.moving = false
+            this.zooming = false
 
-            if (value)
-            {
-                this.input.pause();
+            if (value) {
+                this.input.pause()
             }
         }
 
@@ -4976,38 +4397,31 @@ this.PIXI = this.PIXI || {};
          * @param height
          * @param resizeToFit - Resize the viewport so the box fits within the viewport
          */
-         ensureVisible(x, y, width, height, resizeToFit)
-        {
-            if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
-            {
-                this.fit(true, width, height);
-                this.emit('zoomed', { viewport: this, type: 'ensureVisible' });
+        ensureVisible(x, y, width, height, resizeToFit) {
+            if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight)) {
+                this.fit(true, width, height)
+                this.emit('zoomed', { viewport: this, type: 'ensureVisible' })
             }
-            let moved = false;
+            let moved = false
 
-            if (x < this.left)
-            {
-                this.left = x;
-                moved = true;
+            if (x < this.left) {
+                this.left = x
+                moved = true
             }
-            else if (x + width > this.right)
-            {
-                this.right = x + width;
-                moved = true;
+            else if (x + width > this.right) {
+                this.right = x + width
+                moved = true
             }
-            if (y < this.top)
-            {
-                this.top = y;
-                moved = true;
+            if (y < this.top) {
+                this.top = y
+                moved = true
             }
-            else if (y + height > this.bottom)
-            {
-                this.bottom = y + height;
-                moved = true;
+            else if (y + height > this.bottom) {
+                this.bottom = y + height
+                moved = true
             }
-            if (moved)
-            {
-                this.emit('moved', { viewport: this, type: 'ensureVisible' });
+            if (moved) {
+                this.emit('moved', { viewport: this, type: 'ensureVisible' })
             }
         }
     }
@@ -5163,25 +4577,25 @@ this.PIXI = this.PIXI || {};
     * @type {Viewport}
     */
 
-    exports.Animate = Animate;
-    exports.Bounce = Bounce;
-    exports.Clamp = Clamp;
-    exports.ClampZoom = ClampZoom;
-    exports.Decelerate = Decelerate;
-    exports.Drag = Drag;
-    exports.Follow = Follow;
-    exports.InputManager = InputManager;
-    exports.MouseEdges = MouseEdges;
-    exports.Pinch = Pinch;
-    exports.Plugin = Plugin;
-    exports.PluginManager = PluginManager;
-    exports.Snap = Snap;
-    exports.SnapZoom = SnapZoom;
-    exports.Viewport = Viewport;
-    exports.Wheel = Wheel;
+    exports.Animate = Animate
+    exports.Bounce = Bounce
+    exports.Clamp = Clamp
+    exports.ClampZoom = ClampZoom
+    exports.Decelerate = Decelerate
+    exports.Drag = Drag
+    exports.Follow = Follow
+    exports.InputManager = InputManager
+    exports.MouseEdges = MouseEdges
+    exports.Pinch = Pinch
+    exports.Plugin = Plugin
+    exports.PluginManager = PluginManager
+    exports.Snap = Snap
+    exports.SnapZoom = SnapZoom
+    exports.Viewport = Viewport
+    exports.Wheel = Wheel
 
-    Object.defineProperty(exports, '__esModule', { value: true });
+    Object.defineProperty(exports, '__esModule', { value: true })
 
-})));
-if (typeof pixi_viewport !== 'undefined') { Object.assign(this.PIXI, pixi_viewport); }
+})))
+if (typeof pixi_viewport !== 'undefined') { Object.assign(this.PIXI, pixi_viewport) }
 //# sourceMappingURL=viewport.js.map

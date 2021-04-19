@@ -4,8 +4,7 @@ export let options
 
 const TEST = false
 
-export function gui(viewport, drawWorld, target)
-{
+export function gui(viewport, drawWorld, target) {
     _viewport = viewport
     _drawWorld = drawWorld
     _gui = new dat.GUI({ autoPlace: false })
@@ -18,7 +17,20 @@ export function gui(viewport, drawWorld, target)
     _world = _gui.addFolder('world')
     options = {
         testDirty: false,
-        drag: true,
+        drag: {
+            direction: 'all',
+            pressDrag: true,
+            wheel: true,
+            wheelScroll: 1,
+            reverse: false,
+            clampWheel: false,
+            underflow: 'none',
+            factor: 1,
+            mouseButtons: 'all',
+            keyToPress: null,
+            ignoreKeyToPressOnTouch: false,
+            lineHeight: 20,
+        },
         clampZoom: {
             clampZoom: false,
             minWidth: 1000,
@@ -114,37 +126,17 @@ export function gui(viewport, drawWorld, target)
     guiMouseEdges()
 }
 
-function guiWorld()
-{
+function guiWorld() {
     _world.add(_viewport, 'worldWidth').onChange(_drawWorld)
     _world.add(_viewport, 'worldHeight').onChange(_drawWorld)
 }
 
-function guiDrag()
-{
-    _gui.add(options, 'drag').onChange(
-        function (value)
-        {
-            if (value)
-            {
-                _viewport.drag({ clampWheel: true })
-            }
-            else
-            {
-                _viewport.plugins.remove('drag')
-            }
-        })
-}
-
-function guiClamp()
-{
-    function change()
-    {
-        _viewport.clamp({ direction: options.clamp.x && options.clamp.y ? 'all' : options.clamp.x ? 'x' : 'y', underflow: options.clamp.underflow })
+function guiDrag() {
+    function change() {
+        _viewport.drag({ direction: options.clamp.x && options.clamp.y ? 'all' : options.clamp.x ? 'x' : 'y', underflow: options.clamp.underflow })
     }
 
-    function add()
-    {
+    function add() {
         clampX = clamp.add(options.clamp, 'x').onChange(change)
         clampY = clamp.add(options.clamp, 'y').onChange(change)
         underflow = clamp.add(options.clamp, 'underflow').onChange(change)
@@ -153,37 +145,74 @@ function guiClamp()
     let clampX, clampY, underflow
     const clamp = _gui.addFolder('clamp')
     clamp.add(options.clamp, 'clamp').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 _viewport.plugins.remove('clamp')
                 clamp.remove(clampX)
                 clamp.remove(clampY)
                 clamp.remove(underflow)
             }
         })
-    if (options.clamp.clamp)
-    {
+    if (options.clamp.clamp) {
+        clamp.open()
+    }
+
+
+
+
+    _gui.add(options, 'drag').onChange(
+        function (value) {
+            if (value) {
+                _viewport.drag({ clampWheel: true })
+            }
+            else {
+                _viewport.plugins.remove('drag')
+            }
+        })
+}
+
+function guiClamp() {
+    function change() {
+        _viewport.clamp({ direction: options.clamp.x && options.clamp.y ? 'all' : options.clamp.x ? 'x' : 'y', underflow: options.clamp.underflow })
+    }
+
+    function add() {
+        clampX = clamp.add(options.clamp, 'x').onChange(change)
+        clampY = clamp.add(options.clamp, 'y').onChange(change)
+        underflow = clamp.add(options.clamp, 'underflow').onChange(change)
+    }
+
+    let clampX, clampY, underflow
+    const clamp = _gui.addFolder('clamp')
+    clamp.add(options.clamp, 'clamp').onChange(
+        function (value) {
+            if (value) {
+                change()
+                add()
+            }
+            else {
+                _viewport.plugins.remove('clamp')
+                clamp.remove(clampX)
+                clamp.remove(clampY)
+                clamp.remove(underflow)
+            }
+        })
+    if (options.clamp.clamp) {
         clamp.open()
     }
 }
 
-function guiPinch()
-{
-    function change()
-    {
+function guiPinch() {
+    function change() {
         const center = (options.pinch.centerX || options.pinch.centerY) ? { x: options.pinch.centerX, y: options.pinch.centerY } : null
         _viewport.pinch({ noDrag: options.pinch.noDrag, center, percent: options.pinch.percent })
     }
 
-    function add()
-    {
+    function add() {
         noDrag = pinch.add(options.pinch, 'noDrag').onChange(change)
         centerX = pinch.add(options.pinch, 'centerX').onChange(change)
         centerY = pinch.add(options.pinch, 'centerY').onChange(change)
@@ -192,15 +221,12 @@ function guiPinch()
 
     const pinch = _gui.addFolder('pinch')
     pinch.add(options.pinch, 'pinch').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 _viewport.plugins.remove('pinch')
                 pinch.remove(noDrag)
                 pinch.remove(centerX)
@@ -209,25 +235,20 @@ function guiPinch()
             }
         })
     let noDrag, centerX, centerY, percent
-    if (options.pinch)
-    {
+    if (options.pinch) {
         add()
     }
-    if (options.pinch.pinch)
-    {
+    if (options.pinch.pinch) {
         pinch.open()
     }
 }
 
-function guiBounce()
-{
-    function change()
-    {
+function guiBounce() {
+    function change() {
         _viewport.bounce({ sides: options.bounce.sides, time: options.bounce.time, ease: options.bounce.ease, friction: options.bounce.friction, underflow: options.bounce.underflow })
     }
 
-    function add()
-    {
+    function add() {
         sides = bounce.add(options.bounce, 'sides').onChange(change)
         time = bounce.add(options.bounce, 'time', 0, 2000).step(50).onChange(change)
         ease = bounce.add(options.bounce, 'ease').onChange(change)
@@ -237,21 +258,16 @@ function guiBounce()
     let time, ease, underflow, sides
     const bounce = _gui.addFolder('bounce')
     bounce.add(options.bounce, 'bounce').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
-                if (!time)
-                {
+                if (!time) {
                     add()
                 }
             }
-            else
-            {
+            else {
                 _viewport.plugins.remove('bounce')
-                if (time)
-                {
+                if (time) {
                     bounce.remove(sides)
                     bounce.remove(time)
                     time = null
@@ -261,25 +277,20 @@ function guiBounce()
             }
         }
     )
-    if (options.bounce)
-    {
+    if (options.bounce) {
         add()
     }
-    if (options.bounce.bounce)
-    {
+    if (options.bounce.bounce) {
         bounce.open()
     }
 }
 
-function guiDecelerate()
-{
-    function change()
-    {
+function guiDecelerate() {
+    function change() {
         _viewport.decelerate({ friction: options.decelerate.friction, minSpeed: options.decelerate.minSpeed })
     }
 
-    function add()
-    {
+    function add() {
         friction = decelerate.add(options.decelerate, 'friction', 0, 1)
         minSpeed = decelerate.add(options.decelerate, 'minSpeed')
     }
@@ -288,20 +299,15 @@ function guiDecelerate()
 
     const decelerate = _gui.addFolder('decelerate')
     decelerate.add(options.decelerate, 'decelerate').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
-                if (!friction)
-                {
+                if (!friction) {
                     add()
                 }
             }
-            else
-            {
-                if (friction)
-                {
+            else {
+                if (friction) {
                     decelerate.remove(friction)
                     decelerate.remove(minSpeed)
                     friction = null
@@ -309,25 +315,20 @@ function guiDecelerate()
             }
         }
     )
-    if (options.decelerate)
-    {
+    if (options.decelerate) {
         add()
     }
-    if (options.decelerate.decelerate)
-    {
+    if (options.decelerate.decelerate) {
         decelerate.open()
     }
 }
 
-function guiSnap()
-{
-    function change()
-    {
+function guiSnap() {
+    function change() {
         _viewport.snap(options.snap.x, options.snap.y, { interrupt: options.snap.interrupt, time: options.snap.time, ease: options.snap.ease, friction: options.snap.friction, topLeft: options.snap.topLeft })
     }
 
-    function add()
-    {
+    function add() {
         x = snap.add(options.snap, 'x').onChange(change)
         y = snap.add(options.snap, 'y').onChange(change)
         friction = snap.add(options.snap, 'friction').onChange(change)
@@ -341,15 +342,12 @@ function guiSnap()
 
     const snap = _gui.addFolder('snap')
     snap.add(options.snap, 'snap').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 snap.remove(x)
                 snap.remove(y)
                 snap.remove(time)
@@ -361,25 +359,20 @@ function guiSnap()
             }
         }
     )
-    if (options.snap.snap)
-    {
+    if (options.snap.snap) {
         add()
     }
-    if (options.snap.snap)
-    {
+    if (options.snap.snap) {
         snap.open()
     }
 }
 
-function guiFollow(target)
-{
-    function change()
-    {
+function guiFollow(target) {
+    function change() {
         _viewport.follow(target, { speed: options.follow.speed, radius: options.follow.radius, acceleration: options.follow.acceleration })
     }
 
-    function add()
-    {
+    function add() {
         speed = follow.add(options.follow, 'speed').onChange(change)
         radius = follow.add(options.follow, 'radius').onChange(change)
         acceleration = follow.add(options.follow, 'acceleration').onChange(change)
@@ -388,15 +381,12 @@ function guiFollow(target)
     let speed, radius, acceleration
     const follow = _gui.addFolder('follow')
     follow.add(options.follow, 'follow').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 follow.remove(speed)
                 follow.remove(radius)
                 follow.remove(acceleration)
@@ -404,26 +394,21 @@ function guiFollow(target)
             }
         }
     )
-    if (options.follow.follow)
-    {
+    if (options.follow.follow) {
         add()
     }
-    if (options.follow.follow)
-    {
+    if (options.follow.follow) {
         follow.open()
     }
 }
 
-function guiWheel()
-{
-    function change()
-    {
+function guiWheel() {
+    function change() {
         const center = (options.wheel.centerX || options.wheel.centerY) ? { x: options.wheel.centerX, y: options.wheel.centerY } : null
         _viewport.wheel({ percent: options.wheel.percent, minWidth: options.wheel.minWidth, maxWidth: options.wheel.maxWidth, minHeight: options.wheel.minHeight, maxHeight: options.wheel.maxHeight, center, lineHeight: options.wheel.lineHeight })
     }
 
-    function add()
-    {
+    function add() {
         percent = wheel.add(options.wheel, 'percent').onChange(change)
         centerX = wheel.add(options.wheel, 'centerX').onChange(change)
         centerY = wheel.add(options.wheel, 'centerY').onChange(change)
@@ -432,15 +417,12 @@ function guiWheel()
 
     const wheel = _gui.addFolder('wheel')
     wheel.add(options.wheel, 'wheel').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 _viewport.plugins.remove('wheel')
                 wheel.remove(percent)
                 wheel.remove(centerX)
@@ -449,25 +431,20 @@ function guiWheel()
             }
         })
     let percent, centerX, centerY, lineHeight
-    if (options.wheel)
-    {
+    if (options.wheel) {
         add()
     }
-    if (options.wheel.wheel)
-    {
+    if (options.wheel.wheel) {
         wheel.open()
     }
 }
 
-function guiClampZoom()
-{
-    function change()
-    {
+function guiClampZoom() {
+    function change() {
         _viewport.clampZoom({ minWidth: options.clampZoom.minWidth, maxWidth: options.clampZoom.maxWidth, minHeight: options.clampZoom.minHeight, maxHeight: options.clampZoom.maxHeight })
     }
 
-    function add()
-    {
+    function add() {
         minWidth = clampZoom.add(options.clampZoom, 'minWidth').onChange(change)
         maxWidth = clampZoom.add(options.clampZoom, 'maxWidth').onChange(change)
         minHeight = clampZoom.add(options.clampZoom, 'minHeight').onChange(change)
@@ -476,15 +453,12 @@ function guiClampZoom()
 
     const clampZoom = _gui.addFolder('clamp-zoom')
     clampZoom.add(options.clampZoom, 'clampZoom').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 _viewport.plugins.remove('clamp-zoom')
                 clampZoom.remove(minWidth)
                 clampZoom.remove(maxWidth)
@@ -493,26 +467,21 @@ function guiClampZoom()
             }
         })
     let minWidth, maxWidth, minHeight, maxHeight
-    if (options.clampZoom.clampZoom)
-    {
+    if (options.clampZoom.clampZoom) {
         add()
     }
-    if (options.clampZoom.clampZoom)
-    {
+    if (options.clampZoom.clampZoom) {
         clampZoom.open()
     }
 }
 
-function guiSnapZoom()
-{
-    function change()
-    {
+function guiSnapZoom() {
+    function change() {
         options.snapZoom.center = (options.snapZoom.centerX || options.snapZoom.centerY) ? { x: options.snapZoom.centerX, y: options.snapZoom.centerY } : null
         _viewport.snapZoom(options.snapZoom)
     }
 
-    function add()
-    {
+    function add() {
         width = snapZoom.add(options.snapZoom, 'width').onChange(change)
         height = snapZoom.add(options.snapZoom, 'height').onChange(change)
         time = snapZoom.add(options.snapZoom, 'time').onChange(change)
@@ -525,15 +494,12 @@ function guiSnapZoom()
 
     const snapZoom = _gui.addFolder('snap-zoom')
     snapZoom.add(options.snapZoom, 'snapZoom').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 _viewport.plugins.remove('snap-zoom')
                 snapZoom.remove(width)
                 snapZoom.remove(height)
@@ -546,26 +512,21 @@ function guiSnapZoom()
             }
         })
     let width, height, time, ease, removeOnComplete, centerX, centerY, interrupt
-    if (options.snapZoom.snapZoom)
-    {
+    if (options.snapZoom.snapZoom) {
         add()
     }
-    if (options.snapZoom.snapZoom)
-    {
+    if (options.snapZoom.snapZoom) {
         snapZoom.open()
     }
 }
 
-function guiMouseEdges()
-{
-    function change()
-    {
+function guiMouseEdges() {
+    function change() {
         const me = options.mouseEdges
         _viewport.mouseEdges({ radius: me.radius !== 0 ? me.radius : null, distance: me.distance !== 0 ? me.distance : null, top: me.top !== 0 ? me.top : null, bottom: me.bottom !== 0 ? me.bottom : null, left: me.left !== 0 ? me.left : null, right: me.right !== 0 ? me.right : null, speed: me.speed, reverse: me.reverse, noDecelerate: me.noDecelerate, linear: me.linear })
     }
 
-    function add()
-    {
+    function add() {
         radius = mouseEdges.add(options.mouseEdges, 'radius').onChange(change)
         distance = mouseEdges.add(options.mouseEdges, 'distance').onChange(change)
         top = mouseEdges.add(options.mouseEdges, 'top').onChange(change)
@@ -580,15 +541,12 @@ function guiMouseEdges()
 
     const mouseEdges = _gui.addFolder('mouseEdges')
     mouseEdges.add(options.mouseEdges, 'mouseEdges').onChange(
-        function (value)
-        {
-            if (value)
-            {
+        function (value) {
+            if (value) {
                 change()
                 add()
             }
-            else
-            {
+            else {
                 _viewport.plugins.remove('mouse-edges')
                 mouseEdges.remove(radius)
                 mouseEdges.remove(distance)
@@ -603,12 +561,10 @@ function guiMouseEdges()
             }
         })
     let radius, distance, top, left, right, bottom, speed, reverse, noDecelerate, linear
-    if (options.mouseEdges.mouseEdges)
-    {
+    if (options.mouseEdges.mouseEdges) {
         add()
     }
-    if (options.mouseEdges.mouseEdges)
-    {
+    if (options.mouseEdges.mouseEdges) {
         mouseEdges.open()
     }
 }

@@ -31,7 +31,7 @@ function viewport() {
         }))
     _viewport
         .drag({ clampWheel: false })
-        // .wheel({ smooth: 3 })
+        .wheel({ smooth: 3 })
         .pinch()
         .decelerate()
         .on('clicked', click)
@@ -103,19 +103,6 @@ function events() {
 function border() {
     const line = _viewport.addChild(new PIXI.Graphics())
     line.lineStyle(10, 0xff0000).drawRect(0, 0, _viewport.worldWidth, _viewport.worldHeight)
-}
-
-function overlap(x, y) {
-    const size = STAR_SIZE
-    for (const child of _viewport.children) {
-        if (x < child.x + size &&
-            x + size > child.x &&
-            y < child.y + size &&
-            y + size > child.y) {
-            return true
-        }
-    }
-    return false
 }
 
 function stars() {
