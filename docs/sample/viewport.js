@@ -115,19 +115,43 @@ export function create() {
     //     radius: null,       // radius (in world coordinates) of center circle where movement is allowed without moving the viewport
     // })
 
-    viewport.mouseEdges({
-        radius: null,           // distance from center of screen in screen pixels
-        distance: 20,           // distance from all sides in screen pixels
-        top: null,              // alternatively, set top distance (leave unset for no top scroll)
-        bottom: null,           // alternatively, set bottom distance (leave unset for no top scroll)
-        left: null,             // alternatively, set left distance (leave unset for no top scroll)
-        right: null,            // alternatively, set right distance (leave unset for no top scroll)
-        speed: 8,               // speed in pixels/frame to scroll viewport
-        reverse: false,         // reverse direction of scroll
-        noDecelerate: false,    // don't use decelerate plugin even if it's installed
-        linear: false,          // if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
-        allowButtons: false,    // allows plugin to continue working even when there's a mousedown event
-    })
+    // viewport.mouseEdges({
+    //     radius: null,           // distance from center of screen in screen pixels
+    //     distance: 20,           // distance from all sides in screen pixels
+    //     top: null,              // alternatively, set top distance (leave unset for no top scroll)
+    //     bottom: null,           // alternatively, set bottom distance (leave unset for no top scroll)
+    //     left: null,             // alternatively, set left distance (leave unset for no top scroll)
+    //     right: null,            // alternatively, set right distance (leave unset for no top scroll)
+    //     speed: 8,               // speed in pixels/frame to scroll viewport
+    //     reverse: false,         // reverse direction of scroll
+    //     noDecelerate: false,    // don't use decelerate plugin even if it's installed
+    //     linear: false,          // if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
+    //     allowButtons: false,    // allows plugin to continue working even when there's a mousedown event
+    // })
+
+    // viewport.snap({
+    //     topLeft: false,             // snap to the top-left of viewport instead of center
+    //     friction: 0.8,              // friction/frame to apply if decelerate is active
+    //     time: 1000,                 // time for snapping in ms
+    //     ease: 'easeInOutSine',      // ease function or name (see http://easings.net/ for supported names)
+    //     interrupt: true,            // pause snapping with any user input on the viewport
+    //     removeOnComplete: false,    // removes this plugin after snapping is complete
+    //     removeOnInterrupt: false,   // removes this plugin if interrupted by any user input
+    //     forceStart: false,          // starts the snap immediately regardless of whether the viewport is at the desired location
+    // })
+
+    // viewport.snapZoom({
+    //     width: 0,                   // the desired width to snap (to maintain aspect ratio, choose only width or height)
+    //     height: 0,                  // the desired height to snap(to maintain aspect ratio, choose only width or height)
+    //     time: 1000,                 // time for snapping in ms
+    //     ease: 'easeInOutSine',      // ease function or name(see http://easings.net/ for supported names)
+    //     center: null,               // place this point at center during zoom instead of center of the viewport
+    //     interrupt: true,            // pause snapping with any user input on the viewport
+    //     removeOnComplete: false,    // removes this plugin after snapping is complete
+    //     removeOnInterrupt: false,   // removes this plugin if interrupted by any user input
+    //     forceStart: false,          // starts the snap immediately regardless of whether the viewport is at the desired zoom
+    //     noMove: false,              // zoom but do not move
+    // })
 
     // create elements
     stars(viewport, STAR_SIZE, BORDER)
