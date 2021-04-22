@@ -1024,7 +1024,7 @@
 <dd>
     
     <div class="description">
-        <p>Determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)</p>
+        <p>Determines whether the viewport is dirty (i.e., needs to be rendered to the screen because of a change)</p>
     </div>
     
     
@@ -1076,7 +1076,8 @@
     
     <div class="description">
         <p>Permanently changes the Viewport's hitArea</p>
-<p>NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)</p>
+<p>NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth,
+Viewport.worldScreenHeight)</p>
     </div>
     
     
@@ -1785,7 +1786,7 @@
             <span class="">
                 animate
             </span>
-            <span class="signature">(options)</span><span class="type-signature"><a href="Viewport.html">Viewport</a></span>
+            <span class="signature">()</span><span class="type-signature"><a href="Viewport.html">Viewport</a></span>
             
             
             
@@ -1794,7 +1795,7 @@
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line666">Viewport.js:666</a>
+            <a href="js_Viewport.js.html#line767">Viewport.js:767</a>
         </div>
         
     </div>
@@ -1805,7 +1806,8 @@
 
     
     <div class="description">
-        <p>Animate the position and/or scale of the viewport</p>
+        <p>Animate the position and/or scale of the viewport
+To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height</p>
     </div>
     
 
@@ -1813,51 +1815,6 @@
 
     
 
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">AnimateOptions</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                </td>
-        </tr>
-	
-	
-	</tbody>
-</table>
     
 
     
@@ -1944,7 +1901,7 @@
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line608">Viewport.js:608</a>
+            <a href="js_Viewport.js.html#line666">Viewport.js:666</a>
         </div>
         
     </div>
@@ -2066,7 +2023,8 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
                         
                     
                 
-                <p>all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')</p></td>
+                <p>all, horizontal, vertical, or combination of top, bottom, right, left
+(e.g., 'top-bottom-right')</p></td>
         </tr>
 	
 	
@@ -2379,7 +2337,8 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
                         
                     
                 
-                <p>ease function or name (see http://easings.net/ for supported names)</p></td>
+                <p>ease function or name
+(see http://easings.net/ for supported names)</p></td>
         </tr>
 	
 	
@@ -2415,7 +2374,8 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
                         
                     
                 
-                <p>(top/bottom/center and left/right/center, or center) where to place world if too small for screen</p></td>
+                <p>(top/bottom/center and left/right/center, or center)
+where to place world if too small for screen</p></td>
         </tr>
 	
 	
@@ -2504,7 +2464,7 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
             <span class="">
                 clamp
             </span>
-            <span class="signature">(<span class="optional">options</span>)</span><span class="type-signature"><a href="Viewport.html">Viewport</a></span>
+            <span class="signature">(<span class="optional">options</span>, <span class="optional">direction</span>, <span class="optional">underflow</span>)</span>
             
             
             
@@ -2513,7 +2473,7 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line574">Viewport.js:574</a>
+            <a href="js_Viewport.js.html#line625">Viewport.js:625</a>
         </div>
         
     </div>
@@ -2524,7 +2484,23 @@ fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y
 
     
     <div class="description">
-        <p>Clamp to world boundaries or other provided boundaries</p>
+        <p>Clamp to world boundaries or other provided boundaries
+There are three ways to clamp:</p>
+<ol>
+<li>direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of offscreen
+direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary</li>
+<li>left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
+if any of these are set to true, then the location is set to the boundary
+[0, viewport.worldWidth/viewport.worldHeight], eg: to allow the world to be completely dragged offscreen,
+set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]</li>
+</ol>
+<p>Underflow determines what happens when the world is smaller than the viewport</p>
+<ol>
+<li>none = the world is clamped but there is no special behavior</li>
+<li>center = the world is centered on the viewport</li>
+<li>combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the
+appropriate boundaries</li>
+</ol>
 <p>NOTES:
 clamp is disabled if called with no options; use { direction: 'all' } for all edge clamping
 screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly</p>
@@ -2548,6 +2524,8 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
 		<th>Type</th>
 		
 		
+		<th>Default</th>
+		
 		
 		<th class="last">Description</th>
 	</tr>
@@ -2564,12 +2542,16 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
             <td class="type">
             
                 
-<span class="param-type">ClampOptions</span>
+<span class="param-type">object</span>
 
 
             
             </td>
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">
@@ -2581,7 +2563,259 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>left</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp left; true = 0</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>right</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp right; true = viewport.worldWidth</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>top</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp top; true = 0</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>bottom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp bottom; true = viewport.worldHeight</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>direction</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>(all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight];
+replaces left/right/top/bottom if set</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>underflow</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    center
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>where to place world if too small for screen (e.g., top-right, center,
+none, bottomLeft)     * @returns {Viewport} this</p></td>
         </tr>
 	
 	
@@ -2622,35 +2856,6 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
     
 
     
-    <h5>Returns:</h5>
-    
-
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Type</th>
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    
-        <tr>
-            
-            <td class="type">
-            
-                        <a href="Viewport.html">Viewport</a>
-                        
-                    
-            </td>
-            <td class="description last">this</td>
-        </tr>
-    
-    </tbody>
-</table>
-
-    
 
     
 </dd>
@@ -2673,7 +2878,7 @@ screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this 
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line686">Viewport.js:686</a>
+            <a href="js_Viewport.js.html#line793">Viewport.js:793</a>
         </div>
         
     </div>
@@ -2729,7 +2934,7 @@ larger than the screen).</p>
             <td class="type">
             
                 
-<span class="param-type">ClampZoomOptions</span>
+<span class="param-type">object</span>
 
 
             
@@ -2746,7 +2951,209 @@ larger than the screen).</p>
                         
                     
                 
-                </td>
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>minWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>minimum width</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>minHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>minimum height</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>maximum width</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>maximum height</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>minScale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>minimum scale</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxScale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>minimum scale</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -2838,7 +3245,7 @@ larger than the screen).</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line586">Viewport.js:586</a>
+            <a href="js_Viewport.js.html#line641">Viewport.js:641</a>
         </div>
         
     </div>
@@ -2887,7 +3294,7 @@ larger than the screen).</p>
             <td class="type">
             
                 
-<span class="param-type">DecelerateOptions</span>
+<span class="param-type">IDecelerateOptions</span>
 
 
             
@@ -2904,7 +3311,140 @@ larger than the screen).</p>
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>friction</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0.95
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>percent to decelerate after movement</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>bounce</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0.8
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>percent to decelerate when past boundaries (only applicable when
+viewport.bounce() is active)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>minSpeed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0.01
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>minimum velocity before stopping/reversing acceleration</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -3072,7 +3612,7 @@ larger than the screen).</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line560">Viewport.js:560</a>
+            <a href="js_Viewport.js.html#line591">Viewport.js:591</a>
         </div>
         
     </div>
@@ -3122,7 +3662,7 @@ to avoid the context menu popping up on each right-click drag.</p>
             <td class="type">
             
                 
-<span class="param-type">DragOptions</span>
+<span class="param-type">IDragOptions</span>
 
 
             
@@ -3139,7 +3679,468 @@ to avoid the context menu popping up on each right-click drag.</p>
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>direction</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    all
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>direction to drag</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>pressDrag</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>whether click to drag is active</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>wheel</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>use wheel to scroll in direction (unless wheel plugin is active)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>wheelScroll</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>number of pixels to scroll with each wheel spin</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>reverse</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>reverse the direction of the wheel scroll</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>clampWheel</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>clamp wheel(to avoid weird bounce with mouse wheel)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>underflow</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    center
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>where to place world if too small for screen</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>factor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>factor to multiply drag to increase the speed of movement</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>mouseButtons</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    all
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>changes which mouse buttons trigger drag, use: 'all', 'left',
+'right' 'middle', or some combination, like, 'middle-right'; you may want to set
+viewport.options.disableOnContextMenu if you want to use right-click dragging</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>keyToPress</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>array containing
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code codes of keys that can be
+pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ignoreKeyToPressOnTouch</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>ignore keyToPress for touch events</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>lineHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    20
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>scaling factor for non-DOM_DELTA_PIXEL scrolling events</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -3231,7 +4232,7 @@ to avoid the context menu popping up on each right-click drag.</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line723">Viewport.js:723</a>
+            <a href="js_Viewport.js.html#line842">Viewport.js:842</a>
         </div>
         
     </div>
@@ -4896,7 +5897,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line646">Viewport.js:646</a>
+            <a href="js_Viewport.js.html#line725">Viewport.js:725</a>
         </div>
         
     </div>
@@ -4977,7 +5978,7 @@ fires 'moved' event</p>
             <td class="type">
             
                 
-<span class="param-type">FollowOptions</span>
+<span class="param-type">IFollowOptions</span>
 
 
             
@@ -4994,7 +5995,137 @@ fires 'moved' event</p>
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>speed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>to follow in pixels/frame (0=teleport to location)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>acceleration</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>set acceleration to accelerate and decelerate at this rate; speed
+cannot be 0 to use acceleration</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>radius</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>radius (in world coordinates) of center circle where movement is allowed
+without moving the viewport     * @returns {Viewport} this</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -5162,7 +6293,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line697">Viewport.js:697</a>
+            <a href="js_Viewport.js.html#line816">Viewport.js:816</a>
         </div>
         
     </div>
@@ -5174,7 +6305,7 @@ fires 'moved' event</p>
     
     <div class="description">
         <p>Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.</p>
-<p>NOTE: fires 'moved' event</p>
+<p>NOTES: fires 'moved' event; there's a known bug where the mouseEdges does not work properly with &quot;windowed&quot; viewports</p>
     </div>
     
 
@@ -5211,7 +6342,7 @@ fires 'moved' event</p>
             <td class="type">
             
                 
-<span class="param-type">MouseEdgesOptions</span>
+<span class="param-type">IMouseEdgesOptions</span>
 
 
             
@@ -5228,7 +6359,408 @@ fires 'moved' event</p>
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>radius</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>distance from center of screen in screen pixels</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>distance</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>distance from all sides in screen pixels</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>top</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>alternatively, set top distance (leave unset for no top scroll)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>bottom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>alternatively, set bottom distance (leave unset for no top scroll)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>left</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>alternatively, set left distance (leave unset for no top scroll)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>right</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>alternatively, set right distance (leave unset for no top scroll)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>speed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    8
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>speed in pixels/frame to scroll viewport</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>reverse</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>reverse direction of scroll</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>noDecelerate</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>don't use decelerate plugin even if it's installed</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>linear</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>if using radius, use linear movement (+/- 1, +/- 1) instead of angled
+movement (Math.cos(angle from center), Math.sin(angle from center))</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>allowButtons</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>allows plugin to continue working even when there's a mousedown event</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -5291,7 +6823,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line483">Viewport.js:483</a>
+            <a href="js_Viewport.js.html#line497">Viewport.js:497</a>
         </div>
         
     </div>
@@ -5367,7 +6899,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line618">Viewport.js:618</a>
+            <a href="js_Viewport.js.html#line681">Viewport.js:681</a>
         </div>
         
     </div>
@@ -5432,7 +6964,213 @@ fires 'moved' event</p>
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>noDrag</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>disable two-finger dragging</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>percent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>percent to modify pinch speed</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>factor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>factor to multiply two-finger drag to increase the speed of movement</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>center</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.Point</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>place this point at center during zoom instead of center of two fingers</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">'all'</span>
+|
+
+<span class="param-type">'x'</span>
+|
+
+<span class="param-type">'y'</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    all
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>axis to zoom</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -5785,7 +7523,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line630">Viewport.js:630</a>
+            <a href="js_Viewport.js.html#line703">Viewport.js:703</a>
         </div>
         
     </div>
@@ -5889,7 +7627,7 @@ fires 'moved' event</p>
             <td class="type">
             
                 
-<span class="param-type">SnapOptions</span>
+<span class="param-type">ISnapOptions</span>
 
 
             
@@ -5906,7 +7644,316 @@ fires 'moved' event</p>
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>topLeft</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>snap to the top-left of viewport instead of center</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>friction</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0.8
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>friction/frame to apply if decelerate is active</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1000
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>time in ms to snap</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ease</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    easeInOutSine
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>ease function or name (see http://easings.net/
+for supported names)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>interrupt</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>pause snapping with any user input on the viewport</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>removeOnComplete</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>removes this plugin after snapping is complete</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>removeOnInterrupt</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>removes this plugin if interrupted by any user input</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>forceStart</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>starts the snap immediately regardless of whether the viewport is at
+the desired location</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -5998,7 +8045,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line478">Viewport.js:478</a>
+            <a href="js_Viewport.js.html#line492">Viewport.js:492</a>
         </div>
         
     </div>
@@ -6007,6 +8054,10 @@ fires 'moved' event</p>
 </dt>
 <dd>
 
+    
+    <div class="description">
+        <p>Returns zoom to the desired scale</p>
+    </div>
     
 
     
@@ -6042,7 +8093,7 @@ fires 'moved' event</p>
             <td class="type">
             
                 
-<span class="param-type">SnapZoomOptions</span>
+<span class="param-type">ISnapZoomOptions</span>
 
 
             
@@ -6052,7 +8103,386 @@ fires 'moved' event</p>
             
             <td class="description last">
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>the desired width to snap (to maintain aspect ratio, choose width or height)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>the desired height to snap (to maintain aspect ratio, choose width or height)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    1000
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>time for snapping in ms</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ease</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    easeInOutSine
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>ease function or name (see http://easings.net/
+for supported names)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>center</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.Point</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>place this point at center during zoom instead of center of the viewport</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>interrupt</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>pause snapping with any user input on the viewport</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>removeOnComplete</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>removes this plugin after snapping is complete</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>removeOnInterrupt</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>removes this plugin if interrupted by any user input</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>forceStart</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>starts the snap immediately regardless of whether the viewport is at the
+desired zoom</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>noMove</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>zoom but do not move</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -6237,7 +8667,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line656">Viewport.js:656</a>
+            <a href="js_Viewport.js.html#line745">Viewport.js:745</a>
         </div>
         
     </div>
@@ -6249,6 +8679,8 @@ fires 'moved' event</p>
     
     <div class="description">
         <p>Zoom using mouse wheel</p>
+<p>NOTE: the default event listener for 'wheel' event is document.body. Use <code>Viewport.options.divWheel</code> to
+change this default</p>
     </div>
     
 
@@ -6285,7 +8717,7 @@ fires 'moved' event</p>
             <td class="type">
             
                 
-<span class="param-type">WheelOptions</span>
+<span class="param-type">IWheelOptions</span>
 
 
             
@@ -6302,7 +8734,283 @@ fires 'moved' event</p>
                         
                     
                 
+                
+                
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>percent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    0.1
+                
                 </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>percent to scroll with each spin</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>smooth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>smooth the zooming by providing the number of frames to zoom between wheel spins</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>interrupt</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>stop smoothing with any user input on the viewport</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>reverse</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>reverse the direction of the scroll</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>center</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.Point</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>place this point at center during zoom instead of current mouse position</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>lineHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    20
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>scaling factor for non-DOM_DELTA_PIXEL scrolling events</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">'all'</span>
+|
+
+<span class="param-type">'x'</span>
+|
+
+<span class="param-type">'y'</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    all
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>axis to zoom</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+            </td>
         </tr>
 	
 	
@@ -6774,7 +9482,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line809">Viewport.js:809</a>
+            <a href="js_Viewport.js.html#line928">Viewport.js:928</a>
         </div>
         
     </div>
@@ -6860,7 +9568,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line804">Viewport.js:804</a>
+            <a href="js_Viewport.js.html#line923">Viewport.js:923</a>
         </div>
         
     </div>
@@ -6946,7 +9654,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line819">Viewport.js:819</a>
+            <a href="js_Viewport.js.html#line938">Viewport.js:938</a>
         </div>
         
     </div>
@@ -7032,7 +9740,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line814">Viewport.js:814</a>
+            <a href="js_Viewport.js.html#line933">Viewport.js:933</a>
         </div>
         
     </div>
@@ -7118,7 +9826,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line750">Viewport.js:750</a>
+            <a href="js_Viewport.js.html#line869">Viewport.js:869</a>
         </div>
         
     </div>
@@ -7301,7 +10009,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line766">Viewport.js:766</a>
+            <a href="js_Viewport.js.html#line885">Viewport.js:885</a>
         </div>
         
     </div>
@@ -7484,7 +10192,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line758">Viewport.js:758</a>
+            <a href="js_Viewport.js.html#line877">Viewport.js:877</a>
         </div>
         
     </div>
@@ -7667,7 +10375,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line874">Viewport.js:874</a>
+            <a href="js_Viewport.js.html#line993">Viewport.js:993</a>
         </div>
         
     </div>
@@ -7753,7 +10461,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line844">Viewport.js:844</a>
+            <a href="js_Viewport.js.html#line963">Viewport.js:963</a>
         </div>
         
     </div>
@@ -7839,7 +10547,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line839">Viewport.js:839</a>
+            <a href="js_Viewport.js.html#line958">Viewport.js:958</a>
         </div>
         
     </div>
@@ -7925,7 +10633,7 @@ fires 'moved' event</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line849">Viewport.js:849</a>
+            <a href="js_Viewport.js.html#line968">Viewport.js:968</a>
         </div>
         
     </div>
@@ -8086,7 +10794,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line864">Viewport.js:864</a>
+            <a href="js_Viewport.js.html#line983">Viewport.js:983</a>
         </div>
         
     </div>
@@ -8172,7 +10880,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line779">Viewport.js:779</a>
+            <a href="js_Viewport.js.html#line898">Viewport.js:898</a>
         </div>
         
     </div>
@@ -8258,7 +10966,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line774">Viewport.js:774</a>
+            <a href="js_Viewport.js.html#line893">Viewport.js:893</a>
         </div>
         
     </div>
@@ -8344,7 +11052,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line789">Viewport.js:789</a>
+            <a href="js_Viewport.js.html#line908">Viewport.js:908</a>
         </div>
         
     </div>
@@ -8430,7 +11138,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line784">Viewport.js:784</a>
+            <a href="js_Viewport.js.html#line903">Viewport.js:903</a>
         </div>
         
     </div>
@@ -8516,7 +11224,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line799">Viewport.js:799</a>
+            <a href="js_Viewport.js.html#line918">Viewport.js:918</a>
         </div>
         
     </div>
@@ -8602,7 +11310,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line794">Viewport.js:794</a>
+            <a href="js_Viewport.js.html#line913">Viewport.js:913</a>
         </div>
         
     </div>
@@ -8688,7 +11396,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line824">Viewport.js:824</a>
+            <a href="js_Viewport.js.html#line943">Viewport.js:943</a>
         </div>
         
     </div>
@@ -8941,7 +11649,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line834">Viewport.js:834</a>
+            <a href="js_Viewport.js.html#line953">Viewport.js:953</a>
         </div>
         
     </div>
@@ -9027,7 +11735,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line857">Viewport.js:857</a>
+            <a href="js_Viewport.js.html#line976">Viewport.js:976</a>
         </div>
         
     </div>
@@ -9187,7 +11895,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line869">Viewport.js:869</a>
+            <a href="js_Viewport.js.html#line988">Viewport.js:988</a>
         </div>
         
     </div>
@@ -9269,7 +11977,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 17:20:51 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 19:21:51 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

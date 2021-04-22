@@ -2,8 +2,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.30.0
- * Compiled Thu, 22 Apr 2021 09:16:32 UTC
+ * pixi-viewport - v4.30.1
+ * Compiled Thu, 22 Apr 2021 11:20:27 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1144,7 +1144,7 @@ class ClampZoom extends Plugin
         this.clamp();
     }
 
-    /** Clamp the viewport's zoom immediately. */
+    /** Clamp the viewport scale zoom) */
      clamp()
     {
         if (this.paused)
@@ -1197,20 +1197,59 @@ class ClampZoom extends Plugin
             }
         }
         else
+        if (this.options.minScale || this.options.maxScale)
         {
-            let scale = this.parent.scale.x;
+            const minScale = { x: null, y: null };
+            const maxScale = { x: null, y: null };
 
-            if (this.options.minScale !== null && scale < this.options.minScale)
+            if (typeof this.options.minScale === 'number')
             {
-                scale = this.options.minScale;
+                minScale.x = this.options.minScale;
+                minScale.y = this.options.minScale;
             }
-            if (this.options.maxScale !== null && scale > this.options.maxScale)
+            else if (this.options.minScale !== null)
             {
-                scale = this.options.maxScale;
+                const optsMinScale = this.options.minScale ;
+
+                minScale.x = typeof optsMinScale.x === 'undefined' ? null : optsMinScale.x;
+                minScale.y = typeof optsMinScale.y === 'undefined' ? null : optsMinScale.y;
             }
-            if (scale !== this.parent.scale.x)
+
+            if (typeof this.options.maxScale === 'number')
             {
-                this.parent.scale.set(scale);
+                maxScale.x = this.options.maxScale;
+                maxScale.y = this.options.maxScale;
+            }
+            else if (this.options.maxScale !== null)
+            {
+                const optsMaxScale = this.options.maxScale ;
+
+                maxScale.x = typeof optsMaxScale.x === 'undefined' ? null : optsMaxScale.x;
+                maxScale.y = typeof optsMaxScale.y === 'undefined' ? null : optsMaxScale.y;
+            }
+
+            let scaleX = this.parent.scale.x;
+            let scaleY = this.parent.scale.y;
+
+            if (minScale.x !== null && scaleX < minScale.x)
+            {
+                scaleX = minScale.x;
+            }
+            if (maxScale.x !== null && scaleX > maxScale.x)
+            {
+                scaleX = maxScale.x;
+            }
+            if (minScale.y !== null && scaleY < minScale.y)
+            {
+                scaleY = minScale.y;
+            }
+            if (maxScale.y !== null && scaleY > maxScale.y)
+            {
+                scaleY = maxScale.y;
+            }
+            if (scaleX !== this.parent.scale.x || scaleY !== this.parent.scale.y)
+            {
+                this.parent.scale.set(scaleX, scaleY);
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
         }
@@ -1221,6 +1260,8 @@ class ClampZoom extends Plugin
         this.clamp();
     }
 }
+
+/** This allows independent x and y values for min/maxScale */
 
 const DEFAULT_DECELERATE_OPTIONS = {
     friction: 0.98,
@@ -3953,6 +3994,7 @@ class PluginManager
 
 
 
+
 const DEFAULT_VIEWPORT_OPTIONS = {
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
@@ -4115,7 +4157,7 @@ class Viewport extends display.Container
                 {
                     this.zooming = true;
                 }
-                else  if (this.zooming)
+                else if (this.zooming)
                 {
                     this.emit('zoomed-end', this);
                     this.zooming = false;
@@ -4262,8 +4304,8 @@ class Viewport extends display.Container
     get center()
     {
         return new math.Point(
-            this.worldScreenWidth / 2 - this.x / this.scale.x,
-            this.worldScreenHeight / 2 - this.y / this.scale.y,
+            (this.worldScreenWidth / 2) - (this.x / this.scale.x),
+            (this.worldScreenHeight / 2) - (this.y / this.scale.y),
         );
     }
     set center(value)
@@ -4293,8 +4335,8 @@ class Viewport extends display.Container
             y = args[0].y;
         }
 
-        const newX = (this.worldScreenWidth / 2 - x) * this.scale.x;
-        const newY = (this.worldScreenHeight / 2 - y) * this.scale.y;
+        const newX = ((this.worldScreenWidth / 2) - x) * this.scale.x;
+        const newY = ((this.worldScreenHeight / 2) - y) * this.scale.y;
 
         if (this.x !== newX || this.y !== newY)
         {
@@ -4316,7 +4358,7 @@ class Viewport extends display.Container
         this.moveCorner(value);
     }
 
-    /** Move viewport's top-left corner; also clamps and resets decelerate and bounce (as needed) */
+    /** Move Viewport's top-left corner; also clamps and resets decelerate and bounce (as needed) */
     
 
 
@@ -4629,7 +4671,7 @@ class Viewport extends display.Container
      */
     zoomPercent(percent, center)
     {
-        return this.setZoom(this.scale.x + this.scale.x * percent, center);
+        return this.setZoom(this.scale.x + (this.scale.x * percent), center);
     }
 
     /**
@@ -4657,7 +4699,21 @@ class Viewport extends display.Container
     }
 
     /**
-     * @param {SnapZoomOptions} options
+     * Returns zoom to the desired scale
+     *
+     * @param {ISnapZoomOptions} options
+     * @param {number} [options.width=0] - the desired width to snap (to maintain aspect ratio, choose width or height)
+     * @param {number} [options.height=0] - the desired height to snap (to maintain aspect ratio, choose width or height)
+     * @param {number} [options.time=1000] - time for snapping in ms
+     * @param {(string|function)} [options.ease=easeInOutSine] ease function or name (see http://easings.net/
+     *   for supported names)
+     * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of center of the viewport
+     * @param {boolean} [options.interrupt=true] - pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] - removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] - removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] - starts the snap immediately regardless of whether the viewport is at the
+     *   desired zoom
+     * @param {boolean} [options.noMove] - zoom but do not move
      */
     snapZoom(options)
     {
@@ -4681,8 +4737,8 @@ class Viewport extends display.Container
             top: this.top < 0,
             bottom: this.bottom > this.worldHeight,
             cornerPoint: new math.Point(
-                this.worldWidth * this.scale.x - this.screenWidth,
-                this.worldHeight * this.scale.y - this.screenHeight
+                (this.worldWidth * this.scale.x) - this.screenWidth,
+                (this.worldHeight * this.scale.y) - this.screenHeight
             )
         };
     }
@@ -4690,11 +4746,11 @@ class Viewport extends display.Container
     /** World coordinates of the right edge of the screen */
     get right()
     {
-        return -this.x / this.scale.x + this.worldScreenWidth;
+        return (-this.x / this.scale.x) + this.worldScreenWidth;
     }
     set right(value)
     {
-        this.x = -value * this.scale.x + this.screenWidth;
+        this.x = (-value * this.scale.x) + this.screenWidth;
         this.plugins.reset();
     }
 
@@ -4723,16 +4779,16 @@ class Viewport extends display.Container
     /** World coordinates of the bottom edge of the screen */
     get bottom()
     {
-        return -this.y / this.scale.y + this.worldScreenHeight;
+        return (-this.y / this.scale.y) + this.worldScreenHeight;
     }
     set bottom(value)
     {
-        this.y = -value * this.scale.y + this.screenHeight;
+        this.y = (-value * this.scale.y) + this.screenHeight;
         this.plugins.reset();
     }
 
     /**
-     * Determines whether the viewport is dirty (i.e., needs to be renderered to the screen because of a change)
+     * Determines whether the viewport is dirty (i.e., needs to be rendered to the screen because of a change)
      */
     get dirty()
     {
@@ -4746,7 +4802,8 @@ class Viewport extends display.Container
     /**
      * Permanently changes the Viewport's hitArea
      *
-     * NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth, Viewport.worldScreenHeight)
+     * NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth,
+     * Viewport.worldScreenHeight)
      */
     get forceHitArea()
     {
@@ -4772,7 +4829,23 @@ class Viewport extends display.Container
      * NOTE: if you expect users to use right-click dragging, you should enable `viewport.options.disableOnContextMenu`
      * to avoid the context menu popping up on each right-click drag.
      *
-     * @param {DragOptions} [options]
+     * @param {IDragOptions} [options]
+     * @param {string} [options.direction=all] direction to drag
+     * @param {boolean} [options.pressDrag=true] whether click to drag is active
+     * @param {boolean} [options.wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
+     * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
+     * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+     * @param {(boolean|string)} [options.clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
+     * @param {string} [options.underflow=center] where to place world if too small for screen
+     * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
+     * @param {string} [options.mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left',
+     *  'right' 'middle', or some combination, like, 'middle-right'; you may want to set
+     *   viewport.options.disableOnContextMenu if you want to use right-click dragging
+     * @param {string[]} [options.keyToPress=null] - array containing
+     *  {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be
+     *  pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
+     * @param {boolean} [options.ignoreKeyToPressOnTouch=false] - ignore keyToPress for touch events
+     * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
      * @returns {Viewport} this
      */
      drag(options)
@@ -4784,13 +4857,33 @@ class Viewport extends display.Container
 
     /**
      * Clamp to world boundaries or other provided boundaries
+     * There are three ways to clamp:
+     * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of offscreen
+     *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
+     * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
+     *    if any of these are set to true, then the location is set to the boundary
+     *    [0, viewport.worldWidth/viewport.worldHeight], eg: to allow the world to be completely dragged offscreen,
+     *    set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+     *
+     * Underflow determines what happens when the world is smaller than the viewport
+     * 1. none = the world is clamped but there is no special behavior
+     * 2. center = the world is centered on the viewport
+     * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the
+     *     appropriate boundaries
      *
      * NOTES:
      *   clamp is disabled if called with no options; use { direction: 'all' } for all edge clamping
      *   screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      *
-     * @param {ClampOptions} [options]
-     * @returns {Viewport} this
+     * @param {object} [options]
+     * @param {(number|boolean)} [options.left=false] - clamp left; true = 0
+     * @param {(number|boolean)} [options.right=false] - clamp right; true = viewport.worldWidth
+     * @param {(number|boolean)} [options.top=false] - clamp top; true = 0
+     * @param {(number|boolean)} [options.bottom=false] - clamp bottom; true = viewport.worldHeight
+     * @param {string} [direction] - (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight];
+     *  replaces left/right/top/bottom if set
+     * @param {string} [underflow=center] - where to place world if too small for screen (e.g., top-right, center,
+     *  none, bottomLeft)     * @returns {Viewport} this
      */
      clamp(options)
     {
@@ -4804,7 +4897,11 @@ class Viewport extends display.Container
      *
      * NOTE: this fires 'moved' event during deceleration
      *
-     * @param {DecelerateOptions} [options]
+     * @param {IDecelerateOptions} [options]
+     * @param {number} [options.friction=0.95] - percent to decelerate after movement
+     * @param {number} [options.bounce=0.8] - percent to decelerate when past boundaries (only applicable when
+     *   viewport.bounce() is active)
+     * @param {number} [options.minSpeed=0.01] - minimum velocity before stopping/reversing acceleration
      * @return {Viewport} this
      */
      decelerate(options)
@@ -4820,16 +4917,19 @@ class Viewport extends display.Container
      *    screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
      *    fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y-end' events
      * @param {object} [options]
-     * @param {string} [options.sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
-     * @param {number} [options.friction=0.5] friction to apply to decelerate if active
-     * @param {number} [options.time=150] time in ms to finish bounce
-     * @param {object} [options.bounceBox] use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
+     * @param {string} [options.sides=all] - all, horizontal, vertical, or combination of top, bottom, right, left
+     *  (e.g., 'top-bottom-right')
+     * @param {number} [options.friction=0.5] - friction to apply to decelerate if active
+     * @param {number} [options.time=150] - time in ms to finish bounce
+     * @param {object} [options.bounceBox] - use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
      * @param {number} [options.bounceBox.x=0]
      * @param {number} [options.bounceBox.y=0]
      * @param {number} [options.bounceBox.width=viewport.worldWidth]
      * @param {number} [options.bounceBox.height=viewport.worldHeight]
-     * @param {string|function} [options.ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-     * @param {string} [options.underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
+     * @param {string|function} [options.ease=easeInOutSine] - ease function or name
+     *  (see http://easings.net/ for supported names)
+     * @param {string} [options.underflow=center] - (top/bottom/center and left/right/center, or center)
+     *  where to place world if too small for screen
      * @return {Viewport} this
      */
      bounce(options)
@@ -4843,6 +4943,11 @@ class Viewport extends display.Container
      * Enable pinch to zoom and two-finger touch to drag
      *
      * @param {PinchOptions} [options]
+     * @param {boolean} [options.noDrag] - disable two-finger dragging
+     * @param {number} [options.percent=1] - percent to modify pinch speed
+     * @param {number} [options.factor=1] - factor to multiply two-finger drag to increase the speed of movement
+     * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of center of two fingers
+     * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
      * @return {Viewport} this
      */
      pinch(options)
@@ -4857,7 +4962,17 @@ class Viewport extends display.Container
      *
      * @param {number} x
      * @param {number} y
-     * @param {SnapOptions} [options]
+     * @param {ISnapOptions} [options]
+     * @param {boolean} [options.topLeft] - snap to the top-left of viewport instead of center
+     * @param {number} [options.friction=0.8] - friction/frame to apply if decelerate is active
+     * @param {number} [options.time=1000] - time in ms to snap
+     * @param {string|function} [options.ease=easeInOutSine] - ease function or name (see http://easings.net/
+     *   for supported names)
+     * @param {boolean} [options.interrupt=true] - pause snapping with any user input on the viewport
+     * @param {boolean} [options.removeOnComplete] - removes this plugin after snapping is complete
+     * @param {boolean} [options.removeOnInterrupt] - removes this plugin if interrupted by any user input
+     * @param {boolean} [options.forceStart] - starts the snap immediately regardless of whether the viewport is at
+     *   the desired location
      * @return {Viewport} this
      */
      snap(x, y, options)
@@ -4875,8 +4990,14 @@ class Viewport extends display.Container
      *    options.acceleration is not perfect as it doesn't know the velocity of the target
      *    it adds acceleration to the start of movement and deceleration to the end of movement when the target is stopped
      *    fires 'moved' event
+     *
      * @param {PIXI.DisplayObject} target to follow
-     * @param {FollowOptions} [options]
+     * @param {IFollowOptions} [options]
+     * @param {number} [options.speed=0] - to follow in pixels/frame (0=teleport to location)
+     * @param {number} [options.acceleration] - set acceleration to accelerate and decelerate at this rate; speed
+     *   cannot be 0 to use acceleration
+     * @param {number} [options.radius] - radius (in world coordinates) of center circle where movement is allowed
+     *   without moving the viewport     * @returns {Viewport} this
      * @returns {Viewport} this
      */
      follow(target, options)
@@ -4889,7 +5010,17 @@ class Viewport extends display.Container
     /**
      * Zoom using mouse wheel
      *
-     * @param {WheelOptions} [options]
+     * NOTE: the default event listener for 'wheel' event is document.body. Use `Viewport.options.divWheel` to
+     * change this default
+     *
+     * @param {IWheelOptions} [options]
+     * @param {number} [options.percent=0.1] - percent to scroll with each spin
+     * @param {number} [options.smooth] - smooth the zooming by providing the number of frames to zoom between wheel spins
+     * @param {boolean} [options.interrupt=true] - stop smoothing with any user input on the viewport
+     * @param {boolean} [options.reverse] - reverse the direction of the scroll
+     * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of current mouse position
+     * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
+     * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
      * @return {Viewport} this
      */
      wheel(options)
@@ -4901,8 +5032,20 @@ class Viewport extends display.Container
 
     /**
      * Animate the position and/or scale of the viewport
-     *
-     * @param {AnimateOptions} options
+     * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
+     * @params {object} options
+     * @params {number} [options.time=1000] - time to animate
+     * @params {PIXI.Point} [options.position=viewport.center] - position to move viewport
+     * @params {number} [options.width] - desired viewport width in world pixels (use instead of scale;
+     *  aspect ratio is maintained if height is not provided)
+     * @params {number} [options.height] - desired viewport height in world pixels (use instead of scale;
+     *  aspect ratio is maintained if width is not provided)
+     * @params {number} [options.scale] - scale to change zoom (scale.x = scale.y)
+     * @params {number} [options.scaleX] - independently change zoom in x-direction
+     * @params {number} [options.scaleY] - independently change zoom in y-direction
+     * @params {(function|string)} [options.ease=linear] - easing function to use
+     * @params {function} [options.callbackOnComplete]
+     * @params {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @returns {Viewport} this
      */
      animate(options)
@@ -4925,7 +5068,13 @@ class Viewport extends display.Container
      * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
      * larger than the screen).
      *
-     * @param {ClampZoomOptions} [options]
+     * @param {object} [options]
+     * @param {number} [options.minWidth] - minimum width
+     * @param {number} [options.minHeight] - minimum height
+     * @param {number} [options.maxWidth] - maximum width
+     * @param {number} [options.maxHeight] - maximum height
+     * @param {number} [options.minScale] - minimum scale
+     * @param {number} [options.maxScale] - minimum scale
      * @return {Viewport} this
      */
      clampZoom(options)
@@ -4938,9 +5087,21 @@ class Viewport extends display.Container
     /**
      * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
      *
-     * NOTE: fires 'moved' event
+     * NOTES: fires 'moved' event; there's a known bug where the mouseEdges does not work properly with "windowed" viewports
      *
-     * @param {MouseEdgesOptions} [options]
+     * @param {IMouseEdgesOptions} [options]
+     * @param {number} [options.radius] - distance from center of screen in screen pixels
+     * @param {number} [options.distance] - distance from all sides in screen pixels
+     * @param {number} [options.top] - alternatively, set top distance (leave unset for no top scroll)
+     * @param {number} [options.bottom] - alternatively, set bottom distance (leave unset for no top scroll)
+     * @param {number} [options.left] - alternatively, set left distance (leave unset for no top scroll)
+     * @param {number} [options.right] - alternatively, set right distance (leave unset for no top scroll)
+     * @param {number} [options.speed=8] - speed in pixels/frame to scroll viewport
+     * @param {boolean} [options.reverse] - reverse direction of scroll
+     * @param {boolean} [options.noDecelerate] - don't use decelerate plugin even if it's installed
+     * @param {boolean} [options.linear] - if using radius, use linear movement (+/- 1, +/- 1) instead of angled
+     *   movement (Math.cos(angle from center), Math.sin(angle from center))
+     * @param {boolean} [options.allowButtons] allows plugin to continue working even when there's a mousedown event
      */
      mouseEdges(options)
     {
