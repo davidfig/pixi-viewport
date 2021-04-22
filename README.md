@@ -5,7 +5,7 @@ Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragg
 
 All features are configurable and removable, so set up the viewport to be exactly what you need.
 
-## v4.3.0+
+## v4.30.0+
 This project was migrated to Typescript (thanks [@sukantpal](https://github.com/SukantPal)!). All functionality should be the same. The live Example has been updated.
 
 ## Live Examples
