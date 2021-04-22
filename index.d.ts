@@ -496,7 +496,7 @@ export declare class Viewport extends Container {
     private _worldWidth?;
     private _worldHeight?;
     constructor(options?: IViewportOptions);
-    destroy(options: IDestroyOptions): void;
+    destroy(options?: IDestroyOptions): void;
     update(elapsed: number): void;
     resize(screenWidth: number | undefined, screenHeight: number | undefined, worldWidth: number, worldHeight: number): void;
     get worldWidth(): number;
@@ -536,7 +536,7 @@ export declare class Viewport extends Container {
     zoom(change: number, center?: boolean): Viewport;
     get scaled(): number;
     set scaled(scale: number);
-    snapZoom(options: ISnapZoomOptions): Viewport;
+    snapZoom(options?: ISnapZoomOptions): Viewport;
     OOB(): {
         left: boolean;
         right: boolean;
@@ -556,14 +556,14 @@ export declare class Viewport extends Container {
     set dirty(value: boolean);
     get forceHitArea(): IHitArea | null | undefined;
     set forceHitArea(value: IHitArea | null | undefined);
-    drag(options: IDragOptions): Viewport;
-    clamp(options: IClampOptions): Viewport;
-    decelerate(options: IDecelerateOptions): Viewport;
-    bounce(options: IBounceOptions): Viewport;
-    pinch(options: IPinchOptions): Viewport;
-    snap(x: number, y: number, options: ISnapOptions): Viewport;
-    follow(target: DisplayObject, options: IFollowOptions): Viewport;
-    wheel(options: IWheelOptions): Viewport;
+    drag(options?: IDragOptions): Viewport;
+    clamp(options?: IClampOptions): Viewport;
+    decelerate(options?: IDecelerateOptions): Viewport;
+    bounce(options?: IBounceOptions): Viewport;
+    pinch(options?: IPinchOptions): Viewport;
+    snap(x: number, y: number, options?: ISnapOptions): Viewport;
+    follow(target: DisplayObject, options?: IFollowOptions): Viewport;
+    wheel(options?: IWheelOptions): Viewport;
     animate(options: IAnimateOptions): Viewport;
     clampZoom(options: IClampZoomOptions): Viewport;
     mouseEdges(options: IMouseEdgesOptions): Viewport;

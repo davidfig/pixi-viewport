@@ -232,7 +232,7 @@ export class Viewport extends Container
     }
 
     /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */
-    destroy(options: IDestroyOptions): void
+    destroy(options?: IDestroyOptions): void
     {
         if (!this.options.noTicker && this.tickerFunction)
         {
@@ -832,7 +832,7 @@ export class Viewport extends Container
      *   desired zoom
      * @param {boolean} [options.noMove] - zoom but do not move
      */
-    snapZoom(options: ISnapZoomOptions): Viewport
+    snapZoom(options?: ISnapZoomOptions): Viewport
     {
         this.plugins.add('snap-zoom', new SnapZoom(this, options));
 
@@ -965,7 +965,7 @@ export class Viewport extends Container
      * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
      * @returns {Viewport} this
      */
-    public drag(options: IDragOptions): Viewport
+    public drag(options?: IDragOptions): Viewport
     {
         this.plugins.add('drag', new Drag(this, options));
 
@@ -1002,7 +1002,7 @@ export class Viewport extends Container
      * @param {string} [underflow=center] - where to place world if too small for screen (e.g., top-right, center,
      *  none, bottomLeft)     * @returns {Viewport} this
      */
-    public clamp(options: IClampOptions): Viewport
+    public clamp(options?: IClampOptions): Viewport
     {
         this.plugins.add('clamp', new Clamp(this, options));
 
@@ -1021,7 +1021,7 @@ export class Viewport extends Container
      * @param {number} [options.minSpeed=0.01] - minimum velocity before stopping/reversing acceleration
      * @return {Viewport} this
      */
-    public decelerate(options: IDecelerateOptions): Viewport
+    public decelerate(options?: IDecelerateOptions): Viewport
     {
         this.plugins.add('decelerate', new Decelerate(this, options));
 
@@ -1049,7 +1049,7 @@ export class Viewport extends Container
      *  where to place world if too small for screen
      * @return {Viewport} this
      */
-    public bounce(options: IBounceOptions): Viewport
+    public bounce(options?: IBounceOptions): Viewport
     {
         this.plugins.add('bounce', new Bounce(this, options));
 
@@ -1067,7 +1067,7 @@ export class Viewport extends Container
      * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
      * @return {Viewport} this
      */
-    public pinch(options: IPinchOptions): Viewport
+    public pinch(options?: IPinchOptions): Viewport
     {
         this.plugins.add('pinch', new Pinch(this, options));
 
@@ -1092,7 +1092,7 @@ export class Viewport extends Container
      *   the desired location
      * @return {Viewport} this
      */
-    public snap(x: number, y: number, options: ISnapOptions): Viewport
+    public snap(x: number, y: number, options?: ISnapOptions): Viewport
     {
         this.plugins.add('snap', new Snap(this, x, y, options));
 
@@ -1117,7 +1117,7 @@ export class Viewport extends Container
      *   without moving the viewport     * @returns {Viewport} this
      * @returns {Viewport} this
      */
-    public follow(target: DisplayObject, options: IFollowOptions): Viewport
+    public follow(target: DisplayObject, options?: IFollowOptions): Viewport
     {
         this.plugins.add('follow', new Follow(this, target, options));
 
@@ -1140,7 +1140,7 @@ export class Viewport extends Container
      * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
      * @return {Viewport} this
      */
-    public wheel(options: IWheelOptions): Viewport
+    public wheel(options?: IWheelOptions): Viewport
     {
         this.plugins.add('wheel', new Wheel(this, options));
 
