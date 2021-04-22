@@ -186,8 +186,8 @@ export declare interface IClampZoomOptions {
     minHeight?: number | null;
     maxWidth?: number | null;
     maxHeight?: number | null;
-    minScale?: number | null;
-    maxScale?: number | null;
+    minScale?: number | null | IScale;
+    maxScale?: number | null | IScale;
 }
 
 export declare interface ICompleteViewportOptions extends IViewportOptions {
@@ -279,6 +279,11 @@ export declare interface IPinchOptions {
     factor?: number;
     center?: Point | null;
     axis?: 'all' | 'x' | 'y';
+}
+
+export declare interface IScale {
+    x: null | number;
+    y: null | number;
 }
 
 export declare interface ISnapOptions {

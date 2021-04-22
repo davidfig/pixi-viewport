@@ -22,10 +22,10 @@ export interface IClampZoomOptions
     maxHeight?: number | null;
 
     /** Minimum scale */
-    minScale?: number | null;
+    minScale?: number | null | IScale;
 
     /** Maximum scale */
-    maxScale?: number | null;
+    maxScale?: number | null | IScale;
 }
 
 const DEFAULT_CLAMP_ZOOM_OPTIONS: Required<IClampZoomOptions> = {
@@ -62,7 +62,7 @@ export class ClampZoom extends Plugin
         this.clamp();
     }
 
-    /** Clamp the viewport's zoom immediately. */
+    /** Clamp the viewport scale zoom) */
     public clamp(): void
     {
         if (this.paused)
@@ -115,20 +115,59 @@ export class ClampZoom extends Plugin
             }
         }
         else
+        if (this.options.minScale || this.options.maxScale)
         {
-            let scale = this.parent.scale.x;
+            const minScale: IScale = { x: null, y: null };
+            const maxScale: IScale = { x: null, y: null };
 
-            if (this.options.minScale !== null && scale < this.options.minScale)
+            if (typeof this.options.minScale === 'number')
             {
-                scale = this.options.minScale;
+                minScale.x = this.options.minScale;
+                minScale.y = this.options.minScale;
             }
-            if (this.options.maxScale !== null && scale > this.options.maxScale)
+            else if (this.options.minScale !== null)
             {
-                scale = this.options.maxScale;
+                const optsMinScale = this.options.minScale as IScale;
+
+                minScale.x = typeof optsMinScale.x === 'undefined' ? null : optsMinScale.x;
+                minScale.y = typeof optsMinScale.y === 'undefined' ? null : optsMinScale.y;
             }
-            if (scale !== this.parent.scale.x)
+
+            if (typeof this.options.maxScale === 'number')
             {
-                this.parent.scale.set(scale);
+                maxScale.x = this.options.maxScale;
+                maxScale.y = this.options.maxScale;
+            }
+            else if (this.options.maxScale !== null)
+            {
+                const optsMaxScale = this.options.maxScale as IScale;
+
+                maxScale.x = typeof optsMaxScale.x === 'undefined' ? null : optsMaxScale.x;
+                maxScale.y = typeof optsMaxScale.y === 'undefined' ? null : optsMaxScale.y;
+            }
+
+            let scaleX = this.parent.scale.x;
+            let scaleY = this.parent.scale.y;
+
+            if (minScale.x !== null && scaleX < minScale.x)
+            {
+                scaleX = minScale.x;
+            }
+            if (maxScale.x !== null && scaleX > maxScale.x)
+            {
+                scaleX = maxScale.x;
+            }
+            if (minScale.y !== null && scaleY < minScale.y)
+            {
+                scaleY = minScale.y;
+            }
+            if (maxScale.y !== null && scaleY > maxScale.y)
+            {
+                scaleY = maxScale.y;
+            }
+            if (scaleX !== this.parent.scale.x || scaleY !== this.parent.scale.y)
+            {
+                this.parent.scale.set(scaleX, scaleY);
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
         }
@@ -138,4 +177,10 @@ export class ClampZoom extends Plugin
     {
         this.clamp();
     }
+}
+
+/** This allows independent x and y values for min/maxScale */
+export interface IScale {
+    x: null | number
+    y: null | number
 }

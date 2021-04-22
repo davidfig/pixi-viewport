@@ -2,7 +2,7 @@
  
 /*!
  * pixi-viewport - v4.30.0
- * Compiled Thu, 22 Apr 2021 09:16:32 UTC
+ * Compiled Thu, 22 Apr 2021 10:41:51 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1135,7 +1135,7 @@ class ClampZoom extends Plugin
         this.clamp();
     }
 
-    /** Clamp the viewport's zoom immediately. */
+    /** Clamp the viewport scale zoom) */
      clamp()
     {
         if (this.paused)
@@ -1188,20 +1188,59 @@ class ClampZoom extends Plugin
             }
         }
         else
+        if (this.options.minScale || this.options.maxScale)
         {
-            let scale = this.parent.scale.x;
+            const minScale = { x: null, y: null };
+            const maxScale = { x: null, y: null };
 
-            if (this.options.minScale !== null && scale < this.options.minScale)
+            if (typeof this.options.minScale === 'number')
             {
-                scale = this.options.minScale;
+                minScale.x = this.options.minScale;
+                minScale.y = this.options.minScale;
             }
-            if (this.options.maxScale !== null && scale > this.options.maxScale)
+            else if (this.options.minScale !== null)
             {
-                scale = this.options.maxScale;
+                const optsMinScale = this.options.minScale ;
+
+                minScale.x = typeof optsMinScale.x === 'undefined' ? null : optsMinScale.x;
+                minScale.y = typeof optsMinScale.y === 'undefined' ? null : optsMinScale.y;
             }
-            if (scale !== this.parent.scale.x)
+
+            if (typeof this.options.maxScale === 'number')
             {
-                this.parent.scale.set(scale);
+                maxScale.x = this.options.maxScale;
+                maxScale.y = this.options.maxScale;
+            }
+            else if (this.options.maxScale !== null)
+            {
+                const optsMaxScale = this.options.maxScale ;
+
+                maxScale.x = typeof optsMaxScale.x === 'undefined' ? null : optsMaxScale.x;
+                maxScale.y = typeof optsMaxScale.y === 'undefined' ? null : optsMaxScale.y;
+            }
+
+            let scaleX = this.parent.scale.x;
+            let scaleY = this.parent.scale.y;
+
+            if (minScale.x !== null && scaleX < minScale.x)
+            {
+                scaleX = minScale.x;
+            }
+            if (maxScale.x !== null && scaleX > maxScale.x)
+            {
+                scaleX = maxScale.x;
+            }
+            if (minScale.y !== null && scaleY < minScale.y)
+            {
+                scaleY = minScale.y;
+            }
+            if (maxScale.y !== null && scaleY > maxScale.y)
+            {
+                scaleY = maxScale.y;
+            }
+            if (scaleX !== this.parent.scale.x || scaleY !== this.parent.scale.y)
+            {
+                this.parent.scale.set(scaleX, scaleY);
                 this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
             }
         }
@@ -1212,6 +1251,8 @@ class ClampZoom extends Plugin
         this.clamp();
     }
 }
+
+/** This allows independent x and y values for min/maxScale */
 
 const DEFAULT_DECELERATE_OPTIONS = {
     friction: 0.98,
