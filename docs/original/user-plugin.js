@@ -1,9 +1,7 @@
-import { Plugin } from '../dist/esm/viewport.es'
+import { Plugin } from '../../dist/esm/viewport.es'
 
-export class UserPlugin extends Plugin
-{
-    constructor(parent)
-    {
+export class UserPlugin extends Plugin {
+    constructor(parent) {
         super(parent)
     }
 }

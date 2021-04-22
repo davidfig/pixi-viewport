@@ -5,7 +5,7 @@ import globals from 'rollup-plugin-node-globals'
 import serve from 'rollup-plugin-serve'
 
 export default {
-    input: 'docs/code.js',
+    input: 'docs/original/code.js',
     plugins: [
         builtins(),
         resolve({
@@ -18,10 +18,10 @@ export default {
             }
         }),
         globals(),
-        serve('docs')
+        serve('docs/original')
     ],
     output: {
-        file: 'docs/index.js',
+        file: 'docs/original/index.js',
         format: 'iife',
         sourcemap: true
     }

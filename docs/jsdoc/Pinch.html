@@ -631,148 +631,242 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Index</h1>
+        <h1 class="page-title" data-filename="Viewport">Class: Pinch</h1>
         
         
 
 
+
+<section>
+
+<header>
+    <div class="header content-size">
+        <h2>Pinch
+        </h2>
+        
+            <div class="class-description"><p>Plugin for enabling two-finger pinching (or dragging).</p></div>
+        
+    </div>
+</header>
+
+<article class="content-size">
+    <div class="container-overview">
     
 
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="Pinch">
+            <a class="share-icon" href="#Pinch"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                new Pinch
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
 
-    <h3> </h3>
+        
+        <div class="tag-source">
+            <a href="js_plugins_Pinch.js.html#line14">Pinch.js:14</a>
+        </div>
+        
+    </div>
 
+    
+</dt>
+<dd>
 
+    
+    <div class="description">
+        <p>This is called by Viewport.pinch.</p>
+    </div>
+    
 
+    
 
+    
 
+    
 
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
     
 
+    
 
+    
 
+    
 
-    <section>
-        <article class="readme content-size"><h1>pixi-viewport - PixiJS Viewport Kit</h1>
-<p>A highly configurable viewport/2D camera designed to work with pixi.js.</p>
-<p>Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, aniamte, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.</p>
-<p>All features are configurable and removable, so set up the viewport to be exactly what you need.</p>
-<h2>Live Example</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">https://davidfig.github.io/pixi-viewport/</a></p>
-<h2>API Documentation</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/jsdoc/">https://davidfig.github.io/pixi-viewport/jsdoc/</a></p>
-<h2>Simple Example</h2>
-<pre class="prettyprint source lang-js"><code>import * as PIXI from 'pixi.js'
-import { Viewport } from 'pixi-viewport'
+    
 
-// or with require
-// const PIXI = require('pixi.js')
-// const Viewport = require('pixi-viewport').Viewport
+    
+</dd>
 
-const app = new PIXI.Application()
-document.body.appendChild(app.view)
+    
+    </div>
 
-// create viewport
-const viewport = new Viewport({
-    screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
-    worldWidth: 1000,
-    worldHeight: 1000,
+    
 
-    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
-})
+    
 
-// add the viewport to the stage
-app.stage.addChild(viewport)
+    
 
-// activate plugins
-viewport
-    .drag()
-    .pinch()
-    .wheel()
-    .decelerate()
+    
+        <h3 class="subsection-title">Classes</h3>
 
-// add a red box
-const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-sprite.tint = 0xff0000
-sprite.width = sprite.height = 100
-sprite.position.set(100, 100)
-</code></pre>
-<h2>Installation</h2>
-<pre><code>yarn add pixi-viewport
-</code></pre>
-<p>or</p>
-<pre><code>npm i pixi-viewport
-</code></pre>
-<p>or <a target="_blank" href="https://github.com/davidfig/pixi-viewport/releases/">grab the latest release</a> and use it:</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/directory-to-file/pixi.js&quot;>&lt;/script>
-&lt;script src=&quot;/directory-to-file/viewport.min.js&quot;>&lt;/script>
-&lt;!-- or &lt;script type=&quot;module&quot; src=&quot;/directory-to-file/esm/viewport.es.js&quot;>&lt;/script> -->
-&lt;script>
-    const Viewport = new pixi_viewport.Viewport(options)
-&lt;/script>
-</code></pre>
-<h2>Build Examples</h2>
-<p>I've included the following build examples in the docs/ directory:</p>
-<ul>
-<li><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">flems-io interactive demo</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/original">original demo built with rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify">browserify</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup">rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone">standalone (e.g., cdn)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4">standalone (pixi.js v4)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts">typescript</a>.</li>
-</ul>
-<p>You can see the live demos at <a target="_blank" href="https://davidfig.github.io/pixi-viewport/builds/">https://davidfig.github.io/pixi-viewport/builds/</a>.</p>
-<h2>Migration from pixi-viewport v3 to v4</h2>
-<p>Viewport needs to be imported or required as follows:</p>
-<pre class="prettyprint source lang-js"><code>import { Viewport } from 'pixi-viewport'
+        <dl class="clearfix summary-list list-classes">
+            <dt class=""><a href="Pinch.html">Pinch</a></dt>
+            
+        </dl>
+    
 
-// or
+    
 
-const Viewport = require('pixi-viewport').Viewport
-</code></pre>
-<p>Plugins have been moved to their own object:</p>
-<pre class="prettyprint source lang-js"><code>// viewport.pausePlugin('drag')
-viewport.plugins.pause('drag')
+    
+        <h3 class="subsection-title">Members</h3>
 
-// viewport.resumePlugin('drag')
-viewport.plugins.resume('drag')
+        <dl class="list-members">
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="active">
+            <a class="share-icon" href="#active"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">active</span>
+            
+            
+            
+            
+            
+        </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Flags whether this plugin is active, i.e. a pointer is down on the viewport.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
 
-// viewport.removePlugin('drag')
-viewport.plugins.remove('drag')
+    
 
-// viewport.userPlugin('name', plugin, index)
-viewport.plugins.add('name', plugin, index)
-</code></pre>
-<h2>Tests</h2>
-<ol>
-<li>Clone repository</li>
-<li>yarn install</li>
-<li>yarn test (for Mocha test code)</li>
-<li>yarn coverage (for Instanbul coverage)</li>
-</ol>
-<h2>Development Recipe</h2>
-<ol>
-<li>clone repository</li>
-<li>yarn install</li>
-<li>yarn dev</li>
-<li>open browser to http://localhost:10001</li>
-</ol>
-<p>PRs are more than welcome!</p>
-<h2>Other Libraries</h2>
-<p>If you liked pixi-viewport, please try my other open source libraries:</p>
-<ul>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-scrollbox">pixi-scrollbox</a> - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)</li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-ease">pixi-ease</a> - pixi.js animation library using easing functions</li>
-<li><a target="_blank" href="https://github.com/davidfig/intersects">intersects</a> - a simple collection of 2d collision/intersects functions. Supports points, circles, lines, axis-aligned boxes, and polygons</li>
-</ul>
-<h2>license</h2>
-<p>MIT License
-(c) 2021 <a target="_blank" href="https://yopeyopey.com/">YOPEY YOPEY LLC</a> by David Figatner (david@yopeyopey.com)</p></article>
-    </section>
+    
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="pinching">
+            <a class="share-icon" href="#pinching"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">pinching</span>
+            
+            
+            
+            
+            
+        </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Flags whether the viewport is being pinched.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

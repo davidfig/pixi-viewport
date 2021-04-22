@@ -631,146 +631,176 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Index</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: js/plugins/MouseEdges.js</h1>
         
         
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article class="readme content-size"><h1>pixi-viewport - PixiJS Viewport Kit</h1>
-<p>A highly configurable viewport/2D camera designed to work with pixi.js.</p>
-<p>Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, aniamte, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.</p>
-<p>All features are configurable and removable, so set up the viewport to be exactly what you need.</p>
-<h2>Live Example</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">https://davidfig.github.io/pixi-viewport/</a></p>
-<h2>API Documentation</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/jsdoc/">https://davidfig.github.io/pixi-viewport/jsdoc/</a></p>
-<h2>Simple Example</h2>
-<pre class="prettyprint source lang-js"><code>import * as PIXI from 'pixi.js'
-import { Viewport } from 'pixi-viewport'
-
-// or with require
-// const PIXI = require('pixi.js')
-// const Viewport = require('pixi-viewport').Viewport
-
-const app = new PIXI.Application()
-document.body.appendChild(app.view)
-
-// create viewport
-const viewport = new Viewport({
-    screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
-    worldWidth: 1000,
-    worldHeight: 1000,
-
-    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
-})
-
-// add the viewport to the stage
-app.stage.addChild(viewport)
-
-// activate plugins
-viewport
-    .drag()
-    .pinch()
-    .wheel()
-    .decelerate()
-
-// add a red box
-const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-sprite.tint = 0xff0000
-sprite.width = sprite.height = 100
-sprite.position.set(100, 100)
+        <header>
+            <div class="header content-size">
+                <h2>js/plugins/MouseEdges.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './Plugin';
+const MOUSE_EDGES_OPTIONS = {
+    radius: null,
+    distance: null,
+    top: null,
+    bottom: null,
+    left: null,
+    right: null,
+    speed: 8,
+    reverse: false,
+    noDecelerate: false,
+    linear: false,
+    allowButtons: false,
+};
+/**
+ * Scroll viewport when mouse hovers near one of the edges.
+ *
+ * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
+ * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
+ */
+export class MouseEdges extends Plugin {
+    /**
+     * This is called by {@link Viewport.mouseEdges}.
+     */
+    constructor(parent, options = {}) {
+        super(parent);
+        this.options = Object.assign({}, MOUSE_EDGES_OPTIONS, options);
+        this.reverse = this.options.reverse ? 1 : -1;
+        this.radiusSquared = typeof this.options.radius === 'number' ? Math.pow(this.options.radius, 2) : null;
+        this.resize();
+    }
+    resize() {
+        const distance = this.options.distance;
+        if (distance !== null) {
+            this.left = distance;
+            this.top = distance;
+            this.right = this.parent.worldScreenWidth - distance;
+            this.bottom = this.parent.worldScreenHeight - distance;
+        }
+        else if (!this.options.radius) {
+            this.left = this.options.left;
+            this.top = this.options.top;
+            this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right;
+            this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom;
+        }
+    }
+    down() {
+        if (this.paused) {
+            return false;
+        }
+        if (!this.options.allowButtons) {
+            this.horizontal = this.vertical = null;
+        }
+        return false;
+    }
+    move(event) {
+        if (this.paused) {
+            return false;
+        }
+        if ((event.data.pointerType !== 'mouse' &amp;&amp; event.data.identifier !== 1)
+            || (!this.options.allowButtons &amp;&amp; event.data.buttons !== 0)) {
+            return false;
+        }
+        const x = event.data.global.x;
+        const y = event.data.global.y;
+        if (this.radiusSquared) {
+            const center = this.parent.toScreen(this.parent.center);
+            const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2);
+            if (distance >= this.radiusSquared) {
+                const angle = Math.atan2(center.y - y, center.x - x);
+                if (this.options.linear) {
+                    this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000);
+                    this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000);
+                }
+                else {
+                    this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000);
+                    this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000);
+                }
+            }
+            else {
+                if (this.horizontal) {
+                    this.decelerateHorizontal();
+                }
+                if (this.vertical) {
+                    this.decelerateVertical();
+                }
+                this.horizontal = this.vertical = 0;
+            }
+        }
+        else {
+            if (this.left !== null &amp;&amp; x &lt; this.left) {
+                this.horizontal = Number(this.reverse) * this.options.speed * (60 / 1000);
+            }
+            else if (this.right !== null &amp;&amp; x > this.right) {
+                this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000);
+            }
+            else {
+                this.decelerateHorizontal();
+                this.horizontal = 0;
+            }
+            if (this.top !== null &amp;&amp; y &lt; this.top) {
+                this.vertical = Number(this.reverse) * this.options.speed * (60 / 1000);
+            }
+            else if (this.bottom !== null &amp;&amp; y > this.bottom) {
+                this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000);
+            }
+            else {
+                this.decelerateVertical();
+                this.vertical = 0;
+            }
+        }
+        return false;
+    }
+    decelerateHorizontal() {
+        const decelerate = this.parent.plugins.get('decelerate', true);
+        if (this.horizontal &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate) {
+            decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) });
+        }
+    }
+    decelerateVertical() {
+        const decelerate = this.parent.plugins.get('decelerate', true);
+        if (this.vertical &amp;&amp; decelerate &amp;&amp; !this.options.noDecelerate) {
+            decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) });
+        }
+    }
+    up() {
+        if (this.paused) {
+            return false;
+        }
+        if (this.horizontal) {
+            this.decelerateHorizontal();
+        }
+        if (this.vertical) {
+            this.decelerateVertical();
+        }
+        this.horizontal = this.vertical = null;
+        return false;
+    }
+    update() {
+        if (this.paused) {
+            return;
+        }
+        if (this.horizontal || this.vertical) {
+            const center = this.parent.center;
+            if (this.horizontal) {
+                center.x += this.horizontal * this.options.speed;
+            }
+            if (this.vertical) {
+                center.y += this.vertical * this.options.speed;
+            }
+            this.parent.moveCenter(center);
+            this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' });
+        }
+    }
+}
 </code></pre>
-<h2>Installation</h2>
-<pre><code>yarn add pixi-viewport
-</code></pre>
-<p>or</p>
-<pre><code>npm i pixi-viewport
-</code></pre>
-<p>or <a target="_blank" href="https://github.com/davidfig/pixi-viewport/releases/">grab the latest release</a> and use it:</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/directory-to-file/pixi.js&quot;>&lt;/script>
-&lt;script src=&quot;/directory-to-file/viewport.min.js&quot;>&lt;/script>
-&lt;!-- or &lt;script type=&quot;module&quot; src=&quot;/directory-to-file/esm/viewport.es.js&quot;>&lt;/script> -->
-&lt;script>
-    const Viewport = new pixi_viewport.Viewport(options)
-&lt;/script>
-</code></pre>
-<h2>Build Examples</h2>
-<p>I've included the following build examples in the docs/ directory:</p>
-<ul>
-<li><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">flems-io interactive demo</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/original">original demo built with rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify">browserify</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup">rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone">standalone (e.g., cdn)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4">standalone (pixi.js v4)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts">typescript</a>.</li>
-</ul>
-<p>You can see the live demos at <a target="_blank" href="https://davidfig.github.io/pixi-viewport/builds/">https://davidfig.github.io/pixi-viewport/builds/</a>.</p>
-<h2>Migration from pixi-viewport v3 to v4</h2>
-<p>Viewport needs to be imported or required as follows:</p>
-<pre class="prettyprint source lang-js"><code>import { Viewport } from 'pixi-viewport'
-
-// or
-
-const Viewport = require('pixi-viewport').Viewport
-</code></pre>
-<p>Plugins have been moved to their own object:</p>
-<pre class="prettyprint source lang-js"><code>// viewport.pausePlugin('drag')
-viewport.plugins.pause('drag')
-
-// viewport.resumePlugin('drag')
-viewport.plugins.resume('drag')
-
-// viewport.removePlugin('drag')
-viewport.plugins.remove('drag')
-
-// viewport.userPlugin('name', plugin, index)
-viewport.plugins.add('name', plugin, index)
-</code></pre>
-<h2>Tests</h2>
-<ol>
-<li>Clone repository</li>
-<li>yarn install</li>
-<li>yarn test (for Mocha test code)</li>
-<li>yarn coverage (for Instanbul coverage)</li>
-</ol>
-<h2>Development Recipe</h2>
-<ol>
-<li>clone repository</li>
-<li>yarn install</li>
-<li>yarn dev</li>
-<li>open browser to http://localhost:10001</li>
-</ol>
-<p>PRs are more than welcome!</p>
-<h2>Other Libraries</h2>
-<p>If you liked pixi-viewport, please try my other open source libraries:</p>
-<ul>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-scrollbox">pixi-scrollbox</a> - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)</li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-ease">pixi-ease</a> - pixi.js animation library using easing functions</li>
-<li><a target="_blank" href="https://github.com/davidfig/intersects">intersects</a> - a simple collection of 2d collision/intersects functions. Supports points, circles, lines, axis-aligned boxes, and polygons</li>
-</ul>
-<h2>license</h2>
-<p>MIT License
-(c) 2021 <a target="_blank" href="https://yopeyopey.com/">YOPEY YOPEY LLC</a> by David Figatner (david@yopeyopey.com)</p></article>
+        </article>
     </section>
 
 
@@ -782,7 +812,7 @@ viewport.plugins.add('name', plugin, index)
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 15:51:50 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 15:51:50 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

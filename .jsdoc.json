@@ -16,7 +16,7 @@
     "linenums": true,
     "source": {
         "include": [
-            "./src",
+            "./js",
             "./node_modules/eventemitter3"
         ],
         "includePattern": ".+\\.js(doc)?$",
@@ -41,8 +41,8 @@
             "outputSourceFiles": true
         },
         "applicationName": "pixi-viewport",
-        "footer"        : "by YOPEY YOPEY LLC (yopeyopey.com)",
-        "copyright"     : "Copyright © 2019 YOPEY YOPEY LLC.",
+        "footer": "by YOPEY YOPEY LLC (yopeyopey.com)",
+        "copyright": "Copyright © 2019 YOPEY YOPEY LLC.",
         "meta": {
             "title": "pixi-viewport API Documentation",
             "description": "Documentation for pixi-viewport library",

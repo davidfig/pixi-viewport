@@ -3,7 +3,7 @@
  
 /*!
  * pixi-viewport - v4.23.1
- * Compiled Sun, 11 Apr 2021 17:59:38 UTC
+ * Compiled Thu, 22 Apr 2021 08:44:14 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license

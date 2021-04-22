@@ -17,20 +17,7 @@ export function gui(viewport, drawWorld, target) {
     _world = _gui.addFolder('world')
     options = {
         testDirty: false,
-        drag: {
-            direction: 'all',
-            pressDrag: true,
-            wheel: true,
-            wheelScroll: 1,
-            reverse: false,
-            clampWheel: false,
-            underflow: 'none',
-            factor: 1,
-            mouseButtons: 'all',
-            keyToPress: null,
-            ignoreKeyToPressOnTouch: false,
-            lineHeight: 20,
-        },
+        drag: true,
         clampZoom: {
             clampZoom: false,
             minWidth: 1000,
@@ -132,38 +119,6 @@ function guiWorld() {
 }
 
 function guiDrag() {
-    function change() {
-        _viewport.drag({ direction: options.clamp.x && options.clamp.y ? 'all' : options.clamp.x ? 'x' : 'y', underflow: options.clamp.underflow })
-    }
-
-    function add() {
-        clampX = clamp.add(options.clamp, 'x').onChange(change)
-        clampY = clamp.add(options.clamp, 'y').onChange(change)
-        underflow = clamp.add(options.clamp, 'underflow').onChange(change)
-    }
-
-    let clampX, clampY, underflow
-    const clamp = _gui.addFolder('clamp')
-    clamp.add(options.clamp, 'clamp').onChange(
-        function (value) {
-            if (value) {
-                change()
-                add()
-            }
-            else {
-                _viewport.plugins.remove('clamp')
-                clamp.remove(clampX)
-                clamp.remove(clampY)
-                clamp.remove(underflow)
-            }
-        })
-    if (options.clamp.clamp) {
-        clamp.open()
-    }
-
-
-
-
     _gui.add(options, 'drag').onChange(
         function (value) {
             if (value) {

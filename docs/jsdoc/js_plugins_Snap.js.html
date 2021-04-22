@@ -631,146 +631,137 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Index</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: js/plugins/Snap.js</h1>
         
         
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article class="readme content-size"><h1>pixi-viewport - PixiJS Viewport Kit</h1>
-<p>A highly configurable viewport/2D camera designed to work with pixi.js.</p>
-<p>Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, aniamte, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.</p>
-<p>All features are configurable and removable, so set up the viewport to be exactly what you need.</p>
-<h2>Live Example</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">https://davidfig.github.io/pixi-viewport/</a></p>
-<h2>API Documentation</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/jsdoc/">https://davidfig.github.io/pixi-viewport/jsdoc/</a></p>
-<h2>Simple Example</h2>
-<pre class="prettyprint source lang-js"><code>import * as PIXI from 'pixi.js'
-import { Viewport } from 'pixi-viewport'
-
-// or with require
-// const PIXI = require('pixi.js')
-// const Viewport = require('pixi-viewport').Viewport
-
-const app = new PIXI.Application()
-document.body.appendChild(app.view)
-
-// create viewport
-const viewport = new Viewport({
-    screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
-    worldWidth: 1000,
-    worldHeight: 1000,
-
-    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
-})
-
-// add the viewport to the stage
-app.stage.addChild(viewport)
-
-// activate plugins
-viewport
-    .drag()
-    .pinch()
-    .wheel()
-    .decelerate()
-
-// add a red box
-const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-sprite.tint = 0xff0000
-sprite.width = sprite.height = 100
-sprite.position.set(100, 100)
+        <header>
+            <div class="header content-size">
+                <h2>js/plugins/Snap.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './Plugin';
+import ease from '../ease';
+const DEFAULT_SNAP_OPTIONS = {
+    topLeft: false,
+    friction: 0.8,
+    time: 1000,
+    ease: 'easeInOutSine',
+    interrupt: true,
+    removeOnComplete: false,
+    removeOnInterrupt: false,
+    forceStart: false
+};
+/**
+ * @event snap-start(Viewport) emitted each time a snap animation starts
+ * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
+ * @event snap-end(Viewport) emitted each time snap reaches its target
+ * @event snap-remove(Viewport) emitted if snap plugin is removed
+ */
+export class Snap extends Plugin {
+    /**
+     * This is called by {@link Viewport.snap}.
+     */
+    constructor(parent, x, y, options = {}) {
+        super(parent);
+        this.options = Object.assign({}, DEFAULT_SNAP_OPTIONS, options);
+        this.ease = ease(options.ease, 'easeInOutSine');
+        this.x = x;
+        this.y = y;
+        if (this.options.forceStart) {
+            this.snapStart();
+        }
+    }
+    snapStart() {
+        this.percent = 0;
+        this.snapping = { time: 0 };
+        const current = this.options.topLeft ? this.parent.corner : this.parent.center;
+        this.deltaX = this.x - current.x;
+        this.deltaY = this.y - current.y;
+        this.startX = current.x;
+        this.startY = current.y;
+        this.parent.emit('snap-start', this.parent);
+    }
+    wheel() {
+        if (this.options.removeOnInterrupt) {
+            this.parent.plugins.remove('snap');
+        }
+        return false;
+    }
+    down() {
+        if (this.options.removeOnInterrupt) {
+            this.parent.plugins.remove('snap');
+        }
+        else if (this.options.interrupt) {
+            this.snapping = null;
+        }
+        return false;
+    }
+    up() {
+        if (this.parent.input.count() === 0) {
+            const decelerate = this.parent.plugins.get('decelerate', true);
+            if (decelerate &amp;&amp; (decelerate.x || decelerate.y)) {
+                decelerate.percentChangeX = decelerate.percentChangeY = this.options.friction;
+            }
+        }
+        return false;
+    }
+    update(elapsed) {
+        if (this.paused) {
+            return;
+        }
+        if (this.options.interrupt &amp;&amp; this.parent.input.count() !== 0) {
+            return;
+        }
+        if (!this.snapping) {
+            const current = this.options.topLeft ? this.parent.corner : this.parent.center;
+            if (current.x !== this.x || current.y !== this.y) {
+                this.snapStart();
+            }
+        }
+        else {
+            const snapping = this.snapping;
+            snapping.time += elapsed;
+            let finished;
+            let x;
+            let y;
+            const startX = this.startX;
+            const startY = this.startY;
+            const deltaX = this.deltaX;
+            const deltaY = this.deltaY;
+            if (snapping.time > this.options.time) {
+                finished = true;
+                x = startX + deltaX;
+                y = startY + deltaY;
+            }
+            else {
+                const percent = this.ease(snapping.time, 0, 1, this.options.time);
+                x = startX + (deltaX * percent);
+                y = startY + (deltaY * percent);
+            }
+            if (this.options.topLeft) {
+                this.parent.moveCorner(x, y);
+            }
+            else {
+                this.parent.moveCenter(x, y);
+            }
+            this.parent.emit('moved', { viewport: this.parent, type: 'snap' });
+            if (finished) {
+                if (this.options.removeOnComplete) {
+                    this.parent.plugins.remove('snap');
+                }
+                this.parent.emit('snap-end', this.parent);
+                this.snapping = null;
+            }
+        }
+    }
+}
 </code></pre>
-<h2>Installation</h2>
-<pre><code>yarn add pixi-viewport
-</code></pre>
-<p>or</p>
-<pre><code>npm i pixi-viewport
-</code></pre>
-<p>or <a target="_blank" href="https://github.com/davidfig/pixi-viewport/releases/">grab the latest release</a> and use it:</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/directory-to-file/pixi.js&quot;>&lt;/script>
-&lt;script src=&quot;/directory-to-file/viewport.min.js&quot;>&lt;/script>
-&lt;!-- or &lt;script type=&quot;module&quot; src=&quot;/directory-to-file/esm/viewport.es.js&quot;>&lt;/script> -->
-&lt;script>
-    const Viewport = new pixi_viewport.Viewport(options)
-&lt;/script>
-</code></pre>
-<h2>Build Examples</h2>
-<p>I've included the following build examples in the docs/ directory:</p>
-<ul>
-<li><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">flems-io interactive demo</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/original">original demo built with rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify">browserify</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup">rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone">standalone (e.g., cdn)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4">standalone (pixi.js v4)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts">typescript</a>.</li>
-</ul>
-<p>You can see the live demos at <a target="_blank" href="https://davidfig.github.io/pixi-viewport/builds/">https://davidfig.github.io/pixi-viewport/builds/</a>.</p>
-<h2>Migration from pixi-viewport v3 to v4</h2>
-<p>Viewport needs to be imported or required as follows:</p>
-<pre class="prettyprint source lang-js"><code>import { Viewport } from 'pixi-viewport'
-
-// or
-
-const Viewport = require('pixi-viewport').Viewport
-</code></pre>
-<p>Plugins have been moved to their own object:</p>
-<pre class="prettyprint source lang-js"><code>// viewport.pausePlugin('drag')
-viewport.plugins.pause('drag')
-
-// viewport.resumePlugin('drag')
-viewport.plugins.resume('drag')
-
-// viewport.removePlugin('drag')
-viewport.plugins.remove('drag')
-
-// viewport.userPlugin('name', plugin, index)
-viewport.plugins.add('name', plugin, index)
-</code></pre>
-<h2>Tests</h2>
-<ol>
-<li>Clone repository</li>
-<li>yarn install</li>
-<li>yarn test (for Mocha test code)</li>
-<li>yarn coverage (for Instanbul coverage)</li>
-</ol>
-<h2>Development Recipe</h2>
-<ol>
-<li>clone repository</li>
-<li>yarn install</li>
-<li>yarn dev</li>
-<li>open browser to http://localhost:10001</li>
-</ol>
-<p>PRs are more than welcome!</p>
-<h2>Other Libraries</h2>
-<p>If you liked pixi-viewport, please try my other open source libraries:</p>
-<ul>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-scrollbox">pixi-scrollbox</a> - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)</li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-ease">pixi-ease</a> - pixi.js animation library using easing functions</li>
-<li><a target="_blank" href="https://github.com/davidfig/intersects">intersects</a> - a simple collection of 2d collision/intersects functions. Supports points, circles, lines, axis-aligned boxes, and polygons</li>
-</ul>
-<h2>license</h2>
-<p>MIT License
-(c) 2021 <a target="_blank" href="https://yopeyopey.com/">YOPEY YOPEY LLC</a> by David Figatner (david@yopeyopey.com)</p></article>
+        </article>
     </section>
 
 
@@ -782,7 +773,7 @@ viewport.plugins.add('name', plugin, index)
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 15:51:50 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 15:51:50 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

@@ -4,7 +4,7 @@ import builtins from '@joseph184/rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
 
 export default {
-    input: 'docs/code.js',
+    input: 'docs/original/code.js',
     plugins: [
         builtins(),
         resolve({
@@ -20,7 +20,7 @@ export default {
     ],
     output:
     {
-        file: 'docs/index.js',
+        file: 'docs/original/index.js',
         format: 'iife',
         sourcemap: true
     }

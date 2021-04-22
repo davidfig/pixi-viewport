@@ -120,7 +120,7 @@
     Promise$1._immediateFn(function() {
       var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
       if (cb === null) {
-        (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
+        (self._state === 1 ? resolve$1 : reject)(deferred.promise, self._value);
         return;
       }
       var ret;
@@ -130,11 +130,11 @@
         reject(deferred.promise, e);
         return;
       }
-      resolve(deferred.promise, ret);
+      resolve$1(deferred.promise, ret);
     });
   }
 
-  function resolve(self, newValue) {
+  function resolve$1(self, newValue) {
     try {
       // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
       if (newValue === self)
@@ -205,7 +205,7 @@
         function(value) {
           if (done) return;
           done = true;
-          resolve(self, value);
+          resolve$1(self, value);
         },
         function(reason) {
           if (done) return;
@@ -329,7 +329,7 @@
   */
   /* eslint-disable no-unused-vars */
   var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-  var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+  var hasOwnProperty$2 = Object.prototype.hasOwnProperty;
   var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
   function toObject(val) {
@@ -393,7 +393,7 @@
   		from = Object(arguments[s]);
 
   		for (var key in from) {
-  			if (hasOwnProperty$1.call(from, key)) {
+  			if (hasOwnProperty$2.call(from, key)) {
   				to[key] = from[key];
   			}
   		}
@@ -412,8 +412,8 @@
   };
 
   /*!
-   * @pixi/polyfill - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/polyfill - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/polyfill is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -522,32 +522,32 @@
       self.Int32Array = Array;
   }
 
-  var appleIphone = /iPhone/i;
-  var appleIpod = /iPod/i;
-  var appleTablet = /iPad/i;
-  var appleUniversal = /\biOS-universal(?:.+)Mac\b/i;
-  var androidPhone = /\bAndroid(?:.+)Mobile\b/i;
-  var androidTablet = /Android/i;
-  var amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
-  var amazonTablet = /Silk/i;
-  var windowsPhone = /Windows Phone/i;
-  var windowsTablet = /\bWindows(?:.+)ARM\b/i;
-  var otherBlackBerry = /BlackBerry/i;
-  var otherBlackBerry10 = /BB10/i;
-  var otherOpera = /Opera Mini/i;
-  var otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
-  var otherFirefox = /Mobile(?:.+)Firefox\b/i;
-  var isAppleTabletOnIos13 = function (navigator) {
+  var appleIphone$1 = /iPhone/i;
+  var appleIpod$1 = /iPod/i;
+  var appleTablet$1 = /iPad/i;
+  var appleUniversal$1 = /\biOS-universal(?:.+)Mac\b/i;
+  var androidPhone$1 = /\bAndroid(?:.+)Mobile\b/i;
+  var androidTablet$1 = /Android/i;
+  var amazonPhone$1 = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
+  var amazonTablet$1 = /Silk/i;
+  var windowsPhone$1 = /Windows Phone/i;
+  var windowsTablet$1 = /\bWindows(?:.+)ARM\b/i;
+  var otherBlackBerry$1 = /BlackBerry/i;
+  var otherBlackBerry10$1 = /BB10/i;
+  var otherOpera$1 = /Opera Mini/i;
+  var otherChrome$1 = /\b(CriOS|Chrome)(?:.+)Mobile/i;
+  var otherFirefox$1 = /Mobile(?:.+)Firefox\b/i;
+  var isAppleTabletOnIos13$1 = function (navigator) {
       return (typeof navigator !== 'undefined' &&
           navigator.platform === 'MacIntel' &&
           typeof navigator.maxTouchPoints === 'number' &&
           navigator.maxTouchPoints > 1 &&
           typeof MSStream === 'undefined');
   };
-  function createMatch(userAgent) {
+  function createMatch$1(userAgent) {
       return function (regex) { return regex.test(userAgent); };
   }
-  function isMobile$1(param) {
+  function isMobile$3(param) {
       var nav = {
           userAgent: '',
           platform: '',
@@ -579,57 +579,57 @@
       if (typeof tmp[1] !== 'undefined') {
           userAgent = tmp[0];
       }
-      var match = createMatch(userAgent);
+      var match = createMatch$1(userAgent);
       var result = {
           apple: {
-              phone: match(appleIphone) && !match(windowsPhone),
-              ipod: match(appleIpod),
-              tablet: !match(appleIphone) &&
-                  (match(appleTablet) || isAppleTabletOnIos13(nav)) &&
-                  !match(windowsPhone),
-              universal: match(appleUniversal),
-              device: (match(appleIphone) ||
-                  match(appleIpod) ||
-                  match(appleTablet) ||
-                  match(appleUniversal) ||
-                  isAppleTabletOnIos13(nav)) &&
-                  !match(windowsPhone)
+              phone: match(appleIphone$1) && !match(windowsPhone$1),
+              ipod: match(appleIpod$1),
+              tablet: !match(appleIphone$1) &&
+                  (match(appleTablet$1) || isAppleTabletOnIos13$1(nav)) &&
+                  !match(windowsPhone$1),
+              universal: match(appleUniversal$1),
+              device: (match(appleIphone$1) ||
+                  match(appleIpod$1) ||
+                  match(appleTablet$1) ||
+                  match(appleUniversal$1) ||
+                  isAppleTabletOnIos13$1(nav)) &&
+                  !match(windowsPhone$1)
           },
           amazon: {
-              phone: match(amazonPhone),
-              tablet: !match(amazonPhone) && match(amazonTablet),
-              device: match(amazonPhone) || match(amazonTablet)
+              phone: match(amazonPhone$1),
+              tablet: !match(amazonPhone$1) && match(amazonTablet$1),
+              device: match(amazonPhone$1) || match(amazonTablet$1)
           },
           android: {
-              phone: (!match(windowsPhone) && match(amazonPhone)) ||
-                  (!match(windowsPhone) && match(androidPhone)),
-              tablet: !match(windowsPhone) &&
-                  !match(amazonPhone) &&
-                  !match(androidPhone) &&
-                  (match(amazonTablet) || match(androidTablet)),
-              device: (!match(windowsPhone) &&
-                  (match(amazonPhone) ||
-                      match(amazonTablet) ||
-                      match(androidPhone) ||
-                      match(androidTablet))) ||
+              phone: (!match(windowsPhone$1) && match(amazonPhone$1)) ||
+                  (!match(windowsPhone$1) && match(androidPhone$1)),
+              tablet: !match(windowsPhone$1) &&
+                  !match(amazonPhone$1) &&
+                  !match(androidPhone$1) &&
+                  (match(amazonTablet$1) || match(androidTablet$1)),
+              device: (!match(windowsPhone$1) &&
+                  (match(amazonPhone$1) ||
+                      match(amazonTablet$1) ||
+                      match(androidPhone$1) ||
+                      match(androidTablet$1))) ||
                   match(/\bokhttp\b/i)
           },
           windows: {
-              phone: match(windowsPhone),
-              tablet: match(windowsTablet),
-              device: match(windowsPhone) || match(windowsTablet)
+              phone: match(windowsPhone$1),
+              tablet: match(windowsTablet$1),
+              device: match(windowsPhone$1) || match(windowsTablet$1)
           },
           other: {
-              blackberry: match(otherBlackBerry),
-              blackberry10: match(otherBlackBerry10),
-              opera: match(otherOpera),
-              firefox: match(otherFirefox),
-              chrome: match(otherChrome),
-              device: match(otherBlackBerry) ||
-                  match(otherBlackBerry10) ||
-                  match(otherOpera) ||
-                  match(otherFirefox) ||
-                  match(otherChrome)
+              blackberry: match(otherBlackBerry$1),
+              blackberry10: match(otherBlackBerry10$1),
+              opera: match(otherOpera$1),
+              firefox: match(otherFirefox$1),
+              chrome: match(otherChrome$1),
+              device: match(otherBlackBerry$1) ||
+                  match(otherBlackBerry10$1) ||
+                  match(otherOpera$1) ||
+                  match(otherFirefox$1) ||
+                  match(otherChrome$1)
           },
           any: false,
           phone: false,
@@ -648,15 +648,15 @@
   }
 
   /*!
-   * @pixi/settings - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/settings - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/settings is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
    */
 
   // The ESM/CJS versions of ismobilejs only
-  var isMobile = isMobile$1(self.navigator);
+  var isMobile$2 = isMobile$3(self.navigator);
 
   /**
    * The maximum recommended texture units to use.
@@ -671,10 +671,10 @@
    * @param {number} max
    * @returns {number}
    */
-  function maxRecommendedTextures(max) {
+  function maxRecommendedTextures$1(max) {
       var allowMax = true;
-      if (isMobile.tablet || isMobile.phone) {
-          if (isMobile.apple.device) {
+      if (isMobile$2.tablet || isMobile$2.phone) {
+          if (isMobile$2.apple.device) {
               var match = (navigator.userAgent).match(/OS (\d+)_(\d+)?/);
               if (match) {
                   var majorVersion = parseInt(match[1], 10);
@@ -684,7 +684,7 @@
                   }
               }
           }
-          if (isMobile.android.device) {
+          if (isMobile$2.android.device) {
               var match = (navigator.userAgent).match(/Android\s([0-9.]*)/);
               if (match) {
                   var majorVersion = parseInt(match[1], 10);
@@ -706,8 +706,8 @@
    * @private
    * @returns {boolean}
    */
-  function canUploadSameBuffer() {
-      return !isMobile.apple.device;
+  function canUploadSameBuffer$1() {
+      return !isMobile$2.apple.device;
   }
 
   /**
@@ -722,7 +722,7 @@
    * PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
    * @namespace PIXI.settings
    */
-  var settings = {
+  var settings$1 = {
       /**
        * If set to true WebGL will attempt make textures mimpaped by default.
        * Mipmapping will only succeed if the base texture uploaded has power of two dimensions.
@@ -774,7 +774,7 @@
        * @type {number}
        * @default 32
        */
-      SPRITE_MAX_TEXTURES: maxRecommendedTextures(32),
+      SPRITE_MAX_TEXTURES: maxRecommendedTextures$1(32),
       // TODO: maybe change to SPRITE.BATCH_SIZE: 2000
       // TODO: maybe add PARTICLE.BATCH_SIZE: 15000
       /**
@@ -893,7 +893,7 @@
        * @type {PIXI.PRECISION}
        * @default PIXI.PRECISION.MEDIUM
        */
-      PRECISION_FRAGMENT: isMobile.apple.device ? 'highp' : 'mediump',
+      PRECISION_FRAGMENT: isMobile$2.apple.device ? 'highp' : 'mediump',
       /**
        * Can we upload the same buffer in a single frame?
        *
@@ -902,7 +902,7 @@
        * @memberof PIXI.settings
        * @type {boolean}
        */
-      CAN_UPLOAD_SAME_BUFFER: canUploadSameBuffer(),
+      CAN_UPLOAD_SAME_BUFFER: canUploadSameBuffer$1(),
       /**
        * Enables bitmap creation before image load. This feature is experimental.
        *
@@ -927,7 +927,7 @@
       ROUND_PIXELS: false,
   };
 
-  var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+  var commonjsGlobal$2 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   function getDefaultExportFromCjs (x) {
   	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -948,12 +948,12 @@
   	return a;
   }
 
-  function createCommonjsModule$1(fn) {
+  function createCommonjsModule$2(fn) {
     var module = { exports: {} };
   	return fn(module, module.exports), module.exports;
   }
 
-  var eventemitter3$1 = createCommonjsModule$1(function (module) {
+  var eventemitter3$1 = createCommonjsModule$2(function (module) {
 
   var has = Object.prototype.hasOwnProperty
     , prefix = '~';
@@ -2133,7 +2133,7 @@
    * @param {String} input The string of Unicode symbols.
    * @returns {String} The resulting Punycode string of ASCII-only symbols.
    */
-  function encode(input) {
+  function encode$1(input) {
     var n,
       delta,
       handledCPCount,
@@ -2254,7 +2254,7 @@
   function toASCII(input) {
     return mapDomain(input, function(string) {
       return regexNonASCII.test(string) ?
-        'xn--' + encode(string) :
+        'xn--' + encode$1(string) :
         string;
     });
   }
@@ -4274,13 +4274,13 @@
   // If obj.hasOwnProperty has been overridden, then calling
   // obj.hasOwnProperty(prop) will break.
   // See: https://github.com/joyent/node/issues/1707
-  function hasOwnProperty(obj, prop) {
+  function hasOwnProperty$1(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
   }
   var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
   };
-  function stringifyPrimitive(v) {
+  function stringifyPrimitive$1(v) {
     switch (typeof v) {
       case 'string':
         return v;
@@ -4305,21 +4305,21 @@
 
     if (typeof obj === 'object') {
       return map$2(objectKeys(obj), function(k) {
-        var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+        var ks = encodeURIComponent(stringifyPrimitive$1(k)) + eq;
         if (isArray(obj[k])) {
           return map$2(obj[k], function(v) {
-            return ks + encodeURIComponent(stringifyPrimitive(v));
+            return ks + encodeURIComponent(stringifyPrimitive$1(v));
           }).join(sep);
         } else {
-          return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+          return ks + encodeURIComponent(stringifyPrimitive$1(obj[k]));
         }
       }).join(sep);
 
     }
 
     if (!name) return '';
-    return encodeURIComponent(stringifyPrimitive(name)) + eq +
-           encodeURIComponent(stringifyPrimitive(obj));
+    return encodeURIComponent(stringifyPrimitive$1(name)) + eq +
+           encodeURIComponent(stringifyPrimitive$1(obj));
   }
   function map$2 (xs, f) {
     if (xs.map) return xs.map(f);
@@ -4338,7 +4338,7 @@
     return res;
   };
 
-  function parse$1(qs, sep, eq, options) {
+  function parse$2(qs, sep, eq, options) {
     sep = sep || '&';
     eq = eq || '=';
     var obj = {};
@@ -4377,7 +4377,7 @@
       k = decodeURIComponent(kstr);
       v = decodeURIComponent(vstr);
 
-      if (!hasOwnProperty(obj, k)) {
+      if (!hasOwnProperty$1(obj, k)) {
         obj[k] = v;
       } else if (isArray(obj[k])) {
         obj[k].push(v);
@@ -4390,7 +4390,7 @@
   }
 
   // Copyright Joyent, Inc. and other Node contributors.
-  function Url$1() {
+  function Url$2() {
     this.protocol = null;
     this.slashes = null;
     this.auth = null;
@@ -4409,42 +4409,42 @@
 
   // define these here so at least they only have to be
   // compiled once on the first module load.
-  var protocolPattern = /^([a-z0-9.+-]+:)/i,
-    portPattern = /:[0-9]*$/,
+  var protocolPattern$1 = /^([a-z0-9.+-]+:)/i,
+    portPattern$1 = /:[0-9]*$/,
 
     // Special case for a simple path URL
-    simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
+    simplePathPattern$1 = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
 
     // RFC 2396: characters reserved for delimiting URLs.
     // We actually just auto-escape these.
-    delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
+    delims$1 = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
 
     // RFC 2396: characters not allowed for various reasons.
-    unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
+    unwise$1 = ['{', '}', '|', '\\', '^', '`'].concat(delims$1),
 
     // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
-    autoEscape = ['\''].concat(unwise),
+    autoEscape$1 = ['\''].concat(unwise$1),
     // Characters that are never ever allowed in a hostname.
     // Note that any invalid chars are also handled, but these
     // are the ones that are *expected* to be seen, so we fast-path
     // them.
-    nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
-    hostEndingChars = ['/', '?', '#'],
-    hostnameMaxLen = 255,
-    hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
-    hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
+    nonHostChars$1 = ['%', '/', '?', ';', '#'].concat(autoEscape$1),
+    hostEndingChars$1 = ['/', '?', '#'],
+    hostnameMaxLen$1 = 255,
+    hostnamePartPattern$1 = /^[+a-z0-9A-Z_-]{0,63}$/,
+    hostnamePartStart$1 = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
     // protocols that can allow "unsafe" and "unwise" chars.
-    unsafeProtocol = {
+    unsafeProtocol$1 = {
       'javascript': true,
       'javascript:': true
     },
     // protocols that never have a hostname.
-    hostlessProtocol = {
+    hostlessProtocol$1 = {
       'javascript': true,
       'javascript:': true
     },
     // protocols that always contain a // bit.
-    slashedProtocol = {
+    slashedProtocol$1 = {
       'http': true,
       'https': true,
       'ftp': true,
@@ -4457,18 +4457,18 @@
       'file:': true
     };
 
-  function urlParse(url, parseQueryString, slashesDenoteHost) {
-    if (url && isObject(url) && url instanceof Url$1) return url;
+  function urlParse$1(url, parseQueryString, slashesDenoteHost) {
+    if (url && isObject(url) && url instanceof Url$2) return url;
 
-    var u = new Url$1;
+    var u = new Url$2;
     u.parse(url, parseQueryString, slashesDenoteHost);
     return u;
   }
-  Url$1.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
-    return parse(this, url, parseQueryString, slashesDenoteHost);
+  Url$2.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+    return parse$1(this, url, parseQueryString, slashesDenoteHost);
   };
 
-  function parse(self, url, parseQueryString, slashesDenoteHost) {
+  function parse$1(self, url, parseQueryString, slashesDenoteHost) {
     if (!isString(url)) {
       throw new TypeError('Parameter \'url\' must be a string, not ' + typeof url);
     }
@@ -4492,7 +4492,7 @@
 
     if (!slashesDenoteHost && url.split('#').length === 1) {
       // Try fast path regexp
-      var simplePath = simplePathPattern.exec(rest);
+      var simplePath = simplePathPattern$1.exec(rest);
       if (simplePath) {
         self.path = rest;
         self.href = rest;
@@ -4500,7 +4500,7 @@
         if (simplePath[2]) {
           self.search = simplePath[2];
           if (parseQueryString) {
-            self.query = parse$1(self.search.substr(1));
+            self.query = parse$2(self.search.substr(1));
           } else {
             self.query = self.search.substr(1);
           }
@@ -4512,7 +4512,7 @@
       }
     }
 
-    var proto = protocolPattern.exec(rest);
+    var proto = protocolPattern$1.exec(rest);
     if (proto) {
       proto = proto[0];
       var lowerProto = proto.toLowerCase();
@@ -4526,14 +4526,14 @@
     // how the browser resolves relative URLs.
     if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
       var slashes = rest.substr(0, 2) === '//';
-      if (slashes && !(proto && hostlessProtocol[proto])) {
+      if (slashes && !(proto && hostlessProtocol$1[proto])) {
         rest = rest.substr(2);
         self.slashes = true;
       }
     }
     var i, hec, l, p;
-    if (!hostlessProtocol[proto] &&
-      (slashes || (proto && !slashedProtocol[proto]))) {
+    if (!hostlessProtocol$1[proto] &&
+      (slashes || (proto && !slashedProtocol$1[proto]))) {
 
       // there's a hostname.
       // the first instance of /, ?, ;, or # ends the host.
@@ -4552,8 +4552,8 @@
 
       // find the first instance of any hostEndingChars
       var hostEnd = -1;
-      for (i = 0; i < hostEndingChars.length; i++) {
-        hec = rest.indexOf(hostEndingChars[i]);
+      for (i = 0; i < hostEndingChars$1.length; i++) {
+        hec = rest.indexOf(hostEndingChars$1[i]);
         if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
           hostEnd = hec;
       }
@@ -4580,8 +4580,8 @@
 
       // the host is the remaining to the left of the first non-host char
       hostEnd = -1;
-      for (i = 0; i < nonHostChars.length; i++) {
-        hec = rest.indexOf(nonHostChars[i]);
+      for (i = 0; i < nonHostChars$1.length; i++) {
+        hec = rest.indexOf(nonHostChars$1[i]);
         if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
           hostEnd = hec;
       }
@@ -4610,7 +4610,7 @@
         for (i = 0, l = hostparts.length; i < l; i++) {
           var part = hostparts[i];
           if (!part) continue;
-          if (!part.match(hostnamePartPattern)) {
+          if (!part.match(hostnamePartPattern$1)) {
             var newpart = '';
             for (var j = 0, k = part.length; j < k; j++) {
               if (part.charCodeAt(j) > 127) {
@@ -4623,10 +4623,10 @@
               }
             }
             // we test again with ASCII char only
-            if (!newpart.match(hostnamePartPattern)) {
+            if (!newpart.match(hostnamePartPattern$1)) {
               var validParts = hostparts.slice(0, i);
               var notHost = hostparts.slice(i + 1);
-              var bit = part.match(hostnamePartStart);
+              var bit = part.match(hostnamePartStart$1);
               if (bit) {
                 validParts.push(bit[1]);
                 notHost.unshift(bit[2]);
@@ -4641,7 +4641,7 @@
         }
       }
 
-      if (self.hostname.length > hostnameMaxLen) {
+      if (self.hostname.length > hostnameMaxLen$1) {
         self.hostname = '';
       } else {
         // hostnames are always lower case.
@@ -4673,13 +4673,13 @@
 
     // now rest is set to the post-host stuff.
     // chop off any delim chars.
-    if (!unsafeProtocol[lowerProto]) {
+    if (!unsafeProtocol$1[lowerProto]) {
 
       // First, make 100% sure that any "autoEscape" chars get
       // escaped, even if encodeURIComponent doesn't think they
       // need to be.
-      for (i = 0, l = autoEscape.length; i < l; i++) {
-        var ae = autoEscape[i];
+      for (i = 0, l = autoEscape$1.length; i < l; i++) {
+        var ae = autoEscape$1[i];
         if (rest.indexOf(ae) === -1)
           continue;
         var esc = encodeURIComponent(ae);
@@ -4703,7 +4703,7 @@
       self.search = rest.substr(qm);
       self.query = rest.substr(qm + 1);
       if (parseQueryString) {
-        self.query = parse$1(self.query);
+        self.query = parse$2(self.query);
       }
       rest = rest.slice(0, qm);
     } else if (parseQueryString) {
@@ -4712,7 +4712,7 @@
       self.query = {};
     }
     if (rest) self.pathname = rest;
-    if (slashedProtocol[lowerProto] &&
+    if (slashedProtocol$1[lowerProto] &&
       self.hostname && !self.pathname) {
       self.pathname = '/';
     }
@@ -4725,21 +4725,21 @@
     }
 
     // finally, reconstruct the href based on what has been validated.
-    self.href = format(self);
+    self.href = format$1(self);
     return self;
   }
 
   // format a parsed object into a url string
-  function urlFormat(obj) {
+  function urlFormat$1(obj) {
     // ensure it's an object, and not a string url.
     // If it's an obj, this is a no-op.
     // this way, you can call url_format() on strings
     // to clean up potentially wonky urls.
-    if (isString(obj)) obj = parse({}, obj);
-    return format(obj);
+    if (isString(obj)) obj = parse$1({}, obj);
+    return format$1(obj);
   }
 
-  function format(self) {
+  function format$1(self) {
     var auth = self.auth || '';
     if (auth) {
       auth = encodeURIComponent(auth);
@@ -4777,7 +4777,7 @@
     // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
     // unless they had them to begin with.
     if (self.slashes ||
-      (!protocol || slashedProtocol[protocol]) && host !== false) {
+      (!protocol || slashedProtocol$1[protocol]) && host !== false) {
       host = '//' + (host || '');
       if (pathname && pathname.charAt(0) !== '/') pathname = '/' + pathname;
     } else if (!host) {
@@ -4795,26 +4795,26 @@
     return protocol + host + pathname + search + hash;
   }
 
-  Url$1.prototype.format = function() {
-    return format(this);
+  Url$2.prototype.format = function() {
+    return format$1(this);
   };
 
-  function urlResolve(source, relative) {
-    return urlParse(source, false, true).resolve(relative);
+  function urlResolve$1(source, relative) {
+    return urlParse$1(source, false, true).resolve(relative);
   }
 
-  Url$1.prototype.resolve = function(relative) {
-    return this.resolveObject(urlParse(relative, false, true)).format();
+  Url$2.prototype.resolve = function(relative) {
+    return this.resolveObject(urlParse$1(relative, false, true)).format();
   };
 
-  Url$1.prototype.resolveObject = function(relative) {
+  Url$2.prototype.resolveObject = function(relative) {
     if (isString(relative)) {
-      var rel = new Url$1();
+      var rel = new Url$2();
       rel.parse(relative, false, true);
       relative = rel;
     }
 
-    var result = new Url$1();
+    var result = new Url$2();
     var tkeys = Object.keys(this);
     for (var tk = 0; tk < tkeys.length; tk++) {
       var tkey = tkeys[tk];
@@ -4842,7 +4842,7 @@
       }
 
       //urlParse appends trailing / to urls like http://www.example.com
-      if (slashedProtocol[result.protocol] &&
+      if (slashedProtocol$1[result.protocol] &&
         result.hostname && !result.pathname) {
         result.path = result.pathname = '/';
       }
@@ -4860,7 +4860,7 @@
       // if it is file:, then the host is dropped,
       // because that's known to be hostless.
       // anything else is assumed to be absolute.
-      if (!slashedProtocol[relative.protocol]) {
+      if (!slashedProtocol$1[relative.protocol]) {
         var keys = Object.keys(relative);
         for (var v = 0; v < keys.length; v++) {
           var k = keys[v];
@@ -4871,7 +4871,7 @@
       }
 
       result.protocol = relative.protocol;
-      if (!relative.host && !hostlessProtocol[relative.protocol]) {
+      if (!relative.host && !hostlessProtocol$1[relative.protocol]) {
         relPath = (relative.pathname || '').split('/');
         while (relPath.length && !(relative.host = relPath.shift()));
         if (!relative.host) relative.host = '';
@@ -4908,7 +4908,7 @@
         (result.host && relative.pathname)),
       removeAllDots = mustEndAbs,
       srcPath = result.pathname && result.pathname.split('/') || [],
-      psychotic = result.protocol && !slashedProtocol[result.protocol];
+      psychotic = result.protocol && !slashedProtocol$1[result.protocol];
     relPath = relative.pathname && relative.pathname.split('/') || [];
     // if the url is a non-slashed url, then relative
     // links like ../.. should be able
@@ -5076,13 +5076,13 @@
     return result;
   };
 
-  Url$1.prototype.parseHost = function() {
+  Url$2.prototype.parseHost = function() {
     return parseHost(this);
   };
 
   function parseHost(self) {
     var host = self.host;
-    var port = portPattern.exec(host);
+    var port = portPattern$1.exec(host);
     if (port) {
       port = port[0];
       if (port !== ':') {
@@ -5094,8 +5094,8 @@
   }
 
   /*!
-   * @pixi/constants - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/constants - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/constants is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -5540,12 +5540,24 @@
   })(MSAA_QUALITY$1 || (MSAA_QUALITY$1 = {}));
 
   /*!
-   * @pixi/utils - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/utils - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/utils is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
    */
+
+  /**
+   * This file contains redeclared types for Node `url` and `querystring` modules. These modules
+   * don't provide their own typings but instead are a part of the full Node typings. The purpose of
+   * this file is to redeclare the required types to avoid having the whole Node types as a
+   * dependency.
+   */
+  var url$1 = {
+      parse: urlParse$1,
+      format: urlFormat$1,
+      resolve: urlResolve$1,
+  };
 
   /**
    * The prefix that denotes a URL is for a retina asset.
@@ -5557,7 +5569,7 @@
    * @default /@([0-9\.]+)x/
    * @example `@2x`
    */
-  settings.RETINA_PREFIX = /@([0-9\.]+)x/;
+  settings$1.RETINA_PREFIX = /@([0-9\.]+)x/;
   /**
    * Should the `failIfMajorPerformanceCaveat` flag be enabled as a context option used in the `isWebGLSupported` function.
    * If set to true, a WebGL renderer can fail to be created if the browser thinks there could be performance issues when
@@ -5584,10 +5596,10 @@
    * @type {boolean}
    * @default false
    */
-  settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
+  settings$1.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
 
   var saidHello = false;
-  var VERSION = '6.0.0';
+  var VERSION = '6.0.2';
   /**
    * Logs out the version and renderer information for this running instance of PIXI.
    * If you don't want to see this message you can run `PIXI.utils.skipHello()` before
@@ -5636,7 +5648,7 @@
           supported = (function supported() {
               var contextOptions = {
                   stencil: true,
-                  failIfMajorPerformanceCaveat: settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT,
+                  failIfMajorPerformanceCaveat: settings$1.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT,
               };
               try {
                   if (!self.WebGLRenderingContext) {
@@ -6028,7 +6040,7 @@
    * @private
    * @return {Array<number[]>} Mapped modes.
    */
-  function mapPremultipliedBlendModes() {
+  function mapPremultipliedBlendModes$1() {
       var pm = [];
       var npm = [];
       for (var i = 0; i < 32; i++) {
@@ -6052,7 +6064,7 @@
    * @const premultiplyBlendMode
    * @type {Array<number[]>}
    */
-  var premultiplyBlendMode = mapPremultipliedBlendModes();
+  var premultiplyBlendMode = mapPremultipliedBlendModes$1();
   /**
    * changes blendMode according to texture format
    *
@@ -6357,7 +6369,7 @@
       function CanvasRenderTarget(width, height, resolution) {
           this.canvas = document.createElement('canvas');
           this.context = this.canvas.getContext('2d');
-          this.resolution = resolution || settings.RESOLUTION;
+          this.resolution = resolution || settings$1.RESOLUTION;
           this.resize(width, height);
       }
       /**
@@ -6494,10 +6506,10 @@
    * @param {object} [loc=window.location] - The location object to test against.
    * @return {string} The crossOrigin value to use (or empty string for none).
    */
-  function determineCrossOrigin(url, loc) {
+  function determineCrossOrigin(url$1$1, loc) {
       if (loc === void 0) { loc = self.location; }
       // data: and javascript: urls are considered same-origin
-      if (url.indexOf('data:') === 0) {
+      if (url$1$1.indexOf('data:') === 0) {
           return '';
       }
       // default is window.location
@@ -6508,8 +6520,8 @@
       // let the browser determine the full href for the url of this resource and then
       // parse with the node url lib, we can't use the properties of the anchor element
       // because they don't work in IE9 :(
-      tempAnchor$1.href = url;
-      var parsedUrl = urlParse(tempAnchor$1.href);
+      tempAnchor$1.href = url$1$1;
+      var parsedUrl = url$1.parse(tempAnchor$1.href);
       var samePort = (!parsedUrl.port && loc.port === '') || (parsedUrl.port === loc.port);
       // if cross origin
       if (parsedUrl.hostname !== loc.hostname || !samePort || parsedUrl.protocol !== loc.protocol) {
@@ -6529,45 +6541,16 @@
    * @return {number} resolution / device pixel ratio of an asset
    */
   function getResolutionOfUrl(url, defaultValue) {
-      var resolution = settings.RETINA_PREFIX.exec(url);
+      var resolution = settings$1.RETINA_PREFIX.exec(url);
       if (resolution) {
           return parseFloat(resolution[1]);
       }
       return defaultValue !== undefined ? defaultValue : 1;
   }
 
-  /**
-   * Generalized convenience utilities for PIXI.
-   * @example
-   * // Extend PIXI's internal Event Emitter.
-   * class MyEmitter extends PIXI.utils.EventEmitter {
-   *   constructor() {
-   *      super();
-   *      console.log("Emitter created!");
-   *   }
-   * }
-   *
-   * // Get info on current device
-   * console.log(PIXI.utils.isMobile);
-   *
-   * // Convert hex color to string
-   * console.log(PIXI.utils.hex2string(0xff00ff)); // returns: "#ff00ff"
-   * @namespace PIXI.utils
-   */
-  /**
-   * Node.js compatible URL utilities.
-   *
-   * @see https://www.npmjs.com/package/url
-   *
-   * @memberof PIXI.utils
-   * @name url
-   * @member {object}
-   */
-  var url = { parse: urlParse, format: urlFormat, resolve: urlResolve };
-
   /*!
-   * @pixi/math - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/math - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/math is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -8454,8 +8437,8 @@
   }());
 
   /*!
-   * @pixi/display - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/display - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/display is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -8480,7 +8463,7 @@
    * @type {boolean}
    * @default false
    */
-  settings.SORTABLE_CHILDREN = false;
+  settings$1.SORTABLE_CHILDREN = false;
 
   /**
    * 'Builder' pattern for bounds rectangles.
@@ -9862,7 +9845,7 @@
            *
            * @member {boolean}
            */
-          _this.sortableChildren = settings.SORTABLE_CHILDREN;
+          _this.sortableChildren = settings$1.SORTABLE_CHILDREN;
           /**
            * Should children be sorted by zIndex at the next updateTransform call.
            *
@@ -10384,8 +10367,8 @@
   Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
   /*!
-   * @pixi/accessibility - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/accessibility - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/accessibility is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -10525,7 +10508,7 @@
           /**  The frequency to update the div elements. */
           this.androidUpdateFrequency = 500; // 2fps
           this._hookDiv = null;
-          if (isMobile.tablet || isMobile.phone) {
+          if (isMobile$2.tablet || isMobile$2.phone) {
               this.createTouchHook();
           }
           // first we create a div that will sit over the PixiJS element. This is where the div overlays will go.
@@ -10681,7 +10664,7 @@
           *  so I am just running update every half a second, seems to fix it.
           */
           var now = performance.now();
-          if (isMobile.android.device && now < this.androidUpdateCount) {
+          if (isMobile$2.android.device && now < this.androidUpdateCount) {
               return;
           }
           this.androidUpdateCount = now + this.androidUpdateFrequency;
@@ -10927,8 +10910,8 @@
   }());
 
   /*!
-   * @pixi/ticker - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/ticker - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/ticker is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -10943,7 +10926,7 @@
    * @type {number}
    * @default 0.06
    */
-  settings.TARGET_FPMS = 0.06;
+  settings$1.TARGET_FPMS = 0.06;
 
   /**
    * Represents the update priorities used by internal PIXI classes when registered with
@@ -11150,8 +11133,8 @@
            */
           this._lastFrame = -1;
           this._head = new TickerListener(null, null, Infinity);
-          this.deltaMS = 1 / settings.TARGET_FPMS;
-          this.elapsedMS = 1 / settings.TARGET_FPMS;
+          this.deltaMS = 1 / settings$1.TARGET_FPMS;
+          this.elapsedMS = 1 / settings$1.TARGET_FPMS;
           this._tick = function (time) {
               _this._requestId = null;
               if (_this.started) {
@@ -11398,7 +11381,7 @@
                   this._lastFrame = currentTime - (delta % this._minElapsedMS);
               }
               this.deltaMS = elapsedMS;
-              this.deltaTime = this.deltaMS * settings.TARGET_FPMS;
+              this.deltaTime = this.deltaMS * settings$1.TARGET_FPMS;
               // Cache a local reference, in-case ticker is destroyed
               // during the emit, we can still check for head.next
               var head = this._head;
@@ -11452,7 +11435,7 @@
               // Minimum must be below the maxFPS
               var minFPS = Math.min(this.maxFPS, fps);
               // Must be at least 0, but below 1 / settings.TARGET_FPMS
-              var minFPMS = Math.min(Math.max(0, minFPS) / 1000, settings.TARGET_FPMS);
+              var minFPMS = Math.min(Math.max(0, minFPS) / 1000, settings$1.TARGET_FPMS);
               this._maxElapsedMS = 1 / minFPMS;
           },
           enumerable: false,
@@ -11671,8 +11654,8 @@
   }());
 
   /*!
-   * @pixi/interaction - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/interaction - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/interaction is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -13884,8 +13867,8 @@
   }(eventemitter3$1));
 
   /*!
-   * @pixi/runner - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/runner - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/runner is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -13909,7 +13892,7 @@
    *     }
    * }
    *
-   * myObject.update.add(listener);
+   * myObject.loaded.add(listener);
    *
    * myObject.loaded.emit();
    * ```
@@ -13928,7 +13911,7 @@
    *     }
    * }
    *
-   * myGame.update.add(gameObject1);
+   * myGame.update.add(gameObject);
    *
    * myGame.update.emit(time);
    * ```
@@ -14080,8 +14063,8 @@
   });
 
   /*!
-   * @pixi/core - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/core - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/core is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -14103,7 +14086,7 @@
    * @type {number}
    * @default PIXI.ENV.WEBGL2
    */
-  settings.PREFER_ENV = isMobile.any ? ENV$1.WEBGL : ENV$1.WEBGL2;
+  settings$1.PREFER_ENV = isMobile$2.any ? ENV$1.WEBGL : ENV$1.WEBGL2;
   /**
    * If set to `true`, *only* Textures and BaseTexture objects stored
    * in the caches ({@link PIXI.utils.TextureCache TextureCache} and
@@ -14120,7 +14103,7 @@
    * @type {boolean}
    * @default false
    */
-  settings.STRICT_TEXTURE_CACHE = false;
+  settings$1.STRICT_TEXTURE_CACHE = false;
 
   /**
    * Collection of installed resource types, class must extend {@link PIXI.Resource}.
@@ -14481,13 +14464,15 @@
       BufferResource.prototype.upload = function (renderer, baseTexture, glTexture) {
           var gl = renderer.gl;
           gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES$1.UNPACK);
-          if (glTexture.width === baseTexture.width && glTexture.height === baseTexture.height) {
-              gl.texSubImage2D(baseTexture.target, 0, 0, 0, baseTexture.width, baseTexture.height, baseTexture.format, baseTexture.type, this.data);
+          var width = baseTexture.realWidth;
+          var height = baseTexture.realHeight;
+          if (glTexture.width === width && glTexture.height === height) {
+              gl.texSubImage2D(baseTexture.target, 0, 0, 0, width, height, baseTexture.format, baseTexture.type, this.data);
           }
           else {
-              glTexture.width = baseTexture.width;
-              glTexture.height = baseTexture.height;
-              gl.texImage2D(baseTexture.target, 0, glTexture.internalFormat, baseTexture.width, baseTexture.height, 0, baseTexture.format, glTexture.type, this.data);
+              glTexture.width = width;
+              glTexture.height = height;
+              gl.texImage2D(baseTexture.target, 0, glTexture.internalFormat, width, height, 0, baseTexture.format, glTexture.type, this.data);
           }
           return true;
       };
@@ -14581,33 +14566,33 @@
            * @member {number}
            * @default PIXI.settings.RESOLUTION
            */
-          _this.resolution = resolution || settings.RESOLUTION;
+          _this.resolution = resolution || settings$1.RESOLUTION;
           /**
            * Mipmap mode of the texture, affects downscaled images
            *
            * @member {PIXI.MIPMAP_MODES}
            * @default PIXI.settings.MIPMAP_TEXTURES
            */
-          _this.mipmap = mipmap !== undefined ? mipmap : settings.MIPMAP_TEXTURES;
+          _this.mipmap = mipmap !== undefined ? mipmap : settings$1.MIPMAP_TEXTURES;
           /**
            * Anisotropic filtering level of texture
            *
            * @member {number}
            * @default PIXI.settings.ANISOTROPIC_LEVEL
            */
-          _this.anisotropicLevel = anisotropicLevel !== undefined ? anisotropicLevel : settings.ANISOTROPIC_LEVEL;
+          _this.anisotropicLevel = anisotropicLevel !== undefined ? anisotropicLevel : settings$1.ANISOTROPIC_LEVEL;
           /**
            * How the texture wraps
            * @member {number}
            */
-          _this.wrapMode = wrapMode || settings.WRAP_MODE;
+          _this.wrapMode = wrapMode || settings$1.WRAP_MODE;
           /**
            * The scale mode to apply when scaling this texture
            *
            * @member {PIXI.SCALE_MODES}
            * @default PIXI.settings.SCALE_MODE
            */
-          _this.scaleMode = scaleMode !== undefined ? scaleMode : settings.SCALE_MODE;
+          _this.scaleMode = scaleMode !== undefined ? scaleMode : settings$1.SCALE_MODE;
           /**
            * The pixel format of the texture
            *
@@ -14983,7 +14968,7 @@
        * @returns {PIXI.BaseTexture} The new base texture.
        */
       BaseTexture.from = function (source, options, strict) {
-          if (strict === void 0) { strict = settings.STRICT_TEXTURE_CACHE; }
+          if (strict === void 0) { strict = settings$1.STRICT_TEXTURE_CACHE; }
           var isFrame = typeof source === 'string';
           var cacheId = null;
           if (isFrame) {
@@ -15660,7 +15645,7 @@
            * @default PIXI.settings.CREATE_IMAGE_BITMAP
            */
           _this.createBitmap = (options.createBitmap !== undefined
-              ? options.createBitmap : settings.CREATE_IMAGE_BITMAP) && !!self.createImageBitmap;
+              ? options.createBitmap : settings$1.CREATE_IMAGE_BITMAP) && !!self.createImageBitmap;
           /**
            * Controls texture alphaMode field
            * Copies from options
@@ -16444,15 +16429,17 @@
       DepthResource.prototype.upload = function (renderer, baseTexture, glTexture) {
           var gl = renderer.gl;
           gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, baseTexture.alphaMode === ALPHA_MODES$1.UNPACK);
-          if (glTexture.width === baseTexture.width && glTexture.height === baseTexture.height) {
-              gl.texSubImage2D(baseTexture.target, 0, 0, 0, baseTexture.width, baseTexture.height, baseTexture.format, baseTexture.type, this.data);
+          var width = baseTexture.realWidth;
+          var height = baseTexture.realHeight;
+          if (glTexture.width === width && glTexture.height === height) {
+              gl.texSubImage2D(baseTexture.target, 0, 0, 0, width, height, baseTexture.format, baseTexture.type, this.data);
           }
           else {
-              glTexture.width = baseTexture.width;
-              glTexture.height = baseTexture.height;
+              glTexture.width = width;
+              glTexture.height = height;
               gl.texImage2D(baseTexture.target, 0, 
               //  gl.DEPTH_COMPONENT16 Needed for depth to render properly in webgl2.0
-              renderer.context.webGLVersion === 1 ? gl.DEPTH_COMPONENT : gl.DEPTH_COMPONENT16, baseTexture.width, baseTexture.height, 0, baseTexture.format, baseTexture.type, this.data);
+              renderer.context.webGLVersion === 1 ? gl.DEPTH_COMPONENT : gl.DEPTH_COMPONENT16, width, height, 0, baseTexture.format, baseTexture.type, this.data);
           }
           return true;
       };
@@ -17110,7 +17097,13 @@
        * @return {PIXI.Texture} The new texture
        */
       Texture.prototype.clone = function () {
-          return new Texture(this.baseTexture, this.frame.clone(), this.orig.clone(), this.trim && this.trim.clone(), this.rotate, this.defaultAnchor);
+          var clonedFrame = this._frame.clone();
+          var clonedOrig = this._frame === this.orig ? clonedFrame : this.orig.clone();
+          var clonedTexture = new Texture(this.baseTexture, !this.noFrame && clonedFrame, clonedOrig, this.trim && this.trim.clone(), this.rotate, this.defaultAnchor);
+          if (this.noFrame) {
+              clonedTexture._frame = clonedFrame;
+          }
+          return clonedTexture;
       };
       /**
        * Updates the internal WebGL UV cache. Use it after you change `frame` or `trim` of the texture.
@@ -17137,7 +17130,7 @@
        */
       Texture.from = function (source, options, strict) {
           if (options === void 0) { options = {}; }
-          if (strict === void 0) { strict = settings.STRICT_TEXTURE_CACHE; }
+          if (strict === void 0) { strict = settings$1.STRICT_TEXTURE_CACHE; }
           var isFrame = typeof source === 'string';
           var cacheId = null;
           if (isFrame) {
@@ -17212,7 +17205,7 @@
        */
       Texture.fromLoader = function (source, imageUrl, name, options) {
           var baseTexture = new BaseTexture(source, Object.assign({
-              scaleMode: settings.SCALE_MODE,
+              scaleMode: settings$1.SCALE_MODE,
               resolution: getResolutionOfUrl(imageUrl),
           }, options));
           var resource = baseTexture.resource;
@@ -19192,7 +19185,7 @@
        */
       ContextSystem.prototype.createContext = function (canvas, options) {
           var gl;
-          if (settings.PREFER_ENV >= ENV$1.WEBGL2) {
+          if (settings$1.PREFER_ENV >= ENV$1.WEBGL2) {
               gl = canvas.getContext('webgl2', options);
           }
           if (gl) {
@@ -19421,7 +19414,7 @@
               // webgl 1!
               var nativeDrawBuffersExtension_1 = this.renderer.context.extensions.drawBuffers;
               var nativeDepthTextureExtension = this.renderer.context.extensions.depthTexture;
-              if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
+              if (settings$1.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
                   nativeDrawBuffersExtension_1 = null;
                   nativeDepthTextureExtension = null;
               }
@@ -19860,7 +19853,7 @@
           if (context.webGLVersion !== 2) {
               // webgl 1!
               var nativeVaoExtension_1 = this.renderer.context.extensions.vertexArrayObject;
-              if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
+              if (settings$1.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
                   nativeVaoExtension_1 = null;
               }
               if (nativeVaoExtension_1) {
@@ -20503,7 +20496,7 @@
       if (context === unknownContext || (context && context.isContextLost())) {
           var canvas = document.createElement('canvas');
           var gl = void 0;
-          if (settings.PREFER_ENV >= ENV$1.WEBGL2) {
+          if (settings$1.PREFER_ENV >= ENV$1.WEBGL2) {
               gl = canvas.getContext('webgl2', {});
           }
           if (!gl) {
@@ -20921,8 +20914,8 @@
               }
               this.vertexSrc = "#define SHADER_NAME " + name + "\n" + this.vertexSrc;
               this.fragmentSrc = "#define SHADER_NAME " + name + "\n" + this.fragmentSrc;
-              this.vertexSrc = setPrecision(this.vertexSrc, settings.PRECISION_VERTEX, PRECISION$1.HIGH);
-              this.fragmentSrc = setPrecision(this.fragmentSrc, settings.PRECISION_FRAGMENT, getMaxFragmentPrecision());
+              this.vertexSrc = setPrecision(this.vertexSrc, settings$1.PRECISION_VERTEX, PRECISION$1.HIGH);
+              this.fragmentSrc = setPrecision(this.fragmentSrc, settings$1.PRECISION_FRAGMENT, getMaxFragmentPrecision());
           }
           // currently this does not extract structs only default types
           this.extractData(this.vertexSrc, this.fragmentSrc);
@@ -21538,7 +21531,7 @@
            *
            * @member {number}
            */
-          _this.resolution = settings.FILTER_RESOLUTION;
+          _this.resolution = settings$1.FILTER_RESOLUTION;
           /**
            * If enabled is true the filter is applied, if false it will not.
            *
@@ -23233,19 +23226,19 @@
            * @member {number}
            * @see PIXI.settings.GC_MAX_IDLE
            */
-          _this.maxIdle = settings.GC_MAX_IDLE;
+          _this.maxIdle = settings$1.GC_MAX_IDLE;
           /**
            * Maximum number of item to check
            * @member {number}
            * @see PIXI.settings.GC_MAX_CHECK_COUNT
            */
-          _this.checkCountMax = settings.GC_MAX_CHECK_COUNT;
+          _this.checkCountMax = settings$1.GC_MAX_CHECK_COUNT;
           /**
            * Current garbage collection mode
            * @member {PIXI.GC_MODES}
            * @see PIXI.settings.GC_MODE
            */
-          _this.mode = settings.GC_MODE;
+          _this.mode = settings$1.GC_MODE;
           return _this;
       }
       /**
@@ -23741,7 +23734,7 @@
           if (type === void 0) { type = RENDERER_TYPE$1.UNKNOWN; }
           var _this = _super.call(this) || this;
           // Add the default render options
-          options = Object.assign({}, settings.RENDER_OPTIONS, options);
+          options = Object.assign({}, settings$1.RENDER_OPTIONS, options);
           /**
            * The supplied constructor options.
            *
@@ -23777,7 +23770,7 @@
            * @member {number}
            * @default 1
            */
-          _this.resolution = options.resolution || settings.RESOLUTION;
+          _this.resolution = options.resolution || settings$1.RESOLUTION;
           /**
            * Pass-thru setting for the the canvas' context `alpha` property. This is typically
            * not something you need to fiddle with. If you want transparency, use `backgroundAlpha`.
@@ -24768,7 +24761,7 @@
            * @member {number}
            * @default settings.SPRITE_BATCH_SIZE * 4
            */
-          _this.size = settings.SPRITE_BATCH_SIZE * 4;
+          _this.size = settings$1.SPRITE_BATCH_SIZE * 4;
           /**
            * Total count of all vertices used by the currently
            * buffered objects.
@@ -24909,12 +24902,12 @@
        */
       AbstractBatchRenderer.prototype.contextChange = function () {
           var gl = this.renderer.gl;
-          if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
+          if (settings$1.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
               this.MAX_TEXTURES = 1;
           }
           else {
               // step 1: first check max textures the GPU can handle.
-              this.MAX_TEXTURES = Math.min(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS), settings.SPRITE_MAX_TEXTURES);
+              this.MAX_TEXTURES = Math.min(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS), settings$1.SPRITE_MAX_TEXTURES);
               // step 2: check the maximum number of if statements the shader can have too..
               this.MAX_TEXTURES = checkMaxIfStatementsInShader(this.MAX_TEXTURES, gl);
           }
@@ -25070,7 +25063,7 @@
       };
       AbstractBatchRenderer.prototype.updateGeometry = function () {
           var _a = this, packedGeometries = _a._packedGeometries, attributeBuffer = _a._attributeBuffer, indexBuffer = _a._indexBuffer;
-          if (!settings.CAN_UPLOAD_SAME_BUFFER) { /* Usually on iOS devices, where the browser doesn't
+          if (!settings$1.CAN_UPLOAD_SAME_BUFFER) { /* Usually on iOS devices, where the browser doesn't
               like uploads to the same buffer in a single frame. */
               if (this._packedGeometryPoolSize <= this._flushId) {
                   this._packedGeometryPoolSize++;
@@ -25132,7 +25125,7 @@
       AbstractBatchRenderer.prototype.start = function () {
           this.renderer.state.set(this.state);
           this.renderer.shader.bind(this._shader);
-          if (settings.CAN_UPLOAD_SAME_BUFFER) {
+          if (settings$1.CAN_UPLOAD_SAME_BUFFER) {
               // bind buffer #0, we don't need others
               this.renderer.geometry.bind(this._packedGeometries[this._flushId]);
           }
@@ -25518,8 +25511,8 @@
   }
 
   /*!
-   * @pixi/app - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/app - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/app is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -25770,6 +25763,7 @@
        * @private
        */
       ResizePlugin.destroy = function () {
+          self.removeEventListener('resize', this.queueResize);
           this.cancelResize();
           this.cancelResize = null;
           this.queueResize = null;
@@ -25782,8 +25776,8 @@
   Application.registerPlugin(ResizePlugin);
 
   /*!
-   * @pixi/extract - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/extract - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/extract is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -26037,7 +26031,7 @@
 
   var parseUri = parseURI;
 
-  var miniSignals = createCommonjsModule$1(function (module, exports) {
+  var miniSignals = createCommonjsModule$2(function (module, exports) {
 
   Object.defineProperty(exports, '__esModule', {
     value: true
@@ -26475,7 +26469,7 @@
     }
   }
 
-  function _createClass$8(Constructor, protoProps, staticProps) {
+  function _createClass$7(Constructor, protoProps, staticProps) {
     if (protoProps) _defineProperties(Constructor.prototype, protoProps);
     if (staticProps) _defineProperties(Constructor, staticProps);
     return Constructor;
@@ -27454,7 +27448,7 @@
       }
     };
 
-    _createClass$8(Resource, [{
+    _createClass$7(Resource, [{
       key: "isDataUrl",
       get: function get() {
         return this._hasFlag(Resource.STATUS_FLAGS.DATA_URL);
@@ -27722,7 +27716,7 @@
     return output;
   }
 
-  var Url = window.URL || window.webkitURL;
+  var Url$1 = window.URL || window.webkitURL;
   /**
    * A middleware for transforming XHR loaded Blobs into more useful objects
    *
@@ -27763,7 +27757,7 @@
         }
       } // if content type says this is an image, then we should transform the blob into an Image object
       else if (resource.data.type.indexOf('image') === 0) {
-          var src = Url.createObjectURL(resource.data);
+          var src = Url$1.createObjectURL(resource.data);
           resource.blob = resource.data;
           resource.data = new Image();
           resource.data.src = src;
@@ -27771,7 +27765,7 @@
           // TODO: Is this correct? Will the image be invalid after revoking?
 
           resource.data.onload = function () {
-            Url.revokeObjectURL(src);
+            Url$1.revokeObjectURL(src);
             resource.data.onload = null;
             next();
           }; // next will be called on load.
@@ -28471,7 +28465,7 @@
       }, true);
     };
 
-    _createClass$8(Loader, [{
+    _createClass$7(Loader, [{
       key: "concurrency",
       get: function get() {
         return this._queue.concurrency;
@@ -28534,8 +28528,8 @@
   };
 
   /*!
-   * @pixi/loaders - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/loaders - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/loaders is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -28874,14 +28868,6 @@
   */
   var LoaderResource = Resource;
 
-  /*!
-   * @pixi/compressed-textures - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
-   *
-   * @pixi/compressed-textures is licensed under the MIT License.
-   * http://www.opensource.org/licenses/mit-license
-   */
-
   var _a$1;
   /**
    * WebGL internal formats, including compressed texture formats provided by extensions
@@ -28903,11 +28889,11 @@
    * @property {number} COMPRESSED_RG11_EAC=0x9272
    * @property {number} COMPRESSED_SIGNED_RG11_EAC=0x9273
    * @property {number} COMPRESSED_RGB8_ETC2=0x9274
-   * @property {number} COMPRESSED_RGBA8_ETC2_EAC=0x9275
-   * @property {number} COMPRESSED_SRGB8_ETC2=0x9276
-   * @property {number} COMPRESSED_SRGB8_ALPHA8_ETC2_EAC=0x9277
-   * @property {number} COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2=0x9278
-   * @property {number} COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2= 0x9279
+   * @property {number} COMPRESSED_RGBA8_ETC2_EAC=0x9278
+   * @property {number} COMPRESSED_SRGB8_ETC2=0x9275
+   * @property {number} COMPRESSED_SRGB8_ALPHA8_ETC2_EAC=0x9279
+   * @property {number} COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2=0x9276
+   * @property {number} COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2=0x9277
    * @property {number} COMPRESSED_RGB_PVRTC_4BPPV1_IMG=0x8C00
    * @property {number} COMPRESSED_RGBA_PVRTC_4BPPV1_IMG=0x8C02
    * @property {number} COMPRESSED_RGB_PVRTC_2BPPV1_IMG=0x8C01
@@ -28935,11 +28921,11 @@
       INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RG11_EAC"] = 37490] = "COMPRESSED_RG11_EAC";
       INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_SIGNED_RG11_EAC"] = 37491] = "COMPRESSED_SIGNED_RG11_EAC";
       INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RGB8_ETC2"] = 37492] = "COMPRESSED_RGB8_ETC2";
-      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RGBA8_ETC2_EAC"] = 37493] = "COMPRESSED_RGBA8_ETC2_EAC";
-      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_SRGB8_ETC2"] = 37494] = "COMPRESSED_SRGB8_ETC2";
-      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_SRGB8_ALPHA8_ETC2_EAC"] = 37495] = "COMPRESSED_SRGB8_ALPHA8_ETC2_EAC";
-      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2"] = 37496] = "COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2";
-      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2"] = 37497] = "COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2";
+      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RGBA8_ETC2_EAC"] = 37496] = "COMPRESSED_RGBA8_ETC2_EAC";
+      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_SRGB8_ETC2"] = 37493] = "COMPRESSED_SRGB8_ETC2";
+      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_SRGB8_ALPHA8_ETC2_EAC"] = 37497] = "COMPRESSED_SRGB8_ALPHA8_ETC2_EAC";
+      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2"] = 37494] = "COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2";
+      INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2"] = 37495] = "COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2";
       // WEBGL_compressed_texture_pvrtc
       INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RGB_PVRTC_4BPPV1_IMG"] = 35840] = "COMPRESSED_RGB_PVRTC_4BPPV1_IMG";
       INTERNAL_FORMATS[INTERNAL_FORMATS["COMPRESSED_RGBA_PVRTC_4BPPV1_IMG"] = 35842] = "COMPRESSED_RGBA_PVRTC_4BPPV1_IMG";
@@ -28977,9 +28963,9 @@
       _a$1[INTERNAL_FORMATS.COMPRESSED_RG11_EAC] = 1,
       _a$1[INTERNAL_FORMATS.COMPRESSED_SIGNED_RG11_EAC] = 1,
       _a$1[INTERNAL_FORMATS.COMPRESSED_RGB8_ETC2] = 0.5,
-      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA8_ETC2_EAC] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_RGBA8_ETC2_EAC] = 1,
       _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB8_ETC2] = 0.5,
-      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC] = 0.5,
+      _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC] = 1,
       _a$1[INTERNAL_FORMATS.COMPRESSED_RGB8_PUNCHTHROUGH_ALPHA1_ETC2] = 0.5,
       _a$1[INTERNAL_FORMATS.COMPRESSED_SRGB8_PUNCHTHROUGH_ALPHA1_ETC2] = 0.5,
       // WEBGL_compressed_texture_pvrtc
@@ -29323,6 +29309,2274 @@
       return CompressedTextureResource;
   }(BlobResource));
 
+  var appleIphone = /iPhone/i;
+  var appleIpod = /iPod/i;
+  var appleTablet = /iPad/i;
+  var appleUniversal = /\biOS-universal(?:.+)Mac\b/i;
+  var androidPhone = /\bAndroid(?:.+)Mobile\b/i;
+  var androidTablet = /Android/i;
+  var amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
+  var amazonTablet = /Silk/i;
+  var windowsPhone = /Windows Phone/i;
+  var windowsTablet = /\bWindows(?:.+)ARM\b/i;
+  var otherBlackBerry = /BlackBerry/i;
+  var otherBlackBerry10 = /BB10/i;
+  var otherOpera = /Opera Mini/i;
+  var otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
+  var otherFirefox = /Mobile(?:.+)Firefox\b/i;
+  var isAppleTabletOnIos13 = function (navigator) {
+      return (typeof navigator !== 'undefined' &&
+          navigator.platform === 'MacIntel' &&
+          typeof navigator.maxTouchPoints === 'number' &&
+          navigator.maxTouchPoints > 1 &&
+          typeof MSStream === 'undefined');
+  };
+  function createMatch(userAgent) {
+      return function (regex) { return regex.test(userAgent); };
+  }
+  function isMobile(param) {
+      var nav = {
+          userAgent: '',
+          platform: '',
+          maxTouchPoints: 0
+      };
+      if (!param && typeof navigator !== 'undefined') {
+          nav = {
+              userAgent: navigator.userAgent,
+              platform: navigator.platform,
+              maxTouchPoints: navigator.maxTouchPoints || 0
+          };
+      }
+      else if (typeof param === 'string') {
+          nav.userAgent = param;
+      }
+      else if (param && param.userAgent) {
+          nav = {
+              userAgent: param.userAgent,
+              platform: param.platform,
+              maxTouchPoints: param.maxTouchPoints || 0
+          };
+      }
+      var userAgent = nav.userAgent;
+      var tmp = userAgent.split('[FBAN');
+      if (typeof tmp[1] !== 'undefined') {
+          userAgent = tmp[0];
+      }
+      tmp = userAgent.split('Twitter');
+      if (typeof tmp[1] !== 'undefined') {
+          userAgent = tmp[0];
+      }
+      var match = createMatch(userAgent);
+      var result = {
+          apple: {
+              phone: match(appleIphone) && !match(windowsPhone),
+              ipod: match(appleIpod),
+              tablet: !match(appleIphone) &&
+                  (match(appleTablet) || isAppleTabletOnIos13(nav)) &&
+                  !match(windowsPhone),
+              universal: match(appleUniversal),
+              device: (match(appleIphone) ||
+                  match(appleIpod) ||
+                  match(appleTablet) ||
+                  match(appleUniversal) ||
+                  isAppleTabletOnIos13(nav)) &&
+                  !match(windowsPhone)
+          },
+          amazon: {
+              phone: match(amazonPhone),
+              tablet: !match(amazonPhone) && match(amazonTablet),
+              device: match(amazonPhone) || match(amazonTablet)
+          },
+          android: {
+              phone: (!match(windowsPhone) && match(amazonPhone)) ||
+                  (!match(windowsPhone) && match(androidPhone)),
+              tablet: !match(windowsPhone) &&
+                  !match(amazonPhone) &&
+                  !match(androidPhone) &&
+                  (match(amazonTablet) || match(androidTablet)),
+              device: (!match(windowsPhone) &&
+                  (match(amazonPhone) ||
+                      match(amazonTablet) ||
+                      match(androidPhone) ||
+                      match(androidTablet))) ||
+                  match(/\bokhttp\b/i)
+          },
+          windows: {
+              phone: match(windowsPhone),
+              tablet: match(windowsTablet),
+              device: match(windowsPhone) || match(windowsTablet)
+          },
+          other: {
+              blackberry: match(otherBlackBerry),
+              blackberry10: match(otherBlackBerry10),
+              opera: match(otherOpera),
+              firefox: match(otherFirefox),
+              chrome: match(otherChrome),
+              device: match(otherBlackBerry) ||
+                  match(otherBlackBerry10) ||
+                  match(otherOpera) ||
+                  match(otherFirefox) ||
+                  match(otherChrome)
+          },
+          any: false,
+          phone: false,
+          tablet: false
+      };
+      result.any =
+          result.apple.device ||
+              result.android.device ||
+              result.windows.device ||
+              result.other.device;
+      result.phone =
+          result.apple.phone || result.android.phone || result.windows.phone;
+      result.tablet =
+          result.apple.tablet || result.android.tablet || result.windows.tablet;
+      return result;
+  }
+
+  /*!
+   * @pixi/settings - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   *
+   * @pixi/settings is licensed under the MIT License.
+   * http://www.opensource.org/licenses/mit-license
+   */
+
+  // The ESM/CJS versions of ismobilejs only
+  var isMobile$1 = isMobile(self.navigator);
+
+  /**
+   * The maximum recommended texture units to use.
+   * In theory the bigger the better, and for desktop we'll use as many as we can.
+   * But some mobile devices slow down if there is to many branches in the shader.
+   * So in practice there seems to be a sweet spot size that varies depending on the device.
+   *
+   * In v4, all mobile devices were limited to 4 texture units because for this.
+   * In v5, we allow all texture units to be used on modern Apple or Android devices.
+   *
+   * @private
+   * @param {number} max
+   * @returns {number}
+   */
+  function maxRecommendedTextures(max) {
+      var allowMax = true;
+      if (isMobile$1.tablet || isMobile$1.phone) {
+          if (isMobile$1.apple.device) {
+              var match = (navigator.userAgent).match(/OS (\d+)_(\d+)?/);
+              if (match) {
+                  var majorVersion = parseInt(match[1], 10);
+                  // Limit texture units on devices below iOS 11, which will be older hardware
+                  if (majorVersion < 11) {
+                      allowMax = false;
+                  }
+              }
+          }
+          if (isMobile$1.android.device) {
+              var match = (navigator.userAgent).match(/Android\s([0-9.]*)/);
+              if (match) {
+                  var majorVersion = parseInt(match[1], 10);
+                  // Limit texture units on devices below Android 7 (Nougat), which will be older hardware
+                  if (majorVersion < 7) {
+                      allowMax = false;
+                  }
+              }
+          }
+      }
+      return allowMax ? max : 4;
+  }
+
+  /**
+   * Uploading the same buffer multiple times in a single frame can cause performance issues.
+   * Apparent on iOS so only check for that at the moment
+   * This check may become more complex if this issue pops up elsewhere.
+   *
+   * @private
+   * @returns {boolean}
+   */
+  function canUploadSameBuffer() {
+      return !isMobile$1.apple.device;
+  }
+
+  /**
+   * User's customizable globals for overriding the default PIXI settings, such
+   * as a renderer's default resolution, framerate, float precision, etc.
+   * @example
+   * // Use the native window resolution as the default resolution
+   * // will support high-density displays when rendering
+   * PIXI.settings.RESOLUTION = window.devicePixelRatio;
+   *
+   * // Disable interpolation when scaling, will make texture be pixelated
+   * PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+   * @namespace PIXI.settings
+   */
+  var settings = {
+      /**
+       * If set to true WebGL will attempt make textures mimpaped by default.
+       * Mipmapping will only succeed if the base texture uploaded has power of two dimensions.
+       *
+       * @static
+       * @name MIPMAP_TEXTURES
+       * @memberof PIXI.settings
+       * @type {PIXI.MIPMAP_MODES}
+       * @default PIXI.MIPMAP_MODES.POW2
+       */
+      MIPMAP_TEXTURES: 1,
+      /**
+       * Default anisotropic filtering level of textures.
+       * Usually from 0 to 16
+       *
+       * @static
+       * @name ANISOTROPIC_LEVEL
+       * @memberof PIXI.settings
+       * @type {number}
+       * @default 0
+       */
+      ANISOTROPIC_LEVEL: 0,
+      /**
+       * Default resolution / device pixel ratio of the renderer.
+       *
+       * @static
+       * @name RESOLUTION
+       * @memberof PIXI.settings
+       * @type {number}
+       * @default 1
+       */
+      RESOLUTION: 1,
+      /**
+       * Default filter resolution.
+       *
+       * @static
+       * @name FILTER_RESOLUTION
+       * @memberof PIXI.settings
+       * @type {number}
+       * @default 1
+       */
+      FILTER_RESOLUTION: 1,
+      /**
+       * The maximum textures that this device supports.
+       *
+       * @static
+       * @name SPRITE_MAX_TEXTURES
+       * @memberof PIXI.settings
+       * @type {number}
+       * @default 32
+       */
+      SPRITE_MAX_TEXTURES: maxRecommendedTextures(32),
+      // TODO: maybe change to SPRITE.BATCH_SIZE: 2000
+      // TODO: maybe add PARTICLE.BATCH_SIZE: 15000
+      /**
+       * The default sprite batch size.
+       *
+       * The default aims to balance desktop and mobile devices.
+       *
+       * @static
+       * @name SPRITE_BATCH_SIZE
+       * @memberof PIXI.settings
+       * @type {number}
+       * @default 4096
+       */
+      SPRITE_BATCH_SIZE: 4096,
+      /**
+       * The default render options if none are supplied to {@link PIXI.Renderer}
+       * or {@link PIXI.CanvasRenderer}.
+       *
+       * @static
+       * @name RENDER_OPTIONS
+       * @memberof PIXI.settings
+       * @type {object}
+       * @property {HTMLCanvasElement} view=null
+       * @property {number} resolution=1
+       * @property {boolean} antialias=false
+       * @property {boolean} autoDensity=false
+       * @property {boolean} useContextAlpha=true
+       * @property {number} backgroundColor=0x000000
+       * @property {number} backgroundAlpha=1
+       * @property {boolean} clearBeforeRender=true
+       * @property {boolean} preserveDrawingBuffer=false
+       * @property {number} width=800
+       * @property {number} height=600
+       * @property {boolean} legacy=false
+       */
+      RENDER_OPTIONS: {
+          view: null,
+          antialias: false,
+          autoDensity: false,
+          backgroundColor: 0x000000,
+          backgroundAlpha: 1,
+          useContextAlpha: true,
+          clearBeforeRender: true,
+          preserveDrawingBuffer: false,
+          width: 800,
+          height: 600,
+          legacy: false,
+      },
+      /**
+       * Default Garbage Collection mode.
+       *
+       * @static
+       * @name GC_MODE
+       * @memberof PIXI.settings
+       * @type {PIXI.GC_MODES}
+       * @default PIXI.GC_MODES.AUTO
+       */
+      GC_MODE: 0,
+      /**
+       * Default Garbage Collection max idle.
+       *
+       * @static
+       * @name GC_MAX_IDLE
+       * @memberof PIXI.settings
+       * @type {number}
+       * @default 3600
+       */
+      GC_MAX_IDLE: 60 * 60,
+      /**
+       * Default Garbage Collection maximum check count.
+       *
+       * @static
+       * @name GC_MAX_CHECK_COUNT
+       * @memberof PIXI.settings
+       * @type {number}
+       * @default 600
+       */
+      GC_MAX_CHECK_COUNT: 60 * 10,
+      /**
+       * Default wrap modes that are supported by pixi.
+       *
+       * @static
+       * @name WRAP_MODE
+       * @memberof PIXI.settings
+       * @type {PIXI.WRAP_MODES}
+       * @default PIXI.WRAP_MODES.CLAMP
+       */
+      WRAP_MODE: 33071,
+      /**
+       * Default scale mode for textures.
+       *
+       * @static
+       * @name SCALE_MODE
+       * @memberof PIXI.settings
+       * @type {PIXI.SCALE_MODES}
+       * @default PIXI.SCALE_MODES.LINEAR
+       */
+      SCALE_MODE: 1,
+      /**
+       * Default specify float precision in vertex shader.
+       *
+       * @static
+       * @name PRECISION_VERTEX
+       * @memberof PIXI.settings
+       * @type {PIXI.PRECISION}
+       * @default PIXI.PRECISION.HIGH
+       */
+      PRECISION_VERTEX: 'highp',
+      /**
+       * Default specify float precision in fragment shader.
+       * iOS is best set at highp due to https://github.com/pixijs/pixi.js/issues/3742
+       *
+       * @static
+       * @name PRECISION_FRAGMENT
+       * @memberof PIXI.settings
+       * @type {PIXI.PRECISION}
+       * @default PIXI.PRECISION.MEDIUM
+       */
+      PRECISION_FRAGMENT: isMobile$1.apple.device ? 'highp' : 'mediump',
+      /**
+       * Can we upload the same buffer in a single frame?
+       *
+       * @static
+       * @name CAN_UPLOAD_SAME_BUFFER
+       * @memberof PIXI.settings
+       * @type {boolean}
+       */
+      CAN_UPLOAD_SAME_BUFFER: canUploadSameBuffer(),
+      /**
+       * Enables bitmap creation before image load. This feature is experimental.
+       *
+       * @static
+       * @name CREATE_IMAGE_BITMAP
+       * @memberof PIXI.settings
+       * @type {boolean}
+       * @default false
+       */
+      CREATE_IMAGE_BITMAP: false,
+      /**
+       * If true PixiJS will Math.floor() x/y values when rendering, stopping pixel interpolation.
+       * Advantages can include sharper image quality (like text) and faster rendering on canvas.
+       * The main disadvantage is movement of objects may appear less smooth.
+       *
+       * @static
+       * @constant
+       * @memberof PIXI.settings
+       * @type {boolean}
+       * @default false
+       */
+      ROUND_PIXELS: false,
+  };
+
+  var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
+
+  function createCommonjsModule$1(fn, basedir, module) {
+  	return module = {
+  		path: basedir,
+  		exports: {},
+  		require: function (path, base) {
+  			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+  		}
+  	}, fn(module, module.exports), module.exports;
+  }
+
+  function commonjsRequire () {
+  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+  }
+
+  createCommonjsModule$1(function (module) {
+
+  var has = Object.prototype.hasOwnProperty
+    , prefix = '~';
+
+  /**
+   * Constructor to create a storage for our `EE` objects.
+   * An `Events` instance is a plain object whose properties are event names.
+   *
+   * @constructor
+   * @private
+   */
+  function Events() {}
+
+  //
+  // We try to not inherit from `Object.prototype`. In some engines creating an
+  // instance in this way is faster than calling `Object.create(null)` directly.
+  // If `Object.create(null)` is not supported we prefix the event names with a
+  // character to make sure that the built-in object properties are not
+  // overridden or used as an attack vector.
+  //
+  if (Object.create) {
+    Events.prototype = Object.create(null);
+
+    //
+    // This hack is needed because the `__proto__` property is still inherited in
+    // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+    //
+    if (!new Events().__proto__) { prefix = false; }
+  }
+
+  /**
+   * Representation of a single event listener.
+   *
+   * @param {Function} fn The listener function.
+   * @param {*} context The context to invoke the listener with.
+   * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+   * @constructor
+   * @private
+   */
+  function EE(fn, context, once) {
+    this.fn = fn;
+    this.context = context;
+    this.once = once || false;
+  }
+
+  /**
+   * Add a listener for a given event.
+   *
+   * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn The listener function.
+   * @param {*} context The context to invoke the listener with.
+   * @param {Boolean} once Specify if the listener is a one-time listener.
+   * @returns {EventEmitter}
+   * @private
+   */
+  function addListener(emitter, event, fn, context, once) {
+    if (typeof fn !== 'function') {
+      throw new TypeError('The listener must be a function');
+    }
+
+    var listener = new EE(fn, context || emitter, once)
+      , evt = prefix ? prefix + event : event;
+
+    if (!emitter._events[evt]) { emitter._events[evt] = listener, emitter._eventsCount++; }
+    else if (!emitter._events[evt].fn) { emitter._events[evt].push(listener); }
+    else { emitter._events[evt] = [emitter._events[evt], listener]; }
+
+    return emitter;
+  }
+
+  /**
+   * Clear event by name.
+   *
+   * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+   * @param {(String|Symbol)} evt The Event name.
+   * @private
+   */
+  function clearEvent(emitter, evt) {
+    if (--emitter._eventsCount === 0) { emitter._events = new Events(); }
+    else { delete emitter._events[evt]; }
+  }
+
+  /**
+   * Minimal `EventEmitter` interface that is molded against the Node.js
+   * `EventEmitter` interface.
+   *
+   * @constructor
+   * @public
+   */
+  function EventEmitter() {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  /**
+   * Return an array listing the events for which the emitter has registered
+   * listeners.
+   *
+   * @returns {Array}
+   * @public
+   */
+  EventEmitter.prototype.eventNames = function eventNames() {
+    var names = []
+      , events
+      , name;
+
+    if (this._eventsCount === 0) { return names; }
+
+    for (name in (events = this._events)) {
+      if (has.call(events, name)) { names.push(prefix ? name.slice(1) : name); }
+    }
+
+    if (Object.getOwnPropertySymbols) {
+      return names.concat(Object.getOwnPropertySymbols(events));
+    }
+
+    return names;
+  };
+
+  /**
+   * Return the listeners registered for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @returns {Array} The registered listeners.
+   * @public
+   */
+  EventEmitter.prototype.listeners = function listeners(event) {
+    var evt = prefix ? prefix + event : event
+      , handlers = this._events[evt];
+
+    if (!handlers) { return []; }
+    if (handlers.fn) { return [handlers.fn]; }
+
+    for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+      ee[i] = handlers[i].fn;
+    }
+
+    return ee;
+  };
+
+  /**
+   * Return the number of listeners listening to a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @returns {Number} The number of listeners.
+   * @public
+   */
+  EventEmitter.prototype.listenerCount = function listenerCount(event) {
+    var evt = prefix ? prefix + event : event
+      , listeners = this._events[evt];
+
+    if (!listeners) { return 0; }
+    if (listeners.fn) { return 1; }
+    return listeners.length;
+  };
+
+  /**
+   * Calls each of the listeners registered for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @returns {Boolean} `true` if the event had listeners, else `false`.
+   * @public
+   */
+  EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+    var arguments$1 = arguments;
+
+    var evt = prefix ? prefix + event : event;
+
+    if (!this._events[evt]) { return false; }
+
+    var listeners = this._events[evt]
+      , len = arguments.length
+      , args
+      , i;
+
+    if (listeners.fn) {
+      if (listeners.once) { this.removeListener(event, listeners.fn, undefined, true); }
+
+      switch (len) {
+        case 1: return listeners.fn.call(listeners.context), true;
+        case 2: return listeners.fn.call(listeners.context, a1), true;
+        case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+        case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+        case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+        case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+      }
+
+      for (i = 1, args = new Array(len -1); i < len; i++) {
+        args[i - 1] = arguments$1[i];
+      }
+
+      listeners.fn.apply(listeners.context, args);
+    } else {
+      var length = listeners.length
+        , j;
+
+      for (i = 0; i < length; i++) {
+        if (listeners[i].once) { this.removeListener(event, listeners[i].fn, undefined, true); }
+
+        switch (len) {
+          case 1: listeners[i].fn.call(listeners[i].context); break;
+          case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+          case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+          case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+          default:
+            if (!args) { for (j = 1, args = new Array(len -1); j < len; j++) {
+              args[j - 1] = arguments$1[j];
+            } }
+
+            listeners[i].fn.apply(listeners[i].context, args);
+        }
+      }
+    }
+
+    return true;
+  };
+
+  /**
+   * Add a listener for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn The listener function.
+   * @param {*} [context=this] The context to invoke the listener with.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+  EventEmitter.prototype.on = function on(event, fn, context) {
+    return addListener(this, event, fn, context, false);
+  };
+
+  /**
+   * Add a one-time listener for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn The listener function.
+   * @param {*} [context=this] The context to invoke the listener with.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+  EventEmitter.prototype.once = function once(event, fn, context) {
+    return addListener(this, event, fn, context, true);
+  };
+
+  /**
+   * Remove the listeners of a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn Only remove the listeners that match this function.
+   * @param {*} context Only remove the listeners that have this context.
+   * @param {Boolean} once Only remove one-time listeners.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+  EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+    var evt = prefix ? prefix + event : event;
+
+    if (!this._events[evt]) { return this; }
+    if (!fn) {
+      clearEvent(this, evt);
+      return this;
+    }
+
+    var listeners = this._events[evt];
+
+    if (listeners.fn) {
+      if (
+        listeners.fn === fn &&
+        (!once || listeners.once) &&
+        (!context || listeners.context === context)
+      ) {
+        clearEvent(this, evt);
+      }
+    } else {
+      for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+        if (
+          listeners[i].fn !== fn ||
+          (once && !listeners[i].once) ||
+          (context && listeners[i].context !== context)
+        ) {
+          events.push(listeners[i]);
+        }
+      }
+
+      //
+      // Reset the array, or remove it completely if we have no more listeners.
+      //
+      if (events.length) { this._events[evt] = events.length === 1 ? events[0] : events; }
+      else { clearEvent(this, evt); }
+    }
+
+    return this;
+  };
+
+  /**
+   * Remove all listeners, or those of the specified event.
+   *
+   * @param {(String|Symbol)} [event] The event name.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+  EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+    var evt;
+
+    if (event) {
+      evt = prefix ? prefix + event : event;
+      if (this._events[evt]) { clearEvent(this, evt); }
+    } else {
+      this._events = new Events();
+      this._eventsCount = 0;
+    }
+
+    return this;
+  };
+
+  //
+  // Alias methods names because people roll like that.
+  //
+  EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+  //
+  // Expose the prefix.
+  //
+  EventEmitter.prefixed = prefix;
+
+  //
+  // Allow `EventEmitter` to be imported as module namespace.
+  //
+  EventEmitter.EventEmitter = EventEmitter;
+
+  //
+  // Expose the module.
+  //
+  {
+    module.exports = EventEmitter;
+  }
+  });
+
+  var punycode = createCommonjsModule$1(function (module, exports) {
+  (function(root) {
+
+  	/** Detect free variables */
+  	var freeExports =  exports &&
+  		!exports.nodeType && exports;
+  	var freeModule =  module &&
+  		!module.nodeType && module;
+  	var freeGlobal = typeof commonjsGlobal$1 == 'object' && commonjsGlobal$1;
+  	if (
+  		freeGlobal.global === freeGlobal ||
+  		freeGlobal.window === freeGlobal ||
+  		freeGlobal.self === freeGlobal
+  	) {
+  		root = freeGlobal;
+  	}
+
+  	/**
+  	 * The `punycode` object.
+  	 * @name punycode
+  	 * @type Object
+  	 */
+  	var punycode,
+
+  	/** Highest positive signed 32-bit float value */
+  	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
+
+  	/** Bootstring parameters */
+  	base = 36,
+  	tMin = 1,
+  	tMax = 26,
+  	skew = 38,
+  	damp = 700,
+  	initialBias = 72,
+  	initialN = 128, // 0x80
+  	delimiter = '-', // '\x2D'
+
+  	/** Regular expressions */
+  	regexPunycode = /^xn--/,
+  	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
+  	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
+
+  	/** Error messages */
+  	errors = {
+  		'overflow': 'Overflow: input needs wider integers to process',
+  		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+  		'invalid-input': 'Invalid input'
+  	},
+
+  	/** Convenience shortcuts */
+  	baseMinusTMin = base - tMin,
+  	floor = Math.floor,
+  	stringFromCharCode = String.fromCharCode,
+
+  	/** Temporary variable */
+  	key;
+
+  	/*--------------------------------------------------------------------------*/
+
+  	/**
+  	 * A generic error utility function.
+  	 * @private
+  	 * @param {String} type The error type.
+  	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+  	 */
+  	function error(type) {
+  		throw RangeError(errors[type]);
+  	}
+
+  	/**
+  	 * A generic `Array#map` utility function.
+  	 * @private
+  	 * @param {Array} array The array to iterate over.
+  	 * @param {Function} callback The function that gets called for every array
+  	 * item.
+  	 * @returns {Array} A new array of values returned by the callback function.
+  	 */
+  	function map(array, fn) {
+  		var length = array.length;
+  		var result = [];
+  		while (length--) {
+  			result[length] = fn(array[length]);
+  		}
+  		return result;
+  	}
+
+  	/**
+  	 * A simple `Array#map`-like wrapper to work with domain name strings or email
+  	 * addresses.
+  	 * @private
+  	 * @param {String} domain The domain name or email address.
+  	 * @param {Function} callback The function that gets called for every
+  	 * character.
+  	 * @returns {Array} A new string of characters returned by the callback
+  	 * function.
+  	 */
+  	function mapDomain(string, fn) {
+  		var parts = string.split('@');
+  		var result = '';
+  		if (parts.length > 1) {
+  			// In email addresses, only the domain name should be punycoded. Leave
+  			// the local part (i.e. everything up to `@`) intact.
+  			result = parts[0] + '@';
+  			string = parts[1];
+  		}
+  		// Avoid `split(regex)` for IE8 compatibility. See #17.
+  		string = string.replace(regexSeparators, '\x2E');
+  		var labels = string.split('.');
+  		var encoded = map(labels, fn).join('.');
+  		return result + encoded;
+  	}
+
+  	/**
+  	 * Creates an array containing the numeric code points of each Unicode
+  	 * character in the string. While JavaScript uses UCS-2 internally,
+  	 * this function will convert a pair of surrogate halves (each of which
+  	 * UCS-2 exposes as separate characters) into a single code point,
+  	 * matching UTF-16.
+  	 * @see `punycode.ucs2.encode`
+  	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+  	 * @memberOf punycode.ucs2
+  	 * @name decode
+  	 * @param {String} string The Unicode input string (UCS-2).
+  	 * @returns {Array} The new array of code points.
+  	 */
+  	function ucs2decode(string) {
+  		var output = [],
+  		    counter = 0,
+  		    length = string.length,
+  		    value,
+  		    extra;
+  		while (counter < length) {
+  			value = string.charCodeAt(counter++);
+  			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+  				// high surrogate, and there is a next character
+  				extra = string.charCodeAt(counter++);
+  				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+  					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+  				} else {
+  					// unmatched surrogate; only append this code unit, in case the next
+  					// code unit is the high surrogate of a surrogate pair
+  					output.push(value);
+  					counter--;
+  				}
+  			} else {
+  				output.push(value);
+  			}
+  		}
+  		return output;
+  	}
+
+  	/**
+  	 * Creates a string based on an array of numeric code points.
+  	 * @see `punycode.ucs2.decode`
+  	 * @memberOf punycode.ucs2
+  	 * @name encode
+  	 * @param {Array} codePoints The array of numeric code points.
+  	 * @returns {String} The new Unicode string (UCS-2).
+  	 */
+  	function ucs2encode(array) {
+  		return map(array, function(value) {
+  			var output = '';
+  			if (value > 0xFFFF) {
+  				value -= 0x10000;
+  				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+  				value = 0xDC00 | value & 0x3FF;
+  			}
+  			output += stringFromCharCode(value);
+  			return output;
+  		}).join('');
+  	}
+
+  	/**
+  	 * Converts a basic code point into a digit/integer.
+  	 * @see `digitToBasic()`
+  	 * @private
+  	 * @param {Number} codePoint The basic numeric code point value.
+  	 * @returns {Number} The numeric value of a basic code point (for use in
+  	 * representing integers) in the range `0` to `base - 1`, or `base` if
+  	 * the code point does not represent a value.
+  	 */
+  	function basicToDigit(codePoint) {
+  		if (codePoint - 48 < 10) {
+  			return codePoint - 22;
+  		}
+  		if (codePoint - 65 < 26) {
+  			return codePoint - 65;
+  		}
+  		if (codePoint - 97 < 26) {
+  			return codePoint - 97;
+  		}
+  		return base;
+  	}
+
+  	/**
+  	 * Converts a digit/integer into a basic code point.
+  	 * @see `basicToDigit()`
+  	 * @private
+  	 * @param {Number} digit The numeric value of a basic code point.
+  	 * @returns {Number} The basic code point whose value (when used for
+  	 * representing integers) is `digit`, which needs to be in the range
+  	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+  	 * used; else, the lowercase form is used. The behavior is undefined
+  	 * if `flag` is non-zero and `digit` has no uppercase form.
+  	 */
+  	function digitToBasic(digit, flag) {
+  		//  0..25 map to ASCII a..z or A..Z
+  		// 26..35 map to ASCII 0..9
+  		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+  	}
+
+  	/**
+  	 * Bias adaptation function as per section 3.4 of RFC 3492.
+  	 * http://tools.ietf.org/html/rfc3492#section-3.4
+  	 * @private
+  	 */
+  	function adapt(delta, numPoints, firstTime) {
+  		var k = 0;
+  		delta = firstTime ? floor(delta / damp) : delta >> 1;
+  		delta += floor(delta / numPoints);
+  		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+  			delta = floor(delta / baseMinusTMin);
+  		}
+  		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+  	}
+
+  	/**
+  	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+  	 * symbols.
+  	 * @memberOf punycode
+  	 * @param {String} input The Punycode string of ASCII-only symbols.
+  	 * @returns {String} The resulting string of Unicode symbols.
+  	 */
+  	function decode(input) {
+  		// Don't use UCS-2
+  		var output = [],
+  		    inputLength = input.length,
+  		    out,
+  		    i = 0,
+  		    n = initialN,
+  		    bias = initialBias,
+  		    basic,
+  		    j,
+  		    index,
+  		    oldi,
+  		    w,
+  		    k,
+  		    digit,
+  		    t,
+  		    /** Cached calculation results */
+  		    baseMinusT;
+
+  		// Handle the basic code points: let `basic` be the number of input code
+  		// points before the last delimiter, or `0` if there is none, then copy
+  		// the first basic code points to the output.
+
+  		basic = input.lastIndexOf(delimiter);
+  		if (basic < 0) {
+  			basic = 0;
+  		}
+
+  		for (j = 0; j < basic; ++j) {
+  			// if it's not a basic code point
+  			if (input.charCodeAt(j) >= 0x80) {
+  				error('not-basic');
+  			}
+  			output.push(input.charCodeAt(j));
+  		}
+
+  		// Main decoding loop: start just after the last delimiter if any basic code
+  		// points were copied; start at the beginning otherwise.
+
+  		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+  			// `index` is the index of the next character to be consumed.
+  			// Decode a generalized variable-length integer into `delta`,
+  			// which gets added to `i`. The overflow checking is easier
+  			// if we increase `i` as we go, then subtract off its starting
+  			// value at the end to obtain `delta`.
+  			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+
+  				if (index >= inputLength) {
+  					error('invalid-input');
+  				}
+
+  				digit = basicToDigit(input.charCodeAt(index++));
+
+  				if (digit >= base || digit > floor((maxInt - i) / w)) {
+  					error('overflow');
+  				}
+
+  				i += digit * w;
+  				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+  				if (digit < t) {
+  					break;
+  				}
+
+  				baseMinusT = base - t;
+  				if (w > floor(maxInt / baseMinusT)) {
+  					error('overflow');
+  				}
+
+  				w *= baseMinusT;
+
+  			}
+
+  			out = output.length + 1;
+  			bias = adapt(i - oldi, out, oldi == 0);
+
+  			// `i` was supposed to wrap around from `out` to `0`,
+  			// incrementing `n` each time, so we'll fix that now:
+  			if (floor(i / out) > maxInt - n) {
+  				error('overflow');
+  			}
+
+  			n += floor(i / out);
+  			i %= out;
+
+  			// Insert `n` at position `i` of the output
+  			output.splice(i++, 0, n);
+
+  		}
+
+  		return ucs2encode(output);
+  	}
+
+  	/**
+  	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
+  	 * Punycode string of ASCII-only symbols.
+  	 * @memberOf punycode
+  	 * @param {String} input The string of Unicode symbols.
+  	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+  	 */
+  	function encode(input) {
+  		var n,
+  		    delta,
+  		    handledCPCount,
+  		    basicLength,
+  		    bias,
+  		    j,
+  		    m,
+  		    q,
+  		    k,
+  		    t,
+  		    currentValue,
+  		    output = [],
+  		    /** `inputLength` will hold the number of code points in `input`. */
+  		    inputLength,
+  		    /** Cached calculation results */
+  		    handledCPCountPlusOne,
+  		    baseMinusT,
+  		    qMinusT;
+
+  		// Convert the input in UCS-2 to Unicode
+  		input = ucs2decode(input);
+
+  		// Cache the length
+  		inputLength = input.length;
+
+  		// Initialize the state
+  		n = initialN;
+  		delta = 0;
+  		bias = initialBias;
+
+  		// Handle the basic code points
+  		for (j = 0; j < inputLength; ++j) {
+  			currentValue = input[j];
+  			if (currentValue < 0x80) {
+  				output.push(stringFromCharCode(currentValue));
+  			}
+  		}
+
+  		handledCPCount = basicLength = output.length;
+
+  		// `handledCPCount` is the number of code points that have been handled;
+  		// `basicLength` is the number of basic code points.
+
+  		// Finish the basic string - if it is not empty - with a delimiter
+  		if (basicLength) {
+  			output.push(delimiter);
+  		}
+
+  		// Main encoding loop:
+  		while (handledCPCount < inputLength) {
+
+  			// All non-basic code points < n have been handled already. Find the next
+  			// larger one:
+  			for (m = maxInt, j = 0; j < inputLength; ++j) {
+  				currentValue = input[j];
+  				if (currentValue >= n && currentValue < m) {
+  					m = currentValue;
+  				}
+  			}
+
+  			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+  			// but guard against overflow
+  			handledCPCountPlusOne = handledCPCount + 1;
+  			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+  				error('overflow');
+  			}
+
+  			delta += (m - n) * handledCPCountPlusOne;
+  			n = m;
+
+  			for (j = 0; j < inputLength; ++j) {
+  				currentValue = input[j];
+
+  				if (currentValue < n && ++delta > maxInt) {
+  					error('overflow');
+  				}
+
+  				if (currentValue == n) {
+  					// Represent delta as a generalized variable-length integer
+  					for (q = delta, k = base; /* no condition */; k += base) {
+  						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+  						if (q < t) {
+  							break;
+  						}
+  						qMinusT = q - t;
+  						baseMinusT = base - t;
+  						output.push(
+  							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+  						);
+  						q = floor(qMinusT / baseMinusT);
+  					}
+
+  					output.push(stringFromCharCode(digitToBasic(q, 0)));
+  					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+  					delta = 0;
+  					++handledCPCount;
+  				}
+  			}
+
+  			++delta;
+  			++n;
+
+  		}
+  		return output.join('');
+  	}
+
+  	/**
+  	 * Converts a Punycode string representing a domain name or an email address
+  	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+  	 * it doesn't matter if you call it on a string that has already been
+  	 * converted to Unicode.
+  	 * @memberOf punycode
+  	 * @param {String} input The Punycoded domain name or email address to
+  	 * convert to Unicode.
+  	 * @returns {String} The Unicode representation of the given Punycode
+  	 * string.
+  	 */
+  	function toUnicode(input) {
+  		return mapDomain(input, function(string) {
+  			return regexPunycode.test(string)
+  				? decode(string.slice(4).toLowerCase())
+  				: string;
+  		});
+  	}
+
+  	/**
+  	 * Converts a Unicode string representing a domain name or an email address to
+  	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
+  	 * i.e. it doesn't matter if you call it with a domain that's already in
+  	 * ASCII.
+  	 * @memberOf punycode
+  	 * @param {String} input The domain name or email address to convert, as a
+  	 * Unicode string.
+  	 * @returns {String} The Punycode representation of the given domain name or
+  	 * email address.
+  	 */
+  	function toASCII(input) {
+  		return mapDomain(input, function(string) {
+  			return regexNonASCII.test(string)
+  				? 'xn--' + encode(string)
+  				: string;
+  		});
+  	}
+
+  	/*--------------------------------------------------------------------------*/
+
+  	/** Define the public API */
+  	punycode = {
+  		/**
+  		 * A string representing the current Punycode.js version number.
+  		 * @memberOf punycode
+  		 * @type String
+  		 */
+  		'version': '1.3.2',
+  		/**
+  		 * An object of methods to convert from JavaScript's internal character
+  		 * representation (UCS-2) to Unicode code points, and back.
+  		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+  		 * @memberOf punycode
+  		 * @type Object
+  		 */
+  		'ucs2': {
+  			'decode': ucs2decode,
+  			'encode': ucs2encode
+  		},
+  		'decode': decode,
+  		'encode': encode,
+  		'toASCII': toASCII,
+  		'toUnicode': toUnicode
+  	};
+
+  	/** Expose `punycode` */
+  	// Some AMD build optimizers, like r.js, check for specific condition patterns
+  	// like the following:
+  	if (freeExports && freeModule) {
+  		if (module.exports == freeExports) { // in Node.js or RingoJS v0.8.0+
+  			freeModule.exports = punycode;
+  		} else { // in Narwhal or RingoJS v0.7.0-
+  			for (key in punycode) {
+  				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+  			}
+  		}
+  	} else { // in Rhino or a web browser
+  		root.punycode = punycode;
+  	}
+
+  }(commonjsGlobal$1));
+  });
+
+  var util = {
+    isString: function(arg) {
+      return typeof(arg) === 'string';
+    },
+    isObject: function(arg) {
+      return typeof(arg) === 'object' && arg !== null;
+    },
+    isNull: function(arg) {
+      return arg === null;
+    },
+    isNullOrUndefined: function(arg) {
+      return arg == null;
+    }
+  };
+
+  // Copyright Joyent, Inc. and other Node contributors.
+
+  // If obj.hasOwnProperty has been overridden, then calling
+  // obj.hasOwnProperty(prop) will break.
+  // See: https://github.com/joyent/node/issues/1707
+  function hasOwnProperty(obj, prop) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
+  }
+
+  var decode = function(qs, sep, eq, options) {
+    sep = sep || '&';
+    eq = eq || '=';
+    var obj = {};
+
+    if (typeof qs !== 'string' || qs.length === 0) {
+      return obj;
+    }
+
+    var regexp = /\+/g;
+    qs = qs.split(sep);
+
+    var maxKeys = 1000;
+    if (options && typeof options.maxKeys === 'number') {
+      maxKeys = options.maxKeys;
+    }
+
+    var len = qs.length;
+    // maxKeys <= 0 means that we should not limit keys count
+    if (maxKeys > 0 && len > maxKeys) {
+      len = maxKeys;
+    }
+
+    for (var i = 0; i < len; ++i) {
+      var x = qs[i].replace(regexp, '%20'),
+          idx = x.indexOf(eq),
+          kstr, vstr, k, v;
+
+      if (idx >= 0) {
+        kstr = x.substr(0, idx);
+        vstr = x.substr(idx + 1);
+      } else {
+        kstr = x;
+        vstr = '';
+      }
+
+      k = decodeURIComponent(kstr);
+      v = decodeURIComponent(vstr);
+
+      if (!hasOwnProperty(obj, k)) {
+        obj[k] = v;
+      } else if (Array.isArray(obj[k])) {
+        obj[k].push(v);
+      } else {
+        obj[k] = [obj[k], v];
+      }
+    }
+
+    return obj;
+  };
+
+  // Copyright Joyent, Inc. and other Node contributors.
+
+  var stringifyPrimitive = function(v) {
+    switch (typeof v) {
+      case 'string':
+        return v;
+
+      case 'boolean':
+        return v ? 'true' : 'false';
+
+      case 'number':
+        return isFinite(v) ? v : '';
+
+      default:
+        return '';
+    }
+  };
+
+  var encode = function(obj, sep, eq, name) {
+    sep = sep || '&';
+    eq = eq || '=';
+    if (obj === null) {
+      obj = undefined;
+    }
+
+    if (typeof obj === 'object') {
+      return Object.keys(obj).map(function(k) {
+        var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+        if (Array.isArray(obj[k])) {
+          return obj[k].map(function(v) {
+            return ks + encodeURIComponent(stringifyPrimitive(v));
+          }).join(sep);
+        } else {
+          return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+        }
+      }).join(sep);
+
+    }
+
+    if (!name) { return ''; }
+    return encodeURIComponent(stringifyPrimitive(name)) + eq +
+           encodeURIComponent(stringifyPrimitive(obj));
+  };
+
+  var querystring = createCommonjsModule$1(function (module, exports) {
+
+  exports.decode = exports.parse = decode;
+  exports.encode = exports.stringify = encode;
+  });
+
+  var parse = urlParse;
+  var resolve = urlResolve;
+  var format = urlFormat;
+
+  function Url() {
+    this.protocol = null;
+    this.slashes = null;
+    this.auth = null;
+    this.host = null;
+    this.port = null;
+    this.hostname = null;
+    this.hash = null;
+    this.search = null;
+    this.query = null;
+    this.pathname = null;
+    this.path = null;
+    this.href = null;
+  }
+
+  // Reference: RFC 3986, RFC 1808, RFC 2396
+
+  // define these here so at least they only have to be
+  // compiled once on the first module load.
+  var protocolPattern = /^([a-z0-9.+-]+:)/i,
+      portPattern = /:[0-9]*$/,
+
+      // Special case for a simple path URL
+      simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
+
+      // RFC 2396: characters reserved for delimiting URLs.
+      // We actually just auto-escape these.
+      delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
+
+      // RFC 2396: characters not allowed for various reasons.
+      unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
+
+      // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
+      autoEscape = ['\''].concat(unwise),
+      // Characters that are never ever allowed in a hostname.
+      // Note that any invalid chars are also handled, but these
+      // are the ones that are *expected* to be seen, so we fast-path
+      // them.
+      nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
+      hostEndingChars = ['/', '?', '#'],
+      hostnameMaxLen = 255,
+      hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
+      hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
+      // protocols that can allow "unsafe" and "unwise" chars.
+      unsafeProtocol = {
+        'javascript': true,
+        'javascript:': true
+      },
+      // protocols that never have a hostname.
+      hostlessProtocol = {
+        'javascript': true,
+        'javascript:': true
+      },
+      // protocols that always contain a // bit.
+      slashedProtocol = {
+        'http': true,
+        'https': true,
+        'ftp': true,
+        'gopher': true,
+        'file': true,
+        'http:': true,
+        'https:': true,
+        'ftp:': true,
+        'gopher:': true,
+        'file:': true
+      };
+
+  function urlParse(url, parseQueryString, slashesDenoteHost) {
+    if (url && util.isObject(url) && url instanceof Url) { return url; }
+
+    var u = new Url;
+    u.parse(url, parseQueryString, slashesDenoteHost);
+    return u;
+  }
+
+  Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+    if (!util.isString(url)) {
+      throw new TypeError("Parameter 'url' must be a string, not " + typeof url);
+    }
+
+    // Copy chrome, IE, opera backslash-handling behavior.
+    // Back slashes before the query string get converted to forward slashes
+    // See: https://code.google.com/p/chromium/issues/detail?id=25916
+    var queryIndex = url.indexOf('?'),
+        splitter =
+            (queryIndex !== -1 && queryIndex < url.indexOf('#')) ? '?' : '#',
+        uSplit = url.split(splitter),
+        slashRegex = /\\/g;
+    uSplit[0] = uSplit[0].replace(slashRegex, '/');
+    url = uSplit.join(splitter);
+
+    var rest = url;
+
+    // trim before proceeding.
+    // This is to support parse stuff like "  http://foo.com  \n"
+    rest = rest.trim();
+
+    if (!slashesDenoteHost && url.split('#').length === 1) {
+      // Try fast path regexp
+      var simplePath = simplePathPattern.exec(rest);
+      if (simplePath) {
+        this.path = rest;
+        this.href = rest;
+        this.pathname = simplePath[1];
+        if (simplePath[2]) {
+          this.search = simplePath[2];
+          if (parseQueryString) {
+            this.query = querystring.parse(this.search.substr(1));
+          } else {
+            this.query = this.search.substr(1);
+          }
+        } else if (parseQueryString) {
+          this.search = '';
+          this.query = {};
+        }
+        return this;
+      }
+    }
+
+    var proto = protocolPattern.exec(rest);
+    if (proto) {
+      proto = proto[0];
+      var lowerProto = proto.toLowerCase();
+      this.protocol = lowerProto;
+      rest = rest.substr(proto.length);
+    }
+
+    // figure out if it's got a host
+    // user@server is *always* interpreted as a hostname, and url
+    // resolution will treat //foo/bar as host=foo,path=bar because that's
+    // how the browser resolves relative URLs.
+    if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
+      var slashes = rest.substr(0, 2) === '//';
+      if (slashes && !(proto && hostlessProtocol[proto])) {
+        rest = rest.substr(2);
+        this.slashes = true;
+      }
+    }
+
+    if (!hostlessProtocol[proto] &&
+        (slashes || (proto && !slashedProtocol[proto]))) {
+
+      // there's a hostname.
+      // the first instance of /, ?, ;, or # ends the host.
+      //
+      // If there is an @ in the hostname, then non-host chars *are* allowed
+      // to the left of the last @ sign, unless some host-ending character
+      // comes *before* the @-sign.
+      // URLs are obnoxious.
+      //
+      // ex:
+      // http://a@b@c/ => user:a@b host:c
+      // http://a@b?@c => user:a host:c path:/?@c
+
+      // v0.12 TODO(isaacs): This is not quite how Chrome does things.
+      // Review our test case against browsers more comprehensively.
+
+      // find the first instance of any hostEndingChars
+      var hostEnd = -1;
+      for (var i = 0; i < hostEndingChars.length; i++) {
+        var hec = rest.indexOf(hostEndingChars[i]);
+        if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+          { hostEnd = hec; }
+      }
+
+      // at this point, either we have an explicit point where the
+      // auth portion cannot go past, or the last @ char is the decider.
+      var auth, atSign;
+      if (hostEnd === -1) {
+        // atSign can be anywhere.
+        atSign = rest.lastIndexOf('@');
+      } else {
+        // atSign must be in auth portion.
+        // http://a@b/c@d => host:b auth:a path:/c@d
+        atSign = rest.lastIndexOf('@', hostEnd);
+      }
+
+      // Now we have a portion which is definitely the auth.
+      // Pull that off.
+      if (atSign !== -1) {
+        auth = rest.slice(0, atSign);
+        rest = rest.slice(atSign + 1);
+        this.auth = decodeURIComponent(auth);
+      }
+
+      // the host is the remaining to the left of the first non-host char
+      hostEnd = -1;
+      for (var i = 0; i < nonHostChars.length; i++) {
+        var hec = rest.indexOf(nonHostChars[i]);
+        if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
+          { hostEnd = hec; }
+      }
+      // if we still have not hit it, then the entire thing is a host.
+      if (hostEnd === -1)
+        { hostEnd = rest.length; }
+
+      this.host = rest.slice(0, hostEnd);
+      rest = rest.slice(hostEnd);
+
+      // pull out port.
+      this.parseHost();
+
+      // we've indicated that there is a hostname,
+      // so even if it's empty, it has to be present.
+      this.hostname = this.hostname || '';
+
+      // if hostname begins with [ and ends with ]
+      // assume that it's an IPv6 address.
+      var ipv6Hostname = this.hostname[0] === '[' &&
+          this.hostname[this.hostname.length - 1] === ']';
+
+      // validate a little.
+      if (!ipv6Hostname) {
+        var hostparts = this.hostname.split(/\./);
+        for (var i = 0, l = hostparts.length; i < l; i++) {
+          var part = hostparts[i];
+          if (!part) { continue; }
+          if (!part.match(hostnamePartPattern)) {
+            var newpart = '';
+            for (var j = 0, k = part.length; j < k; j++) {
+              if (part.charCodeAt(j) > 127) {
+                // we replace non-ASCII char with a temporary placeholder
+                // we need this to make sure size of hostname is not
+                // broken by replacing non-ASCII by nothing
+                newpart += 'x';
+              } else {
+                newpart += part[j];
+              }
+            }
+            // we test again with ASCII char only
+            if (!newpart.match(hostnamePartPattern)) {
+              var validParts = hostparts.slice(0, i);
+              var notHost = hostparts.slice(i + 1);
+              var bit = part.match(hostnamePartStart);
+              if (bit) {
+                validParts.push(bit[1]);
+                notHost.unshift(bit[2]);
+              }
+              if (notHost.length) {
+                rest = '/' + notHost.join('.') + rest;
+              }
+              this.hostname = validParts.join('.');
+              break;
+            }
+          }
+        }
+      }
+
+      if (this.hostname.length > hostnameMaxLen) {
+        this.hostname = '';
+      } else {
+        // hostnames are always lower case.
+        this.hostname = this.hostname.toLowerCase();
+      }
+
+      if (!ipv6Hostname) {
+        // IDNA Support: Returns a punycoded representation of "domain".
+        // It only converts parts of the domain name that
+        // have non-ASCII characters, i.e. it doesn't matter if
+        // you call it with a domain that already is ASCII-only.
+        this.hostname = punycode.toASCII(this.hostname);
+      }
+
+      var p = this.port ? ':' + this.port : '';
+      var h = this.hostname || '';
+      this.host = h + p;
+      this.href += this.host;
+
+      // strip [ and ] from the hostname
+      // the host field still retains them, though
+      if (ipv6Hostname) {
+        this.hostname = this.hostname.substr(1, this.hostname.length - 2);
+        if (rest[0] !== '/') {
+          rest = '/' + rest;
+        }
+      }
+    }
+
+    // now rest is set to the post-host stuff.
+    // chop off any delim chars.
+    if (!unsafeProtocol[lowerProto]) {
+
+      // First, make 100% sure that any "autoEscape" chars get
+      // escaped, even if encodeURIComponent doesn't think they
+      // need to be.
+      for (var i = 0, l = autoEscape.length; i < l; i++) {
+        var ae = autoEscape[i];
+        if (rest.indexOf(ae) === -1)
+          { continue; }
+        var esc = encodeURIComponent(ae);
+        if (esc === ae) {
+          esc = escape(ae);
+        }
+        rest = rest.split(ae).join(esc);
+      }
+    }
+
+
+    // chop off from the tail first.
+    var hash = rest.indexOf('#');
+    if (hash !== -1) {
+      // got a fragment string.
+      this.hash = rest.substr(hash);
+      rest = rest.slice(0, hash);
+    }
+    var qm = rest.indexOf('?');
+    if (qm !== -1) {
+      this.search = rest.substr(qm);
+      this.query = rest.substr(qm + 1);
+      if (parseQueryString) {
+        this.query = querystring.parse(this.query);
+      }
+      rest = rest.slice(0, qm);
+    } else if (parseQueryString) {
+      // no query string, but parseQueryString still requested
+      this.search = '';
+      this.query = {};
+    }
+    if (rest) { this.pathname = rest; }
+    if (slashedProtocol[lowerProto] &&
+        this.hostname && !this.pathname) {
+      this.pathname = '/';
+    }
+
+    //to support http.request
+    if (this.pathname || this.search) {
+      var p = this.pathname || '';
+      var s = this.search || '';
+      this.path = p + s;
+    }
+
+    // finally, reconstruct the href based on what has been validated.
+    this.href = this.format();
+    return this;
+  };
+
+  // format a parsed object into a url string
+  function urlFormat(obj) {
+    // ensure it's an object, and not a string url.
+    // If it's an obj, this is a no-op.
+    // this way, you can call url_format() on strings
+    // to clean up potentially wonky urls.
+    if (util.isString(obj)) { obj = urlParse(obj); }
+    if (!(obj instanceof Url)) { return Url.prototype.format.call(obj); }
+    return obj.format();
+  }
+
+  Url.prototype.format = function() {
+    var auth = this.auth || '';
+    if (auth) {
+      auth = encodeURIComponent(auth);
+      auth = auth.replace(/%3A/i, ':');
+      auth += '@';
+    }
+
+    var protocol = this.protocol || '',
+        pathname = this.pathname || '',
+        hash = this.hash || '',
+        host = false,
+        query = '';
+
+    if (this.host) {
+      host = auth + this.host;
+    } else if (this.hostname) {
+      host = auth + (this.hostname.indexOf(':') === -1 ?
+          this.hostname :
+          '[' + this.hostname + ']');
+      if (this.port) {
+        host += ':' + this.port;
+      }
+    }
+
+    if (this.query &&
+        util.isObject(this.query) &&
+        Object.keys(this.query).length) {
+      query = querystring.stringify(this.query);
+    }
+
+    var search = this.search || (query && ('?' + query)) || '';
+
+    if (protocol && protocol.substr(-1) !== ':') { protocol += ':'; }
+
+    // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
+    // unless they had them to begin with.
+    if (this.slashes ||
+        (!protocol || slashedProtocol[protocol]) && host !== false) {
+      host = '//' + (host || '');
+      if (pathname && pathname.charAt(0) !== '/') { pathname = '/' + pathname; }
+    } else if (!host) {
+      host = '';
+    }
+
+    if (hash && hash.charAt(0) !== '#') { hash = '#' + hash; }
+    if (search && search.charAt(0) !== '?') { search = '?' + search; }
+
+    pathname = pathname.replace(/[?#]/g, function(match) {
+      return encodeURIComponent(match);
+    });
+    search = search.replace('#', '%23');
+
+    return protocol + host + pathname + search + hash;
+  };
+
+  function urlResolve(source, relative) {
+    return urlParse(source, false, true).resolve(relative);
+  }
+
+  Url.prototype.resolve = function(relative) {
+    return this.resolveObject(urlParse(relative, false, true)).format();
+  };
+
+  Url.prototype.resolveObject = function(relative) {
+    if (util.isString(relative)) {
+      var rel = new Url();
+      rel.parse(relative, false, true);
+      relative = rel;
+    }
+
+    var result = new Url();
+    var tkeys = Object.keys(this);
+    for (var tk = 0; tk < tkeys.length; tk++) {
+      var tkey = tkeys[tk];
+      result[tkey] = this[tkey];
+    }
+
+    // hash is always overridden, no matter what.
+    // even href="" will remove it.
+    result.hash = relative.hash;
+
+    // if the relative url is empty, then there's nothing left to do here.
+    if (relative.href === '') {
+      result.href = result.format();
+      return result;
+    }
+
+    // hrefs like //foo/bar always cut to the protocol.
+    if (relative.slashes && !relative.protocol) {
+      // take everything except the protocol from relative
+      var rkeys = Object.keys(relative);
+      for (var rk = 0; rk < rkeys.length; rk++) {
+        var rkey = rkeys[rk];
+        if (rkey !== 'protocol')
+          { result[rkey] = relative[rkey]; }
+      }
+
+      //urlParse appends trailing / to urls like http://www.example.com
+      if (slashedProtocol[result.protocol] &&
+          result.hostname && !result.pathname) {
+        result.path = result.pathname = '/';
+      }
+
+      result.href = result.format();
+      return result;
+    }
+
+    if (relative.protocol && relative.protocol !== result.protocol) {
+      // if it's a known url protocol, then changing
+      // the protocol does weird things
+      // first, if it's not file:, then we MUST have a host,
+      // and if there was a path
+      // to begin with, then we MUST have a path.
+      // if it is file:, then the host is dropped,
+      // because that's known to be hostless.
+      // anything else is assumed to be absolute.
+      if (!slashedProtocol[relative.protocol]) {
+        var keys = Object.keys(relative);
+        for (var v = 0; v < keys.length; v++) {
+          var k = keys[v];
+          result[k] = relative[k];
+        }
+        result.href = result.format();
+        return result;
+      }
+
+      result.protocol = relative.protocol;
+      if (!relative.host && !hostlessProtocol[relative.protocol]) {
+        var relPath = (relative.pathname || '').split('/');
+        while (relPath.length && !(relative.host = relPath.shift())){ }
+        if (!relative.host) { relative.host = ''; }
+        if (!relative.hostname) { relative.hostname = ''; }
+        if (relPath[0] !== '') { relPath.unshift(''); }
+        if (relPath.length < 2) { relPath.unshift(''); }
+        result.pathname = relPath.join('/');
+      } else {
+        result.pathname = relative.pathname;
+      }
+      result.search = relative.search;
+      result.query = relative.query;
+      result.host = relative.host || '';
+      result.auth = relative.auth;
+      result.hostname = relative.hostname || relative.host;
+      result.port = relative.port;
+      // to support http.request
+      if (result.pathname || result.search) {
+        var p = result.pathname || '';
+        var s = result.search || '';
+        result.path = p + s;
+      }
+      result.slashes = result.slashes || relative.slashes;
+      result.href = result.format();
+      return result;
+    }
+
+    var isSourceAbs = (result.pathname && result.pathname.charAt(0) === '/'),
+        isRelAbs = (
+            relative.host ||
+            relative.pathname && relative.pathname.charAt(0) === '/'
+        ),
+        mustEndAbs = (isRelAbs || isSourceAbs ||
+                      (result.host && relative.pathname)),
+        removeAllDots = mustEndAbs,
+        srcPath = result.pathname && result.pathname.split('/') || [],
+        relPath = relative.pathname && relative.pathname.split('/') || [],
+        psychotic = result.protocol && !slashedProtocol[result.protocol];
+
+    // if the url is a non-slashed url, then relative
+    // links like ../.. should be able
+    // to crawl up to the hostname, as well.  This is strange.
+    // result.protocol has already been set by now.
+    // Later on, put the first path part into the host field.
+    if (psychotic) {
+      result.hostname = '';
+      result.port = null;
+      if (result.host) {
+        if (srcPath[0] === '') { srcPath[0] = result.host; }
+        else { srcPath.unshift(result.host); }
+      }
+      result.host = '';
+      if (relative.protocol) {
+        relative.hostname = null;
+        relative.port = null;
+        if (relative.host) {
+          if (relPath[0] === '') { relPath[0] = relative.host; }
+          else { relPath.unshift(relative.host); }
+        }
+        relative.host = null;
+      }
+      mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '');
+    }
+
+    if (isRelAbs) {
+      // it's absolute.
+      result.host = (relative.host || relative.host === '') ?
+                    relative.host : result.host;
+      result.hostname = (relative.hostname || relative.hostname === '') ?
+                        relative.hostname : result.hostname;
+      result.search = relative.search;
+      result.query = relative.query;
+      srcPath = relPath;
+      // fall through to the dot-handling below.
+    } else if (relPath.length) {
+      // it's relative
+      // throw away the existing file, and take the new path instead.
+      if (!srcPath) { srcPath = []; }
+      srcPath.pop();
+      srcPath = srcPath.concat(relPath);
+      result.search = relative.search;
+      result.query = relative.query;
+    } else if (!util.isNullOrUndefined(relative.search)) {
+      // just pull out the search.
+      // like href='?foo'.
+      // Put this after the other two cases because it simplifies the booleans
+      if (psychotic) {
+        result.hostname = result.host = srcPath.shift();
+        //occationaly the auth can get stuck only in host
+        //this especially happens in cases like
+        //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+        var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                         result.host.split('@') : false;
+        if (authInHost) {
+          result.auth = authInHost.shift();
+          result.host = result.hostname = authInHost.shift();
+        }
+      }
+      result.search = relative.search;
+      result.query = relative.query;
+      //to support http.request
+      if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
+        result.path = (result.pathname ? result.pathname : '') +
+                      (result.search ? result.search : '');
+      }
+      result.href = result.format();
+      return result;
+    }
+
+    if (!srcPath.length) {
+      // no path at all.  easy.
+      // we've already handled the other stuff above.
+      result.pathname = null;
+      //to support http.request
+      if (result.search) {
+        result.path = '/' + result.search;
+      } else {
+        result.path = null;
+      }
+      result.href = result.format();
+      return result;
+    }
+
+    // if a url ENDs in . or .., then it must get a trailing slash.
+    // however, if it ends in anything else non-slashy,
+    // then it must NOT get a trailing slash.
+    var last = srcPath.slice(-1)[0];
+    var hasTrailingSlash = (
+        (result.host || relative.host || srcPath.length > 1) &&
+        (last === '.' || last === '..') || last === '');
+
+    // strip single dots, resolve double dots to parent dir
+    // if the path tries to go above the root, `up` ends up > 0
+    var up = 0;
+    for (var i = srcPath.length; i >= 0; i--) {
+      last = srcPath[i];
+      if (last === '.') {
+        srcPath.splice(i, 1);
+      } else if (last === '..') {
+        srcPath.splice(i, 1);
+        up++;
+      } else if (up) {
+        srcPath.splice(i, 1);
+        up--;
+      }
+    }
+
+    // if the path is allowed to go above the root, restore leading ..s
+    if (!mustEndAbs && !removeAllDots) {
+      for (; up--; up) {
+        srcPath.unshift('..');
+      }
+    }
+
+    if (mustEndAbs && srcPath[0] !== '' &&
+        (!srcPath[0] || srcPath[0].charAt(0) !== '/')) {
+      srcPath.unshift('');
+    }
+
+    if (hasTrailingSlash && (srcPath.join('/').substr(-1) !== '/')) {
+      srcPath.push('');
+    }
+
+    var isAbsolute = srcPath[0] === '' ||
+        (srcPath[0] && srcPath[0].charAt(0) === '/');
+
+    // put the host back
+    if (psychotic) {
+      result.hostname = result.host = isAbsolute ? '' :
+                                      srcPath.length ? srcPath.shift() : '';
+      //occationaly the auth can get stuck only in host
+      //this especially happens in cases like
+      //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
+      var authInHost = result.host && result.host.indexOf('@') > 0 ?
+                       result.host.split('@') : false;
+      if (authInHost) {
+        result.auth = authInHost.shift();
+        result.host = result.hostname = authInHost.shift();
+      }
+    }
+
+    mustEndAbs = mustEndAbs || (result.host && srcPath.length);
+
+    if (mustEndAbs && !isAbsolute) {
+      srcPath.unshift('');
+    }
+
+    if (!srcPath.length) {
+      result.pathname = null;
+      result.path = null;
+    } else {
+      result.pathname = srcPath.join('/');
+    }
+
+    //to support request.http
+    if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
+      result.path = (result.pathname ? result.pathname : '') +
+                    (result.search ? result.search : '');
+    }
+    result.auth = relative.auth || result.auth;
+    result.slashes = result.slashes || relative.slashes;
+    result.href = result.format();
+    return result;
+  };
+
+  Url.prototype.parseHost = function() {
+    var host = this.host;
+    var port = portPattern.exec(host);
+    if (port) {
+      port = port[0];
+      if (port !== ':') {
+        this.port = port.substr(1);
+      }
+      host = host.substr(0, host.length - port.length);
+    }
+    if (host) { this.hostname = host; }
+  };
+
+  /**
+   * This file contains redeclared types for Node `url` and `querystring` modules. These modules
+   * don't provide their own typings but instead are a part of the full Node typings. The purpose of
+   * this file is to redeclare the required types to avoid having the whole Node types as a
+   * dependency.
+   */
+  var url = {
+      parse: parse,
+      format: format,
+      resolve: resolve,
+  };
+
+  /**
+   * The prefix that denotes a URL is for a retina asset.
+   *
+   * @static
+   * @name RETINA_PREFIX
+   * @memberof PIXI.settings
+   * @type {RegExp}
+   * @default /@([0-9\.]+)x/
+   * @example `@2x`
+   */
+  settings.RETINA_PREFIX = /@([0-9\.]+)x/;
+  /**
+   * Should the `failIfMajorPerformanceCaveat` flag be enabled as a context option used in the `isWebGLSupported` function.
+   * If set to true, a WebGL renderer can fail to be created if the browser thinks there could be performance issues when
+   * using WebGL.
+   *
+   * In PixiJS v6 this has changed from true to false by default, to allow WebGL to work in as many scenarios as possible.
+   * However, some users may have a poor experience, for example, if a user has a gpu or driver version blacklisted by the
+   * browser.
+   *
+   * If your application requires high performance rendering, you may wish to set this to false.
+   * We recommend one of two options if you decide to set this flag to false:
+   *
+   * 1: Use the `pixi.js-legacy` package, which includes a Canvas renderer as a fallback in case high performance WebGL is
+   *    not supported.
+   *
+   * 2: Call `isWebGLSupported` (which if found in the PIXI.utils package) in your code before attempting to create a PixiJS
+   *    renderer, and show an error message to the user if the function returns false, explaining that their device & browser
+   *    combination does not support high performance WebGL.
+   *    This is a much better strategy than trying to create a PixiJS renderer and finding it then fails.
+   *
+   * @static
+   * @name FAIL_IF_MAJOR_PERFORMANCE_CAVEAT
+   * @memberof PIXI.settings
+   * @type {boolean}
+   * @default false
+   */
+  settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
+
+  /**
+   * Corrects PixiJS blend, takes premultiplied alpha into account
+   *
+   * @memberof PIXI.utils
+   * @function mapPremultipliedBlendModes
+   * @private
+   * @return {Array<number[]>} Mapped modes.
+   */
+  function mapPremultipliedBlendModes() {
+      var pm = [];
+      var npm = [];
+      for (var i = 0; i < 32; i++) {
+          pm[i] = i;
+          npm[i] = i;
+      }
+      pm[BLEND_MODES$1.NORMAL_NPM] = BLEND_MODES$1.NORMAL;
+      pm[BLEND_MODES$1.ADD_NPM] = BLEND_MODES$1.ADD;
+      pm[BLEND_MODES$1.SCREEN_NPM] = BLEND_MODES$1.SCREEN;
+      npm[BLEND_MODES$1.NORMAL] = BLEND_MODES$1.NORMAL_NPM;
+      npm[BLEND_MODES$1.ADD] = BLEND_MODES$1.ADD_NPM;
+      npm[BLEND_MODES$1.SCREEN] = BLEND_MODES$1.SCREEN_NPM;
+      var array = [];
+      array.push(npm);
+      array.push(pm);
+      return array;
+  }
+  /**
+   * maps premultiply flag and blendMode to adjusted blendMode
+   * @memberof PIXI.utils
+   * @const premultiplyBlendMode
+   * @type {Array<number[]>}
+   */
+  mapPremultipliedBlendModes();
+
+  /**
+   * Creates a Canvas element of the given size to be used as a target for rendering to.
+   *
+   * @class
+   * @memberof PIXI.utils
+   */
+  /** @class */ ((function () {
+      /**
+       * @param width - the width for the newly created canvas
+       * @param height - the height for the newly created canvas
+       * @param {number} [resolution=1] - The resolution / device pixel ratio of the canvas
+       */
+      function CanvasRenderTarget(width, height, resolution) {
+          this.canvas = document.createElement('canvas');
+          this.context = this.canvas.getContext('2d');
+          this.resolution = resolution || settings.RESOLUTION;
+          this.resize(width, height);
+      }
+      /**
+       * Clears the canvas that was created by the CanvasRenderTarget class.
+       *
+       * @private
+       */
+      CanvasRenderTarget.prototype.clear = function () {
+          this.context.setTransform(1, 0, 0, 1, 0, 0);
+          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      };
+      /**
+       * Resizes the canvas to the specified width and height.
+       *
+       * @param width - the new width of the canvas
+       * @param height - the new height of the canvas
+       */
+      CanvasRenderTarget.prototype.resize = function (width, height) {
+          this.canvas.width = width * this.resolution;
+          this.canvas.height = height * this.resolution;
+      };
+      /** Destroys this canvas. */
+      CanvasRenderTarget.prototype.destroy = function () {
+          this.context = null;
+          this.canvas = null;
+      };
+      Object.defineProperty(CanvasRenderTarget.prototype, "width", {
+          /**
+           * The width of the canvas buffer in pixels.
+           *
+           * @member {number}
+           */
+          get: function () {
+              return this.canvas.width;
+          },
+          set: function (val) {
+              this.canvas.width = val;
+          },
+          enumerable: false,
+          configurable: true
+      });
+      Object.defineProperty(CanvasRenderTarget.prototype, "height", {
+          /**
+           * The height of the canvas buffer in pixels.
+           *
+           * @member {number}
+           */
+          get: function () {
+              return this.canvas.height;
+          },
+          set: function (val) {
+              this.canvas.height = val;
+          },
+          enumerable: false,
+          configurable: true
+      });
+      return CanvasRenderTarget;
+  })());
+
   /* eslint-enable camelcase */
   /**
    * Loader plugin for handling compressed textures for all platforms.
@@ -29352,16 +31606,10 @@
        *   fallback: "asset.png"
        * });
        * ```
-       *
-       * @param resource
-       * @param next
        */
       CompressedTextureLoader.use = function (resource, next) {
           var data = resource.data;
           var loader = this;
-          if (!CompressedTextureLoader.textureExtensions) {
-              CompressedTextureLoader.autoDetectExtensions();
-          }
           if (resource.type === LoaderResource.TYPE.JSON
               && data
               && data.cacheID
@@ -29372,32 +31620,44 @@
               // Search for an extension that holds one the formats
               for (var i = 0, j = textures.length; i < j; i++) {
                   var texture = textures[i];
-                  var url = texture.src;
+                  var url_1 = texture.src;
                   var format = texture.format;
                   if (!format) {
-                      fallbackURL = url;
+                      fallbackURL = url_1;
                   }
                   if (CompressedTextureLoader.textureFormats[format]) {
-                      textureURL = url;
+                      textureURL = url_1;
                       break;
                   }
               }
               textureURL = textureURL || fallbackURL;
               // Make sure we have a URL
               if (!textureURL) {
-                  throw new Error("Cannot load compressed-textures in " + resource.url + ", make sure you provide a fallback");
+                  next(new Error("Cannot load compressed-textures in " + resource.url + ", make sure you provide a fallback"));
+                  return;
               }
               if (textureURL === resource.url) {
                   // Prevent infinite loops
-                  throw new Error('URL of compressed texture cannot be the same as the manifest\'s URL');
+                  next(new Error('URL of compressed texture cannot be the same as the manifest\'s URL'));
+                  return;
               }
               var loadOptions = {
                   crossOrigin: resource.crossOrigin,
                   metadata: resource.metadata.imageMetadata,
                   parentResource: resource
               };
+              var resourcePath = url.resolve(resource.url.replace(loader.baseUrl, ''), textureURL);
+              var resourceName = data.cacheID;
               // The appropriate loader should register the texture
-              loader.add(data.cacheID, textureURL, loadOptions, function onCompressedTextureLoaded() {
+              loader.add(resourceName, resourcePath, loadOptions, function (res) {
+                  if (res.error) {
+                      next(res.error);
+                      return;
+                  }
+                  var _a = res.texture, texture = _a === void 0 ? null : _a, _b = res.textures, textures = _b === void 0 ? {} : _b;
+                  // Make sure texture/textures is assigned to parent resource
+                  Object.assign(resource, { texture: texture, textures: textures });
+                  // Pass along any error
                   next();
               });
           }
@@ -29408,29 +31668,26 @@
       /**
        * Detects the available compressed texture extensions on the device.
        *
-       * @param extensions - extensions provided by a WebGL context
        * @ignore
        */
-      CompressedTextureLoader.autoDetectExtensions = function (extensions) {
+      CompressedTextureLoader.add = function () {
           // Auto-detect WebGL compressed-texture extensions
-          if (!extensions) {
-              var canvas = document.createElement('canvas');
-              var gl = canvas.getContext('webgl');
-              if (!gl) {
-                  console.error('WebGL not available for compressed textures. Silently failing.');
-                  return;
-              }
-              extensions = {
-                  s3tc: gl.getExtension('WEBGL_compressed_texture_s3tc'),
-                  s3tc_sRGB: gl.getExtension('WEBGL_compressed_texture_s3tc_srgb'),
-                  etc: gl.getExtension('WEBGL_compressed_texture_etc'),
-                  etc1: gl.getExtension('WEBGL_compressed_texture_etc1'),
-                  pvrtc: gl.getExtension('WEBGL_compressed_texture_pvrtc')
-                      || gl.getExtension('WEBKIT_WEBGL_compressed_texture_pvrtc'),
-                  atc: gl.getExtension('WEBGL_compressed_texture_atc'),
-                  astc: gl.getExtension('WEBGL_compressed_texture_astc')
-              };
+          var canvas = document.createElement('canvas');
+          var gl = canvas.getContext('webgl');
+          if (!gl) {
+              console.error('WebGL not available for compressed textures. Silently failing.');
+              return;
           }
+          var extensions = {
+              s3tc: gl.getExtension('WEBGL_compressed_texture_s3tc'),
+              s3tc_sRGB: gl.getExtension('WEBGL_compressed_texture_s3tc_srgb'),
+              etc: gl.getExtension('WEBGL_compressed_texture_etc'),
+              etc1: gl.getExtension('WEBGL_compressed_texture_etc1'),
+              pvrtc: gl.getExtension('WEBGL_compressed_texture_pvrtc')
+                  || gl.getExtension('WEBKIT_WEBGL_compressed_texture_pvrtc'),
+              atc: gl.getExtension('WEBGL_compressed_texture_atc'),
+              astc: gl.getExtension('WEBGL_compressed_texture_astc')
+          };
           CompressedTextureLoader.textureExtensions = extensions;
           CompressedTextureLoader.textureFormats = {};
           // Assign all available compressed-texture formats
@@ -29454,23 +31711,33 @@
    * @param resources - the resources backing texture data
    * @ignore
    */
-  function registerCompressedTextures(url, resources) {
+  function registerCompressedTextures(url, resources, metadata) {
+      var result = {
+          textures: {},
+          texture: null,
+      };
       if (!resources) {
-          return;
+          return result;
       }
-      resources.forEach(function (resource, i) {
-          var baseTexture = new BaseTexture(resource, {
+      var textures = resources.map(function (resource) {
+          return (new Texture(new BaseTexture(resource, Object.assign({
               mipmap: MIPMAP_MODES$1.OFF,
               alphaMode: ALPHA_MODES$1.NO_PREMULTIPLIED_ALPHA
-          });
+          }, metadata))));
+      });
+      textures.forEach(function (texture, i) {
+          var baseTexture = texture.baseTexture;
           var cacheID = url + "-" + (i + 1);
           BaseTexture.addToCache(baseTexture, cacheID);
-          Texture.addToCache(new Texture(baseTexture), cacheID);
+          Texture.addToCache(texture, cacheID);
           if (i === 0) {
               BaseTexture.addToCache(baseTexture, url);
-              Texture.addToCache(new Texture(baseTexture), url);
+              Texture.addToCache(texture, url);
+              result.texture = texture;
           }
+          result.textures[cacheID] = texture;
       });
+      return result;
   }
 
   var _a$1$1, _b;
@@ -29717,7 +31984,13 @@
       }
       DDSLoader.use = function (resource, next) {
           if (resource.extension === 'dds' && resource.data) {
-              registerCompressedTextures(resource.name || resource.url, DDSLoader.parse(resource.data));
+              try {
+                  Object.assign(resource, registerCompressedTextures(resource.name || resource.url, DDSLoader.parse(resource.data), resource.metadata));
+              }
+              catch (err) {
+                  next(err);
+                  return;
+              }
           }
           next();
       };
@@ -29944,7 +32217,14 @@
        */
       KTXLoader.use = function (resource, next) {
           if (resource.extension === 'ktx' && resource.data) {
-              KTXLoader.parse(resource.name || resource.url, resource.data);
+              try {
+                  var url = resource.name || resource.url;
+                  Object.assign(resource, registerCompressedTextures(url, KTXLoader.parse(url, resource.data), resource.metadata));
+              }
+              catch (err) {
+                  next(err);
+                  return;
+              }
           }
           next();
       };
@@ -29955,7 +32235,7 @@
       KTXLoader.parse = function (url, arrayBuffer) {
           var dataView = new DataView(arrayBuffer);
           if (!KTXLoader.validate(url, dataView)) {
-              return;
+              return null;
           }
           var littleEndian = dataView.getUint32(KTX_FIELDS.ENDIANNESS, true) === ENDIANNESS;
           var glType = dataView.getUint32(KTX_FIELDS.GL_TYPE, littleEndian);
@@ -30050,16 +32330,13 @@
           if (glType !== 0) {
               throw new Error('TODO: Uncompressed');
           }
-          else {
-              var imageResources = imageBuffers.map(function (levelBuffers) { return new CompressedTextureResource(null, {
-                  format: glInternalFormat,
-                  width: pixelWidth,
-                  height: pixelHeight,
-                  levels: numberOfMipmapLevels,
-                  levelBuffers: levelBuffers,
-              }); });
-              registerCompressedTextures(url, imageResources);
-          }
+          return imageBuffers.map(function (levelBuffers) { return new CompressedTextureResource(null, {
+              format: glInternalFormat,
+              width: pixelWidth,
+              height: pixelHeight,
+              levels: numberOfMipmapLevels,
+              levelBuffers: levelBuffers,
+          }); });
       };
       /**
        * Checks whether the arrayBuffer contains a valid *.ktx file.
@@ -30079,8 +32356,8 @@
   }());
 
   /*!
-   * @pixi/particles - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/particles - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/particles is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -30882,8 +33159,8 @@
   }(ObjectRenderer));
 
   /*!
-   * @pixi/graphics - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/graphics - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/graphics is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -33132,7 +35409,7 @@
            * Current path
            *
            * @member {PIXI.Polygon}
-           * @protected
+           * @readonly
            */
           _this.currentPath = null;
           /**
@@ -34032,8 +36309,8 @@
   }(Container));
 
   /*!
-   * @pixi/sprite - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/sprite - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/sprite is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -34227,7 +36504,7 @@
            * @member {boolean}
            * @private
            */
-          _this._roundPixels = settings.ROUND_PIXELS;
+          _this._roundPixels = settings$1.ROUND_PIXELS;
           return _this;
       }
       /**
@@ -34313,7 +36590,7 @@
           vertexData[6] = (a * w1) + (c * h0) + tx;
           vertexData[7] = (d * h0) + (b * w1) + ty;
           if (this._roundPixels) {
-              var resolution = settings.RESOLUTION;
+              var resolution = settings$1.RESOLUTION;
               for (var i = 0; i < vertexData.length; ++i) {
                   vertexData[i] = Math.round((vertexData[i] * resolution | 0) / resolution);
               }
@@ -34613,8 +36890,8 @@
   }(Container));
 
   /*!
-   * @pixi/text - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/text - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/text is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -36188,7 +38465,7 @@
            * @member {number}
            * @default 1
            */
-          _this._resolution = settings.RESOLUTION;
+          _this._resolution = settings$1.RESOLUTION;
           _this._autoResolution = true;
           /**
            * Private tracker for the current text.
@@ -36668,8 +38945,8 @@
   }(Sprite));
 
   /*!
-   * @pixi/prepare - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/prepare - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/prepare is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -36684,7 +38961,7 @@
    * @type {number}
    * @default 4
    */
-  settings.UPLOADS_PER_FRAME = 4;
+  settings$1.UPLOADS_PER_FRAME = 4;
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -36925,7 +39202,7 @@
            * The limiter to be used to control how quickly items are prepared.
            * @type {PIXI.CountLimiter|PIXI.TimeLimiter}
            */
-          this.limiter = new CountLimiter(settings.UPLOADS_PER_FRAME);
+          this.limiter = new CountLimiter(settings$1.UPLOADS_PER_FRAME);
           /**
            * Reference to the renderer.
            * @type {PIXI.AbstractRenderer}
@@ -37253,8 +39530,8 @@
   }(BasePrepare));
 
   /*!
-   * @pixi/spritesheet - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/spritesheet - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/spritesheet is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -37516,6 +39793,18 @@
       Spritesheet.BATCH_SIZE = 1000;
       return Spritesheet;
   }());
+  /**
+   * Reference to Spritesheet object created.
+   * @member {PIXI.Spritesheet} spritesheet
+   * @memberof PIXI.ILoaderResource
+   * @instance
+   */
+  /**
+   * Dictionary of textures from Spritesheet.
+   * @member {object<string, PIXI.Texture>} textures
+   * @memberof PIXI.ILoaderResource
+   * @instance
+   */
 
   /**
    * {@link PIXI.Loader} middleware for loading texture atlases that have been created with
@@ -37573,10 +39862,10 @@
                       return "continue";
                   }
                   var itemName = item.replace('.json', '');
-                  var itemUrl = url.resolve(resource.url.replace(loader.baseUrl, ''), item);
+                  var itemUrl = url$1.resolve(resource.url.replace(loader.baseUrl, ''), item);
                   // Check if the file wasn't already added as multipacks are redundant
                   if (loader.resources[itemName]
-                      || Object.values(loader.resources).some(function (r) { return url.format(url.parse(r.url)) === itemUrl; })) {
+                      || Object.values(loader.resources).some(function (r) { return url$1.format(url$1.parse(r.url)) === itemUrl; })) {
                       return "continue";
                   }
                   var options = {
@@ -37622,14 +39911,14 @@
           if (resource.isDataUrl) {
               return resource.data.meta.image;
           }
-          return url.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
+          return url$1.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
       };
       return SpritesheetLoader;
   }());
 
   /*!
-   * @pixi/sprite-tiling - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/sprite-tiling - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/sprite-tiling is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38027,8 +40316,8 @@
   }(ObjectRenderer));
 
   /*!
-   * @pixi/mesh - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/mesh - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/mesh is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38222,7 +40511,7 @@
            * @member {boolean}
            * @private
            */
-          _this._roundPixels = settings.ROUND_PIXELS;
+          _this._roundPixels = settings$1.ROUND_PIXELS;
           /**
            * Batched UV's are cached for atlas textures
            * @member {PIXI.MeshBatchUvs}
@@ -38437,7 +40726,7 @@
               vertexData[(i * 2) + 1] = (b * x) + (d * y) + ty;
           }
           if (this._roundPixels) {
-              var resolution = settings.RESOLUTION;
+              var resolution = settings$1.RESOLUTION;
               for (var i = 0; i < vertexData.length; ++i) {
                   vertexData[i] = Math.round((vertexData[i] * resolution | 0) / resolution);
               }
@@ -38741,8 +41030,8 @@
   }(Geometry));
 
   /*!
-   * @pixi/text-bitmap - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/text-bitmap - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/text-bitmap is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -39304,13 +41593,16 @@
       /**
        * @param {PIXI.BitmapFontData} data
        * @param {PIXI.Texture[]|Object.<string, PIXI.Texture>} textures
+       * @param {boolean} ownsTextures - Setting to `true` will destroy page textures
+       *        when the font is uninstalled.
        */
-      function BitmapFont(data, textures) {
+      function BitmapFont(data, textures, ownsTextures) {
           var info = data.info[0];
           var common = data.common[0];
           var page = data.page[0];
           var res = getResolutionOfUrl(page.file);
           var pageTextures = {};
+          this._ownsTextures = ownsTextures;
           /**
            * The name of the font face.
            *
@@ -39395,7 +41687,9 @@
               this.chars[id].texture = null;
           }
           for (var id in this.pageTextures) {
-              this.pageTextures[id].destroy(true);
+              if (this._ownsTextures) {
+                  this.pageTextures[id].destroy(true);
+              }
               this.pageTextures[id] = null;
           }
           // Set readonly null.
@@ -39410,10 +41704,13 @@
        *        characters map that could be provided as xml or raw string.
        * @param {Object.<string, PIXI.Texture>|PIXI.Texture|PIXI.Texture[]}
        *        textures - List of textures for each page.
+       * @param managedTexture - Set to `true` to destroy page textures
+       *        when the font is uninstalled. By default fonts created with
+       *        `BitmapFont.from` or from the `BitmapFontLoader` are `true`.
        * @return {PIXI.BitmapFont} Result font object with font, size, lineHeight
        *         and char fields.
        */
-      BitmapFont.install = function (data, textures) {
+      BitmapFont.install = function (data, textures, ownsTextures) {
           var fontData;
           if (data instanceof BitmapFontData) {
               fontData = data;
@@ -39429,7 +41726,7 @@
           if (textures instanceof Texture) {
               textures = [textures];
           }
-          var font = new BitmapFont(fontData, textures);
+          var font = new BitmapFont(fontData, textures, ownsTextures);
           BitmapFont.available[font.font] = font;
           return font;
       };
@@ -39437,7 +41734,7 @@
        * Remove bitmap font by name.
        *
        * @static
-       * @param {string} name
+       * @param name - Name of the font to uninstall.
        */
       BitmapFont.uninstall = function (name) {
           var font = BitmapFont.available[name];
@@ -39599,7 +41896,7 @@
                   }
               }
           }
-          var font = new BitmapFont(fontData, textures);
+          var font = new BitmapFont(fontData, textures, true);
           // Make it easier to replace a font
           if (BitmapFont.available[name] !== undefined) {
               BitmapFont.uninstall(name);
@@ -39821,7 +42118,7 @@
            * @member {boolean}
            * @default PIXI.settings.ROUND_PIXELS
            */
-          _this._roundPixels = settings.ROUND_PIXELS;
+          _this._roundPixels = settings$1.ROUND_PIXELS;
           /**
            * Set to `true` if the BitmapText needs to be redrawn.
            *
@@ -40414,7 +42711,7 @@
           var completed = function (page) {
               textures[page.metadata.pageFile] = page.texture;
               if (Object.keys(textures).length === data.page.length) {
-                  resource.bitmapFont = BitmapFont.install(data, textures);
+                  resource.bitmapFont = BitmapFont.install(data, textures, true);
                   next();
               }
           };
@@ -40504,8 +42801,8 @@
   }());
 
   /*!
-   * @pixi/filter-alpha - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/filter-alpha - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/filter-alpha is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -40590,8 +42887,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-blur - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/filter-blur - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/filter-blur is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -41145,7 +43442,7 @@
       function BlurFilterPass(horizontal, strength, quality, resolution, kernelSize) {
           if (strength === void 0) { strength = 8; }
           if (quality === void 0) { quality = 4; }
-          if (resolution === void 0) { resolution = settings.FILTER_RESOLUTION; }
+          if (resolution === void 0) { resolution = settings$1.FILTER_RESOLUTION; }
           if (kernelSize === void 0) { kernelSize = 5; }
           var _this = this;
           var vertSrc = generateBlurVertSource(kernelSize, horizontal);
@@ -41273,7 +43570,7 @@
       function BlurFilter(strength, quality, resolution, kernelSize) {
           if (strength === void 0) { strength = 8; }
           if (quality === void 0) { quality = 4; }
-          if (resolution === void 0) { resolution = settings.FILTER_RESOLUTION; }
+          if (resolution === void 0) { resolution = settings$1.FILTER_RESOLUTION; }
           if (kernelSize === void 0) { kernelSize = 5; }
           var _this = _super.call(this) || this;
           _this.blurXFilter = new BlurFilterPass(true, strength, quality, resolution, kernelSize);
@@ -41420,8 +43717,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-color-matrix - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/filter-color-matrix - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/filter-color-matrix is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -41949,8 +44246,8 @@
   ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
   /*!
-   * @pixi/filter-displacement - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/filter-displacement - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/filter-displacement is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42080,8 +44377,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-fxaa - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/filter-fxaa - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/filter-fxaa is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42141,8 +44438,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-noise - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/filter-noise - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/filter-noise is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42241,8 +44538,8 @@
   })(Filter));
 
   /*!
-   * @pixi/mixin-cache-as-bitmap - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/mixin-cache-as-bitmap - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42406,11 +44703,12 @@
           var padding = this.filters[0].padding;
           bounds.pad(padding);
       }
-      bounds.ceil(settings.RESOLUTION);
+      bounds.ceil(settings$1.RESOLUTION);
       // for now we cache the current renderTarget that the WebGL renderer is currently using.
       // this could be more elegant..
       var cachedRenderTexture = renderer.renderTexture.current;
       var cachedSourceFrame = renderer.renderTexture.sourceFrame.clone();
+      var cachedDestinationFrame = renderer.renderTexture.destinationFrame.clone();
       var cachedProjectionTransform = renderer.projection.transform;
       // We also store the filter stack - I will definitely look to change how this works a little later down the line.
       // const stack = renderer.filterManager.filterStack;
@@ -42431,7 +44729,7 @@
       renderer.render(this, { renderTexture: renderTexture, clear: true, transform: m, skipUpdateTransform: false });
       // now restore the state be setting the new properties
       renderer.projection.transform = cachedProjectionTransform;
-      renderer.renderTexture.bind(cachedRenderTexture, cachedSourceFrame);
+      renderer.renderTexture.bind(cachedRenderTexture, cachedSourceFrame, cachedDestinationFrame);
       // renderer.filterManager.filterStack = stack;
       this.render = this._renderCached;
       // the rest is the same as for Canvas
@@ -42496,7 +44794,7 @@
       this.alpha = 1;
       var cachedRenderTarget = renderer.context;
       var cachedProjectionTransform = renderer._projTransform;
-      bounds.ceil(settings.RESOLUTION);
+      bounds.ceil(settings$1.RESOLUTION);
       var renderTexture = RenderTexture.create({ width: bounds.width, height: bounds.height });
       var textureCacheId = "cacheAsBitmap_" + uid();
       this._cacheData.textureCacheId = textureCacheId;
@@ -42593,8 +44891,8 @@
   };
 
   /*!
-   * @pixi/mixin-get-child-by-name - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/mixin-get-child-by-name - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/mixin-get-child-by-name is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42640,8 +44938,8 @@
   };
 
   /*!
-   * @pixi/mixin-get-global-position - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/mixin-get-global-position - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/mixin-get-global-position is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42672,8 +44970,8 @@
   };
 
   /*!
-   * @pixi/mesh-extras - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/mesh-extras - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/mesh-extras is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -43396,8 +45694,8 @@
   })(SimplePlane));
 
   /*!
-   * @pixi/sprite-animated - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * @pixi/sprite-animated - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * @pixi/sprite-animated is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -43855,8 +46153,8 @@
   })(Sprite));
 
   /*!
-   * pixi.js - v6.0.0
-   * Compiled Tue, 02 Mar 2021 21:45:03 UTC
+   * pixi.js - v6.0.2
+   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
    *
    * pixi.js is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -45229,7 +47527,7 @@
 
   Ease$1.ease = ease$2;
 
-  var alea = createCommonjsModule$1(function (module) {
+  var alea = createCommonjsModule$2(function (module) {
   // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
   // http://baagoe.com/en/RandomMusings/javascript/
   // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -45338,13 +47636,13 @@
   }
 
   })(
-    commonjsGlobal$1,
+    commonjsGlobal$2,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xor128 = createCommonjsModule$1(function (module) {
+  var xor128 = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "xor128" prng algorithm by
   // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -45420,13 +47718,13 @@
   }
 
   })(
-    commonjsGlobal$1,
+    commonjsGlobal$2,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xorwow = createCommonjsModule$1(function (module) {
+  var xorwow = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "xorwow" prng algorithm by
   // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -45507,13 +47805,13 @@
   }
 
   })(
-    commonjsGlobal$1,
+    commonjsGlobal$2,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xorshift7 = createCommonjsModule$1(function (module) {
+  var xorshift7 = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "xorshift7" algorithm by
   // François Panneton and Pierre L'ecuyer:
   // "On the Xorgshift Random Number Generators"
@@ -45606,13 +47904,13 @@
   }
 
   })(
-    commonjsGlobal$1,
+    commonjsGlobal$2,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var xor4096 = createCommonjsModule$1(function (module) {
+  var xor4096 = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
   //
   // This fast non-cryptographic random number generator is designed for
@@ -45754,13 +48052,13 @@
   }
 
   })(
-    commonjsGlobal$1,                                     // window object or global
+    commonjsGlobal$2,                                     // window object or global
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
   });
 
-  var tychei = createCommonjsModule$1(function (module) {
+  var tychei = createCommonjsModule$2(function (module) {
   // A Javascript implementaion of the "Tyche-i" prng algorithm by
   // Samuel Neves and Filipe Araujo.
   // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -45857,7 +48155,7 @@
   }
 
   })(
-    commonjsGlobal$1,
+    commonjsGlobal$2,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
@@ -45896,7 +48194,7 @@
 
   */
 
-  var seedrandom$1 = createCommonjsModule$1(function (module) {
+  var seedrandom$1 = createCommonjsModule$2(function (module) {
   (function (global, pool, math) {
   //
   // The following constants are related to IEEE 754 limits.
@@ -46119,7 +48417,7 @@
   })(
     // global: `self` in browsers (including strict mode and web workers),
     // otherwise `this` in Node and other environments
-    (typeof self !== 'undefined') ? self : commonjsGlobal$1,
+    (typeof self !== 'undefined') ? self : commonjsGlobal$2,
     [],     // pool: entropy pool starts empty
     Math    // math: package containing random, pow, and seedrandom
   );
@@ -46186,11 +48484,11 @@
 
   var seedrandom = seedrandom$1;
 
-  var _createClass$7 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+  var _createClass$6 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
   function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-  function _classCallCheck$7(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  function _classCallCheck$6(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
   // yy-random
   // by David Figatner
@@ -46202,7 +48500,7 @@
 
   var Random = function () {
       function Random() {
-          _classCallCheck$7(this, Random);
+          _classCallCheck$6(this, Random);
 
           this.generator = Math.random;
       }
@@ -46216,7 +48514,7 @@
        */
 
 
-      _createClass$7(Random, [{
+      _createClass$6(Random, [{
           key: 'seed',
           value: function seed(_seed, options) {
               options = options || {};
@@ -46791,1423 +49089,255 @@
       }
   };
 
-  var tinycolor = createCommonjsModule$1(function (module) {
-  // TinyColor v1.4.2
-  // https://github.com/bgrins/TinyColor
-  // Brian Grinstead, MIT License
+  /*! *****************************************************************************
+  Copyright (c) Microsoft Corporation.
 
-  (function(Math) {
+  Permission to use, copy, modify, and/or distribute this software for any
+  purpose with or without fee is hereby granted.
 
-  var trimLeft = /^\s+/,
-      trimRight = /\s+$/,
-      tinyCounter = 0,
-      mathRound = Math.round,
-      mathMin = Math.min,
-      mathMax = Math.max,
-      mathRandom = Math.random;
+  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+  REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+  INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+  LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+  OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+  PERFORMANCE OF THIS SOFTWARE.
+  ***************************************************************************** */
 
-  function tinycolor (color, opts) {
-
-      color = (color) ? color : '';
-      opts = opts || { };
-
-      // If input is already a tinycolor, return itself
-      if (color instanceof tinycolor) {
-         return color;
-      }
-      // If we are called as a function, call using new instead
-      if (!(this instanceof tinycolor)) {
-          return new tinycolor(color, opts);
-      }
-
-      var rgb = inputToRGB(color);
-      this._originalInput = color,
-      this._r = rgb.r,
-      this._g = rgb.g,
-      this._b = rgb.b,
-      this._a = rgb.a,
-      this._roundA = mathRound(100*this._a) / 100,
-      this._format = opts.format || rgb.format;
-      this._gradientType = opts.gradientType;
-
-      // Don't let the range of [0,255] come back in [0,1].
-      // Potentially lose a little bit of precision here, but will fix issues where
-      // .5 gets interpreted as half of the total, instead of half of 1
-      // If it was supposed to be 128, this was already taken care of by `inputToRgb`
-      if (this._r < 1) { this._r = mathRound(this._r); }
-      if (this._g < 1) { this._g = mathRound(this._g); }
-      if (this._b < 1) { this._b = mathRound(this._b); }
-
-      this._ok = rgb.ok;
-      this._tc_id = tinyCounter++;
-  }
-
-  tinycolor.prototype = {
-      isDark: function() {
-          return this.getBrightness() < 128;
-      },
-      isLight: function() {
-          return !this.isDark();
-      },
-      isValid: function() {
-          return this._ok;
-      },
-      getOriginalInput: function() {
-        return this._originalInput;
-      },
-      getFormat: function() {
-          return this._format;
-      },
-      getAlpha: function() {
-          return this._a;
-      },
-      getBrightness: function() {
-          //http://www.w3.org/TR/AERT#color-contrast
-          var rgb = this.toRgb();
-          return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-      },
-      getLuminance: function() {
-          //http://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
-          var rgb = this.toRgb();
-          var RsRGB, GsRGB, BsRGB, R, G, B;
-          RsRGB = rgb.r/255;
-          GsRGB = rgb.g/255;
-          BsRGB = rgb.b/255;
-
-          if (RsRGB <= 0.03928) {R = RsRGB / 12.92;} else {R = Math.pow(((RsRGB + 0.055) / 1.055), 2.4);}
-          if (GsRGB <= 0.03928) {G = GsRGB / 12.92;} else {G = Math.pow(((GsRGB + 0.055) / 1.055), 2.4);}
-          if (BsRGB <= 0.03928) {B = BsRGB / 12.92;} else {B = Math.pow(((BsRGB + 0.055) / 1.055), 2.4);}
-          return (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
-      },
-      setAlpha: function(value) {
-          this._a = boundAlpha(value);
-          this._roundA = mathRound(100*this._a) / 100;
-          return this;
-      },
-      toHsv: function() {
-          var hsv = rgbToHsv(this._r, this._g, this._b);
-          return { h: hsv.h * 360, s: hsv.s, v: hsv.v, a: this._a };
-      },
-      toHsvString: function() {
-          var hsv = rgbToHsv(this._r, this._g, this._b);
-          var h = mathRound(hsv.h * 360), s = mathRound(hsv.s * 100), v = mathRound(hsv.v * 100);
-          return (this._a == 1) ?
-            "hsv("  + h + ", " + s + "%, " + v + "%)" :
-            "hsva(" + h + ", " + s + "%, " + v + "%, "+ this._roundA + ")";
-      },
-      toHsl: function() {
-          var hsl = rgbToHsl(this._r, this._g, this._b);
-          return { h: hsl.h * 360, s: hsl.s, l: hsl.l, a: this._a };
-      },
-      toHslString: function() {
-          var hsl = rgbToHsl(this._r, this._g, this._b);
-          var h = mathRound(hsl.h * 360), s = mathRound(hsl.s * 100), l = mathRound(hsl.l * 100);
-          return (this._a == 1) ?
-            "hsl("  + h + ", " + s + "%, " + l + "%)" :
-            "hsla(" + h + ", " + s + "%, " + l + "%, "+ this._roundA + ")";
-      },
-      toHex: function(allow3Char) {
-          return rgbToHex(this._r, this._g, this._b, allow3Char);
-      },
-      toHexString: function(allow3Char) {
-          return '#' + this.toHex(allow3Char);
-      },
-      toHex8: function(allow4Char) {
-          return rgbaToHex(this._r, this._g, this._b, this._a, allow4Char);
-      },
-      toHex8String: function(allow4Char) {
-          return '#' + this.toHex8(allow4Char);
-      },
-      toRgb: function() {
-          return { r: mathRound(this._r), g: mathRound(this._g), b: mathRound(this._b), a: this._a };
-      },
-      toRgbString: function() {
-          return (this._a == 1) ?
-            "rgb("  + mathRound(this._r) + ", " + mathRound(this._g) + ", " + mathRound(this._b) + ")" :
-            "rgba(" + mathRound(this._r) + ", " + mathRound(this._g) + ", " + mathRound(this._b) + ", " + this._roundA + ")";
-      },
-      toPercentageRgb: function() {
-          return { r: mathRound(bound01(this._r, 255) * 100) + "%", g: mathRound(bound01(this._g, 255) * 100) + "%", b: mathRound(bound01(this._b, 255) * 100) + "%", a: this._a };
-      },
-      toPercentageRgbString: function() {
-          return (this._a == 1) ?
-            "rgb("  + mathRound(bound01(this._r, 255) * 100) + "%, " + mathRound(bound01(this._g, 255) * 100) + "%, " + mathRound(bound01(this._b, 255) * 100) + "%)" :
-            "rgba(" + mathRound(bound01(this._r, 255) * 100) + "%, " + mathRound(bound01(this._g, 255) * 100) + "%, " + mathRound(bound01(this._b, 255) * 100) + "%, " + this._roundA + ")";
-      },
-      toName: function() {
-          if (this._a === 0) {
-              return "transparent";
+  var __assign = function() {
+      __assign = Object.assign || function __assign(t) {
+          for (var s, i = 1, n = arguments.length; i < n; i++) {
+              s = arguments[i];
+              for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
           }
-
-          if (this._a < 1) {
-              return false;
-          }
-
-          return hexNames[rgbToHex(this._r, this._g, this._b, true)] || false;
-      },
-      toFilter: function(secondColor) {
-          var hex8String = '#' + rgbaToArgbHex(this._r, this._g, this._b, this._a);
-          var secondHex8String = hex8String;
-          var gradientType = this._gradientType ? "GradientType = 1, " : "";
-
-          if (secondColor) {
-              var s = tinycolor(secondColor);
-              secondHex8String = '#' + rgbaToArgbHex(s._r, s._g, s._b, s._a);
-          }
-
-          return "progid:DXImageTransform.Microsoft.gradient("+gradientType+"startColorstr="+hex8String+",endColorstr="+secondHex8String+")";
-      },
-      toString: function(format) {
-          var formatSet = !!format;
-          format = format || this._format;
-
-          var formattedString = false;
-          var hasAlpha = this._a < 1 && this._a >= 0;
-          var needsAlphaFormat = !formatSet && hasAlpha && (format === "hex" || format === "hex6" || format === "hex3" || format === "hex4" || format === "hex8" || format === "name");
-
-          if (needsAlphaFormat) {
-              // Special case for "transparent", all other non-alpha formats
-              // will return rgba when there is transparency.
-              if (format === "name" && this._a === 0) {
-                  return this.toName();
-              }
-              return this.toRgbString();
-          }
-          if (format === "rgb") {
-              formattedString = this.toRgbString();
-          }
-          if (format === "prgb") {
-              formattedString = this.toPercentageRgbString();
-          }
-          if (format === "hex" || format === "hex6") {
-              formattedString = this.toHexString();
-          }
-          if (format === "hex3") {
-              formattedString = this.toHexString(true);
-          }
-          if (format === "hex4") {
-              formattedString = this.toHex8String(true);
-          }
-          if (format === "hex8") {
-              formattedString = this.toHex8String();
-          }
-          if (format === "name") {
-              formattedString = this.toName();
-          }
-          if (format === "hsl") {
-              formattedString = this.toHslString();
-          }
-          if (format === "hsv") {
-              formattedString = this.toHsvString();
-          }
-
-          return formattedString || this.toHexString();
-      },
-      clone: function() {
-          return tinycolor(this.toString());
-      },
-
-      _applyModification: function(fn, args) {
-          var color = fn.apply(null, [this].concat([].slice.call(args)));
-          this._r = color._r;
-          this._g = color._g;
-          this._b = color._b;
-          this.setAlpha(color._a);
-          return this;
-      },
-      lighten: function() {
-          return this._applyModification(lighten, arguments);
-      },
-      brighten: function() {
-          return this._applyModification(brighten, arguments);
-      },
-      darken: function() {
-          return this._applyModification(darken, arguments);
-      },
-      desaturate: function() {
-          return this._applyModification(desaturate, arguments);
-      },
-      saturate: function() {
-          return this._applyModification(saturate, arguments);
-      },
-      greyscale: function() {
-          return this._applyModification(greyscale, arguments);
-      },
-      spin: function() {
-          return this._applyModification(spin, arguments);
-      },
-
-      _applyCombination: function(fn, args) {
-          return fn.apply(null, [this].concat([].slice.call(args)));
-      },
-      analogous: function() {
-          return this._applyCombination(analogous, arguments);
-      },
-      complement: function() {
-          return this._applyCombination(complement, arguments);
-      },
-      monochromatic: function() {
-          return this._applyCombination(monochromatic, arguments);
-      },
-      splitcomplement: function() {
-          return this._applyCombination(splitcomplement, arguments);
-      },
-      triad: function() {
-          return this._applyCombination(triad, arguments);
-      },
-      tetrad: function() {
-          return this._applyCombination(tetrad, arguments);
-      }
-  };
-
-  // If input is an object, force 1 into "1.0" to handle ratios properly
-  // String input requires "1.0" as input, so 1 will be treated as 1
-  tinycolor.fromRatio = function(color, opts) {
-      if (typeof color == "object") {
-          var newColor = {};
-          for (var i in color) {
-              if (color.hasOwnProperty(i)) {
-                  if (i === "a") {
-                      newColor[i] = color[i];
-                  }
-                  else {
-                      newColor[i] = convertToPercentage(color[i]);
-                  }
-              }
-          }
-          color = newColor;
-      }
-
-      return tinycolor(color, opts);
-  };
-
-  // Given a string or object, convert that input to RGB
-  // Possible string inputs:
-  //
-  //     "red"
-  //     "#f00" or "f00"
-  //     "#ff0000" or "ff0000"
-  //     "#ff000000" or "ff000000"
-  //     "rgb 255 0 0" or "rgb (255, 0, 0)"
-  //     "rgb 1.0 0 0" or "rgb (1, 0, 0)"
-  //     "rgba (255, 0, 0, 1)" or "rgba 255, 0, 0, 1"
-  //     "rgba (1.0, 0, 0, 1)" or "rgba 1.0, 0, 0, 1"
-  //     "hsl(0, 100%, 50%)" or "hsl 0 100% 50%"
-  //     "hsla(0, 100%, 50%, 1)" or "hsla 0 100% 50%, 1"
-  //     "hsv(0, 100%, 100%)" or "hsv 0 100% 100%"
-  //
-  function inputToRGB(color) {
-
-      var rgb = { r: 0, g: 0, b: 0 };
-      var a = 1;
-      var s = null;
-      var v = null;
-      var l = null;
-      var ok = false;
-      var format = false;
-
-      if (typeof color == "string") {
-          color = stringInputToObject(color);
-      }
-
-      if (typeof color == "object") {
-          if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
-              rgb = rgbToRgb(color.r, color.g, color.b);
-              ok = true;
-              format = String(color.r).substr(-1) === "%" ? "prgb" : "rgb";
-          }
-          else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
-              s = convertToPercentage(color.s);
-              v = convertToPercentage(color.v);
-              rgb = hsvToRgb(color.h, s, v);
-              ok = true;
-              format = "hsv";
-          }
-          else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
-              s = convertToPercentage(color.s);
-              l = convertToPercentage(color.l);
-              rgb = hslToRgb(color.h, s, l);
-              ok = true;
-              format = "hsl";
-          }
-
-          if (color.hasOwnProperty("a")) {
-              a = color.a;
-          }
-      }
-
-      a = boundAlpha(a);
-
-      return {
-          ok: ok,
-          format: color.format || format,
-          r: mathMin(255, mathMax(rgb.r, 0)),
-          g: mathMin(255, mathMax(rgb.g, 0)),
-          b: mathMin(255, mathMax(rgb.b, 0)),
-          a: a
+          return t;
       };
-  }
-
-
-  // Conversion Functions
-  // --------------------
-
-  // `rgbToHsl`, `rgbToHsv`, `hslToRgb`, `hsvToRgb` modified from:
-  // <http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript>
-
-  // `rgbToRgb`
-  // Handle bounds / percentage checking to conform to CSS color spec
-  // <http://www.w3.org/TR/css3-color/>
-  // *Assumes:* r, g, b in [0, 255] or [0, 1]
-  // *Returns:* { r, g, b } in [0, 255]
-  function rgbToRgb(r, g, b){
-      return {
-          r: bound01(r, 255) * 255,
-          g: bound01(g, 255) * 255,
-          b: bound01(b, 255) * 255
-      };
-  }
-
-  // `rgbToHsl`
-  // Converts an RGB color value to HSL.
-  // *Assumes:* r, g, and b are contained in [0, 255] or [0, 1]
-  // *Returns:* { h, s, l } in [0,1]
-  function rgbToHsl(r, g, b) {
-
-      r = bound01(r, 255);
-      g = bound01(g, 255);
-      b = bound01(b, 255);
-
-      var max = mathMax(r, g, b), min = mathMin(r, g, b);
-      var h, s, l = (max + min) / 2;
-
-      if(max == min) {
-          h = s = 0; // achromatic
-      }
-      else {
-          var d = max - min;
-          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-          switch(max) {
-              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-              case g: h = (b - r) / d + 2; break;
-              case b: h = (r - g) / d + 4; break;
-          }
-
-          h /= 6;
-      }
-
-      return { h: h, s: s, l: l };
-  }
-
-  // `hslToRgb`
-  // Converts an HSL color value to RGB.
-  // *Assumes:* h is contained in [0, 1] or [0, 360] and s and l are contained [0, 1] or [0, 100]
-  // *Returns:* { r, g, b } in the set [0, 255]
-  function hslToRgb(h, s, l) {
-      var r, g, b;
-
-      h = bound01(h, 360);
-      s = bound01(s, 100);
-      l = bound01(l, 100);
-
-      function hue2rgb(p, q, t) {
-          if(t < 0) t += 1;
-          if(t > 1) t -= 1;
-          if(t < 1/6) return p + (q - p) * 6 * t;
-          if(t < 1/2) return q;
-          if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-          return p;
-      }
-
-      if(s === 0) {
-          r = g = b = l; // achromatic
-      }
-      else {
-          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-          var p = 2 * l - q;
-          r = hue2rgb(p, q, h + 1/3);
-          g = hue2rgb(p, q, h);
-          b = hue2rgb(p, q, h - 1/3);
-      }
-
-      return { r: r * 255, g: g * 255, b: b * 255 };
-  }
-
-  // `rgbToHsv`
-  // Converts an RGB color value to HSV
-  // *Assumes:* r, g, and b are contained in the set [0, 255] or [0, 1]
-  // *Returns:* { h, s, v } in [0,1]
-  function rgbToHsv(r, g, b) {
-
-      r = bound01(r, 255);
-      g = bound01(g, 255);
-      b = bound01(b, 255);
-
-      var max = mathMax(r, g, b), min = mathMin(r, g, b);
-      var h, s, v = max;
-
-      var d = max - min;
-      s = max === 0 ? 0 : d / max;
-
-      if(max == min) {
-          h = 0; // achromatic
-      }
-      else {
-          switch(max) {
-              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-              case g: h = (b - r) / d + 2; break;
-              case b: h = (r - g) / d + 4; break;
-          }
-          h /= 6;
-      }
-      return { h: h, s: s, v: v };
-  }
-
-  // `hsvToRgb`
-  // Converts an HSV color value to RGB.
-  // *Assumes:* h is contained in [0, 1] or [0, 360] and s and v are contained in [0, 1] or [0, 100]
-  // *Returns:* { r, g, b } in the set [0, 255]
-   function hsvToRgb(h, s, v) {
-
-      h = bound01(h, 360) * 6;
-      s = bound01(s, 100);
-      v = bound01(v, 100);
-
-      var i = Math.floor(h),
-          f = h - i,
-          p = v * (1 - s),
-          q = v * (1 - f * s),
-          t = v * (1 - (1 - f) * s),
-          mod = i % 6,
-          r = [v, q, p, p, t, v][mod],
-          g = [t, v, v, q, p, p][mod],
-          b = [p, p, t, v, v, q][mod];
-
-      return { r: r * 255, g: g * 255, b: b * 255 };
-  }
-
-  // `rgbToHex`
-  // Converts an RGB color to hex
-  // Assumes r, g, and b are contained in the set [0, 255]
-  // Returns a 3 or 6 character hex
-  function rgbToHex(r, g, b, allow3Char) {
-
-      var hex = [
-          pad2(mathRound(r).toString(16)),
-          pad2(mathRound(g).toString(16)),
-          pad2(mathRound(b).toString(16))
-      ];
-
-      // Return a 3 character hex if possible
-      if (allow3Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1)) {
-          return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
-      }
-
-      return hex.join("");
-  }
-
-  // `rgbaToHex`
-  // Converts an RGBA color plus alpha transparency to hex
-  // Assumes r, g, b are contained in the set [0, 255] and
-  // a in [0, 1]. Returns a 4 or 8 character rgba hex
-  function rgbaToHex(r, g, b, a, allow4Char) {
-
-      var hex = [
-          pad2(mathRound(r).toString(16)),
-          pad2(mathRound(g).toString(16)),
-          pad2(mathRound(b).toString(16)),
-          pad2(convertDecimalToHex(a))
-      ];
-
-      // Return a 4 character hex if possible
-      if (allow4Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1) && hex[3].charAt(0) == hex[3].charAt(1)) {
-          return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
-      }
-
-      return hex.join("");
-  }
-
-  // `rgbaToArgbHex`
-  // Converts an RGBA color to an ARGB Hex8 string
-  // Rarely used, but required for "toFilter()"
-  function rgbaToArgbHex(r, g, b, a) {
-
-      var hex = [
-          pad2(convertDecimalToHex(a)),
-          pad2(mathRound(r).toString(16)),
-          pad2(mathRound(g).toString(16)),
-          pad2(mathRound(b).toString(16))
-      ];
-
-      return hex.join("");
-  }
-
-  // `equals`
-  // Can be called with any tinycolor input
-  tinycolor.equals = function (color1, color2) {
-      if (!color1 || !color2) { return false; }
-      return tinycolor(color1).toRgbString() == tinycolor(color2).toRgbString();
+      return __assign.apply(this, arguments);
   };
 
-  tinycolor.random = function() {
-      return tinycolor.fromRatio({
-          r: mathRandom(),
-          g: mathRandom(),
-          b: mathRandom()
-      });
+  var defaultFPSOptions = {
+      meter: true,
+      side: 'bottom-right',
+      FPS: 60,
+      tolerance: 1,
+      meterWidth: 100,
+      meterHeight: 25,
+      meterLineHeight: 4,
+      styles: {
+          'background': 'rgba(0, 0, 0, 0.5)',
+          'color': 'white',
+      },
+      stylesFPS: {
+          'padding': '0.1em 0.5em',
+      },
+      text: ' FPS',
+      colorGreen: '#00ff00',
+      colorOrange: '#ffa500',
+      colorRed: '#ff0000',
+      zIndex: 1000,
   };
-
-
-  // Modification Functions
-  // ----------------------
-  // Thanks to less.js for some of the basics here
-  // <https://github.com/cloudhead/less.js/blob/master/lib/less/functions.js>
-
-  function desaturate(color, amount) {
-      amount = (amount === 0) ? 0 : (amount || 10);
-      var hsl = tinycolor(color).toHsl();
-      hsl.s -= amount / 100;
-      hsl.s = clamp01(hsl.s);
-      return tinycolor(hsl);
-  }
-
-  function saturate(color, amount) {
-      amount = (amount === 0) ? 0 : (amount || 10);
-      var hsl = tinycolor(color).toHsl();
-      hsl.s += amount / 100;
-      hsl.s = clamp01(hsl.s);
-      return tinycolor(hsl);
-  }
-
-  function greyscale(color) {
-      return tinycolor(color).desaturate(100);
-  }
-
-  function lighten (color, amount) {
-      amount = (amount === 0) ? 0 : (amount || 10);
-      var hsl = tinycolor(color).toHsl();
-      hsl.l += amount / 100;
-      hsl.l = clamp01(hsl.l);
-      return tinycolor(hsl);
-  }
-
-  function brighten(color, amount) {
-      amount = (amount === 0) ? 0 : (amount || 10);
-      var rgb = tinycolor(color).toRgb();
-      rgb.r = mathMax(0, mathMin(255, rgb.r - mathRound(255 * - (amount / 100))));
-      rgb.g = mathMax(0, mathMin(255, rgb.g - mathRound(255 * - (amount / 100))));
-      rgb.b = mathMax(0, mathMin(255, rgb.b - mathRound(255 * - (amount / 100))));
-      return tinycolor(rgb);
-  }
-
-  function darken (color, amount) {
-      amount = (amount === 0) ? 0 : (amount || 10);
-      var hsl = tinycolor(color).toHsl();
-      hsl.l -= amount / 100;
-      hsl.l = clamp01(hsl.l);
-      return tinycolor(hsl);
-  }
-
-  // Spin takes a positive or negative amount within [-360, 360] indicating the change of hue.
-  // Values outside of this range will be wrapped into this range.
-  function spin(color, amount) {
-      var hsl = tinycolor(color).toHsl();
-      var hue = (hsl.h + amount) % 360;
-      hsl.h = hue < 0 ? 360 + hue : hue;
-      return tinycolor(hsl);
-  }
-
-  // Combination Functions
-  // ---------------------
-  // Thanks to jQuery xColor for some of the ideas behind these
-  // <https://github.com/infusion/jQuery-xcolor/blob/master/jquery.xcolor.js>
-
-  function complement(color) {
-      var hsl = tinycolor(color).toHsl();
-      hsl.h = (hsl.h + 180) % 360;
-      return tinycolor(hsl);
-  }
-
-  function triad(color) {
-      var hsl = tinycolor(color).toHsl();
-      var h = hsl.h;
-      return [
-          tinycolor(color),
-          tinycolor({ h: (h + 120) % 360, s: hsl.s, l: hsl.l }),
-          tinycolor({ h: (h + 240) % 360, s: hsl.s, l: hsl.l })
-      ];
-  }
-
-  function tetrad(color) {
-      var hsl = tinycolor(color).toHsl();
-      var h = hsl.h;
-      return [
-          tinycolor(color),
-          tinycolor({ h: (h + 90) % 360, s: hsl.s, l: hsl.l }),
-          tinycolor({ h: (h + 180) % 360, s: hsl.s, l: hsl.l }),
-          tinycolor({ h: (h + 270) % 360, s: hsl.s, l: hsl.l })
-      ];
-  }
-
-  function splitcomplement(color) {
-      var hsl = tinycolor(color).toHsl();
-      var h = hsl.h;
-      return [
-          tinycolor(color),
-          tinycolor({ h: (h + 72) % 360, s: hsl.s, l: hsl.l}),
-          tinycolor({ h: (h + 216) % 360, s: hsl.s, l: hsl.l})
-      ];
-  }
-
-  function analogous(color, results, slices) {
-      results = results || 6;
-      slices = slices || 30;
-
-      var hsl = tinycolor(color).toHsl();
-      var part = 360 / slices;
-      var ret = [tinycolor(color)];
-
-      for (hsl.h = ((hsl.h - (part * results >> 1)) + 720) % 360; --results; ) {
-          hsl.h = (hsl.h + part) % 360;
-          ret.push(tinycolor(hsl));
-      }
-      return ret;
-  }
-
-  function monochromatic(color, results) {
-      results = results || 6;
-      var hsv = tinycolor(color).toHsv();
-      var h = hsv.h, s = hsv.s, v = hsv.v;
-      var ret = [];
-      var modification = 1 / results;
-
-      while (results--) {
-          ret.push(tinycolor({ h: h, s: s, v: v}));
-          v = (v + modification) % 1;
-      }
-
-      return ret;
-  }
-
-  // Utility Functions
-  // ---------------------
-
-  tinycolor.mix = function(color1, color2, amount) {
-      amount = (amount === 0) ? 0 : (amount || 50);
-
-      var rgb1 = tinycolor(color1).toRgb();
-      var rgb2 = tinycolor(color2).toRgb();
-
-      var p = amount / 100;
-
-      var rgba = {
-          r: ((rgb2.r - rgb1.r) * p) + rgb1.r,
-          g: ((rgb2.g - rgb1.g) * p) + rgb1.g,
-          b: ((rgb2.b - rgb1.b) * p) + rgb1.b,
-          a: ((rgb2.a - rgb1.a) * p) + rgb1.a
-      };
-
-      return tinycolor(rgba);
-  };
-
-
-  // Readability Functions
-  // ---------------------
-  // <http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef (WCAG Version 2)
-
-  // `contrast`
-  // Analyze the 2 colors and returns the color contrast defined by (WCAG Version 2)
-  tinycolor.readability = function(color1, color2) {
-      var c1 = tinycolor(color1);
-      var c2 = tinycolor(color2);
-      return (Math.max(c1.getLuminance(),c2.getLuminance())+0.05) / (Math.min(c1.getLuminance(),c2.getLuminance())+0.05);
-  };
-
-  // `isReadable`
-  // Ensure that foreground and background color combinations meet WCAG2 guidelines.
-  // The third argument is an optional Object.
-  //      the 'level' property states 'AA' or 'AAA' - if missing or invalid, it defaults to 'AA';
-  //      the 'size' property states 'large' or 'small' - if missing or invalid, it defaults to 'small'.
-  // If the entire object is absent, isReadable defaults to {level:"AA",size:"small"}.
-
-  // *Example*
-  //    tinycolor.isReadable("#000", "#111") => false
-  //    tinycolor.isReadable("#000", "#111",{level:"AA",size:"large"}) => false
-  tinycolor.isReadable = function(color1, color2, wcag2) {
-      var readability = tinycolor.readability(color1, color2);
-      var wcag2Parms, out;
-
-      out = false;
-
-      wcag2Parms = validateWCAG2Parms(wcag2);
-      switch (wcag2Parms.level + wcag2Parms.size) {
-          case "AAsmall":
-          case "AAAlarge":
-              out = readability >= 4.5;
-              break;
-          case "AAlarge":
-              out = readability >= 3;
-              break;
-          case "AAAsmall":
-              out = readability >= 7;
-              break;
-      }
-      return out;
-
-  };
-
-  // `mostReadable`
-  // Given a base color and a list of possible foreground or background
-  // colors for that base, returns the most readable color.
-  // Optionally returns Black or White if the most readable color is unreadable.
-  // *Example*
-  //    tinycolor.mostReadable(tinycolor.mostReadable("#123", ["#124", "#125"],{includeFallbackColors:false}).toHexString(); // "#112255"
-  //    tinycolor.mostReadable(tinycolor.mostReadable("#123", ["#124", "#125"],{includeFallbackColors:true}).toHexString();  // "#ffffff"
-  //    tinycolor.mostReadable("#a8015a", ["#faf3f3"],{includeFallbackColors:true,level:"AAA",size:"large"}).toHexString(); // "#faf3f3"
-  //    tinycolor.mostReadable("#a8015a", ["#faf3f3"],{includeFallbackColors:true,level:"AAA",size:"small"}).toHexString(); // "#ffffff"
-  tinycolor.mostReadable = function(baseColor, colorList, args) {
-      var bestColor = null;
-      var bestScore = 0;
-      var readability;
-      var includeFallbackColors, level, size ;
-      args = args || {};
-      includeFallbackColors = args.includeFallbackColors ;
-      level = args.level;
-      size = args.size;
-
-      for (var i= 0; i < colorList.length ; i++) {
-          readability = tinycolor.readability(baseColor, colorList[i]);
-          if (readability > bestScore) {
-              bestScore = readability;
-              bestColor = tinycolor(colorList[i]);
-          }
-      }
-
-      if (tinycolor.isReadable(baseColor, bestColor, {"level":level,"size":size}) || !includeFallbackColors) {
-          return bestColor;
-      }
-      else {
-          args.includeFallbackColors=false;
-          return tinycolor.mostReadable(baseColor,["#fff", "#000"],args);
-      }
-  };
-
-
-  // Big List of Colors
-  // ------------------
-  // <http://www.w3.org/TR/css3-color/#svg-color>
-  var names = tinycolor.names = {
-      aliceblue: "f0f8ff",
-      antiquewhite: "faebd7",
-      aqua: "0ff",
-      aquamarine: "7fffd4",
-      azure: "f0ffff",
-      beige: "f5f5dc",
-      bisque: "ffe4c4",
-      black: "000",
-      blanchedalmond: "ffebcd",
-      blue: "00f",
-      blueviolet: "8a2be2",
-      brown: "a52a2a",
-      burlywood: "deb887",
-      burntsienna: "ea7e5d",
-      cadetblue: "5f9ea0",
-      chartreuse: "7fff00",
-      chocolate: "d2691e",
-      coral: "ff7f50",
-      cornflowerblue: "6495ed",
-      cornsilk: "fff8dc",
-      crimson: "dc143c",
-      cyan: "0ff",
-      darkblue: "00008b",
-      darkcyan: "008b8b",
-      darkgoldenrod: "b8860b",
-      darkgray: "a9a9a9",
-      darkgreen: "006400",
-      darkgrey: "a9a9a9",
-      darkkhaki: "bdb76b",
-      darkmagenta: "8b008b",
-      darkolivegreen: "556b2f",
-      darkorange: "ff8c00",
-      darkorchid: "9932cc",
-      darkred: "8b0000",
-      darksalmon: "e9967a",
-      darkseagreen: "8fbc8f",
-      darkslateblue: "483d8b",
-      darkslategray: "2f4f4f",
-      darkslategrey: "2f4f4f",
-      darkturquoise: "00ced1",
-      darkviolet: "9400d3",
-      deeppink: "ff1493",
-      deepskyblue: "00bfff",
-      dimgray: "696969",
-      dimgrey: "696969",
-      dodgerblue: "1e90ff",
-      firebrick: "b22222",
-      floralwhite: "fffaf0",
-      forestgreen: "228b22",
-      fuchsia: "f0f",
-      gainsboro: "dcdcdc",
-      ghostwhite: "f8f8ff",
-      gold: "ffd700",
-      goldenrod: "daa520",
-      gray: "808080",
-      green: "008000",
-      greenyellow: "adff2f",
-      grey: "808080",
-      honeydew: "f0fff0",
-      hotpink: "ff69b4",
-      indianred: "cd5c5c",
-      indigo: "4b0082",
-      ivory: "fffff0",
-      khaki: "f0e68c",
-      lavender: "e6e6fa",
-      lavenderblush: "fff0f5",
-      lawngreen: "7cfc00",
-      lemonchiffon: "fffacd",
-      lightblue: "add8e6",
-      lightcoral: "f08080",
-      lightcyan: "e0ffff",
-      lightgoldenrodyellow: "fafad2",
-      lightgray: "d3d3d3",
-      lightgreen: "90ee90",
-      lightgrey: "d3d3d3",
-      lightpink: "ffb6c1",
-      lightsalmon: "ffa07a",
-      lightseagreen: "20b2aa",
-      lightskyblue: "87cefa",
-      lightslategray: "789",
-      lightslategrey: "789",
-      lightsteelblue: "b0c4de",
-      lightyellow: "ffffe0",
-      lime: "0f0",
-      limegreen: "32cd32",
-      linen: "faf0e6",
-      magenta: "f0f",
-      maroon: "800000",
-      mediumaquamarine: "66cdaa",
-      mediumblue: "0000cd",
-      mediumorchid: "ba55d3",
-      mediumpurple: "9370db",
-      mediumseagreen: "3cb371",
-      mediumslateblue: "7b68ee",
-      mediumspringgreen: "00fa9a",
-      mediumturquoise: "48d1cc",
-      mediumvioletred: "c71585",
-      midnightblue: "191970",
-      mintcream: "f5fffa",
-      mistyrose: "ffe4e1",
-      moccasin: "ffe4b5",
-      navajowhite: "ffdead",
-      navy: "000080",
-      oldlace: "fdf5e6",
-      olive: "808000",
-      olivedrab: "6b8e23",
-      orange: "ffa500",
-      orangered: "ff4500",
-      orchid: "da70d6",
-      palegoldenrod: "eee8aa",
-      palegreen: "98fb98",
-      paleturquoise: "afeeee",
-      palevioletred: "db7093",
-      papayawhip: "ffefd5",
-      peachpuff: "ffdab9",
-      peru: "cd853f",
-      pink: "ffc0cb",
-      plum: "dda0dd",
-      powderblue: "b0e0e6",
-      purple: "800080",
-      rebeccapurple: "663399",
-      red: "f00",
-      rosybrown: "bc8f8f",
-      royalblue: "4169e1",
-      saddlebrown: "8b4513",
-      salmon: "fa8072",
-      sandybrown: "f4a460",
-      seagreen: "2e8b57",
-      seashell: "fff5ee",
-      sienna: "a0522d",
-      silver: "c0c0c0",
-      skyblue: "87ceeb",
-      slateblue: "6a5acd",
-      slategray: "708090",
-      slategrey: "708090",
-      snow: "fffafa",
-      springgreen: "00ff7f",
-      steelblue: "4682b4",
-      tan: "d2b48c",
-      teal: "008080",
-      thistle: "d8bfd8",
-      tomato: "ff6347",
-      turquoise: "40e0d0",
-      violet: "ee82ee",
-      wheat: "f5deb3",
-      white: "fff",
-      whitesmoke: "f5f5f5",
-      yellow: "ff0",
-      yellowgreen: "9acd32"
-  };
-
-  // Make it easy to access colors via `hexNames[hex]`
-  var hexNames = tinycolor.hexNames = flip(names);
-
-
-  // Utilities
-  // ---------
-
-  // `{ 'name1': 'val1' }` becomes `{ 'val1': 'name1' }`
-  function flip(o) {
-      var flipped = { };
-      for (var i in o) {
-          if (o.hasOwnProperty(i)) {
-              flipped[o[i]] = i;
-          }
-      }
-      return flipped;
-  }
-
-  // Return a valid alpha value [0,1] with all invalid values being set to 1
-  function boundAlpha(a) {
-      a = parseFloat(a);
-
-      if (isNaN(a) || a < 0 || a > 1) {
-          a = 1;
-      }
-
-      return a;
-  }
-
-  // Take input from [0, n] and return it as [0, 1]
-  function bound01(n, max) {
-      if (isOnePointZero(n)) { n = "100%"; }
-
-      var processPercent = isPercentage(n);
-      n = mathMin(max, mathMax(0, parseFloat(n)));
-
-      // Automatically convert percentage into number
-      if (processPercent) {
-          n = parseInt(n * max, 10) / 100;
-      }
-
-      // Handle floating point rounding errors
-      if ((Math.abs(n - max) < 0.000001)) {
-          return 1;
-      }
-
-      // Convert into [0, 1] range if it isn't already
-      return (n % max) / parseFloat(max);
-  }
-
-  // Force a number between 0 and 1
-  function clamp01(val) {
-      return mathMin(1, mathMax(0, val));
-  }
-
-  // Parse a base-16 hex value into a base-10 integer
-  function parseIntFromHex(val) {
-      return parseInt(val, 16);
-  }
-
-  // Need to handle 1.0 as 100%, since once it is a number, there is no difference between it and 1
-  // <http://stackoverflow.com/questions/7422072/javascript-how-to-detect-number-as-a-decimal-including-1-0>
-  function isOnePointZero(n) {
-      return typeof n == "string" && n.indexOf('.') != -1 && parseFloat(n) === 1;
-  }
-
-  // Check to see if string passed in is a percentage
-  function isPercentage(n) {
-      return typeof n === "string" && n.indexOf('%') != -1;
-  }
-
-  // Force a hex value to have 2 characters
-  function pad2(c) {
-      return c.length == 1 ? '0' + c : '' + c;
-  }
-
-  // Replace a decimal with it's percentage value
-  function convertToPercentage(n) {
-      if (n <= 1) {
-          n = (n * 100) + "%";
-      }
-
-      return n;
-  }
-
-  // Converts a decimal to a hex value
-  function convertDecimalToHex(d) {
-      return Math.round(parseFloat(d) * 255).toString(16);
-  }
-  // Converts a hex value to a decimal
-  function convertHexToDecimal(h) {
-      return (parseIntFromHex(h) / 255);
-  }
-
-  var matchers = (function() {
-
-      // <http://www.w3.org/TR/css3-values/#integers>
-      var CSS_INTEGER = "[-\\+]?\\d+%?";
-
-      // <http://www.w3.org/TR/css3-values/#number-value>
-      var CSS_NUMBER = "[-\\+]?\\d*\\.\\d+%?";
-
-      // Allow positive/negative integer/number.  Don't capture the either/or, just the entire outcome.
-      var CSS_UNIT = "(?:" + CSS_NUMBER + ")|(?:" + CSS_INTEGER + ")";
-
-      // Actual matching.
-      // Parentheses and commas are optional, but not required.
-      // Whitespace can take the place of commas or opening paren
-      var PERMISSIVE_MATCH3 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
-      var PERMISSIVE_MATCH4 = "[\\s|\\(]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")[,|\\s]+(" + CSS_UNIT + ")\\s*\\)?";
-
-      return {
-          CSS_UNIT: new RegExp(CSS_UNIT),
-          rgb: new RegExp("rgb" + PERMISSIVE_MATCH3),
-          rgba: new RegExp("rgba" + PERMISSIVE_MATCH4),
-          hsl: new RegExp("hsl" + PERMISSIVE_MATCH3),
-          hsla: new RegExp("hsla" + PERMISSIVE_MATCH4),
-          hsv: new RegExp("hsv" + PERMISSIVE_MATCH3),
-          hsva: new RegExp("hsva" + PERMISSIVE_MATCH4),
-          hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-          hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
-          hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
-          hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
-      };
-  })();
-
-  // `isValidCSSUnit`
-  // Take in a single string / number and check to see if it looks like a CSS unit
-  // (see `matchers` above for definition).
-  function isValidCSSUnit(color) {
-      return !!matchers.CSS_UNIT.exec(color);
-  }
-
-  // `stringInputToObject`
-  // Permissive string parsing.  Take in a number of formats, and output an object
-  // based on detected format.  Returns `{ r, g, b }` or `{ h, s, l }` or `{ h, s, v}`
-  function stringInputToObject(color) {
-
-      color = color.replace(trimLeft,'').replace(trimRight, '').toLowerCase();
-      var named = false;
-      if (names[color]) {
-          color = names[color];
-          named = true;
-      }
-      else if (color == 'transparent') {
-          return { r: 0, g: 0, b: 0, a: 0, format: "name" };
-      }
-
-      // Try to match string input using regular expressions.
-      // Keep most of the number bounding out of this function - don't worry about [0,1] or [0,100] or [0,360]
-      // Just return an object and let the conversion functions handle that.
-      // This way the result will be the same whether the tinycolor is initialized with string or object.
-      var match;
-      if ((match = matchers.rgb.exec(color))) {
-          return { r: match[1], g: match[2], b: match[3] };
-      }
-      if ((match = matchers.rgba.exec(color))) {
-          return { r: match[1], g: match[2], b: match[3], a: match[4] };
-      }
-      if ((match = matchers.hsl.exec(color))) {
-          return { h: match[1], s: match[2], l: match[3] };
-      }
-      if ((match = matchers.hsla.exec(color))) {
-          return { h: match[1], s: match[2], l: match[3], a: match[4] };
-      }
-      if ((match = matchers.hsv.exec(color))) {
-          return { h: match[1], s: match[2], v: match[3] };
-      }
-      if ((match = matchers.hsva.exec(color))) {
-          return { h: match[1], s: match[2], v: match[3], a: match[4] };
-      }
-      if ((match = matchers.hex8.exec(color))) {
-          return {
-              r: parseIntFromHex(match[1]),
-              g: parseIntFromHex(match[2]),
-              b: parseIntFromHex(match[3]),
-              a: convertHexToDecimal(match[4]),
-              format: named ? "name" : "hex8"
-          };
-      }
-      if ((match = matchers.hex6.exec(color))) {
-          return {
-              r: parseIntFromHex(match[1]),
-              g: parseIntFromHex(match[2]),
-              b: parseIntFromHex(match[3]),
-              format: named ? "name" : "hex"
-          };
-      }
-      if ((match = matchers.hex4.exec(color))) {
-          return {
-              r: parseIntFromHex(match[1] + '' + match[1]),
-              g: parseIntFromHex(match[2] + '' + match[2]),
-              b: parseIntFromHex(match[3] + '' + match[3]),
-              a: convertHexToDecimal(match[4] + '' + match[4]),
-              format: named ? "name" : "hex8"
-          };
-      }
-      if ((match = matchers.hex3.exec(color))) {
-          return {
-              r: parseIntFromHex(match[1] + '' + match[1]),
-              g: parseIntFromHex(match[2] + '' + match[2]),
-              b: parseIntFromHex(match[3] + '' + match[3]),
-              format: named ? "name" : "hex"
-          };
-      }
-
-      return false;
-  }
-
-  function validateWCAG2Parms(parms) {
-      // return valid WCAG2 parms for isReadable.
-      // If input parms are invalid, return {"level":"AA", "size":"small"}
-      var level, size;
-      parms = parms || {"level":"AA", "size":"small"};
-      level = (parms.level || "AA").toUpperCase();
-      size = (parms.size || "small").toLowerCase();
-      if (level !== "AA" && level !== "AAA") {
-          level = "AA";
-      }
-      if (size !== "small" && size !== "large") {
-          size = "small";
-      }
-      return {"level":level, "size":size};
-  }
-
-  // Node: Export function
-  if (module.exports) {
-      module.exports = tinycolor;
-  }
-  // AMD/requirejs: Define the module
-  else {
-      window.tinycolor = tinycolor;
-  }
-
-  })(Math);
-  });
-
-  var _createClass$6 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-  function _classCallCheck$6(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-
-
-
-  var STYLES = {
-      'background': 'rgba(0, 0, 0, 0.5)',
-      'color': 'white'
-  };
-
-  var STYLES_FPS = {
-      'padding': '0.1em 0.5em'
-  };
-
-  var STYLES_METER = {};
-
-  var yyFps = function () {
+  var FPS = /** @class */ (function () {
       /**
-       * @param {object} [options]
-       * @param {boolean} [options.meter=true] include a meter with the FPS
-       * @param {string} [options.side=bottom-right] include any combination of left/right and top/bottom
-       * @param {number} [options.FPS=60] desired FPS
-       * @param {number} [options.tolerance=1] minimum tolerance for fluctuations in FPS number
-       * @param {number} [options.meterWidth=100] width of meter div
-       * @param {number} [options.meterHeight=25] height of meter div
-       * @param {number} [options.meterLineHeight=4] height of meter line
-       * @param {styles[]} [options.styles] CSS styles to apply to the div (in javascript format)
-       * @param {styles[]} [options.stylesFPS] CSS styles to apply to the FPS text (in javascript format)
-       * @param {styles[]} [options.stylesMeter] CSS styles to apply to the FPS meter (in javascript format)
-       * @param {string} [options.text=" FPS"] change the text to the right of the FPS
+       * @param [options]
+       * @param [options.meter=true] - include a meter with the FPS
+       * @param [options.side=bottom-right] - include any combination of left/right and top/bottom
+       * @param [options.FPS=60] - desired FPS
+       * @param [options.tolerance=1] - minimum tolerance for fluctuations in FPS number
+       * @param [options.meterWidth=100] - width of meter div
+       * @param [options.meterHeight=25] - height of meter div
+       * @param [options.meterLineHeight=4] - height of meter line
+       * @param [options.styles] - CSS styles to apply to the div (in javascript format)
+       * @param [options.stylesFPS] - CSS styles to apply to the FPS text (in javascript format)
+       * @param [options.stylesMeter] - CSS styles to apply to the FPS meter (in javascript format)
+       * @param [options.text=" FPS"] - change the text to the right of the FPS
+       * @param [options.colorGreen=#ffa500] green (good) color on meter
+       * @param [options.colorRed = #ff0000] red (bad) color on meter
+       * @param [options.zIndex = 1000] zIndex to assign to div
        */
       function FPS(options) {
-          _classCallCheck$6(this, FPS);
-
-          this.options = options || {};
-          this.tolerance = this.options.tolerance || 1;
-          this.FPS = this.options.FPS || 60;
-          this.meterWidth = this.options.meterWidth || 100;
-          this.meterHeight = this.options.meterHeight || 25;
-          this.meterLineHeight = this.options.meterLineHeight || 4;
-          this.div = document.createElement('div');
-          counter.findParent(this.options.side || 'bottom-right').appendChild(this.div);
-          this.style(this.div, STYLES, this.options.styles);
-          this.divFPS();
-          this.meter = typeof this.options.meter === 'undefined' || this.options.meter;
+          if (options === void 0) { options = {}; }
           this.lastTime = 0;
           this.frameNumber = 0;
-          this.lastUpdate = 0;
-          this.lastFPS = '--';
+          this.lastFPS = 0;
+          this.options = __assign(__assign({}, defaultFPSOptions), options);
+          this.div = document.createElement('div');
+          this.findParent(this.options.side || 'bottom-right').appendChild(this.div);
+          this.style(this.div, this.options.styles);
+          this.createDivFPS();
+          if (this.options.meter) {
+              this.createDivMeter();
+          }
       }
-
-      /**
-       * change desired FPS
-       * @type {number}
-       */
-
-
-      _createClass$6(FPS, [{
-          key: 'remove',
-
-
-          /**
-           * remove meter from DOM
-           */
-          value: function remove() {
-              this.div.remove();
-          }
-
-          /**
-           * @type {boolean} meter (the FPS graph) is on or off
-           */
-
-      }, {
-          key: 'style',
-          value: function style(div, style1, style2) {
-              for (var style in style1) {
-                  div.style[style] = style1[style];
-              }
-              if (style2) {
-                  for (var _style in style2) {
-                      div.style[_style] = style2[_style];
-                  }
-              }
-          }
-
-          /**
-           * create div for text FPS
-           * @private
-           * @param {HTMLElement} div
-           * @param {object} options (see contructor)
-           */
-
-      }, {
-          key: 'divFPS',
-          value: function divFPS() {
-              var div = this.div;
-              var options = this.options;
-              var divFPS = document.createElement('div');
-              div.appendChild(divFPS);
-              this.fpsSpan = document.createElement('span');
-              divFPS.appendChild(this.fpsSpan);
-              var span = document.createElement('span');
-              divFPS.appendChild(span);
-              span.innerText = typeof options.text !== 'undefined' ? options.text : ' FPS';
-              this.style(div, STYLES_FPS, options.stylesFPS);
-          }
-
-          /**
-           * create div for FPS meter
-           * @private
-           * @param {HTMLElement} div
-           * @param {object} options (see contructor)
-           */
-
-      }, {
-          key: 'divMeter',
-          value: function divMeter() {
-              var div = this.div;
-              var options = this.options;
-              if (!this.meterCanvas) {
-                  this.meterCanvas = document.createElement('canvas');
-                  div.appendChild(this.meterCanvas);
-                  this.meterCanvas.width = this.meterWidth;
-                  this.meterCanvas.height = this.meterHeight;
-                  this.meterCanvas.style.width = div.width + 'px';
-                  this.meterCanvas.style.height = div.height + 'px';
-                  this.style(this.meterCanvas, STYLES_METER, options.stylesMeter);
-              } else {
-                  this.meterCanvas.style.display = 'block';
-              }
-          }
-
-          /**
-           * call this at the start of the frame to calculate FPS
-           */
-
-      }, {
-          key: 'frame',
-          value: function frame() {
-              this.frameNumber++;
-              var currentTime = performance.now() - this.lastTime;
-
-              // skip large differences to remove garbage
-              if (currentTime > 500) {
-                  if (this.lastTime !== 0) {
-                      this.lastFPS = Math.floor(this.frameNumber / (currentTime / 1000));
-                      if (this.lastFPS >= this.FPS - this.tolerance && this.lastFPS <= this.FPS + this.tolerance) {
-                          this.lastFPS = this.FPS;
-                      }
-                  }
-                  this.lastTime = performance.now();
-                  this.frameNumber = 0;
-              }
-              this.fpsSpan.innerText = this.lastFPS;
-              if (this.meterCanvas && this.lastFPS !== '--') {
-                  this.meterUpdate(this.lastFPS / this.FPS);
-              }
-          }
-      }, {
-          key: 'meterUpdate',
-          value: function meterUpdate(percent) {
-              var c = this.meterCanvas.getContext('2d');
-              var data = c.getImageData(0, 0, this.meterCanvas.width, this.meterCanvas.height);
-              c.putImageData(data, -1, 0);
-              c.clearRect(this.meterCanvas.width - 1, 0, 1, this.meterCanvas.height);
-              if (percent < 0.5) {
-                  c.fillStyle = tinycolor.mix('#ff0000', '0xffa500', percent * 200).toHexString();
-              } else {
-                  c.fillStyle = tinycolor.mix('#ffa500', '#00ff00', (percent - 0.5) * 200).toHexString();
-              }
-              var height = (this.meterCanvas.height - this.meterLineHeight) * (1 - percent);
-              c.fillRect(this.meterCanvas.width - 1, height, 1, this.meterLineHeight);
-          }
-      }, {
-          key: 'side',
-          value: function side(options) {
-              if (options.side) {
-                  options.side = options.side.toLowerCase();
-                  if (options.side.indexOf('left') !== -1) {
-                      STYLES['left'] = 0;
-                      delete STYLES['right'];
-                  } else {
-                      STYLES['right'] = 0;
-                      delete STYLES['left'];
-                  }
-                  if (options.side.indexOf('top') !== -1) {
-                      STYLES['top'] = 0;
-                      delete STYLES['bottom'];
-                  } else {
-                      STYLES['bottom'] = 0;
-                      delete STYLES['top'];
-                  }
-              } else {
-                  STYLES['right'] = 0;
-                  STYLES['bottom'] = 0;
-              }
-          }
-      }, {
-          key: 'fps',
-          get: function get() {
-              return this.FPS;
+      Object.defineProperty(FPS.prototype, "fps", {
+          /** desired FPS */
+          get: function () {
+              return this.options.FPS;
           },
-          set: function set(value) {
-              this.FPS = value;
-          }
-      }, {
-          key: 'meter',
-          get: function get() {
-              return this._meter;
+          set: function (value) {
+              this.options.FPS = value;
           },
-          set: function set(value) {
+          enumerable: false,
+          configurable: true
+      });
+      /** remove meter from DOM */
+      FPS.prototype.remove = function () {
+          this.div.remove();
+      };
+      Object.defineProperty(FPS.prototype, "meter", {
+          /** meter (the FPS graph) is on or off */
+          get: function () {
+              return this.options.meter;
+          },
+          set: function (value) {
               if (value) {
-                  this.divMeter();
-              } else if (this.meterCanvas) {
+                  this.createDivMeter();
+              }
+              else if (this.meterCanvas) {
                   this.meterCanvas.style.display = 'none';
               }
+          },
+          enumerable: false,
+          configurable: true
+      });
+      FPS.prototype.style = function (div, style) {
+          for (var entry in style) {
+              div.style[entry] = style[entry];
           }
-      }]);
-
+      };
+      FPS.prototype.createDivFPS = function () {
+          var divFPS = document.createElement('div');
+          this.style(divFPS, this.options.stylesFPS);
+          this.div.appendChild(divFPS);
+          this.fpsSpan = document.createElement('span');
+          divFPS.appendChild(this.fpsSpan);
+          var span = document.createElement('span');
+          divFPS.appendChild(span);
+          span.innerText = this.options.text;
+      };
+      FPS.prototype.createDivMeter = function () {
+          if (!this.meterCanvas) {
+              this.meterCanvas = document.createElement('canvas');
+              this.div.appendChild(this.meterCanvas);
+              this.meterCanvas.width = this.options.meterWidth;
+              this.meterCanvas.height = this.options.meterHeight;
+              this.meterCanvas.style.width = this.options.meterWidth + 'px';
+              this.meterCanvas.style.height = this.options.meterHeight + 'px';
+              this.style(this.meterCanvas, this.options.stylesMeter);
+              this.meterContext = this.meterCanvas.getContext('2d');
+          }
+          else {
+              this.meterCanvas.style.display = 'block';
+          }
+      };
+      /** call this at the end of the frame to calculate FPS */
+      FPS.prototype.frame = function () {
+          this.frameNumber++;
+          var currentTime = performance.now() - this.lastTime;
+          // skip large differences to remove garbage
+          if (currentTime > 500) {
+              if (this.lastTime !== 0) {
+                  this.lastFPS = Math.floor(this.frameNumber / (currentTime / 1000));
+                  if (this.lastFPS > this.options.FPS ||
+                      (this.lastFPS >= this.options.FPS - this.options.tolerance &&
+                          this.lastFPS <= this.options.FPS + this.options.tolerance)) {
+                      this.lastFPS = this.options.FPS;
+                  }
+              }
+              this.lastTime = performance.now();
+              this.frameNumber = 0;
+          }
+          this.fpsSpan.innerText = this.lastFPS === 0 ? '--' : this.lastFPS + '';
+          if (this.options.meter && this.lastFPS !== 0) {
+              this.meterUpdate(this.lastFPS / this.options.FPS);
+          }
+      };
+      /**
+       * From https://github.com/bgrins/TinyColor#readme
+       * Mix two RGP colors
+       * @param color1 - first color
+       * @param color2 - second color
+       * @param percent - percent to mix
+       */
+      FPS.prototype.mix = function (color1, color2, percent) {
+          var rgb = function (color) {
+              return {
+                  r: parseInt(color.substr(1, 2), 16),
+                  g: parseInt(color.substr(3, 2), 16),
+                  b: parseInt(color.substr(5, 2), 16),
+              };
+          };
+          var digit2 = function (n) {
+              n = Math.floor(n);
+              if (n.toString().length === 1) {
+                  return '0' + n.toString(16);
+              }
+              else {
+                  return n.toString(16);
+              }
+          };
+          var rgb1 = rgb(color1);
+          var rgb2 = rgb(color2);
+          var r = digit2(rgb1.r * percent + rgb2.r * (1 - percent));
+          var g = digit2(rgb1.g * percent + rgb2.g * (1 - percent));
+          var b = digit2(rgb1.b * percent + rgb2.b * (1 - percent));
+          return "#" + r + g + b;
+      };
+      FPS.prototype.meterUpdate = function (percent) {
+          var data = this.meterContext.getImageData(0, 0, this.meterCanvas.width, this.meterCanvas.height);
+          this.meterContext.putImageData(data, -1, 0);
+          this.meterContext.clearRect(this.meterCanvas.width - 1, 0, 1, this.meterCanvas.height);
+          if (percent <= 0.5) {
+              this.meterContext.fillStyle = this.mix(this.options.colorRed, this.options.colorOrange, 1 - percent * 2);
+          }
+          else {
+              this.meterContext.fillStyle = this.mix(this.options.colorGreen, this.options.colorOrange, (percent - 0.5) * 2);
+          }
+          var height = (this.meterCanvas.height - this.options.meterLineHeight) * (1 - percent);
+          this.meterContext.fillRect(this.meterCanvas.width - 1, height, 1, this.options.meterLineHeight);
+      };
+      /**
+       * find the parent div for one of the corners
+       * @param side side to place the panel (combination of right/left and bottom/top)
+       * @return {HTMLElement}
+       */
+      FPS.prototype.findParent = function (side) {
+          var styles = [];
+          var name = 'yy-counter-';
+          if (side.indexOf('left') !== -1) {
+              name += 'left-';
+              styles['left'] = 0;
+          }
+          else {
+              name += 'right-';
+              styles['right'] = 0;
+          }
+          if (side.indexOf('top') !== -1) {
+              name += 'top';
+              styles['top'] = 0;
+          }
+          else {
+              name += 'bottom';
+              styles['bottom'] = 0;
+          }
+          var test = document.getElementById(name);
+          if (test) {
+              return test;
+          }
+          var container = document.createElement('div');
+          container.id = name;
+          container.style.overflow = 'hidden';
+          container.style.position = 'fixed';
+          container.style.zIndex = this.options.zIndex.toString();
+          container.style.pointerEvents = 'none';
+          container.style.userSelect = 'none';
+          for (var style in styles) {
+              container.style[style] = styles[style];
+          }
+          document.body.appendChild(container);
+          return container;
+      };
       return FPS;
-  }();
+  }());
 
   const defaultOptions = {
       threshold: 10,
@@ -48407,7 +49537,7 @@
       }
   }
 
-  var penner = createCommonjsModule$1(function (module, exports) {
+  var penner = createCommonjsModule$2(function (module, exports) {
   /*
   	Copyright © 2001 Robert Penner
   	All rights reserved.
@@ -48650,7 +49780,7 @@
 
     umd(penner);
 
-  }).call(commonjsGlobal$1);
+  }).call(commonjsGlobal$2);
   });
 
   var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -54526,10 +55656,8 @@
       }
   }
 
-  class UserPlugin extends Plugin
-  {
-      constructor(parent)
-      {
+  class UserPlugin extends Plugin {
+      constructor(parent) {
           super(parent);
       }
   }
@@ -54550,20 +55678,7 @@
       _world = _gui.addFolder('world');
       options = {
           testDirty: false,
-          drag: {
-              direction: 'all',
-              pressDrag: true,
-              wheel: true,
-              wheelScroll: 1,
-              reverse: false,
-              clampWheel: false,
-              underflow: 'none',
-              factor: 1,
-              mouseButtons: 'all',
-              keyToPress: null,
-              ignoreKeyToPressOnTouch: false,
-              lineHeight: 20,
-          },
+          drag: true,
           clampZoom: {
               clampZoom: false,
               minWidth: 1000,
@@ -54665,38 +55780,6 @@
   }
 
   function guiDrag() {
-      function change() {
-          _viewport$1.drag({ direction: options.clamp.x && options.clamp.y ? 'all' : options.clamp.x ? 'x' : 'y', underflow: options.clamp.underflow });
-      }
-
-      function add() {
-          clampX = clamp.add(options.clamp, 'x').onChange(change);
-          clampY = clamp.add(options.clamp, 'y').onChange(change);
-          underflow = clamp.add(options.clamp, 'underflow').onChange(change);
-      }
-
-      let clampX, clampY, underflow;
-      const clamp = _gui.addFolder('clamp');
-      clamp.add(options.clamp, 'clamp').onChange(
-          function (value) {
-              if (value) {
-                  change();
-                  add();
-              }
-              else {
-                  _viewport$1.plugins.remove('clamp');
-                  clamp.remove(clampX);
-                  clamp.remove(clampY);
-                  clamp.remove(underflow);
-              }
-          });
-      if (options.clamp.clamp) {
-          clamp.open();
-      }
-
-
-
-
       _gui.add(options, 'drag').onChange(
           function (value) {
               if (value) {
@@ -55286,7 +56369,7 @@
   }
 
   window.onload = function () {
-      _fps = new yyFps({ side: 'bottom-left' });
+      _fps = new FPS({ side: 'bottom-left' });
       _application = new Application({ backgroundAlpha: 0, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio });
       document.body.appendChild(_application.view);
       _application.view.style.position = 'fixed';

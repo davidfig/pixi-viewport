@@ -631,146 +631,182 @@
 </div>
     <div class="main">
         
-        <h1 class="page-title" data-filename="Viewport">Index</h1>
+        <h1 class="page-title" data-filename="Viewport">Source: js/plugins/Clamp.js</h1>
         
         
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article class="readme content-size"><h1>pixi-viewport - PixiJS Viewport Kit</h1>
-<p>A highly configurable viewport/2D camera designed to work with pixi.js.</p>
-<p>Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, aniamte, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.</p>
-<p>All features are configurable and removable, so set up the viewport to be exactly what you need.</p>
-<h2>Live Example</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">https://davidfig.github.io/pixi-viewport/</a></p>
-<h2>API Documentation</h2>
-<p><a target="_blank" href="https://davidfig.github.io/pixi-viewport/jsdoc/">https://davidfig.github.io/pixi-viewport/jsdoc/</a></p>
-<h2>Simple Example</h2>
-<pre class="prettyprint source lang-js"><code>import * as PIXI from 'pixi.js'
-import { Viewport } from 'pixi-viewport'
-
-// or with require
-// const PIXI = require('pixi.js')
-// const Viewport = require('pixi-viewport').Viewport
-
-const app = new PIXI.Application()
-document.body.appendChild(app.view)
-
-// create viewport
-const viewport = new Viewport({
-    screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
-    worldWidth: 1000,
-    worldHeight: 1000,
-
-    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
-})
-
-// add the viewport to the stage
-app.stage.addChild(viewport)
-
-// activate plugins
-viewport
-    .drag()
-    .pinch()
-    .wheel()
-    .decelerate()
-
-// add a red box
-const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
-sprite.tint = 0xff0000
-sprite.width = sprite.height = 100
-sprite.position.set(100, 100)
+        <header>
+            <div class="header content-size">
+                <h2>js/plugins/Clamp.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './Plugin';
+const DEFAULT_CLAMP_OPTIONS = {
+    left: false,
+    right: false,
+    top: false,
+    bottom: false,
+    direction: null,
+    underflow: 'center'
+};
+/**
+ * Plugin to clamp the viewport to a specific world bounding box.
+ *
+ * @public
+ */
+export class Clamp extends Plugin {
+    /**
+     * This is called by {@link Viewport.clamp}.
+     */
+    constructor(parent, options = {}) {
+        super(parent);
+        this.options = Object.assign({}, DEFAULT_CLAMP_OPTIONS, options);
+        if (this.options.direction) {
+            this.options.left = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
+            this.options.right = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
+            this.options.top = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
+            this.options.bottom = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
+        }
+        this.parseUnderflow();
+        this.last = { x: null, y: null, scaleX: null, scaleY: null };
+        this.update();
+    }
+    parseUnderflow() {
+        const clamp = this.options.underflow.toLowerCase();
+        if (clamp === 'none') {
+            this.noUnderflow = true;
+        }
+        else if (clamp === 'center') {
+            this.underflowX = this.underflowY = 0;
+            this.noUnderflow = false;
+        }
+        else {
+            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
+            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
+            this.noUnderflow = false;
+        }
+    }
+    move() {
+        this.update();
+        return false;
+    }
+    update() {
+        if (this.paused) {
+            return;
+        }
+        // only clamp on change
+        if (this.parent.x === this.last.x
+            &amp;&amp; this.parent.y === this.last.y
+            &amp;&amp; this.parent.scale.x === this.last.scaleX
+            &amp;&amp; this.parent.scale.y === this.last.scaleY) {
+            return;
+        }
+        const original = { x: this.parent.x, y: this.parent.y };
+        // TODO: Fix
+        const decelerate = this.parent.plugins.decelerate || {};
+        if (this.options.left !== null || this.options.right !== null) {
+            let moved = false;
+            if (!this.noUnderflow &amp;&amp; this.parent.screenWorldWidth &lt; this.parent.screenWidth) {
+                switch (this.underflowX) {
+                    case -1:
+                        if (this.parent.x !== 0) {
+                            this.parent.x = 0;
+                            moved = true;
+                        }
+                        break;
+                    case 1:
+                        if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth) {
+                            this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
+                            moved = true;
+                        }
+                        break;
+                    default:
+                        if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2) {
+                            this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                            moved = true;
+                        }
+                }
+            }
+            else {
+                if (this.options.left !== null) {
+                    if (this.parent.left &lt; (this.options.left === true ? 0 : this.options.left)) {
+                        this.parent.x = -(this.options.left === true ? 0 : this.options.left) * this.parent.scale.x;
+                        decelerate.x = 0;
+                        moved = true;
+                    }
+                }
+                if (this.options.right !== null) {
+                    if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right)) {
+                        this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth;
+                        decelerate.x = 0;
+                        moved = true;
+                    }
+                }
+            }
+            if (moved) {
+                this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' });
+            }
+        }
+        if (this.options.top !== null || this.options.bottom !== null) {
+            let moved = false;
+            if (!this.noUnderflow &amp;&amp; this.parent.screenWorldHeight &lt; this.parent.screenHeight) {
+                switch (this.underflowY) {
+                    case -1:
+                        if (this.parent.y !== 0) {
+                            this.parent.y = 0;
+                            moved = true;
+                        }
+                        break;
+                    case 1:
+                        if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight) {
+                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                            moved = true;
+                        }
+                        break;
+                    default:
+                        if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2) {
+                            this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                            moved = true;
+                        }
+                }
+            }
+            else {
+                if (this.options.top !== null) {
+                    if (this.parent.top &lt; (this.options.top === true ? 0 : this.options.top)) {
+                        this.parent.y = -(this.options.top === true ? 0 : this.options.top)
+                            * this.parent.scale.y;
+                        decelerate.y = 0;
+                        moved = true;
+                    }
+                }
+                if (this.options.bottom !== null) {
+                    if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)) {
+                        this.parent.y = -(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
+                            * this.parent.scale.y + this.parent.screenHeight;
+                        decelerate.y = 0;
+                        moved = true;
+                    }
+                }
+            }
+            if (moved) {
+                this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' });
+            }
+        }
+        this.last.x = this.parent.x;
+        this.last.y = this.parent.y;
+        this.last.scaleX = this.parent.scale.x;
+        this.last.scaleY = this.parent.scale.y;
+    }
+    reset() {
+        this.update();
+    }
+}
 </code></pre>
-<h2>Installation</h2>
-<pre><code>yarn add pixi-viewport
-</code></pre>
-<p>or</p>
-<pre><code>npm i pixi-viewport
-</code></pre>
-<p>or <a target="_blank" href="https://github.com/davidfig/pixi-viewport/releases/">grab the latest release</a> and use it:</p>
-<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/directory-to-file/pixi.js&quot;>&lt;/script>
-&lt;script src=&quot;/directory-to-file/viewport.min.js&quot;>&lt;/script>
-&lt;!-- or &lt;script type=&quot;module&quot; src=&quot;/directory-to-file/esm/viewport.es.js&quot;>&lt;/script> -->
-&lt;script>
-    const Viewport = new pixi_viewport.Viewport(options)
-&lt;/script>
-</code></pre>
-<h2>Build Examples</h2>
-<p>I've included the following build examples in the docs/ directory:</p>
-<ul>
-<li><a target="_blank" href="https://davidfig.github.io/pixi-viewport/">flems-io interactive demo</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/original">original demo built with rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify">browserify</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup">rollup</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone">standalone (e.g., cdn)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4">standalone (pixi.js v4)</a></li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts">typescript</a>.</li>
-</ul>
-<p>You can see the live demos at <a target="_blank" href="https://davidfig.github.io/pixi-viewport/builds/">https://davidfig.github.io/pixi-viewport/builds/</a>.</p>
-<h2>Migration from pixi-viewport v3 to v4</h2>
-<p>Viewport needs to be imported or required as follows:</p>
-<pre class="prettyprint source lang-js"><code>import { Viewport } from 'pixi-viewport'
-
-// or
-
-const Viewport = require('pixi-viewport').Viewport
-</code></pre>
-<p>Plugins have been moved to their own object:</p>
-<pre class="prettyprint source lang-js"><code>// viewport.pausePlugin('drag')
-viewport.plugins.pause('drag')
-
-// viewport.resumePlugin('drag')
-viewport.plugins.resume('drag')
-
-// viewport.removePlugin('drag')
-viewport.plugins.remove('drag')
-
-// viewport.userPlugin('name', plugin, index)
-viewport.plugins.add('name', plugin, index)
-</code></pre>
-<h2>Tests</h2>
-<ol>
-<li>Clone repository</li>
-<li>yarn install</li>
-<li>yarn test (for Mocha test code)</li>
-<li>yarn coverage (for Instanbul coverage)</li>
-</ol>
-<h2>Development Recipe</h2>
-<ol>
-<li>clone repository</li>
-<li>yarn install</li>
-<li>yarn dev</li>
-<li>open browser to http://localhost:10001</li>
-</ol>
-<p>PRs are more than welcome!</p>
-<h2>Other Libraries</h2>
-<p>If you liked pixi-viewport, please try my other open source libraries:</p>
-<ul>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-scrollbox">pixi-scrollbox</a> - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)</li>
-<li><a target="_blank" href="https://github.com/davidfig/pixi-ease">pixi-ease</a> - pixi.js animation library using easing functions</li>
-<li><a target="_blank" href="https://github.com/davidfig/intersects">intersects</a> - a simple collection of 2d collision/intersects functions. Supports points, circles, lines, axis-aligned boxes, and polygons</li>
-</ul>
-<h2>license</h2>
-<p>MIT License
-(c) 2021 <a target="_blank" href="https://yopeyopey.com/">YOPEY YOPEY LLC</a> by David Figatner (david@yopeyopey.com)</p></article>
+        </article>
     </section>
 
 
@@ -782,7 +818,7 @@ viewport.plugins.add('name', plugin, index)
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 15:51:50 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Thu Apr 22 2021 15:51:50 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>
