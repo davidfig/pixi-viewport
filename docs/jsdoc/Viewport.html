@@ -1795,7 +1795,7 @@ Viewport.worldScreenHeight)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line767">Viewport.js:767</a>
+            <a href="js_Viewport.js.html#line769">Viewport.js:769</a>
         </div>
         
     </div>
@@ -2878,7 +2878,7 @@ none, bottomLeft)     * @returns {Viewport} this</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line793">Viewport.js:793</a>
+            <a href="js_Viewport.js.html#line795">Viewport.js:795</a>
         </div>
         
     </div>
@@ -4232,7 +4232,7 @@ pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.</p></td
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line842">Viewport.js:842</a>
+            <a href="js_Viewport.js.html#line844">Viewport.js:844</a>
         </div>
         
     </div>
@@ -5897,7 +5897,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line725">Viewport.js:725</a>
+            <a href="js_Viewport.js.html#line727">Viewport.js:727</a>
         </div>
         
     </div>
@@ -5911,9 +5911,9 @@ does not change the viewport (use fit... to change)</p>
         <p>Follow a target</p>
 <p>NOTES:
 uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
-options.acceleration is not perfect as it doesn't know the velocity of the target
-it adds acceleration to the start of movement and deceleration to the end of movement when the target is stopped
-fires 'moved' event</p>
+options.acceleration is not perfect as it doesn't know the velocity of the target. It adds acceleration
+to the start of movement and deceleration to the end of movement when the target is stopped.
+To cancel the follow, use: <code>viewport.plugins.remove('follow')</code></p>
     </div>
     
 
@@ -6158,6 +6158,11 @@ without moving the viewport     * @returns {Viewport} this</p></td>
 
 
     
+    <h5>Fires:</h5>
+    <ul>
+        <li>event:'moved' event</li>
+    </ul>
+    
 
     
 
@@ -6293,7 +6298,7 @@ without moving the viewport     * @returns {Viewport} this</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line816">Viewport.js:816</a>
+            <a href="js_Viewport.js.html#line818">Viewport.js:818</a>
         </div>
         
     </div>
@@ -8667,7 +8672,7 @@ desired zoom</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line745">Viewport.js:745</a>
+            <a href="js_Viewport.js.html#line747">Viewport.js:747</a>
         </div>
         
     </div>
@@ -9482,7 +9487,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line928">Viewport.js:928</a>
+            <a href="js_Viewport.js.html#line930">Viewport.js:930</a>
         </div>
         
     </div>
@@ -9568,7 +9573,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line923">Viewport.js:923</a>
+            <a href="js_Viewport.js.html#line925">Viewport.js:925</a>
         </div>
         
     </div>
@@ -9654,7 +9659,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line938">Viewport.js:938</a>
+            <a href="js_Viewport.js.html#line940">Viewport.js:940</a>
         </div>
         
     </div>
@@ -9740,7 +9745,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line933">Viewport.js:933</a>
+            <a href="js_Viewport.js.html#line935">Viewport.js:935</a>
         </div>
         
     </div>
@@ -9826,7 +9831,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line869">Viewport.js:869</a>
+            <a href="js_Viewport.js.html#line871">Viewport.js:871</a>
         </div>
         
     </div>
@@ -10009,7 +10014,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line885">Viewport.js:885</a>
+            <a href="js_Viewport.js.html#line887">Viewport.js:887</a>
         </div>
         
     </div>
@@ -10192,7 +10197,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line877">Viewport.js:877</a>
+            <a href="js_Viewport.js.html#line879">Viewport.js:879</a>
         </div>
         
     </div>
@@ -10375,7 +10380,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line993">Viewport.js:993</a>
+            <a href="js_Viewport.js.html#line995">Viewport.js:995</a>
         </div>
         
     </div>
@@ -10461,7 +10466,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line963">Viewport.js:963</a>
+            <a href="js_Viewport.js.html#line965">Viewport.js:965</a>
         </div>
         
     </div>
@@ -10547,7 +10552,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line958">Viewport.js:958</a>
+            <a href="js_Viewport.js.html#line960">Viewport.js:960</a>
         </div>
         
     </div>
@@ -10633,7 +10638,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line968">Viewport.js:968</a>
+            <a href="js_Viewport.js.html#line970">Viewport.js:970</a>
         </div>
         
     </div>
@@ -10794,7 +10799,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line983">Viewport.js:983</a>
+            <a href="js_Viewport.js.html#line985">Viewport.js:985</a>
         </div>
         
     </div>
@@ -10880,7 +10885,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line898">Viewport.js:898</a>
+            <a href="js_Viewport.js.html#line900">Viewport.js:900</a>
         </div>
         
     </div>
@@ -10966,7 +10971,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line893">Viewport.js:893</a>
+            <a href="js_Viewport.js.html#line895">Viewport.js:895</a>
         </div>
         
     </div>
@@ -11052,7 +11057,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line908">Viewport.js:908</a>
+            <a href="js_Viewport.js.html#line910">Viewport.js:910</a>
         </div>
         
     </div>
@@ -11138,7 +11143,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line903">Viewport.js:903</a>
+            <a href="js_Viewport.js.html#line905">Viewport.js:905</a>
         </div>
         
     </div>
@@ -11224,7 +11229,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line918">Viewport.js:918</a>
+            <a href="js_Viewport.js.html#line920">Viewport.js:920</a>
         </div>
         
     </div>
@@ -11310,7 +11315,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line913">Viewport.js:913</a>
+            <a href="js_Viewport.js.html#line915">Viewport.js:915</a>
         </div>
         
     </div>
@@ -11396,7 +11401,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line943">Viewport.js:943</a>
+            <a href="js_Viewport.js.html#line945">Viewport.js:945</a>
         </div>
         
     </div>
@@ -11649,7 +11654,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line953">Viewport.js:953</a>
+            <a href="js_Viewport.js.html#line955">Viewport.js:955</a>
         </div>
         
     </div>
@@ -11735,7 +11740,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line976">Viewport.js:976</a>
+            <a href="js_Viewport.js.html#line978">Viewport.js:978</a>
         </div>
         
     </div>
@@ -11895,7 +11900,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line988">Viewport.js:988</a>
+            <a href="js_Viewport.js.html#line990">Viewport.js:990</a>
         </div>
         
     </div>
@@ -11977,7 +11982,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Fri Apr 23 2021 06:55:33 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Apr 25 2021 18:52:30 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

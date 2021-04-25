@@ -1104,9 +1104,11 @@ export class Viewport extends Container
      *
      * NOTES:
      *    uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
-     *    options.acceleration is not perfect as it doesn't know the velocity of the target
-     *    it adds acceleration to the start of movement and deceleration to the end of movement when the target is stopped
-     *    fires 'moved' event
+     *    options.acceleration is not perfect as it doesn't know the velocity of the target. It adds acceleration
+     *    to the start of movement and deceleration to the end of movement when the target is stopped.
+     *    To cancel the follow, use: `viewport.plugins.remove('follow')`
+     *
+     * @fires 'moved' event
      *
      * @param {PIXI.DisplayObject} target to follow
      * @param {IFollowOptions} [options]
