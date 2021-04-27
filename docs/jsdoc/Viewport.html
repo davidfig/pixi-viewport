@@ -662,7 +662,7 @@
             <span class="">
                 new Viewport
             </span>
-            <span class="signature">(options)</span>
+            <span class="signature">(ViewportOptions)</span>
             
             
             
@@ -699,6 +699,8 @@
 		<th>Type</th>
 		
 		
+		<th>Default</th>
+		
 		
 		<th class="last">Description</th>
 	</tr>
@@ -709,18 +711,499 @@
 	
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>ViewportOptions</code></td>
             
             
             <td class="type">
             
+                
+<span class="param-type">IViewportOptions</span>
+
+
+            
             </td>
             
+            
+                <td class="default">
+                
+                </td>
             
             
             <td class="description last">
                 
+                    
+                    
+                        
+                    
+                
                 </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.screenWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    window.innerWidth
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.screenHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    window.innerHeight
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.worldWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    this.width
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.worldHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    this.height
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.threshold</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    5
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>number of pixels to move to trigger an input event (e.g., drag, pinch)
+or disable a clicked event</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.passiveWheel</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>whether the 'wheel' event is set to passive (note: if false,
+e.preventDefault() will be called when wheel is used over the viewport)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.stopPropagation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>whether to stopPropagation of events that impact the viewport
+(except wheel events, see options.passiveWheel)</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.forceHitArea</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">HitArea</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>change the default hitArea from world size to a new value</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.noTicker</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>set this if you want to manually call update() function on each frame</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.ticker</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.Ticker</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    PIXI.Ticker.shared
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>use this PIXI.ticker for updates</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.interaction</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.InteractionManager</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>InteractionManager, available from instantiated
+WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
+location on screen</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.divWheel</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    document.body
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>div to attach the wheel event</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options.disableOnContextMenu</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>remove oncontextmenu=() =&gt; {} from the divWheel element</p></td>
         </tr>
 	
 	
@@ -1795,7 +2278,7 @@ Viewport.worldScreenHeight)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line769">Viewport.js:769</a>
+            <a href="js_Viewport.js.html#line787">Viewport.js:787</a>
         </div>
         
     </div>
@@ -1901,7 +2384,7 @@ To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/o
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line666">Viewport.js:666</a>
+            <a href="js_Viewport.js.html#line684">Viewport.js:684</a>
         </div>
         
     </div>
@@ -2473,7 +2956,7 @@ where to place world if too small for screen</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line625">Viewport.js:625</a>
+            <a href="js_Viewport.js.html#line643">Viewport.js:643</a>
         </div>
         
     </div>
@@ -2878,7 +3361,7 @@ none, bottomLeft)     * @returns {Viewport} this</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line795">Viewport.js:795</a>
+            <a href="js_Viewport.js.html#line813">Viewport.js:813</a>
         </div>
         
     </div>
@@ -3245,7 +3728,7 @@ larger than the screen).</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line641">Viewport.js:641</a>
+            <a href="js_Viewport.js.html#line659">Viewport.js:659</a>
         </div>
         
     </div>
@@ -3536,7 +4019,7 @@ viewport.bounce() is active)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line81">Viewport.js:81</a>
+            <a href="js_Viewport.js.html#line99">Viewport.js:99</a>
         </div>
         
     </div>
@@ -3612,7 +4095,7 @@ viewport.bounce() is active)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line591">Viewport.js:591</a>
+            <a href="js_Viewport.js.html#line609">Viewport.js:609</a>
         </div>
         
     </div>
@@ -4232,7 +4715,7 @@ pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.</p></td
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line844">Viewport.js:844</a>
+            <a href="js_Viewport.js.html#line862">Viewport.js:862</a>
         </div>
         
     </div>
@@ -4420,7 +4903,7 @@ pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.</p></td
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line300">Viewport.js:300</a>
+            <a href="js_Viewport.js.html#line318">Viewport.js:318</a>
         </div>
         
     </div>
@@ -4594,7 +5077,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line287">Viewport.js:287</a>
+            <a href="js_Viewport.js.html#line305">Viewport.js:305</a>
         </div>
         
     </div>
@@ -4768,7 +5251,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line276">Viewport.js:276</a>
+            <a href="js_Viewport.js.html#line294">Viewport.js:294</a>
         </div>
         
     </div>
@@ -4896,7 +5379,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line266">Viewport.js:266</a>
+            <a href="js_Viewport.js.html#line284">Viewport.js:284</a>
         </div>
         
     </div>
@@ -5024,7 +5507,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line395">Viewport.js:395</a>
+            <a href="js_Viewport.js.html#line413">Viewport.js:413</a>
         </div>
         
     </div>
@@ -5259,7 +5742,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line341">Viewport.js:341</a>
+            <a href="js_Viewport.js.html#line359">Viewport.js:359</a>
         </div>
         
     </div>
@@ -5528,7 +6011,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line314">Viewport.js:314</a>
+            <a href="js_Viewport.js.html#line332">Viewport.js:332</a>
         </div>
         
     </div>
@@ -5747,7 +6230,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line365">Viewport.js:365</a>
+            <a href="js_Viewport.js.html#line383">Viewport.js:383</a>
         </div>
         
     </div>
@@ -5897,7 +6380,7 @@ does not change the viewport (use fit... to change)</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line727">Viewport.js:727</a>
+            <a href="js_Viewport.js.html#line745">Viewport.js:745</a>
         </div>
         
     </div>
@@ -6222,7 +6705,7 @@ without moving the viewport     * @returns {Viewport} this</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line168">Viewport.js:168</a>
+            <a href="js_Viewport.js.html#line186">Viewport.js:186</a>
         </div>
         
     </div>
@@ -6298,7 +6781,7 @@ without moving the viewport     * @returns {Viewport} this</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line818">Viewport.js:818</a>
+            <a href="js_Viewport.js.html#line836">Viewport.js:836</a>
         </div>
         
     </div>
@@ -6828,7 +7311,7 @@ movement (Math.cos(angle from center), Math.sin(angle from center))</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line497">Viewport.js:497</a>
+            <a href="js_Viewport.js.html#line515">Viewport.js:515</a>
         </div>
         
     </div>
@@ -6904,7 +7387,7 @@ movement (Math.cos(angle from center), Math.sin(angle from center))</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line681">Viewport.js:681</a>
+            <a href="js_Viewport.js.html#line699">Viewport.js:699</a>
         </div>
         
     </div>
@@ -7267,7 +7750,7 @@ movement (Math.cos(angle from center), Math.sin(angle from center))</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line133">Viewport.js:133</a>
+            <a href="js_Viewport.js.html#line151">Viewport.js:151</a>
         </div>
         
     </div>
@@ -7343,7 +7826,7 @@ movement (Math.cos(angle from center), Math.sin(angle from center))</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line432">Viewport.js:432</a>
+            <a href="js_Viewport.js.html#line450">Viewport.js:450</a>
         </div>
         
     </div>
@@ -7528,7 +8011,7 @@ movement (Math.cos(angle from center), Math.sin(angle from center))</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line703">Viewport.js:703</a>
+            <a href="js_Viewport.js.html#line721">Viewport.js:721</a>
         </div>
         
     </div>
@@ -8050,7 +8533,7 @@ the desired location</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line492">Viewport.js:492</a>
+            <a href="js_Viewport.js.html#line510">Viewport.js:510</a>
         </div>
         
     </div>
@@ -8550,7 +9033,7 @@ desired zoom</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line95">Viewport.js:95</a>
+            <a href="js_Viewport.js.html#line113">Viewport.js:113</a>
         </div>
         
     </div>
@@ -8672,7 +9155,7 @@ desired zoom</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line747">Viewport.js:747</a>
+            <a href="js_Viewport.js.html#line765">Viewport.js:765</a>
         </div>
         
     </div>
@@ -9107,7 +9590,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line464">Viewport.js:464</a>
+            <a href="js_Viewport.js.html#line482">Viewport.js:482</a>
         </div>
         
     </div>
@@ -9292,7 +9775,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line454">Viewport.js:454</a>
+            <a href="js_Viewport.js.html#line472">Viewport.js:472</a>
         </div>
         
     </div>
@@ -9487,7 +9970,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line930">Viewport.js:930</a>
+            <a href="js_Viewport.js.html#line948">Viewport.js:948</a>
         </div>
         
     </div>
@@ -9573,7 +10056,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line925">Viewport.js:925</a>
+            <a href="js_Viewport.js.html#line943">Viewport.js:943</a>
         </div>
         
     </div>
@@ -9659,7 +10142,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line940">Viewport.js:940</a>
+            <a href="js_Viewport.js.html#line958">Viewport.js:958</a>
         </div>
         
     </div>
@@ -9745,7 +10228,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line935">Viewport.js:935</a>
+            <a href="js_Viewport.js.html#line953">Viewport.js:953</a>
         </div>
         
     </div>
@@ -9831,7 +10314,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line871">Viewport.js:871</a>
+            <a href="js_Viewport.js.html#line889">Viewport.js:889</a>
         </div>
         
     </div>
@@ -10014,7 +10497,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line887">Viewport.js:887</a>
+            <a href="js_Viewport.js.html#line905">Viewport.js:905</a>
         </div>
         
     </div>
@@ -10197,7 +10680,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line879">Viewport.js:879</a>
+            <a href="js_Viewport.js.html#line897">Viewport.js:897</a>
         </div>
         
     </div>
@@ -10380,7 +10863,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line995">Viewport.js:995</a>
+            <a href="js_Viewport.js.html#line1013">Viewport.js:1013</a>
         </div>
         
     </div>
@@ -10466,7 +10949,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line965">Viewport.js:965</a>
+            <a href="js_Viewport.js.html#line983">Viewport.js:983</a>
         </div>
         
     </div>
@@ -10552,7 +11035,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line960">Viewport.js:960</a>
+            <a href="js_Viewport.js.html#line978">Viewport.js:978</a>
         </div>
         
     </div>
@@ -10638,7 +11121,7 @@ change this default</p>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line970">Viewport.js:970</a>
+            <a href="js_Viewport.js.html#line988">Viewport.js:988</a>
         </div>
         
     </div>
@@ -10799,7 +11282,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line985">Viewport.js:985</a>
+            <a href="js_Viewport.js.html#line1003">Viewport.js:1003</a>
         </div>
         
     </div>
@@ -10885,7 +11368,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line900">Viewport.js:900</a>
+            <a href="js_Viewport.js.html#line918">Viewport.js:918</a>
         </div>
         
     </div>
@@ -10971,7 +11454,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line895">Viewport.js:895</a>
+            <a href="js_Viewport.js.html#line913">Viewport.js:913</a>
         </div>
         
     </div>
@@ -11057,7 +11540,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line910">Viewport.js:910</a>
+            <a href="js_Viewport.js.html#line928">Viewport.js:928</a>
         </div>
         
     </div>
@@ -11143,7 +11626,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line905">Viewport.js:905</a>
+            <a href="js_Viewport.js.html#line923">Viewport.js:923</a>
         </div>
         
     </div>
@@ -11229,7 +11712,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line920">Viewport.js:920</a>
+            <a href="js_Viewport.js.html#line938">Viewport.js:938</a>
         </div>
         
     </div>
@@ -11315,7 +11798,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line915">Viewport.js:915</a>
+            <a href="js_Viewport.js.html#line933">Viewport.js:933</a>
         </div>
         
     </div>
@@ -11401,7 +11884,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line945">Viewport.js:945</a>
+            <a href="js_Viewport.js.html#line963">Viewport.js:963</a>
         </div>
         
     </div>
@@ -11654,7 +12137,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line955">Viewport.js:955</a>
+            <a href="js_Viewport.js.html#line973">Viewport.js:973</a>
         </div>
         
     </div>
@@ -11740,7 +12223,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line978">Viewport.js:978</a>
+            <a href="js_Viewport.js.html#line996">Viewport.js:996</a>
         </div>
         
     </div>
@@ -11900,7 +12383,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         
         <div class="tag-source">
-            <a href="js_Viewport.js.html#line990">Viewport.js:990</a>
+            <a href="js_Viewport.js.html#line1008">Viewport.js:1008</a>
         </div>
         
     </div>
@@ -11982,7 +12465,7 @@ clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)</p></td>
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Sun Apr 25 2021 18:52:30 GMT+0800 (Taipei Standard Time)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Apr 28 2021 06:24:54 GMT+0800 (Taipei Standard Time)
             </div>
         </footer>
     </div>

@@ -195,7 +195,25 @@ export class Viewport extends Container
     private _worldHeight?: number | null;
 
     /**
-     * @param options
+     * @param {IViewportOptions} ViewportOptions
+     * @param {number} [options.screenWidth=window.innerWidth]
+     * @param {number} [options.screenHeight=window.innerHeight]
+     * @param {number} [options.worldWidth=this.width]
+     * @param {number} [options.worldHeight=this.height]
+     * @param {number} [options.threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+     * or disable a clicked event
+     * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive (note: if false,
+     * e.preventDefault() will be called when wheel is used over the viewport)
+     * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
+     * (except wheel events, see options.passiveWheel)
+     * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
+     * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
+     * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
+     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated
+     * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
+     * location on screen
+     * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
+     * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
      */
     constructor(options: IViewportOptions = {})
     {
