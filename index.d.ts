@@ -498,7 +498,7 @@ export declare class Viewport extends Container {
     constructor(options?: IViewportOptions);
     destroy(options?: IDestroyOptions): void;
     update(elapsed: number): void;
-    resize(screenWidth: number | undefined, screenHeight: number | undefined, worldWidth: number, worldHeight: number): void;
+    resize(screenWidth?: number, screenHeight?: number, worldWidth?: number, worldHeight?: number): void;
     get worldWidth(): number;
     set worldWidth(value: number);
     get worldHeight(): number;

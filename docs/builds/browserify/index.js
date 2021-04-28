@@ -2,8 +2,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.30.2
- * Compiled Thu, 22 Apr 2021 22:54:13 UTC
+ * pixi-viewport - v4.30.3
+ * Compiled Wed, 28 Apr 2021 08:00:44 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1730,8 +1730,30 @@ class Drag extends Plugin
         }
         else
         {
-            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
+            if (clamp.includes('left'))
+            {
+                this.underflowX = -1;
+            }
+            else if (clamp.includes('right'))
+            {
+                this.underflowX = 1;
+            }
+            else
+            {
+                this.underflowX = 0;
+            }
+            if (clamp.includes('top'))
+            {
+                this.underflowY = -1;
+            }
+            else if (clamp.includes('bottom'))
+            {
+                this.underflowY = 1;
+            }
+            else
+            {
+                this.underflowY = 0;
+            }
         }
     }
 
@@ -1921,6 +1943,10 @@ class Drag extends Plugin
                 {
                     event.preventDefault();
                 }
+                if (this.parent.options.stopPropagation)
+                {
+                    event.stopPropagation();
+                }
 
                 return true;
             }
@@ -1963,7 +1989,7 @@ class Drag extends Plugin
             }
             else if (this.parent.right > this.parent.worldWidth)
             {
-                this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth;
+                this.parent.x = (-this.parent.worldWidth * this.parent.scale.x) + this.parent.screenWidth;
                 decelerate.x = 0;
             }
         }
@@ -1992,7 +2018,7 @@ class Drag extends Plugin
                 }
                 if (this.parent.bottom > this.parent.worldHeight)
                 {
-                    this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight;
+                    this.parent.y = (-this.parent.worldHeight * this.parent.scale.y) + this.parent.screenHeight;
                     decelerate.y = 0;
                 }
             }
@@ -4078,7 +4104,25 @@ class Viewport extends display.Container
     
 
     /**
-     * @param options
+     * @param {IViewportOptions} ViewportOptions
+     * @param {number} [options.screenWidth=window.innerWidth]
+     * @param {number} [options.screenHeight=window.innerHeight]
+     * @param {number} [options.worldWidth=this.width]
+     * @param {number} [options.worldHeight=this.height]
+     * @param {number} [options.threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+     * or disable a clicked event
+     * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive (note: if false,
+     * e.preventDefault() will be called when wheel is used over the viewport)
+     * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
+     * (except wheel events, see options.passiveWheel)
+     * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
+     * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
+     * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
+     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated
+     * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
+     * location on screen
+     * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
+     * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
      */
     constructor(options = {})
     {
@@ -4987,9 +5031,11 @@ class Viewport extends display.Container
      *
      * NOTES:
      *    uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
-     *    options.acceleration is not perfect as it doesn't know the velocity of the target
-     *    it adds acceleration to the start of movement and deceleration to the end of movement when the target is stopped
-     *    fires 'moved' event
+     *    options.acceleration is not perfect as it doesn't know the velocity of the target. It adds acceleration
+     *    to the start of movement and deceleration to the end of movement when the target is stopped.
+     *    To cancel the follow, use: `viewport.plugins.remove('follow')`
+     *
+     * @fires 'moved' event
      *
      * @param {PIXI.DisplayObject} target to follow
      * @param {IFollowOptions} [options]
