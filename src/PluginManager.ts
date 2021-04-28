@@ -23,7 +23,7 @@ const PLUGIN_ORDER = [
     'follow',
     'mouse-edges',
     'decelerate',
-    'aniamte',
+    'animate',
     'bounce',
     'snap-zoom',
     'clamp-zoom',
