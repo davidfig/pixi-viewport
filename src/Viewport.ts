@@ -323,8 +323,8 @@ export class Viewport extends Container
     resize(
         screenWidth = window.innerWidth,
         screenHeight = window.innerHeight,
-        worldWidth: number,
-        worldHeight: number
+        worldWidth?: number,
+        worldHeight?: number
     ): void
     {
         this.screenWidth = screenWidth;

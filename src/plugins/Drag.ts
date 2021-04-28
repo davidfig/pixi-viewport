@@ -129,7 +129,7 @@ export class Drag extends Plugin
     protected reverse: 1 | -1;
 
     /** Holds whether dragging is enabled along the x-axis. */
-    protected xDirection: boolean
+    protected xDirection: boolean;
 
     /** Holds whether dragging is enabled along the y-axis. */
     protected yDirection: boolean;
@@ -138,7 +138,7 @@ export class Drag extends Plugin
     protected keyIsPressed: boolean;
 
     /** Holds whether the left, center, and right buttons are required to pan. */
-    protected mouse!: [boolean, boolean, boolean]
+    protected mouse!: [boolean, boolean, boolean];
 
     /** Underflow factor along x-axis */
     protected underflowX!: -1 | 0 | 1;
@@ -147,7 +147,7 @@ export class Drag extends Plugin
     protected underflowY!: -1 | 0 | 1;
 
     /** Last pointer position while panning. */
-    protected last?: IPointData | null
+    protected last?: IPointData | null;
 
     /** The ID of the pointer currently panning the viewport. */
     protected current?: number;
@@ -226,8 +226,30 @@ export class Drag extends Plugin
         }
         else
         {
-            this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-            this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
+            if (clamp.includes('left'))
+            {
+                this.underflowX = -1;
+            }
+            else if (clamp.includes('right'))
+            {
+                this.underflowX = 1;
+            }
+            else
+            {
+                this.underflowX = 0;
+            }
+            if (clamp.includes('top'))
+            {
+                this.underflowY = -1;
+            }
+            else if (clamp.includes('bottom'))
+            {
+                this.underflowY = 1;
+            }
+            else
+            {
+                this.underflowY = 0;
+            }
         }
     }
 
@@ -417,6 +439,10 @@ export class Drag extends Plugin
                 {
                     event.preventDefault();
                 }
+                if (this.parent.options.stopPropagation)
+                {
+                    event.stopPropagation();
+                }
 
                 return true;
             }
@@ -425,13 +451,13 @@ export class Drag extends Plugin
         return false;
     }
 
-    public resume()
+    public resume(): void
     {
         this.last = null;
         this.paused = false;
     }
 
-    public clamp()
+    public clamp(): void
     {
         const decelerate: Partial<Decelerate> = this.parent.plugins.get('decelerate', true) || {};
 
@@ -459,7 +485,7 @@ export class Drag extends Plugin
             }
             else if (this.parent.right > this.parent.worldWidth)
             {
-                this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth;
+                this.parent.x = (-this.parent.worldWidth * this.parent.scale.x) + this.parent.screenWidth;
                 decelerate.x = 0;
             }
         }
@@ -488,7 +514,7 @@ export class Drag extends Plugin
                 }
                 if (this.parent.bottom > this.parent.worldHeight)
                 {
-                    this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight;
+                    this.parent.y = (-this.parent.worldHeight * this.parent.scale.y) + this.parent.screenHeight;
                     decelerate.y = 0;
                 }
             }
