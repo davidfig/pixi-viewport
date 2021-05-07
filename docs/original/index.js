@@ -54319,7 +54319,7 @@
       'follow',
       'mouse-edges',
       'decelerate',
-      'aniamte',
+      'animate',
       'bounce',
       'snap-zoom',
       'clamp-zoom',
@@ -55329,17 +55329,22 @@
           return this;
       }
 
-      // eslint-disable-next-line
-      // @ts-ignore
-      set visible(value)
-      {
-          if (!value)
-          {
-              this.input.clear();
-          }
+      // this doesn't work
+      // set visible(value: boolean)
+      // {
+      //     console.log('hello!');
+      //     if (!value)
+      //     {
+      //         debugger;
+      //         this.input.clear();
+      //     }
+      //     super.visible = value;
+      // }
 
-          super.visible = value;
-      }
+      // get visible(): boolean
+      // {
+      //     return super.visible;
+      // }
 
       /**
        * Zoom viewport to specific value.

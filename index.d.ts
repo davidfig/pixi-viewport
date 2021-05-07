@@ -530,7 +530,6 @@ export declare class Viewport extends Container {
     fitHeight(height?: number, center?: boolean, scaleX?: boolean, noClamp?: boolean): Viewport;
     fitWorld(center?: boolean): Viewport;
     fit(center?: boolean, width?: number, height?: number): Viewport;
-    set visible(value: boolean);
     setZoom(scale: number, center?: boolean): Viewport;
     zoomPercent(percent: number, center?: boolean): Viewport;
     zoom(change: number, center?: boolean): Viewport;
