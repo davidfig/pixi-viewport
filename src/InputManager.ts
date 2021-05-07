@@ -61,7 +61,7 @@ export class InputManager
      * Removes all event listeners from viewport
      * (useful for cleanup of wheel when removing viewport)
      */
-    public destroy()
+    public destroy(): void
     {
         this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction as any);
     }

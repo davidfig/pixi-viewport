@@ -322,6 +322,27 @@
     }
   };
 
+  var commonjsGlobal$2 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+  function getDefaultExportFromCjs (x) {
+  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+  }
+
+  function getAugmentedNamespace(n) {
+  	if (n.__esModule) return n;
+  	var a = Object.defineProperty({}, '__esModule', {value: true});
+  	Object.keys(n).forEach(function (k) {
+  		var d = Object.getOwnPropertyDescriptor(n, k);
+  		Object.defineProperty(a, k, d.get ? d : {
+  			enumerable: true,
+  			get: function () {
+  				return n[k];
+  			}
+  		});
+  	});
+  	return a;
+  }
+
   /*
   object-assign
   (c) Sindre Sorhus
@@ -927,33 +948,9 @@
       ROUND_PIXELS: false,
   };
 
-  var commonjsGlobal$2 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+  var eventemitter3$1 = {exports: {}};
 
-  function getDefaultExportFromCjs (x) {
-  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-  }
-
-  function getAugmentedNamespace(n) {
-  	if (n.__esModule) return n;
-  	var a = Object.defineProperty({}, '__esModule', {value: true});
-  	Object.keys(n).forEach(function (k) {
-  		var d = Object.getOwnPropertyDescriptor(n, k);
-  		Object.defineProperty(a, k, d.get ? d : {
-  			enumerable: true,
-  			get: function () {
-  				return n[k];
-  			}
-  		});
-  	});
-  	return a;
-  }
-
-  function createCommonjsModule$2(fn) {
-    var module = { exports: {} };
-  	return fn(module, module.exports), module.exports;
-  }
-
-  var eventemitter3$1 = createCommonjsModule$2(function (module) {
+  (function (module) {
 
   var has = Object.prototype.hasOwnProperty
     , prefix = '~';
@@ -1289,10 +1286,14 @@
   {
     module.exports = EventEmitter;
   }
-  });
+  }(eventemitter3$1));
 
-  var earcut_1 = earcut;
-  var _default = earcut;
+  var EventEmitter$2 = eventemitter3$1.exports;
+
+  var earcut$2 = {exports: {}};
+
+  earcut$2.exports = earcut;
+  earcut$2.exports.default = earcut;
 
   function earcut(data, holeIndices, dim) {
 
@@ -1968,7 +1969,8 @@
       }
       return result;
   };
-  earcut_1.default = _default;
+
+  var earcut$1 = earcut$2.exports;
 
   /*! https://mths.be/punycode v1.4.1 by @mathias */
 
@@ -8210,7 +8212,7 @@
    * @class
    * @memberof PIXI
    */
-  var Transform = /** @class */ (function () {
+  var Transform$1 = /** @class */ (function () {
       function Transform() {
           /**
            * The world transformation matrix.
@@ -9079,7 +9081,7 @@
            *
            * @member {PIXI.Transform}
            */
-          _this.transform = new Transform();
+          _this.transform = new Transform$1();
           /**
            * The opacity of the object.
            *
@@ -9757,7 +9759,7 @@
           configurable: true
       });
       return DisplayObject;
-  }(eventemitter3$1));
+  }(EventEmitter$2));
   var TemporaryDisplayObject = /** @class */ (function (_super) {
       __extends$k(TemporaryDisplayObject, _super);
       function TemporaryDisplayObject() {
@@ -13864,7 +13866,7 @@
           this.search = null;
       };
       return InteractionManager;
-  }(eventemitter3$1));
+  }(EventEmitter$2));
 
   /*!
    * @pixi/runner - v6.0.2
@@ -15065,7 +15067,7 @@
        */
       BaseTexture._globalBatch = 0;
       return BaseTexture;
-  }(eventemitter3$1));
+  }(EventEmitter$2));
 
   /**
    * Resource that can manage several resource (items) inside.
@@ -17384,7 +17386,7 @@
           return this.baseTexture;
       };
       return Texture;
-  }(eventemitter3$1));
+  }(EventEmitter$2));
   function createWhiteTexture() {
       var canvas = document.createElement('canvas');
       canvas.width = 16;
@@ -24002,7 +24004,7 @@
           configurable: true
       });
       return AbstractRenderer;
-  }(eventemitter3$1));
+  }(EventEmitter$2));
 
   /**
    * The Renderer draws the scene and all its content onto a WebGL enabled canvas.
@@ -26031,7 +26033,9 @@
 
   var parseUri = parseURI;
 
-  var miniSignals = createCommonjsModule$2(function (module, exports) {
+  var miniSignals = {exports: {}};
+
+  (function (module, exports) {
 
   Object.defineProperty(exports, '__esModule', {
     value: true
@@ -26196,9 +26200,9 @@
 
   exports['default'] = MiniSignal;
   module.exports = exports['default'];
-  });
+  }(miniSignals, miniSignals.exports));
 
-  var Signal = /*@__PURE__*/getDefaultExportFromCjs(miniSignals);
+  var Signal = /*@__PURE__*/getDefaultExportFromCjs(miniSignals.exports);
 
   /*!
    * resource-loader - v3.0.1
@@ -33379,7 +33383,7 @@
                   points = points.concat(hole.points);
               }
               // sort color
-              var triangles = earcut_1(points, holeArray, 2);
+              var triangles = earcut$1(points, holeArray, 2);
               if (!triangles) {
                   return;
               }
@@ -33592,7 +33596,7 @@
           var verts = graphicsGeometry.points;
           var indices = graphicsGeometry.indices;
           var vecPos = verts.length / 2;
-          var triangles = earcut_1(points, null, 2);
+          var triangles = earcut$1(points, null, 2);
           for (var i = 0, j = triangles.length; i < j; i += 3) {
               indices.push(triangles[i] + vecPos);
               //     indices.push(triangles[i] + vecPos);
@@ -39977,7 +39981,7 @@
            *
            * @member {PIXI.Transform}
            */
-          _this.tileTransform = new Transform();
+          _this.tileTransform = new Transform$1();
           /**
            * The with of the tiling sprite
            *
@@ -47238,7 +47242,7 @@
    * test2.tint = 0x0000ff
    * secondEase.add(test2, { blend: [0xff0000, 0x00ff00], scale: 2 })
    */
-  class Ease$1 extends eventemitter3
+  class Ease$2 extends eventemitter3
   {
       /**
        * @param {object} [options]
@@ -47517,17 +47521,19 @@
   }
 
   // manages the ids used to define the DisplayObject ease variable (enabled multiple eases attached to the same object)
-  Ease$1.id = 0;
+  Ease$2.id = 0;
 
   /**
    * default instantiated Ease class
    * @type {Ease}
    */
-  let ease$2 = new Ease$1();
+  let ease$2 = new Ease$2();
 
-  Ease$1.ease = ease$2;
+  Ease$2.ease = ease$2;
 
-  var alea = createCommonjsModule$2(function (module) {
+  var alea$1 = {exports: {}};
+
+  (function (module) {
   // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
   // http://baagoe.com/en/RandomMusings/javascript/
   // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -47640,9 +47646,11 @@
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
-  });
+  }(alea$1));
 
-  var xor128 = createCommonjsModule$2(function (module) {
+  var xor128$1 = {exports: {}};
+
+  (function (module) {
   // A Javascript implementaion of the "xor128" prng algorithm by
   // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -47722,9 +47730,11 @@
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
-  });
+  }(xor128$1));
 
-  var xorwow = createCommonjsModule$2(function (module) {
+  var xorwow$1 = {exports: {}};
+
+  (function (module) {
   // A Javascript implementaion of the "xorwow" prng algorithm by
   // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -47809,9 +47819,11 @@
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
-  });
+  }(xorwow$1));
 
-  var xorshift7 = createCommonjsModule$2(function (module) {
+  var xorshift7$1 = {exports: {}};
+
+  (function (module) {
   // A Javascript implementaion of the "xorshift7" algorithm by
   // François Panneton and Pierre L'ecuyer:
   // "On the Xorgshift Random Number Generators"
@@ -47908,9 +47920,11 @@
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
-  });
+  }(xorshift7$1));
 
-  var xor4096 = createCommonjsModule$2(function (module) {
+  var xor4096$1 = {exports: {}};
+
+  (function (module) {
   // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
   //
   // This fast non-cryptographic random number generator is designed for
@@ -48056,9 +48070,11 @@
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
-  });
+  }(xor4096$1));
 
-  var tychei = createCommonjsModule$2(function (module) {
+  var tychei$1 = {exports: {}};
+
+  (function (module) {
   // A Javascript implementaion of the "Tyche-i" prng algorithm by
   // Samuel Neves and Filipe Araujo.
   // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -48159,7 +48175,9 @@
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
-  });
+  }(tychei$1));
+
+  var seedrandom$2 = {exports: {}};
 
   var empty = {};
 
@@ -48194,7 +48212,7 @@
 
   */
 
-  var seedrandom$1 = createCommonjsModule$2(function (module) {
+  (function (module) {
   (function (global, pool, math) {
   //
   // The following constants are related to IEEE 754 limits.
@@ -48421,7 +48439,7 @@
     [],     // pool: entropy pool starts empty
     Math    // math: package containing random, pow, and seedrandom
   );
-  });
+  }(seedrandom$2));
 
   // A library of seedable RNGs implemented in Javascript.
   //
@@ -48435,17 +48453,17 @@
   // alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
   // Period: ~2^116
   // Reported to pass all BigCrush tests.
-
+  var alea = alea$1.exports;
 
   // xor128, a pure xor-shift generator by George Marsaglia.
   // Period: 2^128-1.
   // Reported to fail: MatrixRank and LinearComp.
-
+  var xor128 = xor128$1.exports;
 
   // xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
   // Period: 2^192-2^32
   // Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-
+  var xorwow = xorwow$1.exports;
 
   // xorshift7, by François Panneton and Pierre L'ecuyer, takes
   // a different approach: it adds robustness by allowing more shifts
@@ -48453,7 +48471,7 @@
   // with 256 bits, that passes BigCrush with no systmatic failures.
   // Period 2^256-1.
   // No systematic BigCrush failures reported.
-
+  var xorshift7 = xorshift7$1.exports;
 
   // xor4096, by Richard Brent, is a 4096-bit xor-shift with a
   // very long period that also adds a Weyl generator. It also passes
@@ -48462,27 +48480,27 @@
   // collisions.
   // Period: 2^4128-2^32.
   // No systematic BigCrush failures reported.
-
+  var xor4096 = xor4096$1.exports;
 
   // Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
   // number generator derived from ChaCha, a modern stream cipher.
   // https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
   // Period: ~2^127
   // No systematic BigCrush failures reported.
-
+  var tychei = tychei$1.exports;
 
   // The original ARC4-based prng included in this library.
   // Period: ~2^1600
+  var sr = seedrandom$2.exports;
 
+  sr.alea = alea;
+  sr.xor128 = xor128;
+  sr.xorwow = xorwow;
+  sr.xorshift7 = xorshift7;
+  sr.xor4096 = xor4096;
+  sr.tychei = tychei;
 
-  seedrandom$1.alea = alea;
-  seedrandom$1.xor128 = xor128;
-  seedrandom$1.xorwow = xorwow;
-  seedrandom$1.xorshift7 = xorshift7;
-  seedrandom$1.xor4096 = xor4096;
-  seedrandom$1.tychei = tychei;
-
-  var seedrandom = seedrandom$1;
+  var seedrandom$1 = sr;
 
   var _createClass$6 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -48496,7 +48514,7 @@
   // copyright YOPEY YOPEY LLC 2016-17
   // https://github.com/davidfig/random
 
-
+  var seedrandom = seedrandom$1;
 
   var Random = function () {
       function Random() {
@@ -49537,7 +49555,9 @@
       }
   }
 
-  var penner = createCommonjsModule$2(function (module, exports) {
+  var penner = {exports: {}};
+
+  (function (module, exports) {
   /*
   	Copyright © 2001 Robert Penner
   	All rights reserved.
@@ -49781,7 +49801,9 @@
     umd(penner);
 
   }).call(commonjsGlobal$2);
-  });
+  }(penner));
+
+  var Penner$1 = penner.exports;
 
   var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -50039,7 +50061,7 @@
       return document.defaultView.getComputedStyle(el, '').getPropertyValue(style);
   }
 
-  var utils = {
+  var utils$2 = {
       getComputed: getComputed
   };
 
@@ -50047,7 +50069,7 @@
 
   function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-
+  var utils$1 = utils$2;
 
   var ORDER = ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'];
 
@@ -50057,10 +50079,10 @@
 
           this.element = element;
           this.margins = {
-              marginTop: { start: parseInt(utils.getComputed(element, 'margin-top')) },
-              marginRight: { start: parseInt(utils.getComputed(element, 'margin-right')) },
-              marginBottom: { start: parseInt(utils.getComputed(element, 'margin-bottom')) },
-              marginLeft: { start: parseInt(utils.getComputed(element, 'margin-left')) }
+              marginTop: { start: parseInt(utils$1.getComputed(element, 'margin-top')) },
+              marginRight: { start: parseInt(utils$1.getComputed(element, 'margin-right')) },
+              marginBottom: { start: parseInt(utils$1.getComputed(element, 'margin-bottom')) },
+              marginLeft: { start: parseInt(utils$1.getComputed(element, 'margin-left')) }
           };
           this.add(entry, to);
       }
@@ -50156,15 +50178,15 @@
 
   function _inherits$1(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+  var EventEmitter$1 = eventemitter3$1.exports;
 
+  var Number$1 = number;
+  var Color = color;
+  var Transform = transform;
+  var Margin = margin;
+  var utils = utils$2;
 
-
-
-
-
-
-
-  var Ease = function (_EventEmitter) {
+  var Ease$1 = function (_EventEmitter) {
       _inherits$1(Ease, _EventEmitter);
 
       /**
@@ -50217,34 +50239,34 @@
           for (var entry in params) {
               switch (entry) {
                   case 'left':
-                      _this.list.push(new number(element, entry, element.offsetLeft, params[entry], 'px'));
+                      _this.list.push(new Number$1(element, entry, element.offsetLeft, params[entry], 'px'));
                       break;
 
                   case 'top':
-                      _this.list.push(new number(element, entry, element.offsetTop, params[entry], 'px'));
+                      _this.list.push(new Number$1(element, entry, element.offsetTop, params[entry], 'px'));
                       break;
 
                   case 'bottom':
-                      _this.list.push(new number(element, entry, element.parentNode.offsetHeight - (element.offsetTop + element.offsetHeight), params[entry], 'px'));
+                      _this.list.push(new Number$1(element, entry, element.parentNode.offsetHeight - (element.offsetTop + element.offsetHeight), params[entry], 'px'));
                       break;
 
                   case 'right':
-                      _this.list.push(new number(element, entry, element.parentNode.offsetWidth - (element.offsetLeft + element.offsetWidth), params[entry], 'px'));
+                      _this.list.push(new Number$1(element, entry, element.parentNode.offsetWidth - (element.offsetLeft + element.offsetWidth), params[entry], 'px'));
                       break;
 
                   case 'color':
-                      _this.list.push(new color(element, 'color', params[entry], _this.duration / (1 + params[entry].length)));
+                      _this.list.push(new Color(element, 'color', params[entry], _this.duration / (1 + params[entry].length)));
                       break;
 
                   case 'backgroundColor':
-                      _this.list.push(new color(element, 'backgroundColor', _this.duration / (1 + params[entry].length)));
+                      _this.list.push(new Color(element, 'backgroundColor', _this.duration / (1 + params[entry].length)));
                       break;
 
                   case 'scale':
                       if (_this.transform) {
                           _this.transform.add('scaleX', params[entry]);
                       } else {
-                          _this.transform = new transform(element, 'scaleX', params[entry]);
+                          _this.transform = new Transform(element, 'scaleX', params[entry]);
                           _this.list.push(_this.transform);
                       }
                       _this.transform.add('scaleY', params[entry]);
@@ -50255,21 +50277,21 @@
                       if (_this.transform) {
                           _this.transform.add(entry, params[entry]);
                       } else {
-                          _this.transform = new transform(element, entry, params[entry]);
+                          _this.transform = new Transform(element, entry, params[entry]);
                           _this.list.push(_this.transform);
                       }
                       break;
 
                   case 'opacity':
-                      _this.list.push(new number(element, entry, parseFloat(utils.getComputed(element, 'opacity')), params[entry]));
+                      _this.list.push(new Number$1(element, entry, parseFloat(utils.getComputed(element, 'opacity')), params[entry]));
                       break;
 
                   case 'width':
-                      _this.list.push(new number(element, entry, element.offsetWidth, params[entry], 'px'));
+                      _this.list.push(new Number$1(element, entry, element.offsetWidth, params[entry], 'px'));
                       break;
 
                   case 'height':
-                      _this.list.push(new number(element, entry, element.offsetHeight, params[entry], 'px'));
+                      _this.list.push(new Number$1(element, entry, element.offsetHeight, params[entry], 'px'));
                       break;
 
                   case 'marginLeft':
@@ -50279,7 +50301,7 @@
                       if (_this.margin) {
                           _this.margin.add(entry, params[entry]);
                       } else {
-                          _this.margin = new margin(element, entry, params[entry]);
+                          _this.margin = new Margin(element, entry, params[entry]);
                           _this.list.push(_this.margin);
                       }
                       break;
@@ -50351,7 +50373,7 @@
       }]);
 
       return Ease;
-  }(eventemitter3$1);
+  }(EventEmitter$1);
 
   /**
    * fires when eases are complete
@@ -50371,7 +50393,7 @@
    * @type {Ease}
    */
 
-  var ease$1 = Ease;
+  var ease$1 = Ease$1;
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -50381,10 +50403,10 @@
 
   function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+  var EventEmitter = eventemitter3$1.exports;
+  var Penner = penner.exports;
 
-
-
-
+  var Ease = ease$1;
 
   /**
    * Manages all eases
@@ -50417,7 +50439,7 @@
 
           _this.options = options || {};
           _this.options.duration = _this.options.duration || 1000;
-          _this.options.ease = _this.options.ease || penner.linear;
+          _this.options.ease = _this.options.ease || Penner.linear;
           _this.options.maximumFrameRate = _this.options.maximumFrameRate || 16.667;
           _this.list = [];
           _this.empty = true;
@@ -50528,7 +50550,7 @@
               options.duration = typeof options.duration !== 'undefined' ? options.duration : this.options.duration;
               options.ease = options.ease || this.options.ease;
               if (typeof options.ease === 'string') {
-                  options.ease = penner[options.ease];
+                  options.ease = Penner[options.ease];
               }
               if (Array.isArray(element)) {
                   var eases = [];
@@ -50540,7 +50562,7 @@
                       for (var _iterator = element[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                           var el = _step.value;
 
-                          var ease = new ease$1(el, params, options);
+                          var ease = new Ease(el, params, options);
                           this.list.push(ease);
                           eases.push(ease);
                       }
@@ -50561,7 +50583,7 @@
 
                   return eases;
               } else {
-                  var _ease = new ease$1(element, params, options);
+                  var _ease = new Ease(element, params, options);
                   this.list.push(_ease);
                   return _ease;
               }
@@ -50648,7 +50670,7 @@
       }]);
 
       return DomEase;
-  }(eventemitter3$1);
+  }(EventEmitter);
 
   /**
    * fires when there are no more animations for a DOM element
@@ -50769,7 +50791,7 @@
   {
       if (!ease)
       {
-          return penner[defaults]
+          return Penner$1[defaults]
       }
       else if (typeof ease === 'function')
       {
@@ -50777,7 +50799,7 @@
       }
       else if (typeof ease === 'string')
       {
-          return penner[ease]
+          return Penner$1[ease]
       }
   }
 
@@ -55744,2455 +55766,6 @@
           return this;
       }
 
-<<<<<<< HEAD:docs/index.js
-  /**
-   * @typedef ViewportTouch
-   * @property {number} id
-   * @property {PIXI.Point} last
-  */
-
-  /**
-   * handles all input for Viewport
-   * @private
-   */
-  class InputManager {
-      constructor(viewport) {
-          this.viewport = viewport;
-
-          /**
-           * list of active touches on viewport
-           * @type {ViewportTouch[]}
-           */
-          this.touches = [];
-          this.addListeners();
-      }
-
-      /**
-       * add input listeners
-       * @private
-       */
-      addListeners() {
-          this.viewport.interactive = true;
-          if (!this.viewport.forceHitArea) {
-              this.viewport.hitArea = new Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
-          }
-          this.viewport.on('pointerdown', this.down, this);
-          this.viewport.on('pointermove', this.move, this);
-          this.viewport.on('pointerup', this.up, this);
-          this.viewport.on('pointerupoutside', this.up, this);
-          this.viewport.on('pointercancel', this.up, this);
-          this.viewport.on('pointerout', this.up, this);
-          this.wheelFunction = (e) => this.handleWheel(e);
-          this.viewport.options.divWheel.addEventListener('wheel', this.wheelFunction, { passive: this.viewport.options.passiveWheel });
-          this.isMouseDown = false;
-      }
-
-      /**
-       * removes all event listeners from viewport
-       * (useful for cleanup of wheel when removing viewport)
-       */
-      destroy() {
-          this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction);
-      }
-
-      /**
-       * handle down events for viewport
-       * @param {PIXI.InteractionEvent} event
-       */
-      down(event) {
-          if (this.viewport.pause || !this.viewport.worldVisible) {
-              return
-          }
-          if (event.data.pointerType === 'mouse') {
-              this.isMouseDown = true;
-          }
-          else if (!this.get(event.data.pointerId)) {
-              this.touches.push({ id: event.data.pointerId, last: null });
-          }
-          if (this.count() === 1) {
-              this.last = event.data.global.clone();
-
-              // clicked event does not fire if viewport is decelerating or bouncing
-              const decelerate = this.viewport.plugins.get('decelerate', true);
-              const bounce = this.viewport.plugins.get('bounce', true);
-              if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive())) {
-                  this.clickedAvailable = true;
-              }
-              else {
-                  this.clickedAvailable = false;
-              }
-          }
-          else {
-              this.clickedAvailable = false;
-          }
-
-          const stop = this.viewport.plugins.down(event);
-          if (stop && this.viewport.options.stopPropagation) {
-              event.stopPropagation();
-          }
-      }
-
-      /**
-       * clears all pointer events
-       */
-      clear() {
-          this.isMouseDown = false;
-          this.touches = [];
-          this.last = null;
-      }
-
-      /**
-       * @param {number} change
-       * @returns whether change exceeds threshold
-       */
-      checkThreshold(change) {
-          if (Math.abs(change) >= this.viewport.threshold) {
-              return true
-          }
-          return false
-      }
-
-      /**
-       * handle move events for viewport
-       * @param {PIXI.InteractionEvent} event
-       */
-      move(event) {
-          if (this.viewport.pause || !this.viewport.worldVisible) {
-              return
-          }
-
-          const stop = this.viewport.plugins.move(event);
-
-          if (this.clickedAvailable) {
-              const distX = event.data.global.x - this.last.x;
-              const distY = event.data.global.y - this.last.y;
-              if (this.checkThreshold(distX) || this.checkThreshold(distY)) {
-                  this.clickedAvailable = false;
-              }
-          }
-
-          if (stop && this.viewport.options.stopPropagation) {
-              event.stopPropagation();
-          }
-      }
-
-      /**
-       * handle up events for viewport
-       * @param {PIXI.InteractionEvent} event
-       */
-      up(event) {
-          if (this.viewport.pause || !this.viewport.worldVisible) {
-              return
-          }
-
-          if (event.data.pointerType === 'mouse') {
-              this.isMouseDown = false;
-          }
-
-          if (event.data.pointerType !== 'mouse') {
-              this.remove(event.data.pointerId);
-          }
-
-          const stop = this.viewport.plugins.up(event);
-
-          if (this.clickedAvailable && this.count() === 0) {
-              this.viewport.emit('clicked', { event: event, screen: this.last, world: this.viewport.toWorld(this.last), viewport: this });
-              this.clickedAvailable = false;
-          }
-
-          if (stop && this.viewport.options.stopPropagation) {
-              event.stopPropagation();
-          }
-      }
-
-      /**
-       * gets pointer position if this.interaction is set
-       * @param {WheelEvent} event
-       * @return {PIXI.Point}
-       */
-      getPointerPosition(event) {
-          let point = new Point();
-          if (this.viewport.options.interaction) {
-              this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY);
-          }
-          else {
-              point.x = event.clientX;
-              point.y = event.clientY;
-          }
-          return point
-      }
-
-      /**
-       * handle wheel events
-       * @param {WheelEvent} event
-       */
-      handleWheel(event) {
-          if (this.viewport.pause || !this.viewport.worldVisible) {
-              return
-          }
-
-          // do not handle events coming from other elements
-          if (this.viewport.options.interaction && this.viewport.options.interaction.interactionDOMElement !== event.target) {
-              return
-          }
-
-          // only handle wheel events where the mouse is over the viewport
-          const point = this.viewport.toLocal(this.getPointerPosition(event));
-          if (this.viewport.left <= point.x && point.x <= this.viewport.right && this.viewport.top <= point.y && point.y <= this.viewport.bottom) {
-              const stop = this.viewport.plugins.wheel(event);
-              if (stop && !this.viewport.options.passiveWheel) {
-                  event.preventDefault();
-              }
-          }
-      }
-
-      pause() {
-          this.touches = [];
-          this.isMouseDown = false;
-      }
-
-      /**
-       * get touch by id
-       * @param {number} id
-       * @return {ViewportTouch}
-       */
-      get(id) {
-          for (let touch of this.touches) {
-              if (touch.id === id) {
-                  return touch
-              }
-          }
-          return null
-      }
-
-      /**
-       * remove touch by number
-       * @param {number} id
-       */
-      remove(id) {
-          for (let i = 0; i < this.touches.length; i++) {
-              if (this.touches[i].id === id) {
-                  this.touches.splice(i, 1);
-                  return
-              }
-          }
-      }
-
-      /**
-       * @returns {number} count of mouse/touch pointers that are down on the viewport
-       */
-      count() {
-          return (this.isMouseDown ? 1 : 0) + this.touches.length
-      }
-  }
-
-  const PLUGIN_ORDER = ['drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'aniamte', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'];
-
-  /**
-   * Use this to access current plugins or add user-defined plugins
-   */
-  class PluginManager {
-      /**
-       * instantiated by Viewport
-       * @param {Viewport} viewport
-       */
-      constructor(viewport) {
-          this.viewport = viewport;
-          this.list = [];
-          this.plugins = {};
-      }
-
-      /**
-       * Inserts a named plugin or a user plugin into the viewport
-       * default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce', 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
-       * @param {string} name of plugin
-       * @param {Plugin} plugin - instantiated Plugin class
-       * @param {number} index to insert userPlugin (otherwise inserts it at the end)
-       */
-      add(name, plugin, index = PLUGIN_ORDER.length) {
-          this.plugins[name] = plugin;
-          const current = PLUGIN_ORDER.indexOf(name);
-          if (current !== -1) {
-              PLUGIN_ORDER.splice(current, 1);
-          }
-          PLUGIN_ORDER.splice(index, 0, name);
-          this.sort();
-      }
-
-      /**
-       * get plugin
-       * @param {string} name of plugin
-       * @param {boolean} [ignorePaused] return null if plugin is paused
-       * @return {Plugin}
-       */
-      get(name, ignorePaused) {
-          if (ignorePaused) {
-              if (this.plugins[name] && this.plugins[name].paused) {
-                  return null
-              }
-          }
-          return this.plugins[name]
-      }
-
-      /**
-       * update all active plugins
-       * @ignore
-       * @param {number} elapsed type in milliseconds since last update
-       */
-      update(elapsed) {
-          for (let plugin of this.list) {
-              plugin.update(elapsed);
-          }
-      }
-
-      /**
-       * resize all active plugins
-       * @ignore
-       */
-      resize() {
-          for (let plugin of this.list) {
-              plugin.resize();
-          }
-      }
-
-      /**
-       * clamps and resets bounce and decelerate (as needed) after manually moving viewport
-       */
-      reset() {
-          for (let plugin of this.list) {
-              plugin.reset();
-          }
-      }
-
-      /** removes all installed plugins */
-      removeAll() {
-          this.plugins = {};
-          this.sort();
-      }
-
-      /**
-       * removes installed plugin
-       * @param {string} name of plugin (e.g., 'drag', 'pinch')
-       */
-      remove(name) {
-          if (this.plugins[name]) {
-              delete this.plugins[name];
-              this.viewport.emit(name + '-remove');
-              this.sort();
-          }
-      }
-
-      /**
-       * pause plugin
-       * @param {string} name of plugin (e.g., 'drag', 'pinch')
-       */
-      pause(name) {
-          if (this.plugins[name]) {
-              this.plugins[name].pause();
-          }
-      }
-
-      /**
-       * resume plugin
-       * @param {string} name of plugin (e.g., 'drag', 'pinch')
-       */
-      resume(name) {
-          if (this.plugins[name]) {
-              this.plugins[name].resume();
-          }
-      }
-
-      /**
-       * sort plugins according to PLUGIN_ORDER
-       * @ignore
-       */
-      sort() {
-          this.list = [];
-          for (let plugin of PLUGIN_ORDER) {
-              if (this.plugins[plugin]) {
-                  this.list.push(this.plugins[plugin]);
-              }
-          }
-      }
-
-      /**
-       * handle down for all plugins
-       * @ignore
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      down(event) {
-          let stop = false;
-          for (let plugin of this.list) {
-              if (plugin.down(event)) {
-                  stop = true;
-              }
-          }
-          return stop
-      }
-
-      /**
-       * handle move for all plugins
-       * @ignore
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      move(event) {
-          let stop = false;
-          for (let plugin of this.viewport.plugins.list) {
-              if (plugin.move(event)) {
-                  stop = true;
-              }
-          }
-          return stop
-      }
-
-      /**
-       * handle up for all plugins
-       * @ignore
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      up(event) {
-          let stop = false;
-          for (let plugin of this.list) {
-              if (plugin.up(event)) {
-                  stop = true;
-              }
-          }
-          return stop
-      }
-
-      /**
-       * handle wheel event for all plugins
-       * @ignore
-       * @param {WheelEvent} event
-       * @returns {boolean}
-       */
-      wheel(e) {
-          let result = false;
-          for (let plugin of this.list) {
-              if (plugin.wheel(e)) {
-                  result = true;
-              }
-          }
-          return result
-      }
-  }
-
-  /**
-   * derive this class to create user-defined plugins
-   */
-  class Plugin$1 {
-      /**
-       * @param {Viewport} parent
-       */
-      constructor(parent) {
-          this.parent = parent;
-          this.paused = false;
-      }
-
-      /** called when plugin is removed */
-      destroy() {}
-
-      /**
-       * handler for pointerdown PIXI event
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      down() {
-          return false
-      }
-
-      /**
-       * handler for pointermove PIXI event
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      move() {
-          return false
-      }
-
-      /**
-       * handler for pointerup PIXI event
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      up() {
-          return false
-      }
-
-      /**
-       * handler for wheel event on div
-       * @param {WheelEvent} event
-       * @returns {boolean}
-       */
-      wheel() {
-          return false
-      }
-
-      /**
-       * called on each tick
-       * @param {number} elapsed time in millisecond since last update
-       */
-      update() { }
-
-      /** called when the viewport is resized */
-      resize() { }
-
-      /** called when the viewport is manually moved */
-      reset() { }
-
-      /** pause the plugin */
-      pause() {
-          this.paused = true;
-      }
-
-      /** un-pause the plugin */
-      resume() {
-          this.paused = false;
-      }
-  }
-
-  /**
-   * @typedef {object} LastDrag
-   * @property {number} x
-   * @property {number} y
-   * @property {PIXI.Point} parent
-   */
-
-  /**
-   * @typedef DragOptions
-   * @property {string} [direction=all] direction to drag
-   * @property {boolean} [pressDrag=true] whether click to drag is active
-   * @property {boolean} [wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
-   * @property {number} [wheelScroll=1] number of pixels to scroll with each wheel spin
-   * @property {boolean} [reverse] reverse the direction of the wheel scroll
-   * @property {(boolean|string)} [clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
-   * @property {string} [underflow=center] where to place world if too small for screen
-   * @property {number} [factor=1] factor to multiply drag to increase the speed of movement
-   * @property {string} [mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left', right' 'middle', or some combination, like, 'middle-right'; you may want to set viewport.options.disableOnContextMenu if you want to use right-click dragging
-   * @property {string[]} [keyToPress=null] array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
-   * @property {boolean} [ignoreKeyToPressOnTouch=false] ignore keyToPress for touch events
-   * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
-   */
-
-  const dragOptions = {
-      direction: 'all',
-      pressDrag: true,
-      wheel: true,
-      wheelScroll: 1,
-      reverse: false,
-      clampWheel: false,
-      underflow: 'center',
-      factor: 1,
-      mouseButtons: 'all',
-      keyToPress: null,
-      ignoreKeyToPressOnTouch: false,
-      lineHeight: 20,
-  };
-
-  /**
-   * @private
-   */
-  class Drag extends Plugin$1 {
-      /**
-       * @param {Viewport} parent
-       * @param {DragOptions} options
-       */
-      constructor(parent, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, dragOptions, options);
-          this.moved = false;
-          this.reverse = this.options.reverse ? 1 : -1;
-          this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x';
-          this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y';
-          this.keyIsPressed = false;
-
-          this.parseUnderflow();
-          this.mouseButtons(this.options.mouseButtons);
-          if (this.options.keyToPress) {
-              this.handleKeyPresses(this.options.keyToPress);
-          }
-      }
-
-      /**
-       * Handles keypress events and set the keyIsPressed boolean accordingly
-       * @param {array} codes - key codes that can be used to trigger drag event
-       */
-      handleKeyPresses(codes) {
-          window.addEventListener('keydown', e => {
-              if (codes.includes(e.code))
-                  this.keyIsPressed = true;
-          });
-
-          window.addEventListener('keyup', e => {
-              if (codes.includes(e.code))
-                  this.keyIsPressed = false;
-          });
-      }
-
-      /**
-       * initialize mousebuttons array
-       * @param {string} buttons
-       */
-      mouseButtons(buttons) {
-          if (!buttons || buttons === 'all') {
-              this.mouse = [true, true, true];
-          } else {
-              this.mouse = [
-                  buttons.indexOf('left') === -1 ? false : true,
-                  buttons.indexOf('middle') === -1 ? false : true,
-                  buttons.indexOf('right') === -1 ? false : true
-              ];
-          }
-      }
-
-      parseUnderflow() {
-          const clamp = this.options.underflow.toLowerCase();
-          if (clamp === 'center') {
-              this.underflowX = 0;
-              this.underflowY = 0;
-          } else {
-              this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-              this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
-          }
-      }
-
-      /**
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      checkButtons(event) {
-          const isMouse = event.data.pointerType === 'mouse';
-          const count = this.parent.input.count();
-          if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch', true))) {
-              if (!isMouse || this.mouse[event.data.button]) {
-                  return true
-              }
-          }
-          return false
-      }
-
-      /**
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      checkKeyPress(event) {
-          if (!this.options.keyToPress || this.keyIsPressed || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'))
-              return true
-
-          return false
-      }
-
-      /**
-       * @param {PIXI.InteractionEvent} event
-       */
-      down(event) {
-          if (this.paused || !this.options.pressDrag) {
-              return
-          }
-          if (this.checkButtons(event) && this.checkKeyPress(event)) {
-              this.last = { x: event.data.global.x, y: event.data.global.y };
-              this.current = event.data.pointerId;
-              return true
-          } else {
-              this.last = null;
-          }
-      }
-
-      get active() {
-          return this.moved
-      }
-
-      /**
-       * @param {PIXI.InteractionEvent} event
-       */
-      move(event) {
-          if (this.paused || !this.options.pressDrag) {
-              return
-          }
-          if (this.last && this.current === event.data.pointerId) {
-              const x = event.data.global.x;
-              const y = event.data.global.y;
-              const count = this.parent.input.count();
-              if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true))) {
-                  const distX = x - this.last.x;
-                  const distY = y - this.last.y;
-                  if (this.moved || ((this.xDirection && this.parent.input.checkThreshold(distX)) || (this.yDirection && this.parent.input.checkThreshold(distY)))) {
-                      const newPoint = { x, y };
-                      if (this.xDirection) {
-                          this.parent.x += (newPoint.x - this.last.x) * this.options.factor;
-                      }
-                      if (this.yDirection) {
-                          this.parent.y += (newPoint.y - this.last.y) * this.options.factor;
-                      }
-                      this.last = newPoint;
-                      if (!this.moved) {
-                          this.parent.emit('drag-start', { event: event, screen: new Point(this.last.x, this.last.y), world: this.parent.toWorld(new Point(this.last.x, this.last.y)), viewport: this.parent });
-                      }
-                      this.moved = true;
-                      this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
-                      return true
-                  }
-              } else {
-                  this.moved = false;
-              }
-          }
-      }
-
-      /**
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      up(event) {
-          if (this.paused) {
-              return
-          }
-          const touches = this.parent.input.touches;
-          if (touches.length === 1) {
-              const pointer = touches[0];
-              if (pointer.last) {
-                  this.last = { x: pointer.last.x, y: pointer.last.y };
-                  this.current = pointer.id;
-              }
-              this.moved = false;
-              return true
-          } else if (this.last) {
-              if (this.moved) {
-                  const screen = new Point(this.last.x, this.last.y);
-                  this.parent.emit('drag-end', { event: event, screen, world: this.parent.toWorld(screen), viewport: this.parent });
-                  this.last = null;
-                  this.moved = false;
-                  return true
-              }
-          }
-      }
-
-      /**
-       * @param {WheelEvent} event
-       * @returns {boolean}
-       */
-      wheel(event) {
-          if (this.paused) {
-              return
-          }
-
-          if (this.options.wheel) {
-              const wheel = this.parent.plugins.get('wheel', true);
-              if (!wheel) {
-                  const step = event.deltaMode ? this.options.lineHeight : 1;
-                  if (this.xDirection) {
-                      this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
-                  }
-                  if (this.yDirection) {
-                      this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
-                  }
-                  if (this.options.clampWheel) {
-                      this.clamp();
-                  }
-                  this.parent.emit('wheel-scroll', this.parent);
-                  this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-                  if (!this.parent.options.passiveWheel) {
-                      event.preventDefault();
-                  }
-                  return true
-              }
-          }
-      }
-
-      resume() {
-          this.last = null;
-          this.paused = false;
-      }
-
-      clamp() {
-          const decelerate = this.parent.plugins.get('decelerate', true) || {};
-          if (this.options.clampWheel !== 'y') {
-              if (this.parent.screenWorldWidth < this.parent.screenWidth) {
-                  switch (this.underflowX) {
-                  case -1:
-                      this.parent.x = 0;
-                      break
-                  case 1:
-                      this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth);
-                      break
-                  default:
-                      this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                  }
-              } else {
-                  if (this.parent.left < 0) {
-                      this.parent.x = 0;
-                      decelerate.x = 0;
-                  } else if (this.parent.right > this.parent.worldWidth) {
-                      this.parent.x = -this.parent.worldWidth * this.parent.scale.x + this.parent.screenWidth;
-                      decelerate.x = 0;
-                  }
-              }
-          }
-          if (this.options.clampWheel !== 'x') {
-              if (this.parent.screenWorldHeight < this.parent.screenHeight) {
-                  switch (this.underflowY) {
-                  case -1:
-                      this.parent.y = 0;
-                      break
-                  case 1:
-                      this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                      break
-                  default:
-                      this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                  }
-              } else {
-                  if (this.parent.top < 0) {
-                      this.parent.y = 0;
-                      decelerate.y = 0;
-                  }
-                  if (this.parent.bottom > this.parent.worldHeight) {
-                      this.parent.y = -this.parent.worldHeight * this.parent.scale.y + this.parent.screenHeight;
-                      decelerate.y = 0;
-                  }
-              }
-          }
-      }
-  }
-
-  /**
-   * @typedef {object} PinchOptions
-   * @property {boolean} [noDrag] disable two-finger dragging
-   * @property {number} [percent=1] percent to modify pinch speed
-   * @property {number} [factor=1] factor to multiply two-finger drag to increase the speed of movement
-   * @property {PIXI.Point} [center] place this point at center during zoom instead of center of two fingers
-   * @property {('all'|'x'|'y')} [axis=all] axis to zoom
-   */
-
-  const pinchOptions = {
-      noDrag: false,
-      percent: 1,
-      center: null,
-      factor: 1,
-      axis: 'all',
-  };
-
-  class Pinch extends Plugin$1 {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {PinchOptions} [options]
-       */
-      constructor(parent, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, pinchOptions, options);
-      }
-
-      down() {
-          if (this.parent.input.count() >= 2) {
-              this.active = true;
-              return true
-          }
-      }
-
-      isAxisX() {
-          return ['all', 'x'].includes(this.options.axis)
-      }
-
-      isAxisY() {
-          return ['all', 'y'].includes(this.options.axis)
-      }
-
-      move(e) {
-          if (this.paused || !this.active) {
-              return
-          }
-
-          const x = e.data.global.x;
-          const y = e.data.global.y;
-
-          const pointers = this.parent.input.touches;
-          if (pointers.length >= 2) {
-              const first = pointers[0];
-              const second = pointers[1];
-              const last = (first.last && second.last) ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2)) : null;
-              if (first.id === e.data.pointerId) {
-                  first.last = { x, y, data: e.data };
-              }
-              else if (second.id === e.data.pointerId) {
-                  second.last = { x, y, data: e.data };
-              }
-              if (last) {
-                  let oldPoint;
-                  const point = { x: first.last.x + (second.last.x - first.last.x) / 2, y: first.last.y + (second.last.y - first.last.y) / 2 };
-                  if (!this.options.center) {
-                      oldPoint = this.parent.toLocal(point);
-                  }
-                  let dist = Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2));
-                  dist = dist === 0 ? dist = 0.0000000001 : dist;
-                  const change = (1 - last / dist) * this.options.percent * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
-                  if (this.isAxisX()) {
-                      this.parent.scale.x += change;
-                  }
-                  if (this.isAxisY()) {
-                      this.parent.scale.y += change;
-                  }
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point });
-                  const clamp = this.parent.plugins.get('clamp-zoom', true);
-                  if (clamp) {
-                      clamp.clamp();
-                  }
-                  if (this.options.center) {
-                      this.parent.moveCenter(this.options.center);
-                  }
-                  else {
-                      const newPoint = this.parent.toGlobal(oldPoint);
-                      this.parent.x += (point.x - newPoint.x) * this.options.factor;
-                      this.parent.y += (point.y - newPoint.y) * this.options.factor;
-                      this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
-                  }
-                  if (!this.options.noDrag && this.lastCenter) {
-                      this.parent.x += (point.x - this.lastCenter.x) * this.options.factor;
-                      this.parent.y += (point.y - this.lastCenter.y) * this.options.factor;
-                      this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
-                  }
-                  this.lastCenter = point;
-                  this.moved = true;
-              }
-              else {
-                  if (!this.pinching) {
-                      this.parent.emit('pinch-start', this.parent);
-                      this.pinching = true;
-                  }
-              }
-              return true
-          }
-      }
-
-      up() {
-          if (this.pinching) {
-              if (this.parent.input.touches.length <= 1) {
-                  this.active = false;
-                  this.lastCenter = null;
-                  this.pinching = false;
-                  this.moved = false;
-                  this.parent.emit('pinch-end', this.parent);
-                  return true
-              }
-          }
-      }
-  }
-
-  /**
-   * There are three ways to clamp:
-   * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of the world offscreen
-   *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
-   * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
-   *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
-   *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
-   *
-   * Underflow determines what happens when the world is smaller than the viewport
-   * 1. none = the world is clamped but there is no special behavior
-   * 2. center = the world is centered on the viewport
-   * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
-   *
-   * @typedef ClampOptions
-   * @property {(number|boolean)} [left=false] clamp left; true = 0
-   * @property {(number|boolean)} [right=false] clamp right; true = viewport.worldWidth
-   * @property {(number|boolean)} [top=false] clamp top; true = 0
-   * @property {(number|boolean)} [bottom=false] clamp bottom; true = viewport.worldHeight
-   * @property {string} [direction] (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight]; replaces left/right/top/bottom if set
-   * @property {string} [underflow=center] where to place world if too small for screen (e.g., top-right, center, none, bottomleft)
-   */
-
-  const clampOptions =
-  {
-      left: false,
-      right: false,
-      top: false,
-      bottom: false,
-      direction: null,
-      underflow: 'center'
-  };
-
-  class Clamp extends Plugin$1
-  {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {ClampOptions} [options]
-       */
-      constructor(parent, options={})
-      {
-          super(parent);
-          this.options = Object.assign({}, clampOptions, options);
-          if (this.options.direction)
-          {
-              this.options.left = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
-              this.options.right = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
-              this.options.top = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
-              this.options.bottom = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
-          }
-          this.parseUnderflow();
-          this.last = { x: null, y: null, scaleX: null, scaleY: null };
-          this.update();
-      }
-
-      parseUnderflow()
-      {
-          const clamp = this.options.underflow.toLowerCase();
-          if (clamp === 'none')
-          {
-              this.noUnderflow = true;
-          }
-          else if (clamp === 'center')
-          {
-              this.underflowX = this.underflowY = 0;
-              this.noUnderflow = false;
-          }
-          else
-          {
-              this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-              this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
-              this.noUnderflow = false;
-          }
-      }
-
-      /**
-       * handle move events
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-      move()
-      {
-          this.update();
-          return false
-      }
-
-      update()
-      {
-          if (this.paused)
-          {
-              return
-          }
-
-          // only clamp on change
-          if (this.parent.x === this.last.x && this.parent.y === this.last.y && this.parent.scale.x === this.last.scaleX && this.parent.scale.y === this.last.scaleY)
-          {
-              return
-          }
-          const original = { x: this.parent.x, y: this.parent.y };
-          const decelerate = this.parent.plugins['decelerate'] || {};
-          if (this.options.left !== null || this.options.right !== null)
-          {
-              let moved = false;
-              if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth)
-              {
-                  switch (this.underflowX)
-                  {
-                      case -1:
-                          if (this.parent.x !== 0)
-                          {
-                              this.parent.x = 0;
-                              moved = true;
-                          }
-                          break
-                      case 1:
-                          if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
-                          {
-                              this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
-                              moved = true;
-                          }
-                          break
-                      default:
-                          if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
-                          {
-                              this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                              moved = true;
-                          }
-                  }
-              }
-              else
-              {
-                  if (this.options.left !== null)
-                  {
-                      if (this.parent.left < (this.options.left === true ? 0 : this.options.left))
-                      {
-                          this.parent.x = -(this.options.left === true ? 0 : this.options.left) * this.parent.scale.x;
-                          decelerate.x = 0;
-                          moved = true;
-                      }
-                  }
-                  if (this.options.right !== null)
-                  {
-                      if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right))
-                      {
-                          this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth;
-                          decelerate.x = 0;
-                          moved = true;
-                      }
-                  }
-              }
-              if (moved)
-              {
-                  this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' });
-              }
-          }
-          if (this.options.top !== null || this.options.bottom !== null)
-          {
-              let moved = false;
-              if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight)
-              {
-                  switch (this.underflowY)
-                  {
-                      case -1:
-                          if (this.parent.y !== 0)
-                          {
-                              this.parent.y = 0;
-                              moved = true;
-                          }
-                          break
-                      case 1:
-                          if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
-                          {
-                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                              moved = true;
-                          }
-                          break
-                      default:
-                          if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
-                          {
-                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                              moved = true;
-                          }
-                  }
-              }
-              else
-              {
-                  if (this.options.top !== null)
-                  {
-                      if (this.parent.top < (this.options.top === true ? 0 : this.options.top))
-                      {
-                          this.parent.y = -(this.options.top === true ? 0 : this.options.top) * this.parent.scale.y;
-                          decelerate.y = 0;
-                          moved = true;
-                      }
-                  }
-                  if (this.options.bottom !== null)
-                  {
-                      if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom))
-                      {
-                          this.parent.y = -(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom) * this.parent.scale.y + this.parent.screenHeight;
-                          decelerate.y = 0;
-                          moved = true;
-                      }
-                  }
-              }
-              if (moved)
-              {
-                  this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' });
-              }
-          }
-          this.last.x = this.parent.x;
-          this.last.y = this.parent.y;
-          this.last.scaleX = this.parent.scale.x;
-          this.last.scaleY = this.parent.scale.y;
-      }
-
-      reset()
-      {
-          this.update();
-      }
-  }
-
-  /**
-   * There are a few ways to use clampZoom
-   * 1. minWidth, maxWidth, minHeight, maxHeight = this clamps the zoom to in world-screen-sized pixels;
-   *    maxWidth/Height is used to clamp the zoom out; ie, the minimum size of the world in screen pixels;
-   *    minWidth/Height is used to clamp the zoom in; ie, the maximum size of the world in screen pixels;
-   *    if you set independent=true, then the aspect ratio is not maintained (it is by default)
-   * 2. minScale, maxScale = the minimum and maximum scale the viewport can zoom to; scale.x always equals scale.y
-   * 3. minScaleX, maxScaleX, minScaleY, maxScaleY = the minimum and maximum scale the viewport can zoom to;
-   *    scale.x and scale.y are independent
-   *
-   * @typedef {object} ClampZoomOptions
-   * @property {number} [minWidth] minimum width
-   * @property {number} [maxWidth] maximum width
-   * @property {number} [minHeight] minimum height
-   * @property {number} [maxHeight] maximum height
-   * @property {boolean} [independent] x and y scale are independent (only used for minimum/maximum width/height)
-   *
-   * @property {number} [minScale] minimum scale
-   * @property {number} [maxScale] minimum scale
-   *
-   * @property {number} [minScaleX] minimum scale for x-axis
-   * @property {number} [maxScaleX] maximum scale for x-axis
-   * @property {number} [minScaleY] minimum scale for y-axis
-   * @property {number} [maxScaleY] maximum scale for y-axis
-   */
-
-  const clampZoomOptions = {
-      minWidth: null,
-      minHeight: null,
-      maxWidth: null,
-      maxHeight: null,
-      minScale: null,
-      maxScale: null,
-      independent: false,
-  };
-
-  class ClampZoom extends Plugin$1
-  {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {ClampZoomOptions} [options]
-       */
-      constructor(parent, options={})
-      {
-          super(parent);
-          this.options = Object.assign({}, clampZoomOptions, options);
-          this.clamp();
-      }
-
-      resize()
-      {
-          this.clamp();
-      }
-
-      clamp() {
-          if (this.paused) {
-              return
-          }
-
-          if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight) {
-              let width = this.parent.worldScreenWidth;
-              let height = this.parent.worldScreenHeight;
-              if (this.options.minWidth !== null && width < this.options.minWidth) {
-                  const original = this.parent.scale.x;
-                  this.parent.fitWidth(this.options.minWidth, false, false, true);
-                  if (!this.options.independent) {
-                      this.parent.scale.y *= this.parent.scale.x / original;
-                  }
-                  width = this.parent.worldScreenWidth;
-                  height = this.parent.worldScreenHeight;
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-              if (this.options.maxWidth !== null && width > this.options.maxWidth) {
-                  const original = this.parent.scale.x;
-                  this.parent.fitWidth(this.options.maxWidth, false, false, true);
-                  if (!this.options.independent) {
-                      this.parent.scale.y *= this.parent.scale.x / original;
-                  }
-                  width = this.parent.worldScreenWidth;
-                  height = this.parent.worldScreenHeight;
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-              if (this.options.minHeight !== null && height < this.options.minHeight) {
-                  const original = this.parent.scale.y;
-                  this.parent.fitHeight(this.options.minHeight, false, false, true);
-                  if (!this.options.independent) {
-                      this.parent.scale.x *= this.parent.scale.y / original;
-                  }
-                  width = this.parent.worldScreenWidth;
-                  height = this.parent.worldScreenHeight;
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-              if (this.options.maxHeight !== null && height > this.options.maxHeight) {
-                  const original = this.parent.scale.y;
-                  this.parent.fitHeight(this.options.maxHeight, false, false, true);
-                  if (!this.options.independent) {
-                      this.parent.scale.x *= this.parent.scale.y / original;
-                  }
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-          }
-          else if (this.options.minScale || this.options.maxScale) {
-              let scale = this.parent.scale.x;
-              if (this.options.minScale !== null && scale < this.options.minScale) {
-                  scale = this.options.minScale;
-              }
-              if (this.options.maxScale !== null && scale > this.options.maxScale) {
-                  scale = this.options.maxScale;
-              }
-              if (scale !== this.parent.scale.x) {
-                  this.parent.scale.set(scale);
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-          } else {
-              if (this.options.minScaleX || this.options.maxScaleX) {
-                  let scaleX = this.parent.scale.x;
-                  if (this.options.minScaleX !== null && scaleX < this.options.minScaleX) {
-                      scaleX = this.options.minScaleX;
-                  } else if (this.options.maxScaleX !== null && scaleX > this.options.maxScaleX) {
-                      scaleX = this.options.maxScaleX;
-                  }
-              }
-              if (this.options.minScaleY || this.options.maxScaleY) {
-                  let scaleY = this.parent.scale.Y;
-                  if (this.options.minScaleY !== null && scaleY < this.options.minScaleY) {
-                      scaleY = this.options.minScaleY;
-                  } else if (this.options.maxScaleY !== null && scaleY > this.options.maxScaleY) {
-                      scaleY = this.options.maxScaleY;
-                  }
-              }
-          }
-      }
-
-      reset() {
-          this.clamp();
-      }
-  }
-
-  /**
-   * @typedef {object} DecelerateOptions
-   * @property {number} [friction=0.95] percent to decelerate after movement
-   * @property {number} [bounce=0.8] percent to decelerate when past boundaries (only applicable when viewport.bounce() is active)
-   * @property {number} [minSpeed=0.01] minimum velocity before stopping/reversing acceleration
-   */
-
-  const decelerateOptions = {
-      friction: 0.98,
-      bounce: 0.8,
-      minSpeed: 0.01
-  };
-
-  /**
-   * Time period of decay (1 frame)
-   */
-  const TP = 16;
-
-  class Decelerate extends Plugin$1 {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {DecelerateOptions} [options]
-       */
-      constructor(parent, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, decelerateOptions, options);
-          this.saved = [];
-          this.timeSinceRelease = 0;
-          this.reset();
-          this.parent.on('moved', data => this.moved(data));
-      }
-
-      destroy() {
-          this.parent;
-      }
-
-      down() {
-          this.saved = [];
-          this.x = this.y = false;
-      }
-
-      isActive() {
-          return this.x || this.y
-      }
-
-      move() {
-          if (this.paused) {
-              return
-          }
-
-          const count = this.parent.input.count();
-          if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true))) {
-              this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() });
-              if (this.saved.length > 60) {
-                  this.saved.splice(0, 30);
-              }
-          }
-      }
-
-      moved(data) {
-          if (this.saved.length) {
-              const last = this.saved[this.saved.length - 1];
-              if (data.type === 'clamp-x') {
-                  if (last.x === data.original.x) {
-                      last.x = this.parent.x;
-                  }
-              }
-              else if (data.type === 'clamp-y') {
-                  if (last.y === data.original.y) {
-                      last.y = this.parent.y;
-                  }
-              }
-          }
-      }
-
-      up() {
-          if (this.parent.input.count() === 0 && this.saved.length) {
-              const now = performance.now();
-              for (let save of this.saved) {
-                  if (save.time >= now - 100) {
-                      const time = now - save.time;
-                      this.x = (this.parent.x - save.x) / time;
-                      this.y = (this.parent.y - save.y) / time;
-                      this.percentChangeX = this.percentChangeY = this.options.friction;
-                      this.timeSinceRelease = 0;
-                      break
-                  }
-              }
-          }
-      }
-
-      /**
-       * manually activate plugin
-       * @param {object} options
-       * @param {number} [options.x]
-       * @param {number} [options.y]
-       */
-      activate(options) {
-          options = options || {};
-          if (typeof options.x !== 'undefined') {
-              this.x = options.x;
-              this.percentChangeX = this.options.friction;
-          }
-          if (typeof options.y !== 'undefined') {
-              this.y = options.y;
-              this.percentChangeY = this.options.friction;
-          }
-      }
-
-      update(elapsed) {
-          if (this.paused) {
-              return
-          }
-
-          /*
-           * See https://github.com/davidfig/pixi-viewport/issues/271 for math.
-           *
-           * The viewport velocity (this.x, this.y) decays expoenential by the the decay factor
-           * (this.percentChangeX, this.percentChangeY) each frame. This velocity function is integrated
-           * to calculate the displacement.
-           */
-
-          const moved = this.x || this.y;
-
-          const ti = this.timeSinceRelease;
-          const tf = this.timeSinceRelease + elapsed;
-
-          if (this.x) {
-              const k = this.percentChangeX;
-              const lnk = Math.log(k);
-
-              this.parent.x += ((this.x * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
-          }
-          if (this.y) {
-              const k = this.percentChangeY;
-              const lnk = Math.log(k);
-
-              this.parent.y += ((this.y * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
-          }
-
-          this.timeSinceRelease += elapsed;
-          this.x *= Math.pow(this.percentChangeX, elapsed / TP);
-          this.y *= Math.pow(this.percentChangeY, elapsed / TP);
-
-          if (Math.abs(this.x) < this.options.minSpeed) {
-              this.x = 0;
-          }
-          if (Math.abs(this.y) < this.options.minSpeed) {
-              this.y = 0;
-          }
-
-          if (moved) {
-              this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' });
-          }
-      }
-
-      reset() {
-          this.x = this.y = null;
-      }
-  }
-
-  /**
-   * returns correct Penner equation using string or Function
-   * @param {(function|string)} [ease]
-   * @param {defaults} default penner equation to use if none is provided
-   */
-  function ease(ease, defaults)
-  {
-      if (!ease)
-      {
-          return penner[defaults]
-      }
-      else if (typeof ease === 'function')
-      {
-          return ease
-      }
-      else if (typeof ease === 'string')
-      {
-          return penner[ease]
-      }
-  }
-
-  /**
-   * @typedef {options} BounceOptions
-   * @property {string} [sides=all] all, horizontal, vertical, or combination of top, bottom, right, left (e.g., 'top-bottom-right')
-   * @property {number} [friction=0.5] friction to apply to decelerate if active
-   * @property {number} [time=150] time in ms to finish bounce
-   * @property {object} [bounceBox] use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
-   * @property {number} [bounceBox.x=0]
-   * @property {number} [bounceBox.y=0]
-   * @property {number} [bounceBox.width=viewport.worldWidth]
-   * @property {number} [bounceBox.height=viewport.worldHeight]
-   * @property {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-   * @property {string} [underflow=center] (top/bottom/center and left/right/center, or center) where to place world if too small for screen
-   */
-
-  const bounceOptions = {
-      sides: 'all',
-      friction: 0.5,
-      time: 150,
-      ease: 'easeInOutSine',
-      underflow: 'center',
-      bounceBox: null
-  };
-
-  class Bounce extends Plugin$1 {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {BounceOptions} [options]
-       * @fires bounce-start-x
-       * @fires bounce.end-x
-       * @fires bounce-start-y
-       * @fires bounce-end-y
-       */
-      constructor(parent, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, bounceOptions, options);
-          this.ease = ease(this.options.ease, 'easeInOutSine');
-          if (this.options.sides) {
-              if (this.options.sides === 'all') {
-                  this.top = this.bottom = this.left = this.right = true;
-              }
-              else if (this.options.sides === 'horizontal') {
-                  this.right = this.left = true;
-              }
-              else if (this.options.sides === 'vertical') {
-                  this.top = this.bottom = true;
-              }
-              else {
-                  this.top = this.options.sides.indexOf('top') !== -1;
-                  this.bottom = this.options.sides.indexOf('bottom') !== -1;
-                  this.left = this.options.sides.indexOf('left') !== -1;
-                  this.right = this.options.sides.indexOf('right') !== -1;
-              }
-          }
-          this.parseUnderflow();
-          this.last = {};
-          this.reset();
-      }
-
-      parseUnderflow() {
-          const clamp = this.options.underflow.toLowerCase();
-          if (clamp === 'center') {
-              this.underflowX = 0;
-              this.underflowY = 0;
-          }
-          else {
-              this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-              this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
-          }
-      }
-
-      isActive() {
-          return this.toX !== null || this.toY !== null
-      }
-
-      down() {
-          this.toX = this.toY = null;
-      }
-
-      up() {
-          this.bounce();
-      }
-
-      update(elapsed) {
-          if (this.paused) {
-              return
-          }
-
-          this.bounce();
-          if (this.toX) {
-              const toX = this.toX;
-              toX.time += elapsed;
-              this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' });
-              if (toX.time >= this.options.time) {
-                  this.parent.x = toX.end;
-                  this.toX = null;
-                  this.parent.emit('bounce-x-end', this.parent);
-              }
-              else {
-                  this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.options.time);
-              }
-          }
-          if (this.toY) {
-              const toY = this.toY;
-              toY.time += elapsed;
-              this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' });
-              if (toY.time >= this.options.time) {
-                  this.parent.y = toY.end;
-                  this.toY = null;
-                  this.parent.emit('bounce-y-end', this.parent);
-              }
-              else {
-                  this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.options.time);
-              }
-          }
-      }
-
-      calcUnderflowX() {
-          let x;
-          switch (this.underflowX) {
-              case -1:
-                  x = 0;
-                  break
-              case 1:
-                  x = (this.parent.screenWidth - this.parent.screenWorldWidth);
-                  break
-              default:
-                  x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-          }
-          return x
-      }
-
-      calcUnderflowY() {
-          let y;
-          switch (this.underflowY) {
-              case -1:
-                  y = 0;
-                  break
-              case 1:
-                  y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                  break
-              default:
-                  y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-          }
-          return y
-      }
-
-      oob() {
-          const box = this.options.bounceBox;
-          if (box) {
-              const x1 = typeof box.x === 'undefined' ? 0 : box.x;
-              const y1 = typeof box.y === 'undefined' ? 0 : box.y;
-              const width = typeof box.width === 'undefined' ? this.parent.worldWidth : box.width;
-              const height = typeof box.height === 'undefined' ? this.parent.worldHeight : box.height;
-              return {
-                  left: this.parent.left < x1,
-                  right: this.parent.right > width,
-                  top: this.parent.top < y1,
-                  bottom: this.parent.bottom > height,
-                  topLeft: new Point(
-                      x1 * this.parent.scale.x,
-                      y1 * this.parent.scale.y
-                  ),
-                  bottomRight: new Point(
-                      width * this.parent.scale.x - this.parent.screenWidth,
-                      height * this.parent.scale.y - this.parent.screenHeight
-                  )
-              }
-          }
-          return {
-              left: this.parent.left < 0,
-              right: this.parent.right > this.parent.worldWidth,
-              top: this.parent.top < 0,
-              bottom: this.parent.bottom > this.parent.worldHeight,
-              topLeft: new Point(0, 0),
-              bottomRight: new Point(
-                  this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
-                  this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
-              )
-          }
-      }
-
-      bounce() {
-          if (this.paused) {
-              return
-          }
-
-          let oob;
-          let decelerate = this.parent.plugins.get('decelerate', true);
-          if (decelerate && (decelerate.x || decelerate.y)) {
-              if ((decelerate.x && decelerate.percentChangeX === decelerate.options.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.options.friction)) {
-                  oob = this.oob();
-                  if ((oob.left && this.left) || (oob.right && this.right)) {
-                      decelerate.percentChangeX = this.options.friction;
-                  }
-                  if ((oob.top && this.top) || (oob.bottom && this.bottom)) {
-                      decelerate.percentChangeY = this.options.friction;
-                  }
-              }
-          }
-          const drag = this.parent.plugins.get('drag', true) || {};
-          const pinch = this.parent.plugins.get('pinch', true) || {};
-          decelerate = decelerate || {};
-          if (!drag.active && !pinch.active && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y))) {
-              oob = oob || this.oob();
-              const topLeft = oob.topLeft;
-              const bottomRight = oob.bottomRight;
-              if (!this.toX && !decelerate.x) {
-                  let x = null;
-                  if (oob.left && this.left) {
-                      x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x;
-                  }
-                  else if (oob.right && this.right) {
-                      x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x;
-                  }
-                  if (x !== null && this.parent.x !== x) {
-                      this.toX = { time: 0, start: this.parent.x, delta: x - this.parent.x, end: x };
-                      this.parent.emit('bounce-x-start', this.parent);
-                  }
-              }
-              if (!this.toY && !decelerate.y) {
-                  let y = null;
-                  if (oob.top && this.top) {
-                      y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y;
-                  }
-                  else if (oob.bottom && this.bottom) {
-                      y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y;
-                  }
-                  if (y !== null && this.parent.y !== y) {
-                      this.toY = { time: 0, start: this.parent.y, delta: y - this.parent.y, end: y };
-                      this.parent.emit('bounce-y-start', this.parent);
-                  }
-              }
-          }
-      }
-
-      reset() {
-          this.toX = this.toY = null;
-          this.bounce();
-      }
-  }
-
-  /**
-   * @typedef SnapOptions
-   * @property {boolean} [topLeft] snap to the top-left of viewport instead of center
-   * @property {number} [friction=0.8] friction/frame to apply if decelerate is active
-   * @property {number} [time=1000]
-   * @property {string|function} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-   * @property {boolean} [interrupt=true] pause snapping with any user input on the viewport
-   * @property {boolean} [removeOnComplete] removes this plugin after snapping is complete
-   * @property {boolean} [removeOnInterrupt] removes this plugin if interrupted by any user input
-   * @property {boolean} [forceStart] starts the snap immediately regardless of whether the viewport is at the desired location
-   */
-
-  const snapOptions = {
-      topLeft: false,
-      friction: 0.8,
-      time: 1000,
-      ease: 'easeInOutSine',
-      interrupt: true,
-      removeOnComplete: false,
-      removeOnInterrupt: false,
-      forceStart: false
-  };
-
-  class Snap extends Plugin$1 {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {number} x
-       * @param {number} y
-       * @param {SnapOptions} [options]
-       * @event snap-start(Viewport) emitted each time a snap animation starts
-       * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
-       * @event snap-end(Viewport) emitted each time snap reaches its target
-       * @event snap-remove(Viewport) emitted if snap plugin is removed
-       */
-      constructor(parent, x, y, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, snapOptions, options);
-          this.ease = ease(options.ease, 'easeInOutSine');
-          this.x = x;
-          this.y = y;
-          if (this.options.forceStart) {
-              this.snapStart();
-          }
-      }
-
-      snapStart() {
-          this.percent = 0;
-          this.snapping = { time: 0 };
-          const current = this.options.topLeft ? this.parent.corner : this.parent.center;
-          this.deltaX = this.x - current.x;
-          this.deltaY = this.y - current.y;
-          this.startX = current.x;
-          this.startY = current.y;
-          this.parent.emit('snap-start', this.parent);
-      }
-
-      wheel() {
-          if (this.options.removeOnInterrupt) {
-              this.parent.plugins.remove('snap');
-          }
-      }
-
-      down() {
-          if (this.options.removeOnInterrupt) {
-              this.parent.plugins.remove('snap');
-          }
-          else if (this.options.interrupt) {
-              this.snapping = null;
-          }
-      }
-
-      up() {
-          if (this.parent.input.count() === 0) {
-              const decelerate = this.parent.plugins.get('decelerate', true);
-              if (decelerate && (decelerate.x || decelerate.y)) {
-                  decelerate.percentChangeX = decelerate.percentChangeY = this.options.friction;
-              }
-          }
-      }
-
-      update(elapsed) {
-          if (this.paused) {
-              return
-          }
-          if (this.options.interrupt && this.parent.input.count() !== 0) {
-              return
-          }
-          if (!this.snapping) {
-              const current = this.options.topLeft ? this.parent.corner : this.parent.center;
-              if (current.x !== this.x || current.y !== this.y) {
-                  this.snapStart();
-              }
-          }
-          else {
-              const snapping = this.snapping;
-              snapping.time += elapsed;
-              let finished, x, y;
-              if (snapping.time > this.options.time) {
-                  finished = true;
-                  x = this.startX + this.deltaX;
-                  y = this.startY + this.deltaY;
-              }
-              else {
-                  const percent = this.ease(snapping.time, 0, 1, this.options.time);
-                  x = this.startX + this.deltaX * percent;
-                  y = this.startY + this.deltaY * percent;
-              }
-              if (this.options.topLeft) {
-                  this.parent.moveCorner(x, y);
-              }
-              else {
-                  this.parent.moveCenter(x, y);
-              }
-              this.parent.emit('moved', { viewport: this.parent, type: 'snap' });
-              if (finished) {
-                  if (this.options.removeOnComplete) {
-                      this.parent.plugins.remove('snap');
-                  }
-                  this.parent.emit('snap-end', this.parent);
-                  this.snapping = null;
-              }
-          }
-      }
-  }
-
-  /**
-   * @typedef {Object} SnapZoomOptions
-   * @property {number} [width=0] the desired width to snap (to maintain aspect ratio, choose only width or height)
-   * @property {number} [height=0] the desired height to snap (to maintain aspect ratio, choose only width or height)
-   * @property {number} [time=1000] time for snapping in ms
-   * @property {(string|function)} [ease=easeInOutSine] ease function or name (see http://easings.net/ for supported names)
-   * @property {PIXI.Point} [center] place this point at center during zoom instead of center of the viewport
-   * @property {boolean} [interrupt=true] pause snapping with any user input on the viewport
-   * @property {boolean} [removeOnComplete] removes this plugin after snapping is complete
-   * @property {boolean} [removeOnInterrupt] removes this plugin if interrupted by any user input
-   * @property {boolean} [forceStart] starts the snap immediately regardless of whether the viewport is at the desired zoom
-   * @property {boolean} [noMove] zoom but do not move
-   */
-
-  const snapZoomOptions = {
-      width: 0,
-      height: 0,
-      time: 1000,
-      ease: 'easeInOutSine',
-      center: null,
-      interrupt: true,
-      removeOnComplete: false,
-      removeOnInterrupts: false,
-      forceStart: false,
-      noMove: false
-  };
-
-  class SnapZoom extends Plugin$1 {
-      /**
-       * @param {Viewport} parent
-       * @param {SnapZoomOptions} options
-       * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
-       * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
-       * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
-       */
-      constructor(parent, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, snapZoomOptions, options);
-          this.ease = ease(this.options.ease);
-          if (this.options.width > 0) {
-              this.xScale = parent.screenWidth / this.options.width;
-          }
-          if (this.options.height > 0) {
-              this.yScale = parent.screenHeight / this.options.height;
-          }
-          this.xIndependent = this.xScale ? true : false;
-          this.yIndependent = this.yScale ? true : false;
-          this.xScale = this.xIndependent ? this.xScale : this.yScale;
-          this.yScale = this.yIndependent ? this.yScale : this.xScale;
-
-          if (this.options.time === 0) {
-              parent.container.scale.x = this.xScale;
-              parent.container.scale.y = this.yScale;
-              if (this.options.removeOnComplete) {
-                  this.parent.plugins.remove('snap-zoom');
-              }
-          }
-          else if (options.forceStart) {
-              this.createSnapping();
-          }
-      }
-
-      createSnapping() {
-          this.parent.scale;
-          const startWorldScreenWidth = this.parent.worldScreenWidth;
-          const startWorldScreenHeight = this.parent.worldScreenHeight;
-          const endWorldScreenWidth = this.parent.screenWidth / this.xScale;
-          const endWorldScreenHeight = this.parent.screenHeight / this.yScale;
-          
-          this.snapping = { 
-              time: 0, 
-              startX: startWorldScreenWidth, 
-              startY: startWorldScreenHeight, 
-              deltaX: endWorldScreenWidth - startWorldScreenWidth, 
-              deltaY: endWorldScreenHeight - startWorldScreenHeight 
-          };
-          this.parent.emit('snap-zoom-start', this.parent);
-      }
-
-      resize() {
-          this.snapping = null;
-
-          if (this.options.width > 0) {
-              this.xScale = this.parent.screenWidth / this.options.width;
-          }
-          if (this.options.height > 0) {
-              this.yScale = this.parent.screenHeight / this.options.height;
-          }
-          this.xScale = this.xIndependent ? this.xScale : this.yScale;
-          this.yScale = this.yIndependent ? this.yScale : this.xScale;
-      }
-
-      wheel() {
-          if (this.options.removeOnInterrupt) {
-              this.parent.plugins.remove('snap-zoom');
-          }
-      }
-
-      down() {
-          if (this.options.removeOnInterrupt) {
-              this.parent.plugins.remove('snap-zoom');
-          }
-          else if (this.options.interrupt) {
-              this.snapping = null;
-          }
-      }
-
-      update(elapsed) {
-          if (this.paused) {
-              return
-          }
-          if (this.options.interrupt && this.parent.input.count() !== 0) {
-              return
-          }
-
-          let oldCenter;
-          if (!this.options.center && !this.options.noMove) {
-              oldCenter = this.parent.center;
-          }
-          if (!this.snapping) {
-              if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale) {
-                  this.createSnapping();
-              }
-          }
-          else if (this.snapping) {
-              const snapping = this.snapping;
-              snapping.time += elapsed;
-              if (snapping.time >= this.options.time) {
-                  this.parent.scale.set(this.xScale, this.yScale);
-                  if (this.options.removeOnComplete) {
-                      this.parent.plugins.remove('snap-zoom');
-                  }
-                  this.parent.emit('snap-zoom-end', this.parent);
-                  this.snapping = null;
-              }
-              else {
-                  const snapping = this.snapping;
-                  const worldScreenWidth = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
-                  const worldScreenHeight = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
-
-                  this.parent.scale.x = this.parent.screenWidth / worldScreenWidth;
-                  this.parent.scale.y = this.parent.screenHeight / worldScreenHeight;
-              }
-              const clamp = this.parent.plugins.get('clamp-zoom', true);
-              if (clamp) {
-                  clamp.clamp();
-              }
-              if (!this.options.noMove) {
-                  if (!this.options.center) {
-                      this.parent.moveCenter(oldCenter);
-                  }
-                  else {
-                      this.parent.moveCenter(this.options.center);
-                  }
-              }
-          }
-      }
-
-      resume() {
-          this.snapping = null;
-          super.resume();
-      }
-  }
-
-  /**
-   * @typedef {object} FollowOptions
-   * @property {number} [speed=0] to follow in pixels/frame (0=teleport to location)
-   * @property {number} [acceleration] set acceleration to accelerate and decelerate at this rate; speed cannot be 0 to use acceleration
-   * @property {number} [radius] radius (in world coordinates) of center circle where movement is allowed without moving the viewport
-   */
-
-  const followOptions = {
-      speed: 0,
-      acceleration: null,
-      radius: null
-  };
-
-  class Follow extends Plugin$1
-  {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {PIXI.DisplayObject} target to follow
-       * @param {FollowOptions} [options]
-       */
-      constructor(parent, target, options = {})
-      {
-          super(parent);
-          this.target = target;
-          this.options = Object.assign({}, followOptions, options);
-          this.velocity = { x: 0, y: 0 };
-      }
-
-      update(elapsed)
-      {
-          if (this.paused)
-          {
-              return
-          }
-
-          const center = this.parent.center;
-          let toX = this.target.x,
-              toY = this.target.y;
-          if (this.options.radius)
-          {
-              const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
-              if (distance > this.options.radius)
-              {
-                  const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x);
-                  toX = this.target.x - Math.cos(angle) * this.options.radius;
-                  toY = this.target.y - Math.sin(angle) * this.options.radius;
-              }
-              else
-              {
-                  return
-              }
-          }
-
-          const deltaX = toX - center.x;
-          const deltaY = toY - center.y;
-          if (deltaX || deltaY)
-          {
-              if (this.options.speed)
-              {
-                  if (this.options.acceleration)
-                  {
-                      const angle = Math.atan2(toY - center.y, toX - center.x);
-                      const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-                      if (distance)
-                      {
-                          const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.options.acceleration);
-                          if (distance > decelerationDistance)
-                          {
-                              this.velocity = {
-                                  x: Math.min(this.velocity.x + this.options.acceleration * elapsed, this.options.speed),
-                                  y: Math.min(this.velocity.y + this.options.acceleration * elapsed, this.options.speed)
-                              };
-                          }
-                          else
-                          {
-                              this.velocity = {
-                                  x: Math.max(this.velocity.x - this.options.acceleration * this.options.speed, 0),
-                                  y: Math.max(this.velocity.y - this.options.acceleration * this.options.speed, 0)
-                              };
-                          }
-                          const changeX = Math.cos(angle) * this.velocity.x;
-                          const changeY = Math.sin(angle) * this.velocity.y;
-                          const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
-                          const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
-                          this.parent.moveCenter(x, y);
-                          this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
-                      }
-                  }
-                  else
-                  {
-                      const angle = Math.atan2(toY - center.y, toX - center.x);
-                      const changeX = Math.cos(angle) * this.options.speed;
-                      const changeY = Math.sin(angle) * this.options.speed;
-                      const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
-                      const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
-                      this.parent.moveCenter(x, y);
-                      this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
-                  }
-              }
-              else
-              {
-                  this.parent.moveCenter(toX, toY);
-                  this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
-              }
-          }
-      }
-  }
-
-  /**
-   * the default event listener for 'wheel' event is document.body. Use `Viewport.options.divWheel` to change this default
-   * @typedef WheelOptions
-   * @property {number} [percent=0.1] percent to scroll with each spin
-   * @property {number} [smooth] smooth the zooming by providing the number of frames to zoom between wheel spins
-   * @property {boolean} [interrupt=true] stop smoothing with any user input on the viewport
-   * @property {boolean} [reverse] reverse the direction of the scroll
-   * @property {PIXI.Point} [center] place this point at center during zoom instead of current mouse position
-   * @property {number} [lineHeight=20] scaling factor for non-DOM_DELTA_PIXEL scrolling events
-   * @property {('all'|'x'|'y')} [axis=all] axis to zoom
-   */
-
-  const wheelOptions = {
-      percent: 0.1,
-      smooth: false,
-      interrupt: true,
-      reverse: false,
-      center: null,
-      lineHeight: 20,
-      axis: 'all',
-  };
-
-  class Wheel extends Plugin$1 {
-      /**
-       * @private
-       * @param {Viewport} parent
-       * @param {WheelOptions} [options]
-       * @event wheel({wheel: {dx, dy, dz}, event, viewport})
-       */
-      constructor(parent, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, wheelOptions, options);
-      }
-
-      down() {
-          if (this.options.interrupt) {
-              this.smoothing = null;
-          }
-      }
-
-      isAxisX() {
-          return ['all', 'x'].includes(this.options.axis)
-      }
-
-      isAxisY() {
-          return ['all', 'y'].includes(this.options.axis)
-      }
-
-      update() {
-          if (this.smoothing) {
-              const point = this.smoothingCenter;
-              const change = this.smoothing;
-              let oldPoint;
-              if (!this.options.center) {
-                  oldPoint = this.parent.toLocal(point);
-              }
-              if (this.isAxisX()) {
-                  this.parent.scale.x += change.x;
-              }
-              if (this.isAxisY()) {
-                  this.parent.scale.y += change.y;
-              }
-              this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-              const clamp = this.parent.plugins.get('clamp-zoom', true);
-              if (clamp) {
-                  clamp.clamp();
-              }
-              if (this.options.center) {
-                  this.parent.moveCenter(this.options.center);
-              } else {
-                  const newPoint = this.parent.toGlobal(oldPoint);
-                  this.parent.x += point.x - newPoint.x;
-                  this.parent.y += point.y - newPoint.y;
-              }
-              this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-              this.smoothingCount++;
-              if (this.smoothingCount >= this.options.smooth) {
-                  this.smoothing = null;
-              }
-          }
-      }
-
-      wheel(e) {
-          if (this.paused) {
-              return
-          }
-          let point = this.parent.input.getPointerPosition(e);
-          const sign = this.options.reverse ? -1 : 1;
-          const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
-          const change = Math.pow(2, (1 + this.options.percent) * step);
-          if (this.options.smooth) {
-              const original = {
-                  x: this.smoothing ? this.smoothing.x * (this.options.smooth - this.smoothingCount) : 0,
-                  y: this.smoothing ? this.smoothing.y * (this.options.smooth - this.smoothingCount) : 0
-              };
-              this.smoothing = {
-                  x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
-                  y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth
-              };
-              this.smoothingCount = 0;
-              this.smoothingCenter = point;
-          } else {
-              let oldPoint;
-              if (!this.options.center) {
-                  oldPoint = this.parent.toLocal(point);
-              }
-              if (this.isAxisX()) {
-                  this.parent.scale.x *= change;
-              }
-              if (this.isAxisY()) {
-                  this.parent.scale.y *= change;
-              }
-              this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-              const clamp = this.parent.plugins.get('clamp-zoom', true);
-              if (clamp) {
-                  clamp.clamp();
-              }
-              if (this.options.center) {
-                  this.parent.moveCenter(this.options.center);
-              } else {
-                  const newPoint = this.parent.toGlobal(oldPoint);
-                  this.parent.x += point.x - newPoint.x;
-                  this.parent.y += point.y - newPoint.y;
-              }
-          }
-          this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-          this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
-          if (!this.parent.options.passiveWheel) {
-              return true
-          }
-      }
-  }
-
-  /**
-   * @typedef MouseEdgesOptions
-   * @property {number} [radius] distance from center of screen in screen pixels
-   * @property {number} [distance] distance from all sides in screen pixels
-   * @property {number} [top] alternatively, set top distance (leave unset for no top scroll)
-   * @property {number} [bottom] alternatively, set bottom distance (leave unset for no top scroll)
-   * @property {number} [left] alternatively, set left distance (leave unset for no top scroll)
-   * @property {number} [right] alternatively, set right distance (leave unset for no top scroll)
-   * @property {number} [speed=8] speed in pixels/frame to scroll viewport
-   * @property {boolean} [reverse] reverse direction of scroll
-   * @property {boolean} [noDecelerate] don't use decelerate plugin even if it's installed
-   * @property {boolean} [linear] if using radius, use linear movement (+/- 1, +/- 1) instead of angled movement (Math.cos(angle from center), Math.sin(angle from center))
-   * @property {boolean} [allowButtons] allows plugin to continue working even when there's a mousedown event
-   */
-
-  const mouseEdgesOptions = {
-      radius: null,
-      distance: null,
-      top: null,
-      bottom: null,
-      left: null,
-      right: null,
-      speed: 8,
-      reverse: false,
-      noDecelerate: false,
-      linear: false,
-      allowButtons: false
-  };
-
-  class MouseEdges extends Plugin$1 {
-      /**
-       * Scroll viewport when mouse hovers near one of the edges.
-       * @private
-       * @param {Viewport} parent
-       * @param {MouseEdgeOptions} [options]
-       * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
-       * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
-       */
-      constructor(parent, options = {}) {
-          super(parent);
-          this.options = Object.assign({}, mouseEdgesOptions, options);
-          this.reverse = this.options.reverse ? 1 : -1;
-          this.radiusSquared = Math.pow(this.options.radius, 2);
-          this.resize();
-      }
-
-      resize() {
-          const distance = this.options.distance;
-          if (distance !== null) {
-              this.left = distance;
-              this.top = distance;
-              this.right = this.parent.worldScreenWidth - distance;
-              this.bottom = this.parent.worldScreenHeight - distance;
-          }
-          else if (!this.radius) {
-              this.left = this.options.left;
-              this.top = this.options.top;
-              this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right;
-              this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom;
-          }
-      }
-
-      down() {
-          if (this.paused) {
-              return
-          }
-          if (!this.options.allowButtons) {
-              this.horizontal = this.vertical = null;
-          }
-      }
-
-      move(event) {
-          if (this.paused) {
-              return
-          }
-          if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1) || (!this.options.allowButtons && event.data.buttons !== 0)) {
-              return
-          }
-          const x = event.data.global.x;
-          const y = event.data.global.y;
-
-          if (this.radiusSquared) {
-              const center = this.parent.toScreen(this.parent.center);
-              const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2);
-              if (distance >= this.radiusSquared) {
-                  const angle = Math.atan2(center.y - y, center.x - x);
-                  if (this.options.linear) {
-                      this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000);
-                      this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000);
-                  }
-                  else {
-                      this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000);
-                      this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000);
-                  }
-              }
-              else {
-                  if (this.horizontal) {
-                      this.decelerateHorizontal();
-                  }
-                  if (this.vertical) {
-                      this.decelerateVertical();
-                  }
-                  this.horizontal = this.vertical = 0;
-              }
-          }
-          else {
-              if (this.left !== null && x < this.left) {
-                  this.horizontal = 1 * this.reverse * this.options.speed * (60 / 1000);
-              }
-              else if (this.right !== null && x > this.right) {
-                  this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000);
-              }
-              else {
-                  this.decelerateHorizontal();
-                  this.horizontal = 0;
-              }
-              if (this.top !== null && y < this.top) {
-                  this.vertical = 1 * this.reverse * this.options.speed * (60 / 1000);
-              }
-              else if (this.bottom !== null && y > this.bottom) {
-                  this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000);
-              }
-              else {
-                  this.decelerateVertical();
-                  this.vertical = 0;
-              }
-          }
-      }
-
-      decelerateHorizontal() {
-          const decelerate = this.parent.plugins.get('decelerate', true);
-          if (this.horizontal && decelerate && !this.options.noDecelerate) {
-              decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) });
-          }
-      }
-
-      decelerateVertical() {
-          const decelerate = this.parent.plugins.get('decelerate', true);
-          if (this.vertical && decelerate && !this.options.noDecelerate) {
-              decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) });
-          }
-      }
-
-      up() {
-          if (this.paused) {
-              return
-          }
-          if (this.horizontal) {
-              this.decelerateHorizontal();
-          }
-          if (this.vertical) {
-              this.decelerateVertical();
-          }
-          this.horizontal = this.vertical = null;
-      }
-
-      update() {
-          if (this.paused) {
-              return
-          }
-
-          if (this.horizontal || this.vertical) {
-              const center = this.parent.center;
-              if (this.horizontal) {
-                  center.x += this.horizontal * this.options.speed;
-              }
-              if (this.vertical) {
-                  center.y += this.vertical * this.options.speed;
-              }
-              this.parent.moveCenter(center);
-              this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' });
-          }
-      }
-  }
-
-  /**
-   * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
-   * @typedef {options} AnimateOptions
-   * @property {number} [time=1000] to animate
-   * @property {PIXI.Point} [position=viewport.center] position to move viewport
-   * @property {number} [width] desired viewport width in world pixels (use instead of scale; aspect ratio is maintained if height is not provided)
-   * @property {number} [height] desired viewport height in world pixels (use instead of scale; aspect ratio is maintained if width is not provided)
-   * @property {number} [scale] scale to change zoom (scale.x = scale.y)
-   * @property {number} [scaleX] independently change zoom in x-direction
-   * @property {number} [scaleY] independently change zoom in y-direction
-   * @property {(function|string)} [ease=linear] easing function to use
-   * @property {function} [callbackOnComplete]
-   * @property {boolean} [removeOnInterrupt] removes this plugin if interrupted by any user input
-   */
-
-  const animateOptions = {
-      removeOnInterrupt: false,
-      ease: 'linear',
-      time: 1000
-  };
-=======
       /**
        * Enable clamping of zoom to constraints
        *
@@ -58221,7 +55794,6 @@
 
           return this;
       }
->>>>>>> b5c50cc161419e77dceaa92e8463d9df32f9748f:docs/original/index.js
 
       /**
        * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
