@@ -2,12 +2,15 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import builtins from '@joseph184/rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
-import typescript from '@rollup/plugin-typescript'
+import sucrase from '@rollup/plugin-sucrase'
 
 export default {
     input: 'docs/builds/ts/code.ts',
     plugins: [
-        typescript(),
+        sucrase({
+            include: ["**/*.ts"],
+            transforms: ['typescript']
+        }),
         builtins(),
         resolve({
             preferBuiltins: false,

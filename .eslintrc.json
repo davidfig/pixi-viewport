@@ -1,0 +1,36 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "ignorePatterns": [
+    "index.d.ts",
+    "dist",
+    "docs",
+    "compile",
+    "node_modules"
+  ],
+  "rules": {
+    "@typescript-eslint/triple-slash-reference": [
+      "off"
+    ],
+    "spaced-comment": [
+      "off"
+    ],
+    "no-duplicate-imports": [
+      "off"
+    ]
+  },
+  "extends": [
+    "@pixi/eslint-config"
+  ]
+}

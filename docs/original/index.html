@@ -1,0 +1,62 @@
+<head>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/ascetic.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            height: 200vh;
+        }
+
+        .titleCode {
+            margin-top: 0.5em;
+            margin-left: 15%;
+            font-size: 2em;
+        }
+
+        #code {
+            left: 15%;
+            width: 80%;
+            position: absolute;
+            word-wrap: break-word;
+            z-index: -1;
+        }
+
+        .hljs {
+            display: block;
+            overflow-x: auto;
+            padding: 0.5em;
+            background: rgba(0, 0, 100, 0.02);
+        }
+
+        .hljs-comment {
+            color: blue;
+        }
+
+        .font {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-size: 1.25em;
+        }
+
+        .github-fork-ribbon.right-top:before {
+            background-color: blue;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 4em;
+            width: 100%;
+            height: calc(100% - 4em);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.5/dat.gui.js"></script>
+    <script src="index.js"></script>
+</head>
+
+<body>
+    <div class="titleCode">Example for <a href="https://github.com/davidfig/pixi-viewport.git/">github.com/davidfig/pixi-viewport/</a></div>
+    <div id="test"></div>
+    <pre><code class="javascript" id="code"></code></pre>
+    <a class="github-fork-ribbon right-top" href="https://github.com/davidfig/pixi-viewport/" title="Fork me on GitHub">Fork me on GitHub</a>
+</body>

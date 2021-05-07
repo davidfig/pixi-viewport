@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>pixi-viewport API Documentation</title>
+    
+    <meta name="description" content="Documentation for pixi-viewport library" />
+    
+        <meta name="keywords" content="docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d" />
+        <meta name="keyword" content="docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d" />
+    
+    
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,700" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"default":{"outputSourceFiles":true},"applicationName":"pixi-viewport","footer":"by YOPEY YOPEY LLC (yopeyopey.com)","copyright":"Copyright © 2019 YOPEY YOPEY LLC.","meta":{"title":"pixi-viewport API Documentation","description":"Documentation for pixi-viewport library","keyword":"docs, documentation, html5, javascript, jsdoc, camera, viewport, bounce, snap, 2d"}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">pixi-viewport</a></h3>
+    <button id="menuToggle" class="btn btn-link btn-lg menu-toggle">
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+    </button>
+    <div class="search">
+        <input id="search" type="text" class="form-control input-md" placeholder="Search...">
+    </div>
+    <ul class="list">
+    
+        
+        <li class="item" data-name="Animate">
+            <span class="title  ">
+                
+                <a href="Animate.html">Animate</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="Animate#deltaHeight"><a href="Animate.html#deltaHeight">deltaHeight</a></li>
+            
+                <li class="parent " data-name="Animate#deltaWidth"><a href="Animate.html#deltaWidth">deltaWidth</a></li>
+            
+                <li class="parent " data-name="Animate#height"><a href="Animate.html#height">height</a></li>
+            
+                <li class="parent " data-name="Animate#startHeight"><a href="Animate.html#startHeight">startHeight</a></li>
+            
+                <li class="parent " data-name="Animate#startWidth"><a href="Animate.html#startWidth">startWidth</a></li>
+            
+                <li class="parent " data-name="Animate#time"><a href="Animate.html#time">time</a></li>
+            
+                <li class="parent " data-name="Animate#width"><a href="Animate.html#width">width</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Animate#setupPosition"><a href="Animate.html#setupPosition">setupPosition</a></li>
+            
+                <li class="parent  " data-name="Animate#setupZoom"><a href="Animate.html#setupZoom">setupZoom</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Bounce">
+            <span class="title  ">
+                
+                <a href="Bounce.html">Bounce</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Bounce#calcUnderflowX"><a href="Bounce.html#calcUnderflowX">calcUnderflowX</a></li>
+            
+                <li class="parent  " data-name="Bounce#calcUnderflowY"><a href="Bounce.html#calcUnderflowY">calcUnderflowY</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Clamp">
+            <span class="title  ">
+                
+                <a href="Clamp.html">Clamp</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="ClampZoom">
+            <span class="title  ">
+                
+                <a href="ClampZoom.html">ClampZoom</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ClampZoom#clamp"><a href="ClampZoom.html#clamp">clamp</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Decelerate">
+            <span class="title  ">
+                
+                <a href="Decelerate.html">Decelerate</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Decelerate#activate"><a href="Decelerate.html#activate">activate</a></li>
+            
+                <li class="parent  " data-name="Decelerate#moved"><a href="Decelerate.html#moved">moved</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Drag">
+            <span class="title  ">
+                
+                <a href="Drag.html">Drag</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Drag#checkButtons"><a href="Drag.html#checkButtons">checkButtons</a></li>
+            
+                <li class="parent  " data-name="Drag#checkKeyPress"><a href="Drag.html#checkKeyPress">checkKeyPress</a></li>
+            
+                <li class="parent  " data-name="Drag#handleKeyPresses"><a href="Drag.html#handleKeyPresses">handleKeyPresses</a></li>
+            
+                <li class="parent  " data-name="Drag#mouseButtons"><a href="Drag.html#mouseButtons">mouseButtons</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+    
+        
+        <li class="item" data-name="Follow">
+            <span class="title  ">
+                
+                <a href="Follow.html">Follow</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="MouseEdges#MouseEdges">
+            <span class="title  ">
+                
+                <a href="MouseEdges_MouseEdges.html">MouseEdges#MouseEdges</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Pinch">
+            <span class="title  ">
+                
+                <a href="Pinch.html">Pinch</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="Pinch#active"><a href="Pinch.html#active">active</a></li>
+            
+                <li class="parent " data-name="Pinch#pinching"><a href="Pinch.html#pinching">pinching</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Plugin">
+            <span class="title  ">
+                
+                <a href="Plugin.html">Plugin</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Plugin#destroy"><a href="Plugin.html#destroy">destroy</a></li>
+            
+                <li class="parent  " data-name="Plugin#down"><a href="Plugin.html#down">down</a></li>
+            
+                <li class="parent  " data-name="Plugin#move"><a href="Plugin.html#move">move</a></li>
+            
+                <li class="parent  " data-name="Plugin#pause"><a href="Plugin.html#pause">pause</a></li>
+            
+                <li class="parent  " data-name="Plugin#reset"><a href="Plugin.html#reset">reset</a></li>
+            
+                <li class="parent  " data-name="Plugin#resize"><a href="Plugin.html#resize">resize</a></li>
+            
+                <li class="parent  " data-name="Plugin#resume"><a href="Plugin.html#resume">resume</a></li>
+            
+                <li class="parent  " data-name="Plugin#up"><a href="Plugin.html#up">up</a></li>
+            
+                <li class="parent  " data-name="Plugin#update"><a href="Plugin.html#update">update</a></li>
+            
+                <li class="parent  " data-name="Plugin#wheel"><a href="Plugin.html#wheel">wheel</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="PluginManager">
+            <span class="title  ">
+                
+                <a href="PluginManager.html">PluginManager</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="PluginManager#add"><a href="PluginManager.html#add">add</a></li>
+            
+                <li class="parent  " data-name="PluginManager#get"><a href="PluginManager.html#get">get</a></li>
+            
+                <li class="parent  " data-name="PluginManager#pause"><a href="PluginManager.html#pause">pause</a></li>
+            
+                <li class="parent  " data-name="PluginManager#remove"><a href="PluginManager.html#remove">remove</a></li>
+            
+                <li class="parent  " data-name="PluginManager#removeAll"><a href="PluginManager.html#removeAll">removeAll</a></li>
+            
+                <li class="parent  " data-name="PluginManager#reset"><a href="PluginManager.html#reset">reset</a></li>
+            
+                <li class="parent  " data-name="PluginManager#resume"><a href="PluginManager.html#resume">resume</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Snap#Snap">
+            <span class="title  ">
+                
+                <a href="Snap_Snap.html">Snap#Snap</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="SnapZoom#SnapZoom">
+            <span class="title  ">
+                
+                <a href="SnapZoom_SnapZoom.html">SnapZoom#SnapZoom</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Viewport">
+            <span class="title  ">
+                
+                <a href="Viewport.html">Viewport</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li class="parent " data-name="Viewport#bottom"><a href="Viewport.html#bottom">bottom</a></li>
+            
+                <li class="parent " data-name="Viewport#center"><a href="Viewport.html#center">center</a></li>
+            
+                <li class="parent " data-name="Viewport#corner"><a href="Viewport.html#corner">corner</a></li>
+            
+                <li class="parent " data-name="Viewport#dirty"><a href="Viewport.html#dirty">dirty</a></li>
+            
+                <li class="parent " data-name="Viewport#forceHitArea"><a href="Viewport.html#forceHitArea">forceHitArea</a></li>
+            
+                <li class="parent " data-name="Viewport#left"><a href="Viewport.html#left">left</a></li>
+            
+                <li class="parent " data-name="Viewport#pause"><a href="Viewport.html#pause">pause</a></li>
+            
+                <li class="parent " data-name="Viewport#right"><a href="Viewport.html#right">right</a></li>
+            
+                <li class="parent " data-name="Viewport#scaled"><a href="Viewport.html#scaled">scaled</a></li>
+            
+                <li class="parent " data-name="Viewport#screenHeightInWorldPixels"><a href="Viewport.html#screenHeightInWorldPixels">screenHeightInWorldPixels</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWidthInWorldPixels"><a href="Viewport.html#screenWidthInWorldPixels">screenWidthInWorldPixels</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWorldHeight"><a href="Viewport.html#screenWorldHeight">screenWorldHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#screenWorldWidth"><a href="Viewport.html#screenWorldWidth">screenWorldWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#top"><a href="Viewport.html#top">top</a></li>
+            
+                <li class="parent " data-name="Viewport#worldHeight"><a href="Viewport.html#worldHeight">worldHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#worldScreenHeight"><a href="Viewport.html#worldScreenHeight">worldScreenHeight</a></li>
+            
+                <li class="parent " data-name="Viewport#worldScreenWidth"><a href="Viewport.html#worldScreenWidth">worldScreenWidth</a></li>
+            
+                <li class="parent " data-name="Viewport#worldWidth"><a href="Viewport.html#worldWidth">worldWidth</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="Viewport#animate"><a href="Viewport.html#animate">animate</a></li>
+            
+                <li class="parent  " data-name="Viewport#bounce"><a href="Viewport.html#bounce">bounce</a></li>
+            
+                <li class="parent  " data-name="Viewport#clamp"><a href="Viewport.html#clamp">clamp</a></li>
+            
+                <li class="parent  " data-name="Viewport#clampZoom"><a href="Viewport.html#clampZoom">clampZoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#decelerate"><a href="Viewport.html#decelerate">decelerate</a></li>
+            
+                <li class="parent  " data-name="Viewport#destroy"><a href="Viewport.html#destroy">destroy</a></li>
+            
+                <li class="parent  " data-name="Viewport#drag"><a href="Viewport.html#drag">drag</a></li>
+            
+                <li class="parent  " data-name="Viewport#ensureVisible"><a href="Viewport.html#ensureVisible">ensureVisible</a></li>
+            
+                <li class="parent  " data-name="Viewport#findCover"><a href="Viewport.html#findCover">findCover</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFit"><a href="Viewport.html#findFit">findFit</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitHeight"><a href="Viewport.html#findFitHeight">findFitHeight</a></li>
+            
+                <li class="parent  " data-name="Viewport#findFitWidth"><a href="Viewport.html#findFitWidth">findFitWidth</a></li>
+            
+                <li class="parent  " data-name="Viewport#fit"><a href="Viewport.html#fit">fit</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitHeight"><a href="Viewport.html#fitHeight">fitHeight</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitWidth"><a href="Viewport.html#fitWidth">fitWidth</a></li>
+            
+                <li class="parent  " data-name="Viewport#fitWorld"><a href="Viewport.html#fitWorld">fitWorld</a></li>
+            
+                <li class="parent  " data-name="Viewport#follow"><a href="Viewport.html#follow">follow</a></li>
+            
+                <li class="parent  " data-name="Viewport#getVisibleBounds"><a href="Viewport.html#getVisibleBounds">getVisibleBounds</a></li>
+            
+                <li class="parent  " data-name="Viewport#mouseEdges"><a href="Viewport.html#mouseEdges">mouseEdges</a></li>
+            
+                <li class="parent  " data-name="Viewport#OOB"><a href="Viewport.html#OOB">OOB</a></li>
+            
+                <li class="parent  " data-name="Viewport#pinch"><a href="Viewport.html#pinch">pinch</a></li>
+            
+                <li class="parent  " data-name="Viewport#resize"><a href="Viewport.html#resize">resize</a></li>
+            
+                <li class="parent  " data-name="Viewport#setZoom"><a href="Viewport.html#setZoom">setZoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#snap"><a href="Viewport.html#snap">snap</a></li>
+            
+                <li class="parent  " data-name="Viewport#snapZoom"><a href="Viewport.html#snapZoom">snapZoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#update"><a href="Viewport.html#update">update</a></li>
+            
+                <li class="parent  " data-name="Viewport#wheel"><a href="Viewport.html#wheel">wheel</a></li>
+            
+                <li class="parent  " data-name="Viewport#zoom"><a href="Viewport.html#zoom">zoom</a></li>
+            
+                <li class="parent  " data-name="Viewport#zoomPercent"><a href="Viewport.html#zoomPercent">zoomPercent</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li class="parent" data-name="Viewport#event:bounce-x-end"><a href="Viewport.html#event:bounce-x-end">bounce-x-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-x-start"><a href="Viewport.html#event:bounce-x-start">bounce-x-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-y-end"><a href="Viewport.html#event:bounce-y-end">bounce-y-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:bounce-y-start"><a href="Viewport.html#event:bounce-y-start">bounce-y-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:clicked"><a href="Viewport.html#event:clicked">clicked</a></li>
+            
+                <li class="parent" data-name="Viewport#event:drag-end"><a href="Viewport.html#event:drag-end">drag-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:drag-start"><a href="Viewport.html#event:drag-start">drag-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:frame-end"><a href="Viewport.html#event:frame-end">frame-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:mouse-edge-end"><a href="Viewport.html#event:mouse-edge-end">mouse-edge-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:mouse-edge-start"><a href="Viewport.html#event:mouse-edge-start">mouse-edge-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:moved"><a href="Viewport.html#event:moved">moved</a></li>
+            
+                <li class="parent" data-name="Viewport#event:moved-end"><a href="Viewport.html#event:moved-end">moved-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:pinch-end"><a href="Viewport.html#event:pinch-end">pinch-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:pinch-start"><a href="Viewport.html#event:pinch-start">pinch-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-end"><a href="Viewport.html#event:snap-end">snap-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-start"><a href="Viewport.html#event:snap-start">snap-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-zoom-end"><a href="Viewport.html#event:snap-zoom-end">snap-zoom-end</a></li>
+            
+                <li class="parent" data-name="Viewport#event:snap-zoom-start"><a href="Viewport.html#event:snap-zoom-start">snap-zoom-start</a></li>
+            
+                <li class="parent" data-name="Viewport#event:wheel"><a href="Viewport.html#event:wheel">wheel</a></li>
+            
+                <li class="parent" data-name="Viewport#event:wheel-scroll"><a href="Viewport.html#event:wheel-scroll">wheel-scroll</a></li>
+            
+                <li class="parent" data-name="Viewport#event:zoomed"><a href="Viewport.html#event:zoomed">zoomed</a></li>
+            
+                <li class="parent" data-name="Viewport#event:zoomed-end"><a href="Viewport.html#event:zoomed-end">zoomed-end</a></li>
+            
+            </ul>
+        </li>
+    
+        
+        <li class="item" data-name="Wheel#Wheel">
+            <span class="title  ">
+                
+                <a href="Wheel_Wheel.html">Wheel#Wheel</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        
+        <h1 class="page-title" data-filename="Viewport">Source: js/plugins/ClampZoom.js</h1>
+        
+        
+
+
+    
+    <section>
+        <header>
+            <div class="header content-size">
+                <h2>js/plugins/ClampZoom.js</h2>
+            </div>
+        </header>
+        <article>
+            <pre id="source-code" class="prettyprint source "><code>import { Plugin } from './Plugin';
+const DEFAULT_CLAMP_ZOOM_OPTIONS = {
+    minWidth: null,
+    minHeight: null,
+    maxWidth: null,
+    maxHeight: null,
+    minScale: null,
+    maxScale: null
+};
+/**
+ * Plugin to clamp the viewport's zoom to a specific range.
+ *
+ * @public
+ */
+export class ClampZoom extends Plugin {
+    /**
+     * This is called by {@link Viewport.clampZoom}.
+     */
+    constructor(parent, options = {}) {
+        super(parent);
+        this.options = Object.assign({}, DEFAULT_CLAMP_ZOOM_OPTIONS, options);
+        this.clamp();
+    }
+    resize() {
+        this.clamp();
+    }
+    /** Clamp the viewport scale zoom) */
+    clamp() {
+        if (this.paused) {
+            return;
+        }
+        if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight) {
+            let width = this.parent.worldScreenWidth;
+            let height = this.parent.worldScreenHeight;
+            if (this.options.minWidth !== null &amp;&amp; width &lt; this.options.minWidth) {
+                const original = this.parent.scale.x;
+                this.parent.fitWidth(this.options.minWidth, false, false, true);
+                this.parent.scale.y *= this.parent.scale.x / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.maxWidth !== null &amp;&amp; width > this.options.maxWidth) {
+                const original = this.parent.scale.x;
+                this.parent.fitWidth(this.options.maxWidth, false, false, true);
+                this.parent.scale.y *= this.parent.scale.x / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.minHeight !== null &amp;&amp; height &lt; this.options.minHeight) {
+                const original = this.parent.scale.y;
+                this.parent.fitHeight(this.options.minHeight, false, false, true);
+                this.parent.scale.x *= this.parent.scale.y / original;
+                width = this.parent.worldScreenWidth;
+                height = this.parent.worldScreenHeight;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+            if (this.options.maxHeight !== null &amp;&amp; height > this.options.maxHeight) {
+                const original = this.parent.scale.y;
+                this.parent.fitHeight(this.options.maxHeight, false, false, true);
+                this.parent.scale.x *= this.parent.scale.y / original;
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+        }
+        else if (this.options.minScale || this.options.maxScale) {
+            const minScale = { x: null, y: null };
+            const maxScale = { x: null, y: null };
+            if (typeof this.options.minScale === 'number') {
+                minScale.x = this.options.minScale;
+                minScale.y = this.options.minScale;
+            }
+            else if (this.options.minScale !== null) {
+                const optsMinScale = this.options.minScale;
+                minScale.x = typeof optsMinScale.x === 'undefined' ? null : optsMinScale.x;
+                minScale.y = typeof optsMinScale.y === 'undefined' ? null : optsMinScale.y;
+            }
+            if (typeof this.options.maxScale === 'number') {
+                maxScale.x = this.options.maxScale;
+                maxScale.y = this.options.maxScale;
+            }
+            else if (this.options.maxScale !== null) {
+                const optsMaxScale = this.options.maxScale;
+                maxScale.x = typeof optsMaxScale.x === 'undefined' ? null : optsMaxScale.x;
+                maxScale.y = typeof optsMaxScale.y === 'undefined' ? null : optsMaxScale.y;
+            }
+            let scaleX = this.parent.scale.x;
+            let scaleY = this.parent.scale.y;
+            if (minScale.x !== null &amp;&amp; scaleX &lt; minScale.x) {
+                scaleX = minScale.x;
+            }
+            if (maxScale.x !== null &amp;&amp; scaleX > maxScale.x) {
+                scaleX = maxScale.x;
+            }
+            if (minScale.y !== null &amp;&amp; scaleY &lt; minScale.y) {
+                scaleY = minScale.y;
+            }
+            if (maxScale.y !== null &amp;&amp; scaleY > maxScale.y) {
+                scaleY = maxScale.y;
+            }
+            if (scaleX !== this.parent.scale.x || scaleY !== this.parent.scale.y) {
+                this.parent.scale.set(scaleX, scaleY);
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+            }
+        }
+    }
+    reset() {
+        this.clamp();
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer class="content-size">
+            <div class="footer">
+                Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on Wed Apr 28 2021 16:02:03 GMT+0800 (Taipei Standard Time)
+            </div>
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
