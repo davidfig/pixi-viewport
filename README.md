@@ -80,7 +80,6 @@ I've included the following build examples in the docs/ directory:
 * [browserify](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify)
 * [rollup](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup)
 * [standalone (e.g., cdn)](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone)
-* [standalone (pixi.js v4)](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone-v4)
 * [typescript](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts).
 
 You can see the live demos at [https://davidfig.github.io/pixi-viewport/builds/](https://davidfig.github.io/pixi-viewport/builds/).

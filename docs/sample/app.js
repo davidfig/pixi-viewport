@@ -23,7 +23,7 @@ function createRenderer() {
 
 function start() {
     createRenderer()
-    viewport.create()
+    viewport.create(renderer)
     window.onresize = () => {
         renderer.resize(window.innerWidth, window.innerHeight)
         viewport.get().resize(window.innerWidth, window.innerHeight)

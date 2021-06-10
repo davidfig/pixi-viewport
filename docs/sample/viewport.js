@@ -13,7 +13,7 @@ const BORDER = 10
 // uncomment out the plugins or change options to experiment with how the viewport works
 let viewport
 
-export function create() {
+export function create(renderer) {
     // create the viewport
     // viewport = new Viewport({    // use with modern build toolchain
     viewport = new pixi_viewport.Viewport({
@@ -27,7 +27,7 @@ export function create() {
         // forceHitArea: null,                          // change the default hitArea from world size to a new value
         // noTicker: false,                             // set this if you want to manually call update() function on each frame
         // ticker: PIXI.Ticker.shared,                  // use this PIXI.ticker for updates
-        // interaction: renderer.plugins.interaction,   // InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas location on screen
+        interaction: renderer.plugins.interaction,   // InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas location on screen
         // divWheel: null,                              // div to attach the wheel event (uses document.body as default)
         // disableOnContextMenu: false,                 // remove oncontextmenu=() => {} from the divWheel element
     })
