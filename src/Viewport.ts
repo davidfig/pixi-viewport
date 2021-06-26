@@ -194,6 +194,8 @@ export class Viewport extends Container
     private _worldWidth?: number | null;
     private _worldHeight?: number | null;
 
+    private _disableContextMenuHandler: undefined | ((e: MouseEvent) => void)
+
     /**
      * @param {IViewportOptions} ViewportOptions
      * @param {number} [options.screenWidth=window.innerWidth]
@@ -237,8 +239,10 @@ export class Viewport extends Container
 
         if (this.options.disableOnContextMenu)
         {
-            this.options.divWheel.oncontextmenu = (e) => e.preventDefault();
+            this._disableContextMenuHandler = (e: MouseEvent) => e.preventDefault();
+            this.options.divWheel.addEventListener("contextmenu", this._disableContextMenuHandler);
         }
+
         if (!this.options.noTicker)
         {
             this.tickerFunction = () => this.update(this.options.ticker.elapsedMS);
@@ -255,6 +259,10 @@ export class Viewport extends Container
         if (!this.options.noTicker && this.tickerFunction)
         {
             this.options.ticker.remove(this.tickerFunction);
+        }
+
+        if (this.options.disableOnContextMenu && this._disableContextMenuHandler) {
+            this.options.divWheel.removeEventListener("contextmenu", this._disableContextMenuHandler);
         }
 
         this.input.destroy();
