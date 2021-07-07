@@ -346,6 +346,7 @@ export declare interface IWheelOptions {
     center?: Point | null;
     lineHeight?: number;
     axis?: 'all' | 'x' | 'y';
+    keyToPress?: string[] | null;
 }
 
 export declare class MouseEdges extends Plugin_2 {
@@ -576,7 +577,10 @@ export declare class Wheel extends Plugin_2 {
     protected smoothing?: IPointData | null;
     protected smoothingCenter?: Point | null;
     protected smoothingCount?: number;
+    protected keyIsPressed: boolean;
     constructor(parent: Viewport, options?: IWheelOptions);
+    protected handleKeyPresses(codes: string[]): void;
+    protected checkKeyPress(): boolean;
     down(): boolean;
     protected isAxisX(): boolean;
     protected isAxisY(): boolean;
