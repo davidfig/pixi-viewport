@@ -54,6 +54,14 @@ export interface IWheelOptions
      * @default 'all'
      */
     axis?: 'all' | 'x' | 'y';
+
+    /**
+     * Array containing {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of
+     * keys that can be pressed for the zoom to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
+     *
+     * @default null
+     */
+    keyToPress?: string[] | null;
 }
 
 const DEFAULT_WHEEL_OPTIONS: Required<IWheelOptions> = {
@@ -64,6 +72,7 @@ const DEFAULT_WHEEL_OPTIONS: Required<IWheelOptions> = {
     center: null,
     lineHeight: 20,
     axis: 'all',
+    keyToPress: null,
 };
 
 /**
@@ -79,6 +88,9 @@ export class Wheel extends Plugin
     protected smoothingCenter?: Point | null;
     protected smoothingCount?: number;
 
+    /** Flags whether the keys required to zoom are pressed currently. */
+    protected keyIsPressed: boolean;
+
     /**
      * This is called by {@link Viewport.wheel}.
      */
@@ -86,6 +98,41 @@ export class Wheel extends Plugin
     {
         super(parent);
         this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options);
+        this.keyIsPressed = false;
+
+        if (this.options.keyToPress)
+        {
+            this.handleKeyPresses(this.options.keyToPress);
+        }
+    }
+
+    /**
+     * Handles keypress events and set the keyIsPressed boolean accordingly
+     *
+     * @param {array} codes - key codes that can be used to trigger zoom event
+     */
+    protected handleKeyPresses(codes: string[]): void
+    {
+        window.addEventListener('keydown', (e) =>
+        {
+            if (codes.includes(e.code))
+            {
+                this.keyIsPressed = true;
+            }
+        });
+
+        window.addEventListener('keyup', (e) =>
+        {
+            if (codes.includes(e.code))
+            {
+                this.keyIsPressed = false;
+            }
+        });
+    }
+
+    protected checkKeyPress(): boolean
+    {
+        return !this.options.keyToPress || this.keyIsPressed;
     }
 
     public down(): boolean
@@ -151,7 +198,7 @@ export class Wheel extends Plugin
             this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
             (this.smoothingCount as number)++;
 
-            if (this.smoothingCount as number >= this.options.smooth)
+            if ((this.smoothingCount as number) >= this.options.smooth)
             {
                 this.smoothing = null;
             }
@@ -161,6 +208,11 @@ export class Wheel extends Plugin
     public wheel(e: WheelEvent): boolean | undefined
     {
         if (this.paused)
+        {
+            return;
+        }
+
+        if (!this.checkKeyPress())
         {
             return;
         }
