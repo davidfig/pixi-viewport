@@ -2,7 +2,7 @@
  
 /*!
  * pixi-viewport - v4.31.0
- * Compiled Wed, 12 May 2021 23:44:22 UTC
+ * Compiled Sat, 17 Jul 2021 14:52:10 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1480,13 +1480,18 @@ class Decelerate extends Plugin
         this.timeSinceRelease += elapsed;
 
         // End decelerate velocity once it goes under a certain amount of precision.
-        if (Math.abs(this.x || 0) < this.options.minSpeed)
-        {
-            this.x = 0;
-        }
-        if (Math.abs(this.y || 0) < this.options.minSpeed)
-        {
-            this.y = 0;
+        if (this.x && this.y) {
+            if (Math.abs(this.x) < this.options.minSpeed && Math.abs(this.y) < this.options.minSpeed) {
+                 this.x = 0;
+                 this.y = 0;
+            }
+        } else {
+            if (Math.abs(this.x || 0) < this.options.minSpeed) {
+                this.x = 0;
+            }
+            if (Math.abs(this.y || 0) < this.options.minSpeed) {
+                this.y = 0;
+            }
         }
 
         if (moved)
@@ -4093,6 +4098,7 @@ class Viewport extends Container
     
     
     
+     __init() {this._disableOnContextMenu = (e) => e.preventDefault();}
 
     /**
      * @param {IViewportOptions} ViewportOptions
@@ -4117,8 +4123,7 @@ class Viewport extends Container
      */
     constructor(options = {})
     {
-        super();
-        this.options = Object.assign(
+        super();Viewport.prototype.__init.call(this);        this.options = Object.assign(
             {},
             { divWheel: document.body },
             DEFAULT_VIEWPORT_OPTIONS,
@@ -4137,7 +4142,7 @@ class Viewport extends Container
 
         if (this.options.disableOnContextMenu)
         {
-            this.options.divWheel.oncontextmenu = (e) => e.preventDefault();
+            this.options.divWheel.addEventListener('contextmenu', this._disableOnContextMenu);
         }
         if (!this.options.noTicker)
         {
@@ -4155,6 +4160,10 @@ class Viewport extends Container
         if (!this.options.noTicker && this.tickerFunction)
         {
             this.options.ticker.remove(this.tickerFunction);
+        }
+        if (this.options.disableOnContextMenu)
+        {
+            this.options.divWheel.removeEventListener('contextmenu', this._disableOnContextMenu);
         }
 
         this.input.destroy();

@@ -495,6 +495,7 @@ export declare class Viewport extends Container {
     private readonly tickerFunction?;
     private _worldWidth?;
     private _worldHeight?;
+    private _disableOnContextMenu;
     constructor(options?: IViewportOptions);
     destroy(options?: IDestroyOptions): void;
     update(elapsed: number): void;
