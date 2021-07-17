@@ -346,6 +346,8 @@ export declare interface IWheelOptions {
     center?: Point | null;
     lineHeight?: number;
     axis?: 'all' | 'x' | 'y';
+    trackpadPinch?: boolean;
+    wheelZoom?: boolean;
 }
 
 export declare class MouseEdges extends Plugin_2 {
@@ -582,7 +584,8 @@ export declare class Wheel extends Plugin_2 {
     protected isAxisX(): boolean;
     protected isAxisY(): boolean;
     update(): void;
-    wheel(e: WheelEvent): boolean | undefined;
+    private pinch;
+    wheel(e: WheelEvent): boolean;
 }
 
 export { }

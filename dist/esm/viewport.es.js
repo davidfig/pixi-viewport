@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.31.0
- * Compiled Sat, 17 Jul 2021 15:43:41 UTC
+ * pixi-viewport - v4.32.0
+ * Compiled Sat, 17 Jul 2021 16:47:05 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1917,7 +1917,7 @@ class Drag extends Plugin
         {
             const wheel = this.parent.plugins.get('wheel', true);
 
-            if (!wheel)
+            if (!wheel || (!wheel.options.wheelZoom && !event.ctrlKey))
             {
                 const step = event.deltaMode ? this.options.lineHeight : 1;
 
@@ -2486,16 +2486,12 @@ class MouseEdges extends Plugin
 
 
 
-
-
-
 const DEFAULT_PINCH_OPTIONS = {
     noDrag: false,
     percent: 1,
     center: null,
     factor: 1,
     axis: 'all',
-    trackpad: true,
 };
 
 /**
@@ -2514,10 +2510,7 @@ class Pinch extends Plugin
     /** Flags whether the viewport is being pinched. */
      __init2() {this.pinching = false;}
 
-    /** whether to allow trackpad pinch to zoom */
-     __init3() {this.trackpad = false;}
-
-     __init4() {this.moved = false;}
+     __init3() {this.moved = false;}
     
 
     /**
@@ -2525,8 +2518,7 @@ class Pinch extends Plugin
      */
     constructor(parent, options = {})
     {
-        super(parent);Pinch.prototype.__init.call(this);Pinch.prototype.__init2.call(this);Pinch.prototype.__init3.call(this);Pinch.prototype.__init4.call(this);        this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options);
-        this.trackpad = this.options.trackpad;
+        super(parent);Pinch.prototype.__init.call(this);Pinch.prototype.__init2.call(this);Pinch.prototype.__init3.call(this);        this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options);
     }
 
      down()
@@ -2585,9 +2577,9 @@ class Pinch extends Plugin
 
                 const point = {
                     x: (first.last ).x
-                        + (((second.last ).x - (first.last ).x) / 2),
+                        + ((second.last ).x - (first.last ).x) / 2,
                     y: (first.last ).y
-                        + (((second.last ).y - (first.last ).y) / 2),
+                        + ((second.last ).y - (first.last ).y) / 2,
                 };
 
                 if (!this.options.center)
@@ -2600,7 +2592,7 @@ class Pinch extends Plugin
 
                 dist = dist === 0 ? dist = 0.0000000001 : dist;
 
-                const change = (1 - (last / dist)) * this.options.percent
+                const change = (1 - last / dist) * this.options.percent
                     * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
 
                 if (this.isAxisX())
@@ -2650,22 +2642,6 @@ class Pinch extends Plugin
 
             return true;
         }
-
-        return false;
-    }
-
-     wheel(e)
-    {
-        console.log('wheeling...');
-        if (e.ctrlKey)
-        {
-            console.log('ctrlkey');
-        }
-        else console.log('no ctrlkey');
-        const wheel = this.parent.plugins.get('wheel', true);
-
-        if (!wheel && this.trackpad)
-        ;
 
         return false;
     }
@@ -3191,6 +3167,16 @@ class SnapZoom extends Plugin
 
 
 
+
+
+
+
+
+
+
+
+
+
 const DEFAULT_WHEEL_OPTIONS = {
     percent: 0.1,
     smooth: false,
@@ -3199,6 +3185,8 @@ const DEFAULT_WHEEL_OPTIONS = {
     center: null,
     lineHeight: 20,
     axis: 'all',
+    trackpadPinch: false,
+    wheelZoom: true,
 };
 
 /**
@@ -3293,75 +3281,123 @@ class Wheel extends Plugin
         }
     }
 
+     pinch(e)
+    {
+        const point = this.parent.input.getPointerPosition(e);
+        const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
+        const change = Math.pow(2, (1 + this.options.percent) * step);
+
+        let oldPoint;
+
+        if (!this.options.center)
+        {
+            oldPoint = this.parent.toLocal(point);
+        }
+        if (this.isAxisX())
+        {
+            this.parent.scale.x *= change;
+        }
+        if (this.isAxisY())
+        {
+            this.parent.scale.y *= change;
+        }
+        this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+        const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+        if (clamp)
+        {
+            clamp.clamp();
+        }
+        if (this.options.center)
+        {
+            this.parent.moveCenter(this.options.center);
+        }
+        else
+        {
+            const newPoint = this.parent.toGlobal(oldPoint );
+
+            this.parent.x += point.x - newPoint.x;
+            this.parent.y += point.y - newPoint.y;
+        }
+        this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+        this.parent.emit('wheel',
+            { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+    }
+
      wheel(e)
     {
         if (this.paused)
         {
-            return;
+            return false;
         }
 
-        const point = this.parent.input.getPointerPosition(e);
-        const sign = this.options.reverse ? -1 : 1;
-        const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
-        const change = Math.pow(2, (1 + this.options.percent) * step);
-
-        if (this.options.smooth)
+        if (e.ctrlKey && this.options.trackpadPinch)
         {
-            const original = {
-                x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount )) : 0,
-                y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount )) : 0
-            };
-
-            this.smoothing = {
-                x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
-                y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
-            };
-            this.smoothingCount = 0;
-            this.smoothingCenter = point;
+            this.pinch(e);
         }
-        else
+        else if (this.options.wheelZoom)
         {
-            let oldPoint;
+            const point = this.parent.input.getPointerPosition(e);
+            const sign = this.options.reverse ? -1 : 1;
+            const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
+            const change = Math.pow(2, (1 + this.options.percent) * step);
 
-            if (!this.options.center)
+            if (this.options.smooth)
             {
-                oldPoint = this.parent.toLocal(point);
-            }
-            if (this.isAxisX())
-            {
-                this.parent.scale.x *= change;
-            }
-            if (this.isAxisY())
-            {
-                this.parent.scale.y *= change;
-            }
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-            const clamp = this.parent.plugins.get('clamp-zoom', true);
+                const original = {
+                    x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount )) : 0,
+                    y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount )) : 0
+                };
 
-            if (clamp)
-            {
-                clamp.clamp();
-            }
-            if (this.options.center)
-            {
-                this.parent.moveCenter(this.options.center);
+                this.smoothing = {
+                    x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
+                    y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
+                };
+                this.smoothingCount = 0;
+                this.smoothingCenter = point;
             }
             else
             {
-                const newPoint = this.parent.toGlobal(oldPoint );
+                let oldPoint;
 
-                this.parent.x += point.x - newPoint.x;
-                this.parent.y += point.y - newPoint.y;
+                if (!this.options.center)
+                {
+                    oldPoint = this.parent.toLocal(point);
+                }
+                if (this.isAxisX())
+                {
+                    this.parent.scale.x *= change;
+                }
+                if (this.isAxisY())
+                {
+                    this.parent.scale.y *= change;
+                }
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+                const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+                if (clamp)
+                {
+                    clamp.clamp();
+                }
+                if (this.options.center)
+                {
+                    this.parent.moveCenter(this.options.center);
+                }
+                else
+                {
+                    const newPoint = this.parent.toGlobal(oldPoint );
+
+                    this.parent.x += point.x - newPoint.x;
+                    this.parent.y += point.y - newPoint.y;
+                }
             }
+
+            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+            this.parent.emit('wheel',
+                { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
         }
 
-        this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
-
-        if (!this.parent.options.passiveWheel)
-        {
-            return true;
-        }
+        return !this.parent.options.passiveWheel;
     }
 }
 
@@ -3578,7 +3614,6 @@ class InputManager
     /** Handle wheel events */
      handleWheel(event)
     {
-        console.log('wheel');
         if (this.viewport.pause || !this.viewport.worldVisible)
         {
             return;

@@ -6,7 +6,7 @@ import { FPS } from 'yy-fps'
 import { clicked } from 'clicked'
 import DomEase from 'dom-ease'
 
-import { Viewport } from '../../src'
+import { Viewport } from '../../dist/viewport.min.js'
 import { UserPlugin } from './user-plugin'
 
 import { gui } from './gui'
