@@ -17,6 +17,7 @@
     "scripts": {
         "start": "serve docs/",
         "dev": "rollup -w -c docs/sample/rollup.dev.js",
+        "dev-original": "rollup -w -c docs/original/rollup.dev.js",
         "test": "floss --path test",
         "coverage": "nyc mocha",
         "build": "rollup -c && yarn build:types",
@@ -76,6 +77,7 @@
         "@rollup/plugin-commonjs": "^19.0.0",
         "@rollup/plugin-node-resolve": "^13.0.0",
         "@rollup/plugin-sucrase": "^3.1.0",
+        "@rollup/plugin-typescript": "^8.2.3",
         "@typescript-eslint/eslint-plugin": "^4.22.1",
         "@typescript-eslint/parser": "^4.22.1",
         "browserify": "^17.0.0",

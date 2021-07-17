@@ -2,7 +2,7 @@
  
 /*!
  * pixi-viewport - v4.31.0
- * Compiled Sat, 17 Jul 2021 14:52:10 UTC
+ * Compiled Sat, 17 Jul 2021 15:43:41 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -2486,12 +2486,16 @@ class MouseEdges extends Plugin
 
 
 
+
+
+
 const DEFAULT_PINCH_OPTIONS = {
     noDrag: false,
     percent: 1,
     center: null,
     factor: 1,
     axis: 'all',
+    trackpad: true,
 };
 
 /**
@@ -2510,7 +2514,10 @@ class Pinch extends Plugin
     /** Flags whether the viewport is being pinched. */
      __init2() {this.pinching = false;}
 
-     __init3() {this.moved = false;}
+    /** whether to allow trackpad pinch to zoom */
+     __init3() {this.trackpad = false;}
+
+     __init4() {this.moved = false;}
     
 
     /**
@@ -2518,7 +2525,8 @@ class Pinch extends Plugin
      */
     constructor(parent, options = {})
     {
-        super(parent);Pinch.prototype.__init.call(this);Pinch.prototype.__init2.call(this);Pinch.prototype.__init3.call(this);        this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options);
+        super(parent);Pinch.prototype.__init.call(this);Pinch.prototype.__init2.call(this);Pinch.prototype.__init3.call(this);Pinch.prototype.__init4.call(this);        this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options);
+        this.trackpad = this.options.trackpad;
     }
 
      down()
@@ -2526,6 +2534,7 @@ class Pinch extends Plugin
         if (this.parent.input.count() >= 2)
         {
             this.active = true;
+
             return true;
         }
 
@@ -2575,10 +2584,10 @@ class Pinch extends Plugin
                 let oldPoint;
 
                 const point = {
-                    x: (first.last ).x +
-                        ((second.last ).x - (first.last ).x) / 2,
-                    y: (first.last ).y +
-                        ((second.last ).y - (first.last ).y) / 2,
+                    x: (first.last ).x
+                        + (((second.last ).x - (first.last ).x) / 2),
+                    y: (first.last ).y
+                        + (((second.last ).y - (first.last ).y) / 2),
                 };
 
                 if (!this.options.center)
@@ -2586,12 +2595,12 @@ class Pinch extends Plugin
                     oldPoint = this.parent.toLocal(point);
                 }
                 let dist = Math.sqrt(Math.pow(
-                    (second.last ).x - (first.last ).x, 2) +
-                    Math.pow((second.last ).y - (first.last ).y, 2));
+                    (second.last ).x - (first.last ).x, 2)
+                    + Math.pow((second.last ).y - (first.last ).y, 2));
 
                 dist = dist === 0 ? dist = 0.0000000001 : dist;
 
-                const change = (1 - last / dist) * this.options.percent
+                const change = (1 - (last / dist)) * this.options.percent
                     * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
 
                 if (this.isAxisX())
@@ -2641,6 +2650,22 @@ class Pinch extends Plugin
 
             return true;
         }
+
+        return false;
+    }
+
+     wheel(e)
+    {
+        console.log('wheeling...');
+        if (e.ctrlKey)
+        {
+            console.log('ctrlkey');
+        }
+        else console.log('no ctrlkey');
+        const wheel = this.parent.plugins.get('wheel', true);
+
+        if (!wheel && this.trackpad)
+        ;
 
         return false;
     }
@@ -3553,6 +3578,7 @@ class InputManager
     /** Handle wheel events */
      handleWheel(event)
     {
+        console.log('wheel');
         if (this.viewport.pause || !this.viewport.worldVisible)
         {
             return;

@@ -74,6 +74,7 @@ export class Pinch extends Plugin
         if (this.parent.input.count() >= 2)
         {
             this.active = true;
+
             return true;
         }
 
@@ -123,10 +124,10 @@ export class Pinch extends Plugin
                 let oldPoint: IPointData | undefined;
 
                 const point = {
-                    x: (first.last as IPointData).x +
-                        ((second.last as IPointData).x - (first.last as IPointData).x) / 2,
-                    y: (first.last as IPointData).y +
-                        ((second.last as IPointData).y - (first.last as IPointData).y) / 2,
+                    x: (first.last as IPointData).x
+                        + ((second.last as IPointData).x - (first.last as IPointData).x) / 2,
+                    y: (first.last as IPointData).y
+                        + ((second.last as IPointData).y - (first.last as IPointData).y) / 2,
                 };
 
                 if (!this.options.center)
@@ -134,8 +135,8 @@ export class Pinch extends Plugin
                     oldPoint = this.parent.toLocal(point);
                 }
                 let dist = Math.sqrt(Math.pow(
-                    (second.last as IPointData).x - (first.last as IPointData).x, 2) +
-                    Math.pow((second.last as IPointData).y - (first.last as IPointData).y, 2));
+                    (second.last as IPointData).x - (first.last as IPointData).x, 2)
+                    + Math.pow((second.last as IPointData).y - (first.last as IPointData).y, 2));
 
                 dist = dist === 0 ? dist = 0.0000000001 : dist;
 

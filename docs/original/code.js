@@ -6,7 +6,7 @@ import { FPS } from 'yy-fps'
 import { clicked } from 'clicked'
 import DomEase from 'dom-ease'
 
-import { Viewport } from '../../dist/esm/viewport.es.js'
+import { Viewport } from '../../src'
 import { UserPlugin } from './user-plugin'
 
 import { gui } from './gui'
@@ -31,7 +31,7 @@ function viewport() {
         }))
     _viewport
         .drag({ clampWheel: false })
-        .wheel({ smooth: 3 })
+        .wheel({ smooth: 3, trackpadPinch: true, wheelZoom: false, })
         .pinch()
         .decelerate()
         .on('clicked', click)
