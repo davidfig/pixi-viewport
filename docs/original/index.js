@@ -48702,7 +48702,7 @@
       }
       pinch(e) {
           const point = this.parent.input.getPointerPosition(e);
-          const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
+          const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
           const change = Math.pow(2, (1 + this.options.percent) * step);
           let oldPoint;
           if (!this.options.center) {
