@@ -264,13 +264,18 @@ export class Decelerate extends Plugin
         this.timeSinceRelease += elapsed;
 
         // End decelerate velocity once it goes under a certain amount of precision.
-        if (Math.abs(this.x || 0) < this.options.minSpeed)
-        {
-            this.x = 0;
-        }
-        if (Math.abs(this.y || 0) < this.options.minSpeed)
-        {
-            this.y = 0;
+        if (this.x && this.y) {
+            if (Math.abs(this.x) < this.options.minSpeed && Math.abs(this.y) < this.options.minSpeed) {
+                 this.x = 0;
+                 this.y = 0;
+            }
+        } else {
+            if (Math.abs(this.x || 0) < this.options.minSpeed) {
+                this.x = 0;
+            }
+            if (Math.abs(this.y || 0) < this.options.minSpeed) {
+                this.y = 0;
+            }
         }
 
         if (moved)

@@ -193,6 +193,7 @@ export class Viewport extends Container
     private readonly tickerFunction?: () => void;
     private _worldWidth?: number | null;
     private _worldHeight?: number | null;
+    private _disableOnContextMenu = (e: MouseEvent) => e.preventDefault();
 
     /**
      * @param {IViewportOptions} ViewportOptions
@@ -237,7 +238,7 @@ export class Viewport extends Container
 
         if (this.options.disableOnContextMenu)
         {
-            this.options.divWheel.oncontextmenu = (e) => e.preventDefault();
+            this.options.divWheel.addEventListener('contextmenu', this._disableOnContextMenu);
         }
         if (!this.options.noTicker)
         {
@@ -255,6 +256,10 @@ export class Viewport extends Container
         if (!this.options.noTicker && this.tickerFunction)
         {
             this.options.ticker.remove(this.tickerFunction);
+        }
+        if (this.options.disableOnContextMenu)
+        {
+            this.options.divWheel.removeEventListener('contextmenu', this._disableOnContextMenu);
         }
 
         this.input.destroy();

@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
 
-const FILES = ['viewport.js', 'viewport.js.map', 'viewport.min.js', 'viewport.min.js.map'];
+const FILES = ['cjs/viewport.js', 'cjs/viewport.js.map', 'viewport.min.js', 'viewport.min.js.map'];
 
 const FROM = 'dist';
 const TO = 'docs';

@@ -62,6 +62,16 @@ export interface IWheelOptions
      * @default null
      */
     keyToPress?: string[] | null;
+
+    /**
+     * pinch the trackpad to zoom
+     */
+    trackpadPinch?: boolean;
+
+    /**
+     * zooms on wheel spin (use this as an alternative to drag.options.wheel)
+     */
+    wheelZoom?: boolean;
 }
 
 const DEFAULT_WHEEL_OPTIONS: Required<IWheelOptions> = {
@@ -73,6 +83,8 @@ const DEFAULT_WHEEL_OPTIONS: Required<IWheelOptions> = {
     lineHeight: 20,
     axis: 'all',
     keyToPress: null,
+    trackpadPinch: false,
+    wheelZoom: true,
 };
 
 /**
@@ -205,11 +217,59 @@ export class Wheel extends Plugin
         }
     }
 
-    public wheel(e: WheelEvent): boolean | undefined
+    private pinch(e: WheelEvent)
     {
         if (this.paused)
         {
             return;
+        }
+
+        const point = this.parent.input.getPointerPosition(e);
+        const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
+        const change = Math.pow(2, (1 + this.options.percent) * step);
+
+        let oldPoint: IPointData | undefined;
+
+        if (!this.options.center)
+        {
+            oldPoint = this.parent.toLocal(point);
+        }
+        if (this.isAxisX())
+        {
+            this.parent.scale.x *= change;
+        }
+        if (this.isAxisY())
+        {
+            this.parent.scale.y *= change;
+        }
+        this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+        const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+        if (clamp)
+        {
+            clamp.clamp();
+        }
+        if (this.options.center)
+        {
+            this.parent.moveCenter(this.options.center);
+        }
+        else
+        {
+            const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+
+            this.parent.x += point.x - newPoint.x;
+            this.parent.y += point.y - newPoint.y;
+        }
+        this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+        this.parent.emit('wheel',
+            { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+    }
+
+    public wheel(e: WheelEvent): boolean
+    {
+        if (this.paused)
+        {
+            return false;
         }
 
         if (!this.checkKeyPress())
@@ -217,67 +277,72 @@ export class Wheel extends Plugin
             return;
         }
 
-        const point = this.parent.input.getPointerPosition(e);
-        const sign = this.options.reverse ? -1 : 1;
-        const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
-        const change = Math.pow(2, (1 + this.options.percent) * step);
-
-        if (this.options.smooth)
+        if (e.ctrlKey && this.options.trackpadPinch)
         {
-            const original = {
-                x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount as number)) : 0,
-                y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount as number)) : 0
-            };
-
-            this.smoothing = {
-                x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
-                y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
-            };
-            this.smoothingCount = 0;
-            this.smoothingCenter = point;
+            this.pinch(e);
         }
-        else
+        else if (this.options.wheelZoom)
         {
-            let oldPoint: IPointData | undefined;
+            const point = this.parent.input.getPointerPosition(e);
+            const sign = this.options.reverse ? -1 : 1;
+            const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
+            const change = Math.pow(2, (1 + this.options.percent) * step);
 
-            if (!this.options.center)
+            if (this.options.smooth)
             {
-                oldPoint = this.parent.toLocal(point);
-            }
-            if (this.isAxisX())
-            {
-                this.parent.scale.x *= change;
-            }
-            if (this.isAxisY())
-            {
-                this.parent.scale.y *= change;
-            }
-            this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-            const clamp = this.parent.plugins.get('clamp-zoom', true);
+                const original = {
+                    x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount as number)) : 0,
+                    y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount as number)) : 0
+                };
 
-            if (clamp)
-            {
-                clamp.clamp();
-            }
-            if (this.options.center)
-            {
-                this.parent.moveCenter(this.options.center);
+                this.smoothing = {
+                    x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
+                    y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
+                };
+                this.smoothingCount = 0;
+                this.smoothingCenter = point;
             }
             else
             {
-                const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+                let oldPoint: IPointData | undefined;
 
-                this.parent.x += point.x - newPoint.x;
-                this.parent.y += point.y - newPoint.y;
+                if (!this.options.center)
+                {
+                    oldPoint = this.parent.toLocal(point);
+                }
+                if (this.isAxisX())
+                {
+                    this.parent.scale.x *= change;
+                }
+                if (this.isAxisY())
+                {
+                    this.parent.scale.y *= change;
+                }
+                this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+                const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+                if (clamp)
+                {
+                    clamp.clamp();
+                }
+                if (this.options.center)
+                {
+                    this.parent.moveCenter(this.options.center);
+                }
+                else
+                {
+                    const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+
+                    this.parent.x += point.x - newPoint.x;
+                    this.parent.y += point.y - newPoint.y;
+                }
             }
+
+            this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+            this.parent.emit('wheel',
+                { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
         }
 
-        this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-        this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
-
-        if (!this.parent.options.passiveWheel)
-        {
-            return true;
-        }
+        return !this.parent.options.passiveWheel;
     }
 }

@@ -67,6 +67,7 @@
     }
 
     const SIZE = 40;
+    const SPEED = 3;
 
     const target = new PIXI.Sprite(PIXI.Texture.WHITE);
 
@@ -83,8 +84,10 @@
     }
 
     function changeTarget() {
-        range(SIZE / 2, _viewport.worldWidth - SIZE / 2);
-        range(SIZE / 2, _viewport.worldHeight - SIZE / 2);
+        const x = range(SIZE / 2, _viewport.worldWidth - SIZE / 2);
+        const y = range(SIZE / 2, _viewport.worldHeight - SIZE / 2);
+        Math.atan2(y - target.y, x - target.x);
+        Math.sqrt(Math.pow(x - target.x, 2) + Math.pow(y - target.y, 2)) / (SPEED * 60 / 1000);
     }
 
     function isDirty() {
@@ -112,7 +115,7 @@
             worldWidth: WORLD_WIDTH,                        // world width used by viewport (automatically calculated based on container width)
             worldHeight: WORLD_HEIGHT,                      // world height used by viewport (automatically calculated based on container height)
             // threshold: 5,                                // number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event
-            // passiveWheel: true,                          // whether the 'wheel' event is set to passive (note: if false, e.preventDefault() will be called when wheel is used over the viewport)
+            passiveWheel: false,                            // whether the 'wheel' event is set to passive (note: if false, e.preventDefault() will be called when wheel is used over the viewport)
             // stopPropagation: false,                      // whether to stopPropagation of events that impact the viewport (except wheel events, see options.passiveWheel)
             // forceHitArea: null,                          // change the default hitArea from world size to a new value
             // noTicker: false,                             // set this if you want to manually call update() function on each frame
@@ -148,15 +151,15 @@
                 // factor: 1,                   // factor to multiply two-finger drag to increase the speed of movement
                 // center: null,                // place this point at center during zoom instead of center of two fingers
                 // axis: 'all',                 // axis to zoom
-            })
-            .wheel({
-                // percent: 0.1,                // smooth the zooming by providing the number of frames to zoom between wheel spins
-                // interrupt: true,             // stop smoothing with any user input on the viewport
-                // reverse: false,              // reverse the direction of the scroll
-                // center: null,                // place this point at center during zoom instead of current mouse position
-                // lineHeight: 20,	            // scaling factor for non-DOM_DELTA_PIXEL scrolling events
-                // axis: 'all',                 // axis to zoom
             });
+        // .wheel({
+        // percent: 0.1,                // smooth the zooming by providing the number of frames to zoom between wheel spins
+        // interrupt: true,             // stop smoothing with any user input on the viewport
+        // reverse: false,              // reverse the direction of the scroll
+        // center: null,                // place this point at center during zoom instead of current mouse position
+        // lineHeight: 20,	            // scaling factor for non-DOM_DELTA_PIXEL scrolling events
+        // axis: 'all',                 // axis to zoom
+        // })
 
         // viewport.bounce({
         //     sides: 'all',                // all, horizontal, vertical, or combination of top, bottom, right, left(e.g., 'top-bottom-right')

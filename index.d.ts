@@ -347,6 +347,8 @@ export declare interface IWheelOptions {
     lineHeight?: number;
     axis?: 'all' | 'x' | 'y';
     keyToPress?: string[] | null;
+    trackpadPinch?: boolean;
+    wheelZoom?: boolean;
 }
 
 export declare class MouseEdges extends Plugin_2 {
@@ -496,6 +498,7 @@ export declare class Viewport extends Container {
     private readonly tickerFunction?;
     private _worldWidth?;
     private _worldHeight?;
+    private _disableOnContextMenu;
     constructor(options?: IViewportOptions);
     destroy(options?: IDestroyOptions): void;
     update(elapsed: number): void;
@@ -585,7 +588,8 @@ export declare class Wheel extends Plugin_2 {
     protected isAxisX(): boolean;
     protected isAxisY(): boolean;
     update(): void;
-    wheel(e: WheelEvent): boolean | undefined;
+    private pinch;
+    wheel(e: WheelEvent): boolean;
 }
 
 export { }

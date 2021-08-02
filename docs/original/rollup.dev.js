@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs'
 import builtins from '@joseph184/rollup-plugin-node-builtins'
 import globals from 'rollup-plugin-node-globals'
 import serve from 'rollup-plugin-serve'
+import typescript from '@rollup/plugin-typescript'
 
 export default {
     input: 'docs/original/code.js',
@@ -18,6 +19,9 @@ export default {
             }
         }),
         globals(),
+        typescript({
+            declaration: false,
+        }),
         serve('docs/original')
     ],
     output: {

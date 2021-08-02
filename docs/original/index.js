@@ -75,7 +75,7 @@
   // other code modifying setTimeout (like sinon.useFakeTimers())
   var setTimeoutFunc = setTimeout;
 
-  function isArray$2(x) {
+  function isArray$1(x) {
     return Boolean(x && typeof x.length !== 'undefined');
   }
 
@@ -120,7 +120,7 @@
     Promise$1._immediateFn(function() {
       var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
       if (cb === null) {
-        (self._state === 1 ? resolve$1 : reject)(deferred.promise, self._value);
+        (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
         return;
       }
       var ret;
@@ -130,11 +130,11 @@
         reject(deferred.promise, e);
         return;
       }
-      resolve$1(deferred.promise, ret);
+      resolve(deferred.promise, ret);
     });
   }
 
-  function resolve$1(self, newValue) {
+  function resolve(self, newValue) {
     try {
       // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
       if (newValue === self)
@@ -205,7 +205,7 @@
         function(value) {
           if (done) return;
           done = true;
-          resolve$1(self, value);
+          resolve(self, value);
         },
         function(reason) {
           if (done) return;
@@ -236,7 +236,7 @@
 
   Promise$1.all = function(arr) {
     return new Promise$1(function(resolve, reject) {
-      if (!isArray$2(arr)) {
+      if (!isArray$1(arr)) {
         return reject(new TypeError('Promise.all accepts an array'));
       }
 
@@ -294,7 +294,7 @@
 
   Promise$1.race = function(arr) {
     return new Promise$1(function(resolve, reject) {
-      if (!isArray$2(arr)) {
+      if (!isArray$1(arr)) {
         return reject(new TypeError('Promise.race accepts an array'));
       }
 
@@ -322,7 +322,7 @@
     }
   };
 
-  var commonjsGlobal$2 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+  var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   function getDefaultExportFromCjs (x) {
   	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
@@ -350,7 +350,7 @@
   */
   /* eslint-disable no-unused-vars */
   var getOwnPropertySymbols = Object.getOwnPropertySymbols;
-  var hasOwnProperty$2 = Object.prototype.hasOwnProperty;
+  var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
   var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
   function toObject(val) {
@@ -414,7 +414,7 @@
   		from = Object(arguments[s]);
 
   		for (var key in from) {
-  			if (hasOwnProperty$2.call(from, key)) {
+  			if (hasOwnProperty$1.call(from, key)) {
   				to[key] = from[key];
   			}
   		}
@@ -433,8 +433,8 @@
   };
 
   /*!
-   * @pixi/polyfill - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/polyfill - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/polyfill is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -543,32 +543,32 @@
       self.Int32Array = Array;
   }
 
-  var appleIphone$1 = /iPhone/i;
-  var appleIpod$1 = /iPod/i;
-  var appleTablet$1 = /iPad/i;
-  var appleUniversal$1 = /\biOS-universal(?:.+)Mac\b/i;
-  var androidPhone$1 = /\bAndroid(?:.+)Mobile\b/i;
-  var androidTablet$1 = /Android/i;
-  var amazonPhone$1 = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
-  var amazonTablet$1 = /Silk/i;
-  var windowsPhone$1 = /Windows Phone/i;
-  var windowsTablet$1 = /\bWindows(?:.+)ARM\b/i;
-  var otherBlackBerry$1 = /BlackBerry/i;
-  var otherBlackBerry10$1 = /BB10/i;
-  var otherOpera$1 = /Opera Mini/i;
-  var otherChrome$1 = /\b(CriOS|Chrome)(?:.+)Mobile/i;
-  var otherFirefox$1 = /Mobile(?:.+)Firefox\b/i;
-  var isAppleTabletOnIos13$1 = function (navigator) {
+  var appleIphone = /iPhone/i;
+  var appleIpod = /iPod/i;
+  var appleTablet = /iPad/i;
+  var appleUniversal = /\biOS-universal(?:.+)Mac\b/i;
+  var androidPhone = /\bAndroid(?:.+)Mobile\b/i;
+  var androidTablet = /Android/i;
+  var amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
+  var amazonTablet = /Silk/i;
+  var windowsPhone = /Windows Phone/i;
+  var windowsTablet = /\bWindows(?:.+)ARM\b/i;
+  var otherBlackBerry = /BlackBerry/i;
+  var otherBlackBerry10 = /BB10/i;
+  var otherOpera = /Opera Mini/i;
+  var otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
+  var otherFirefox = /Mobile(?:.+)Firefox\b/i;
+  var isAppleTabletOnIos13 = function (navigator) {
       return (typeof navigator !== 'undefined' &&
           navigator.platform === 'MacIntel' &&
           typeof navigator.maxTouchPoints === 'number' &&
           navigator.maxTouchPoints > 1 &&
           typeof MSStream === 'undefined');
   };
-  function createMatch$1(userAgent) {
+  function createMatch(userAgent) {
       return function (regex) { return regex.test(userAgent); };
   }
-  function isMobile$3(param) {
+  function isMobile$1(param) {
       var nav = {
           userAgent: '',
           platform: '',
@@ -600,57 +600,57 @@
       if (typeof tmp[1] !== 'undefined') {
           userAgent = tmp[0];
       }
-      var match = createMatch$1(userAgent);
+      var match = createMatch(userAgent);
       var result = {
           apple: {
-              phone: match(appleIphone$1) && !match(windowsPhone$1),
-              ipod: match(appleIpod$1),
-              tablet: !match(appleIphone$1) &&
-                  (match(appleTablet$1) || isAppleTabletOnIos13$1(nav)) &&
-                  !match(windowsPhone$1),
-              universal: match(appleUniversal$1),
-              device: (match(appleIphone$1) ||
-                  match(appleIpod$1) ||
-                  match(appleTablet$1) ||
-                  match(appleUniversal$1) ||
-                  isAppleTabletOnIos13$1(nav)) &&
-                  !match(windowsPhone$1)
+              phone: match(appleIphone) && !match(windowsPhone),
+              ipod: match(appleIpod),
+              tablet: !match(appleIphone) &&
+                  (match(appleTablet) || isAppleTabletOnIos13(nav)) &&
+                  !match(windowsPhone),
+              universal: match(appleUniversal),
+              device: (match(appleIphone) ||
+                  match(appleIpod) ||
+                  match(appleTablet) ||
+                  match(appleUniversal) ||
+                  isAppleTabletOnIos13(nav)) &&
+                  !match(windowsPhone)
           },
           amazon: {
-              phone: match(amazonPhone$1),
-              tablet: !match(amazonPhone$1) && match(amazonTablet$1),
-              device: match(amazonPhone$1) || match(amazonTablet$1)
+              phone: match(amazonPhone),
+              tablet: !match(amazonPhone) && match(amazonTablet),
+              device: match(amazonPhone) || match(amazonTablet)
           },
           android: {
-              phone: (!match(windowsPhone$1) && match(amazonPhone$1)) ||
-                  (!match(windowsPhone$1) && match(androidPhone$1)),
-              tablet: !match(windowsPhone$1) &&
-                  !match(amazonPhone$1) &&
-                  !match(androidPhone$1) &&
-                  (match(amazonTablet$1) || match(androidTablet$1)),
-              device: (!match(windowsPhone$1) &&
-                  (match(amazonPhone$1) ||
-                      match(amazonTablet$1) ||
-                      match(androidPhone$1) ||
-                      match(androidTablet$1))) ||
+              phone: (!match(windowsPhone) && match(amazonPhone)) ||
+                  (!match(windowsPhone) && match(androidPhone)),
+              tablet: !match(windowsPhone) &&
+                  !match(amazonPhone) &&
+                  !match(androidPhone) &&
+                  (match(amazonTablet) || match(androidTablet)),
+              device: (!match(windowsPhone) &&
+                  (match(amazonPhone) ||
+                      match(amazonTablet) ||
+                      match(androidPhone) ||
+                      match(androidTablet))) ||
                   match(/\bokhttp\b/i)
           },
           windows: {
-              phone: match(windowsPhone$1),
-              tablet: match(windowsTablet$1),
-              device: match(windowsPhone$1) || match(windowsTablet$1)
+              phone: match(windowsPhone),
+              tablet: match(windowsTablet),
+              device: match(windowsPhone) || match(windowsTablet)
           },
           other: {
-              blackberry: match(otherBlackBerry$1),
-              blackberry10: match(otherBlackBerry10$1),
-              opera: match(otherOpera$1),
-              firefox: match(otherFirefox$1),
-              chrome: match(otherChrome$1),
-              device: match(otherBlackBerry$1) ||
-                  match(otherBlackBerry10$1) ||
-                  match(otherOpera$1) ||
-                  match(otherFirefox$1) ||
-                  match(otherChrome$1)
+              blackberry: match(otherBlackBerry),
+              blackberry10: match(otherBlackBerry10),
+              opera: match(otherOpera),
+              firefox: match(otherFirefox),
+              chrome: match(otherChrome),
+              device: match(otherBlackBerry) ||
+                  match(otherBlackBerry10) ||
+                  match(otherOpera) ||
+                  match(otherFirefox) ||
+                  match(otherChrome)
           },
           any: false,
           phone: false,
@@ -669,15 +669,15 @@
   }
 
   /*!
-   * @pixi/settings - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/settings - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/settings is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
    */
 
   // The ESM/CJS versions of ismobilejs only
-  var isMobile$2 = isMobile$3(self.navigator);
+  var isMobile = isMobile$1(self.navigator);
 
   /**
    * The maximum recommended texture units to use.
@@ -692,10 +692,10 @@
    * @param {number} max
    * @returns {number}
    */
-  function maxRecommendedTextures$1(max) {
+  function maxRecommendedTextures(max) {
       var allowMax = true;
-      if (isMobile$2.tablet || isMobile$2.phone) {
-          if (isMobile$2.apple.device) {
+      if (isMobile.tablet || isMobile.phone) {
+          if (isMobile.apple.device) {
               var match = (navigator.userAgent).match(/OS (\d+)_(\d+)?/);
               if (match) {
                   var majorVersion = parseInt(match[1], 10);
@@ -705,7 +705,7 @@
                   }
               }
           }
-          if (isMobile$2.android.device) {
+          if (isMobile.android.device) {
               var match = (navigator.userAgent).match(/Android\s([0-9.]*)/);
               if (match) {
                   var majorVersion = parseInt(match[1], 10);
@@ -727,9 +727,467 @@
    * @private
    * @returns {boolean}
    */
-  function canUploadSameBuffer$1() {
-      return !isMobile$2.apple.device;
+  function canUploadSameBuffer() {
+      return !isMobile.apple.device;
   }
+
+  /**
+   * Different types of environments for WebGL.
+   *
+   * @static
+   * @memberof PIXI
+   * @name ENV
+   * @enum {number}
+   * @property {number} WEBGL_LEGACY - Used for older v1 WebGL devices. PixiJS will aim to ensure compatibility
+   *  with older / less advanced devices. If you experience unexplained flickering prefer this environment.
+   * @property {number} WEBGL - Version 1 of WebGL
+   * @property {number} WEBGL2 - Version 2 of WebGL
+   */
+  var ENV$2;
+  (function (ENV) {
+      ENV[ENV["WEBGL_LEGACY"] = 0] = "WEBGL_LEGACY";
+      ENV[ENV["WEBGL"] = 1] = "WEBGL";
+      ENV[ENV["WEBGL2"] = 2] = "WEBGL2";
+  })(ENV$2 || (ENV$2 = {}));
+  /**
+   * Constant to identify the Renderer Type.
+   *
+   * @static
+   * @memberof PIXI
+   * @name RENDERER_TYPE
+   * @enum {number}
+   * @property {number} UNKNOWN - Unknown render type.
+   * @property {number} WEBGL - WebGL render type.
+   * @property {number} CANVAS - Canvas render type.
+   */
+  var RENDERER_TYPE$2;
+  (function (RENDERER_TYPE) {
+      RENDERER_TYPE[RENDERER_TYPE["UNKNOWN"] = 0] = "UNKNOWN";
+      RENDERER_TYPE[RENDERER_TYPE["WEBGL"] = 1] = "WEBGL";
+      RENDERER_TYPE[RENDERER_TYPE["CANVAS"] = 2] = "CANVAS";
+  })(RENDERER_TYPE$2 || (RENDERER_TYPE$2 = {}));
+  /**
+   * Bitwise OR of masks that indicate the buffers to be cleared.
+   *
+   * @static
+   * @memberof PIXI
+   * @name BUFFER_BITS
+   * @enum {number}
+   * @property {number} COLOR - Indicates the buffers currently enabled for color writing.
+   * @property {number} DEPTH - Indicates the depth buffer.
+   * @property {number} STENCIL - Indicates the stencil buffer.
+   */
+  var BUFFER_BITS$2;
+  (function (BUFFER_BITS) {
+      BUFFER_BITS[BUFFER_BITS["COLOR"] = 16384] = "COLOR";
+      BUFFER_BITS[BUFFER_BITS["DEPTH"] = 256] = "DEPTH";
+      BUFFER_BITS[BUFFER_BITS["STENCIL"] = 1024] = "STENCIL";
+  })(BUFFER_BITS$2 || (BUFFER_BITS$2 = {}));
+  /**
+   * Various blend modes supported by PIXI.
+   *
+   * IMPORTANT - The WebGL renderer only supports the NORMAL, ADD, MULTIPLY and SCREEN blend modes.
+   * Anything else will silently act like NORMAL.
+   *
+   * @memberof PIXI
+   * @name BLEND_MODES
+   * @enum {number}
+   * @property {number} NORMAL
+   * @property {number} ADD
+   * @property {number} MULTIPLY
+   * @property {number} SCREEN
+   * @property {number} OVERLAY
+   * @property {number} DARKEN
+   * @property {number} LIGHTEN
+   * @property {number} COLOR_DODGE
+   * @property {number} COLOR_BURN
+   * @property {number} HARD_LIGHT
+   * @property {number} SOFT_LIGHT
+   * @property {number} DIFFERENCE
+   * @property {number} EXCLUSION
+   * @property {number} HUE
+   * @property {number} SATURATION
+   * @property {number} COLOR
+   * @property {number} LUMINOSITY
+   * @property {number} NORMAL_NPM
+   * @property {number} ADD_NPM
+   * @property {number} SCREEN_NPM
+   * @property {number} NONE
+   * @property {number} SRC_IN
+   * @property {number} SRC_OUT
+   * @property {number} SRC_ATOP
+   * @property {number} DST_OVER
+   * @property {number} DST_IN
+   * @property {number} DST_OUT
+   * @property {number} DST_ATOP
+   * @property {number} SUBTRACT
+   * @property {number} SRC_OVER
+   * @property {number} ERASE
+   * @property {number} XOR
+   */
+  var BLEND_MODES$2;
+  (function (BLEND_MODES) {
+      BLEND_MODES[BLEND_MODES["NORMAL"] = 0] = "NORMAL";
+      BLEND_MODES[BLEND_MODES["ADD"] = 1] = "ADD";
+      BLEND_MODES[BLEND_MODES["MULTIPLY"] = 2] = "MULTIPLY";
+      BLEND_MODES[BLEND_MODES["SCREEN"] = 3] = "SCREEN";
+      BLEND_MODES[BLEND_MODES["OVERLAY"] = 4] = "OVERLAY";
+      BLEND_MODES[BLEND_MODES["DARKEN"] = 5] = "DARKEN";
+      BLEND_MODES[BLEND_MODES["LIGHTEN"] = 6] = "LIGHTEN";
+      BLEND_MODES[BLEND_MODES["COLOR_DODGE"] = 7] = "COLOR_DODGE";
+      BLEND_MODES[BLEND_MODES["COLOR_BURN"] = 8] = "COLOR_BURN";
+      BLEND_MODES[BLEND_MODES["HARD_LIGHT"] = 9] = "HARD_LIGHT";
+      BLEND_MODES[BLEND_MODES["SOFT_LIGHT"] = 10] = "SOFT_LIGHT";
+      BLEND_MODES[BLEND_MODES["DIFFERENCE"] = 11] = "DIFFERENCE";
+      BLEND_MODES[BLEND_MODES["EXCLUSION"] = 12] = "EXCLUSION";
+      BLEND_MODES[BLEND_MODES["HUE"] = 13] = "HUE";
+      BLEND_MODES[BLEND_MODES["SATURATION"] = 14] = "SATURATION";
+      BLEND_MODES[BLEND_MODES["COLOR"] = 15] = "COLOR";
+      BLEND_MODES[BLEND_MODES["LUMINOSITY"] = 16] = "LUMINOSITY";
+      BLEND_MODES[BLEND_MODES["NORMAL_NPM"] = 17] = "NORMAL_NPM";
+      BLEND_MODES[BLEND_MODES["ADD_NPM"] = 18] = "ADD_NPM";
+      BLEND_MODES[BLEND_MODES["SCREEN_NPM"] = 19] = "SCREEN_NPM";
+      BLEND_MODES[BLEND_MODES["NONE"] = 20] = "NONE";
+      BLEND_MODES[BLEND_MODES["SRC_OVER"] = 0] = "SRC_OVER";
+      BLEND_MODES[BLEND_MODES["SRC_IN"] = 21] = "SRC_IN";
+      BLEND_MODES[BLEND_MODES["SRC_OUT"] = 22] = "SRC_OUT";
+      BLEND_MODES[BLEND_MODES["SRC_ATOP"] = 23] = "SRC_ATOP";
+      BLEND_MODES[BLEND_MODES["DST_OVER"] = 24] = "DST_OVER";
+      BLEND_MODES[BLEND_MODES["DST_IN"] = 25] = "DST_IN";
+      BLEND_MODES[BLEND_MODES["DST_OUT"] = 26] = "DST_OUT";
+      BLEND_MODES[BLEND_MODES["DST_ATOP"] = 27] = "DST_ATOP";
+      BLEND_MODES[BLEND_MODES["ERASE"] = 26] = "ERASE";
+      BLEND_MODES[BLEND_MODES["SUBTRACT"] = 28] = "SUBTRACT";
+      BLEND_MODES[BLEND_MODES["XOR"] = 29] = "XOR";
+  })(BLEND_MODES$2 || (BLEND_MODES$2 = {}));
+  /**
+   * Various webgl draw modes. These can be used to specify which GL drawMode to use
+   * under certain situations and renderers.
+   *
+   * @memberof PIXI
+   * @static
+   * @name DRAW_MODES
+   * @enum {number}
+   * @property {number} POINTS
+   * @property {number} LINES
+   * @property {number} LINE_LOOP
+   * @property {number} LINE_STRIP
+   * @property {number} TRIANGLES
+   * @property {number} TRIANGLE_STRIP
+   * @property {number} TRIANGLE_FAN
+   */
+  var DRAW_MODES$2;
+  (function (DRAW_MODES) {
+      DRAW_MODES[DRAW_MODES["POINTS"] = 0] = "POINTS";
+      DRAW_MODES[DRAW_MODES["LINES"] = 1] = "LINES";
+      DRAW_MODES[DRAW_MODES["LINE_LOOP"] = 2] = "LINE_LOOP";
+      DRAW_MODES[DRAW_MODES["LINE_STRIP"] = 3] = "LINE_STRIP";
+      DRAW_MODES[DRAW_MODES["TRIANGLES"] = 4] = "TRIANGLES";
+      DRAW_MODES[DRAW_MODES["TRIANGLE_STRIP"] = 5] = "TRIANGLE_STRIP";
+      DRAW_MODES[DRAW_MODES["TRIANGLE_FAN"] = 6] = "TRIANGLE_FAN";
+  })(DRAW_MODES$2 || (DRAW_MODES$2 = {}));
+  /**
+   * Various GL texture/resources formats.
+   *
+   * @memberof PIXI
+   * @static
+   * @name FORMATS
+   * @enum {number}
+   * @property {number} RGBA=6408
+   * @property {number} RGB=6407
+   * @property {number} RED=6403
+   * @property {number} ALPHA=6406
+   * @property {number} LUMINANCE=6409
+   * @property {number} LUMINANCE_ALPHA=6410
+   * @property {number} DEPTH_COMPONENT=6402
+   * @property {number} DEPTH_STENCIL=34041
+   */
+  var FORMATS$2;
+  (function (FORMATS) {
+      FORMATS[FORMATS["RGBA"] = 6408] = "RGBA";
+      FORMATS[FORMATS["RGB"] = 6407] = "RGB";
+      FORMATS[FORMATS["ALPHA"] = 6406] = "ALPHA";
+      FORMATS[FORMATS["LUMINANCE"] = 6409] = "LUMINANCE";
+      FORMATS[FORMATS["LUMINANCE_ALPHA"] = 6410] = "LUMINANCE_ALPHA";
+      FORMATS[FORMATS["DEPTH_COMPONENT"] = 6402] = "DEPTH_COMPONENT";
+      FORMATS[FORMATS["DEPTH_STENCIL"] = 34041] = "DEPTH_STENCIL";
+  })(FORMATS$2 || (FORMATS$2 = {}));
+  /**
+   * Various GL target types.
+   *
+   * @memberof PIXI
+   * @static
+   * @name TARGETS
+   * @enum {number}
+   * @property {number} TEXTURE_2D=3553
+   * @property {number} TEXTURE_CUBE_MAP=34067
+   * @property {number} TEXTURE_2D_ARRAY=35866
+   * @property {number} TEXTURE_CUBE_MAP_POSITIVE_X=34069
+   * @property {number} TEXTURE_CUBE_MAP_NEGATIVE_X=34070
+   * @property {number} TEXTURE_CUBE_MAP_POSITIVE_Y=34071
+   * @property {number} TEXTURE_CUBE_MAP_NEGATIVE_Y=34072
+   * @property {number} TEXTURE_CUBE_MAP_POSITIVE_Z=34073
+   * @property {number} TEXTURE_CUBE_MAP_NEGATIVE_Z=34074
+   */
+  var TARGETS$2;
+  (function (TARGETS) {
+      TARGETS[TARGETS["TEXTURE_2D"] = 3553] = "TEXTURE_2D";
+      TARGETS[TARGETS["TEXTURE_CUBE_MAP"] = 34067] = "TEXTURE_CUBE_MAP";
+      TARGETS[TARGETS["TEXTURE_2D_ARRAY"] = 35866] = "TEXTURE_2D_ARRAY";
+      TARGETS[TARGETS["TEXTURE_CUBE_MAP_POSITIVE_X"] = 34069] = "TEXTURE_CUBE_MAP_POSITIVE_X";
+      TARGETS[TARGETS["TEXTURE_CUBE_MAP_NEGATIVE_X"] = 34070] = "TEXTURE_CUBE_MAP_NEGATIVE_X";
+      TARGETS[TARGETS["TEXTURE_CUBE_MAP_POSITIVE_Y"] = 34071] = "TEXTURE_CUBE_MAP_POSITIVE_Y";
+      TARGETS[TARGETS["TEXTURE_CUBE_MAP_NEGATIVE_Y"] = 34072] = "TEXTURE_CUBE_MAP_NEGATIVE_Y";
+      TARGETS[TARGETS["TEXTURE_CUBE_MAP_POSITIVE_Z"] = 34073] = "TEXTURE_CUBE_MAP_POSITIVE_Z";
+      TARGETS[TARGETS["TEXTURE_CUBE_MAP_NEGATIVE_Z"] = 34074] = "TEXTURE_CUBE_MAP_NEGATIVE_Z";
+  })(TARGETS$2 || (TARGETS$2 = {}));
+  /**
+   * Various GL data format types.
+   *
+   * @memberof PIXI
+   * @static
+   * @name TYPES
+   * @enum {number}
+   * @property {number} UNSIGNED_BYTE=5121
+   * @property {number} UNSIGNED_SHORT=5123
+   * @property {number} UNSIGNED_SHORT_5_6_5=33635
+   * @property {number} UNSIGNED_SHORT_4_4_4_4=32819
+   * @property {number} UNSIGNED_SHORT_5_5_5_1=32820
+   * @property {number} FLOAT=5126
+   * @property {number} HALF_FLOAT=36193
+   */
+  var TYPES$2;
+  (function (TYPES) {
+      TYPES[TYPES["UNSIGNED_BYTE"] = 5121] = "UNSIGNED_BYTE";
+      TYPES[TYPES["UNSIGNED_SHORT"] = 5123] = "UNSIGNED_SHORT";
+      TYPES[TYPES["UNSIGNED_SHORT_5_6_5"] = 33635] = "UNSIGNED_SHORT_5_6_5";
+      TYPES[TYPES["UNSIGNED_SHORT_4_4_4_4"] = 32819] = "UNSIGNED_SHORT_4_4_4_4";
+      TYPES[TYPES["UNSIGNED_SHORT_5_5_5_1"] = 32820] = "UNSIGNED_SHORT_5_5_5_1";
+      TYPES[TYPES["FLOAT"] = 5126] = "FLOAT";
+      TYPES[TYPES["HALF_FLOAT"] = 36193] = "HALF_FLOAT";
+  })(TYPES$2 || (TYPES$2 = {}));
+  /**
+   * Various sampler types. Correspond to `sampler`, `isampler`, `usampler` GLSL types respectively.
+   * WebGL1 works only with FLOAT.
+   *
+   * @memberof PIXI
+   * @static
+   * @name SAMPLER_TYPES
+   * @enum {number}
+   * @property {number} FLOAT=0
+   * @property {number} INT=1
+   * @property {number} UINT=2
+   */
+  var SAMPLER_TYPES$2;
+  (function (SAMPLER_TYPES) {
+      SAMPLER_TYPES[SAMPLER_TYPES["FLOAT"] = 0] = "FLOAT";
+      SAMPLER_TYPES[SAMPLER_TYPES["INT"] = 1] = "INT";
+      SAMPLER_TYPES[SAMPLER_TYPES["UINT"] = 2] = "UINT";
+  })(SAMPLER_TYPES$2 || (SAMPLER_TYPES$2 = {}));
+  /**
+   * The scale modes that are supported by pixi.
+   *
+   * The {@link PIXI.settings.SCALE_MODE} scale mode affects the default scaling mode of future operations.
+   * It can be re-assigned to either LINEAR or NEAREST, depending upon suitability.
+   *
+   * @memberof PIXI
+   * @static
+   * @name SCALE_MODES
+   * @enum {number}
+   * @property {number} LINEAR Smooth scaling
+   * @property {number} NEAREST Pixelating scaling
+   */
+  var SCALE_MODES$2;
+  (function (SCALE_MODES) {
+      SCALE_MODES[SCALE_MODES["NEAREST"] = 0] = "NEAREST";
+      SCALE_MODES[SCALE_MODES["LINEAR"] = 1] = "LINEAR";
+  })(SCALE_MODES$2 || (SCALE_MODES$2 = {}));
+  /**
+   * The wrap modes that are supported by pixi.
+   *
+   * The {@link PIXI.settings.WRAP_MODE} wrap mode affects the default wrapping mode of future operations.
+   * It can be re-assigned to either CLAMP or REPEAT, depending upon suitability.
+   * If the texture is non power of two then clamp will be used regardless as WebGL can
+   * only use REPEAT if the texture is po2.
+   *
+   * This property only affects WebGL.
+   *
+   * @name WRAP_MODES
+   * @memberof PIXI
+   * @static
+   * @enum {number}
+   * @property {number} CLAMP - The textures uvs are clamped
+   * @property {number} REPEAT - The texture uvs tile and repeat
+   * @property {number} MIRRORED_REPEAT - The texture uvs tile and repeat with mirroring
+   */
+  var WRAP_MODES$2;
+  (function (WRAP_MODES) {
+      WRAP_MODES[WRAP_MODES["CLAMP"] = 33071] = "CLAMP";
+      WRAP_MODES[WRAP_MODES["REPEAT"] = 10497] = "REPEAT";
+      WRAP_MODES[WRAP_MODES["MIRRORED_REPEAT"] = 33648] = "MIRRORED_REPEAT";
+  })(WRAP_MODES$2 || (WRAP_MODES$2 = {}));
+  /**
+   * Mipmap filtering modes that are supported by pixi.
+   *
+   * The {@link PIXI.settings.MIPMAP_TEXTURES} affects default texture filtering.
+   * Mipmaps are generated for a baseTexture if its `mipmap` field is `ON`,
+   * or its `POW2` and texture dimensions are powers of 2.
+   * Due to platform restriction, `ON` option will work like `POW2` for webgl-1.
+   *
+   * This property only affects WebGL.
+   *
+   * @name MIPMAP_MODES
+   * @memberof PIXI
+   * @static
+   * @enum {number}
+   * @property {number} OFF - No mipmaps
+   * @property {number} POW2 - Generate mipmaps if texture dimensions are pow2
+   * @property {number} ON - Always generate mipmaps
+   * @property {number} ON_MANUAL - Use mipmaps, but do not auto-generate them; this is used with a resource
+   *   that supports buffering each level-of-detail.
+   */
+  var MIPMAP_MODES$2;
+  (function (MIPMAP_MODES) {
+      MIPMAP_MODES[MIPMAP_MODES["OFF"] = 0] = "OFF";
+      MIPMAP_MODES[MIPMAP_MODES["POW2"] = 1] = "POW2";
+      MIPMAP_MODES[MIPMAP_MODES["ON"] = 2] = "ON";
+      MIPMAP_MODES[MIPMAP_MODES["ON_MANUAL"] = 3] = "ON_MANUAL";
+  })(MIPMAP_MODES$2 || (MIPMAP_MODES$2 = {}));
+  /**
+   * How to treat textures with premultiplied alpha
+   *
+   * @name ALPHA_MODES
+   * @memberof PIXI
+   * @static
+   * @enum {number}
+   * @property {number} NO_PREMULTIPLIED_ALPHA - Source is not premultiplied, leave it like that.
+   *  Option for compressed and data textures that are created from typed arrays.
+   * @property {number} PREMULTIPLY_ON_UPLOAD - Source is not premultiplied, premultiply on upload.
+   *  Default option, used for all loaded images.
+   * @property {number} PREMULTIPLIED_ALPHA - Source is already premultiplied
+   *  Example: spine atlases with `_pma` suffix.
+   * @property {number} NPM - Alias for NO_PREMULTIPLIED_ALPHA.
+   * @property {number} UNPACK - Default option, alias for PREMULTIPLY_ON_UPLOAD.
+   * @property {number} PMA - Alias for PREMULTIPLIED_ALPHA.
+   */
+  var ALPHA_MODES$2;
+  (function (ALPHA_MODES) {
+      ALPHA_MODES[ALPHA_MODES["NPM"] = 0] = "NPM";
+      ALPHA_MODES[ALPHA_MODES["UNPACK"] = 1] = "UNPACK";
+      ALPHA_MODES[ALPHA_MODES["PMA"] = 2] = "PMA";
+      ALPHA_MODES[ALPHA_MODES["NO_PREMULTIPLIED_ALPHA"] = 0] = "NO_PREMULTIPLIED_ALPHA";
+      ALPHA_MODES[ALPHA_MODES["PREMULTIPLY_ON_UPLOAD"] = 1] = "PREMULTIPLY_ON_UPLOAD";
+      ALPHA_MODES[ALPHA_MODES["PREMULTIPLY_ALPHA"] = 2] = "PREMULTIPLY_ALPHA";
+  })(ALPHA_MODES$2 || (ALPHA_MODES$2 = {}));
+  /**
+   * Configure whether filter textures are cleared after binding.
+   *
+   * Filter textures need not be cleared if the filter does not use pixel blending. {@link CLEAR_MODES.BLIT} will detect
+   * this and skip clearing as an optimization.
+   *
+   * @name CLEAR_MODES
+   * @memberof PIXI
+   * @static
+   * @enum {number}
+   * @property {number} BLEND - Do not clear the filter texture. The filter's output will blend on top of the output texture.
+   * @property {number} CLEAR - Always clear the filter texture.
+   * @property {number} BLIT - Clear only if {@link FilterSystem.forceClear} is set or if the filter uses pixel blending.
+   * @property {number} NO - Alias for BLEND, same as `false` in earlier versions
+   * @property {number} YES - Alias for CLEAR, same as `true` in earlier versions
+   * @property {number} AUTO - Alias for BLIT
+   */
+  var CLEAR_MODES$2;
+  (function (CLEAR_MODES) {
+      CLEAR_MODES[CLEAR_MODES["NO"] = 0] = "NO";
+      CLEAR_MODES[CLEAR_MODES["YES"] = 1] = "YES";
+      CLEAR_MODES[CLEAR_MODES["AUTO"] = 2] = "AUTO";
+      CLEAR_MODES[CLEAR_MODES["BLEND"] = 0] = "BLEND";
+      CLEAR_MODES[CLEAR_MODES["CLEAR"] = 1] = "CLEAR";
+      CLEAR_MODES[CLEAR_MODES["BLIT"] = 2] = "BLIT";
+  })(CLEAR_MODES$2 || (CLEAR_MODES$2 = {}));
+  /**
+   * The gc modes that are supported by pixi.
+   *
+   * The {@link PIXI.settings.GC_MODE} Garbage Collection mode for PixiJS textures is AUTO
+   * If set to GC_MODE, the renderer will occasionally check textures usage. If they are not
+   * used for a specified period of time they will be removed from the GPU. They will of course
+   * be uploaded again when they are required. This is a silent behind the scenes process that
+   * should ensure that the GPU does not  get filled up.
+   *
+   * Handy for mobile devices!
+   * This property only affects WebGL.
+   *
+   * @name GC_MODES
+   * @enum {number}
+   * @static
+   * @memberof PIXI
+   * @property {number} AUTO - Garbage collection will happen periodically automatically
+   * @property {number} MANUAL - Garbage collection will need to be called manually
+   */
+  var GC_MODES$2;
+  (function (GC_MODES) {
+      GC_MODES[GC_MODES["AUTO"] = 0] = "AUTO";
+      GC_MODES[GC_MODES["MANUAL"] = 1] = "MANUAL";
+  })(GC_MODES$2 || (GC_MODES$2 = {}));
+  /**
+   * Constants that specify float precision in shaders.
+   *
+   * @name PRECISION
+   * @memberof PIXI
+   * @constant
+   * @static
+   * @enum {string}
+   * @property {string} LOW='lowp'
+   * @property {string} MEDIUM='mediump'
+   * @property {string} HIGH='highp'
+   */
+  var PRECISION$2;
+  (function (PRECISION) {
+      PRECISION["LOW"] = "lowp";
+      PRECISION["MEDIUM"] = "mediump";
+      PRECISION["HIGH"] = "highp";
+  })(PRECISION$2 || (PRECISION$2 = {}));
+  /**
+   * Constants for mask implementations.
+   * We use `type` suffix because it leads to very different behaviours
+   *
+   * @name MASK_TYPES
+   * @memberof PIXI
+   * @static
+   * @enum {number}
+   * @property {number} NONE - Mask is ignored
+   * @property {number} SCISSOR - Scissor mask, rectangle on screen, cheap
+   * @property {number} STENCIL - Stencil mask, 1-bit, medium, works only if renderer supports stencil
+   * @property {number} SPRITE - Mask that uses SpriteMaskFilter, uses temporary RenderTexture
+   */
+  var MASK_TYPES$2;
+  (function (MASK_TYPES) {
+      MASK_TYPES[MASK_TYPES["NONE"] = 0] = "NONE";
+      MASK_TYPES[MASK_TYPES["SCISSOR"] = 1] = "SCISSOR";
+      MASK_TYPES[MASK_TYPES["STENCIL"] = 2] = "STENCIL";
+      MASK_TYPES[MASK_TYPES["SPRITE"] = 3] = "SPRITE";
+  })(MASK_TYPES$2 || (MASK_TYPES$2 = {}));
+  /**
+   * Constants for multi-sampling antialiasing.
+   *
+   * @see PIXI.Framebuffer#multisample
+   *
+   * @name MSAA_QUALITY
+   * @memberof PIXI
+   * @static
+   * @enum {number}
+   * @property {number} NONE - No multisampling for this renderTexture
+   * @property {number} LOW - Try 2 samples
+   * @property {number} MEDIUM - Try 4 samples
+   * @property {number} HIGH - Try 8 samples
+   */
+  var MSAA_QUALITY$2;
+  (function (MSAA_QUALITY) {
+      MSAA_QUALITY[MSAA_QUALITY["NONE"] = 0] = "NONE";
+      MSAA_QUALITY[MSAA_QUALITY["LOW"] = 2] = "LOW";
+      MSAA_QUALITY[MSAA_QUALITY["MEDIUM"] = 4] = "MEDIUM";
+      MSAA_QUALITY[MSAA_QUALITY["HIGH"] = 8] = "HIGH";
+  })(MSAA_QUALITY$2 || (MSAA_QUALITY$2 = {}));
 
   /**
    * User's customizable globals for overriding the default PIXI settings, such
@@ -743,7 +1201,7 @@
    * PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
    * @namespace PIXI.settings
    */
-  var settings$1 = {
+  var settings = {
       /**
        * If set to true WebGL will attempt make textures mimpaped by default.
        * Mipmapping will only succeed if the base texture uploaded has power of two dimensions.
@@ -754,7 +1212,7 @@
        * @type {PIXI.MIPMAP_MODES}
        * @default PIXI.MIPMAP_MODES.POW2
        */
-      MIPMAP_TEXTURES: 1,
+      MIPMAP_TEXTURES: MIPMAP_MODES$2.POW2,
       /**
        * Default anisotropic filtering level of textures.
        * Usually from 0 to 16
@@ -795,7 +1253,7 @@
        * @type {number}
        * @default 32
        */
-      SPRITE_MAX_TEXTURES: maxRecommendedTextures$1(32),
+      SPRITE_MAX_TEXTURES: maxRecommendedTextures(32),
       // TODO: maybe change to SPRITE.BATCH_SIZE: 2000
       // TODO: maybe add PARTICLE.BATCH_SIZE: 15000
       /**
@@ -819,7 +1277,6 @@
        * @memberof PIXI.settings
        * @type {object}
        * @property {HTMLCanvasElement} view=null
-       * @property {number} resolution=1
        * @property {boolean} antialias=false
        * @property {boolean} autoDensity=false
        * @property {boolean} useContextAlpha=true
@@ -853,7 +1310,7 @@
        * @type {PIXI.GC_MODES}
        * @default PIXI.GC_MODES.AUTO
        */
-      GC_MODE: 0,
+      GC_MODE: GC_MODES$2.AUTO,
       /**
        * Default Garbage Collection max idle.
        *
@@ -883,7 +1340,7 @@
        * @type {PIXI.WRAP_MODES}
        * @default PIXI.WRAP_MODES.CLAMP
        */
-      WRAP_MODE: 33071,
+      WRAP_MODE: WRAP_MODES$2.CLAMP,
       /**
        * Default scale mode for textures.
        *
@@ -893,7 +1350,7 @@
        * @type {PIXI.SCALE_MODES}
        * @default PIXI.SCALE_MODES.LINEAR
        */
-      SCALE_MODE: 1,
+      SCALE_MODE: SCALE_MODES$2.LINEAR,
       /**
        * Default specify float precision in vertex shader.
        *
@@ -903,7 +1360,7 @@
        * @type {PIXI.PRECISION}
        * @default PIXI.PRECISION.HIGH
        */
-      PRECISION_VERTEX: 'highp',
+      PRECISION_VERTEX: PRECISION$2.HIGH,
       /**
        * Default specify float precision in fragment shader.
        * iOS is best set at highp due to https://github.com/pixijs/pixi.js/issues/3742
@@ -914,7 +1371,7 @@
        * @type {PIXI.PRECISION}
        * @default PIXI.PRECISION.MEDIUM
        */
-      PRECISION_FRAGMENT: isMobile$2.apple.device ? 'highp' : 'mediump',
+      PRECISION_FRAGMENT: isMobile.apple.device ? PRECISION$2.HIGH : PRECISION$2.MEDIUM,
       /**
        * Can we upload the same buffer in a single frame?
        *
@@ -923,7 +1380,7 @@
        * @memberof PIXI.settings
        * @type {boolean}
        */
-      CAN_UPLOAD_SAME_BUFFER: canUploadSameBuffer$1(),
+      CAN_UPLOAD_SAME_BUFFER: canUploadSameBuffer(),
       /**
        * Enables bitmap creation before image load. This feature is experimental.
        *
@@ -1569,7 +2026,7 @@
 
       // process holes from left to right
       for (i = 0; i < queue.length; i++) {
-          eliminateHole(queue[i], outerNode);
+          outerNode = eliminateHole(queue[i], outerNode);
           outerNode = filterPoints(outerNode, outerNode.next);
       }
 
@@ -1582,14 +2039,19 @@
 
   // find a bridge between vertices that connects hole with an outer ring and and link it
   function eliminateHole(hole, outerNode) {
-      outerNode = findHoleBridge(hole, outerNode);
-      if (outerNode) {
-          var b = splitPolygon(outerNode, hole);
-
-          // filter collinear points around the cuts
-          filterPoints(outerNode, outerNode.next);
-          filterPoints(b, b.next);
+      var bridge = findHoleBridge(hole, outerNode);
+      if (!bridge) {
+          return outerNode;
       }
+
+      var bridgeReverse = splitPolygon(bridge, hole);
+
+      // filter collinear points around the cuts
+      var filteredBridge = filterPoints(bridge, bridge.next);
+      filterPoints(bridgeReverse, bridgeReverse.next);
+
+      // Check if input node was removed by the filtering
+      return outerNode === bridge ? filteredBridge : outerNode;
   }
 
   // David Eberly's algorithm for finding a bridge between hole and outer polygon
@@ -2135,7 +2597,7 @@
    * @param {String} input The string of Unicode symbols.
    * @returns {String} The resulting Punycode string of ASCII-only symbols.
    */
-  function encode$1(input) {
+  function encode(input) {
     var n,
       delta,
       handledCPCount,
@@ -2256,7 +2718,7 @@
   function toASCII(input) {
     return mapDomain(input, function(string) {
       return regexNonASCII.test(string) ?
-        'xn--' + encode$1(string) :
+        'xn--' + encode(string) :
         string;
     });
   }
@@ -2264,209 +2726,6 @@
   var global$1 = (typeof global !== "undefined" ? global :
               typeof self !== "undefined" ? self :
               typeof window !== "undefined" ? window : {});
-
-  var lookup = [];
-  var revLookup = [];
-  var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
-  var inited = false;
-  function init$1 () {
-    inited = true;
-    var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    for (var i = 0, len = code.length; i < len; ++i) {
-      lookup[i] = code[i];
-      revLookup[code.charCodeAt(i)] = i;
-    }
-
-    revLookup['-'.charCodeAt(0)] = 62;
-    revLookup['_'.charCodeAt(0)] = 63;
-  }
-
-  function toByteArray (b64) {
-    if (!inited) {
-      init$1();
-    }
-    var i, j, l, tmp, placeHolders, arr;
-    var len = b64.length;
-
-    if (len % 4 > 0) {
-      throw new Error('Invalid string. Length must be a multiple of 4')
-    }
-
-    // the number of equal signs (place holders)
-    // if there are two placeholders, than the two characters before it
-    // represent one byte
-    // if there is only one, then the three characters before it represent 2 bytes
-    // this is just a cheap hack to not do indexOf twice
-    placeHolders = b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0;
-
-    // base64 is 4/3 + up to two characters of the original data
-    arr = new Arr(len * 3 / 4 - placeHolders);
-
-    // if there are placeholders, only get up to the last complete 4 chars
-    l = placeHolders > 0 ? len - 4 : len;
-
-    var L = 0;
-
-    for (i = 0, j = 0; i < l; i += 4, j += 3) {
-      tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)];
-      arr[L++] = (tmp >> 16) & 0xFF;
-      arr[L++] = (tmp >> 8) & 0xFF;
-      arr[L++] = tmp & 0xFF;
-    }
-
-    if (placeHolders === 2) {
-      tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4);
-      arr[L++] = tmp & 0xFF;
-    } else if (placeHolders === 1) {
-      tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2);
-      arr[L++] = (tmp >> 8) & 0xFF;
-      arr[L++] = tmp & 0xFF;
-    }
-
-    return arr
-  }
-
-  function tripletToBase64 (num) {
-    return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
-  }
-
-  function encodeChunk (uint8, start, end) {
-    var tmp;
-    var output = [];
-    for (var i = start; i < end; i += 3) {
-      tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
-      output.push(tripletToBase64(tmp));
-    }
-    return output.join('')
-  }
-
-  function fromByteArray (uint8) {
-    if (!inited) {
-      init$1();
-    }
-    var tmp;
-    var len = uint8.length;
-    var extraBytes = len % 3; // if we have 1 byte left, pad 2 bytes
-    var output = '';
-    var parts = [];
-    var maxChunkLength = 16383; // must be multiple of 3
-
-    // go through the array every three bytes, we'll deal with trailing stuff later
-    for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-      parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)));
-    }
-
-    // pad the end with zeros, but make sure to not forget the extra bytes
-    if (extraBytes === 1) {
-      tmp = uint8[len - 1];
-      output += lookup[tmp >> 2];
-      output += lookup[(tmp << 4) & 0x3F];
-      output += '==';
-    } else if (extraBytes === 2) {
-      tmp = (uint8[len - 2] << 8) + (uint8[len - 1]);
-      output += lookup[tmp >> 10];
-      output += lookup[(tmp >> 4) & 0x3F];
-      output += lookup[(tmp << 2) & 0x3F];
-      output += '=';
-    }
-
-    parts.push(output);
-
-    return parts.join('')
-  }
-
-  function read (buffer, offset, isLE, mLen, nBytes) {
-    var e, m;
-    var eLen = nBytes * 8 - mLen - 1;
-    var eMax = (1 << eLen) - 1;
-    var eBias = eMax >> 1;
-    var nBits = -7;
-    var i = isLE ? (nBytes - 1) : 0;
-    var d = isLE ? -1 : 1;
-    var s = buffer[offset + i];
-
-    i += d;
-
-    e = s & ((1 << (-nBits)) - 1);
-    s >>= (-nBits);
-    nBits += eLen;
-    for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-    m = e & ((1 << (-nBits)) - 1);
-    e >>= (-nBits);
-    nBits += mLen;
-    for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
-
-    if (e === 0) {
-      e = 1 - eBias;
-    } else if (e === eMax) {
-      return m ? NaN : ((s ? -1 : 1) * Infinity)
-    } else {
-      m = m + Math.pow(2, mLen);
-      e = e - eBias;
-    }
-    return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-  }
-
-  function write (buffer, value, offset, isLE, mLen, nBytes) {
-    var e, m, c;
-    var eLen = nBytes * 8 - mLen - 1;
-    var eMax = (1 << eLen) - 1;
-    var eBias = eMax >> 1;
-    var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0);
-    var i = isLE ? 0 : (nBytes - 1);
-    var d = isLE ? 1 : -1;
-    var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0;
-
-    value = Math.abs(value);
-
-    if (isNaN(value) || value === Infinity) {
-      m = isNaN(value) ? 1 : 0;
-      e = eMax;
-    } else {
-      e = Math.floor(Math.log(value) / Math.LN2);
-      if (value * (c = Math.pow(2, -e)) < 1) {
-        e--;
-        c *= 2;
-      }
-      if (e + eBias >= 1) {
-        value += rt / c;
-      } else {
-        value += rt * Math.pow(2, 1 - eBias);
-      }
-      if (value * c >= 2) {
-        e++;
-        c /= 2;
-      }
-
-      if (e + eBias >= eMax) {
-        m = 0;
-        e = eMax;
-      } else if (e + eBias >= 1) {
-        m = (value * c - 1) * Math.pow(2, mLen);
-        e = e + eBias;
-      } else {
-        m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen);
-        e = 0;
-      }
-    }
-
-    for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-    e = (e << mLen) | m;
-    eLen += mLen;
-    for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-    buffer[offset + i - d] |= s * 128;
-  }
-
-  var toString = {}.toString;
-
-  var isArray$1 = Array.isArray || function (arr) {
-    return toString.call(arr) == '[object Array]';
-  };
-
-  var INSPECT_MAX_BYTES = 50;
 
   /**
    * If `Buffer.TYPED_ARRAY_SUPPORT`:
@@ -2492,1739 +2751,12 @@
    * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
    * get the Object implementation, which is slower but behaves correctly.
    */
-  Buffer$1.TYPED_ARRAY_SUPPORT = global$1.TYPED_ARRAY_SUPPORT !== undefined
+  global$1.TYPED_ARRAY_SUPPORT !== undefined
     ? global$1.TYPED_ARRAY_SUPPORT
     : true;
 
-  function kMaxLength () {
-    return Buffer$1.TYPED_ARRAY_SUPPORT
-      ? 0x7fffffff
-      : 0x3fffffff
-  }
-
-  function createBuffer (that, length) {
-    if (kMaxLength() < length) {
-      throw new RangeError('Invalid typed array length')
-    }
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      // Return an augmented `Uint8Array` instance, for best performance
-      that = new Uint8Array(length);
-      that.__proto__ = Buffer$1.prototype;
-    } else {
-      // Fallback: Return an object instance of the Buffer class
-      if (that === null) {
-        that = new Buffer$1(length);
-      }
-      that.length = length;
-    }
-
-    return that
-  }
-
-  /**
-   * The Buffer constructor returns instances of `Uint8Array` that have their
-   * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
-   * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
-   * and the `Uint8Array` methods. Square bracket notation works as expected -- it
-   * returns a single octet.
-   *
-   * The `Uint8Array` prototype remains unmodified.
-   */
-
-  function Buffer$1 (arg, encodingOrOffset, length) {
-    if (!Buffer$1.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer$1)) {
-      return new Buffer$1(arg, encodingOrOffset, length)
-    }
-
-    // Common case.
-    if (typeof arg === 'number') {
-      if (typeof encodingOrOffset === 'string') {
-        throw new Error(
-          'If encoding is specified then the first argument must be a string'
-        )
-      }
-      return allocUnsafe(this, arg)
-    }
-    return from(this, arg, encodingOrOffset, length)
-  }
-
-  Buffer$1.poolSize = 8192; // not used by this implementation
-
-  // TODO: Legacy, not needed anymore. Remove in next major version.
-  Buffer$1._augment = function (arr) {
-    arr.__proto__ = Buffer$1.prototype;
-    return arr
-  };
-
-  function from (that, value, encodingOrOffset, length) {
-    if (typeof value === 'number') {
-      throw new TypeError('"value" argument must not be a number')
-    }
-
-    if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
-      return fromArrayBuffer(that, value, encodingOrOffset, length)
-    }
-
-    if (typeof value === 'string') {
-      return fromString(that, value, encodingOrOffset)
-    }
-
-    return fromObject(that, value)
-  }
-
-  /**
-   * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
-   * if value is a number.
-   * Buffer.from(str[, encoding])
-   * Buffer.from(array)
-   * Buffer.from(buffer)
-   * Buffer.from(arrayBuffer[, byteOffset[, length]])
-   **/
-  Buffer$1.from = function (value, encodingOrOffset, length) {
-    return from(null, value, encodingOrOffset, length)
-  };
-
-  if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-    Buffer$1.prototype.__proto__ = Uint8Array.prototype;
-    Buffer$1.__proto__ = Uint8Array;
-  }
-
-  function assertSize (size) {
-    if (typeof size !== 'number') {
-      throw new TypeError('"size" argument must be a number')
-    } else if (size < 0) {
-      throw new RangeError('"size" argument must not be negative')
-    }
-  }
-
-  function alloc (that, size, fill, encoding) {
-    assertSize(size);
-    if (size <= 0) {
-      return createBuffer(that, size)
-    }
-    if (fill !== undefined) {
-      // Only pay attention to encoding if it's a string. This
-      // prevents accidentally sending in a number that would
-      // be interpretted as a start offset.
-      return typeof encoding === 'string'
-        ? createBuffer(that, size).fill(fill, encoding)
-        : createBuffer(that, size).fill(fill)
-    }
-    return createBuffer(that, size)
-  }
-
-  /**
-   * Creates a new filled Buffer instance.
-   * alloc(size[, fill[, encoding]])
-   **/
-  Buffer$1.alloc = function (size, fill, encoding) {
-    return alloc(null, size, fill, encoding)
-  };
-
-  function allocUnsafe (that, size) {
-    assertSize(size);
-    that = createBuffer(that, size < 0 ? 0 : checked(size) | 0);
-    if (!Buffer$1.TYPED_ARRAY_SUPPORT) {
-      for (var i = 0; i < size; ++i) {
-        that[i] = 0;
-      }
-    }
-    return that
-  }
-
-  /**
-   * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
-   * */
-  Buffer$1.allocUnsafe = function (size) {
-    return allocUnsafe(null, size)
-  };
-  /**
-   * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
-   */
-  Buffer$1.allocUnsafeSlow = function (size) {
-    return allocUnsafe(null, size)
-  };
-
-  function fromString (that, string, encoding) {
-    if (typeof encoding !== 'string' || encoding === '') {
-      encoding = 'utf8';
-    }
-
-    if (!Buffer$1.isEncoding(encoding)) {
-      throw new TypeError('"encoding" must be a valid string encoding')
-    }
-
-    var length = byteLength(string, encoding) | 0;
-    that = createBuffer(that, length);
-
-    var actual = that.write(string, encoding);
-
-    if (actual !== length) {
-      // Writing a hex string, for example, that contains invalid characters will
-      // cause everything after the first invalid character to be ignored. (e.g.
-      // 'abxxcd' will be treated as 'ab')
-      that = that.slice(0, actual);
-    }
-
-    return that
-  }
-
-  function fromArrayLike (that, array) {
-    var length = array.length < 0 ? 0 : checked(array.length) | 0;
-    that = createBuffer(that, length);
-    for (var i = 0; i < length; i += 1) {
-      that[i] = array[i] & 255;
-    }
-    return that
-  }
-
-  function fromArrayBuffer (that, array, byteOffset, length) {
-    array.byteLength; // this throws if `array` is not a valid ArrayBuffer
-
-    if (byteOffset < 0 || array.byteLength < byteOffset) {
-      throw new RangeError('\'offset\' is out of bounds')
-    }
-
-    if (array.byteLength < byteOffset + (length || 0)) {
-      throw new RangeError('\'length\' is out of bounds')
-    }
-
-    if (byteOffset === undefined && length === undefined) {
-      array = new Uint8Array(array);
-    } else if (length === undefined) {
-      array = new Uint8Array(array, byteOffset);
-    } else {
-      array = new Uint8Array(array, byteOffset, length);
-    }
-
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      // Return an augmented `Uint8Array` instance, for best performance
-      that = array;
-      that.__proto__ = Buffer$1.prototype;
-    } else {
-      // Fallback: Return an object instance of the Buffer class
-      that = fromArrayLike(that, array);
-    }
-    return that
-  }
-
-  function fromObject (that, obj) {
-    if (internalIsBuffer(obj)) {
-      var len = checked(obj.length) | 0;
-      that = createBuffer(that, len);
-
-      if (that.length === 0) {
-        return that
-      }
-
-      obj.copy(that, 0, 0, len);
-      return that
-    }
-
-    if (obj) {
-      if ((typeof ArrayBuffer !== 'undefined' &&
-          obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
-        if (typeof obj.length !== 'number' || isnan(obj.length)) {
-          return createBuffer(that, 0)
-        }
-        return fromArrayLike(that, obj)
-      }
-
-      if (obj.type === 'Buffer' && isArray$1(obj.data)) {
-        return fromArrayLike(that, obj.data)
-      }
-    }
-
-    throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
-  }
-
-  function checked (length) {
-    // Note: cannot use `length < kMaxLength()` here because that fails when
-    // length is NaN (which is otherwise coerced to zero.)
-    if (length >= kMaxLength()) {
-      throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
-                           'size: 0x' + kMaxLength().toString(16) + ' bytes')
-    }
-    return length | 0
-  }
-  Buffer$1.isBuffer = isBuffer;
-  function internalIsBuffer (b) {
-    return !!(b != null && b._isBuffer)
-  }
-
-  Buffer$1.compare = function compare (a, b) {
-    if (!internalIsBuffer(a) || !internalIsBuffer(b)) {
-      throw new TypeError('Arguments must be Buffers')
-    }
-
-    if (a === b) return 0
-
-    var x = a.length;
-    var y = b.length;
-
-    for (var i = 0, len = Math.min(x, y); i < len; ++i) {
-      if (a[i] !== b[i]) {
-        x = a[i];
-        y = b[i];
-        break
-      }
-    }
-
-    if (x < y) return -1
-    if (y < x) return 1
-    return 0
-  };
-
-  Buffer$1.isEncoding = function isEncoding (encoding) {
-    switch (String(encoding).toLowerCase()) {
-      case 'hex':
-      case 'utf8':
-      case 'utf-8':
-      case 'ascii':
-      case 'latin1':
-      case 'binary':
-      case 'base64':
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return true
-      default:
-        return false
-    }
-  };
-
-  Buffer$1.concat = function concat (list, length) {
-    if (!isArray$1(list)) {
-      throw new TypeError('"list" argument must be an Array of Buffers')
-    }
-
-    if (list.length === 0) {
-      return Buffer$1.alloc(0)
-    }
-
-    var i;
-    if (length === undefined) {
-      length = 0;
-      for (i = 0; i < list.length; ++i) {
-        length += list[i].length;
-      }
-    }
-
-    var buffer = Buffer$1.allocUnsafe(length);
-    var pos = 0;
-    for (i = 0; i < list.length; ++i) {
-      var buf = list[i];
-      if (!internalIsBuffer(buf)) {
-        throw new TypeError('"list" argument must be an Array of Buffers')
-      }
-      buf.copy(buffer, pos);
-      pos += buf.length;
-    }
-    return buffer
-  };
-
-  function byteLength (string, encoding) {
-    if (internalIsBuffer(string)) {
-      return string.length
-    }
-    if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
-        (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
-      return string.byteLength
-    }
-    if (typeof string !== 'string') {
-      string = '' + string;
-    }
-
-    var len = string.length;
-    if (len === 0) return 0
-
-    // Use a for loop to avoid recursion
-    var loweredCase = false;
-    for (;;) {
-      switch (encoding) {
-        case 'ascii':
-        case 'latin1':
-        case 'binary':
-          return len
-        case 'utf8':
-        case 'utf-8':
-        case undefined:
-          return utf8ToBytes(string).length
-        case 'ucs2':
-        case 'ucs-2':
-        case 'utf16le':
-        case 'utf-16le':
-          return len * 2
-        case 'hex':
-          return len >>> 1
-        case 'base64':
-          return base64ToBytes(string).length
-        default:
-          if (loweredCase) return utf8ToBytes(string).length // assume utf8
-          encoding = ('' + encoding).toLowerCase();
-          loweredCase = true;
-      }
-    }
-  }
-  Buffer$1.byteLength = byteLength;
-
-  function slowToString (encoding, start, end) {
-    var loweredCase = false;
-
-    // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
-    // property of a typed array.
-
-    // This behaves neither like String nor Uint8Array in that we set start/end
-    // to their upper/lower bounds if the value passed is out of range.
-    // undefined is handled specially as per ECMA-262 6th Edition,
-    // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
-    if (start === undefined || start < 0) {
-      start = 0;
-    }
-    // Return early if start > this.length. Done here to prevent potential uint32
-    // coercion fail below.
-    if (start > this.length) {
-      return ''
-    }
-
-    if (end === undefined || end > this.length) {
-      end = this.length;
-    }
-
-    if (end <= 0) {
-      return ''
-    }
-
-    // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
-    end >>>= 0;
-    start >>>= 0;
-
-    if (end <= start) {
-      return ''
-    }
-
-    if (!encoding) encoding = 'utf8';
-
-    while (true) {
-      switch (encoding) {
-        case 'hex':
-          return hexSlice(this, start, end)
-
-        case 'utf8':
-        case 'utf-8':
-          return utf8Slice(this, start, end)
-
-        case 'ascii':
-          return asciiSlice(this, start, end)
-
-        case 'latin1':
-        case 'binary':
-          return latin1Slice(this, start, end)
-
-        case 'base64':
-          return base64Slice(this, start, end)
-
-        case 'ucs2':
-        case 'ucs-2':
-        case 'utf16le':
-        case 'utf-16le':
-          return utf16leSlice(this, start, end)
-
-        default:
-          if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-          encoding = (encoding + '').toLowerCase();
-          loweredCase = true;
-      }
-    }
-  }
-
-  // The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
-  // Buffer instances.
-  Buffer$1.prototype._isBuffer = true;
-
-  function swap (b, n, m) {
-    var i = b[n];
-    b[n] = b[m];
-    b[m] = i;
-  }
-
-  Buffer$1.prototype.swap16 = function swap16 () {
-    var len = this.length;
-    if (len % 2 !== 0) {
-      throw new RangeError('Buffer size must be a multiple of 16-bits')
-    }
-    for (var i = 0; i < len; i += 2) {
-      swap(this, i, i + 1);
-    }
-    return this
-  };
-
-  Buffer$1.prototype.swap32 = function swap32 () {
-    var len = this.length;
-    if (len % 4 !== 0) {
-      throw new RangeError('Buffer size must be a multiple of 32-bits')
-    }
-    for (var i = 0; i < len; i += 4) {
-      swap(this, i, i + 3);
-      swap(this, i + 1, i + 2);
-    }
-    return this
-  };
-
-  Buffer$1.prototype.swap64 = function swap64 () {
-    var len = this.length;
-    if (len % 8 !== 0) {
-      throw new RangeError('Buffer size must be a multiple of 64-bits')
-    }
-    for (var i = 0; i < len; i += 8) {
-      swap(this, i, i + 7);
-      swap(this, i + 1, i + 6);
-      swap(this, i + 2, i + 5);
-      swap(this, i + 3, i + 4);
-    }
-    return this
-  };
-
-  Buffer$1.prototype.toString = function toString () {
-    var length = this.length | 0;
-    if (length === 0) return ''
-    if (arguments.length === 0) return utf8Slice(this, 0, length)
-    return slowToString.apply(this, arguments)
-  };
-
-  Buffer$1.prototype.equals = function equals (b) {
-    if (!internalIsBuffer(b)) throw new TypeError('Argument must be a Buffer')
-    if (this === b) return true
-    return Buffer$1.compare(this, b) === 0
-  };
-
-  Buffer$1.prototype.inspect = function inspect () {
-    var str = '';
-    var max = INSPECT_MAX_BYTES;
-    if (this.length > 0) {
-      str = this.toString('hex', 0, max).match(/.{2}/g).join(' ');
-      if (this.length > max) str += ' ... ';
-    }
-    return '<Buffer ' + str + '>'
-  };
-
-  Buffer$1.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
-    if (!internalIsBuffer(target)) {
-      throw new TypeError('Argument must be a Buffer')
-    }
-
-    if (start === undefined) {
-      start = 0;
-    }
-    if (end === undefined) {
-      end = target ? target.length : 0;
-    }
-    if (thisStart === undefined) {
-      thisStart = 0;
-    }
-    if (thisEnd === undefined) {
-      thisEnd = this.length;
-    }
-
-    if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
-      throw new RangeError('out of range index')
-    }
-
-    if (thisStart >= thisEnd && start >= end) {
-      return 0
-    }
-    if (thisStart >= thisEnd) {
-      return -1
-    }
-    if (start >= end) {
-      return 1
-    }
-
-    start >>>= 0;
-    end >>>= 0;
-    thisStart >>>= 0;
-    thisEnd >>>= 0;
-
-    if (this === target) return 0
-
-    var x = thisEnd - thisStart;
-    var y = end - start;
-    var len = Math.min(x, y);
-
-    var thisCopy = this.slice(thisStart, thisEnd);
-    var targetCopy = target.slice(start, end);
-
-    for (var i = 0; i < len; ++i) {
-      if (thisCopy[i] !== targetCopy[i]) {
-        x = thisCopy[i];
-        y = targetCopy[i];
-        break
-      }
-    }
-
-    if (x < y) return -1
-    if (y < x) return 1
-    return 0
-  };
-
-  // Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
-  // OR the last index of `val` in `buffer` at offset <= `byteOffset`.
-  //
-  // Arguments:
-  // - buffer - a Buffer to search
-  // - val - a string, Buffer, or number
-  // - byteOffset - an index into `buffer`; will be clamped to an int32
-  // - encoding - an optional encoding, relevant is val is a string
-  // - dir - true for indexOf, false for lastIndexOf
-  function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
-    // Empty buffer means no match
-    if (buffer.length === 0) return -1
-
-    // Normalize byteOffset
-    if (typeof byteOffset === 'string') {
-      encoding = byteOffset;
-      byteOffset = 0;
-    } else if (byteOffset > 0x7fffffff) {
-      byteOffset = 0x7fffffff;
-    } else if (byteOffset < -0x80000000) {
-      byteOffset = -0x80000000;
-    }
-    byteOffset = +byteOffset;  // Coerce to Number.
-    if (isNaN(byteOffset)) {
-      // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
-      byteOffset = dir ? 0 : (buffer.length - 1);
-    }
-
-    // Normalize byteOffset: negative offsets start from the end of the buffer
-    if (byteOffset < 0) byteOffset = buffer.length + byteOffset;
-    if (byteOffset >= buffer.length) {
-      if (dir) return -1
-      else byteOffset = buffer.length - 1;
-    } else if (byteOffset < 0) {
-      if (dir) byteOffset = 0;
-      else return -1
-    }
-
-    // Normalize val
-    if (typeof val === 'string') {
-      val = Buffer$1.from(val, encoding);
-    }
-
-    // Finally, search either indexOf (if dir is true) or lastIndexOf
-    if (internalIsBuffer(val)) {
-      // Special case: looking for empty string/buffer always fails
-      if (val.length === 0) {
-        return -1
-      }
-      return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
-    } else if (typeof val === 'number') {
-      val = val & 0xFF; // Search for a byte value [0-255]
-      if (Buffer$1.TYPED_ARRAY_SUPPORT &&
-          typeof Uint8Array.prototype.indexOf === 'function') {
-        if (dir) {
-          return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
-        } else {
-          return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
-        }
-      }
-      return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
-    }
-
-    throw new TypeError('val must be string, number or Buffer')
-  }
-
-  function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
-    var indexSize = 1;
-    var arrLength = arr.length;
-    var valLength = val.length;
-
-    if (encoding !== undefined) {
-      encoding = String(encoding).toLowerCase();
-      if (encoding === 'ucs2' || encoding === 'ucs-2' ||
-          encoding === 'utf16le' || encoding === 'utf-16le') {
-        if (arr.length < 2 || val.length < 2) {
-          return -1
-        }
-        indexSize = 2;
-        arrLength /= 2;
-        valLength /= 2;
-        byteOffset /= 2;
-      }
-    }
-
-    function read (buf, i) {
-      if (indexSize === 1) {
-        return buf[i]
-      } else {
-        return buf.readUInt16BE(i * indexSize)
-      }
-    }
-
-    var i;
-    if (dir) {
-      var foundIndex = -1;
-      for (i = byteOffset; i < arrLength; i++) {
-        if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-          if (foundIndex === -1) foundIndex = i;
-          if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
-        } else {
-          if (foundIndex !== -1) i -= i - foundIndex;
-          foundIndex = -1;
-        }
-      }
-    } else {
-      if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength;
-      for (i = byteOffset; i >= 0; i--) {
-        var found = true;
-        for (var j = 0; j < valLength; j++) {
-          if (read(arr, i + j) !== read(val, j)) {
-            found = false;
-            break
-          }
-        }
-        if (found) return i
-      }
-    }
-
-    return -1
-  }
-
-  Buffer$1.prototype.includes = function includes (val, byteOffset, encoding) {
-    return this.indexOf(val, byteOffset, encoding) !== -1
-  };
-
-  Buffer$1.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
-    return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
-  };
-
-  Buffer$1.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
-    return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
-  };
-
-  function hexWrite (buf, string, offset, length) {
-    offset = Number(offset) || 0;
-    var remaining = buf.length - offset;
-    if (!length) {
-      length = remaining;
-    } else {
-      length = Number(length);
-      if (length > remaining) {
-        length = remaining;
-      }
-    }
-
-    // must be an even number of digits
-    var strLen = string.length;
-    if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
-
-    if (length > strLen / 2) {
-      length = strLen / 2;
-    }
-    for (var i = 0; i < length; ++i) {
-      var parsed = parseInt(string.substr(i * 2, 2), 16);
-      if (isNaN(parsed)) return i
-      buf[offset + i] = parsed;
-    }
-    return i
-  }
-
-  function utf8Write (buf, string, offset, length) {
-    return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
-  }
-
-  function asciiWrite (buf, string, offset, length) {
-    return blitBuffer(asciiToBytes(string), buf, offset, length)
-  }
-
-  function latin1Write (buf, string, offset, length) {
-    return asciiWrite(buf, string, offset, length)
-  }
-
-  function base64Write (buf, string, offset, length) {
-    return blitBuffer(base64ToBytes(string), buf, offset, length)
-  }
-
-  function ucs2Write (buf, string, offset, length) {
-    return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
-  }
-
-  Buffer$1.prototype.write = function write (string, offset, length, encoding) {
-    // Buffer#write(string)
-    if (offset === undefined) {
-      encoding = 'utf8';
-      length = this.length;
-      offset = 0;
-    // Buffer#write(string, encoding)
-    } else if (length === undefined && typeof offset === 'string') {
-      encoding = offset;
-      length = this.length;
-      offset = 0;
-    // Buffer#write(string, offset[, length][, encoding])
-    } else if (isFinite(offset)) {
-      offset = offset | 0;
-      if (isFinite(length)) {
-        length = length | 0;
-        if (encoding === undefined) encoding = 'utf8';
-      } else {
-        encoding = length;
-        length = undefined;
-      }
-    // legacy write(string, encoding, offset, length) - remove in v0.13
-    } else {
-      throw new Error(
-        'Buffer.write(string, encoding, offset[, length]) is no longer supported'
-      )
-    }
-
-    var remaining = this.length - offset;
-    if (length === undefined || length > remaining) length = remaining;
-
-    if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
-      throw new RangeError('Attempt to write outside buffer bounds')
-    }
-
-    if (!encoding) encoding = 'utf8';
-
-    var loweredCase = false;
-    for (;;) {
-      switch (encoding) {
-        case 'hex':
-          return hexWrite(this, string, offset, length)
-
-        case 'utf8':
-        case 'utf-8':
-          return utf8Write(this, string, offset, length)
-
-        case 'ascii':
-          return asciiWrite(this, string, offset, length)
-
-        case 'latin1':
-        case 'binary':
-          return latin1Write(this, string, offset, length)
-
-        case 'base64':
-          // Warning: maxLength not taken into account in base64Write
-          return base64Write(this, string, offset, length)
-
-        case 'ucs2':
-        case 'ucs-2':
-        case 'utf16le':
-        case 'utf-16le':
-          return ucs2Write(this, string, offset, length)
-
-        default:
-          if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-          encoding = ('' + encoding).toLowerCase();
-          loweredCase = true;
-      }
-    }
-  };
-
-  Buffer$1.prototype.toJSON = function toJSON () {
-    return {
-      type: 'Buffer',
-      data: Array.prototype.slice.call(this._arr || this, 0)
-    }
-  };
-
-  function base64Slice (buf, start, end) {
-    if (start === 0 && end === buf.length) {
-      return fromByteArray(buf)
-    } else {
-      return fromByteArray(buf.slice(start, end))
-    }
-  }
-
-  function utf8Slice (buf, start, end) {
-    end = Math.min(buf.length, end);
-    var res = [];
-
-    var i = start;
-    while (i < end) {
-      var firstByte = buf[i];
-      var codePoint = null;
-      var bytesPerSequence = (firstByte > 0xEF) ? 4
-        : (firstByte > 0xDF) ? 3
-        : (firstByte > 0xBF) ? 2
-        : 1;
-
-      if (i + bytesPerSequence <= end) {
-        var secondByte, thirdByte, fourthByte, tempCodePoint;
-
-        switch (bytesPerSequence) {
-          case 1:
-            if (firstByte < 0x80) {
-              codePoint = firstByte;
-            }
-            break
-          case 2:
-            secondByte = buf[i + 1];
-            if ((secondByte & 0xC0) === 0x80) {
-              tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F);
-              if (tempCodePoint > 0x7F) {
-                codePoint = tempCodePoint;
-              }
-            }
-            break
-          case 3:
-            secondByte = buf[i + 1];
-            thirdByte = buf[i + 2];
-            if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
-              tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F);
-              if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
-                codePoint = tempCodePoint;
-              }
-            }
-            break
-          case 4:
-            secondByte = buf[i + 1];
-            thirdByte = buf[i + 2];
-            fourthByte = buf[i + 3];
-            if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
-              tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F);
-              if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
-                codePoint = tempCodePoint;
-              }
-            }
-        }
-      }
-
-      if (codePoint === null) {
-        // we did not generate a valid codePoint so insert a
-        // replacement char (U+FFFD) and advance only 1 byte
-        codePoint = 0xFFFD;
-        bytesPerSequence = 1;
-      } else if (codePoint > 0xFFFF) {
-        // encode to utf16 (surrogate pair dance)
-        codePoint -= 0x10000;
-        res.push(codePoint >>> 10 & 0x3FF | 0xD800);
-        codePoint = 0xDC00 | codePoint & 0x3FF;
-      }
-
-      res.push(codePoint);
-      i += bytesPerSequence;
-    }
-
-    return decodeCodePointsArray(res)
-  }
-
-  // Based on http://stackoverflow.com/a/22747272/680742, the browser with
-  // the lowest limit is Chrome, with 0x10000 args.
-  // We go 1 magnitude less, for safety
-  var MAX_ARGUMENTS_LENGTH = 0x1000;
-
-  function decodeCodePointsArray (codePoints) {
-    var len = codePoints.length;
-    if (len <= MAX_ARGUMENTS_LENGTH) {
-      return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
-    }
-
-    // Decode in chunks to avoid "call stack size exceeded".
-    var res = '';
-    var i = 0;
-    while (i < len) {
-      res += String.fromCharCode.apply(
-        String,
-        codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
-      );
-    }
-    return res
-  }
-
-  function asciiSlice (buf, start, end) {
-    var ret = '';
-    end = Math.min(buf.length, end);
-
-    for (var i = start; i < end; ++i) {
-      ret += String.fromCharCode(buf[i] & 0x7F);
-    }
-    return ret
-  }
-
-  function latin1Slice (buf, start, end) {
-    var ret = '';
-    end = Math.min(buf.length, end);
-
-    for (var i = start; i < end; ++i) {
-      ret += String.fromCharCode(buf[i]);
-    }
-    return ret
-  }
-
-  function hexSlice (buf, start, end) {
-    var len = buf.length;
-
-    if (!start || start < 0) start = 0;
-    if (!end || end < 0 || end > len) end = len;
-
-    var out = '';
-    for (var i = start; i < end; ++i) {
-      out += toHex(buf[i]);
-    }
-    return out
-  }
-
-  function utf16leSlice (buf, start, end) {
-    var bytes = buf.slice(start, end);
-    var res = '';
-    for (var i = 0; i < bytes.length; i += 2) {
-      res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256);
-    }
-    return res
-  }
-
-  Buffer$1.prototype.slice = function slice (start, end) {
-    var len = this.length;
-    start = ~~start;
-    end = end === undefined ? len : ~~end;
-
-    if (start < 0) {
-      start += len;
-      if (start < 0) start = 0;
-    } else if (start > len) {
-      start = len;
-    }
-
-    if (end < 0) {
-      end += len;
-      if (end < 0) end = 0;
-    } else if (end > len) {
-      end = len;
-    }
-
-    if (end < start) end = start;
-
-    var newBuf;
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      newBuf = this.subarray(start, end);
-      newBuf.__proto__ = Buffer$1.prototype;
-    } else {
-      var sliceLen = end - start;
-      newBuf = new Buffer$1(sliceLen, undefined);
-      for (var i = 0; i < sliceLen; ++i) {
-        newBuf[i] = this[i + start];
-      }
-    }
-
-    return newBuf
-  };
-
-  /*
-   * Need to make sure that buffer isn't trying to write out of bounds.
-   */
-  function checkOffset (offset, ext, length) {
-    if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
-    if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
-  }
-
-  Buffer$1.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
-    offset = offset | 0;
-    byteLength = byteLength | 0;
-    if (!noAssert) checkOffset(offset, byteLength, this.length);
-
-    var val = this[offset];
-    var mul = 1;
-    var i = 0;
-    while (++i < byteLength && (mul *= 0x100)) {
-      val += this[offset + i] * mul;
-    }
-
-    return val
-  };
-
-  Buffer$1.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
-    offset = offset | 0;
-    byteLength = byteLength | 0;
-    if (!noAssert) {
-      checkOffset(offset, byteLength, this.length);
-    }
-
-    var val = this[offset + --byteLength];
-    var mul = 1;
-    while (byteLength > 0 && (mul *= 0x100)) {
-      val += this[offset + --byteLength] * mul;
-    }
-
-    return val
-  };
-
-  Buffer$1.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 1, this.length);
-    return this[offset]
-  };
-
-  Buffer$1.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 2, this.length);
-    return this[offset] | (this[offset + 1] << 8)
-  };
-
-  Buffer$1.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 2, this.length);
-    return (this[offset] << 8) | this[offset + 1]
-  };
-
-  Buffer$1.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 4, this.length);
-
-    return ((this[offset]) |
-        (this[offset + 1] << 8) |
-        (this[offset + 2] << 16)) +
-        (this[offset + 3] * 0x1000000)
-  };
-
-  Buffer$1.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 4, this.length);
-
-    return (this[offset] * 0x1000000) +
-      ((this[offset + 1] << 16) |
-      (this[offset + 2] << 8) |
-      this[offset + 3])
-  };
-
-  Buffer$1.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
-    offset = offset | 0;
-    byteLength = byteLength | 0;
-    if (!noAssert) checkOffset(offset, byteLength, this.length);
-
-    var val = this[offset];
-    var mul = 1;
-    var i = 0;
-    while (++i < byteLength && (mul *= 0x100)) {
-      val += this[offset + i] * mul;
-    }
-    mul *= 0x80;
-
-    if (val >= mul) val -= Math.pow(2, 8 * byteLength);
-
-    return val
-  };
-
-  Buffer$1.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
-    offset = offset | 0;
-    byteLength = byteLength | 0;
-    if (!noAssert) checkOffset(offset, byteLength, this.length);
-
-    var i = byteLength;
-    var mul = 1;
-    var val = this[offset + --i];
-    while (i > 0 && (mul *= 0x100)) {
-      val += this[offset + --i] * mul;
-    }
-    mul *= 0x80;
-
-    if (val >= mul) val -= Math.pow(2, 8 * byteLength);
-
-    return val
-  };
-
-  Buffer$1.prototype.readInt8 = function readInt8 (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 1, this.length);
-    if (!(this[offset] & 0x80)) return (this[offset])
-    return ((0xff - this[offset] + 1) * -1)
-  };
-
-  Buffer$1.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 2, this.length);
-    var val = this[offset] | (this[offset + 1] << 8);
-    return (val & 0x8000) ? val | 0xFFFF0000 : val
-  };
-
-  Buffer$1.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 2, this.length);
-    var val = this[offset + 1] | (this[offset] << 8);
-    return (val & 0x8000) ? val | 0xFFFF0000 : val
-  };
-
-  Buffer$1.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 4, this.length);
-
-    return (this[offset]) |
-      (this[offset + 1] << 8) |
-      (this[offset + 2] << 16) |
-      (this[offset + 3] << 24)
-  };
-
-  Buffer$1.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 4, this.length);
-
-    return (this[offset] << 24) |
-      (this[offset + 1] << 16) |
-      (this[offset + 2] << 8) |
-      (this[offset + 3])
-  };
-
-  Buffer$1.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 4, this.length);
-    return read(this, offset, true, 23, 4)
-  };
-
-  Buffer$1.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 4, this.length);
-    return read(this, offset, false, 23, 4)
-  };
-
-  Buffer$1.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 8, this.length);
-    return read(this, offset, true, 52, 8)
-  };
-
-  Buffer$1.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
-    if (!noAssert) checkOffset(offset, 8, this.length);
-    return read(this, offset, false, 52, 8)
-  };
-
-  function checkInt (buf, value, offset, ext, max, min) {
-    if (!internalIsBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
-    if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
-    if (offset + ext > buf.length) throw new RangeError('Index out of range')
-  }
-
-  Buffer$1.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    byteLength = byteLength | 0;
-    if (!noAssert) {
-      var maxBytes = Math.pow(2, 8 * byteLength) - 1;
-      checkInt(this, value, offset, byteLength, maxBytes, 0);
-    }
-
-    var mul = 1;
-    var i = 0;
-    this[offset] = value & 0xFF;
-    while (++i < byteLength && (mul *= 0x100)) {
-      this[offset + i] = (value / mul) & 0xFF;
-    }
-
-    return offset + byteLength
-  };
-
-  Buffer$1.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    byteLength = byteLength | 0;
-    if (!noAssert) {
-      var maxBytes = Math.pow(2, 8 * byteLength) - 1;
-      checkInt(this, value, offset, byteLength, maxBytes, 0);
-    }
-
-    var i = byteLength - 1;
-    var mul = 1;
-    this[offset + i] = value & 0xFF;
-    while (--i >= 0 && (mul *= 0x100)) {
-      this[offset + i] = (value / mul) & 0xFF;
-    }
-
-    return offset + byteLength
-  };
-
-  Buffer$1.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0);
-    if (!Buffer$1.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
-    this[offset] = (value & 0xff);
-    return offset + 1
-  };
-
-  function objectWriteUInt16 (buf, value, offset, littleEndian) {
-    if (value < 0) value = 0xffff + value + 1;
-    for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
-      buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
-        (littleEndian ? i : 1 - i) * 8;
-    }
-  }
-
-  Buffer$1.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset] = (value & 0xff);
-      this[offset + 1] = (value >>> 8);
-    } else {
-      objectWriteUInt16(this, value, offset, true);
-    }
-    return offset + 2
-  };
-
-  Buffer$1.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0);
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset] = (value >>> 8);
-      this[offset + 1] = (value & 0xff);
-    } else {
-      objectWriteUInt16(this, value, offset, false);
-    }
-    return offset + 2
-  };
-
-  function objectWriteUInt32 (buf, value, offset, littleEndian) {
-    if (value < 0) value = 0xffffffff + value + 1;
-    for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
-      buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff;
-    }
-  }
-
-  Buffer$1.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset + 3] = (value >>> 24);
-      this[offset + 2] = (value >>> 16);
-      this[offset + 1] = (value >>> 8);
-      this[offset] = (value & 0xff);
-    } else {
-      objectWriteUInt32(this, value, offset, true);
-    }
-    return offset + 4
-  };
-
-  Buffer$1.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0);
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset] = (value >>> 24);
-      this[offset + 1] = (value >>> 16);
-      this[offset + 2] = (value >>> 8);
-      this[offset + 3] = (value & 0xff);
-    } else {
-      objectWriteUInt32(this, value, offset, false);
-    }
-    return offset + 4
-  };
-
-  Buffer$1.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) {
-      var limit = Math.pow(2, 8 * byteLength - 1);
-
-      checkInt(this, value, offset, byteLength, limit - 1, -limit);
-    }
-
-    var i = 0;
-    var mul = 1;
-    var sub = 0;
-    this[offset] = value & 0xFF;
-    while (++i < byteLength && (mul *= 0x100)) {
-      if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
-        sub = 1;
-      }
-      this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
-    }
-
-    return offset + byteLength
-  };
-
-  Buffer$1.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) {
-      var limit = Math.pow(2, 8 * byteLength - 1);
-
-      checkInt(this, value, offset, byteLength, limit - 1, -limit);
-    }
-
-    var i = byteLength - 1;
-    var mul = 1;
-    var sub = 0;
-    this[offset + i] = value & 0xFF;
-    while (--i >= 0 && (mul *= 0x100)) {
-      if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
-        sub = 1;
-      }
-      this[offset + i] = ((value / mul) >> 0) - sub & 0xFF;
-    }
-
-    return offset + byteLength
-  };
-
-  Buffer$1.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80);
-    if (!Buffer$1.TYPED_ARRAY_SUPPORT) value = Math.floor(value);
-    if (value < 0) value = 0xff + value + 1;
-    this[offset] = (value & 0xff);
-    return offset + 1
-  };
-
-  Buffer$1.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset] = (value & 0xff);
-      this[offset + 1] = (value >>> 8);
-    } else {
-      objectWriteUInt16(this, value, offset, true);
-    }
-    return offset + 2
-  };
-
-  Buffer$1.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000);
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset] = (value >>> 8);
-      this[offset + 1] = (value & 0xff);
-    } else {
-      objectWriteUInt16(this, value, offset, false);
-    }
-    return offset + 2
-  };
-
-  Buffer$1.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset] = (value & 0xff);
-      this[offset + 1] = (value >>> 8);
-      this[offset + 2] = (value >>> 16);
-      this[offset + 3] = (value >>> 24);
-    } else {
-      objectWriteUInt32(this, value, offset, true);
-    }
-    return offset + 4
-  };
-
-  Buffer$1.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
-    value = +value;
-    offset = offset | 0;
-    if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000);
-    if (value < 0) value = 0xffffffff + value + 1;
-    if (Buffer$1.TYPED_ARRAY_SUPPORT) {
-      this[offset] = (value >>> 24);
-      this[offset + 1] = (value >>> 16);
-      this[offset + 2] = (value >>> 8);
-      this[offset + 3] = (value & 0xff);
-    } else {
-      objectWriteUInt32(this, value, offset, false);
-    }
-    return offset + 4
-  };
-
-  function checkIEEE754 (buf, value, offset, ext, max, min) {
-    if (offset + ext > buf.length) throw new RangeError('Index out of range')
-    if (offset < 0) throw new RangeError('Index out of range')
-  }
-
-  function writeFloat (buf, value, offset, littleEndian, noAssert) {
-    if (!noAssert) {
-      checkIEEE754(buf, value, offset, 4);
-    }
-    write(buf, value, offset, littleEndian, 23, 4);
-    return offset + 4
-  }
-
-  Buffer$1.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
-    return writeFloat(this, value, offset, true, noAssert)
-  };
-
-  Buffer$1.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
-    return writeFloat(this, value, offset, false, noAssert)
-  };
-
-  function writeDouble (buf, value, offset, littleEndian, noAssert) {
-    if (!noAssert) {
-      checkIEEE754(buf, value, offset, 8);
-    }
-    write(buf, value, offset, littleEndian, 52, 8);
-    return offset + 8
-  }
-
-  Buffer$1.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
-    return writeDouble(this, value, offset, true, noAssert)
-  };
-
-  Buffer$1.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
-    return writeDouble(this, value, offset, false, noAssert)
-  };
-
-  // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-  Buffer$1.prototype.copy = function copy (target, targetStart, start, end) {
-    if (!start) start = 0;
-    if (!end && end !== 0) end = this.length;
-    if (targetStart >= target.length) targetStart = target.length;
-    if (!targetStart) targetStart = 0;
-    if (end > 0 && end < start) end = start;
-
-    // Copy 0 bytes; we're done
-    if (end === start) return 0
-    if (target.length === 0 || this.length === 0) return 0
-
-    // Fatal error conditions
-    if (targetStart < 0) {
-      throw new RangeError('targetStart out of bounds')
-    }
-    if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
-    if (end < 0) throw new RangeError('sourceEnd out of bounds')
-
-    // Are we oob?
-    if (end > this.length) end = this.length;
-    if (target.length - targetStart < end - start) {
-      end = target.length - targetStart + start;
-    }
-
-    var len = end - start;
-    var i;
-
-    if (this === target && start < targetStart && targetStart < end) {
-      // descending copy from end
-      for (i = len - 1; i >= 0; --i) {
-        target[i + targetStart] = this[i + start];
-      }
-    } else if (len < 1000 || !Buffer$1.TYPED_ARRAY_SUPPORT) {
-      // ascending copy from start
-      for (i = 0; i < len; ++i) {
-        target[i + targetStart] = this[i + start];
-      }
-    } else {
-      Uint8Array.prototype.set.call(
-        target,
-        this.subarray(start, start + len),
-        targetStart
-      );
-    }
-
-    return len
-  };
-
-  // Usage:
-  //    buffer.fill(number[, offset[, end]])
-  //    buffer.fill(buffer[, offset[, end]])
-  //    buffer.fill(string[, offset[, end]][, encoding])
-  Buffer$1.prototype.fill = function fill (val, start, end, encoding) {
-    // Handle string cases:
-    if (typeof val === 'string') {
-      if (typeof start === 'string') {
-        encoding = start;
-        start = 0;
-        end = this.length;
-      } else if (typeof end === 'string') {
-        encoding = end;
-        end = this.length;
-      }
-      if (val.length === 1) {
-        var code = val.charCodeAt(0);
-        if (code < 256) {
-          val = code;
-        }
-      }
-      if (encoding !== undefined && typeof encoding !== 'string') {
-        throw new TypeError('encoding must be a string')
-      }
-      if (typeof encoding === 'string' && !Buffer$1.isEncoding(encoding)) {
-        throw new TypeError('Unknown encoding: ' + encoding)
-      }
-    } else if (typeof val === 'number') {
-      val = val & 255;
-    }
-
-    // Invalid ranges are not set to a default, so can range check early.
-    if (start < 0 || this.length < start || this.length < end) {
-      throw new RangeError('Out of range index')
-    }
-
-    if (end <= start) {
-      return this
-    }
-
-    start = start >>> 0;
-    end = end === undefined ? this.length : end >>> 0;
-
-    if (!val) val = 0;
-
-    var i;
-    if (typeof val === 'number') {
-      for (i = start; i < end; ++i) {
-        this[i] = val;
-      }
-    } else {
-      var bytes = internalIsBuffer(val)
-        ? val
-        : utf8ToBytes(new Buffer$1(val, encoding).toString());
-      var len = bytes.length;
-      for (i = 0; i < end - start; ++i) {
-        this[i + start] = bytes[i % len];
-      }
-    }
-
-    return this
-  };
-
-  // HELPER FUNCTIONS
-  // ================
-
-  var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g;
-
-  function base64clean (str) {
-    // Node strips out invalid characters like \n and \t from the string, base64-js does not
-    str = stringtrim(str).replace(INVALID_BASE64_RE, '');
-    // Node converts strings with length < 2 to ''
-    if (str.length < 2) return ''
-    // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
-    while (str.length % 4 !== 0) {
-      str = str + '=';
-    }
-    return str
-  }
-
-  function stringtrim (str) {
-    if (str.trim) return str.trim()
-    return str.replace(/^\s+|\s+$/g, '')
-  }
-
-  function toHex (n) {
-    if (n < 16) return '0' + n.toString(16)
-    return n.toString(16)
-  }
-
-  function utf8ToBytes (string, units) {
-    units = units || Infinity;
-    var codePoint;
-    var length = string.length;
-    var leadSurrogate = null;
-    var bytes = [];
-
-    for (var i = 0; i < length; ++i) {
-      codePoint = string.charCodeAt(i);
-
-      // is surrogate component
-      if (codePoint > 0xD7FF && codePoint < 0xE000) {
-        // last char was a lead
-        if (!leadSurrogate) {
-          // no lead yet
-          if (codePoint > 0xDBFF) {
-            // unexpected trail
-            if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-            continue
-          } else if (i + 1 === length) {
-            // unpaired lead
-            if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-            continue
-          }
-
-          // valid lead
-          leadSurrogate = codePoint;
-
-          continue
-        }
-
-        // 2 leads in a row
-        if (codePoint < 0xDC00) {
-          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-          leadSurrogate = codePoint;
-          continue
-        }
-
-        // valid surrogate pair
-        codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000;
-      } else if (leadSurrogate) {
-        // valid bmp char, but last char was a lead
-        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD);
-      }
-
-      leadSurrogate = null;
-
-      // encode utf8
-      if (codePoint < 0x80) {
-        if ((units -= 1) < 0) break
-        bytes.push(codePoint);
-      } else if (codePoint < 0x800) {
-        if ((units -= 2) < 0) break
-        bytes.push(
-          codePoint >> 0x6 | 0xC0,
-          codePoint & 0x3F | 0x80
-        );
-      } else if (codePoint < 0x10000) {
-        if ((units -= 3) < 0) break
-        bytes.push(
-          codePoint >> 0xC | 0xE0,
-          codePoint >> 0x6 & 0x3F | 0x80,
-          codePoint & 0x3F | 0x80
-        );
-      } else if (codePoint < 0x110000) {
-        if ((units -= 4) < 0) break
-        bytes.push(
-          codePoint >> 0x12 | 0xF0,
-          codePoint >> 0xC & 0x3F | 0x80,
-          codePoint >> 0x6 & 0x3F | 0x80,
-          codePoint & 0x3F | 0x80
-        );
-      } else {
-        throw new Error('Invalid code point')
-      }
-    }
-
-    return bytes
-  }
-
-  function asciiToBytes (str) {
-    var byteArray = [];
-    for (var i = 0; i < str.length; ++i) {
-      // Node's code seems to be doing this and not & 0x7F..
-      byteArray.push(str.charCodeAt(i) & 0xFF);
-    }
-    return byteArray
-  }
-
-  function utf16leToBytes (str, units) {
-    var c, hi, lo;
-    var byteArray = [];
-    for (var i = 0; i < str.length; ++i) {
-      if ((units -= 2) < 0) break
-
-      c = str.charCodeAt(i);
-      hi = c >> 8;
-      lo = c % 256;
-      byteArray.push(lo);
-      byteArray.push(hi);
-    }
-
-    return byteArray
-  }
-
-
-  function base64ToBytes (str) {
-    return toByteArray(base64clean(str))
-  }
-
-  function blitBuffer (src, dst, offset, length) {
-    for (var i = 0; i < length; ++i) {
-      if ((i + offset >= dst.length) || (i >= src.length)) break
-      dst[i + offset] = src[i];
-    }
-    return i
-  }
-
-  function isnan (val) {
-    return val !== val // eslint-disable-line no-self-compare
-  }
-
-
-  // the following is from is-buffer, also by Feross Aboukhadijeh and with same lisence
-  // The _isBuffer check is for Safari 5-7 support, because it's missing
-  // Object.prototype.constructor. Remove this eventually
-  function isBuffer(obj) {
-    return obj != null && (!!obj._isBuffer || isFastBuffer(obj) || isSlowBuffer(obj))
-  }
-
-  function isFastBuffer (obj) {
-    return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-  }
-
-  // For Node v0.10 support. Remove this eventually.
-  function isSlowBuffer (obj) {
-    return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isFastBuffer(obj.slice(0, 0))
-  }
+  if (typeof global$1.setTimeout === 'function') ;
+  if (typeof global$1.clearTimeout === 'function') ;
 
   // from https://github.com/kumavis/browser-process-hrtime/blob/master/index.js
   var performance$1 = global$1.performance || {};
@@ -4276,13 +2808,13 @@
   // If obj.hasOwnProperty has been overridden, then calling
   // obj.hasOwnProperty(prop) will break.
   // See: https://github.com/joyent/node/issues/1707
-  function hasOwnProperty$1(obj, prop) {
+  function hasOwnProperty(obj, prop) {
     return Object.prototype.hasOwnProperty.call(obj, prop);
   }
   var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
   };
-  function stringifyPrimitive$1(v) {
+  function stringifyPrimitive(v) {
     switch (typeof v) {
       case 'string':
         return v;
@@ -4307,21 +2839,21 @@
 
     if (typeof obj === 'object') {
       return map$2(objectKeys(obj), function(k) {
-        var ks = encodeURIComponent(stringifyPrimitive$1(k)) + eq;
+        var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
         if (isArray(obj[k])) {
           return map$2(obj[k], function(v) {
-            return ks + encodeURIComponent(stringifyPrimitive$1(v));
+            return ks + encodeURIComponent(stringifyPrimitive(v));
           }).join(sep);
         } else {
-          return ks + encodeURIComponent(stringifyPrimitive$1(obj[k]));
+          return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
         }
       }).join(sep);
 
     }
 
     if (!name) return '';
-    return encodeURIComponent(stringifyPrimitive$1(name)) + eq +
-           encodeURIComponent(stringifyPrimitive$1(obj));
+    return encodeURIComponent(stringifyPrimitive(name)) + eq +
+           encodeURIComponent(stringifyPrimitive(obj));
   }
   function map$2 (xs, f) {
     if (xs.map) return xs.map(f);
@@ -4340,7 +2872,7 @@
     return res;
   };
 
-  function parse$2(qs, sep, eq, options) {
+  function parse$1(qs, sep, eq, options) {
     sep = sep || '&';
     eq = eq || '=';
     var obj = {};
@@ -4379,7 +2911,7 @@
       k = decodeURIComponent(kstr);
       v = decodeURIComponent(vstr);
 
-      if (!hasOwnProperty$1(obj, k)) {
+      if (!hasOwnProperty(obj, k)) {
         obj[k] = v;
       } else if (isArray(obj[k])) {
         obj[k].push(v);
@@ -4392,7 +2924,7 @@
   }
 
   // Copyright Joyent, Inc. and other Node contributors.
-  function Url$2() {
+  function Url$1() {
     this.protocol = null;
     this.slashes = null;
     this.auth = null;
@@ -4411,42 +2943,42 @@
 
   // define these here so at least they only have to be
   // compiled once on the first module load.
-  var protocolPattern$1 = /^([a-z0-9.+-]+:)/i,
-    portPattern$1 = /:[0-9]*$/,
+  var protocolPattern = /^([a-z0-9.+-]+:)/i,
+    portPattern = /:[0-9]*$/,
 
     // Special case for a simple path URL
-    simplePathPattern$1 = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
+    simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
 
     // RFC 2396: characters reserved for delimiting URLs.
     // We actually just auto-escape these.
-    delims$1 = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
+    delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
 
     // RFC 2396: characters not allowed for various reasons.
-    unwise$1 = ['{', '}', '|', '\\', '^', '`'].concat(delims$1),
+    unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
 
     // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
-    autoEscape$1 = ['\''].concat(unwise$1),
+    autoEscape = ['\''].concat(unwise),
     // Characters that are never ever allowed in a hostname.
     // Note that any invalid chars are also handled, but these
     // are the ones that are *expected* to be seen, so we fast-path
     // them.
-    nonHostChars$1 = ['%', '/', '?', ';', '#'].concat(autoEscape$1),
-    hostEndingChars$1 = ['/', '?', '#'],
-    hostnameMaxLen$1 = 255,
-    hostnamePartPattern$1 = /^[+a-z0-9A-Z_-]{0,63}$/,
-    hostnamePartStart$1 = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
+    nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
+    hostEndingChars = ['/', '?', '#'],
+    hostnameMaxLen = 255,
+    hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
+    hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
     // protocols that can allow "unsafe" and "unwise" chars.
-    unsafeProtocol$1 = {
+    unsafeProtocol = {
       'javascript': true,
       'javascript:': true
     },
     // protocols that never have a hostname.
-    hostlessProtocol$1 = {
+    hostlessProtocol = {
       'javascript': true,
       'javascript:': true
     },
     // protocols that always contain a // bit.
-    slashedProtocol$1 = {
+    slashedProtocol = {
       'http': true,
       'https': true,
       'ftp': true,
@@ -4459,18 +2991,18 @@
       'file:': true
     };
 
-  function urlParse$1(url, parseQueryString, slashesDenoteHost) {
-    if (url && isObject(url) && url instanceof Url$2) return url;
+  function urlParse(url, parseQueryString, slashesDenoteHost) {
+    if (url && isObject(url) && url instanceof Url$1) return url;
 
-    var u = new Url$2;
+    var u = new Url$1;
     u.parse(url, parseQueryString, slashesDenoteHost);
     return u;
   }
-  Url$2.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
-    return parse$1(this, url, parseQueryString, slashesDenoteHost);
+  Url$1.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
+    return parse(this, url, parseQueryString, slashesDenoteHost);
   };
 
-  function parse$1(self, url, parseQueryString, slashesDenoteHost) {
+  function parse(self, url, parseQueryString, slashesDenoteHost) {
     if (!isString(url)) {
       throw new TypeError('Parameter \'url\' must be a string, not ' + typeof url);
     }
@@ -4494,7 +3026,7 @@
 
     if (!slashesDenoteHost && url.split('#').length === 1) {
       // Try fast path regexp
-      var simplePath = simplePathPattern$1.exec(rest);
+      var simplePath = simplePathPattern.exec(rest);
       if (simplePath) {
         self.path = rest;
         self.href = rest;
@@ -4502,7 +3034,7 @@
         if (simplePath[2]) {
           self.search = simplePath[2];
           if (parseQueryString) {
-            self.query = parse$2(self.search.substr(1));
+            self.query = parse$1(self.search.substr(1));
           } else {
             self.query = self.search.substr(1);
           }
@@ -4514,7 +3046,7 @@
       }
     }
 
-    var proto = protocolPattern$1.exec(rest);
+    var proto = protocolPattern.exec(rest);
     if (proto) {
       proto = proto[0];
       var lowerProto = proto.toLowerCase();
@@ -4528,14 +3060,14 @@
     // how the browser resolves relative URLs.
     if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
       var slashes = rest.substr(0, 2) === '//';
-      if (slashes && !(proto && hostlessProtocol$1[proto])) {
+      if (slashes && !(proto && hostlessProtocol[proto])) {
         rest = rest.substr(2);
         self.slashes = true;
       }
     }
     var i, hec, l, p;
-    if (!hostlessProtocol$1[proto] &&
-      (slashes || (proto && !slashedProtocol$1[proto]))) {
+    if (!hostlessProtocol[proto] &&
+      (slashes || (proto && !slashedProtocol[proto]))) {
 
       // there's a hostname.
       // the first instance of /, ?, ;, or # ends the host.
@@ -4554,8 +3086,8 @@
 
       // find the first instance of any hostEndingChars
       var hostEnd = -1;
-      for (i = 0; i < hostEndingChars$1.length; i++) {
-        hec = rest.indexOf(hostEndingChars$1[i]);
+      for (i = 0; i < hostEndingChars.length; i++) {
+        hec = rest.indexOf(hostEndingChars[i]);
         if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
           hostEnd = hec;
       }
@@ -4582,8 +3114,8 @@
 
       // the host is the remaining to the left of the first non-host char
       hostEnd = -1;
-      for (i = 0; i < nonHostChars$1.length; i++) {
-        hec = rest.indexOf(nonHostChars$1[i]);
+      for (i = 0; i < nonHostChars.length; i++) {
+        hec = rest.indexOf(nonHostChars[i]);
         if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
           hostEnd = hec;
       }
@@ -4612,7 +3144,7 @@
         for (i = 0, l = hostparts.length; i < l; i++) {
           var part = hostparts[i];
           if (!part) continue;
-          if (!part.match(hostnamePartPattern$1)) {
+          if (!part.match(hostnamePartPattern)) {
             var newpart = '';
             for (var j = 0, k = part.length; j < k; j++) {
               if (part.charCodeAt(j) > 127) {
@@ -4625,10 +3157,10 @@
               }
             }
             // we test again with ASCII char only
-            if (!newpart.match(hostnamePartPattern$1)) {
+            if (!newpart.match(hostnamePartPattern)) {
               var validParts = hostparts.slice(0, i);
               var notHost = hostparts.slice(i + 1);
-              var bit = part.match(hostnamePartStart$1);
+              var bit = part.match(hostnamePartStart);
               if (bit) {
                 validParts.push(bit[1]);
                 notHost.unshift(bit[2]);
@@ -4643,7 +3175,7 @@
         }
       }
 
-      if (self.hostname.length > hostnameMaxLen$1) {
+      if (self.hostname.length > hostnameMaxLen) {
         self.hostname = '';
       } else {
         // hostnames are always lower case.
@@ -4675,13 +3207,13 @@
 
     // now rest is set to the post-host stuff.
     // chop off any delim chars.
-    if (!unsafeProtocol$1[lowerProto]) {
+    if (!unsafeProtocol[lowerProto]) {
 
       // First, make 100% sure that any "autoEscape" chars get
       // escaped, even if encodeURIComponent doesn't think they
       // need to be.
-      for (i = 0, l = autoEscape$1.length; i < l; i++) {
-        var ae = autoEscape$1[i];
+      for (i = 0, l = autoEscape.length; i < l; i++) {
+        var ae = autoEscape[i];
         if (rest.indexOf(ae) === -1)
           continue;
         var esc = encodeURIComponent(ae);
@@ -4705,7 +3237,7 @@
       self.search = rest.substr(qm);
       self.query = rest.substr(qm + 1);
       if (parseQueryString) {
-        self.query = parse$2(self.query);
+        self.query = parse$1(self.query);
       }
       rest = rest.slice(0, qm);
     } else if (parseQueryString) {
@@ -4714,7 +3246,7 @@
       self.query = {};
     }
     if (rest) self.pathname = rest;
-    if (slashedProtocol$1[lowerProto] &&
+    if (slashedProtocol[lowerProto] &&
       self.hostname && !self.pathname) {
       self.pathname = '/';
     }
@@ -4727,21 +3259,21 @@
     }
 
     // finally, reconstruct the href based on what has been validated.
-    self.href = format$1(self);
+    self.href = format(self);
     return self;
   }
 
   // format a parsed object into a url string
-  function urlFormat$1(obj) {
+  function urlFormat(obj) {
     // ensure it's an object, and not a string url.
     // If it's an obj, this is a no-op.
     // this way, you can call url_format() on strings
     // to clean up potentially wonky urls.
-    if (isString(obj)) obj = parse$1({}, obj);
-    return format$1(obj);
+    if (isString(obj)) obj = parse({}, obj);
+    return format(obj);
   }
 
-  function format$1(self) {
+  function format(self) {
     var auth = self.auth || '';
     if (auth) {
       auth = encodeURIComponent(auth);
@@ -4779,7 +3311,7 @@
     // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
     // unless they had them to begin with.
     if (self.slashes ||
-      (!protocol || slashedProtocol$1[protocol]) && host !== false) {
+      (!protocol || slashedProtocol[protocol]) && host !== false) {
       host = '//' + (host || '');
       if (pathname && pathname.charAt(0) !== '/') pathname = '/' + pathname;
     } else if (!host) {
@@ -4797,26 +3329,26 @@
     return protocol + host + pathname + search + hash;
   }
 
-  Url$2.prototype.format = function() {
-    return format$1(this);
+  Url$1.prototype.format = function() {
+    return format(this);
   };
 
-  function urlResolve$1(source, relative) {
-    return urlParse$1(source, false, true).resolve(relative);
+  function urlResolve(source, relative) {
+    return urlParse(source, false, true).resolve(relative);
   }
 
-  Url$2.prototype.resolve = function(relative) {
-    return this.resolveObject(urlParse$1(relative, false, true)).format();
+  Url$1.prototype.resolve = function(relative) {
+    return this.resolveObject(urlParse(relative, false, true)).format();
   };
 
-  Url$2.prototype.resolveObject = function(relative) {
+  Url$1.prototype.resolveObject = function(relative) {
     if (isString(relative)) {
-      var rel = new Url$2();
+      var rel = new Url$1();
       rel.parse(relative, false, true);
       relative = rel;
     }
 
-    var result = new Url$2();
+    var result = new Url$1();
     var tkeys = Object.keys(this);
     for (var tk = 0; tk < tkeys.length; tk++) {
       var tkey = tkeys[tk];
@@ -4844,7 +3376,7 @@
       }
 
       //urlParse appends trailing / to urls like http://www.example.com
-      if (slashedProtocol$1[result.protocol] &&
+      if (slashedProtocol[result.protocol] &&
         result.hostname && !result.pathname) {
         result.path = result.pathname = '/';
       }
@@ -4862,7 +3394,7 @@
       // if it is file:, then the host is dropped,
       // because that's known to be hostless.
       // anything else is assumed to be absolute.
-      if (!slashedProtocol$1[relative.protocol]) {
+      if (!slashedProtocol[relative.protocol]) {
         var keys = Object.keys(relative);
         for (var v = 0; v < keys.length; v++) {
           var k = keys[v];
@@ -4873,7 +3405,7 @@
       }
 
       result.protocol = relative.protocol;
-      if (!relative.host && !hostlessProtocol$1[relative.protocol]) {
+      if (!relative.host && !hostlessProtocol[relative.protocol]) {
         relPath = (relative.pathname || '').split('/');
         while (relPath.length && !(relative.host = relPath.shift()));
         if (!relative.host) relative.host = '';
@@ -4910,7 +3442,7 @@
         (result.host && relative.pathname)),
       removeAllDots = mustEndAbs,
       srcPath = result.pathname && result.pathname.split('/') || [],
-      psychotic = result.protocol && !slashedProtocol$1[result.protocol];
+      psychotic = result.protocol && !slashedProtocol[result.protocol];
     relPath = relative.pathname && relative.pathname.split('/') || [];
     // if the url is a non-slashed url, then relative
     // links like ../.. should be able
@@ -5078,13 +3610,13 @@
     return result;
   };
 
-  Url$2.prototype.parseHost = function() {
+  Url$1.prototype.parseHost = function() {
     return parseHost(this);
   };
 
   function parseHost(self) {
     var host = self.host;
-    var port = portPattern$1.exec(host);
+    var port = portPattern.exec(host);
     if (port) {
       port = port[0];
       if (port !== ':') {
@@ -5096,8 +3628,8 @@
   }
 
   /*!
-   * @pixi/constants - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/constants - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/constants is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -5266,6 +3798,7 @@
    * @enum {number}
    * @property {number} RGBA=6408
    * @property {number} RGB=6407
+   * @property {number} RED=6403
    * @property {number} ALPHA=6406
    * @property {number} LUMINANCE=6409
    * @property {number} LUMINANCE_ALPHA=6410
@@ -5336,6 +3869,24 @@
       TYPES[TYPES["FLOAT"] = 5126] = "FLOAT";
       TYPES[TYPES["HALF_FLOAT"] = 36193] = "HALF_FLOAT";
   })(TYPES$1 || (TYPES$1 = {}));
+  /**
+   * Various sampler types. Correspond to `sampler`, `isampler`, `usampler` GLSL types respectively.
+   * WebGL1 works only with FLOAT.
+   *
+   * @memberof PIXI
+   * @static
+   * @name SAMPLER_TYPES
+   * @enum {number}
+   * @property {number} FLOAT=0
+   * @property {number} INT=1
+   * @property {number} UINT=2
+   */
+  var SAMPLER_TYPES$1;
+  (function (SAMPLER_TYPES) {
+      SAMPLER_TYPES[SAMPLER_TYPES["FLOAT"] = 0] = "FLOAT";
+      SAMPLER_TYPES[SAMPLER_TYPES["INT"] = 1] = "INT";
+      SAMPLER_TYPES[SAMPLER_TYPES["UINT"] = 2] = "UINT";
+  })(SAMPLER_TYPES$1 || (SAMPLER_TYPES$1 = {}));
   /**
    * The scale modes that are supported by pixi.
    *
@@ -5542,8 +4093,8 @@
   })(MSAA_QUALITY$1 || (MSAA_QUALITY$1 = {}));
 
   /*!
-   * @pixi/utils - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/utils - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/utils is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -5555,10 +4106,10 @@
    * this file is to redeclare the required types to avoid having the whole Node types as a
    * dependency.
    */
-  var url$1 = {
-      parse: urlParse$1,
-      format: urlFormat$1,
-      resolve: urlResolve$1,
+  var url = {
+      parse: urlParse,
+      format: urlFormat,
+      resolve: urlResolve,
   };
 
   /**
@@ -5571,7 +4122,7 @@
    * @default /@([0-9\.]+)x/
    * @example `@2x`
    */
-  settings$1.RETINA_PREFIX = /@([0-9\.]+)x/;
+  settings.RETINA_PREFIX = /@([0-9\.]+)x/;
   /**
    * Should the `failIfMajorPerformanceCaveat` flag be enabled as a context option used in the `isWebGLSupported` function.
    * If set to true, a WebGL renderer can fail to be created if the browser thinks there could be performance issues when
@@ -5598,10 +4149,10 @@
    * @type {boolean}
    * @default false
    */
-  settings$1.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
+  settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
 
   var saidHello = false;
-  var VERSION = '6.0.2';
+  var VERSION = '6.0.4';
   /**
    * Logs out the version and renderer information for this running instance of PIXI.
    * If you don't want to see this message you can run `PIXI.utils.skipHello()` before
@@ -5650,7 +4201,7 @@
           supported = (function supported() {
               var contextOptions = {
                   stencil: true,
-                  failIfMajorPerformanceCaveat: settings$1.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT,
+                  failIfMajorPerformanceCaveat: settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT,
               };
               try {
                   if (!self.WebGLRenderingContext) {
@@ -6042,7 +4593,7 @@
    * @private
    * @return {Array<number[]>} Mapped modes.
    */
-  function mapPremultipliedBlendModes$1() {
+  function mapPremultipliedBlendModes() {
       var pm = [];
       var npm = [];
       for (var i = 0; i < 32; i++) {
@@ -6066,7 +4617,7 @@
    * @const premultiplyBlendMode
    * @type {Array<number[]>}
    */
-  var premultiplyBlendMode = mapPremultipliedBlendModes$1();
+  var premultiplyBlendMode = mapPremultipliedBlendModes();
   /**
    * changes blendMode according to texture format
    *
@@ -6366,12 +4917,12 @@
       /**
        * @param width - the width for the newly created canvas
        * @param height - the height for the newly created canvas
-       * @param {number} [resolution=1] - The resolution / device pixel ratio of the canvas
+       * @param {number} [resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the canvas
        */
       function CanvasRenderTarget(width, height, resolution) {
           this.canvas = document.createElement('canvas');
           this.context = this.canvas.getContext('2d');
-          this.resolution = resolution || settings$1.RESOLUTION;
+          this.resolution = resolution || settings.RESOLUTION;
           this.resize(width, height);
       }
       /**
@@ -6508,10 +5059,10 @@
    * @param {object} [loc=window.location] - The location object to test against.
    * @return {string} The crossOrigin value to use (or empty string for none).
    */
-  function determineCrossOrigin(url$1$1, loc) {
+  function determineCrossOrigin(url$1, loc) {
       if (loc === void 0) { loc = self.location; }
       // data: and javascript: urls are considered same-origin
-      if (url$1$1.indexOf('data:') === 0) {
+      if (url$1.indexOf('data:') === 0) {
           return '';
       }
       // default is window.location
@@ -6522,8 +5073,8 @@
       // let the browser determine the full href for the url of this resource and then
       // parse with the node url lib, we can't use the properties of the anchor element
       // because they don't work in IE9 :(
-      tempAnchor$1.href = url$1$1;
-      var parsedUrl = url$1.parse(tempAnchor$1.href);
+      tempAnchor$1.href = url$1;
+      var parsedUrl = url.parse(tempAnchor$1.href);
       var samePort = (!parsedUrl.port && loc.port === '') || (parsedUrl.port === loc.port);
       // if cross origin
       if (parsedUrl.hostname !== loc.hostname || !samePort || parsedUrl.protocol !== loc.protocol) {
@@ -6543,7 +5094,7 @@
    * @return {number} resolution / device pixel ratio of an asset
    */
   function getResolutionOfUrl(url, defaultValue) {
-      var resolution = settings$1.RETINA_PREFIX.exec(url);
+      var resolution = settings.RETINA_PREFIX.exec(url);
       if (resolution) {
           return parseFloat(resolution[1]);
       }
@@ -6551,8 +5102,8 @@
   }
 
   /*!
-   * @pixi/math - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/math - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/math is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -7224,76 +5775,70 @@
   }());
 
   /**
-   * The Point object represents a location in a two-dimensional coordinate system, where x represents
-   * the horizontal axis and y represents the vertical axis.
+   * The Point object represents a location in a two-dimensional coordinate system, where `x` represents
+   * the position on the horizontal axis and `y` represents the position on the vertical axis
    *
    * @class
    * @memberof PIXI
    * @implements IPoint
    */
   var Point = /** @class */ (function () {
-      /**
+      /** Creates a new `Point`
        * @param {number} [x=0] - position of the point on the x axis
        * @param {number} [y=0] - position of the point on the y axis
        */
       function Point(x, y) {
           if (x === void 0) { x = 0; }
           if (y === void 0) { y = 0; }
-          /**
-           * @member {number}
-           * @default 0
-           */
+          /** Position of the point on the x axis */
+          this.x = 0;
+          /** Position of the point on the y axis */
+          this.y = 0;
           this.x = x;
-          /**
-           * @member {number}
-           * @default 0
-           */
           this.y = y;
       }
-      /**
-       * Creates a clone of this point
-       *
-       * @return {PIXI.Point} a copy of the point
+      /** Creates a clone of this point
+       * @returns A clone of this point
        */
       Point.prototype.clone = function () {
           return new Point(this.x, this.y);
       };
       /**
-       * Copies x and y from the given point
+       * Copies `x` and `y` from the given point into this point
        *
-       * @param {PIXI.IPointData} p - The point to copy from
-       * @returns {this} Returns itself.
+       * @param p - The point to copy from
+       * @returns The point instance itself
        */
       Point.prototype.copyFrom = function (p) {
           this.set(p.x, p.y);
           return this;
       };
       /**
-       * Copies x and y into the given point
+       * Copies this point's x and y into the given point (`p`).
        *
-       * @param {PIXI.IPoint} p - The point to copy.
-       * @returns {PIXI.IPoint} Given point with values updated
+       * @param p - The point to copy to. Can be any of type that is or extends `IPointData`
+       * @returns The point (`p`) with values updated
        */
       Point.prototype.copyTo = function (p) {
           p.set(this.x, this.y);
           return p;
       };
       /**
-       * Returns true if the given point is equal to this point
+       * Accepts another point (`p`) and returns `true` if the given point is equal to this point
        *
-       * @param {PIXI.IPointData} p - The point to check
-       * @returns {boolean} Whether the given point equal to this point
+       * @param p - The point to check
+       * @returns Returns `true` if both `x` and `y` are equal
        */
       Point.prototype.equals = function (p) {
           return (p.x === this.x) && (p.y === this.y);
       };
       /**
-       * Sets the point to a new x and y position.
-       * If y is omitted, both x and y will be set to x.
+       * Sets the point to a new `x` and `y` position.
+       * If `y` is omitted, both `x` and `y` will be set to `x`.
        *
-       * @param {number} [x=0] - position of the point on the x axis
-       * @param {number} [y=x] - position of the point on the y axis
-       * @returns {this} Returns itself.
+       * @param {number} [x=0] - position of the point on the `x` axis
+       * @param {number} [y=x] - position of the point on the `y` axis
+       * @returns The point instance itself
        */
       Point.prototype.set = function (x, y) {
           if (x === void 0) { x = 0; }
@@ -7309,10 +5854,10 @@
   }());
 
   /**
-   * The Point object represents a location in a two-dimensional coordinate system, where x represents
-   * the horizontal axis and y represents the vertical axis.
+   * The ObservablePoint object represents a location in a two-dimensional coordinate system, where `x` represents
+   * the position on the horizontal axis and `y` represents the position on the vertical axis.
    *
-   * An ObservablePoint is a point that triggers a callback when the point's position is changed.
+   * An `ObservablePoint` is a point that triggers a callback when the point's position is changed.
    *
    * @class
    * @memberof PIXI
@@ -7320,11 +5865,13 @@
    */
   var ObservablePoint = /** @class */ (function () {
       /**
-       * @param {Function} cb - callback when changed
-       * @param {object} scope - owner of callback
+       * Creates a new `ObservablePoint`
+       *
+       * @param cb - callback function triggered when `x` and/or `y` are changed
+       * @param scope - owner of callback
        * @param {number} [x=0] - position of the point on the x axis
        * @param {number} [y=0] - position of the point on the y axis
-       */
+      */
       function ObservablePoint(cb, scope, x, y) {
           if (x === void 0) { x = 0; }
           if (y === void 0) { y = 0; }
@@ -7339,9 +5886,9 @@
        * to the clone object's values.
        *
        * @override
-       * @param {Function} [cb=null] - callback when changed
-       * @param {object} [scope=null] - owner of callback
-       * @return {PIXI.ObservablePoint} a copy of the point
+       * @param cb - The callback function triggered when `x` and/or `y` are changed
+       * @param scope - The owner of the callback
+       * @return a copy of this observable point
        */
       ObservablePoint.prototype.clone = function (cb, scope) {
           if (cb === void 0) { cb = this.cb; }
@@ -7349,12 +5896,12 @@
           return new ObservablePoint(cb, scope, this._x, this._y);
       };
       /**
-       * Sets the point to a new x and y position.
-       * If y is omitted, both x and y will be set to x.
+       * Sets the point to a new `x` and `y` position.
+       * If `y` is omitted, both `x` and `y` will be set to `x`.
        *
        * @param {number} [x=0] - position of the point on the x axis
        * @param {number} [y=x] - position of the point on the y axis
-       * @returns {this} Returns itself.
+       * @returns The observable point instance itself
        */
       ObservablePoint.prototype.set = function (x, y) {
           if (x === void 0) { x = 0; }
@@ -7367,10 +5914,10 @@
           return this;
       };
       /**
-       * Copies x and y from the given point
+       * Copies x and y from the given point (`p`)
        *
-       * @param {PIXI.IPointData} p - The point to copy from.
-       * @returns {this} Returns itself.
+       * @param p - The point to copy from. Can be any of type that is or extends `IPointData`
+       * @returns The observable point instance itself
        */
       ObservablePoint.prototype.copyFrom = function (p) {
           if (this._x !== p.x || this._y !== p.y) {
@@ -7381,20 +5928,20 @@
           return this;
       };
       /**
-       * Copies x and y into the given point
+       * Copies this point's x and y into that of the given point (`p`)
        *
-       * @param {PIXI.IPoint} p - The point to copy.
-       * @returns {PIXI.IPoint} Given point with values updated
+       * @param p - The point to copy to. Can be any of type that is or extends `IPointData`
+       * @returns The point (`p`) with values updated
        */
       ObservablePoint.prototype.copyTo = function (p) {
           p.set(this._x, this._y);
           return p;
       };
       /**
-       * Returns true if the given point is equal to this point
+       * Accepts another point (`p`) and returns `true` if the given point is equal to this point
        *
-       * @param {PIXI.IPointData} p - The point to check
-       * @returns {boolean} Whether the given point equal to this point
+       * @param p - The point to check
+       * @returns Returns `true` if both `x` and `y` are equal
        */
       ObservablePoint.prototype.equals = function (p) {
           return (p.x === this._x) && (p.y === this._y);
@@ -7403,10 +5950,8 @@
           return "[@pixi/math:ObservablePoint x=" + 0 + " y=" + 0 + " scope=" + this.scope + "]";
       };
       Object.defineProperty(ObservablePoint.prototype, "x", {
-          /**
-           * The position of the displayObject on the x axis relative to the local coordinates of the parent.
-           *
-           * @member {number}
+          /** Position of the observable point on the x axis
+           * @type {number}
            */
           get: function () {
               return this._x;
@@ -7421,10 +5966,8 @@
           configurable: true
       });
       Object.defineProperty(ObservablePoint.prototype, "y", {
-          /**
-           * The position of the displayObject on the x axis relative to the local coordinates of the parent.
-           *
-           * @member {number}
+          /** Position of the observable point on the y axis
+           * @type {number}
            */
           get: function () {
               return this._y;
@@ -8438,9 +6981,27 @@
       return Transform;
   }());
 
+  var math = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Circle: Circle,
+    DEG_TO_RAD: DEG_TO_RAD,
+    Ellipse: Ellipse,
+    Matrix: Matrix,
+    ObservablePoint: ObservablePoint,
+    PI_2: PI_2,
+    Point: Point,
+    Polygon: Polygon,
+    RAD_TO_DEG: RAD_TO_DEG,
+    Rectangle: Rectangle,
+    RoundedRectangle: RoundedRectangle,
+    get SHAPES () { return SHAPES; },
+    Transform: Transform$1,
+    groupD8: groupD8
+  });
+
   /*!
-   * @pixi/display - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/display - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/display is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -8465,7 +7026,7 @@
    * @type {boolean}
    * @default false
    */
-  settings$1.SORTABLE_CHILDREN = false;
+  settings.SORTABLE_CHILDREN = false;
 
   /**
    * 'Builder' pattern for bounds rectangles.
@@ -9847,7 +8408,7 @@
            *
            * @member {boolean}
            */
-          _this.sortableChildren = settings$1.SORTABLE_CHILDREN;
+          _this.sortableChildren = settings.SORTABLE_CHILDREN;
           /**
            * Should children be sorted by zIndex at the next updateTransform call.
            *
@@ -10368,9 +8929,17 @@
    */
   Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
+  var display = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Bounds: Bounds,
+    Container: Container,
+    DisplayObject: DisplayObject,
+    TemporaryDisplayObject: TemporaryDisplayObject
+  });
+
   /*!
-   * @pixi/accessibility - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/accessibility - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/accessibility is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -10510,7 +9079,7 @@
           /**  The frequency to update the div elements. */
           this.androidUpdateFrequency = 500; // 2fps
           this._hookDiv = null;
-          if (isMobile$2.tablet || isMobile$2.phone) {
+          if (isMobile.tablet || isMobile.phone) {
               this.createTouchHook();
           }
           // first we create a div that will sit over the PixiJS element. This is where the div overlays will go.
@@ -10666,7 +9235,7 @@
           *  so I am just running update every half a second, seems to fix it.
           */
           var now = performance.now();
-          if (isMobile$2.android.device && now < this.androidUpdateCount) {
+          if (isMobile.android.device && now < this.androidUpdateCount) {
               return;
           }
           this.androidUpdateCount = now + this.androidUpdateFrequency;
@@ -10912,8 +9481,8 @@
   }());
 
   /*!
-   * @pixi/ticker - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/ticker - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/ticker is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -10928,7 +9497,7 @@
    * @type {number}
    * @default 0.06
    */
-  settings$1.TARGET_FPMS = 0.06;
+  settings.TARGET_FPMS = 0.06;
 
   /**
    * Represents the update priorities used by internal PIXI classes when registered with
@@ -11135,8 +9704,8 @@
            */
           this._lastFrame = -1;
           this._head = new TickerListener(null, null, Infinity);
-          this.deltaMS = 1 / settings$1.TARGET_FPMS;
-          this.elapsedMS = 1 / settings$1.TARGET_FPMS;
+          this.deltaMS = 1 / settings.TARGET_FPMS;
+          this.elapsedMS = 1 / settings.TARGET_FPMS;
           this._tick = function (time) {
               _this._requestId = null;
               if (_this.started) {
@@ -11383,7 +9952,7 @@
                   this._lastFrame = currentTime - (delta % this._minElapsedMS);
               }
               this.deltaMS = elapsedMS;
-              this.deltaTime = this.deltaMS * settings$1.TARGET_FPMS;
+              this.deltaTime = this.deltaMS * settings.TARGET_FPMS;
               // Cache a local reference, in-case ticker is destroyed
               // during the emit, we can still check for head.next
               var head = this._head;
@@ -11437,7 +10006,7 @@
               // Minimum must be below the maxFPS
               var minFPS = Math.min(this.maxFPS, fps);
               // Must be at least 0, but below 1 / settings.TARGET_FPMS
-              var minFPMS = Math.min(Math.max(0, minFPS) / 1000, settings$1.TARGET_FPMS);
+              var minFPMS = Math.min(Math.max(0, minFPS) / 1000, settings.TARGET_FPMS);
               this._maxElapsedMS = 1 / minFPMS;
           },
           enumerable: false,
@@ -11655,9 +10224,16 @@
       return TickerPlugin;
   }());
 
+  var ticker = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    Ticker: Ticker,
+    TickerPlugin: TickerPlugin,
+    get UPDATE_PRIORITY () { return UPDATE_PRIORITY; }
+  });
+
   /*!
-   * @pixi/interaction - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/interaction - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/interaction is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -13869,8 +12445,8 @@
   }(EventEmitter$2));
 
   /*!
-   * @pixi/runner - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/runner - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/runner is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -14065,8 +12641,8 @@
   });
 
   /*!
-   * @pixi/core - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/core - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/core is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -14088,7 +12664,7 @@
    * @type {number}
    * @default PIXI.ENV.WEBGL2
    */
-  settings$1.PREFER_ENV = isMobile$2.any ? ENV$1.WEBGL : ENV$1.WEBGL2;
+  settings.PREFER_ENV = isMobile.any ? ENV$1.WEBGL : ENV$1.WEBGL2;
   /**
    * If set to `true`, *only* Textures and BaseTexture objects stored
    * in the caches ({@link PIXI.utils.TextureCache TextureCache} and
@@ -14105,7 +12681,7 @@
    * @type {boolean}
    * @default false
    */
-  settings$1.STRICT_TEXTURE_CACHE = false;
+  settings.STRICT_TEXTURE_CACHE = false;
 
   /**
    * Collection of installed resource types, class must extend {@link PIXI.Resource}.
@@ -14533,7 +13109,7 @@
        * @param {PIXI.ALPHA_MODES} [options.alphaMode=PIXI.ALPHA_MODES.UNPACK] - Pre multiply the image alpha
        * @param {number} [options.width=0] - Width of the texture
        * @param {number} [options.height=0] - Height of the texture
-       * @param {number} [options.resolution] - Resolution of the base texture
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - Resolution of the base texture
        * @param {object} [options.resourceOptions] - Optional resource options,
        *        see {@link PIXI.autoDetectResource autoDetectResource}
        */
@@ -14553,6 +13129,7 @@
            *
            * @readonly
            * @member {number}
+           * @default PIXI.settings.RESOLUTION
            */
           _this.width = width || 0;
           /**
@@ -14568,33 +13145,34 @@
            * @member {number}
            * @default PIXI.settings.RESOLUTION
            */
-          _this.resolution = resolution || settings$1.RESOLUTION;
+          _this.resolution = resolution || settings.RESOLUTION;
           /**
            * Mipmap mode of the texture, affects downscaled images
            *
            * @member {PIXI.MIPMAP_MODES}
            * @default PIXI.settings.MIPMAP_TEXTURES
            */
-          _this.mipmap = mipmap !== undefined ? mipmap : settings$1.MIPMAP_TEXTURES;
+          _this.mipmap = mipmap !== undefined ? mipmap : settings.MIPMAP_TEXTURES;
           /**
            * Anisotropic filtering level of texture
            *
            * @member {number}
            * @default PIXI.settings.ANISOTROPIC_LEVEL
            */
-          _this.anisotropicLevel = anisotropicLevel !== undefined ? anisotropicLevel : settings$1.ANISOTROPIC_LEVEL;
+          _this.anisotropicLevel = anisotropicLevel !== undefined ? anisotropicLevel : settings.ANISOTROPIC_LEVEL;
           /**
            * How the texture wraps
-           * @member {number}
+           * @member {PIXI.WRAP_MODES}
+           * @default PIXI.settings.WRAP_MODE
            */
-          _this.wrapMode = wrapMode || settings$1.WRAP_MODE;
+          _this.wrapMode = wrapMode || settings.WRAP_MODE;
           /**
            * The scale mode to apply when scaling this texture
            *
            * @member {PIXI.SCALE_MODES}
            * @default PIXI.settings.SCALE_MODE
            */
-          _this.scaleMode = scaleMode !== undefined ? scaleMode : settings$1.SCALE_MODE;
+          _this.scaleMode = scaleMode !== undefined ? scaleMode : settings.SCALE_MODE;
           /**
            * The pixel format of the texture
            *
@@ -14970,7 +13548,7 @@
        * @returns {PIXI.BaseTexture} The new base texture.
        */
       BaseTexture.from = function (source, options, strict) {
-          if (strict === void 0) { strict = settings$1.STRICT_TEXTURE_CACHE; }
+          if (strict === void 0) { strict = settings.STRICT_TEXTURE_CACHE; }
           var isFrame = typeof source === 'string';
           var cacheId = null;
           if (isFrame) {
@@ -15514,9 +14092,6 @@
           baseTexture.target = TARGETS$1.TEXTURE_CUBE_MAP;
       };
       CubeResource.prototype.addBaseTextureAt = function (baseTexture, index, linkBaseTexture) {
-          if (linkBaseTexture === undefined) {
-              linkBaseTexture = this.linkBaseTexture;
-          }
           if (!this.items[index]) {
               throw new Error("Index " + index + " is out of bounds");
           }
@@ -15647,7 +14222,7 @@
            * @default PIXI.settings.CREATE_IMAGE_BITMAP
            */
           _this.createBitmap = (options.createBitmap !== undefined
-              ? options.createBitmap : settings$1.CREATE_IMAGE_BITMAP) && !!self.createImageBitmap;
+              ? options.createBitmap : settings.CREATE_IMAGE_BITMAP) && !!self.createImageBitmap;
           /**
            * Controls texture alphaMode field
            * Copies from options
@@ -16664,8 +15239,10 @@
        * @param {object} [options]
        * @param {number} [options.width=100] - The width of the base render texture.
        * @param {number} [options.height=100] - The height of the base render texture.
-       * @param {PIXI.SCALE_MODES} [options.scaleMode] - See {@link PIXI.SCALE_MODES} for possible values.
-       * @param {number} [options.resolution=1] - The resolution / device pixel ratio of the texture being generated.
+       * @param {PIXI.SCALE_MODES} [options.scaleMode=PIXI.settings.SCALE_MODE] - See {@link PIXI.SCALE_MODES}
+       *   for possible values.
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio
+       *   of the texture being generated.
        */
       function BaseRenderTexture(options) {
           var _this = this;
@@ -16682,7 +15259,7 @@
           _this = _super.call(this, null, options) || this;
           var _a = options || {}, width = _a.width, height = _a.height;
           // Set defaults
-          _this.mipmap = 0;
+          _this.mipmap = MIPMAP_MODES$1.OFF;
           _this.width = Math.ceil(width) || 100;
           _this.height = Math.ceil(height) || 100;
           _this.valid = true;
@@ -17132,7 +15709,7 @@
        */
       Texture.from = function (source, options, strict) {
           if (options === void 0) { options = {}; }
-          if (strict === void 0) { strict = settings$1.STRICT_TEXTURE_CACHE; }
+          if (strict === void 0) { strict = settings.STRICT_TEXTURE_CACHE; }
           var isFrame = typeof source === 'string';
           var cacheId = null;
           if (isFrame) {
@@ -17207,7 +15784,7 @@
        */
       Texture.fromLoader = function (source, imageUrl, name, options) {
           var baseTexture = new BaseTexture(source, Object.assign({
-              scaleMode: settings$1.SCALE_MODE,
+              scaleMode: settings.SCALE_MODE,
               resolution: getResolutionOfUrl(imageUrl),
           }, options));
           var resource = baseTexture.resource;
@@ -17743,14 +16320,14 @@
        * @param {string} buffer - the id of the buffer that this attribute will look for
        * @param {Number} [size=0] - the size of the attribute. If you have 2 floats per vertex (eg position x and y) this would be 2.
        * @param {Boolean} [normalized=false] - should the data be normalized.
-       * @param {Number} [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {@link PIXI.TYPES} to see the ones available
+       * @param {PIXI.TYPES} [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {@link PIXI.TYPES} to see the ones available
        * @param {Number} [stride=0] - How far apart (in floats) the start of each value is. (used for interleaving data)
        * @param {Number} [start=0] - How far into the array to start reading values (used for interleaving data)
        */
       function Attribute(buffer, size, normalized, type, stride, start, instance) {
           if (size === void 0) { size = 0; }
           if (normalized === void 0) { normalized = false; }
-          if (type === void 0) { type = 5126; }
+          if (type === void 0) { type = TYPES$1.FLOAT; }
           this.buffer = buffer;
           this.size = size;
           this.normalized = normalized;
@@ -17772,7 +16349,7 @@
        * @param {string} buffer - the id of the buffer that this attribute will look for
        * @param {Number} [size=0] - the size of the attribute. If you have 2 floats per vertex (eg position x and y) this would be 2
        * @param {Boolean} [normalized=false] - should the data be normalized.
-       * @param {Number} [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {@link PIXI.TYPES} to see the ones available
+       * @param {PIXI.TYPES} [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {@link PIXI.TYPES} to see the ones available
        * @param {Number} [stride=0] - How far apart (in floats) the start of each value is. (used for interleaving data)
        *
        * @returns {PIXI.Attribute} A new {@link PIXI.Attribute} based on the information provided
@@ -17988,7 +16565,7 @@
       * @param {PIXI.Buffer|number[]} buffer - the buffer that holds the data of the attribute . You can also provide an Array and a buffer will be created from it.
       * @param {Number} [size=0] - the size of the attribute. If you have 2 floats per vertex (eg position x and y) this would be 2
       * @param {Boolean} [normalized=false] - should the data be normalized.
-      * @param {Number} [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {PIXI.TYPES} to see the ones available
+      * @param {PIXI.TYPES} [type=PIXI.TYPES.FLOAT] - what type of number is the attribute. Check {PIXI.TYPES} to see the ones available
       * @param {Number} [stride] - How far apart (in floats) the start of each value is. (used for interleaving data)
       * @param {Number} [start] - How far into the array to start reading values (used for interleaving data)
       * @param {boolean} [instance=false] - Instancing flag
@@ -19187,7 +17764,7 @@
        */
       ContextSystem.prototype.createContext = function (canvas, options) {
           var gl;
-          if (settings$1.PREFER_ENV >= ENV$1.WEBGL2) {
+          if (settings.PREFER_ENV >= ENV$1.WEBGL2) {
               gl = canvas.getContext('webgl2', options);
           }
           if (gl) {
@@ -19416,7 +17993,7 @@
               // webgl 1!
               var nativeDrawBuffersExtension_1 = this.renderer.context.extensions.drawBuffers;
               var nativeDepthTextureExtension = this.renderer.context.extensions.depthTexture;
-              if (settings$1.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
+              if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
                   nativeDrawBuffersExtension_1 = null;
                   nativeDepthTextureExtension = null;
               }
@@ -19855,7 +18432,7 @@
           if (context.webGLVersion !== 2) {
               // webgl 1!
               var nativeVaoExtension_1 = this.renderer.context.extensions.vertexArrayObject;
-              if (settings$1.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
+              if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
                   nativeVaoExtension_1 = null;
               }
               if (nativeVaoExtension_1) {
@@ -20498,7 +19075,7 @@
       if (context === unknownContext || (context && context.isContextLost())) {
           var canvas = document.createElement('canvas');
           var gl = void 0;
-          if (settings$1.PREFER_ENV >= ENV$1.WEBGL2) {
+          if (settings.PREFER_ENV >= ENV$1.WEBGL2) {
               gl = canvas.getContext('webgl2', {});
           }
           if (!gl) {
@@ -20539,8 +19116,8 @@
    *
    * @private
    * @param {string} src - The shader source
-   * @param {string} requestedPrecision - The request float precision of the shader. Options are 'lowp', 'mediump' or 'highp'.
-   * @param {string} maxSupportedPrecision - The maximum precision the shader supports.
+   * @param {PIXI.PRECISION} requestedPrecision - The request float precision of the shader.
+   * @param {PIXI.PRECISION} maxSupportedPrecision - The maximum precision the shader supports.
    *
    * @return {string} modified shader source
    */
@@ -20916,8 +19493,8 @@
               }
               this.vertexSrc = "#define SHADER_NAME " + name + "\n" + this.vertexSrc;
               this.fragmentSrc = "#define SHADER_NAME " + name + "\n" + this.fragmentSrc;
-              this.vertexSrc = setPrecision(this.vertexSrc, settings$1.PRECISION_VERTEX, PRECISION$1.HIGH);
-              this.fragmentSrc = setPrecision(this.fragmentSrc, settings$1.PRECISION_FRAGMENT, getMaxFragmentPrecision());
+              this.vertexSrc = setPrecision(this.vertexSrc, settings.PRECISION_VERTEX, PRECISION$1.HIGH);
+              this.fragmentSrc = setPrecision(this.fragmentSrc, settings.PRECISION_FRAGMENT, getMaxFragmentPrecision());
           }
           // currently this does not extract structs only default types
           this.extractData(this.vertexSrc, this.fragmentSrc);
@@ -21533,7 +20110,7 @@
            *
            * @member {number}
            */
-          _this.resolution = settings$1.FILTER_RESOLUTION;
+          _this.resolution = settings.FILTER_RESOLUTION;
           /**
            * If enabled is true the filter is applied, if false it will not.
            *
@@ -23228,19 +21805,19 @@
            * @member {number}
            * @see PIXI.settings.GC_MAX_IDLE
            */
-          _this.maxIdle = settings$1.GC_MAX_IDLE;
+          _this.maxIdle = settings.GC_MAX_IDLE;
           /**
            * Maximum number of item to check
            * @member {number}
            * @see PIXI.settings.GC_MAX_CHECK_COUNT
            */
-          _this.checkCountMax = settings$1.GC_MAX_CHECK_COUNT;
+          _this.checkCountMax = settings.GC_MAX_CHECK_COUNT;
           /**
            * Current garbage collection mode
            * @member {PIXI.GC_MODES}
            * @see PIXI.settings.GC_MODE
            */
-          _this.mode = settings$1.GC_MODE;
+          _this.mode = settings.GC_MODE;
           return _this;
       }
       /**
@@ -23359,6 +21936,7 @@
            * @member {number}
            */
           this.internalFormat = 5121;
+          this.samplerType = 0;
       }
       return GLTexture;
   }());
@@ -23408,6 +21986,7 @@
            * @readonly
            */
           _this.unknownTexture = new BaseTexture();
+          _this.hasIntegerTextures = false;
           return _this;
       }
       /**
@@ -23493,6 +22072,7 @@
        */
       TextureSystem.prototype.reset = function () {
           this._unknownBoundTextures = true;
+          this.hasIntegerTextures = false;
           this.currentLocation = -1;
           for (var i = 0; i < this.boundTextures.length; i++) {
               this.boundTextures[i] = this.unknownTexture;
@@ -23522,6 +22102,27 @@
                   }
                   gl.bindTexture(texture.target, this.emptyTextures[texture.target].texture);
                   boundTextures[i] = null;
+              }
+          }
+      };
+      /**
+       * Ensures that current boundTextures all have FLOAT sampler type,
+       * see {@link PIXI.SAMPLER_TYPES} for explanation.
+       *
+       * @param maxTextures - number of locations to check
+       */
+      TextureSystem.prototype.ensureSamplerType = function (maxTextures) {
+          var _a = this, boundTextures = _a.boundTextures, hasIntegerTextures = _a.hasIntegerTextures, CONTEXT_UID = _a.CONTEXT_UID;
+          if (!hasIntegerTextures) {
+              return;
+          }
+          for (var i = maxTextures - 1; i >= 0; --i) {
+              var tex = boundTextures[i];
+              if (tex) {
+                  var glTexture = tex._glTextures[CONTEXT_UID];
+                  if (glTexture.samplerType !== SAMPLER_TYPES$1.FLOAT) {
+                      this.renderer.texture.unbind(tex);
+                  }
               }
           }
       };
@@ -23574,7 +22175,12 @@
           }
           var renderer = this.renderer;
           this.initTextureType(texture, glTexture);
-          if (texture.resource && texture.resource.upload(renderer, texture, glTexture)) ;
+          if (texture.resource && texture.resource.upload(renderer, texture, glTexture)) {
+              // texture is uploaded, dont do anything!
+              if (glTexture.samplerType !== SAMPLER_TYPES$1.FLOAT) {
+                  this.hasIntegerTextures = true;
+              }
+          }
           else {
               // default, renderTexture-like logic
               var width = texture.realWidth;
@@ -23722,8 +22328,7 @@
        * @param {boolean} [options.autoDensity=false] - Resizes renderer view in CSS pixels to allow for
        *   resolutions other than 1.
        * @param {boolean} [options.antialias=false] - Sets antialias
-       * @param {number} [options.resolution=1] - The resolution / device pixel ratio of the renderer. The
-       *  resolution of the renderer retina would be 2.
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
        * @param {boolean} [options.preserveDrawingBuffer=false] - Enables drawing buffer preservation,
        *  enable this if you need to call toDataUrl on the WebGL context.
        * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear the canvas or
@@ -23736,7 +22341,7 @@
           if (type === void 0) { type = RENDERER_TYPE$1.UNKNOWN; }
           var _this = _super.call(this) || this;
           // Add the default render options
-          options = Object.assign({}, settings$1.RENDER_OPTIONS, options);
+          options = Object.assign({}, settings.RENDER_OPTIONS, options);
           /**
            * The supplied constructor options.
            *
@@ -23770,9 +22375,9 @@
            * The resolution / device pixel ratio of the renderer.
            *
            * @member {number}
-           * @default 1
+           * @default PIXI.settings.RESOLUTION
            */
-          _this.resolution = options.resolution || settings$1.RESOLUTION;
+          _this.resolution = options.resolution || settings.RESOLUTION;
           /**
            * Pass-thru setting for the the canvas' context `alpha` property. This is typically
            * not something you need to fiddle with. If you want transparency, use `backgroundAlpha`.
@@ -24054,8 +22659,7 @@
        *   resolutions other than 1.
        * @param {boolean} [options.antialias=false] - Sets antialias. If not available natively then FXAA
        *  antialiasing is used.
-       * @param {number} [options.resolution=1] - The resolution / device pixel ratio of the renderer.
-       *  The resolution of the renderer retina would be 2.
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
        * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear
        *  the canvas or not before the new render pass. If you wish to set this to false, you *must* set
        *  preserveDrawingBuffer to `true`.
@@ -24446,7 +23050,7 @@
    * @param {number} [options.backgroundAlpha=1] - Value from 0 (fully transparent) to 1 (fully opaque).
    * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear the canvas or
    *   not before the new render pass.
-   * @param {number} [options.resolution=1] - The resolution / device pixel ratio of the renderer, retina would be 2
+   * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
    * @param {boolean} [options.forceCanvas=false] - prevents selection of WebGL renderer, even if such is present, this
    *   option only is available when using **pixi.js-legacy** or **@pixi/canvas-renderer** modules, otherwise
    *   it is ignored.
@@ -24763,7 +23367,7 @@
            * @member {number}
            * @default settings.SPRITE_BATCH_SIZE * 4
            */
-          _this.size = settings$1.SPRITE_BATCH_SIZE * 4;
+          _this.size = settings.SPRITE_BATCH_SIZE * 4;
           /**
            * Total count of all vertices used by the currently
            * buffered objects.
@@ -24904,12 +23508,12 @@
        */
       AbstractBatchRenderer.prototype.contextChange = function () {
           var gl = this.renderer.gl;
-          if (settings$1.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
+          if (settings.PREFER_ENV === ENV$1.WEBGL_LEGACY) {
               this.MAX_TEXTURES = 1;
           }
           else {
               // step 1: first check max textures the GPU can handle.
-              this.MAX_TEXTURES = Math.min(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS), settings$1.SPRITE_MAX_TEXTURES);
+              this.MAX_TEXTURES = Math.min(gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS), settings.SPRITE_MAX_TEXTURES);
               // step 2: check the maximum number of if statements the shader can have too..
               this.MAX_TEXTURES = checkMaxIfStatementsInShader(this.MAX_TEXTURES, gl);
           }
@@ -25065,7 +23669,7 @@
       };
       AbstractBatchRenderer.prototype.updateGeometry = function () {
           var _a = this, packedGeometries = _a._packedGeometries, attributeBuffer = _a._attributeBuffer, indexBuffer = _a._indexBuffer;
-          if (!settings$1.CAN_UPLOAD_SAME_BUFFER) { /* Usually on iOS devices, where the browser doesn't
+          if (!settings.CAN_UPLOAD_SAME_BUFFER) { /* Usually on iOS devices, where the browser doesn't
               like uploads to the same buffer in a single frame. */
               if (this._packedGeometryPoolSize <= this._flushId) {
                   this._packedGeometryPoolSize++;
@@ -25126,8 +23730,9 @@
        */
       AbstractBatchRenderer.prototype.start = function () {
           this.renderer.state.set(this.state);
+          this.renderer.texture.ensureSamplerType(this.MAX_TEXTURES);
           this.renderer.shader.bind(this._shader);
-          if (settings$1.CAN_UPLOAD_SAME_BUFFER) {
+          if (settings.CAN_UPLOAD_SAME_BUFFER) {
               // bind buffer #0, we don't need others
               this.renderer.geometry.bind(this._packedGeometries[this._flushId]);
           }
@@ -25513,8 +24118,8 @@
   }
 
   /*!
-   * @pixi/app - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/app - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/app is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -25555,7 +24160,7 @@
        * @param {boolean} [options.antialias=false] - Sets antialias
        * @param {boolean} [options.preserveDrawingBuffer=false] - Enables drawing buffer preservation, enable this if you
        *  need to call toDataUrl on the WebGL context.
-       * @param {number} [options.resolution=1] - The resolution / device pixel ratio of the renderer, retina would be 2.
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
        * @param {boolean} [options.forceCanvas=false] - prevents selection of WebGL renderer, even if such is present, this
        *   option only is available when using **pixi.js-legacy** or **@pixi/canvas-renderer** modules, otherwise
        *   it is ignored.
@@ -25778,8 +24383,8 @@
   Application.registerPlugin(ResizePlugin);
 
   /*!
-   * @pixi/extract - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/extract - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/extract is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -27720,7 +26325,7 @@
     return output;
   }
 
-  var Url$1 = window.URL || window.webkitURL;
+  var Url = window.URL || window.webkitURL;
   /**
    * A middleware for transforming XHR loaded Blobs into more useful objects
    *
@@ -27761,7 +26366,7 @@
         }
       } // if content type says this is an image, then we should transform the blob into an Image object
       else if (resource.data.type.indexOf('image') === 0) {
-          var src = Url$1.createObjectURL(resource.data);
+          var src = Url.createObjectURL(resource.data);
           resource.blob = resource.data;
           resource.data = new Image();
           resource.data.src = src;
@@ -27769,7 +26374,7 @@
           // TODO: Is this correct? Will the image be invalid after revoking?
 
           resource.data.onload = function () {
-            Url$1.revokeObjectURL(src);
+            Url.revokeObjectURL(src);
             resource.data.onload = null;
             next();
           }; // next will be called on load.
@@ -28532,8 +27137,8 @@
   };
 
   /*!
-   * @pixi/loaders - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/loaders - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/loaders is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -28871,6 +27476,14 @@
   * @memberof PIXI
   */
   var LoaderResource = Resource;
+
+  /*!
+   * @pixi/compressed-textures - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
+   *
+   * @pixi/compressed-textures is licensed under the MIT License.
+   * http://www.opensource.org/licenses/mit-license
+   */
 
   var _a$1;
   /**
@@ -29312,2274 +27925,6 @@
       };
       return CompressedTextureResource;
   }(BlobResource));
-
-  var appleIphone = /iPhone/i;
-  var appleIpod = /iPod/i;
-  var appleTablet = /iPad/i;
-  var appleUniversal = /\biOS-universal(?:.+)Mac\b/i;
-  var androidPhone = /\bAndroid(?:.+)Mobile\b/i;
-  var androidTablet = /Android/i;
-  var amazonPhone = /(?:SD4930UR|\bSilk(?:.+)Mobile\b)/i;
-  var amazonTablet = /Silk/i;
-  var windowsPhone = /Windows Phone/i;
-  var windowsTablet = /\bWindows(?:.+)ARM\b/i;
-  var otherBlackBerry = /BlackBerry/i;
-  var otherBlackBerry10 = /BB10/i;
-  var otherOpera = /Opera Mini/i;
-  var otherChrome = /\b(CriOS|Chrome)(?:.+)Mobile/i;
-  var otherFirefox = /Mobile(?:.+)Firefox\b/i;
-  var isAppleTabletOnIos13 = function (navigator) {
-      return (typeof navigator !== 'undefined' &&
-          navigator.platform === 'MacIntel' &&
-          typeof navigator.maxTouchPoints === 'number' &&
-          navigator.maxTouchPoints > 1 &&
-          typeof MSStream === 'undefined');
-  };
-  function createMatch(userAgent) {
-      return function (regex) { return regex.test(userAgent); };
-  }
-  function isMobile(param) {
-      var nav = {
-          userAgent: '',
-          platform: '',
-          maxTouchPoints: 0
-      };
-      if (!param && typeof navigator !== 'undefined') {
-          nav = {
-              userAgent: navigator.userAgent,
-              platform: navigator.platform,
-              maxTouchPoints: navigator.maxTouchPoints || 0
-          };
-      }
-      else if (typeof param === 'string') {
-          nav.userAgent = param;
-      }
-      else if (param && param.userAgent) {
-          nav = {
-              userAgent: param.userAgent,
-              platform: param.platform,
-              maxTouchPoints: param.maxTouchPoints || 0
-          };
-      }
-      var userAgent = nav.userAgent;
-      var tmp = userAgent.split('[FBAN');
-      if (typeof tmp[1] !== 'undefined') {
-          userAgent = tmp[0];
-      }
-      tmp = userAgent.split('Twitter');
-      if (typeof tmp[1] !== 'undefined') {
-          userAgent = tmp[0];
-      }
-      var match = createMatch(userAgent);
-      var result = {
-          apple: {
-              phone: match(appleIphone) && !match(windowsPhone),
-              ipod: match(appleIpod),
-              tablet: !match(appleIphone) &&
-                  (match(appleTablet) || isAppleTabletOnIos13(nav)) &&
-                  !match(windowsPhone),
-              universal: match(appleUniversal),
-              device: (match(appleIphone) ||
-                  match(appleIpod) ||
-                  match(appleTablet) ||
-                  match(appleUniversal) ||
-                  isAppleTabletOnIos13(nav)) &&
-                  !match(windowsPhone)
-          },
-          amazon: {
-              phone: match(amazonPhone),
-              tablet: !match(amazonPhone) && match(amazonTablet),
-              device: match(amazonPhone) || match(amazonTablet)
-          },
-          android: {
-              phone: (!match(windowsPhone) && match(amazonPhone)) ||
-                  (!match(windowsPhone) && match(androidPhone)),
-              tablet: !match(windowsPhone) &&
-                  !match(amazonPhone) &&
-                  !match(androidPhone) &&
-                  (match(amazonTablet) || match(androidTablet)),
-              device: (!match(windowsPhone) &&
-                  (match(amazonPhone) ||
-                      match(amazonTablet) ||
-                      match(androidPhone) ||
-                      match(androidTablet))) ||
-                  match(/\bokhttp\b/i)
-          },
-          windows: {
-              phone: match(windowsPhone),
-              tablet: match(windowsTablet),
-              device: match(windowsPhone) || match(windowsTablet)
-          },
-          other: {
-              blackberry: match(otherBlackBerry),
-              blackberry10: match(otherBlackBerry10),
-              opera: match(otherOpera),
-              firefox: match(otherFirefox),
-              chrome: match(otherChrome),
-              device: match(otherBlackBerry) ||
-                  match(otherBlackBerry10) ||
-                  match(otherOpera) ||
-                  match(otherFirefox) ||
-                  match(otherChrome)
-          },
-          any: false,
-          phone: false,
-          tablet: false
-      };
-      result.any =
-          result.apple.device ||
-              result.android.device ||
-              result.windows.device ||
-              result.other.device;
-      result.phone =
-          result.apple.phone || result.android.phone || result.windows.phone;
-      result.tablet =
-          result.apple.tablet || result.android.tablet || result.windows.tablet;
-      return result;
-  }
-
-  /*!
-   * @pixi/settings - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
-   *
-   * @pixi/settings is licensed under the MIT License.
-   * http://www.opensource.org/licenses/mit-license
-   */
-
-  // The ESM/CJS versions of ismobilejs only
-  var isMobile$1 = isMobile(self.navigator);
-
-  /**
-   * The maximum recommended texture units to use.
-   * In theory the bigger the better, and for desktop we'll use as many as we can.
-   * But some mobile devices slow down if there is to many branches in the shader.
-   * So in practice there seems to be a sweet spot size that varies depending on the device.
-   *
-   * In v4, all mobile devices were limited to 4 texture units because for this.
-   * In v5, we allow all texture units to be used on modern Apple or Android devices.
-   *
-   * @private
-   * @param {number} max
-   * @returns {number}
-   */
-  function maxRecommendedTextures(max) {
-      var allowMax = true;
-      if (isMobile$1.tablet || isMobile$1.phone) {
-          if (isMobile$1.apple.device) {
-              var match = (navigator.userAgent).match(/OS (\d+)_(\d+)?/);
-              if (match) {
-                  var majorVersion = parseInt(match[1], 10);
-                  // Limit texture units on devices below iOS 11, which will be older hardware
-                  if (majorVersion < 11) {
-                      allowMax = false;
-                  }
-              }
-          }
-          if (isMobile$1.android.device) {
-              var match = (navigator.userAgent).match(/Android\s([0-9.]*)/);
-              if (match) {
-                  var majorVersion = parseInt(match[1], 10);
-                  // Limit texture units on devices below Android 7 (Nougat), which will be older hardware
-                  if (majorVersion < 7) {
-                      allowMax = false;
-                  }
-              }
-          }
-      }
-      return allowMax ? max : 4;
-  }
-
-  /**
-   * Uploading the same buffer multiple times in a single frame can cause performance issues.
-   * Apparent on iOS so only check for that at the moment
-   * This check may become more complex if this issue pops up elsewhere.
-   *
-   * @private
-   * @returns {boolean}
-   */
-  function canUploadSameBuffer() {
-      return !isMobile$1.apple.device;
-  }
-
-  /**
-   * User's customizable globals for overriding the default PIXI settings, such
-   * as a renderer's default resolution, framerate, float precision, etc.
-   * @example
-   * // Use the native window resolution as the default resolution
-   * // will support high-density displays when rendering
-   * PIXI.settings.RESOLUTION = window.devicePixelRatio;
-   *
-   * // Disable interpolation when scaling, will make texture be pixelated
-   * PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-   * @namespace PIXI.settings
-   */
-  var settings = {
-      /**
-       * If set to true WebGL will attempt make textures mimpaped by default.
-       * Mipmapping will only succeed if the base texture uploaded has power of two dimensions.
-       *
-       * @static
-       * @name MIPMAP_TEXTURES
-       * @memberof PIXI.settings
-       * @type {PIXI.MIPMAP_MODES}
-       * @default PIXI.MIPMAP_MODES.POW2
-       */
-      MIPMAP_TEXTURES: 1,
-      /**
-       * Default anisotropic filtering level of textures.
-       * Usually from 0 to 16
-       *
-       * @static
-       * @name ANISOTROPIC_LEVEL
-       * @memberof PIXI.settings
-       * @type {number}
-       * @default 0
-       */
-      ANISOTROPIC_LEVEL: 0,
-      /**
-       * Default resolution / device pixel ratio of the renderer.
-       *
-       * @static
-       * @name RESOLUTION
-       * @memberof PIXI.settings
-       * @type {number}
-       * @default 1
-       */
-      RESOLUTION: 1,
-      /**
-       * Default filter resolution.
-       *
-       * @static
-       * @name FILTER_RESOLUTION
-       * @memberof PIXI.settings
-       * @type {number}
-       * @default 1
-       */
-      FILTER_RESOLUTION: 1,
-      /**
-       * The maximum textures that this device supports.
-       *
-       * @static
-       * @name SPRITE_MAX_TEXTURES
-       * @memberof PIXI.settings
-       * @type {number}
-       * @default 32
-       */
-      SPRITE_MAX_TEXTURES: maxRecommendedTextures(32),
-      // TODO: maybe change to SPRITE.BATCH_SIZE: 2000
-      // TODO: maybe add PARTICLE.BATCH_SIZE: 15000
-      /**
-       * The default sprite batch size.
-       *
-       * The default aims to balance desktop and mobile devices.
-       *
-       * @static
-       * @name SPRITE_BATCH_SIZE
-       * @memberof PIXI.settings
-       * @type {number}
-       * @default 4096
-       */
-      SPRITE_BATCH_SIZE: 4096,
-      /**
-       * The default render options if none are supplied to {@link PIXI.Renderer}
-       * or {@link PIXI.CanvasRenderer}.
-       *
-       * @static
-       * @name RENDER_OPTIONS
-       * @memberof PIXI.settings
-       * @type {object}
-       * @property {HTMLCanvasElement} view=null
-       * @property {number} resolution=1
-       * @property {boolean} antialias=false
-       * @property {boolean} autoDensity=false
-       * @property {boolean} useContextAlpha=true
-       * @property {number} backgroundColor=0x000000
-       * @property {number} backgroundAlpha=1
-       * @property {boolean} clearBeforeRender=true
-       * @property {boolean} preserveDrawingBuffer=false
-       * @property {number} width=800
-       * @property {number} height=600
-       * @property {boolean} legacy=false
-       */
-      RENDER_OPTIONS: {
-          view: null,
-          antialias: false,
-          autoDensity: false,
-          backgroundColor: 0x000000,
-          backgroundAlpha: 1,
-          useContextAlpha: true,
-          clearBeforeRender: true,
-          preserveDrawingBuffer: false,
-          width: 800,
-          height: 600,
-          legacy: false,
-      },
-      /**
-       * Default Garbage Collection mode.
-       *
-       * @static
-       * @name GC_MODE
-       * @memberof PIXI.settings
-       * @type {PIXI.GC_MODES}
-       * @default PIXI.GC_MODES.AUTO
-       */
-      GC_MODE: 0,
-      /**
-       * Default Garbage Collection max idle.
-       *
-       * @static
-       * @name GC_MAX_IDLE
-       * @memberof PIXI.settings
-       * @type {number}
-       * @default 3600
-       */
-      GC_MAX_IDLE: 60 * 60,
-      /**
-       * Default Garbage Collection maximum check count.
-       *
-       * @static
-       * @name GC_MAX_CHECK_COUNT
-       * @memberof PIXI.settings
-       * @type {number}
-       * @default 600
-       */
-      GC_MAX_CHECK_COUNT: 60 * 10,
-      /**
-       * Default wrap modes that are supported by pixi.
-       *
-       * @static
-       * @name WRAP_MODE
-       * @memberof PIXI.settings
-       * @type {PIXI.WRAP_MODES}
-       * @default PIXI.WRAP_MODES.CLAMP
-       */
-      WRAP_MODE: 33071,
-      /**
-       * Default scale mode for textures.
-       *
-       * @static
-       * @name SCALE_MODE
-       * @memberof PIXI.settings
-       * @type {PIXI.SCALE_MODES}
-       * @default PIXI.SCALE_MODES.LINEAR
-       */
-      SCALE_MODE: 1,
-      /**
-       * Default specify float precision in vertex shader.
-       *
-       * @static
-       * @name PRECISION_VERTEX
-       * @memberof PIXI.settings
-       * @type {PIXI.PRECISION}
-       * @default PIXI.PRECISION.HIGH
-       */
-      PRECISION_VERTEX: 'highp',
-      /**
-       * Default specify float precision in fragment shader.
-       * iOS is best set at highp due to https://github.com/pixijs/pixi.js/issues/3742
-       *
-       * @static
-       * @name PRECISION_FRAGMENT
-       * @memberof PIXI.settings
-       * @type {PIXI.PRECISION}
-       * @default PIXI.PRECISION.MEDIUM
-       */
-      PRECISION_FRAGMENT: isMobile$1.apple.device ? 'highp' : 'mediump',
-      /**
-       * Can we upload the same buffer in a single frame?
-       *
-       * @static
-       * @name CAN_UPLOAD_SAME_BUFFER
-       * @memberof PIXI.settings
-       * @type {boolean}
-       */
-      CAN_UPLOAD_SAME_BUFFER: canUploadSameBuffer(),
-      /**
-       * Enables bitmap creation before image load. This feature is experimental.
-       *
-       * @static
-       * @name CREATE_IMAGE_BITMAP
-       * @memberof PIXI.settings
-       * @type {boolean}
-       * @default false
-       */
-      CREATE_IMAGE_BITMAP: false,
-      /**
-       * If true PixiJS will Math.floor() x/y values when rendering, stopping pixel interpolation.
-       * Advantages can include sharper image quality (like text) and faster rendering on canvas.
-       * The main disadvantage is movement of objects may appear less smooth.
-       *
-       * @static
-       * @constant
-       * @memberof PIXI.settings
-       * @type {boolean}
-       * @default false
-       */
-      ROUND_PIXELS: false,
-  };
-
-  var commonjsGlobal$1 = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
-
-  function createCommonjsModule$1(fn, basedir, module) {
-  	return module = {
-  		path: basedir,
-  		exports: {},
-  		require: function (path, base) {
-  			return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
-  		}
-  	}, fn(module, module.exports), module.exports;
-  }
-
-  function commonjsRequire () {
-  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
-  }
-
-  createCommonjsModule$1(function (module) {
-
-  var has = Object.prototype.hasOwnProperty
-    , prefix = '~';
-
-  /**
-   * Constructor to create a storage for our `EE` objects.
-   * An `Events` instance is a plain object whose properties are event names.
-   *
-   * @constructor
-   * @private
-   */
-  function Events() {}
-
-  //
-  // We try to not inherit from `Object.prototype`. In some engines creating an
-  // instance in this way is faster than calling `Object.create(null)` directly.
-  // If `Object.create(null)` is not supported we prefix the event names with a
-  // character to make sure that the built-in object properties are not
-  // overridden or used as an attack vector.
-  //
-  if (Object.create) {
-    Events.prototype = Object.create(null);
-
-    //
-    // This hack is needed because the `__proto__` property is still inherited in
-    // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
-    //
-    if (!new Events().__proto__) { prefix = false; }
-  }
-
-  /**
-   * Representation of a single event listener.
-   *
-   * @param {Function} fn The listener function.
-   * @param {*} context The context to invoke the listener with.
-   * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
-   * @constructor
-   * @private
-   */
-  function EE(fn, context, once) {
-    this.fn = fn;
-    this.context = context;
-    this.once = once || false;
-  }
-
-  /**
-   * Add a listener for a given event.
-   *
-   * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
-   * @param {(String|Symbol)} event The event name.
-   * @param {Function} fn The listener function.
-   * @param {*} context The context to invoke the listener with.
-   * @param {Boolean} once Specify if the listener is a one-time listener.
-   * @returns {EventEmitter}
-   * @private
-   */
-  function addListener(emitter, event, fn, context, once) {
-    if (typeof fn !== 'function') {
-      throw new TypeError('The listener must be a function');
-    }
-
-    var listener = new EE(fn, context || emitter, once)
-      , evt = prefix ? prefix + event : event;
-
-    if (!emitter._events[evt]) { emitter._events[evt] = listener, emitter._eventsCount++; }
-    else if (!emitter._events[evt].fn) { emitter._events[evt].push(listener); }
-    else { emitter._events[evt] = [emitter._events[evt], listener]; }
-
-    return emitter;
-  }
-
-  /**
-   * Clear event by name.
-   *
-   * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
-   * @param {(String|Symbol)} evt The Event name.
-   * @private
-   */
-  function clearEvent(emitter, evt) {
-    if (--emitter._eventsCount === 0) { emitter._events = new Events(); }
-    else { delete emitter._events[evt]; }
-  }
-
-  /**
-   * Minimal `EventEmitter` interface that is molded against the Node.js
-   * `EventEmitter` interface.
-   *
-   * @constructor
-   * @public
-   */
-  function EventEmitter() {
-    this._events = new Events();
-    this._eventsCount = 0;
-  }
-
-  /**
-   * Return an array listing the events for which the emitter has registered
-   * listeners.
-   *
-   * @returns {Array}
-   * @public
-   */
-  EventEmitter.prototype.eventNames = function eventNames() {
-    var names = []
-      , events
-      , name;
-
-    if (this._eventsCount === 0) { return names; }
-
-    for (name in (events = this._events)) {
-      if (has.call(events, name)) { names.push(prefix ? name.slice(1) : name); }
-    }
-
-    if (Object.getOwnPropertySymbols) {
-      return names.concat(Object.getOwnPropertySymbols(events));
-    }
-
-    return names;
-  };
-
-  /**
-   * Return the listeners registered for a given event.
-   *
-   * @param {(String|Symbol)} event The event name.
-   * @returns {Array} The registered listeners.
-   * @public
-   */
-  EventEmitter.prototype.listeners = function listeners(event) {
-    var evt = prefix ? prefix + event : event
-      , handlers = this._events[evt];
-
-    if (!handlers) { return []; }
-    if (handlers.fn) { return [handlers.fn]; }
-
-    for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
-      ee[i] = handlers[i].fn;
-    }
-
-    return ee;
-  };
-
-  /**
-   * Return the number of listeners listening to a given event.
-   *
-   * @param {(String|Symbol)} event The event name.
-   * @returns {Number} The number of listeners.
-   * @public
-   */
-  EventEmitter.prototype.listenerCount = function listenerCount(event) {
-    var evt = prefix ? prefix + event : event
-      , listeners = this._events[evt];
-
-    if (!listeners) { return 0; }
-    if (listeners.fn) { return 1; }
-    return listeners.length;
-  };
-
-  /**
-   * Calls each of the listeners registered for a given event.
-   *
-   * @param {(String|Symbol)} event The event name.
-   * @returns {Boolean} `true` if the event had listeners, else `false`.
-   * @public
-   */
-  EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
-    var arguments$1 = arguments;
-
-    var evt = prefix ? prefix + event : event;
-
-    if (!this._events[evt]) { return false; }
-
-    var listeners = this._events[evt]
-      , len = arguments.length
-      , args
-      , i;
-
-    if (listeners.fn) {
-      if (listeners.once) { this.removeListener(event, listeners.fn, undefined, true); }
-
-      switch (len) {
-        case 1: return listeners.fn.call(listeners.context), true;
-        case 2: return listeners.fn.call(listeners.context, a1), true;
-        case 3: return listeners.fn.call(listeners.context, a1, a2), true;
-        case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
-        case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
-        case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
-      }
-
-      for (i = 1, args = new Array(len -1); i < len; i++) {
-        args[i - 1] = arguments$1[i];
-      }
-
-      listeners.fn.apply(listeners.context, args);
-    } else {
-      var length = listeners.length
-        , j;
-
-      for (i = 0; i < length; i++) {
-        if (listeners[i].once) { this.removeListener(event, listeners[i].fn, undefined, true); }
-
-        switch (len) {
-          case 1: listeners[i].fn.call(listeners[i].context); break;
-          case 2: listeners[i].fn.call(listeners[i].context, a1); break;
-          case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-          case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
-          default:
-            if (!args) { for (j = 1, args = new Array(len -1); j < len; j++) {
-              args[j - 1] = arguments$1[j];
-            } }
-
-            listeners[i].fn.apply(listeners[i].context, args);
-        }
-      }
-    }
-
-    return true;
-  };
-
-  /**
-   * Add a listener for a given event.
-   *
-   * @param {(String|Symbol)} event The event name.
-   * @param {Function} fn The listener function.
-   * @param {*} [context=this] The context to invoke the listener with.
-   * @returns {EventEmitter} `this`.
-   * @public
-   */
-  EventEmitter.prototype.on = function on(event, fn, context) {
-    return addListener(this, event, fn, context, false);
-  };
-
-  /**
-   * Add a one-time listener for a given event.
-   *
-   * @param {(String|Symbol)} event The event name.
-   * @param {Function} fn The listener function.
-   * @param {*} [context=this] The context to invoke the listener with.
-   * @returns {EventEmitter} `this`.
-   * @public
-   */
-  EventEmitter.prototype.once = function once(event, fn, context) {
-    return addListener(this, event, fn, context, true);
-  };
-
-  /**
-   * Remove the listeners of a given event.
-   *
-   * @param {(String|Symbol)} event The event name.
-   * @param {Function} fn Only remove the listeners that match this function.
-   * @param {*} context Only remove the listeners that have this context.
-   * @param {Boolean} once Only remove one-time listeners.
-   * @returns {EventEmitter} `this`.
-   * @public
-   */
-  EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-    var evt = prefix ? prefix + event : event;
-
-    if (!this._events[evt]) { return this; }
-    if (!fn) {
-      clearEvent(this, evt);
-      return this;
-    }
-
-    var listeners = this._events[evt];
-
-    if (listeners.fn) {
-      if (
-        listeners.fn === fn &&
-        (!once || listeners.once) &&
-        (!context || listeners.context === context)
-      ) {
-        clearEvent(this, evt);
-      }
-    } else {
-      for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-        if (
-          listeners[i].fn !== fn ||
-          (once && !listeners[i].once) ||
-          (context && listeners[i].context !== context)
-        ) {
-          events.push(listeners[i]);
-        }
-      }
-
-      //
-      // Reset the array, or remove it completely if we have no more listeners.
-      //
-      if (events.length) { this._events[evt] = events.length === 1 ? events[0] : events; }
-      else { clearEvent(this, evt); }
-    }
-
-    return this;
-  };
-
-  /**
-   * Remove all listeners, or those of the specified event.
-   *
-   * @param {(String|Symbol)} [event] The event name.
-   * @returns {EventEmitter} `this`.
-   * @public
-   */
-  EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-    var evt;
-
-    if (event) {
-      evt = prefix ? prefix + event : event;
-      if (this._events[evt]) { clearEvent(this, evt); }
-    } else {
-      this._events = new Events();
-      this._eventsCount = 0;
-    }
-
-    return this;
-  };
-
-  //
-  // Alias methods names because people roll like that.
-  //
-  EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-  //
-  // Expose the prefix.
-  //
-  EventEmitter.prefixed = prefix;
-
-  //
-  // Allow `EventEmitter` to be imported as module namespace.
-  //
-  EventEmitter.EventEmitter = EventEmitter;
-
-  //
-  // Expose the module.
-  //
-  {
-    module.exports = EventEmitter;
-  }
-  });
-
-  var punycode = createCommonjsModule$1(function (module, exports) {
-  (function(root) {
-
-  	/** Detect free variables */
-  	var freeExports =  exports &&
-  		!exports.nodeType && exports;
-  	var freeModule =  module &&
-  		!module.nodeType && module;
-  	var freeGlobal = typeof commonjsGlobal$1 == 'object' && commonjsGlobal$1;
-  	if (
-  		freeGlobal.global === freeGlobal ||
-  		freeGlobal.window === freeGlobal ||
-  		freeGlobal.self === freeGlobal
-  	) {
-  		root = freeGlobal;
-  	}
-
-  	/**
-  	 * The `punycode` object.
-  	 * @name punycode
-  	 * @type Object
-  	 */
-  	var punycode,
-
-  	/** Highest positive signed 32-bit float value */
-  	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
-
-  	/** Bootstring parameters */
-  	base = 36,
-  	tMin = 1,
-  	tMax = 26,
-  	skew = 38,
-  	damp = 700,
-  	initialBias = 72,
-  	initialN = 128, // 0x80
-  	delimiter = '-', // '\x2D'
-
-  	/** Regular expressions */
-  	regexPunycode = /^xn--/,
-  	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
-  	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
-
-  	/** Error messages */
-  	errors = {
-  		'overflow': 'Overflow: input needs wider integers to process',
-  		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-  		'invalid-input': 'Invalid input'
-  	},
-
-  	/** Convenience shortcuts */
-  	baseMinusTMin = base - tMin,
-  	floor = Math.floor,
-  	stringFromCharCode = String.fromCharCode,
-
-  	/** Temporary variable */
-  	key;
-
-  	/*--------------------------------------------------------------------------*/
-
-  	/**
-  	 * A generic error utility function.
-  	 * @private
-  	 * @param {String} type The error type.
-  	 * @returns {Error} Throws a `RangeError` with the applicable error message.
-  	 */
-  	function error(type) {
-  		throw RangeError(errors[type]);
-  	}
-
-  	/**
-  	 * A generic `Array#map` utility function.
-  	 * @private
-  	 * @param {Array} array The array to iterate over.
-  	 * @param {Function} callback The function that gets called for every array
-  	 * item.
-  	 * @returns {Array} A new array of values returned by the callback function.
-  	 */
-  	function map(array, fn) {
-  		var length = array.length;
-  		var result = [];
-  		while (length--) {
-  			result[length] = fn(array[length]);
-  		}
-  		return result;
-  	}
-
-  	/**
-  	 * A simple `Array#map`-like wrapper to work with domain name strings or email
-  	 * addresses.
-  	 * @private
-  	 * @param {String} domain The domain name or email address.
-  	 * @param {Function} callback The function that gets called for every
-  	 * character.
-  	 * @returns {Array} A new string of characters returned by the callback
-  	 * function.
-  	 */
-  	function mapDomain(string, fn) {
-  		var parts = string.split('@');
-  		var result = '';
-  		if (parts.length > 1) {
-  			// In email addresses, only the domain name should be punycoded. Leave
-  			// the local part (i.e. everything up to `@`) intact.
-  			result = parts[0] + '@';
-  			string = parts[1];
-  		}
-  		// Avoid `split(regex)` for IE8 compatibility. See #17.
-  		string = string.replace(regexSeparators, '\x2E');
-  		var labels = string.split('.');
-  		var encoded = map(labels, fn).join('.');
-  		return result + encoded;
-  	}
-
-  	/**
-  	 * Creates an array containing the numeric code points of each Unicode
-  	 * character in the string. While JavaScript uses UCS-2 internally,
-  	 * this function will convert a pair of surrogate halves (each of which
-  	 * UCS-2 exposes as separate characters) into a single code point,
-  	 * matching UTF-16.
-  	 * @see `punycode.ucs2.encode`
-  	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-  	 * @memberOf punycode.ucs2
-  	 * @name decode
-  	 * @param {String} string The Unicode input string (UCS-2).
-  	 * @returns {Array} The new array of code points.
-  	 */
-  	function ucs2decode(string) {
-  		var output = [],
-  		    counter = 0,
-  		    length = string.length,
-  		    value,
-  		    extra;
-  		while (counter < length) {
-  			value = string.charCodeAt(counter++);
-  			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-  				// high surrogate, and there is a next character
-  				extra = string.charCodeAt(counter++);
-  				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-  					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-  				} else {
-  					// unmatched surrogate; only append this code unit, in case the next
-  					// code unit is the high surrogate of a surrogate pair
-  					output.push(value);
-  					counter--;
-  				}
-  			} else {
-  				output.push(value);
-  			}
-  		}
-  		return output;
-  	}
-
-  	/**
-  	 * Creates a string based on an array of numeric code points.
-  	 * @see `punycode.ucs2.decode`
-  	 * @memberOf punycode.ucs2
-  	 * @name encode
-  	 * @param {Array} codePoints The array of numeric code points.
-  	 * @returns {String} The new Unicode string (UCS-2).
-  	 */
-  	function ucs2encode(array) {
-  		return map(array, function(value) {
-  			var output = '';
-  			if (value > 0xFFFF) {
-  				value -= 0x10000;
-  				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-  				value = 0xDC00 | value & 0x3FF;
-  			}
-  			output += stringFromCharCode(value);
-  			return output;
-  		}).join('');
-  	}
-
-  	/**
-  	 * Converts a basic code point into a digit/integer.
-  	 * @see `digitToBasic()`
-  	 * @private
-  	 * @param {Number} codePoint The basic numeric code point value.
-  	 * @returns {Number} The numeric value of a basic code point (for use in
-  	 * representing integers) in the range `0` to `base - 1`, or `base` if
-  	 * the code point does not represent a value.
-  	 */
-  	function basicToDigit(codePoint) {
-  		if (codePoint - 48 < 10) {
-  			return codePoint - 22;
-  		}
-  		if (codePoint - 65 < 26) {
-  			return codePoint - 65;
-  		}
-  		if (codePoint - 97 < 26) {
-  			return codePoint - 97;
-  		}
-  		return base;
-  	}
-
-  	/**
-  	 * Converts a digit/integer into a basic code point.
-  	 * @see `basicToDigit()`
-  	 * @private
-  	 * @param {Number} digit The numeric value of a basic code point.
-  	 * @returns {Number} The basic code point whose value (when used for
-  	 * representing integers) is `digit`, which needs to be in the range
-  	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-  	 * used; else, the lowercase form is used. The behavior is undefined
-  	 * if `flag` is non-zero and `digit` has no uppercase form.
-  	 */
-  	function digitToBasic(digit, flag) {
-  		//  0..25 map to ASCII a..z or A..Z
-  		// 26..35 map to ASCII 0..9
-  		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
-  	}
-
-  	/**
-  	 * Bias adaptation function as per section 3.4 of RFC 3492.
-  	 * http://tools.ietf.org/html/rfc3492#section-3.4
-  	 * @private
-  	 */
-  	function adapt(delta, numPoints, firstTime) {
-  		var k = 0;
-  		delta = firstTime ? floor(delta / damp) : delta >> 1;
-  		delta += floor(delta / numPoints);
-  		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
-  			delta = floor(delta / baseMinusTMin);
-  		}
-  		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-  	}
-
-  	/**
-  	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-  	 * symbols.
-  	 * @memberOf punycode
-  	 * @param {String} input The Punycode string of ASCII-only symbols.
-  	 * @returns {String} The resulting string of Unicode symbols.
-  	 */
-  	function decode(input) {
-  		// Don't use UCS-2
-  		var output = [],
-  		    inputLength = input.length,
-  		    out,
-  		    i = 0,
-  		    n = initialN,
-  		    bias = initialBias,
-  		    basic,
-  		    j,
-  		    index,
-  		    oldi,
-  		    w,
-  		    k,
-  		    digit,
-  		    t,
-  		    /** Cached calculation results */
-  		    baseMinusT;
-
-  		// Handle the basic code points: let `basic` be the number of input code
-  		// points before the last delimiter, or `0` if there is none, then copy
-  		// the first basic code points to the output.
-
-  		basic = input.lastIndexOf(delimiter);
-  		if (basic < 0) {
-  			basic = 0;
-  		}
-
-  		for (j = 0; j < basic; ++j) {
-  			// if it's not a basic code point
-  			if (input.charCodeAt(j) >= 0x80) {
-  				error('not-basic');
-  			}
-  			output.push(input.charCodeAt(j));
-  		}
-
-  		// Main decoding loop: start just after the last delimiter if any basic code
-  		// points were copied; start at the beginning otherwise.
-
-  		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
-
-  			// `index` is the index of the next character to be consumed.
-  			// Decode a generalized variable-length integer into `delta`,
-  			// which gets added to `i`. The overflow checking is easier
-  			// if we increase `i` as we go, then subtract off its starting
-  			// value at the end to obtain `delta`.
-  			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
-
-  				if (index >= inputLength) {
-  					error('invalid-input');
-  				}
-
-  				digit = basicToDigit(input.charCodeAt(index++));
-
-  				if (digit >= base || digit > floor((maxInt - i) / w)) {
-  					error('overflow');
-  				}
-
-  				i += digit * w;
-  				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-
-  				if (digit < t) {
-  					break;
-  				}
-
-  				baseMinusT = base - t;
-  				if (w > floor(maxInt / baseMinusT)) {
-  					error('overflow');
-  				}
-
-  				w *= baseMinusT;
-
-  			}
-
-  			out = output.length + 1;
-  			bias = adapt(i - oldi, out, oldi == 0);
-
-  			// `i` was supposed to wrap around from `out` to `0`,
-  			// incrementing `n` each time, so we'll fix that now:
-  			if (floor(i / out) > maxInt - n) {
-  				error('overflow');
-  			}
-
-  			n += floor(i / out);
-  			i %= out;
-
-  			// Insert `n` at position `i` of the output
-  			output.splice(i++, 0, n);
-
-  		}
-
-  		return ucs2encode(output);
-  	}
-
-  	/**
-  	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
-  	 * Punycode string of ASCII-only symbols.
-  	 * @memberOf punycode
-  	 * @param {String} input The string of Unicode symbols.
-  	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-  	 */
-  	function encode(input) {
-  		var n,
-  		    delta,
-  		    handledCPCount,
-  		    basicLength,
-  		    bias,
-  		    j,
-  		    m,
-  		    q,
-  		    k,
-  		    t,
-  		    currentValue,
-  		    output = [],
-  		    /** `inputLength` will hold the number of code points in `input`. */
-  		    inputLength,
-  		    /** Cached calculation results */
-  		    handledCPCountPlusOne,
-  		    baseMinusT,
-  		    qMinusT;
-
-  		// Convert the input in UCS-2 to Unicode
-  		input = ucs2decode(input);
-
-  		// Cache the length
-  		inputLength = input.length;
-
-  		// Initialize the state
-  		n = initialN;
-  		delta = 0;
-  		bias = initialBias;
-
-  		// Handle the basic code points
-  		for (j = 0; j < inputLength; ++j) {
-  			currentValue = input[j];
-  			if (currentValue < 0x80) {
-  				output.push(stringFromCharCode(currentValue));
-  			}
-  		}
-
-  		handledCPCount = basicLength = output.length;
-
-  		// `handledCPCount` is the number of code points that have been handled;
-  		// `basicLength` is the number of basic code points.
-
-  		// Finish the basic string - if it is not empty - with a delimiter
-  		if (basicLength) {
-  			output.push(delimiter);
-  		}
-
-  		// Main encoding loop:
-  		while (handledCPCount < inputLength) {
-
-  			// All non-basic code points < n have been handled already. Find the next
-  			// larger one:
-  			for (m = maxInt, j = 0; j < inputLength; ++j) {
-  				currentValue = input[j];
-  				if (currentValue >= n && currentValue < m) {
-  					m = currentValue;
-  				}
-  			}
-
-  			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-  			// but guard against overflow
-  			handledCPCountPlusOne = handledCPCount + 1;
-  			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-  				error('overflow');
-  			}
-
-  			delta += (m - n) * handledCPCountPlusOne;
-  			n = m;
-
-  			for (j = 0; j < inputLength; ++j) {
-  				currentValue = input[j];
-
-  				if (currentValue < n && ++delta > maxInt) {
-  					error('overflow');
-  				}
-
-  				if (currentValue == n) {
-  					// Represent delta as a generalized variable-length integer
-  					for (q = delta, k = base; /* no condition */; k += base) {
-  						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-  						if (q < t) {
-  							break;
-  						}
-  						qMinusT = q - t;
-  						baseMinusT = base - t;
-  						output.push(
-  							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
-  						);
-  						q = floor(qMinusT / baseMinusT);
-  					}
-
-  					output.push(stringFromCharCode(digitToBasic(q, 0)));
-  					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-  					delta = 0;
-  					++handledCPCount;
-  				}
-  			}
-
-  			++delta;
-  			++n;
-
-  		}
-  		return output.join('');
-  	}
-
-  	/**
-  	 * Converts a Punycode string representing a domain name or an email address
-  	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
-  	 * it doesn't matter if you call it on a string that has already been
-  	 * converted to Unicode.
-  	 * @memberOf punycode
-  	 * @param {String} input The Punycoded domain name or email address to
-  	 * convert to Unicode.
-  	 * @returns {String} The Unicode representation of the given Punycode
-  	 * string.
-  	 */
-  	function toUnicode(input) {
-  		return mapDomain(input, function(string) {
-  			return regexPunycode.test(string)
-  				? decode(string.slice(4).toLowerCase())
-  				: string;
-  		});
-  	}
-
-  	/**
-  	 * Converts a Unicode string representing a domain name or an email address to
-  	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
-  	 * i.e. it doesn't matter if you call it with a domain that's already in
-  	 * ASCII.
-  	 * @memberOf punycode
-  	 * @param {String} input The domain name or email address to convert, as a
-  	 * Unicode string.
-  	 * @returns {String} The Punycode representation of the given domain name or
-  	 * email address.
-  	 */
-  	function toASCII(input) {
-  		return mapDomain(input, function(string) {
-  			return regexNonASCII.test(string)
-  				? 'xn--' + encode(string)
-  				: string;
-  		});
-  	}
-
-  	/*--------------------------------------------------------------------------*/
-
-  	/** Define the public API */
-  	punycode = {
-  		/**
-  		 * A string representing the current Punycode.js version number.
-  		 * @memberOf punycode
-  		 * @type String
-  		 */
-  		'version': '1.3.2',
-  		/**
-  		 * An object of methods to convert from JavaScript's internal character
-  		 * representation (UCS-2) to Unicode code points, and back.
-  		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-  		 * @memberOf punycode
-  		 * @type Object
-  		 */
-  		'ucs2': {
-  			'decode': ucs2decode,
-  			'encode': ucs2encode
-  		},
-  		'decode': decode,
-  		'encode': encode,
-  		'toASCII': toASCII,
-  		'toUnicode': toUnicode
-  	};
-
-  	/** Expose `punycode` */
-  	// Some AMD build optimizers, like r.js, check for specific condition patterns
-  	// like the following:
-  	if (freeExports && freeModule) {
-  		if (module.exports == freeExports) { // in Node.js or RingoJS v0.8.0+
-  			freeModule.exports = punycode;
-  		} else { // in Narwhal or RingoJS v0.7.0-
-  			for (key in punycode) {
-  				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
-  			}
-  		}
-  	} else { // in Rhino or a web browser
-  		root.punycode = punycode;
-  	}
-
-  }(commonjsGlobal$1));
-  });
-
-  var util = {
-    isString: function(arg) {
-      return typeof(arg) === 'string';
-    },
-    isObject: function(arg) {
-      return typeof(arg) === 'object' && arg !== null;
-    },
-    isNull: function(arg) {
-      return arg === null;
-    },
-    isNullOrUndefined: function(arg) {
-      return arg == null;
-    }
-  };
-
-  // Copyright Joyent, Inc. and other Node contributors.
-
-  // If obj.hasOwnProperty has been overridden, then calling
-  // obj.hasOwnProperty(prop) will break.
-  // See: https://github.com/joyent/node/issues/1707
-  function hasOwnProperty(obj, prop) {
-    return Object.prototype.hasOwnProperty.call(obj, prop);
-  }
-
-  var decode = function(qs, sep, eq, options) {
-    sep = sep || '&';
-    eq = eq || '=';
-    var obj = {};
-
-    if (typeof qs !== 'string' || qs.length === 0) {
-      return obj;
-    }
-
-    var regexp = /\+/g;
-    qs = qs.split(sep);
-
-    var maxKeys = 1000;
-    if (options && typeof options.maxKeys === 'number') {
-      maxKeys = options.maxKeys;
-    }
-
-    var len = qs.length;
-    // maxKeys <= 0 means that we should not limit keys count
-    if (maxKeys > 0 && len > maxKeys) {
-      len = maxKeys;
-    }
-
-    for (var i = 0; i < len; ++i) {
-      var x = qs[i].replace(regexp, '%20'),
-          idx = x.indexOf(eq),
-          kstr, vstr, k, v;
-
-      if (idx >= 0) {
-        kstr = x.substr(0, idx);
-        vstr = x.substr(idx + 1);
-      } else {
-        kstr = x;
-        vstr = '';
-      }
-
-      k = decodeURIComponent(kstr);
-      v = decodeURIComponent(vstr);
-
-      if (!hasOwnProperty(obj, k)) {
-        obj[k] = v;
-      } else if (Array.isArray(obj[k])) {
-        obj[k].push(v);
-      } else {
-        obj[k] = [obj[k], v];
-      }
-    }
-
-    return obj;
-  };
-
-  // Copyright Joyent, Inc. and other Node contributors.
-
-  var stringifyPrimitive = function(v) {
-    switch (typeof v) {
-      case 'string':
-        return v;
-
-      case 'boolean':
-        return v ? 'true' : 'false';
-
-      case 'number':
-        return isFinite(v) ? v : '';
-
-      default:
-        return '';
-    }
-  };
-
-  var encode = function(obj, sep, eq, name) {
-    sep = sep || '&';
-    eq = eq || '=';
-    if (obj === null) {
-      obj = undefined;
-    }
-
-    if (typeof obj === 'object') {
-      return Object.keys(obj).map(function(k) {
-        var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-        if (Array.isArray(obj[k])) {
-          return obj[k].map(function(v) {
-            return ks + encodeURIComponent(stringifyPrimitive(v));
-          }).join(sep);
-        } else {
-          return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-        }
-      }).join(sep);
-
-    }
-
-    if (!name) { return ''; }
-    return encodeURIComponent(stringifyPrimitive(name)) + eq +
-           encodeURIComponent(stringifyPrimitive(obj));
-  };
-
-  var querystring = createCommonjsModule$1(function (module, exports) {
-
-  exports.decode = exports.parse = decode;
-  exports.encode = exports.stringify = encode;
-  });
-
-  var parse = urlParse;
-  var resolve = urlResolve;
-  var format = urlFormat;
-
-  function Url() {
-    this.protocol = null;
-    this.slashes = null;
-    this.auth = null;
-    this.host = null;
-    this.port = null;
-    this.hostname = null;
-    this.hash = null;
-    this.search = null;
-    this.query = null;
-    this.pathname = null;
-    this.path = null;
-    this.href = null;
-  }
-
-  // Reference: RFC 3986, RFC 1808, RFC 2396
-
-  // define these here so at least they only have to be
-  // compiled once on the first module load.
-  var protocolPattern = /^([a-z0-9.+-]+:)/i,
-      portPattern = /:[0-9]*$/,
-
-      // Special case for a simple path URL
-      simplePathPattern = /^(\/\/?(?!\/)[^\?\s]*)(\?[^\s]*)?$/,
-
-      // RFC 2396: characters reserved for delimiting URLs.
-      // We actually just auto-escape these.
-      delims = ['<', '>', '"', '`', ' ', '\r', '\n', '\t'],
-
-      // RFC 2396: characters not allowed for various reasons.
-      unwise = ['{', '}', '|', '\\', '^', '`'].concat(delims),
-
-      // Allowed by RFCs, but cause of XSS attacks.  Always escape these.
-      autoEscape = ['\''].concat(unwise),
-      // Characters that are never ever allowed in a hostname.
-      // Note that any invalid chars are also handled, but these
-      // are the ones that are *expected* to be seen, so we fast-path
-      // them.
-      nonHostChars = ['%', '/', '?', ';', '#'].concat(autoEscape),
-      hostEndingChars = ['/', '?', '#'],
-      hostnameMaxLen = 255,
-      hostnamePartPattern = /^[+a-z0-9A-Z_-]{0,63}$/,
-      hostnamePartStart = /^([+a-z0-9A-Z_-]{0,63})(.*)$/,
-      // protocols that can allow "unsafe" and "unwise" chars.
-      unsafeProtocol = {
-        'javascript': true,
-        'javascript:': true
-      },
-      // protocols that never have a hostname.
-      hostlessProtocol = {
-        'javascript': true,
-        'javascript:': true
-      },
-      // protocols that always contain a // bit.
-      slashedProtocol = {
-        'http': true,
-        'https': true,
-        'ftp': true,
-        'gopher': true,
-        'file': true,
-        'http:': true,
-        'https:': true,
-        'ftp:': true,
-        'gopher:': true,
-        'file:': true
-      };
-
-  function urlParse(url, parseQueryString, slashesDenoteHost) {
-    if (url && util.isObject(url) && url instanceof Url) { return url; }
-
-    var u = new Url;
-    u.parse(url, parseQueryString, slashesDenoteHost);
-    return u;
-  }
-
-  Url.prototype.parse = function(url, parseQueryString, slashesDenoteHost) {
-    if (!util.isString(url)) {
-      throw new TypeError("Parameter 'url' must be a string, not " + typeof url);
-    }
-
-    // Copy chrome, IE, opera backslash-handling behavior.
-    // Back slashes before the query string get converted to forward slashes
-    // See: https://code.google.com/p/chromium/issues/detail?id=25916
-    var queryIndex = url.indexOf('?'),
-        splitter =
-            (queryIndex !== -1 && queryIndex < url.indexOf('#')) ? '?' : '#',
-        uSplit = url.split(splitter),
-        slashRegex = /\\/g;
-    uSplit[0] = uSplit[0].replace(slashRegex, '/');
-    url = uSplit.join(splitter);
-
-    var rest = url;
-
-    // trim before proceeding.
-    // This is to support parse stuff like "  http://foo.com  \n"
-    rest = rest.trim();
-
-    if (!slashesDenoteHost && url.split('#').length === 1) {
-      // Try fast path regexp
-      var simplePath = simplePathPattern.exec(rest);
-      if (simplePath) {
-        this.path = rest;
-        this.href = rest;
-        this.pathname = simplePath[1];
-        if (simplePath[2]) {
-          this.search = simplePath[2];
-          if (parseQueryString) {
-            this.query = querystring.parse(this.search.substr(1));
-          } else {
-            this.query = this.search.substr(1);
-          }
-        } else if (parseQueryString) {
-          this.search = '';
-          this.query = {};
-        }
-        return this;
-      }
-    }
-
-    var proto = protocolPattern.exec(rest);
-    if (proto) {
-      proto = proto[0];
-      var lowerProto = proto.toLowerCase();
-      this.protocol = lowerProto;
-      rest = rest.substr(proto.length);
-    }
-
-    // figure out if it's got a host
-    // user@server is *always* interpreted as a hostname, and url
-    // resolution will treat //foo/bar as host=foo,path=bar because that's
-    // how the browser resolves relative URLs.
-    if (slashesDenoteHost || proto || rest.match(/^\/\/[^@\/]+@[^@\/]+/)) {
-      var slashes = rest.substr(0, 2) === '//';
-      if (slashes && !(proto && hostlessProtocol[proto])) {
-        rest = rest.substr(2);
-        this.slashes = true;
-      }
-    }
-
-    if (!hostlessProtocol[proto] &&
-        (slashes || (proto && !slashedProtocol[proto]))) {
-
-      // there's a hostname.
-      // the first instance of /, ?, ;, or # ends the host.
-      //
-      // If there is an @ in the hostname, then non-host chars *are* allowed
-      // to the left of the last @ sign, unless some host-ending character
-      // comes *before* the @-sign.
-      // URLs are obnoxious.
-      //
-      // ex:
-      // http://a@b@c/ => user:a@b host:c
-      // http://a@b?@c => user:a host:c path:/?@c
-
-      // v0.12 TODO(isaacs): This is not quite how Chrome does things.
-      // Review our test case against browsers more comprehensively.
-
-      // find the first instance of any hostEndingChars
-      var hostEnd = -1;
-      for (var i = 0; i < hostEndingChars.length; i++) {
-        var hec = rest.indexOf(hostEndingChars[i]);
-        if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
-          { hostEnd = hec; }
-      }
-
-      // at this point, either we have an explicit point where the
-      // auth portion cannot go past, or the last @ char is the decider.
-      var auth, atSign;
-      if (hostEnd === -1) {
-        // atSign can be anywhere.
-        atSign = rest.lastIndexOf('@');
-      } else {
-        // atSign must be in auth portion.
-        // http://a@b/c@d => host:b auth:a path:/c@d
-        atSign = rest.lastIndexOf('@', hostEnd);
-      }
-
-      // Now we have a portion which is definitely the auth.
-      // Pull that off.
-      if (atSign !== -1) {
-        auth = rest.slice(0, atSign);
-        rest = rest.slice(atSign + 1);
-        this.auth = decodeURIComponent(auth);
-      }
-
-      // the host is the remaining to the left of the first non-host char
-      hostEnd = -1;
-      for (var i = 0; i < nonHostChars.length; i++) {
-        var hec = rest.indexOf(nonHostChars[i]);
-        if (hec !== -1 && (hostEnd === -1 || hec < hostEnd))
-          { hostEnd = hec; }
-      }
-      // if we still have not hit it, then the entire thing is a host.
-      if (hostEnd === -1)
-        { hostEnd = rest.length; }
-
-      this.host = rest.slice(0, hostEnd);
-      rest = rest.slice(hostEnd);
-
-      // pull out port.
-      this.parseHost();
-
-      // we've indicated that there is a hostname,
-      // so even if it's empty, it has to be present.
-      this.hostname = this.hostname || '';
-
-      // if hostname begins with [ and ends with ]
-      // assume that it's an IPv6 address.
-      var ipv6Hostname = this.hostname[0] === '[' &&
-          this.hostname[this.hostname.length - 1] === ']';
-
-      // validate a little.
-      if (!ipv6Hostname) {
-        var hostparts = this.hostname.split(/\./);
-        for (var i = 0, l = hostparts.length; i < l; i++) {
-          var part = hostparts[i];
-          if (!part) { continue; }
-          if (!part.match(hostnamePartPattern)) {
-            var newpart = '';
-            for (var j = 0, k = part.length; j < k; j++) {
-              if (part.charCodeAt(j) > 127) {
-                // we replace non-ASCII char with a temporary placeholder
-                // we need this to make sure size of hostname is not
-                // broken by replacing non-ASCII by nothing
-                newpart += 'x';
-              } else {
-                newpart += part[j];
-              }
-            }
-            // we test again with ASCII char only
-            if (!newpart.match(hostnamePartPattern)) {
-              var validParts = hostparts.slice(0, i);
-              var notHost = hostparts.slice(i + 1);
-              var bit = part.match(hostnamePartStart);
-              if (bit) {
-                validParts.push(bit[1]);
-                notHost.unshift(bit[2]);
-              }
-              if (notHost.length) {
-                rest = '/' + notHost.join('.') + rest;
-              }
-              this.hostname = validParts.join('.');
-              break;
-            }
-          }
-        }
-      }
-
-      if (this.hostname.length > hostnameMaxLen) {
-        this.hostname = '';
-      } else {
-        // hostnames are always lower case.
-        this.hostname = this.hostname.toLowerCase();
-      }
-
-      if (!ipv6Hostname) {
-        // IDNA Support: Returns a punycoded representation of "domain".
-        // It only converts parts of the domain name that
-        // have non-ASCII characters, i.e. it doesn't matter if
-        // you call it with a domain that already is ASCII-only.
-        this.hostname = punycode.toASCII(this.hostname);
-      }
-
-      var p = this.port ? ':' + this.port : '';
-      var h = this.hostname || '';
-      this.host = h + p;
-      this.href += this.host;
-
-      // strip [ and ] from the hostname
-      // the host field still retains them, though
-      if (ipv6Hostname) {
-        this.hostname = this.hostname.substr(1, this.hostname.length - 2);
-        if (rest[0] !== '/') {
-          rest = '/' + rest;
-        }
-      }
-    }
-
-    // now rest is set to the post-host stuff.
-    // chop off any delim chars.
-    if (!unsafeProtocol[lowerProto]) {
-
-      // First, make 100% sure that any "autoEscape" chars get
-      // escaped, even if encodeURIComponent doesn't think they
-      // need to be.
-      for (var i = 0, l = autoEscape.length; i < l; i++) {
-        var ae = autoEscape[i];
-        if (rest.indexOf(ae) === -1)
-          { continue; }
-        var esc = encodeURIComponent(ae);
-        if (esc === ae) {
-          esc = escape(ae);
-        }
-        rest = rest.split(ae).join(esc);
-      }
-    }
-
-
-    // chop off from the tail first.
-    var hash = rest.indexOf('#');
-    if (hash !== -1) {
-      // got a fragment string.
-      this.hash = rest.substr(hash);
-      rest = rest.slice(0, hash);
-    }
-    var qm = rest.indexOf('?');
-    if (qm !== -1) {
-      this.search = rest.substr(qm);
-      this.query = rest.substr(qm + 1);
-      if (parseQueryString) {
-        this.query = querystring.parse(this.query);
-      }
-      rest = rest.slice(0, qm);
-    } else if (parseQueryString) {
-      // no query string, but parseQueryString still requested
-      this.search = '';
-      this.query = {};
-    }
-    if (rest) { this.pathname = rest; }
-    if (slashedProtocol[lowerProto] &&
-        this.hostname && !this.pathname) {
-      this.pathname = '/';
-    }
-
-    //to support http.request
-    if (this.pathname || this.search) {
-      var p = this.pathname || '';
-      var s = this.search || '';
-      this.path = p + s;
-    }
-
-    // finally, reconstruct the href based on what has been validated.
-    this.href = this.format();
-    return this;
-  };
-
-  // format a parsed object into a url string
-  function urlFormat(obj) {
-    // ensure it's an object, and not a string url.
-    // If it's an obj, this is a no-op.
-    // this way, you can call url_format() on strings
-    // to clean up potentially wonky urls.
-    if (util.isString(obj)) { obj = urlParse(obj); }
-    if (!(obj instanceof Url)) { return Url.prototype.format.call(obj); }
-    return obj.format();
-  }
-
-  Url.prototype.format = function() {
-    var auth = this.auth || '';
-    if (auth) {
-      auth = encodeURIComponent(auth);
-      auth = auth.replace(/%3A/i, ':');
-      auth += '@';
-    }
-
-    var protocol = this.protocol || '',
-        pathname = this.pathname || '',
-        hash = this.hash || '',
-        host = false,
-        query = '';
-
-    if (this.host) {
-      host = auth + this.host;
-    } else if (this.hostname) {
-      host = auth + (this.hostname.indexOf(':') === -1 ?
-          this.hostname :
-          '[' + this.hostname + ']');
-      if (this.port) {
-        host += ':' + this.port;
-      }
-    }
-
-    if (this.query &&
-        util.isObject(this.query) &&
-        Object.keys(this.query).length) {
-      query = querystring.stringify(this.query);
-    }
-
-    var search = this.search || (query && ('?' + query)) || '';
-
-    if (protocol && protocol.substr(-1) !== ':') { protocol += ':'; }
-
-    // only the slashedProtocols get the //.  Not mailto:, xmpp:, etc.
-    // unless they had them to begin with.
-    if (this.slashes ||
-        (!protocol || slashedProtocol[protocol]) && host !== false) {
-      host = '//' + (host || '');
-      if (pathname && pathname.charAt(0) !== '/') { pathname = '/' + pathname; }
-    } else if (!host) {
-      host = '';
-    }
-
-    if (hash && hash.charAt(0) !== '#') { hash = '#' + hash; }
-    if (search && search.charAt(0) !== '?') { search = '?' + search; }
-
-    pathname = pathname.replace(/[?#]/g, function(match) {
-      return encodeURIComponent(match);
-    });
-    search = search.replace('#', '%23');
-
-    return protocol + host + pathname + search + hash;
-  };
-
-  function urlResolve(source, relative) {
-    return urlParse(source, false, true).resolve(relative);
-  }
-
-  Url.prototype.resolve = function(relative) {
-    return this.resolveObject(urlParse(relative, false, true)).format();
-  };
-
-  Url.prototype.resolveObject = function(relative) {
-    if (util.isString(relative)) {
-      var rel = new Url();
-      rel.parse(relative, false, true);
-      relative = rel;
-    }
-
-    var result = new Url();
-    var tkeys = Object.keys(this);
-    for (var tk = 0; tk < tkeys.length; tk++) {
-      var tkey = tkeys[tk];
-      result[tkey] = this[tkey];
-    }
-
-    // hash is always overridden, no matter what.
-    // even href="" will remove it.
-    result.hash = relative.hash;
-
-    // if the relative url is empty, then there's nothing left to do here.
-    if (relative.href === '') {
-      result.href = result.format();
-      return result;
-    }
-
-    // hrefs like //foo/bar always cut to the protocol.
-    if (relative.slashes && !relative.protocol) {
-      // take everything except the protocol from relative
-      var rkeys = Object.keys(relative);
-      for (var rk = 0; rk < rkeys.length; rk++) {
-        var rkey = rkeys[rk];
-        if (rkey !== 'protocol')
-          { result[rkey] = relative[rkey]; }
-      }
-
-      //urlParse appends trailing / to urls like http://www.example.com
-      if (slashedProtocol[result.protocol] &&
-          result.hostname && !result.pathname) {
-        result.path = result.pathname = '/';
-      }
-
-      result.href = result.format();
-      return result;
-    }
-
-    if (relative.protocol && relative.protocol !== result.protocol) {
-      // if it's a known url protocol, then changing
-      // the protocol does weird things
-      // first, if it's not file:, then we MUST have a host,
-      // and if there was a path
-      // to begin with, then we MUST have a path.
-      // if it is file:, then the host is dropped,
-      // because that's known to be hostless.
-      // anything else is assumed to be absolute.
-      if (!slashedProtocol[relative.protocol]) {
-        var keys = Object.keys(relative);
-        for (var v = 0; v < keys.length; v++) {
-          var k = keys[v];
-          result[k] = relative[k];
-        }
-        result.href = result.format();
-        return result;
-      }
-
-      result.protocol = relative.protocol;
-      if (!relative.host && !hostlessProtocol[relative.protocol]) {
-        var relPath = (relative.pathname || '').split('/');
-        while (relPath.length && !(relative.host = relPath.shift())){ }
-        if (!relative.host) { relative.host = ''; }
-        if (!relative.hostname) { relative.hostname = ''; }
-        if (relPath[0] !== '') { relPath.unshift(''); }
-        if (relPath.length < 2) { relPath.unshift(''); }
-        result.pathname = relPath.join('/');
-      } else {
-        result.pathname = relative.pathname;
-      }
-      result.search = relative.search;
-      result.query = relative.query;
-      result.host = relative.host || '';
-      result.auth = relative.auth;
-      result.hostname = relative.hostname || relative.host;
-      result.port = relative.port;
-      // to support http.request
-      if (result.pathname || result.search) {
-        var p = result.pathname || '';
-        var s = result.search || '';
-        result.path = p + s;
-      }
-      result.slashes = result.slashes || relative.slashes;
-      result.href = result.format();
-      return result;
-    }
-
-    var isSourceAbs = (result.pathname && result.pathname.charAt(0) === '/'),
-        isRelAbs = (
-            relative.host ||
-            relative.pathname && relative.pathname.charAt(0) === '/'
-        ),
-        mustEndAbs = (isRelAbs || isSourceAbs ||
-                      (result.host && relative.pathname)),
-        removeAllDots = mustEndAbs,
-        srcPath = result.pathname && result.pathname.split('/') || [],
-        relPath = relative.pathname && relative.pathname.split('/') || [],
-        psychotic = result.protocol && !slashedProtocol[result.protocol];
-
-    // if the url is a non-slashed url, then relative
-    // links like ../.. should be able
-    // to crawl up to the hostname, as well.  This is strange.
-    // result.protocol has already been set by now.
-    // Later on, put the first path part into the host field.
-    if (psychotic) {
-      result.hostname = '';
-      result.port = null;
-      if (result.host) {
-        if (srcPath[0] === '') { srcPath[0] = result.host; }
-        else { srcPath.unshift(result.host); }
-      }
-      result.host = '';
-      if (relative.protocol) {
-        relative.hostname = null;
-        relative.port = null;
-        if (relative.host) {
-          if (relPath[0] === '') { relPath[0] = relative.host; }
-          else { relPath.unshift(relative.host); }
-        }
-        relative.host = null;
-      }
-      mustEndAbs = mustEndAbs && (relPath[0] === '' || srcPath[0] === '');
-    }
-
-    if (isRelAbs) {
-      // it's absolute.
-      result.host = (relative.host || relative.host === '') ?
-                    relative.host : result.host;
-      result.hostname = (relative.hostname || relative.hostname === '') ?
-                        relative.hostname : result.hostname;
-      result.search = relative.search;
-      result.query = relative.query;
-      srcPath = relPath;
-      // fall through to the dot-handling below.
-    } else if (relPath.length) {
-      // it's relative
-      // throw away the existing file, and take the new path instead.
-      if (!srcPath) { srcPath = []; }
-      srcPath.pop();
-      srcPath = srcPath.concat(relPath);
-      result.search = relative.search;
-      result.query = relative.query;
-    } else if (!util.isNullOrUndefined(relative.search)) {
-      // just pull out the search.
-      // like href='?foo'.
-      // Put this after the other two cases because it simplifies the booleans
-      if (psychotic) {
-        result.hostname = result.host = srcPath.shift();
-        //occationaly the auth can get stuck only in host
-        //this especially happens in cases like
-        //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-        var authInHost = result.host && result.host.indexOf('@') > 0 ?
-                         result.host.split('@') : false;
-        if (authInHost) {
-          result.auth = authInHost.shift();
-          result.host = result.hostname = authInHost.shift();
-        }
-      }
-      result.search = relative.search;
-      result.query = relative.query;
-      //to support http.request
-      if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
-        result.path = (result.pathname ? result.pathname : '') +
-                      (result.search ? result.search : '');
-      }
-      result.href = result.format();
-      return result;
-    }
-
-    if (!srcPath.length) {
-      // no path at all.  easy.
-      // we've already handled the other stuff above.
-      result.pathname = null;
-      //to support http.request
-      if (result.search) {
-        result.path = '/' + result.search;
-      } else {
-        result.path = null;
-      }
-      result.href = result.format();
-      return result;
-    }
-
-    // if a url ENDs in . or .., then it must get a trailing slash.
-    // however, if it ends in anything else non-slashy,
-    // then it must NOT get a trailing slash.
-    var last = srcPath.slice(-1)[0];
-    var hasTrailingSlash = (
-        (result.host || relative.host || srcPath.length > 1) &&
-        (last === '.' || last === '..') || last === '');
-
-    // strip single dots, resolve double dots to parent dir
-    // if the path tries to go above the root, `up` ends up > 0
-    var up = 0;
-    for (var i = srcPath.length; i >= 0; i--) {
-      last = srcPath[i];
-      if (last === '.') {
-        srcPath.splice(i, 1);
-      } else if (last === '..') {
-        srcPath.splice(i, 1);
-        up++;
-      } else if (up) {
-        srcPath.splice(i, 1);
-        up--;
-      }
-    }
-
-    // if the path is allowed to go above the root, restore leading ..s
-    if (!mustEndAbs && !removeAllDots) {
-      for (; up--; up) {
-        srcPath.unshift('..');
-      }
-    }
-
-    if (mustEndAbs && srcPath[0] !== '' &&
-        (!srcPath[0] || srcPath[0].charAt(0) !== '/')) {
-      srcPath.unshift('');
-    }
-
-    if (hasTrailingSlash && (srcPath.join('/').substr(-1) !== '/')) {
-      srcPath.push('');
-    }
-
-    var isAbsolute = srcPath[0] === '' ||
-        (srcPath[0] && srcPath[0].charAt(0) === '/');
-
-    // put the host back
-    if (psychotic) {
-      result.hostname = result.host = isAbsolute ? '' :
-                                      srcPath.length ? srcPath.shift() : '';
-      //occationaly the auth can get stuck only in host
-      //this especially happens in cases like
-      //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
-      var authInHost = result.host && result.host.indexOf('@') > 0 ?
-                       result.host.split('@') : false;
-      if (authInHost) {
-        result.auth = authInHost.shift();
-        result.host = result.hostname = authInHost.shift();
-      }
-    }
-
-    mustEndAbs = mustEndAbs || (result.host && srcPath.length);
-
-    if (mustEndAbs && !isAbsolute) {
-      srcPath.unshift('');
-    }
-
-    if (!srcPath.length) {
-      result.pathname = null;
-      result.path = null;
-    } else {
-      result.pathname = srcPath.join('/');
-    }
-
-    //to support request.http
-    if (!util.isNull(result.pathname) || !util.isNull(result.search)) {
-      result.path = (result.pathname ? result.pathname : '') +
-                    (result.search ? result.search : '');
-    }
-    result.auth = relative.auth || result.auth;
-    result.slashes = result.slashes || relative.slashes;
-    result.href = result.format();
-    return result;
-  };
-
-  Url.prototype.parseHost = function() {
-    var host = this.host;
-    var port = portPattern.exec(host);
-    if (port) {
-      port = port[0];
-      if (port !== ':') {
-        this.port = port.substr(1);
-      }
-      host = host.substr(0, host.length - port.length);
-    }
-    if (host) { this.hostname = host; }
-  };
-
-  /**
-   * This file contains redeclared types for Node `url` and `querystring` modules. These modules
-   * don't provide their own typings but instead are a part of the full Node typings. The purpose of
-   * this file is to redeclare the required types to avoid having the whole Node types as a
-   * dependency.
-   */
-  var url = {
-      parse: parse,
-      format: format,
-      resolve: resolve,
-  };
-
-  /**
-   * The prefix that denotes a URL is for a retina asset.
-   *
-   * @static
-   * @name RETINA_PREFIX
-   * @memberof PIXI.settings
-   * @type {RegExp}
-   * @default /@([0-9\.]+)x/
-   * @example `@2x`
-   */
-  settings.RETINA_PREFIX = /@([0-9\.]+)x/;
-  /**
-   * Should the `failIfMajorPerformanceCaveat` flag be enabled as a context option used in the `isWebGLSupported` function.
-   * If set to true, a WebGL renderer can fail to be created if the browser thinks there could be performance issues when
-   * using WebGL.
-   *
-   * In PixiJS v6 this has changed from true to false by default, to allow WebGL to work in as many scenarios as possible.
-   * However, some users may have a poor experience, for example, if a user has a gpu or driver version blacklisted by the
-   * browser.
-   *
-   * If your application requires high performance rendering, you may wish to set this to false.
-   * We recommend one of two options if you decide to set this flag to false:
-   *
-   * 1: Use the `pixi.js-legacy` package, which includes a Canvas renderer as a fallback in case high performance WebGL is
-   *    not supported.
-   *
-   * 2: Call `isWebGLSupported` (which if found in the PIXI.utils package) in your code before attempting to create a PixiJS
-   *    renderer, and show an error message to the user if the function returns false, explaining that their device & browser
-   *    combination does not support high performance WebGL.
-   *    This is a much better strategy than trying to create a PixiJS renderer and finding it then fails.
-   *
-   * @static
-   * @name FAIL_IF_MAJOR_PERFORMANCE_CAVEAT
-   * @memberof PIXI.settings
-   * @type {boolean}
-   * @default false
-   */
-  settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
-
-  /**
-   * Corrects PixiJS blend, takes premultiplied alpha into account
-   *
-   * @memberof PIXI.utils
-   * @function mapPremultipliedBlendModes
-   * @private
-   * @return {Array<number[]>} Mapped modes.
-   */
-  function mapPremultipliedBlendModes() {
-      var pm = [];
-      var npm = [];
-      for (var i = 0; i < 32; i++) {
-          pm[i] = i;
-          npm[i] = i;
-      }
-      pm[BLEND_MODES$1.NORMAL_NPM] = BLEND_MODES$1.NORMAL;
-      pm[BLEND_MODES$1.ADD_NPM] = BLEND_MODES$1.ADD;
-      pm[BLEND_MODES$1.SCREEN_NPM] = BLEND_MODES$1.SCREEN;
-      npm[BLEND_MODES$1.NORMAL] = BLEND_MODES$1.NORMAL_NPM;
-      npm[BLEND_MODES$1.ADD] = BLEND_MODES$1.ADD_NPM;
-      npm[BLEND_MODES$1.SCREEN] = BLEND_MODES$1.SCREEN_NPM;
-      var array = [];
-      array.push(npm);
-      array.push(pm);
-      return array;
-  }
-  /**
-   * maps premultiply flag and blendMode to adjusted blendMode
-   * @memberof PIXI.utils
-   * @const premultiplyBlendMode
-   * @type {Array<number[]>}
-   */
-  mapPremultipliedBlendModes();
-
-  /**
-   * Creates a Canvas element of the given size to be used as a target for rendering to.
-   *
-   * @class
-   * @memberof PIXI.utils
-   */
-  /** @class */ ((function () {
-      /**
-       * @param width - the width for the newly created canvas
-       * @param height - the height for the newly created canvas
-       * @param {number} [resolution=1] - The resolution / device pixel ratio of the canvas
-       */
-      function CanvasRenderTarget(width, height, resolution) {
-          this.canvas = document.createElement('canvas');
-          this.context = this.canvas.getContext('2d');
-          this.resolution = resolution || settings.RESOLUTION;
-          this.resize(width, height);
-      }
-      /**
-       * Clears the canvas that was created by the CanvasRenderTarget class.
-       *
-       * @private
-       */
-      CanvasRenderTarget.prototype.clear = function () {
-          this.context.setTransform(1, 0, 0, 1, 0, 0);
-          this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      };
-      /**
-       * Resizes the canvas to the specified width and height.
-       *
-       * @param width - the new width of the canvas
-       * @param height - the new height of the canvas
-       */
-      CanvasRenderTarget.prototype.resize = function (width, height) {
-          this.canvas.width = width * this.resolution;
-          this.canvas.height = height * this.resolution;
-      };
-      /** Destroys this canvas. */
-      CanvasRenderTarget.prototype.destroy = function () {
-          this.context = null;
-          this.canvas = null;
-      };
-      Object.defineProperty(CanvasRenderTarget.prototype, "width", {
-          /**
-           * The width of the canvas buffer in pixels.
-           *
-           * @member {number}
-           */
-          get: function () {
-              return this.canvas.width;
-          },
-          set: function (val) {
-              this.canvas.width = val;
-          },
-          enumerable: false,
-          configurable: true
-      });
-      Object.defineProperty(CanvasRenderTarget.prototype, "height", {
-          /**
-           * The height of the canvas buffer in pixels.
-           *
-           * @member {number}
-           */
-          get: function () {
-              return this.canvas.height;
-          },
-          set: function (val) {
-              this.canvas.height = val;
-          },
-          enumerable: false,
-          configurable: true
-      });
-      return CanvasRenderTarget;
-  })());
 
   /* eslint-enable camelcase */
   /**
@@ -32360,8 +28705,8 @@
   }());
 
   /*!
-   * @pixi/particles - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/particles - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/particles is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -33163,8 +29508,8 @@
   }(ObjectRenderer));
 
   /*!
-   * @pixi/graphics - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/graphics - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/graphics is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -34977,7 +31322,7 @@
                       nextTexture.touched = 1; // touch;
                       nextTexture._batchEnabled = TICK;
                       nextTexture._batchLocation = textureCount;
-                      nextTexture.wrapMode = 10497;
+                      nextTexture.wrapMode = WRAP_MODES$1.REPEAT;
                       currentGroup.texArray.elements[currentGroup.texArray.count++] = nextTexture;
                       textureCount++;
                   }
@@ -35993,6 +32338,7 @@
           var data = this._geometry.graphicsData;
           return data.length === 1
               && data[0].shape.type === SHAPES.RECT
+              && !data[0].holes.length
               && !(data[0].lineStyle.visible && data[0].lineStyle.width);
       };
       /**
@@ -36313,8 +32659,8 @@
   }(Container));
 
   /*!
-   * @pixi/sprite - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/sprite - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/sprite is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -36508,7 +32854,7 @@
            * @member {boolean}
            * @private
            */
-          _this._roundPixels = settings$1.ROUND_PIXELS;
+          _this._roundPixels = settings.ROUND_PIXELS;
           return _this;
       }
       /**
@@ -36594,7 +32940,7 @@
           vertexData[6] = (a * w1) + (c * h0) + tx;
           vertexData[7] = (d * h0) + (b * w1) + ty;
           if (this._roundPixels) {
-              var resolution = settings$1.RESOLUTION;
+              var resolution = settings.RESOLUTION;
               for (var i = 0; i < vertexData.length; ++i) {
                   vertexData[i] = Math.round((vertexData[i] * resolution | 0) / resolution);
               }
@@ -36894,8 +33240,8 @@
   }(Container));
 
   /*!
-   * @pixi/text - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/text - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/text is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38189,7 +34535,7 @@
           var metricsString = TextMetrics.METRICS_STRING + TextMetrics.BASELINE_SYMBOL;
           var width = Math.ceil(context.measureText(metricsString).width);
           var baseline = Math.ceil(context.measureText(TextMetrics.BASELINE_SYMBOL).width);
-          var height = TextMetrics.HEIGHT_MULTIPLIER * baseline;
+          var height = Math.ceil(TextMetrics.HEIGHT_MULTIPLIER * baseline);
           baseline = baseline * TextMetrics.BASELINE_MULTIPLIER | 0;
           canvas.width = width;
           canvas.height = height;
@@ -38467,9 +34813,9 @@
            * The resolution / device pixel ratio of the canvas.
            * This is set to automatically match the renderer resolution by default, but can be overridden by setting manually.
            * @member {number}
-           * @default 1
+           * @default PIXI.settings.RESOLUTION
            */
-          _this._resolution = settings$1.RESOLUTION;
+          _this._resolution = settings.RESOLUTION;
           _this._autoResolution = true;
           /**
            * Private tracker for the current text.
@@ -38586,10 +34932,15 @@
                   context.shadowOffsetX = 0;
                   context.shadowOffsetY = 0;
               }
+              var linePositionYShift = (lineHeight - fontProperties.fontSize) / 2;
+              if (!Text.nextLineHeightBehavior || lineHeight - fontProperties.fontSize < 0) {
+                  linePositionYShift = 0;
+              }
               // draw lines line by line
               for (var i_1 = 0; i_1 < lines.length; i_1++) {
                   linePositionX = style.strokeThickness / 2;
-                  linePositionY = ((style.strokeThickness / 2) + (i_1 * lineHeight)) + fontProperties.ascent;
+                  linePositionY = ((style.strokeThickness / 2) + (i_1 * lineHeight)) + fontProperties.ascent
+                      + linePositionYShift;
                   if (style.align === 'right') {
                       linePositionX += maxLineWidth - lineWidths[i_1];
                   }
@@ -38945,12 +35296,24 @@
           enumerable: false,
           configurable: true
       });
+      /**
+       * New behavior for `lineHeight` that's meant to mimic HTML text. A value of `true` will
+       * make sure the first baseline is offset by the `lineHeight` value if it is greater than `fontSize`.
+       * A value of `false` will use the legacy behavior and not change the baseline of the first line.
+       * In the next major release, we'll enable this by default.
+       *
+       * @static
+       * @memberof PIXI.Text
+       * @member {boolean} nextLineHeightBehavior
+       * @default false
+       */
+      Text.nextLineHeightBehavior = false;
       return Text;
   }(Sprite));
 
   /*!
-   * @pixi/prepare - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/prepare - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/prepare is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38965,7 +35328,7 @@
    * @type {number}
    * @default 4
    */
-  settings$1.UPLOADS_PER_FRAME = 4;
+  settings.UPLOADS_PER_FRAME = 4;
 
   /*! *****************************************************************************
   Copyright (c) Microsoft Corporation. All rights reserved.
@@ -39206,7 +35569,7 @@
            * The limiter to be used to control how quickly items are prepared.
            * @type {PIXI.CountLimiter|PIXI.TimeLimiter}
            */
-          this.limiter = new CountLimiter(settings$1.UPLOADS_PER_FRAME);
+          this.limiter = new CountLimiter(settings.UPLOADS_PER_FRAME);
           /**
            * Reference to the renderer.
            * @type {PIXI.AbstractRenderer}
@@ -39534,8 +35897,8 @@
   }(BasePrepare));
 
   /*!
-   * @pixi/spritesheet - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/spritesheet - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/spritesheet is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -39866,10 +36229,10 @@
                       return "continue";
                   }
                   var itemName = item.replace('.json', '');
-                  var itemUrl = url$1.resolve(resource.url.replace(loader.baseUrl, ''), item);
+                  var itemUrl = url.resolve(resource.url.replace(loader.baseUrl, ''), item);
                   // Check if the file wasn't already added as multipacks are redundant
                   if (loader.resources[itemName]
-                      || Object.values(loader.resources).some(function (r) { return url$1.format(url$1.parse(r.url)) === itemUrl; })) {
+                      || Object.values(loader.resources).some(function (r) { return url.format(url.parse(r.url)) === itemUrl; })) {
                       return "continue";
                   }
                   var options = {
@@ -39915,14 +36278,14 @@
           if (resource.isDataUrl) {
               return resource.data.meta.image;
           }
-          return url$1.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
+          return url.resolve(resource.url.replace(baseUrl, ''), resource.data.meta.image);
       };
       return SpritesheetLoader;
   }());
 
   /*!
-   * @pixi/sprite-tiling - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/sprite-tiling - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/sprite-tiling is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -40178,7 +36541,10 @@
        * @return {PIXI.TilingSprite} The newly created texture
        */
       TilingSprite.from = function (source, options) {
-          return new TilingSprite(Texture.from(source, options), options.width, options.height);
+          var texture = (source instanceof Texture)
+              ? source
+              : Texture.from(source, options);
+          return new TilingSprite(texture, options.width, options.height);
       };
       Object.defineProperty(TilingSprite.prototype, "width", {
           /**
@@ -40320,8 +36686,8 @@
   }(ObjectRenderer));
 
   /*!
-   * @pixi/mesh - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/mesh - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/mesh is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -40507,7 +36873,7 @@
            * @member {number}
            * @private
            */
-          _this.vertexDirty = 0;
+          _this.vertexDirty = -1;
           _this._transformID = -1;
           /**
            * Internal roundPixels field
@@ -40515,7 +36881,7 @@
            * @member {boolean}
            * @private
            */
-          _this._roundPixels = settings$1.ROUND_PIXELS;
+          _this._roundPixels = settings.ROUND_PIXELS;
           /**
            * Batched UV's are cached for atlas textures
            * @member {PIXI.MeshBatchUvs}
@@ -40707,8 +37073,10 @@
        */
       Mesh.prototype.calculateVertices = function () {
           var geometry = this.geometry;
-          var vertices = geometry.buffers[0].data;
-          if (geometry.vertexDirtyId === this.vertexDirty && this._transformID === this.transform._worldID) {
+          var verticesBuffer = geometry.buffers[0];
+          var vertices = verticesBuffer.data;
+          var vertexDirtyId = verticesBuffer._updateID;
+          if (vertexDirtyId === this.vertexDirty && this._transformID === this.transform._worldID) {
               return;
           }
           this._transformID = this.transform._worldID;
@@ -40730,12 +37098,12 @@
               vertexData[(i * 2) + 1] = (b * x) + (d * y) + ty;
           }
           if (this._roundPixels) {
-              var resolution = settings$1.RESOLUTION;
+              var resolution = settings.RESOLUTION;
               for (var i = 0; i < vertexData.length; ++i) {
                   vertexData[i] = Math.round((vertexData[i] * resolution | 0) / resolution);
               }
           }
-          this.vertexDirty = geometry.vertexDirtyId;
+          this.vertexDirty = vertexDirtyId;
       };
       /**
        * Updates uv field based on from geometry uv's or batchUvs
@@ -41034,8 +37402,8 @@
   }(Geometry));
 
   /*!
-   * @pixi/text-bitmap - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/text-bitmap - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/text-bitmap is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42000,7 +38368,11 @@
    *
    * ```js
    * // in this case the font is in a file called 'desyrel.fnt'
-   * let bitmapText = new PIXI.BitmapText("text using a fancy font!", {font: "35px Desyrel", align: "right"});
+   * let bitmapText = new PIXI.BitmapText("text using a fancy font!", {
+   *   fontName: "Desyrel",
+   *   fontSize: 35,
+   *   align: "right"
+   * });
    * ```
    *
    * @class
@@ -42122,7 +38494,7 @@
            * @member {boolean}
            * @default PIXI.settings.ROUND_PIXELS
            */
-          _this._roundPixels = settings$1.ROUND_PIXELS;
+          _this._roundPixels = settings.ROUND_PIXELS;
           /**
            * Set to `true` if the BitmapText needs to be redrawn.
            *
@@ -42805,8 +39177,8 @@
   }());
 
   /*!
-   * @pixi/filter-alpha - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/filter-alpha - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/filter-alpha is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -42891,8 +39263,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-blur - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/filter-blur - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/filter-blur is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -43152,6 +39524,7 @@
    * @enum {number}
    * @property {number} RGBA=6408
    * @property {number} RGB=6407
+   * @property {number} RED=6403
    * @property {number} ALPHA=6406
    * @property {number} LUMINANCE=6409
    * @property {number} LUMINANCE_ALPHA=6410
@@ -43222,6 +39595,24 @@
       TYPES[TYPES["FLOAT"] = 5126] = "FLOAT";
       TYPES[TYPES["HALF_FLOAT"] = 36193] = "HALF_FLOAT";
   })(TYPES || (TYPES = {}));
+  /**
+   * Various sampler types. Correspond to `sampler`, `isampler`, `usampler` GLSL types respectively.
+   * WebGL1 works only with FLOAT.
+   *
+   * @memberof PIXI
+   * @static
+   * @name SAMPLER_TYPES
+   * @enum {number}
+   * @property {number} FLOAT=0
+   * @property {number} INT=1
+   * @property {number} UINT=2
+   */
+  var SAMPLER_TYPES;
+  (function (SAMPLER_TYPES) {
+      SAMPLER_TYPES[SAMPLER_TYPES["FLOAT"] = 0] = "FLOAT";
+      SAMPLER_TYPES[SAMPLER_TYPES["INT"] = 1] = "INT";
+      SAMPLER_TYPES[SAMPLER_TYPES["UINT"] = 2] = "UINT";
+  })(SAMPLER_TYPES || (SAMPLER_TYPES = {}));
   /**
    * The scale modes that are supported by pixi.
    *
@@ -43446,7 +39837,7 @@
       function BlurFilterPass(horizontal, strength, quality, resolution, kernelSize) {
           if (strength === void 0) { strength = 8; }
           if (quality === void 0) { quality = 4; }
-          if (resolution === void 0) { resolution = settings$1.FILTER_RESOLUTION; }
+          if (resolution === void 0) { resolution = settings.FILTER_RESOLUTION; }
           if (kernelSize === void 0) { kernelSize = 5; }
           var _this = this;
           var vertSrc = generateBlurVertSource(kernelSize, horizontal);
@@ -43574,7 +39965,7 @@
       function BlurFilter(strength, quality, resolution, kernelSize) {
           if (strength === void 0) { strength = 8; }
           if (quality === void 0) { quality = 4; }
-          if (resolution === void 0) { resolution = settings$1.FILTER_RESOLUTION; }
+          if (resolution === void 0) { resolution = settings.FILTER_RESOLUTION; }
           if (kernelSize === void 0) { kernelSize = 5; }
           var _this = _super.call(this) || this;
           _this.blurXFilter = new BlurFilterPass(true, strength, quality, resolution, kernelSize);
@@ -43721,8 +40112,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-color-matrix - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/filter-color-matrix - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/filter-color-matrix is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -44250,8 +40641,8 @@
   ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
   /*!
-   * @pixi/filter-displacement - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/filter-displacement - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/filter-displacement is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -44381,8 +40772,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-fxaa - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/filter-fxaa - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/filter-fxaa is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -44417,9 +40808,9 @@
       d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
   }
 
-  var vertex = "\nattribute vec2 aVertexPosition;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\n\nuniform vec4 inputPixel;\nuniform vec4 outputFrame;\n\nvec4 filterVertexPosition( void )\n{\n    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;\n\n    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);\n}\n\nvoid texcoords(vec2 fragCoord, vec2 inverseVP,\n               out vec2 v_rgbNW, out vec2 v_rgbNE,\n               out vec2 v_rgbSW, out vec2 v_rgbSE,\n               out vec2 v_rgbM) {\n    v_rgbNW = (fragCoord + vec2(-1.0, -1.0)) * inverseVP;\n    v_rgbNE = (fragCoord + vec2(1.0, -1.0)) * inverseVP;\n    v_rgbSW = (fragCoord + vec2(-1.0, 1.0)) * inverseVP;\n    v_rgbSE = (fragCoord + vec2(1.0, 1.0)) * inverseVP;\n    v_rgbM = vec2(fragCoord * inverseVP);\n}\n\nvoid main(void) {\n\n   gl_Position = filterVertexPosition();\n\n   vFragCoord = aVertexPosition * outputFrame.zw;\n\n   texcoords(vFragCoord, inputPixel.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n}\n";
+  var vertex = "\nattribute vec2 aVertexPosition;\n\nuniform mat3 projectionMatrix;\n\nvarying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\n\nuniform vec4 inputSize;\nuniform vec4 outputFrame;\n\nvec4 filterVertexPosition( void )\n{\n    vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;\n\n    return vec4((projectionMatrix * vec3(position, 1.0)).xy, 0.0, 1.0);\n}\n\nvoid texcoords(vec2 fragCoord, vec2 inverseVP,\n               out vec2 v_rgbNW, out vec2 v_rgbNE,\n               out vec2 v_rgbSW, out vec2 v_rgbSE,\n               out vec2 v_rgbM) {\n    v_rgbNW = (fragCoord + vec2(-1.0, -1.0)) * inverseVP;\n    v_rgbNE = (fragCoord + vec2(1.0, -1.0)) * inverseVP;\n    v_rgbSW = (fragCoord + vec2(-1.0, 1.0)) * inverseVP;\n    v_rgbSE = (fragCoord + vec2(1.0, 1.0)) * inverseVP;\n    v_rgbM = vec2(fragCoord * inverseVP);\n}\n\nvoid main(void) {\n\n   gl_Position = filterVertexPosition();\n\n   vFragCoord = aVertexPosition * outputFrame.zw;\n\n   texcoords(vFragCoord, inputSize.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n}\n";
 
-  var fragment$1 = "varying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\nuniform sampler2D uSampler;\nuniform highp vec4 inputPixel;\n\n\n/**\n Basic FXAA implementation based on the code on geeks3d.com with the\n modification that the texture2DLod stuff was removed since it's\n unsupported by WebGL.\n\n --\n\n From:\n https://github.com/mitsuhiko/webgl-meincraft\n\n Copyright (c) 2011 by Armin Ronacher.\n\n Some rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions are\n met:\n\n * Redistributions of source code must retain the above copyright\n notice, this list of conditions and the following disclaimer.\n\n * Redistributions in binary form must reproduce the above\n copyright notice, this list of conditions and the following\n disclaimer in the documentation and/or other materials provided\n with the distribution.\n\n * The names of the contributors may not be used to endorse or\n promote products derived from this software without specific\n prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\n\n#ifndef FXAA_REDUCE_MIN\n#define FXAA_REDUCE_MIN   (1.0/ 128.0)\n#endif\n#ifndef FXAA_REDUCE_MUL\n#define FXAA_REDUCE_MUL   (1.0 / 8.0)\n#endif\n#ifndef FXAA_SPAN_MAX\n#define FXAA_SPAN_MAX     8.0\n#endif\n\n//optimized version for mobile, where dependent\n//texture reads can be a bottleneck\nvec4 fxaa(sampler2D tex, vec2 fragCoord, vec2 inverseVP,\n          vec2 v_rgbNW, vec2 v_rgbNE,\n          vec2 v_rgbSW, vec2 v_rgbSE,\n          vec2 v_rgbM) {\n    vec4 color;\n    vec3 rgbNW = texture2D(tex, v_rgbNW).xyz;\n    vec3 rgbNE = texture2D(tex, v_rgbNE).xyz;\n    vec3 rgbSW = texture2D(tex, v_rgbSW).xyz;\n    vec3 rgbSE = texture2D(tex, v_rgbSE).xyz;\n    vec4 texColor = texture2D(tex, v_rgbM);\n    vec3 rgbM  = texColor.xyz;\n    vec3 luma = vec3(0.299, 0.587, 0.114);\n    float lumaNW = dot(rgbNW, luma);\n    float lumaNE = dot(rgbNE, luma);\n    float lumaSW = dot(rgbSW, luma);\n    float lumaSE = dot(rgbSE, luma);\n    float lumaM  = dot(rgbM,  luma);\n    float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n    float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n\n    mediump vec2 dir;\n    dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n    dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n\n    float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) *\n                          (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n\n    float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\n    dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),\n              max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),\n                  dir * rcpDirMin)) * inverseVP;\n\n    vec3 rgbA = 0.5 * (\n                       texture2D(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz +\n                       texture2D(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);\n    vec3 rgbB = rgbA * 0.5 + 0.25 * (\n                                     texture2D(tex, fragCoord * inverseVP + dir * -0.5).xyz +\n                                     texture2D(tex, fragCoord * inverseVP + dir * 0.5).xyz);\n\n    float lumaB = dot(rgbB, luma);\n    if ((lumaB < lumaMin) || (lumaB > lumaMax))\n        color = vec4(rgbA, texColor.a);\n    else\n        color = vec4(rgbB, texColor.a);\n    return color;\n}\n\nvoid main() {\n\n      vec4 color;\n\n      color = fxaa(uSampler, vFragCoord, inputPixel.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n\n      gl_FragColor = color;\n}\n";
+  var fragment$1 = "varying vec2 v_rgbNW;\nvarying vec2 v_rgbNE;\nvarying vec2 v_rgbSW;\nvarying vec2 v_rgbSE;\nvarying vec2 v_rgbM;\n\nvarying vec2 vFragCoord;\nuniform sampler2D uSampler;\nuniform highp vec4 inputSize;\n\n\n/**\n Basic FXAA implementation based on the code on geeks3d.com with the\n modification that the texture2DLod stuff was removed since it's\n unsupported by WebGL.\n\n --\n\n From:\n https://github.com/mitsuhiko/webgl-meincraft\n\n Copyright (c) 2011 by Armin Ronacher.\n\n Some rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions are\n met:\n\n * Redistributions of source code must retain the above copyright\n notice, this list of conditions and the following disclaimer.\n\n * Redistributions in binary form must reproduce the above\n copyright notice, this list of conditions and the following\n disclaimer in the documentation and/or other materials provided\n with the distribution.\n\n * The names of the contributors may not be used to endorse or\n promote products derived from this software without specific\n prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */\n\n#ifndef FXAA_REDUCE_MIN\n#define FXAA_REDUCE_MIN   (1.0/ 128.0)\n#endif\n#ifndef FXAA_REDUCE_MUL\n#define FXAA_REDUCE_MUL   (1.0 / 8.0)\n#endif\n#ifndef FXAA_SPAN_MAX\n#define FXAA_SPAN_MAX     8.0\n#endif\n\n//optimized version for mobile, where dependent\n//texture reads can be a bottleneck\nvec4 fxaa(sampler2D tex, vec2 fragCoord, vec2 inverseVP,\n          vec2 v_rgbNW, vec2 v_rgbNE,\n          vec2 v_rgbSW, vec2 v_rgbSE,\n          vec2 v_rgbM) {\n    vec4 color;\n    vec3 rgbNW = texture2D(tex, v_rgbNW).xyz;\n    vec3 rgbNE = texture2D(tex, v_rgbNE).xyz;\n    vec3 rgbSW = texture2D(tex, v_rgbSW).xyz;\n    vec3 rgbSE = texture2D(tex, v_rgbSE).xyz;\n    vec4 texColor = texture2D(tex, v_rgbM);\n    vec3 rgbM  = texColor.xyz;\n    vec3 luma = vec3(0.299, 0.587, 0.114);\n    float lumaNW = dot(rgbNW, luma);\n    float lumaNE = dot(rgbNE, luma);\n    float lumaSW = dot(rgbSW, luma);\n    float lumaSE = dot(rgbSE, luma);\n    float lumaM  = dot(rgbM,  luma);\n    float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n    float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n\n    mediump vec2 dir;\n    dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n    dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n\n    float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) *\n                          (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n\n    float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\n    dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX),\n              max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),\n                  dir * rcpDirMin)) * inverseVP;\n\n    vec3 rgbA = 0.5 * (\n                       texture2D(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz +\n                       texture2D(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);\n    vec3 rgbB = rgbA * 0.5 + 0.25 * (\n                                     texture2D(tex, fragCoord * inverseVP + dir * -0.5).xyz +\n                                     texture2D(tex, fragCoord * inverseVP + dir * 0.5).xyz);\n\n    float lumaB = dot(rgbB, luma);\n    if ((lumaB < lumaMin) || (lumaB > lumaMax))\n        color = vec4(rgbA, texColor.a);\n    else\n        color = vec4(rgbB, texColor.a);\n    return color;\n}\n\nvoid main() {\n\n      vec4 color;\n\n      color = fxaa(uSampler, vFragCoord, inputSize.zw, v_rgbNW, v_rgbNE, v_rgbSW, v_rgbSE, v_rgbM);\n\n      gl_FragColor = color;\n}\n";
 
   /**
    * Basic FXAA (Fast Approximate Anti-Aliasing) implementation based on the code on geeks3d.com
@@ -44442,8 +40833,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-noise - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/filter-noise - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/filter-noise is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -44542,8 +40933,8 @@
   })(Filter));
 
   /*!
-   * @pixi/mixin-cache-as-bitmap - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/mixin-cache-as-bitmap - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -44707,7 +41098,7 @@
           var padding = this.filters[0].padding;
           bounds.pad(padding);
       }
-      bounds.ceil(settings$1.RESOLUTION);
+      bounds.ceil(settings.RESOLUTION);
       // for now we cache the current renderTarget that the WebGL renderer is currently using.
       // this could be more elegant..
       var cachedRenderTexture = renderer.renderTexture.current;
@@ -44742,6 +41133,7 @@
       this.getLocalBounds = this._getCachedLocalBounds;
       this._mask = null;
       this.filterArea = null;
+      this.alpha = cacheAlpha;
       // create our cached sprite
       var cachedSprite = new Sprite(renderTexture);
       cachedSprite.transform.worldTransform = this.transform.worldTransform;
@@ -44798,7 +41190,7 @@
       this.alpha = 1;
       var cachedRenderTarget = renderer.context;
       var cachedProjectionTransform = renderer._projTransform;
-      bounds.ceil(settings$1.RESOLUTION);
+      bounds.ceil(settings.RESOLUTION);
       var renderTexture = RenderTexture.create({ width: bounds.width, height: bounds.height });
       var textureCacheId = "cacheAsBitmap_" + uid();
       this._cacheData.textureCacheId = textureCacheId;
@@ -44824,6 +41216,7 @@
       this.getLocalBounds = this._getCachedLocalBounds;
       this._mask = null;
       this.filterArea = null;
+      this.alpha = cacheAlpha;
       // create our cached sprite
       var cachedSprite = new Sprite(renderTexture);
       cachedSprite.transform.worldTransform = this.transform.worldTransform;
@@ -44895,8 +41288,8 @@
   };
 
   /*!
-   * @pixi/mixin-get-child-by-name - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/mixin-get-child-by-name - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/mixin-get-child-by-name is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -44942,8 +41335,8 @@
   };
 
   /*!
-   * @pixi/mixin-get-global-position - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/mixin-get-global-position - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/mixin-get-global-position is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -44974,8 +41367,8 @@
   };
 
   /*!
-   * @pixi/mesh-extras - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/mesh-extras - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/mesh-extras is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -45698,8 +42091,8 @@
   })(SimplePlane));
 
   /*!
-   * @pixi/sprite-animated - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * @pixi/sprite-animated - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * @pixi/sprite-animated is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -46157,8 +42550,8 @@
   })(Sprite));
 
   /*!
-   * pixi.js - v6.0.2
-   * Compiled Mon, 05 Apr 2021 18:17:46 UTC
+   * pixi.js - v6.0.4
+   * Compiled Tue, 11 May 2021 18:00:23 UTC
    *
    * pixi.js is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -47527,9 +43920,9 @@
    * default instantiated Ease class
    * @type {Ease}
    */
-  let ease$2 = new Ease$2();
+  let ease$1 = new Ease$2();
 
-  Ease$2.ease = ease$2;
+  Ease$2.ease = ease$1;
 
   var alea$1 = {exports: {}};
 
@@ -47642,7 +44035,7 @@
   }
 
   })(
-    commonjsGlobal$2,
+    commonjsGlobal$1,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
@@ -47726,7 +44119,7 @@
   }
 
   })(
-    commonjsGlobal$2,
+    commonjsGlobal$1,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
@@ -47815,7 +44208,7 @@
   }
 
   })(
-    commonjsGlobal$2,
+    commonjsGlobal$1,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
@@ -47916,7 +44309,7 @@
   }
 
   })(
-    commonjsGlobal$2,
+    commonjsGlobal$1,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
@@ -48066,7 +44459,7 @@
   }
 
   })(
-    commonjsGlobal$2,                                     // window object or global
+    commonjsGlobal$1,                                     // window object or global
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
@@ -48171,7 +44564,7 @@
   }
 
   })(
-    commonjsGlobal$2,
+    commonjsGlobal$1,
     module,    // present in node.js
     (typeof undefined) == 'function'    // present with an AMD loader
   );
@@ -48186,7 +44579,7 @@
     'default': empty
   });
 
-  var require$$0 = /*@__PURE__*/getAugmentedNamespace(empty$1);
+  var require$$0$1 = /*@__PURE__*/getAugmentedNamespace(empty$1);
 
   /*
   Copyright 2019 David Bau.
@@ -48423,7 +44816,7 @@
     module.exports = seedrandom;
     // When in node.js, try using crypto package for autoseeding.
     try {
-      nodecrypto = require$$0;
+      nodecrypto = require$$0$1;
     } catch (ex) {}
   } else {
     // When included as a plain script, set up Math.seedrandom global.
@@ -48435,7 +44828,7 @@
   })(
     // global: `self` in browsers (including strict mode and web workers),
     // otherwise `this` in Node and other environments
-    (typeof self !== 'undefined') ? self : commonjsGlobal$2,
+    (typeof self !== 'undefined') ? self : commonjsGlobal$1,
     [],     // pool: entropy pool starts empty
     Math    // math: package containing random, pow, and seedrandom
   );
@@ -49800,10 +46193,8 @@
 
     umd(penner);
 
-  }).call(commonjsGlobal$2);
+  }).call(commonjsGlobal$1);
   }(penner));
-
-  var Penner$1 = penner.exports;
 
   var _createClass$5 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -50393,7 +46784,7 @@
    * @type {Ease}
    */
 
-  var ease$1 = Ease$1;
+  var ease = Ease$1;
 
   var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -50406,7 +46797,7 @@
   var EventEmitter = eventemitter3$1.exports;
   var Penner = penner.exports;
 
-  var Ease = ease$1;
+  var Ease = ease;
 
   /**
    * Manages all eases
@@ -50686,6 +47077,5481 @@
 
   var domEase$1 = DomEase;
 
+  var viewport_min = {exports: {}};
+
+  var require$$0 = /*@__PURE__*/getAugmentedNamespace(math);
+
+  var require$$2 = /*@__PURE__*/getAugmentedNamespace(display);
+
+  var require$$3 = /*@__PURE__*/getAugmentedNamespace(ticker);
+
+  /* eslint-disable */
+
+  (function (module, exports) {
+  /*!
+   * pixi-viewport - v4.32.0
+   * Compiled Sat, 17 Jul 2021 16:47:05 UTC
+   *
+   * pixi-viewport is licensed under the MIT License.
+   * http://www.opensource.org/licenses/mit-license
+   * 
+   * Copyright 2019-2020, David Figatner, All Rights Reserved
+   */
+  commonjsGlobal$1.PIXI = commonjsGlobal$1.PIXI || {};
+  (function (global, factory) {
+      factory(exports, require$$0, penner.exports, require$$2, require$$3) ;
+  }(commonjsGlobal$1, (function (exports, math, Penner, display, ticker) {
+      function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+      var Penner__default = /*#__PURE__*/_interopDefaultLegacy(Penner);
+
+      /**
+       * Derive this class to create user-defined plugins
+       *
+       * @public
+       */
+      class Plugin
+      {
+          /** The viewport to which this plugin is attached. */
+          
+
+          /**
+           * Flags whether this plugin has been "paused".
+           *
+           * @see Plugin#pause
+           * @see Plugin#resume
+           */
+          
+
+          /** @param {Viewport} parent */
+          constructor(parent)
+          {
+              this.parent = parent;
+              this.paused = false;
+          }
+
+          /** Called when plugin is removed */
+           destroy()
+          {
+              // Override for implementation
+          }
+
+          /** Handler for pointerdown PIXI event */
+           down(_e)
+          {
+              return false;
+          }
+
+          /** Handler for pointermove PIXI event */
+           move(_e)
+          {
+              return false;
+          }
+
+          /** Handler for pointerup PIXI event */
+           up(_e)
+          {
+              return false;
+          }
+
+          /** Handler for wheel event on div */
+           wheel(_e)
+          {
+              return false;
+          }
+
+          /**
+           * Called on each tick
+           * @param {number} elapsed time in millisecond since last update
+           */
+           update(_delta)
+          {
+              // Override for implementation
+          }
+
+          /** Called when the viewport is resized */
+           resize()
+          {
+              // Override for implementation
+          }
+
+          /** Called when the viewport is manually moved */
+           reset()
+          {
+              // Override for implementation
+          }
+
+          /** Pause the plugin */
+           pause()
+          {
+              this.paused = true;
+          }
+
+          /** Un-pause the plugin */
+           resume()
+          {
+              this.paused = false;
+          }
+      }
+
+      // eslint-disable-next-line
+
+      /**
+       * Returns correct Penner equation using string or Function.
+       *
+       * @internal
+       * @ignore
+       * @param {(function|string)} [ease]
+       * @param {defaults} default penner equation to use if none is provided
+       */
+      function ease(ease, defaults)
+      {
+          if (!ease)
+          {
+              return Penner__default['default'][defaults]
+          }
+          else if (typeof ease === 'function')
+          {
+              return ease
+          }
+          else if (typeof ease === 'string')
+          {
+              return Penner__default['default'][ease]
+          }
+      }
+
+      /** Options for {@link Animate}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_ANIMATE_OPTIONS = {
+          removeOnInterrupt: false,
+          ease: 'linear',
+          time: 1000,
+      };
+
+      /**
+       * Animation plugin.
+       *
+       * @see Viewport#animate
+       * @fires animate-end
+       */
+      class Animate extends Plugin
+      {
+          
+
+          /** The starting x-coordinate of the viewport. */
+          
+
+          /** The starting y-coordinate of the viewport. */
+          
+
+          /** The change in the x-coordinate of the viewport through the animation.*/
+          
+
+          /** The change in the y-coordinate of the viewport through the animation. */
+          
+
+          /** Marks whether the center of the viewport is preserved in the animation. */
+          
+
+          /** The starting viewport width. */
+           __init() {this.startWidth = null;}
+
+          /** The starting viewport height. */
+           __init2() {this.startHeight = null;}
+
+          /** The change in the viewport's width through the animation. */
+           __init3() {this.deltaWidth = null;}
+
+          /** The change in the viewport's height through the animation. */
+           __init4() {this.deltaHeight = null;}
+
+          /** The viewport's width post-animation. */
+           __init5() {this.width = null;}
+
+          /** The viewport's height post-animation. */
+           __init6() {this.height = null;}
+
+          /** The time since the animation started. */
+           __init7() {this.time = 0;}
+
+          /**
+           * This is called by {@link Viewport.animate}.
+           *
+           * @param parent
+           * @param options
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);Animate.prototype.__init.call(this);Animate.prototype.__init2.call(this);Animate.prototype.__init3.call(this);Animate.prototype.__init4.call(this);Animate.prototype.__init5.call(this);Animate.prototype.__init6.call(this);Animate.prototype.__init7.call(this);
+              this.options = Object.assign({}, DEFAULT_ANIMATE_OPTIONS, options);
+              this.options.ease = ease(this.options.ease);
+
+              this.setupPosition();
+              this.setupZoom();
+
+              this.time = 0;
+          }
+
+          /**
+           * Setup `startX`, `startY`, `deltaX`, `deltaY`, `keepCenter`.
+           *
+           * This is called during construction.
+           */
+           setupPosition()
+          {
+              if (typeof this.options.position !== 'undefined')
+              {
+                  this.startX = this.parent.center.x;
+                  this.startY = this.parent.center.y;
+                  this.deltaX = this.options.position.x - this.parent.center.x;
+                  this.deltaY = this.options.position.y - this.parent.center.y;
+                  this.keepCenter = false;
+              }
+              else
+              {
+                  this.keepCenter = true;
+              }
+          }
+
+          /**
+           * Setup `startWidth, `startHeight`, `deltaWidth, `deltaHeight, `width`, `height`.
+           *
+           * This is called during construction.
+           */
+           setupZoom()
+          {
+              this.width = null;
+              this.height = null;
+
+              if (typeof this.options.scale !== 'undefined')
+              {
+                  this.width = this.parent.screenWidth / this.options.scale;
+              }
+              else if (typeof this.options.scaleX !== 'undefined' || typeof this.options.scaleY !== 'undefined')
+              {
+                  if (typeof this.options.scaleX !== 'undefined')
+                  {
+                      // screenSizeInWorldPixels = screenWidth / scale
+                      this.width = this.parent.screenWidth / this.options.scaleX;
+                  }
+                  if (typeof this.options.scaleY !== 'undefined')
+                  {
+                      this.height = this.parent.screenHeight / this.options.scaleY;
+                  }
+              }
+              else
+              {
+                  if (typeof this.options.width !== 'undefined')
+                  {
+                      this.width = this.options.width;
+                  }
+                  if (typeof this.options.height !== 'undefined')
+                  {
+                      this.height = this.options.height;
+                  }
+              }
+
+              if (this.width !== null)
+              {
+                  this.startWidth = this.parent.screenWidthInWorldPixels;
+                  this.deltaWidth = this.width - this.startWidth;
+              }
+              if (this.height !== null)
+              {
+                  this.startHeight = this.parent.screenHeightInWorldPixels;
+                  this.deltaHeight = this.height - this.startHeight;
+              }
+          }
+
+           down()
+          {
+              if (this.options.removeOnInterrupt)
+              {
+                  this.parent.plugins.remove('animate');
+              }
+
+              return false;
+          }
+
+           complete()
+          {
+              this.parent.plugins.remove('animate');
+              if (this.width !== null)
+              {
+                  this.parent.fitWidth(this.width, this.keepCenter, this.height === null);
+              }
+              if (this.height !== null)
+              {
+                  this.parent.fitHeight(this.height, this.keepCenter, this.width === null);
+              }
+              if (!this.keepCenter)
+              {
+                  this.parent.moveCenter(this.options.position );
+              }
+
+              this.parent.emit('animate-end', this.parent);
+
+              if (this.options.callbackOnComplete)
+              {
+                  this.options.callbackOnComplete(this.parent);
+              }
+          }
+
+           update(elapsed)
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+              this.time += elapsed;
+
+              if (this.time >= this.options.time)
+              {
+                  this.complete();
+              }
+              else
+              {
+                  const originalZoom = new math.Point(this.parent.scale.x, this.parent.scale.y);
+                  const percent = this.options.ease(this.time, 0, 1, this.options.time);
+
+                  if (this.width !== null)
+                  {
+                      const startWidth = this.startWidth ;
+                      const deltaWidth = this.deltaWidth ;
+
+                      this.parent.fitWidth(
+                          startWidth + (deltaWidth * percent),
+                          this.keepCenter,
+                          this.height === null);
+                  }
+                  if (this.height !== null)
+                  {
+                      const startHeight = this.startHeight ;
+                      const deltaHeight = this.deltaHeight ;
+
+                      this.parent.fitHeight(
+                          startHeight + (deltaHeight * percent),
+                          this.keepCenter,
+                          this.width === null);
+                  }
+                  if (this.width === null)
+                  {
+                      this.parent.scale.x = this.parent.scale.y;
+                  }
+                  else if (this.height === null)
+                  {
+                      this.parent.scale.y = this.parent.scale.x;
+                  }
+                  if (!this.keepCenter)
+                  {
+                      const startX = this.startX ;
+                      const startY = this.startY ;
+                      const deltaX = this.deltaX ;
+                      const deltaY = this.deltaY ;
+                      const original = new math.Point(this.parent.x, this.parent.y);
+
+                      this.parent.moveCenter(startX + (deltaX * percent), startY + (deltaY * percent));
+                      this.parent.emit('moved', { viewport: this.parent, original, type: 'animate' });
+                  }
+                  if (this.width || this.height)
+                  {
+                      this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
+                  }
+              }
+          }
+      }
+
+      function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+
+
+
+
+      /** Options for {@link Bounce}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_BOUNCE_OPTIONS = {
+          sides: 'all',
+          friction: 0.5,
+          time: 150,
+          ease: 'easeInOutSine',
+          underflow: 'center',
+          bounceBox: null
+      };
+
+      /**
+       * @fires bounce-start-x
+       * @fires bounce.end-x
+       * @fires bounce-start-y
+       * @fires bounce-end-y
+       * @public
+       */
+      class Bounce extends Plugin
+      {
+          /** The options passed to initialize this plugin, cannot be modified again. */
+          
+
+          /** Holds whether to bounce from left side. */
+           
+
+          /** Holds whether to bounce from top side. */
+          
+
+          /** Holds whether to bounce from right side. */
+          
+
+          /** Holds whether to bounce from bottom side. */
+          
+
+          /** Direction of underflow along x-axis. */
+          
+
+          /** Direction of underflow along y-axis. */
+          
+
+          /** Easing */
+          
+
+          /** Bounce state along x-axis */
+          
+
+          /** Bounce state along y-axis */
+          
+
+          /**
+           * This is called by {@link Viewport.bounce}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);
+
+              this.options = Object.assign({}, DEFAULT_BOUNCE_OPTIONS, options);
+              this.ease = ease(this.options.ease, 'easeInOutSine');
+
+              if (this.options.sides)
+              {
+                  if (this.options.sides === 'all')
+                  {
+                      this.top = this.bottom = this.left = this.right = true;
+                  }
+                  else if (this.options.sides === 'horizontal')
+                  {
+                      this.right = this.left = true;
+                      this.top = this.bottom = false;
+                  }
+                  else if (this.options.sides === 'vertical')
+                  {
+                      this.left = this.right = false;
+                      this.top = this.bottom = true;
+                  }
+                  else
+                  {
+                      this.top = this.options.sides.indexOf('top') !== -1;
+                      this.bottom = this.options.sides.indexOf('bottom') !== -1;
+                      this.left = this.options.sides.indexOf('left') !== -1;
+                      this.right = this.options.sides.indexOf('right') !== -1;
+                  }
+              } else {
+                  this.left = this.top = this.right = this.bottom = false;
+              }
+
+              const clamp = this.options.underflow.toLowerCase();
+
+              if (clamp === 'center')
+              {
+                  this.underflowX = 0;
+                  this.underflowY = 0;
+              }
+              else
+              {
+                  this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
+                  this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
+              }
+
+              this.reset();
+          }
+
+           isActive()
+          {
+              return this.toX !== null || this.toY !== null;
+          }
+
+           down()
+          {
+              this.toX = this.toY = null;
+
+              return false;
+          }
+
+           up()
+          {
+              this.bounce();
+
+              return false;
+          }
+
+           update(elapsed)
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+
+              this.bounce();
+
+              if (this.toX)
+              {
+                  const toX = this.toX;
+
+                  toX.time += elapsed;
+                  this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' });
+
+                  if (toX.time >= this.options.time)
+                  {
+                      this.parent.x = toX.end;
+                      this.toX = null;
+                      this.parent.emit('bounce-x-end', this.parent);
+                  }
+                  else
+                  {
+                      this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.options.time);
+                  }
+              }
+
+              if (this.toY)
+              {
+                  const toY = this.toY;
+
+                  toY.time += elapsed;
+                  this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' });
+
+                  if (toY.time >= this.options.time)
+                  {
+                      this.parent.y = toY.end;
+                      this.toY = null;
+                      this.parent.emit('bounce-y-end', this.parent);
+                  }
+                  else
+                  {
+                      this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.options.time);
+                  }
+              }
+          }
+
+          /** @internal */
+           calcUnderflowX()
+          {
+              let x;
+
+              switch (this.underflowX)
+              {
+                  case -1:
+                      x = 0;
+                      break;
+                  case 1:
+                      x = (this.parent.screenWidth - this.parent.screenWorldWidth);
+                      break;
+                  default:
+                      x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+              }
+
+              return x;
+          }
+
+          /** @internal */
+           calcUnderflowY()
+          {
+              let y;
+
+              switch (this.underflowY)
+              {
+                  case -1:
+                      y = 0;
+                      break;
+                  case 1:
+                      y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                      break;
+                  default:
+                      y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+              }
+
+              return y;
+          }
+
+           oob()
+          {
+              const box = this.options.bounceBox;
+
+              if (box)
+              {
+                  const x1 = typeof box.x === 'undefined' ? 0 : box.x;
+                  const y1 = typeof box.y === 'undefined' ? 0 : box.y;
+                  const width = typeof box.width === 'undefined' ? this.parent.worldWidth : box.width;
+                  const height = typeof box.height === 'undefined' ? this.parent.worldHeight : box.height;
+
+                  return {
+                      left: this.parent.left < x1,
+                      right: this.parent.right > width,
+                      top: this.parent.top < y1,
+                      bottom: this.parent.bottom > height,
+                      topLeft: new math.Point(
+                          x1 * this.parent.scale.x,
+                          y1 * this.parent.scale.y
+                      ),
+                      bottomRight: new math.Point(
+                          width * this.parent.scale.x - this.parent.screenWidth,
+                          height * this.parent.scale.y - this.parent.screenHeight
+                      )
+                  };
+              }
+
+              return {
+                  left: this.parent.left < 0,
+                  right: this.parent.right > this.parent.worldWidth,
+                  top: this.parent.top < 0,
+                  bottom: this.parent.bottom > this.parent.worldHeight,
+                  topLeft: new math.Point(0, 0),
+                  bottomRight: new math.Point(
+                      this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
+                      this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
+                  )
+              };
+          }
+
+           bounce()
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+
+              let oob;
+              let decelerate
+
+
+
+
+
+       = this.parent.plugins.get('decelerate', true) ;
+
+              if (decelerate && (decelerate.x || decelerate.y))
+              {
+                  if ((decelerate.x && decelerate.percentChangeX === _optionalChain$1([decelerate, 'access', _ => _.options, 'optionalAccess', _2 => _2.friction])) || (decelerate.y && decelerate.percentChangeY === _optionalChain$1([decelerate, 'access', _3 => _3.options, 'optionalAccess', _4 => _4.friction])))
+                  {
+                      oob = this.oob();
+                      if ((oob.left && this.left) || (oob.right && this.right))
+                      {
+                          decelerate.percentChangeX = this.options.friction;
+                      }
+                      if ((oob.top && this.top) || (oob.bottom && this.bottom))
+                      {
+                          decelerate.percentChangeY = this.options.friction;
+                      }
+                  }
+              }
+              const drag = this.parent.plugins.get('drag', true) || {};
+              const pinch = this.parent.plugins.get('pinch', true) || {};
+
+              decelerate = decelerate || {};
+
+              if (!_optionalChain$1([drag, 'optionalAccess', _5 => _5.active]) && !_optionalChain$1([pinch, 'optionalAccess', _6 => _6.active]) && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
+              {
+                  oob = oob || this.oob();
+                  const topLeft = oob.topLeft;
+                  const bottomRight = oob.bottomRight;
+
+                  if (!this.toX && !decelerate.x)
+                  {
+                      let x = null;
+
+                      if (oob.left && this.left)
+                      {
+                          x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x;
+                      }
+                      else if (oob.right && this.right)
+                      {
+                          x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x;
+                      }
+                      if (x !== null && this.parent.x !== x)
+                      {
+                          this.toX = { time: 0, start: this.parent.x, delta: x - this.parent.x, end: x };
+                          this.parent.emit('bounce-x-start', this.parent);
+                      }
+                  }
+                  if (!this.toY && !decelerate.y)
+                  {
+                      let y = null;
+
+                      if (oob.top && this.top)
+                      {
+                          y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y;
+                      }
+                      else if (oob.bottom && this.bottom)
+                      {
+                          y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y;
+                      }
+                      if (y !== null && this.parent.y !== y)
+                      {
+                          this.toY = { time: 0, start: this.parent.y, delta: y - this.parent.y, end: y };
+                          this.parent.emit('bounce-y-start', this.parent);
+                      }
+                  }
+              }
+          }
+
+           reset()
+          {
+              this.toX = this.toY = null;
+              this.bounce();
+          }
+      }
+
+      /**
+       * There are three ways to clamp:
+       * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of the world offscreen
+       *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
+       * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
+       *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
+       *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+       *
+       * Underflow determines what happens when the world is smaller than the viewport
+       * 1. none = the world is clamped but there is no special behavior
+       * 2. center = the world is centered on the viewport
+       * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
+       *
+       */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_CLAMP_OPTIONS = {
+          left: false,
+          right: false,
+          top: false,
+          bottom: false,
+          direction: null,
+          underflow: 'center'
+      };
+
+      /**
+       * Plugin to clamp the viewport to a specific world bounding box.
+       *
+       * @public
+       */
+      class Clamp extends Plugin
+      {
+          /** Options used to initialize this plugin, cannot be modified later. */
+          
+
+          /** Last state of viewport */
+          
+
+
+
+
+
+
+          
+          
+          
+
+          /**
+           * This is called by {@link Viewport.clamp}.
+           */
+          constructor(parent, options  = {})
+          {
+              super(parent);
+              this.options = Object.assign({}, DEFAULT_CLAMP_OPTIONS, options);
+
+              if (this.options.direction)
+              {
+                  this.options.left = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
+                  this.options.right = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
+                  this.options.top = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
+                  this.options.bottom = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
+              }
+
+              this.parseUnderflow();
+              this.last = { x: null, y: null, scaleX: null, scaleY: null };
+              this.update();
+          }
+
+           parseUnderflow()
+          {
+              const clamp = this.options.underflow.toLowerCase();
+
+              if (clamp === 'none')
+              {
+                  this.noUnderflow = true;
+              }
+              else if (clamp === 'center')
+              {
+                  this.underflowX = this.underflowY = 0;
+                  this.noUnderflow = false;
+              }
+              else
+              {
+                  this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
+                  this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
+                  this.noUnderflow = false;
+              }
+          }
+
+           move()
+          {
+              this.update();
+
+              return false;
+          }
+
+           update()
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+
+              // only clamp on change
+              if (this.parent.x === this.last.x
+                  && this.parent.y === this.last.y
+                  && this.parent.scale.x === this.last.scaleX
+                  && this.parent.scale.y === this.last.scaleY)
+              {
+                  return;
+              }
+              const original = { x: this.parent.x, y: this.parent.y };
+              // TODO: Fix
+              const decelerate = (this.parent.plugins ).decelerate || {};
+
+              if (this.options.left !== null || this.options.right !== null)
+              {
+                  let moved = false;
+
+                  if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth)
+                  {
+                      switch (this.underflowX)
+                      {
+                          case -1:
+                              if (this.parent.x !== 0)
+                              {
+                                  this.parent.x = 0;
+                                  moved = true;
+                              }
+                              break;
+                          case 1:
+                              if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
+                              {
+                                  this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
+                                  moved = true;
+                              }
+                              break;
+                          default:
+                              if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
+                              {
+                                  this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                                  moved = true;
+                              }
+                      }
+                  }
+                  else
+                  {
+                      if (this.options.left !== null)
+                      {
+                          if (this.parent.left < (this.options.left === true ? 0 : this.options.left))
+                          {
+                              this.parent.x = -(this.options.left === true ? 0 : this.options.left) * this.parent.scale.x;
+                              decelerate.x = 0;
+                              moved = true;
+                          }
+                      }
+                      if (this.options.right !== null)
+                      {
+                          if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right))
+                          {
+                              this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth;
+                              decelerate.x = 0;
+                              moved = true;
+                          }
+                      }
+                  }
+                  if (moved)
+                  {
+                      this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' });
+                  }
+              }
+              if (this.options.top !== null || this.options.bottom !== null)
+              {
+                  let moved = false;
+
+                  if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight)
+                  {
+                      switch (this.underflowY)
+                      {
+                          case -1:
+                              if (this.parent.y !== 0)
+                              {
+                                  this.parent.y = 0;
+                                  moved = true;
+                              }
+                              break;
+                          case 1:
+                              if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
+                              {
+                                  this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                                  moved = true;
+                              }
+                              break;
+                          default:
+                              if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
+                              {
+                                  this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                                  moved = true;
+                              }
+                      }
+                  }
+                  else
+                  {
+                      if (this.options.top !== null)
+                      {
+                          if (this.parent.top < (this.options.top === true ? 0 : this.options.top))
+                          {
+                              this.parent.y = -(this.options.top === true ? 0 : this.options.top)
+                                  * this.parent.scale.y;
+                              decelerate.y = 0;
+                              moved = true;
+                          }
+                      }
+                      if (this.options.bottom !== null)
+                      {
+                          if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom))
+                          {
+                              this.parent.y = -(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
+                                  * this.parent.scale.y + this.parent.screenHeight;
+                              decelerate.y = 0;
+                              moved = true;
+                          }
+                      }
+                  }
+                  if (moved)
+                  {
+                      this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' });
+                  }
+              }
+              this.last.x = this.parent.x;
+              this.last.y = this.parent.y;
+              this.last.scaleX = this.parent.scale.x;
+              this.last.scaleY = this.parent.scale.y;
+          }
+
+           reset()
+          {
+              this.update();
+          }
+      }
+
+      /**
+       * Options for {@link ClampZoom}.
+       *
+       * Use either minimum width/height or minimum scale
+       */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_CLAMP_ZOOM_OPTIONS = {
+          minWidth: null,
+          minHeight: null,
+          maxWidth: null,
+          maxHeight: null,
+          minScale: null,
+          maxScale: null
+      };
+
+      /**
+       * Plugin to clamp the viewport's zoom to a specific range.
+       *
+       * @public
+       */
+      class ClampZoom extends Plugin
+      {
+          
+
+          /**
+           * This is called by {@link Viewport.clampZoom}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);
+              this.options = Object.assign({}, DEFAULT_CLAMP_ZOOM_OPTIONS, options);
+
+              this.clamp();
+          }
+
+           resize()
+          {
+              this.clamp();
+          }
+
+          /** Clamp the viewport scale zoom) */
+           clamp()
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+
+              if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
+              {
+                  let width = this.parent.worldScreenWidth;
+                  let height = this.parent.worldScreenHeight;
+
+                  if (this.options.minWidth !== null && width < this.options.minWidth)
+                  {
+                      const original = this.parent.scale.x;
+
+                      this.parent.fitWidth(this.options.minWidth, false, false, true);
+                      this.parent.scale.y *= this.parent.scale.x / original;
+                      width = this.parent.worldScreenWidth;
+                      height = this.parent.worldScreenHeight;
+                      this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                  }
+                  if (this.options.maxWidth !== null && width > this.options.maxWidth)
+                  {
+                      const original = this.parent.scale.x;
+
+                      this.parent.fitWidth(this.options.maxWidth, false, false, true);
+                      this.parent.scale.y *= this.parent.scale.x / original;
+                      width = this.parent.worldScreenWidth;
+                      height = this.parent.worldScreenHeight;
+                      this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                  }
+                  if (this.options.minHeight !== null && height < this.options.minHeight)
+                  {
+                      const original = this.parent.scale.y;
+
+                      this.parent.fitHeight(this.options.minHeight, false, false, true);
+                      this.parent.scale.x *= this.parent.scale.y / original;
+                      width = this.parent.worldScreenWidth;
+                      height = this.parent.worldScreenHeight;
+                      this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                  }
+                  if (this.options.maxHeight !== null && height > this.options.maxHeight)
+                  {
+                      const original = this.parent.scale.y;
+
+                      this.parent.fitHeight(this.options.maxHeight, false, false, true);
+                      this.parent.scale.x *= this.parent.scale.y / original;
+                      this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                  }
+              }
+              else
+              if (this.options.minScale || this.options.maxScale)
+              {
+                  const minScale = { x: null, y: null };
+                  const maxScale = { x: null, y: null };
+
+                  if (typeof this.options.minScale === 'number')
+                  {
+                      minScale.x = this.options.minScale;
+                      minScale.y = this.options.minScale;
+                  }
+                  else if (this.options.minScale !== null)
+                  {
+                      const optsMinScale = this.options.minScale ;
+
+                      minScale.x = typeof optsMinScale.x === 'undefined' ? null : optsMinScale.x;
+                      minScale.y = typeof optsMinScale.y === 'undefined' ? null : optsMinScale.y;
+                  }
+
+                  if (typeof this.options.maxScale === 'number')
+                  {
+                      maxScale.x = this.options.maxScale;
+                      maxScale.y = this.options.maxScale;
+                  }
+                  else if (this.options.maxScale !== null)
+                  {
+                      const optsMaxScale = this.options.maxScale ;
+
+                      maxScale.x = typeof optsMaxScale.x === 'undefined' ? null : optsMaxScale.x;
+                      maxScale.y = typeof optsMaxScale.y === 'undefined' ? null : optsMaxScale.y;
+                  }
+
+                  let scaleX = this.parent.scale.x;
+                  let scaleY = this.parent.scale.y;
+
+                  if (minScale.x !== null && scaleX < minScale.x)
+                  {
+                      scaleX = minScale.x;
+                  }
+                  if (maxScale.x !== null && scaleX > maxScale.x)
+                  {
+                      scaleX = maxScale.x;
+                  }
+                  if (minScale.y !== null && scaleY < minScale.y)
+                  {
+                      scaleY = minScale.y;
+                  }
+                  if (maxScale.y !== null && scaleY > maxScale.y)
+                  {
+                      scaleY = maxScale.y;
+                  }
+                  if (scaleX !== this.parent.scale.x || scaleY !== this.parent.scale.y)
+                  {
+                      this.parent.scale.set(scaleX, scaleY);
+                      this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
+                  }
+              }
+          }
+
+           reset()
+          {
+              this.clamp();
+          }
+      }
+
+      /** This allows independent x and y values for min/maxScale */
+
+      const DEFAULT_DECELERATE_OPTIONS = {
+          friction: 0.98,
+          bounce: 0.8,
+          minSpeed: 0.01
+      };
+
+      /**
+       * Time period of decay (1 frame)
+       *
+       * @internal
+       * @ignore
+       */
+      const TP = 16;
+
+      /**
+       * Plugin to decelerate viewport velocity smoothly after panning ends.
+       *
+       * @public
+       */
+      class Decelerate extends Plugin
+      {
+          /** Options used to initialize this plugin. */
+          
+
+          /**
+           * x-component of the velocity of viewport provided by this plugin, at the current time.
+           *
+           * This is measured in px/frame, where a frame is normalized to 16 milliseconds.
+           */
+          
+
+          /**
+           * y-component of the velocity of the viewport provided by this plugin, at the current time.
+           *
+           * This is measured in px/frame, where a frame is normalized to 16 milliseconds.
+           */
+          
+
+          /**
+           * The decay factor for the x-component of the viewport.
+           *
+           * The viewport's velocity decreased by this amount each 16 milliseconds.
+           */
+          
+
+          /**
+           * The decay factor for the y-component of the viewport.
+           *
+           * The viewport's velocity decreased by this amount each 16 milliseconds.
+           */
+          
+
+          /** Saved list of recent viewport position snapshots, to estimate velocity. */
+          
+
+          /** The time since the user released panning of the viewport. */
+          
+
+          /**
+           * This is called by {@link Viewport.decelerate}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);
+
+              this.options = Object.assign({}, DEFAULT_DECELERATE_OPTIONS, options);
+              this.saved = [];
+              this.timeSinceRelease = 0;
+
+              this.reset();
+              this.parent.on('moved', (data) => this.moved(data));
+          }
+
+           down()
+          {
+              this.saved = [];
+              this.x = this.y = null;
+
+              return false;
+          }
+
+           isActive()
+          {
+              return !!(this.x || this.y);
+          }
+
+           move()
+          {
+              if (this.paused)
+              {
+                  return false;
+              }
+
+              const count = this.parent.input.count();
+
+              if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
+              {
+                  this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() });
+
+                  if (this.saved.length > 60)
+                  {
+                      this.saved.splice(0, 30);
+                  }
+              }
+
+              // Silently recording viewport positions
+              return false;
+          }
+
+          /** Listener to viewport's "moved" event. */
+           moved(data)
+          {
+              if (this.saved.length)
+              {
+                  const last = this.saved[this.saved.length - 1];
+
+                  if (data.type === 'clamp-x')
+                  {
+                      if (last.x === data.original.x)
+                      {
+                          last.x = this.parent.x;
+                      }
+                  }
+                  else if (data.type === 'clamp-y')
+                  {
+                      if (last.y === data.original.y)
+                      {
+                          last.y = this.parent.y;
+                      }
+                  }
+              }
+          }
+
+           up()
+          {
+              if (this.parent.input.count() === 0 && this.saved.length)
+              {
+                  const now = performance.now();
+
+                  for (const save of this.saved)
+                  {
+                      if (save.time >= now - 100)
+                      {
+                          const time = now - save.time;
+
+                          this.x = (this.parent.x - save.x) / time;
+                          this.y = (this.parent.y - save.y) / time;
+                          this.percentChangeX = this.percentChangeY = this.options.friction;
+                          this.timeSinceRelease = 0;
+                          break;
+                      }
+                  }
+              }
+
+              return false;
+          }
+
+          /**
+           * Manually activate deceleration, starting from the (x, y) velocity components passed in the options.
+           *
+           * @param {object} options
+           * @param {number} [options.x] - Specify x-component of initial velocity.
+           * @param {number} [options.y] - Specify y-component of initial velocity.
+           */
+           activate(options)
+          {
+              options = options || {};
+
+              if (typeof options.x !== 'undefined')
+              {
+                  this.x = options.x;
+                  this.percentChangeX = this.options.friction;
+              }
+              if (typeof options.y !== 'undefined')
+              {
+                  this.y = options.y;
+                  this.percentChangeY = this.options.friction;
+              }
+          }
+
+           update(elapsed)
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+
+              /*
+               * See https://github.com/davidfig/pixi-viewport/issues/271 for math.
+               *
+               * The viewport velocity (this.x, this.y) decays exponentially by the the decay factor
+               * (this.percentChangeX, this.percentChangeY) each frame. This velocity function is integrated
+               * to calculate the displacement.
+               */
+
+              const moved = this.x || this.y;
+
+              const ti = this.timeSinceRelease;
+              const tf = this.timeSinceRelease + elapsed;
+
+              if (this.x)
+              {
+                  const k = this.percentChangeX;
+                  const lnk = Math.log(k);
+
+                  // Apply velocity delta on the viewport x-coordinate.
+                  this.parent.x += ((this.x * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
+
+                  // Apply decay on x-component of velocity
+                  this.x *= Math.pow(this.percentChangeX, elapsed / TP);
+              }
+              if (this.y)
+              {
+                  const k = this.percentChangeY;
+                  const lnk = Math.log(k);
+
+                  // Apply velocity delta on the viewport y-coordinate.
+                  this.parent.y += ((this.y * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
+
+                  // Apply decay on y-component of velocity
+                  this.y *= Math.pow(this.percentChangeY, elapsed / TP);
+              }
+
+              this.timeSinceRelease += elapsed;
+
+              // End decelerate velocity once it goes under a certain amount of precision.
+              if (this.x && this.y) {
+                  if (Math.abs(this.x) < this.options.minSpeed && Math.abs(this.y) < this.options.minSpeed) {
+                       this.x = 0;
+                       this.y = 0;
+                  }
+              } else {
+                  if (Math.abs(this.x || 0) < this.options.minSpeed) {
+                      this.x = 0;
+                  }
+                  if (Math.abs(this.y || 0) < this.options.minSpeed) {
+                      this.y = 0;
+                  }
+              }
+
+              if (moved)
+              {
+                  this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' });
+              }
+          }
+
+           reset()
+          {
+              this.x = this.y = null;
+          }
+      }
+
+      /** Options for {@link Drag}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_DRAG_OPTIONS = {
+          direction: 'all',
+          pressDrag: true,
+          wheel: true,
+          wheelScroll: 1,
+          reverse: false,
+          clampWheel: false,
+          underflow: 'center',
+          factor: 1,
+          mouseButtons: 'all',
+          keyToPress: null,
+          ignoreKeyToPressOnTouch: false,
+          lineHeight: 20,
+      };
+
+      /**
+       * Plugin to enable panning/dragging of the viewport to move around.
+       *
+       * @public
+       */
+      class Drag extends Plugin
+      {
+          /** Options used to initialize this plugin, cannot be modified later. */
+          
+
+          /** Flags when viewport is moving. */
+          
+
+          /** Factor to apply from {@link IDecelerateOptions}'s reverse. */
+          
+
+          /** Holds whether dragging is enabled along the x-axis. */
+          
+
+          /** Holds whether dragging is enabled along the y-axis. */
+          
+
+          /** Flags whether the keys required to drag are pressed currently. */
+          
+
+          /** Holds whether the left, center, and right buttons are required to pan. */
+          
+
+          /** Underflow factor along x-axis */
+          
+
+          /** Underflow factor along y-axis */
+          
+
+          /** Last pointer position while panning. */
+          
+
+          /** The ID of the pointer currently panning the viewport. */
+          
+
+          /**
+           * This is called by {@link Viewport.drag}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);
+
+              this.options = Object.assign({}, DEFAULT_DRAG_OPTIONS, options);
+              this.moved = false;
+              this.reverse = this.options.reverse ? 1 : -1;
+              this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x';
+              this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y';
+              this.keyIsPressed = false;
+
+              this.parseUnderflow();
+              this.mouseButtons(this.options.mouseButtons);
+
+              if (this.options.keyToPress)
+              {
+                  this.handleKeyPresses(this.options.keyToPress);
+              }
+          }
+
+          /**
+           * Handles keypress events and set the keyIsPressed boolean accordingly
+           *
+           * @param {array} codes - key codes that can be used to trigger drag event
+           */
+           handleKeyPresses(codes)
+          {
+              window.addEventListener('keydown', (e) =>
+              {
+                  if (codes.includes(e.code))
+                  { this.keyIsPressed = true; }
+              });
+
+              window.addEventListener('keyup', (e) =>
+              {
+                  if (codes.includes(e.code))
+                  { this.keyIsPressed = false; }
+              });
+          }
+
+          /**
+           * initialize mousebuttons array
+           * @param {string} buttons
+           */
+           mouseButtons(buttons)
+          {
+              if (!buttons || buttons === 'all')
+              {
+                  this.mouse = [true, true, true];
+              }
+              else
+              {
+                  this.mouse = [
+                      buttons.indexOf('left') !== -1,
+                      buttons.indexOf('middle') !== -1,
+                      buttons.indexOf('right') !== -1
+                  ];
+              }
+          }
+
+           parseUnderflow()
+          {
+              const clamp = this.options.underflow.toLowerCase();
+
+              if (clamp === 'center')
+              {
+                  this.underflowX = 0;
+                  this.underflowY = 0;
+              }
+              else
+              {
+                  if (clamp.includes('left'))
+                  {
+                      this.underflowX = -1;
+                  }
+                  else if (clamp.includes('right'))
+                  {
+                      this.underflowX = 1;
+                  }
+                  else
+                  {
+                      this.underflowX = 0;
+                  }
+                  if (clamp.includes('top'))
+                  {
+                      this.underflowY = -1;
+                  }
+                  else if (clamp.includes('bottom'))
+                  {
+                      this.underflowY = 1;
+                  }
+                  else
+                  {
+                      this.underflowY = 0;
+                  }
+              }
+          }
+
+          /**
+           * @param {PIXI.InteractionEvent} event
+           * @returns {boolean}
+           */
+           checkButtons(event)
+          {
+              const isMouse = event.data.pointerType === 'mouse';
+              const count = this.parent.input.count();
+
+              if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch', true)))
+              {
+                  if (!isMouse || this.mouse[event.data.button])
+                  {
+                      return true;
+                  }
+              }
+
+              return false;
+          }
+
+          /**
+           * @param {PIXI.InteractionEvent} event
+           * @returns {boolean}
+           */
+           checkKeyPress(event)
+          {
+              return (!this.options.keyToPress
+                  || this.keyIsPressed
+                  || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'));
+          }
+
+           down(event)
+          {
+              if (this.paused || !this.options.pressDrag)
+              {
+                  return false;
+              }
+              if (this.checkButtons(event) && this.checkKeyPress(event))
+              {
+                  this.last = { x: event.data.global.x, y: event.data.global.y };
+                  this.current = event.data.pointerId;
+
+                  return true;
+              }
+              this.last = null;
+
+              return false;
+          }
+
+          get active()
+          {
+              return this.moved;
+          }
+
+           move(event)
+          {
+              if (this.paused || !this.options.pressDrag)
+              {
+                  return false;
+              }
+              if (this.last && this.current === event.data.pointerId)
+              {
+                  const x = event.data.global.x;
+                  const y = event.data.global.y;
+                  const count = this.parent.input.count();
+
+                  if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
+                  {
+                      const distX = x - this.last.x;
+                      const distY = y - this.last.y;
+
+                      if (this.moved
+                          || ((this.xDirection && this.parent.input.checkThreshold(distX))
+                          || (this.yDirection && this.parent.input.checkThreshold(distY))))
+                      {
+                          const newPoint = { x, y };
+
+                          if (this.xDirection)
+                          {
+                              this.parent.x += (newPoint.x - this.last.x) * this.options.factor;
+                          }
+                          if (this.yDirection)
+                          {
+                              this.parent.y += (newPoint.y - this.last.y) * this.options.factor;
+                          }
+                          this.last = newPoint;
+                          if (!this.moved)
+                          {
+                              this.parent.emit('drag-start', {
+                                  event,
+                                  screen: new math.Point(this.last.x, this.last.y),
+                                  world: this.parent.toWorld(new math.Point(this.last.x, this.last.y)),
+                                  viewport: this.parent
+                              });
+                          }
+                          this.moved = true;
+                          this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
+
+                          return true;
+                      }
+                  }
+                  else
+                  {
+                      this.moved = false;
+                  }
+              }
+
+              return false;
+          }
+
+           up(event)
+          {
+              if (this.paused)
+              {
+                  return false;
+              }
+
+              const touches = this.parent.input.touches;
+
+              if (touches.length === 1)
+              {
+                  const pointer = touches[0];
+
+                  if (pointer.last)
+                  {
+                      this.last = { x: pointer.last.x, y: pointer.last.y };
+                      this.current = pointer.id;
+                  }
+                  this.moved = false;
+
+                  return true;
+              }
+              else if (this.last)
+              {
+                  if (this.moved)
+                  {
+                      const screen = new math.Point(this.last.x, this.last.y);
+
+                      this.parent.emit('drag-end', {
+                          event, screen,
+                          world: this.parent.toWorld(screen),
+                          viewport: this.parent,
+                      });
+                      this.last = null;
+                      this.moved = false;
+
+                      return true;
+                  }
+              }
+
+              return false;
+          }
+
+           wheel(event)
+          {
+              if (this.paused)
+              {
+                  return false;
+              }
+
+              if (this.options.wheel)
+              {
+                  const wheel = this.parent.plugins.get('wheel', true);
+
+                  if (!wheel || (!wheel.options.wheelZoom && !event.ctrlKey))
+                  {
+                      const step = event.deltaMode ? this.options.lineHeight : 1;
+
+                      if (this.xDirection)
+                      {
+                          this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
+                      }
+                      if (this.yDirection)
+                      {
+                          this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
+                      }
+                      if (this.options.clampWheel)
+                      {
+                          this.clamp();
+                      }
+                      this.parent.emit('wheel-scroll', this.parent);
+                      this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+                      if (!this.parent.options.passiveWheel)
+                      {
+                          event.preventDefault();
+                      }
+                      if (this.parent.options.stopPropagation)
+                      {
+                          event.stopPropagation();
+                      }
+
+                      return true;
+                  }
+              }
+
+              return false;
+          }
+
+           resume()
+          {
+              this.last = null;
+              this.paused = false;
+          }
+
+           clamp()
+          {
+              const decelerate = this.parent.plugins.get('decelerate', true) || {};
+
+              if (this.options.clampWheel !== 'y')
+              {
+                  if (this.parent.screenWorldWidth < this.parent.screenWidth)
+                  {
+                      switch (this.underflowX)
+                      {
+                          case -1:
+                              this.parent.x = 0;
+                              break;
+                          case 1:
+                              this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth);
+                              break;
+                          default:
+                              this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
+                      }
+                  }
+                  else
+                  if (this.parent.left < 0)
+                  {
+                      this.parent.x = 0;
+                      decelerate.x = 0;
+                  }
+                  else if (this.parent.right > this.parent.worldWidth)
+                  {
+                      this.parent.x = (-this.parent.worldWidth * this.parent.scale.x) + this.parent.screenWidth;
+                      decelerate.x = 0;
+                  }
+              }
+              if (this.options.clampWheel !== 'x')
+              {
+                  if (this.parent.screenWorldHeight < this.parent.screenHeight)
+                  {
+                      switch (this.underflowY)
+                      {
+                          case -1:
+                              this.parent.y = 0;
+                              break;
+                          case 1:
+                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
+                              break;
+                          default:
+                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
+                      }
+                  }
+                  else
+                  {
+                      if (this.parent.top < 0)
+                      {
+                          this.parent.y = 0;
+                          decelerate.y = 0;
+                      }
+                      if (this.parent.bottom > this.parent.worldHeight)
+                      {
+                          this.parent.y = (-this.parent.worldHeight * this.parent.scale.y) + this.parent.screenHeight;
+                          decelerate.y = 0;
+                      }
+                  }
+              }
+          }
+      }
+
+      /** Options for {@link Follow}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_FOLLOW_OPTIONS = {
+          speed: 0,
+          acceleration: null,
+          radius: null
+      };
+
+      /**
+       * Plugin to follow a display-object.
+       *
+       * @see Viewport.follow
+       * @public
+       */
+      class Follow extends Plugin
+      {
+          /** The options used to initialize this plugin. */
+          
+
+          /** The target this plugin will make the viewport follow. */
+          
+
+          /** The velocity provided the viewport by following, at the current time. */
+          
+
+          /**
+           * This is called by {@link Viewport.follow}.
+           *
+           * @param parent
+           * @param target - target to follow
+           * @param options
+           */
+          constructor(parent, target, options = {})
+          {
+              super(parent);
+
+              this.target = target;
+              this.options = Object.assign({}, DEFAULT_FOLLOW_OPTIONS, options);
+              this.velocity = { x: 0, y: 0 };
+          }
+
+           update(elapsed)
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+
+              const center = this.parent.center;
+              let toX = this.target.x;
+              let toY = this.target.y;
+
+              if (this.options.radius)
+              {
+                  const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
+
+                  if (distance > this.options.radius)
+                  {
+                      const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x);
+
+                      toX = this.target.x - (Math.cos(angle) * this.options.radius);
+                      toY = this.target.y - (Math.sin(angle) * this.options.radius);
+                  }
+                  else
+                  {
+                      return;
+                  }
+              }
+
+              const deltaX = toX - center.x;
+              const deltaY = toY - center.y;
+
+              if (deltaX || deltaY)
+              {
+                  if (this.options.speed)
+                  {
+                      if (this.options.acceleration)
+                      {
+                          const angle = Math.atan2(toY - center.y, toX - center.x);
+                          const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+                          if (distance)
+                          {
+                              const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.options.acceleration);
+
+                              if (distance > decelerationDistance)
+                              {
+                                  this.velocity = {
+                                      x: Math.min(this.velocity.x + this.options.acceleration * elapsed, this.options.speed),
+                                      y: Math.min(this.velocity.y + this.options.acceleration * elapsed, this.options.speed)
+                                  };
+                              }
+                              else
+                              {
+                                  this.velocity = {
+                                      x: Math.max(this.velocity.x - this.options.acceleration * this.options.speed, 0),
+                                      y: Math.max(this.velocity.y - this.options.acceleration * this.options.speed, 0)
+                                  };
+                              }
+                              const changeX = Math.cos(angle) * this.velocity.x;
+                              const changeY = Math.sin(angle) * this.velocity.y;
+                              const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
+                              const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
+
+                              this.parent.moveCenter(x, y);
+                              this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                          }
+                      }
+                      else
+                      {
+                          const angle = Math.atan2(toY - center.y, toX - center.x);
+                          const changeX = Math.cos(angle) * this.options.speed;
+                          const changeY = Math.sin(angle) * this.options.speed;
+                          const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
+                          const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
+
+                          this.parent.moveCenter(x, y);
+                          this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                      }
+                  }
+                  else
+                  {
+                      this.parent.moveCenter(toX, toY);
+                      this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
+                  }
+              }
+          }
+      }
+
+      /** Insets for mouse edges scrolling regions */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const MOUSE_EDGES_OPTIONS = {
+          radius: null,
+          distance: null,
+          top: null,
+          bottom: null,
+          left: null,
+          right: null,
+          speed: 8,
+          reverse: false,
+          noDecelerate: false,
+          linear: false,
+          allowButtons: false,
+      };
+
+      /**
+       * Scroll viewport when mouse hovers near one of the edges.
+       *
+       * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
+       * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
+       */
+      class MouseEdges extends Plugin
+      {
+          /** Options used to initialize this plugin, cannot be modified later. */
+          
+
+          /** Factor from reverse option. */
+          
+
+          /** Radius squared */
+          
+
+          /** Scroll region size on the left side. */
+          
+
+          /** Scroll region size on the top size. */
+          
+
+          /** Scroll region size on the right side. */
+          
+
+          /** Scroll region size on the bottom side. */
+          
+
+          
+
+          
+
+          /**
+           * This is called by {@link Viewport.mouseEdges}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);
+
+              this.options = Object.assign({}, MOUSE_EDGES_OPTIONS, options);
+              this.reverse = this.options.reverse ? 1 : -1;
+              this.radiusSquared = typeof this.options.radius === 'number' ? Math.pow(this.options.radius, 2) : null;
+
+              this.resize();
+          }
+
+           resize()
+          {
+              const distance = this.options.distance;
+
+              if (distance !== null)
+              {
+                  this.left = distance;
+                  this.top = distance;
+                  this.right = this.parent.worldScreenWidth - distance;
+                  this.bottom = this.parent.worldScreenHeight - distance;
+              }
+              else if (!this.options.radius)
+              {
+                  this.left = this.options.left;
+                  this.top = this.options.top;
+                  this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right;
+                  this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom;
+              }
+          }
+
+           down()
+          {
+              if (this.paused)
+              {
+                  return false;
+              }
+              if (!this.options.allowButtons)
+              {
+                  this.horizontal = this.vertical = null;
+              }
+
+              return false;
+          }
+
+           move(event)
+          {
+              if (this.paused)
+              {
+                  return false;
+              }
+              if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1)
+                  || (!this.options.allowButtons && event.data.buttons !== 0))
+              {
+                  return false;
+              }
+
+              const x = event.data.global.x;
+              const y = event.data.global.y;
+
+              if (this.radiusSquared)
+              {
+                  const center = this.parent.toScreen(this.parent.center);
+                  const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2);
+
+                  if (distance >= this.radiusSquared)
+                  {
+                      const angle = Math.atan2(center.y - y, center.x - x);
+
+                      if (this.options.linear)
+                      {
+                          this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000);
+                          this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000);
+                      }
+                      else
+                      {
+                          this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000);
+                          this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000);
+                      }
+                  }
+                  else
+                  {
+                      if (this.horizontal)
+                      {
+                          this.decelerateHorizontal();
+                      }
+                      if (this.vertical)
+                      {
+                          this.decelerateVertical();
+                      }
+
+                      this.horizontal = this.vertical = 0;
+                  }
+              }
+              else
+              {
+                  if (this.left !== null && x < this.left)
+                  {
+                      this.horizontal = Number(this.reverse) * this.options.speed * (60 / 1000);
+                  }
+                  else if (this.right !== null && x > this.right)
+                  {
+                      this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000);
+                  }
+                  else
+                  {
+                      this.decelerateHorizontal();
+                      this.horizontal = 0;
+                  }
+                  if (this.top !== null && y < this.top)
+                  {
+                      this.vertical = Number(this.reverse) * this.options.speed * (60 / 1000);
+                  }
+                  else if (this.bottom !== null && y > this.bottom)
+                  {
+                      this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000);
+                  }
+                  else
+                  {
+                      this.decelerateVertical();
+                      this.vertical = 0;
+                  }
+              }
+
+              return false;
+          }
+
+           decelerateHorizontal()
+          {
+              const decelerate = this.parent.plugins.get('decelerate', true);
+
+              if (this.horizontal && decelerate && !this.options.noDecelerate)
+              {
+                  decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) });
+              }
+          }
+
+           decelerateVertical()
+          {
+              const decelerate = this.parent.plugins.get('decelerate', true);
+
+              if (this.vertical && decelerate && !this.options.noDecelerate)
+              {
+                  decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) });
+              }
+          }
+
+           up()
+          {
+              if (this.paused)
+              {
+                  return false;
+              }
+              if (this.horizontal)
+              {
+                  this.decelerateHorizontal();
+              }
+              if (this.vertical)
+              {
+                  this.decelerateVertical();
+              }
+              this.horizontal = this.vertical = null;
+
+              return false;
+          }
+
+           update()
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+
+              if (this.horizontal || this.vertical)
+              {
+                  const center = this.parent.center;
+
+                  if (this.horizontal)
+                  {
+                      center.x += this.horizontal * this.options.speed;
+                  }
+                  if (this.vertical)
+                  {
+                      center.y += this.vertical * this.options.speed;
+                  }
+
+                  this.parent.moveCenter(center);
+                  this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' });
+              }
+          }
+      }
+
+      /** Options for {@link Pinch}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_PINCH_OPTIONS = {
+          noDrag: false,
+          percent: 1,
+          center: null,
+          factor: 1,
+          axis: 'all',
+      };
+
+      /**
+       * Plugin for enabling two-finger pinching (or dragging).
+       *
+       * @public
+       */
+      class Pinch extends Plugin
+      {
+          /** Options used to initialize this plugin. */
+          
+
+          /** Flags whether this plugin is active, i.e. a pointer is down on the viewport. */
+           __init() {this.active = false;}
+
+          /** Flags whether the viewport is being pinched. */
+           __init2() {this.pinching = false;}
+
+           __init3() {this.moved = false;}
+          
+
+          /**
+           * This is called by {@link Viewport.pinch}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);Pinch.prototype.__init.call(this);Pinch.prototype.__init2.call(this);Pinch.prototype.__init3.call(this);            this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options);
+          }
+
+           down()
+          {
+              if (this.parent.input.count() >= 2)
+              {
+                  this.active = true;
+
+                  return true;
+              }
+
+              return false;
+          }
+
+           isAxisX()
+          {
+              return ['all', 'x'].includes(this.options.axis);
+          }
+
+           isAxisY()
+          {
+              return ['all', 'y'].includes(this.options.axis);
+          }
+
+           move(e)
+          {
+              if (this.paused || !this.active)
+              {
+                  return false;
+              }
+
+              const x = e.data.global.x;
+              const y = e.data.global.y;
+
+              const pointers = this.parent.input.touches;
+
+              if (pointers.length >= 2)
+              {
+                  const first = pointers[0] ;
+                  const second = pointers[1] ;
+                  const last = (first.last && second.last)
+                      ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
+                      : null;
+
+                  if (first.id === e.data.pointerId)
+                  {
+                      first.last = { x, y, data: e.data } ;
+                  }
+                  else if (second.id === e.data.pointerId)
+                  {
+                      second.last = { x, y, data: e.data } ;
+                  }
+                  if (last)
+                  {
+                      let oldPoint;
+
+                      const point = {
+                          x: (first.last ).x
+                              + ((second.last ).x - (first.last ).x) / 2,
+                          y: (first.last ).y
+                              + ((second.last ).y - (first.last ).y) / 2,
+                      };
+
+                      if (!this.options.center)
+                      {
+                          oldPoint = this.parent.toLocal(point);
+                      }
+                      let dist = Math.sqrt(Math.pow(
+                          (second.last ).x - (first.last ).x, 2)
+                          + Math.pow((second.last ).y - (first.last ).y, 2));
+
+                      dist = dist === 0 ? dist = 0.0000000001 : dist;
+
+                      const change = (1 - last / dist) * this.options.percent
+                          * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
+
+                      if (this.isAxisX())
+                      {
+                          this.parent.scale.x += change;
+                      }
+                      if (this.isAxisY())
+                      {
+                          this.parent.scale.y += change;
+                      }
+
+                      this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point });
+
+                      const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+                      if (clamp)
+                      {
+                          clamp.clamp();
+                      }
+                      if (this.options.center)
+                      {
+                          this.parent.moveCenter(this.options.center);
+                      }
+                      else
+                      {
+                          const newPoint = this.parent.toGlobal(oldPoint );
+
+                          this.parent.x += (point.x - newPoint.x) * this.options.factor;
+                          this.parent.y += (point.y - newPoint.y) * this.options.factor;
+                          this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
+                      }
+                      if (!this.options.noDrag && this.lastCenter)
+                      {
+                          this.parent.x += (point.x - this.lastCenter.x) * this.options.factor;
+                          this.parent.y += (point.y - this.lastCenter.y) * this.options.factor;
+                          this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
+                      }
+
+                      this.lastCenter = point;
+                      this.moved = true;
+                  }
+                  else if (!this.pinching)
+                  {
+                      this.parent.emit('pinch-start', this.parent);
+                      this.pinching = true;
+                  }
+
+                  return true;
+              }
+
+              return false;
+          }
+
+           up()
+          {
+              if (this.pinching)
+              {
+                  if (this.parent.input.touches.length <= 1)
+                  {
+                      this.active = false;
+                      this.lastCenter = null;
+                      this.pinching = false;
+                      this.moved = false;
+                      this.parent.emit('pinch-end', this.parent);
+
+                      return true;
+                  }
+              }
+
+              return false;
+          }
+      }
+
+      const DEFAULT_SNAP_OPTIONS = {
+          topLeft: false,
+          friction: 0.8,
+          time: 1000,
+          ease: 'easeInOutSine',
+          interrupt: true,
+          removeOnComplete: false,
+          removeOnInterrupt: false,
+          forceStart: false
+      };
+
+      /**
+       * @event snap-start(Viewport) emitted each time a snap animation starts
+       * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
+       * @event snap-end(Viewport) emitted each time snap reaches its target
+       * @event snap-remove(Viewport) emitted if snap plugin is removed
+       */
+      class Snap extends Plugin
+      {
+          
+          
+          
+          
+
+          
+          
+          
+          
+          
+          
+
+          /**
+           * This is called by {@link Viewport.snap}.
+           */
+          constructor(parent, x, y, options = {})
+          {
+              super(parent);
+              this.options = Object.assign({}, DEFAULT_SNAP_OPTIONS, options);
+              this.ease = ease(options.ease, 'easeInOutSine');
+              this.x = x;
+              this.y = y;
+
+              if (this.options.forceStart)
+              {
+                  this.snapStart();
+              }
+          }
+
+           snapStart()
+          {
+              this.percent = 0;
+              this.snapping = { time: 0 };
+              const current = this.options.topLeft ? this.parent.corner : this.parent.center;
+
+              this.deltaX = this.x - current.x;
+              this.deltaY = this.y - current.y;
+              this.startX = current.x;
+              this.startY = current.y;
+              this.parent.emit('snap-start', this.parent);
+          }
+
+           wheel()
+          {
+              if (this.options.removeOnInterrupt)
+              {
+                  this.parent.plugins.remove('snap');
+              }
+
+              return false;
+          }
+
+           down()
+          {
+              if (this.options.removeOnInterrupt)
+              {
+                  this.parent.plugins.remove('snap');
+              }
+              else if (this.options.interrupt)
+              {
+                  this.snapping = null;
+              }
+
+              return false;
+          }
+
+           up()
+          {
+              if (this.parent.input.count() === 0)
+              {
+                  const decelerate = this.parent.plugins.get('decelerate', true);
+
+                  if (decelerate && (decelerate.x || decelerate.y))
+                  {
+                      decelerate.percentChangeX = decelerate.percentChangeY = this.options.friction;
+                  }
+              }
+
+              return false;
+          }
+
+           update(elapsed)
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+              if (this.options.interrupt && this.parent.input.count() !== 0)
+              {
+                  return;
+              }
+              if (!this.snapping)
+              {
+                  const current = this.options.topLeft ? this.parent.corner : this.parent.center;
+
+                  if (current.x !== this.x || current.y !== this.y)
+                  {
+                      this.snapStart();
+                  }
+              }
+              else
+              {
+                  const snapping = this.snapping;
+
+                  snapping.time += elapsed;
+                  let finished;
+                  let x;
+                  let y;
+
+                  const startX = this.startX ;
+                  const startY = this.startY ;
+                  const deltaX = this.deltaX ;
+                  const deltaY = this.deltaY ;
+
+                  if (snapping.time > this.options.time)
+                  {
+                      finished = true;
+                      x = startX + deltaX;
+                      y = startY + deltaY;
+                  }
+                  else
+                  {
+                      const percent = this.ease(snapping.time, 0, 1, this.options.time);
+
+                      x = startX + (deltaX * percent);
+                      y = startY + (deltaY * percent);
+                  }
+                  if (this.options.topLeft)
+                  {
+                      this.parent.moveCorner(x, y);
+                  }
+                  else
+                  {
+                      this.parent.moveCenter(x, y);
+                  }
+
+                  this.parent.emit('moved', { viewport: this.parent, type: 'snap' });
+
+                  if (finished)
+                  {
+                      if (this.options.removeOnComplete)
+                      {
+                          this.parent.plugins.remove('snap');
+                      }
+                      this.parent.emit('snap-end', this.parent);
+                      this.snapping = null;
+                  }
+              }
+          }
+      }
+
+      /** Options for {@link SnapZoom}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_SNAP_ZOOM_OPTIONS = {
+          width: 0,
+          height: 0,
+          time: 1000,
+          ease: 'easeInOutSine',
+          center: null,
+          interrupt: true,
+          removeOnComplete: false,
+          removeOnInterrupt: false,
+          forceStart: false,
+          noMove: false
+      };
+
+      /**
+       * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
+       * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
+       * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
+       */
+      class SnapZoom extends Plugin
+      {
+          
+
+          
+          
+          
+          
+          
+          
+
+
+
+
+
+
+
+          /**
+           * This is called by {@link Viewport.snapZoom}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);
+
+              this.options = Object.assign({}, DEFAULT_SNAP_ZOOM_OPTIONS, options);
+              this.ease = ease(this.options.ease);
+
+              // Assign defaults for typescript.
+              this.xIndependent = false;
+              this.yIndependent = false;
+              this.xScale = 0;
+              this.yScale = 0;
+
+              if (this.options.width > 0)
+              {
+                  this.xScale = parent.screenWidth / this.options.width;
+                  this.xIndependent = true;
+              }
+              if (this.options.height > 0)
+              {
+                  this.yScale = parent.screenHeight / this.options.height;
+                  this.yIndependent = true;
+              }
+
+              this.xScale = this.xIndependent ? (this.xScale ) : (this.yScale );
+              this.yScale = this.yIndependent ? (this.yScale ) : this.xScale;
+
+              if (this.options.time === 0)
+              {
+                  // TODO: Fix this
+                  // @ts-expect-error todo
+                  parent.container.scale.x = this.xScale;
+
+                  // TODO: Fix this
+                  // @ts-expect-error todo
+                  parent.container.scale.y = this.yScale;
+
+                  if (this.options.removeOnComplete)
+                  {
+                      this.parent.plugins.remove('snap-zoom');
+                  }
+              }
+              else if (options.forceStart)
+              {
+                  this.createSnapping();
+              }
+          }
+
+           createSnapping()
+          {
+              const startWorldScreenWidth = this.parent.worldScreenWidth;
+              const startWorldScreenHeight = this.parent.worldScreenHeight;
+              const endWorldScreenWidth = this.parent.screenWidth / this.xScale;
+              const endWorldScreenHeight = this.parent.screenHeight / this.yScale;
+
+              this.snapping = {
+                  time: 0,
+                  startX: startWorldScreenWidth,
+                  startY: startWorldScreenHeight,
+                  deltaX: endWorldScreenWidth - startWorldScreenWidth,
+                  deltaY: endWorldScreenHeight - startWorldScreenHeight
+              };
+
+              this.parent.emit('snap-zoom-start', this.parent);
+          }
+
+           resize()
+          {
+              this.snapping = null;
+
+              if (this.options.width > 0)
+              {
+                  this.xScale = this.parent.screenWidth / this.options.width;
+              }
+              if (this.options.height > 0)
+              {
+                  this.yScale = this.parent.screenHeight / this.options.height;
+              }
+              this.xScale = this.xIndependent ? this.xScale : this.yScale;
+              this.yScale = this.yIndependent ? this.yScale : this.xScale;
+          }
+
+           wheel()
+          {
+              if (this.options.removeOnInterrupt)
+              {
+                  this.parent.plugins.remove('snap-zoom');
+              }
+
+              return false;
+          }
+
+           down()
+          {
+              if (this.options.removeOnInterrupt)
+              {
+                  this.parent.plugins.remove('snap-zoom');
+              }
+              else if (this.options.interrupt)
+              {
+                  this.snapping = null;
+              }
+
+              return false;
+          }
+
+           update(elapsed)
+          {
+              if (this.paused)
+              {
+                  return;
+              }
+              if (this.options.interrupt && this.parent.input.count() !== 0)
+              {
+                  return;
+              }
+
+              let oldCenter;
+
+              if (!this.options.center && !this.options.noMove)
+              {
+                  oldCenter = this.parent.center;
+              }
+              if (!this.snapping)
+              {
+                  if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale)
+                  {
+                      this.createSnapping();
+                  }
+              }
+              else if (this.snapping)
+              {
+                  const snapping = this.snapping;
+
+                  snapping.time += elapsed;
+
+                  if (snapping.time >= this.options.time)
+                  {
+                      this.parent.scale.set(this.xScale, this.yScale);
+                      if (this.options.removeOnComplete)
+                      {
+                          this.parent.plugins.remove('snap-zoom');
+                      }
+                      this.parent.emit('snap-zoom-end', this.parent);
+                      this.snapping = null;
+                  }
+                  else
+                  {
+                      const snapping = this.snapping;
+                      const worldScreenWidth = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
+                      const worldScreenHeight = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
+
+                      this.parent.scale.x = this.parent.screenWidth / worldScreenWidth;
+                      this.parent.scale.y = this.parent.screenHeight / worldScreenHeight;
+                  }
+                  const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+                  if (clamp)
+                  {
+                      clamp.clamp();
+                  }
+                  if (!this.options.noMove)
+                  {
+                      if (!this.options.center)
+                      {
+                          this.parent.moveCenter(oldCenter );
+                      }
+                      else
+                      {
+                          this.parent.moveCenter(this.options.center);
+                      }
+                  }
+              }
+          }
+
+           resume()
+          {
+              this.snapping = null;
+              super.resume();
+          }
+      }
+
+      /** Options for {@link Wheel}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_WHEEL_OPTIONS = {
+          percent: 0.1,
+          smooth: false,
+          interrupt: true,
+          reverse: false,
+          center: null,
+          lineHeight: 20,
+          axis: 'all',
+          trackpadPinch: false,
+          wheelZoom: true,
+      };
+
+      /**
+       * Plugin for handling wheel scrolling for viewport zoom.
+       *
+       * @event wheel({wheel: {dx, dy, dz}, event, viewport})
+       */
+      class Wheel extends Plugin
+      {
+          
+
+          
+          
+          
+
+          /**
+           * This is called by {@link Viewport.wheel}.
+           */
+          constructor(parent, options = {})
+          {
+              super(parent);
+              this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options);
+          }
+
+           down()
+          {
+              if (this.options.interrupt)
+              {
+                  this.smoothing = null;
+              }
+
+              return false;
+          }
+
+           isAxisX()
+          {
+              return ['all', 'x'].includes(this.options.axis);
+          }
+
+           isAxisY()
+          {
+              return ['all', 'y'].includes(this.options.axis);
+          }
+
+           update()
+          {
+              if (this.smoothing)
+              {
+                  const point = this.smoothingCenter;
+                  const change = this.smoothing;
+                  let oldPoint;
+
+                  if (!this.options.center)
+                  {
+                      oldPoint = this.parent.toLocal(point );
+                  }
+                  if (this.isAxisX())
+                  {
+                      this.parent.scale.x += change.x;
+                  }
+                  if (this.isAxisY())
+                  {
+                      this.parent.scale.y += change.y;
+                  }
+
+                  this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+                  const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+                  if (clamp)
+                  {
+                      clamp.clamp();
+                  }
+                  if (this.options.center)
+                  {
+                      this.parent.moveCenter(this.options.center);
+                  }
+                  else
+                  {
+                      const newPoint = this.parent.toGlobal(oldPoint );
+
+                      this.parent.x += (point ).x - newPoint.x;
+                      this.parent.y += (point ).y - newPoint.y;
+                  }
+
+                  this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+                  (this.smoothingCount )++;
+
+                  if (this.smoothingCount  >= this.options.smooth)
+                  {
+                      this.smoothing = null;
+                  }
+              }
+          }
+
+           pinch(e)
+          {
+              const point = this.parent.input.getPointerPosition(e);
+              const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
+              const change = Math.pow(2, (1 + this.options.percent) * step);
+
+              let oldPoint;
+
+              if (!this.options.center)
+              {
+                  oldPoint = this.parent.toLocal(point);
+              }
+              if (this.isAxisX())
+              {
+                  this.parent.scale.x *= change;
+              }
+              if (this.isAxisY())
+              {
+                  this.parent.scale.y *= change;
+              }
+              this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+              const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+              if (clamp)
+              {
+                  clamp.clamp();
+              }
+              if (this.options.center)
+              {
+                  this.parent.moveCenter(this.options.center);
+              }
+              else
+              {
+                  const newPoint = this.parent.toGlobal(oldPoint );
+
+                  this.parent.x += point.x - newPoint.x;
+                  this.parent.y += point.y - newPoint.y;
+              }
+              this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+              this.parent.emit('wheel',
+                  { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+          }
+
+           wheel(e)
+          {
+              if (this.paused)
+              {
+                  return false;
+              }
+
+              if (e.ctrlKey && this.options.trackpadPinch)
+              {
+                  this.pinch(e);
+              }
+              else if (this.options.wheelZoom)
+              {
+                  const point = this.parent.input.getPointerPosition(e);
+                  const sign = this.options.reverse ? -1 : 1;
+                  const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
+                  const change = Math.pow(2, (1 + this.options.percent) * step);
+
+                  if (this.options.smooth)
+                  {
+                      const original = {
+                          x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount )) : 0,
+                          y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount )) : 0
+                      };
+
+                      this.smoothing = {
+                          x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
+                          y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
+                      };
+                      this.smoothingCount = 0;
+                      this.smoothingCenter = point;
+                  }
+                  else
+                  {
+                      let oldPoint;
+
+                      if (!this.options.center)
+                      {
+                          oldPoint = this.parent.toLocal(point);
+                      }
+                      if (this.isAxisX())
+                      {
+                          this.parent.scale.x *= change;
+                      }
+                      if (this.isAxisY())
+                      {
+                          this.parent.scale.y *= change;
+                      }
+                      this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
+                      const clamp = this.parent.plugins.get('clamp-zoom', true);
+
+                      if (clamp)
+                      {
+                          clamp.clamp();
+                      }
+                      if (this.options.center)
+                      {
+                          this.parent.moveCenter(this.options.center);
+                      }
+                      else
+                      {
+                          const newPoint = this.parent.toGlobal(oldPoint );
+
+                          this.parent.x += point.x - newPoint.x;
+                          this.parent.y += point.y - newPoint.y;
+                      }
+                  }
+
+                  this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
+                  this.parent.emit('wheel',
+                      { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+              }
+
+              return !this.parent.options.passiveWheel;
+          }
+      }
+
+      /**
+       * Handles all input for Viewport
+       *
+       * @internal
+       * @ignore
+       * @private
+       */
+      class InputManager
+      {
+          
+
+          
+          
+          
+          
+          /** List of active touches on viewport */
+          
+
+          constructor(viewport)
+          {
+              this.viewport = viewport;
+              this.touches = [];
+
+              this.addListeners();
+          }
+
+          /** Add input listeners */
+           addListeners()
+          {
+              this.viewport.interactive = true;
+              if (!this.viewport.forceHitArea)
+              {
+                  this.viewport.hitArea = new math.Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
+              }
+              this.viewport.on('pointerdown', this.down, this);
+              this.viewport.on('pointermove', this.move, this);
+              this.viewport.on('pointerup', this.up, this);
+              this.viewport.on('pointerupoutside', this.up, this);
+              this.viewport.on('pointercancel', this.up, this);
+              this.viewport.on('pointerout', this.up, this);
+              this.wheelFunction = (e) => this.handleWheel(e);
+              this.viewport.options.divWheel.addEventListener(
+                  'wheel',
+                  this.wheelFunction ,
+                  { passive: this.viewport.options.passiveWheel });
+              this.isMouseDown = false;
+          }
+
+          /**
+           * Removes all event listeners from viewport
+           * (useful for cleanup of wheel when removing viewport)
+           */
+           destroy()
+          {
+              this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction );
+          }
+
+          /**
+           * handle down events for viewport
+           *
+           * @param {PIXI.InteractionEvent} event
+           */
+           down(event)
+          {
+              if (this.viewport.pause || !this.viewport.worldVisible)
+              {
+                  return;
+              }
+              if (event.data.pointerType === 'mouse')
+              {
+                  this.isMouseDown = true;
+              }
+              else if (!this.get(event.data.pointerId))
+              {
+                  this.touches.push({ id: event.data.pointerId, last: null });
+              }
+              if (this.count() === 1)
+              {
+                  this.last = event.data.global.clone();
+
+                  // clicked event does not fire if viewport is decelerating or bouncing
+                  const decelerate = this.viewport.plugins.get('decelerate', true);
+                  const bounce = this.viewport.plugins.get('bounce', true);
+
+                  if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive()))
+                  {
+                      this.clickedAvailable = true;
+                  }
+                  else
+                  {
+                      this.clickedAvailable = false;
+                  }
+              }
+              else
+              {
+                  this.clickedAvailable = false;
+              }
+
+              const stop = this.viewport.plugins.down(event);
+
+              if (stop && this.viewport.options.stopPropagation)
+              {
+                  event.stopPropagation();
+              }
+          }
+
+          /** Clears all pointer events */
+           clear()
+          {
+              this.isMouseDown = false;
+              this.touches = [];
+              this.last = null;
+          }
+
+          /**
+           * @param {number} change
+           * @returns whether change exceeds threshold
+           */
+           checkThreshold(change)
+          {
+              if (Math.abs(change) >= this.viewport.threshold)
+              {
+                  return true;
+              }
+
+              return false;
+          }
+
+          /** Handle move events for viewport */
+           move(event)
+          {
+              if (this.viewport.pause || !this.viewport.worldVisible)
+              {
+                  return;
+              }
+
+              const stop = this.viewport.plugins.move(event);
+
+              if (this.clickedAvailable && this.last)
+              {
+                  const distX = event.data.global.x - this.last.x;
+                  const distY = event.data.global.y - this.last.y;
+
+                  if (this.checkThreshold(distX) || this.checkThreshold(distY))
+                  {
+                      this.clickedAvailable = false;
+                  }
+              }
+
+              if (stop && this.viewport.options.stopPropagation)
+              {
+                  event.stopPropagation();
+              }
+          }
+
+          /** Handle up events for viewport */
+           up(event)
+          {
+              if (this.viewport.pause || !this.viewport.worldVisible)
+              {
+                  return;
+              }
+
+              if (event.data.pointerType === 'mouse')
+              {
+                  this.isMouseDown = false;
+              }
+
+              if (event.data.pointerType !== 'mouse')
+              {
+                  this.remove(event.data.pointerId);
+              }
+
+              const stop = this.viewport.plugins.up(event);
+
+              if (this.clickedAvailable && this.count() === 0 && this.last)
+              {
+                  this.viewport.emit('clicked', {
+                      event,
+                      screen: this.last,
+                      world: this.viewport.toWorld(this.last),
+                      viewport: this
+                  });
+                  this.clickedAvailable = false;
+              }
+
+              if (stop && this.viewport.options.stopPropagation)
+              {
+                  event.stopPropagation();
+              }
+          }
+
+          /** Gets pointer position if this.interaction is set */
+           getPointerPosition(event)
+          {
+              const point = new math.Point();
+
+              if (this.viewport.options.interaction)
+              {
+                  this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY);
+              }
+              else
+              {
+                  point.x = event.clientX;
+                  point.y = event.clientY;
+              }
+
+              return point;
+          }
+
+          /** Handle wheel events */
+           handleWheel(event)
+          {
+              if (this.viewport.pause || !this.viewport.worldVisible)
+              {
+                  return;
+              }
+
+              // do not handle events coming from other elements
+              if (this.viewport.options.interaction
+                  && (this.viewport.options.interaction ).interactionDOMElement !== event.target)
+              {
+                  return;
+              }
+
+              // only handle wheel events where the mouse is over the viewport
+              const point = this.viewport.toLocal(this.getPointerPosition(event));
+
+              if (this.viewport.left <= point.x
+                  && point.x <= this.viewport.right
+                  && this.viewport.top <= point.y
+                  && point.y <= this.viewport.bottom)
+              {
+                  const stop = this.viewport.plugins.wheel(event);
+
+                  if (stop && !this.viewport.options.passiveWheel)
+                  {
+                      event.preventDefault();
+                  }
+              }
+          }
+
+           pause()
+          {
+              this.touches = [];
+              this.isMouseDown = false;
+          }
+
+          /** Get touch by id */
+           get(id)
+          {
+              for (const touch of this.touches)
+              {
+                  if (touch.id === id)
+                  {
+                      return touch;
+                  }
+              }
+
+              return null;
+          }
+
+          /** Remove touch by number */
+          remove(id)
+          {
+              for (let i = 0; i < this.touches.length; i++)
+              {
+                  if (this.touches[i].id === id)
+                  {
+                      this.touches.splice(i, 1);
+
+                      return;
+                  }
+              }
+          }
+
+          /**
+           * @returns {number} count of mouse/touch pointers that are down on the viewport
+           */
+          count()
+          {
+              return (this.isMouseDown ? 1 : 0) + this.touches.length;
+          }
+      }
+
+      function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const PLUGIN_ORDER = [
+          'drag',
+          'pinch',
+          'wheel',
+          'follow',
+          'mouse-edges',
+          'decelerate',
+          'animate',
+          'bounce',
+          'snap-zoom',
+          'clamp-zoom',
+          'snap',
+          'clamp',
+      ];
+
+      /**
+       * Use this to access current plugins or add user-defined plugins
+       *
+       * @public
+       */
+      class PluginManager
+      {
+          /** Maps mounted plugins by their type */
+          
+
+          /**
+           * List of plugins mounted
+           *
+           * This list is kept sorted by the internal priority of plugins (hard-coded).
+           */
+          
+
+          /** The viewport using the plugins managed by `this`. */
+          
+
+          /** This is called by {@link Viewport} to initialize the {@link Viewport.plugins plugins}. */
+          constructor(viewport)
+          {
+              this.viewport = viewport;
+              this.list = [];
+              this.plugins = {};
+          }
+
+          /**
+           * Inserts a named plugin or a user plugin into the viewport
+           * default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce',
+           * 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
+           *
+           * @param {string} name of plugin
+           * @param {Plugin} plugin - instantiated Plugin class
+           * @param {number} index to insert userPlugin (otherwise inserts it at the end)
+           */
+           add(name, plugin, index = PLUGIN_ORDER.length)
+          {
+              this.plugins[name] = plugin;
+
+              const current = PLUGIN_ORDER.indexOf(name);
+
+              if (current !== -1)
+              {
+                  PLUGIN_ORDER.splice(current, 1);
+              }
+
+              PLUGIN_ORDER.splice(index, 0, name);
+              this.sort();
+          }
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+          /**
+           * Get plugin
+           *
+           * @param {string} name of plugin
+           * @param {boolean} [ignorePaused] return null if plugin is paused
+           */
+           get(name, ignorePaused)
+          {
+              if (ignorePaused)
+              {
+                  if (_optionalChain([this, 'access', _ => _.plugins, 'access', _2 => _2[name], 'optionalAccess', _3 => _3.paused]))
+                  {
+                      return null;
+                  }
+              }
+
+              return this.plugins[name] ;
+          }
+
+          /**
+           * Update all active plugins
+           *
+           * @internal
+           * @ignore
+           * @param {number} elapsed type in milliseconds since last update
+           */
+           update(elapsed)
+          {
+              for (const plugin of this.list)
+              {
+                  plugin.update(elapsed);
+              }
+          }
+
+          /**
+           * Resize all active plugins
+           *
+           * @internal
+           * @ignore
+           */
+           resize()
+          {
+              for (const plugin of this.list)
+              {
+                  plugin.resize();
+              }
+          }
+
+          /** Clamps and resets bounce and decelerate (as needed) after manually moving viewport */
+           reset()
+          {
+              for (const plugin of this.list)
+              {
+                  plugin.reset();
+              }
+          }
+
+          /** removes all installed plugins */
+           removeAll()
+          {
+              this.plugins = {};
+              this.sort();
+          }
+
+          /**
+           * Removes installed plugin
+           *
+           * @param {string} name of plugin (e.g., 'drag', 'pinch')
+           */
+           remove(name)
+          {
+              if (this.plugins[name])
+              {
+                  delete this.plugins[name];
+                  this.viewport.emit(`${name}-remove`);
+                  this.sort();
+              }
+          }
+
+          /**
+           * Pause plugin
+           *
+           * @param {string} name of plugin (e.g., 'drag', 'pinch')
+           */
+           pause(name)
+          {
+              _optionalChain([this, 'access', _4 => _4.plugins, 'access', _5 => _5[name], 'optionalAccess', _6 => _6.pause, 'call', _7 => _7()]);
+          }
+
+          /**
+           * Resume plugin
+           *
+           * @param {string} name of plugin (e.g., 'drag', 'pinch')
+           */
+           resume(name)
+          {
+              _optionalChain([this, 'access', _8 => _8.plugins, 'access', _9 => _9[name], 'optionalAccess', _10 => _10.resume, 'call', _11 => _11()]);
+          }
+
+          /**
+           * Sort plugins according to PLUGIN_ORDER
+           *
+           * @internal
+           * @ignore
+           */
+           sort()
+          {
+              this.list = [];
+
+              for (const plugin of PLUGIN_ORDER)
+              {
+                  if (this.plugins[plugin])
+                  {
+                      this.list.push(this.plugins[plugin] );
+                  }
+              }
+          }
+
+          /**
+           * Handle down for all plugins
+           *
+           * @internal
+           * @ignore
+           */
+           down(event)
+          {
+              let stop = false;
+
+              for (const plugin of this.list)
+              {
+                  if (plugin.down(event))
+                  {
+                      stop = true;
+                  }
+              }
+
+              return stop;
+          }
+
+          /**
+           * Handle move for all plugins
+           *
+           * @internal
+           * @ignore
+           */
+           move(event)
+          {
+              let stop = false;
+
+              for (const plugin of this.viewport.plugins.list)
+              {
+                  if (plugin.move(event))
+                  {
+                      stop = true;
+                  }
+              }
+
+              return stop;
+          }
+
+          /**
+           * Handle up for all plugins
+           *
+           * @internal
+           * @ignore
+           */
+           up(event)
+          {
+              let stop = false;
+
+              for (const plugin of this.list)
+              {
+                  if (plugin.up(event))
+                  {
+                      stop = true;
+                  }
+              }
+
+              return stop;
+          }
+
+          /**
+           * Handle wheel event for all plugins
+           *
+           * @internal
+           * @ignore
+           */
+           wheel(e)
+          {
+              let result = false;
+
+              for (const plugin of this.list)
+              {
+                  if (plugin.wheel(e))
+                  {
+                      result = true;
+                  }
+              }
+
+              return result;
+          }
+      }
+
+      /** Options for {@link Viewport}. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const DEFAULT_VIEWPORT_OPTIONS = {
+          screenWidth: window.innerWidth,
+          screenHeight: window.innerHeight,
+          worldWidth: null,
+          worldHeight: null,
+          threshold: 5,
+          passiveWheel: true,
+          stopPropagation: false,
+          forceHitArea: null,
+          noTicker: false,
+          interaction: null,
+          disableOnContextMenu: false,
+          ticker: ticker.Ticker.shared,
+      };
+
+      /**
+       * Main class to use when creating a Viewport
+       *
+       * @public
+       * @fires clicked
+       * @fires drag-start
+       * @fires drag-end
+       * @fires drag-remove
+       * @fires pinch-start
+       * @fires pinch-end
+       * @fires pinch-remove
+       * @fires snap-start
+       * @fires snap-end
+       * @fires snap-remove
+       * @fires snap-zoom-start
+       * @fires snap-zoom-end
+       * @fires snap-zoom-remove
+       * @fires bounce-x-start
+       * @fires bounce-x-end
+       * @fires bounce-y-start
+       * @fires bounce-y-end
+       * @fires bounce-remove
+       * @fires wheel
+       * @fires wheel-remove
+       * @fires wheel-scroll
+       * @fires wheel-scroll-remove
+       * @fires mouse-edge-start
+       * @fires mouse-edge-end
+       * @fires mouse-edge-remove
+       * @fires moved
+       * @fires moved-end
+       * @fires zoomed
+       * @fires zoomed-end
+       * @fires frame-end
+       */
+      class Viewport extends display.Container
+      {
+          /** Flags whether the viewport is being panned */
+          
+
+          
+          
+
+          /** Number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event */
+          
+
+          
+
+          /** Use this to add user plugins or access existing plugins (e.g., to pause, resume, or remove them) */
+          
+
+          /** Flags whether the viewport zoom is being changed. */
+          
+
+          
+
+          /** The options passed when creating this viewport, merged with the default values */
+          
+
+          
+          
+          
+          
+          
+          
+          
+           __init() {this._disableOnContextMenu = (e) => e.preventDefault();}
+
+          /**
+           * @param {IViewportOptions} ViewportOptions
+           * @param {number} [options.screenWidth=window.innerWidth]
+           * @param {number} [options.screenHeight=window.innerHeight]
+           * @param {number} [options.worldWidth=this.width]
+           * @param {number} [options.worldHeight=this.height]
+           * @param {number} [options.threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch)
+           * or disable a clicked event
+           * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive (note: if false,
+           * e.preventDefault() will be called when wheel is used over the viewport)
+           * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
+           * (except wheel events, see options.passiveWheel)
+           * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
+           * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
+           * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
+           * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated
+           * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
+           * location on screen
+           * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
+           * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
+           */
+          constructor(options = {})
+          {
+              super();Viewport.prototype.__init.call(this);            this.options = Object.assign(
+                  {},
+                  { divWheel: document.body },
+                  DEFAULT_VIEWPORT_OPTIONS,
+                  options
+              );
+
+              this.screenWidth = this.options.screenWidth;
+              this.screenHeight = this.options.screenHeight;
+
+              this._worldWidth = this.options.worldWidth;
+              this._worldHeight = this.options.worldHeight;
+              this.forceHitArea = this.options.forceHitArea;
+              this.threshold = this.options.threshold;
+
+              this.options.divWheel = this.options.divWheel || document.body;
+
+              if (this.options.disableOnContextMenu)
+              {
+                  this.options.divWheel.addEventListener('contextmenu', this._disableOnContextMenu);
+              }
+              if (!this.options.noTicker)
+              {
+                  this.tickerFunction = () => this.update(this.options.ticker.elapsedMS);
+                  this.options.ticker.add(this.tickerFunction);
+              }
+
+              this.input = new InputManager(this);
+              this.plugins = new PluginManager(this);
+          }
+
+          /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */
+          destroy(options)
+          {
+              if (!this.options.noTicker && this.tickerFunction)
+              {
+                  this.options.ticker.remove(this.tickerFunction);
+              }
+              if (this.options.disableOnContextMenu)
+              {
+                  this.options.divWheel.removeEventListener('contextmenu', this._disableOnContextMenu);
+              }
+
+              this.input.destroy();
+              super.destroy(options);
+          }
+
+          /**
+           * Update viewport on each frame.
+           *
+           * By default, you do not need to call this unless you set `options.noTicker=true`.
+           *
+           * @param {number} elapsed time in milliseconds since last update
+           */
+          update(elapsed)
+          {
+              if (!this.pause)
+              {
+                  this.plugins.update(elapsed);
+
+                  if (this.lastViewport)
+                  {
+                      // Check for moved-end event
+                      if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y)
+                      {
+                          this.moving = true;
+                      }
+                      else if (this.moving)
+                      {
+                          this.emit('moved-end', this);
+                          this.moving = false;
+                      }
+
+                      // Check for zoomed-end event
+                      if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y)
+                      {
+                          this.zooming = true;
+                      }
+                      else if (this.zooming)
+                      {
+                          this.emit('zoomed-end', this);
+                          this.zooming = false;
+                      }
+                  }
+
+                  if (!this.forceHitArea)
+                  {
+                      this._hitAreaDefault = new math.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
+                      this.hitArea = this._hitAreaDefault;
+                  }
+
+                  this._dirty = this._dirty || !this.lastViewport
+                      || this.lastViewport.x !== this.x || this.lastViewport.y !== this.y
+                      || this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y;
+
+                  this.lastViewport = {
+                      x: this.x,
+                      y: this.y,
+                      scaleX: this.scale.x,
+                      scaleY: this.scale.y
+                  };
+                  this.emit('frame-end', this);
+              }
+          }
+
+          /** Use this to set screen and world sizes, needed for pinch/wheel/clamp/bounce. */
+          resize(
+              screenWidth = window.innerWidth,
+              screenHeight = window.innerHeight,
+              worldWidth,
+              worldHeight
+          )
+          {
+              this.screenWidth = screenWidth;
+              this.screenHeight = screenHeight;
+
+              if (typeof worldWidth !== 'undefined')
+              {
+                  this._worldWidth = worldWidth;
+              }
+              if (typeof worldHeight !== 'undefined')
+              {
+                  this._worldHeight = worldHeight;
+              }
+
+              this.plugins.resize();
+              this.dirty = true;
+          }
+
+          /** World width, in pixels */
+          get worldWidth()
+          {
+              if (this._worldWidth)
+              {
+                  return this._worldWidth;
+              }
+
+              return this.width / this.scale.x;
+          }
+          set worldWidth(value)
+          {
+              this._worldWidth = value;
+              this.plugins.resize();
+          }
+
+          /** World height, in pixels */
+          get worldHeight()
+          {
+              if (this._worldHeight)
+              {
+                  return this._worldHeight;
+              }
+
+              return this.height / this.scale.y;
+          }
+          set worldHeight(value)
+          {
+              this._worldHeight = value;
+              this.plugins.resize();
+          }
+
+          /** Get visible world bounds of viewport */
+           getVisibleBounds()
+          {
+              return new math.Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
+          }
+
+          /** Change coordinates from screen to world */
+          
+
+
+
+           toWorld(x, y)
+          {
+              if (arguments.length === 2)
+              {
+                  return this.toLocal(new math.Point(x , y));
+              }
+
+              return this.toLocal(x );
+          }
+
+          /** Change coordinates from world to screen */
+          
+
+
+
+           toScreen(x, y)
+          {
+              if (arguments.length === 2)
+              {
+                  return this.toGlobal(new math.Point(x , y));
+              }
+
+              return this.toGlobal(x );
+          }
+
+          /** Screen width in world coordinates */
+          get worldScreenWidth()
+          {
+              return this.screenWidth / this.scale.x;
+          }
+
+          /** Screen height in world coordinates */
+          get worldScreenHeight()
+          {
+              return this.screenHeight / this.scale.y;
+          }
+
+          /** World width in screen coordinates */
+          get screenWorldWidth()
+          {
+              return this.worldWidth * this.scale.x;
+          }
+
+          /** World height in screen coordinates */
+          get screenWorldHeight()
+          {
+              return this.worldHeight * this.scale.y;
+          }
+
+          /** Center of screen in world coordinates */
+          get center()
+          {
+              return new math.Point(
+                  (this.worldScreenWidth / 2) - (this.x / this.scale.x),
+                  (this.worldScreenHeight / 2) - (this.y / this.scale.y),
+              );
+          }
+          set center(value)
+          {
+              this.moveCenter(value);
+          }
+
+          /** Move center of viewport to (x, y) */
+          
+
+
+
+
+           moveCenter(...args)
+          {
+              let x;
+              let y;
+
+              if (typeof args[0] === 'number')
+              {
+                  x = args[0];
+                  y = args[1] ;
+              }
+              else
+              {
+                  x = args[0].x;
+                  y = args[0].y;
+              }
+
+              const newX = ((this.worldScreenWidth / 2) - x) * this.scale.x;
+              const newY = ((this.worldScreenHeight / 2) - y) * this.scale.y;
+
+              if (this.x !== newX || this.y !== newY)
+              {
+                  this.position.set(newX, newY);
+                  this.plugins.reset();
+                  this.dirty = true;
+              }
+
+              return this;
+          }
+
+          /** Top-left corner of Viewport */
+          get corner()
+          {
+              return new math.Point(-this.x / this.scale.x, -this.y / this.scale.y);
+          }
+          set corner(value)
+          {
+              this.moveCorner(value);
+          }
+
+          /** Move Viewport's top-left corner; also clamps and resets decelerate and bounce (as needed) */
+          
+
+
+
+
+           moveCorner(...args)
+          {
+              let x;
+              let y;
+
+              if (args.length === 1)
+              {
+                  x = -args[0].x * this.scale.x;
+                  y = -args[0].y * this.scale.y;
+              }
+              else
+              {
+                  x = -args[0] * this.scale.x;
+                  y = -args[1] * this.scale.y;
+              }
+
+              if (x !== this.x || y !== this.y)
+              {
+                  this.position.set(x, y);
+                  this.plugins.reset();
+                  this.dirty = true;
+              }
+
+              return this;
+          }
+
+          /** Get how many world pixels fit in screen's width */
+          get screenWidthInWorldPixels()
+          {
+              return this.screenWidth / this.scale.x;
+          }
+
+          /** Get how many world pixels fit on screen's height */
+          get screenHeightInWorldPixels()
+          {
+              return this.screenHeight / this.scale.y;
+          }
+
+          /**
+           * Find the scale value that fits a world width on the screen
+           * does not change the viewport (use fit... to change)
+           *
+           * @param width - Width in world pixels
+           * @return - scale
+           */
+          findFitWidth(width)
+          {
+              return this.screenWidth / width;
+          }
+
+          /**
+           * Finds the scale value that fits a world height on the screens
+           * does not change the viewport (use fit... to change)
+           *
+           * @param height - Height in world pixels
+           * @return - scale
+           */
+          findFitHeight(height)
+          {
+              return this.screenHeight / height;
+          }
+
+          /**
+           * Finds the scale value that fits the smaller of a world width and world height on the screen
+           * does not change the viewport (use fit... to change)
+           *
+           * @param {number} width in world pixels
+           * @param {number} height in world pixels
+           * @returns {number} scale
+           */
+          findFit(width, height)
+          {
+              const scaleX = this.screenWidth / width;
+              const scaleY = this.screenHeight / height;
+
+              return Math.min(scaleX, scaleY);
+          }
+
+          /**
+           * Finds the scale value that fits the larger of a world width and world height on the screen
+           * does not change the viewport (use fit... to change)
+           *
+           * @param {number} width in world pixels
+           * @param {number} height in world pixels
+           * @returns {number} scale
+           */
+          findCover(width, height)
+          {
+              const scaleX = this.screenWidth / width;
+              const scaleY = this.screenHeight / height;
+
+              return Math.max(scaleX, scaleY);
+          }
+
+          /**
+           * Change zoom so the width fits in the viewport
+           *
+           * @param width - width in world coordinates
+           * @param center - maintain the same center
+           * @param scaleY - whether to set scaleY=scaleX
+           * @param noClamp - whether to disable clamp-zoom
+           * @returns {Viewport} this
+           */
+          fitWidth(width = this.worldWidth, center, scaleY = true, noClamp)
+          {
+              let save;
+
+              if (center)
+              {
+                  save = this.center;
+              }
+              this.scale.x = this.screenWidth / width;
+
+              if (scaleY)
+              {
+                  this.scale.y = this.scale.x;
+              }
+
+              const clampZoom = this.plugins.get('clamp-zoom', true);
+
+              if (!noClamp && clampZoom)
+              {
+                  clampZoom.clamp();
+              }
+
+              if (center && save)
+              {
+                  this.moveCenter(save);
+              }
+
+              return this;
+          }
+
+          /**
+           * Change zoom so the height fits in the viewport
+           *
+           * @param {number} [height=this.worldHeight] in world coordinates
+           * @param {boolean} [center] maintain the same center of the screen after zoom
+           * @param {boolean} [scaleX=true] whether to set scaleX = scaleY
+           * @param {boolean} [noClamp] whether to disable clamp-zoom
+           * @returns {Viewport} this
+           */
+          fitHeight(height = this.worldHeight, center, scaleX = true, noClamp)
+          {
+              let save;
+
+              if (center)
+              {
+                  save = this.center;
+              }
+              this.scale.y = this.screenHeight / height;
+
+              if (scaleX)
+              {
+                  this.scale.x = this.scale.y;
+              }
+
+              const clampZoom = this.plugins.get('clamp-zoom', true);
+
+              if (!noClamp && clampZoom)
+              {
+                  clampZoom.clamp();
+              }
+
+              if (center && save)
+              {
+                  this.moveCenter(save);
+              }
+
+              return this;
+          }
+
+          /**
+           * Change zoom so it fits the entire world in the viewport
+           *
+           * @param {boolean} center maintain the same center of the screen after zoom
+           * @returns {Viewport} this
+           */
+          fitWorld(center)
+          {
+              let save;
+
+              if (center)
+              {
+                  save = this.center;
+              }
+
+              this.scale.x = this.screenWidth / this.worldWidth;
+              this.scale.y = this.screenHeight / this.worldHeight;
+
+              if (this.scale.x < this.scale.y)
+              {
+                  this.scale.y = this.scale.x;
+              }
+              else
+              {
+                  this.scale.x = this.scale.y;
+              }
+
+              const clampZoom = this.plugins.get('clamp-zoom', true);
+
+              if (clampZoom)
+              {
+                  clampZoom.clamp();
+              }
+
+              if (center && save)
+              {
+                  this.moveCenter(save);
+              }
+
+              return this;
+          }
+
+          /**
+           * Change zoom so it fits the size or the entire world in the viewport
+           *
+           * @param {boolean} [center] maintain the same center of the screen after zoom
+           * @param {number} [width=this.worldWidth] desired width
+           * @param {number} [height=this.worldHeight] desired height
+           * @returns {Viewport} this
+           */
+          fit(center, width = this.worldWidth, height = this.worldHeight)
+          {
+              let save;
+
+              if (center)
+              {
+                  save = this.center;
+              }
+
+              this.scale.x = this.screenWidth / width;
+              this.scale.y = this.screenHeight / height;
+
+              if (this.scale.x < this.scale.y)
+              {
+                  this.scale.y = this.scale.x;
+              }
+              else
+              {
+                  this.scale.x = this.scale.y;
+              }
+              const clampZoom = this.plugins.get('clamp-zoom', true);
+
+              if (clampZoom)
+              {
+                  clampZoom.clamp();
+              }
+              if (center && save)
+              {
+                  this.moveCenter(save);
+              }
+
+              return this;
+          }
+
+          // this doesn't work
+          // set visible(value: boolean)
+          // {
+          //     console.log('hello!');
+          //     if (!value)
+          //     {
+          //         debugger;
+          //         this.input.clear();
+          //     }
+          //     super.visible = value;
+          // }
+
+          // get visible(): boolean
+          // {
+          //     return super.visible;
+          // }
+
+          /**
+           * Zoom viewport to specific value.
+           *
+           * @param {number} scale value (e.g., 1 would be 100%, 0.25 would be 25%)
+           * @param {boolean} [center] maintain the same center of the screen after zoom
+           * @return {Viewport} this
+           */
+          setZoom(scale, center)
+          {
+              let save;
+
+              if (center)
+              {
+                  save = this.center;
+              }
+              this.scale.set(scale);
+              const clampZoom = this.plugins.get('clamp-zoom', true);
+
+              if (clampZoom)
+              {
+                  clampZoom.clamp();
+              }
+              if (center && save)
+              {
+                  this.moveCenter(save);
+              }
+
+              return this;
+          }
+
+          /**
+           * Zoom viewport by a certain percent (in both x and y direction).
+           *
+           * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
+           * @param {boolean} [center] maintain the same center of the screen after zoom
+           * @return {Viewport} this
+           */
+          zoomPercent(percent, center)
+          {
+              return this.setZoom(this.scale.x + (this.scale.x * percent), center);
+          }
+
+          /**
+           * Zoom viewport by increasing/decreasing width by a certain number of pixels.
+           *
+           * @param {number} change in pixels
+           * @param {boolean} [center] maintain the same center of the screen after zoom
+           * @return {Viewport} this
+           */
+          zoom(change, center)
+          {
+              this.fitWidth(change + this.worldScreenWidth, center);
+
+              return this;
+          }
+
+          /** Changes scale of viewport and maintains center of viewport */
+          get scaled()
+          {
+              return this.scale.x;
+          }
+          set scaled(scale)
+          {
+              this.setZoom(scale, true);
+          }
+
+          /**
+           * Returns zoom to the desired scale
+           *
+           * @param {ISnapZoomOptions} options
+           * @param {number} [options.width=0] - the desired width to snap (to maintain aspect ratio, choose width or height)
+           * @param {number} [options.height=0] - the desired height to snap (to maintain aspect ratio, choose width or height)
+           * @param {number} [options.time=1000] - time for snapping in ms
+           * @param {(string|function)} [options.ease=easeInOutSine] ease function or name (see http://easings.net/
+           *   for supported names)
+           * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of center of the viewport
+           * @param {boolean} [options.interrupt=true] - pause snapping with any user input on the viewport
+           * @param {boolean} [options.removeOnComplete] - removes this plugin after snapping is complete
+           * @param {boolean} [options.removeOnInterrupt] - removes this plugin if interrupted by any user input
+           * @param {boolean} [options.forceStart] - starts the snap immediately regardless of whether the viewport is at the
+           *   desired zoom
+           * @param {boolean} [options.noMove] - zoom but do not move
+           */
+          snapZoom(options)
+          {
+              this.plugins.add('snap-zoom', new SnapZoom(this, options));
+
+              return this;
+          }
+
+          /** Is container out of world bounds */
+          OOB()
+
+
+
+
+
+
+          {
+              return {
+                  left: this.left < 0,
+                  right: this.right > this.worldWidth,
+                  top: this.top < 0,
+                  bottom: this.bottom > this.worldHeight,
+                  cornerPoint: new math.Point(
+                      (this.worldWidth * this.scale.x) - this.screenWidth,
+                      (this.worldHeight * this.scale.y) - this.screenHeight
+                  )
+              };
+          }
+
+          /** World coordinates of the right edge of the screen */
+          get right()
+          {
+              return (-this.x / this.scale.x) + this.worldScreenWidth;
+          }
+          set right(value)
+          {
+              this.x = (-value * this.scale.x) + this.screenWidth;
+              this.plugins.reset();
+          }
+
+          /** World coordinates of the left edge of the screen */
+          get left()
+          {
+              return -this.x / this.scale.x;
+          }
+          set left(value)
+          {
+              this.x = -value * this.scale.x;
+              this.plugins.reset();
+          }
+
+          /** World coordinates of the top edge of the screen */
+          get top()
+          {
+              return -this.y / this.scale.y;
+          }
+          set top(value)
+          {
+              this.y = -value * this.scale.y;
+              this.plugins.reset();
+          }
+
+          /** World coordinates of the bottom edge of the screen */
+          get bottom()
+          {
+              return (-this.y / this.scale.y) + this.worldScreenHeight;
+          }
+          set bottom(value)
+          {
+              this.y = (-value * this.scale.y) + this.screenHeight;
+              this.plugins.reset();
+          }
+
+          /**
+           * Determines whether the viewport is dirty (i.e., needs to be rendered to the screen because of a change)
+           */
+          get dirty()
+          {
+              return !!this._dirty;
+          }
+          set dirty(value)
+          {
+              this._dirty = value;
+          }
+
+          /**
+           * Permanently changes the Viewport's hitArea
+           *
+           * NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth,
+           * Viewport.worldScreenHeight)
+           */
+          get forceHitArea()
+          {
+              return this._forceHitArea;
+          }
+          set forceHitArea(value)
+          {
+              if (value)
+              {
+                  this._forceHitArea = value;
+                  this.hitArea = value;
+              }
+              else
+              {
+                  this._forceHitArea = null;
+                  this.hitArea = new math.Rectangle(0, 0, this.worldWidth, this.worldHeight);
+              }
+          }
+
+          /**
+           * Enable one-finger touch to drag
+           *
+           * NOTE: if you expect users to use right-click dragging, you should enable `viewport.options.disableOnContextMenu`
+           * to avoid the context menu popping up on each right-click drag.
+           *
+           * @param {IDragOptions} [options]
+           * @param {string} [options.direction=all] direction to drag
+           * @param {boolean} [options.pressDrag=true] whether click to drag is active
+           * @param {boolean} [options.wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
+           * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
+           * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
+           * @param {(boolean|string)} [options.clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
+           * @param {string} [options.underflow=center] where to place world if too small for screen
+           * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
+           * @param {string} [options.mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left',
+           *  'right' 'middle', or some combination, like, 'middle-right'; you may want to set
+           *   viewport.options.disableOnContextMenu if you want to use right-click dragging
+           * @param {string[]} [options.keyToPress=null] - array containing
+           *  {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be
+           *  pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
+           * @param {boolean} [options.ignoreKeyToPressOnTouch=false] - ignore keyToPress for touch events
+           * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
+           * @returns {Viewport} this
+           */
+           drag(options)
+          {
+              this.plugins.add('drag', new Drag(this, options));
+
+              return this;
+          }
+
+          /**
+           * Clamp to world boundaries or other provided boundaries
+           * There are three ways to clamp:
+           * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of offscreen
+           *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
+           * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
+           *    if any of these are set to true, then the location is set to the boundary
+           *    [0, viewport.worldWidth/viewport.worldHeight], eg: to allow the world to be completely dragged offscreen,
+           *    set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+           *
+           * Underflow determines what happens when the world is smaller than the viewport
+           * 1. none = the world is clamped but there is no special behavior
+           * 2. center = the world is centered on the viewport
+           * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the
+           *     appropriate boundaries
+           *
+           * NOTES:
+           *   clamp is disabled if called with no options; use { direction: 'all' } for all edge clamping
+           *   screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+           *
+           * @param {object} [options]
+           * @param {(number|boolean)} [options.left=false] - clamp left; true = 0
+           * @param {(number|boolean)} [options.right=false] - clamp right; true = viewport.worldWidth
+           * @param {(number|boolean)} [options.top=false] - clamp top; true = 0
+           * @param {(number|boolean)} [options.bottom=false] - clamp bottom; true = viewport.worldHeight
+           * @param {string} [direction] - (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight];
+           *  replaces left/right/top/bottom if set
+           * @param {string} [underflow=center] - where to place world if too small for screen (e.g., top-right, center,
+           *  none, bottomLeft)     * @returns {Viewport} this
+           */
+           clamp(options)
+          {
+              this.plugins.add('clamp', new Clamp(this, options));
+
+              return this;
+          }
+
+          /**
+           * Decelerate after a move
+           *
+           * NOTE: this fires 'moved' event during deceleration
+           *
+           * @param {IDecelerateOptions} [options]
+           * @param {number} [options.friction=0.95] - percent to decelerate after movement
+           * @param {number} [options.bounce=0.8] - percent to decelerate when past boundaries (only applicable when
+           *   viewport.bounce() is active)
+           * @param {number} [options.minSpeed=0.01] - minimum velocity before stopping/reversing acceleration
+           * @return {Viewport} this
+           */
+           decelerate(options)
+          {
+              this.plugins.add('decelerate', new Decelerate(this, options));
+
+              return this;
+          }
+
+          /**
+           * Bounce on borders
+           * NOTES:
+           *    screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
+           *    fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y-end' events
+           * @param {object} [options]
+           * @param {string} [options.sides=all] - all, horizontal, vertical, or combination of top, bottom, right, left
+           *  (e.g., 'top-bottom-right')
+           * @param {number} [options.friction=0.5] - friction to apply to decelerate if active
+           * @param {number} [options.time=150] - time in ms to finish bounce
+           * @param {object} [options.bounceBox] - use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
+           * @param {number} [options.bounceBox.x=0]
+           * @param {number} [options.bounceBox.y=0]
+           * @param {number} [options.bounceBox.width=viewport.worldWidth]
+           * @param {number} [options.bounceBox.height=viewport.worldHeight]
+           * @param {string|function} [options.ease=easeInOutSine] - ease function or name
+           *  (see http://easings.net/ for supported names)
+           * @param {string} [options.underflow=center] - (top/bottom/center and left/right/center, or center)
+           *  where to place world if too small for screen
+           * @return {Viewport} this
+           */
+           bounce(options)
+          {
+              this.plugins.add('bounce', new Bounce(this, options));
+
+              return this;
+          }
+
+          /**
+           * Enable pinch to zoom and two-finger touch to drag
+           *
+           * @param {PinchOptions} [options]
+           * @param {boolean} [options.noDrag] - disable two-finger dragging
+           * @param {number} [options.percent=1] - percent to modify pinch speed
+           * @param {number} [options.factor=1] - factor to multiply two-finger drag to increase the speed of movement
+           * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of center of two fingers
+           * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
+           * @return {Viewport} this
+           */
+           pinch(options)
+          {
+              this.plugins.add('pinch', new Pinch(this, options));
+
+              return this;
+          }
+
+          /**
+           * Snap to a point
+           *
+           * @param {number} x
+           * @param {number} y
+           * @param {ISnapOptions} [options]
+           * @param {boolean} [options.topLeft] - snap to the top-left of viewport instead of center
+           * @param {number} [options.friction=0.8] - friction/frame to apply if decelerate is active
+           * @param {number} [options.time=1000] - time in ms to snap
+           * @param {string|function} [options.ease=easeInOutSine] - ease function or name (see http://easings.net/
+           *   for supported names)
+           * @param {boolean} [options.interrupt=true] - pause snapping with any user input on the viewport
+           * @param {boolean} [options.removeOnComplete] - removes this plugin after snapping is complete
+           * @param {boolean} [options.removeOnInterrupt] - removes this plugin if interrupted by any user input
+           * @param {boolean} [options.forceStart] - starts the snap immediately regardless of whether the viewport is at
+           *   the desired location
+           * @return {Viewport} this
+           */
+           snap(x, y, options)
+          {
+              this.plugins.add('snap', new Snap(this, x, y, options));
+
+              return this;
+          }
+
+          /**
+           * Follow a target
+           *
+           * NOTES:
+           *    uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
+           *    options.acceleration is not perfect as it doesn't know the velocity of the target. It adds acceleration
+           *    to the start of movement and deceleration to the end of movement when the target is stopped.
+           *    To cancel the follow, use: `viewport.plugins.remove('follow')`
+           *
+           * @fires 'moved' event
+           *
+           * @param {PIXI.DisplayObject} target to follow
+           * @param {IFollowOptions} [options]
+           * @param {number} [options.speed=0] - to follow in pixels/frame (0=teleport to location)
+           * @param {number} [options.acceleration] - set acceleration to accelerate and decelerate at this rate; speed
+           *   cannot be 0 to use acceleration
+           * @param {number} [options.radius] - radius (in world coordinates) of center circle where movement is allowed
+           *   without moving the viewport     * @returns {Viewport} this
+           * @returns {Viewport} this
+           */
+           follow(target, options)
+          {
+              this.plugins.add('follow', new Follow(this, target, options));
+
+              return this;
+          }
+
+          /**
+           * Zoom using mouse wheel
+           *
+           * NOTE: the default event listener for 'wheel' event is document.body. Use `Viewport.options.divWheel` to
+           * change this default
+           *
+           * @param {IWheelOptions} [options]
+           * @param {number} [options.percent=0.1] - percent to scroll with each spin
+           * @param {number} [options.smooth] - smooth the zooming by providing the number of frames to zoom between wheel spins
+           * @param {boolean} [options.interrupt=true] - stop smoothing with any user input on the viewport
+           * @param {boolean} [options.reverse] - reverse the direction of the scroll
+           * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of current mouse position
+           * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
+           * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
+           * @return {Viewport} this
+           */
+           wheel(options)
+          {
+              this.plugins.add('wheel', new Wheel(this, options));
+
+              return this;
+          }
+
+          /**
+           * Animate the position and/or scale of the viewport
+           * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
+           * @params {object} options
+           * @params {number} [options.time=1000] - time to animate
+           * @params {PIXI.Point} [options.position=viewport.center] - position to move viewport
+           * @params {number} [options.width] - desired viewport width in world pixels (use instead of scale;
+           *  aspect ratio is maintained if height is not provided)
+           * @params {number} [options.height] - desired viewport height in world pixels (use instead of scale;
+           *  aspect ratio is maintained if width is not provided)
+           * @params {number} [options.scale] - scale to change zoom (scale.x = scale.y)
+           * @params {number} [options.scaleX] - independently change zoom in x-direction
+           * @params {number} [options.scaleY] - independently change zoom in y-direction
+           * @params {(function|string)} [options.ease=linear] - easing function to use
+           * @params {function} [options.callbackOnComplete]
+           * @params {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+           * @returns {Viewport} this
+           */
+           animate(options)
+          {
+              this.plugins.add('animate', new Animate(this, options));
+
+              return this;
+          }
+
+          /**
+           * Enable clamping of zoom to constraints
+           *
+           * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
+           * before clamping. The maxWidth/maxHeight is how larger the world can scale (as it would appear on
+           * the screen) before clamping.
+           *
+           * For example, if you have a world size of 1000 x 1000 and a screen size of 100 x 100, if you set
+           * minWidth/Height = 100 then the world will not be able to zoom smaller than the screen size (ie,
+           * zooming out so it appears smaller than the screen). Similarly, if you set maxWidth/Height = 100
+           * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
+           * larger than the screen).
+           *
+           * @param {object} [options]
+           * @param {number} [options.minWidth] - minimum width
+           * @param {number} [options.minHeight] - minimum height
+           * @param {number} [options.maxWidth] - maximum width
+           * @param {number} [options.maxHeight] - maximum height
+           * @param {number} [options.minScale] - minimum scale
+           * @param {number} [options.maxScale] - minimum scale
+           * @return {Viewport} this
+           */
+           clampZoom(options)
+          {
+              this.plugins.add('clamp-zoom', new ClampZoom(this, options));
+
+              return this;
+          }
+
+          /**
+           * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
+           *
+           * NOTES: fires 'moved' event; there's a known bug where the mouseEdges does not work properly with "windowed" viewports
+           *
+           * @param {IMouseEdgesOptions} [options]
+           * @param {number} [options.radius] - distance from center of screen in screen pixels
+           * @param {number} [options.distance] - distance from all sides in screen pixels
+           * @param {number} [options.top] - alternatively, set top distance (leave unset for no top scroll)
+           * @param {number} [options.bottom] - alternatively, set bottom distance (leave unset for no top scroll)
+           * @param {number} [options.left] - alternatively, set left distance (leave unset for no top scroll)
+           * @param {number} [options.right] - alternatively, set right distance (leave unset for no top scroll)
+           * @param {number} [options.speed=8] - speed in pixels/frame to scroll viewport
+           * @param {boolean} [options.reverse] - reverse direction of scroll
+           * @param {boolean} [options.noDecelerate] - don't use decelerate plugin even if it's installed
+           * @param {boolean} [options.linear] - if using radius, use linear movement (+/- 1, +/- 1) instead of angled
+           *   movement (Math.cos(angle from center), Math.sin(angle from center))
+           * @param {boolean} [options.allowButtons] allows plugin to continue working even when there's a mousedown event
+           */
+           mouseEdges(options)
+          {
+              this.plugins.add('mouse-edges', new MouseEdges(this, options));
+
+              return this;
+          }
+
+          /** Pause viewport (including animation updates such as decelerate) */
+          get pause()
+          {
+              return !!this._pause;
+          }
+          set pause(value)
+          {
+              this._pause = value;
+
+              this.lastViewport = null;
+              this.moving = false;
+              this.zooming = false;
+
+              if (value)
+              {
+                  this.input.pause();
+              }
+          }
+
+          /**
+           * Move the viewport so the bounding box is visible
+           *
+           * @param x - left
+           * @param y - top
+           * @param width
+           * @param height
+           * @param resizeToFit - Resize the viewport so the box fits within the viewport
+           */
+           ensureVisible(x, y, width, height, resizeToFit)
+          {
+              if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
+              {
+                  this.fit(true, width, height);
+                  this.emit('zoomed', { viewport: this, type: 'ensureVisible' });
+              }
+              let moved = false;
+
+              if (x < this.left)
+              {
+                  this.left = x;
+                  moved = true;
+              }
+              else if (x + width > this.right)
+              {
+                  this.right = x + width;
+                  moved = true;
+              }
+              if (y < this.top)
+              {
+                  this.top = y;
+                  moved = true;
+              }
+              else if (y + height > this.bottom)
+              {
+                  this.bottom = y + height;
+                  moved = true;
+              }
+              if (moved)
+              {
+                  this.emit('moved', { viewport: this, type: 'ensureVisible' });
+              }
+          }
+      }
+
+      /**
+       * Fires after a mouse or touch click
+       * @event Viewport#clicked
+       * @type {object}
+       * @property {PIXI.Point} screen
+       * @property {PIXI.Point} world
+       * @property {Viewport} viewport
+       */
+
+      /**
+       * Fires when a drag starts
+       * @event Viewport#drag-start
+       * @type {object}
+       * @property {PIXI.Point} screen
+       * @property {PIXI.Point} world
+       * @property {Viewport} viewport
+       */
+
+      /**
+       * Fires when a drag ends
+       * @event Viewport#drag-end
+       * @type {object}
+       * @property {PIXI.Point} screen
+       * @property {PIXI.Point} world
+       * @property {Viewport} viewport
+       */
+
+      /**
+       * Fires when a pinch starts
+       * @event Viewport#pinch-start
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a pinch end
+       * @event Viewport#pinch-end
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a snap starts
+       * @event Viewport#snap-start
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a snap ends
+       * @event Viewport#snap-end
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a snap-zoom starts
+       * @event Viewport#snap-zoom-start
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a snap-zoom ends
+       * @event Viewport#snap-zoom-end
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a bounce starts in the x direction
+       * @event Viewport#bounce-x-start
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a bounce ends in the x direction
+       * @event Viewport#bounce-x-end
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a bounce starts in the y direction
+       * @event Viewport#bounce-y-start
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a bounce ends in the y direction
+       * @event Viewport#bounce-y-end
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when for a mouse wheel event
+       * @event Viewport#wheel
+       * @type {object}
+       * @property {object} wheel
+       * @property {number} wheel.dx
+       * @property {number} wheel.dy
+       * @property {number} wheel.dz
+       * @property {Viewport} viewport
+       */
+
+      /**
+       * Fires when a wheel-scroll occurs
+       * @event Viewport#wheel-scroll
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when a mouse-edge starts to scroll
+       * @event Viewport#mouse-edge-start
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when the mouse-edge scrolling ends
+       * @event Viewport#mouse-edge-end
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
+       * @event Viewport#moved
+       * @type {object}
+       * @property {Viewport} viewport
+       * @property {string} type - (drag, snap, pinch, follow, bounce-x, bounce-y,
+       *  clamp-x, clamp-y, decelerate, mouse-edges, wheel, ensureVisible)
+       */
+
+      /**
+       * Fires when viewport moves through UI interaction, deceleration, ensureVisible, or follow
+       * @event Viewport#zoomed
+       * @type {object}
+       * @property {Viewport} viewport
+       * @property {string} type (drag-zoom, pinch, wheel, clamp-zoom, ensureVisible)
+       */
+
+      /**
+       * Fires when viewport stops moving
+       * @event Viewport#moved-end
+       * @type {Viewport}
+       */
+
+      /**
+       * Fires when viewport stops zooming
+       * @event Viewport#zoomed-end
+       * @type {Viewport}
+       */
+
+      /**
+      * Fires at the end of an update frame
+      * @event Viewport#frame-end
+      * @type {Viewport}
+      */
+
+      exports.Animate = Animate;
+      exports.Bounce = Bounce;
+      exports.Clamp = Clamp;
+      exports.ClampZoom = ClampZoom;
+      exports.Decelerate = Decelerate;
+      exports.Drag = Drag;
+      exports.Follow = Follow;
+      exports.InputManager = InputManager;
+      exports.MouseEdges = MouseEdges;
+      exports.Pinch = Pinch;
+      exports.Plugin = Plugin;
+      exports.PluginManager = PluginManager;
+      exports.Snap = Snap;
+      exports.SnapZoom = SnapZoom;
+      exports.Viewport = Viewport;
+      exports.Wheel = Wheel;
+
+      Object.defineProperty(exports, '__esModule', { value: true });
+
+  })));
+  if (typeof pixi_viewport !== 'undefined') { Object.assign(commonjsGlobal$1.PIXI, pixi_viewport); }
+
+  }(viewport_min, viewport_min.exports));
+
   /* eslint-disable */
 
   /**
@@ -50774,5119 +52640,6 @@
        resume()
       {
           this.paused = false;
-      }
-  }
-
-  // eslint-disable-next-line
-
-  /**
-   * Returns correct Penner equation using string or Function.
-   *
-   * @internal
-   * @ignore
-   * @param {(function|string)} [ease]
-   * @param {defaults} default penner equation to use if none is provided
-   */
-  function ease(ease, defaults)
-  {
-      if (!ease)
-      {
-          return Penner$1[defaults]
-      }
-      else if (typeof ease === 'function')
-      {
-          return ease
-      }
-      else if (typeof ease === 'string')
-      {
-          return Penner$1[ease]
-      }
-  }
-
-  /** Options for {@link Animate}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_ANIMATE_OPTIONS = {
-      removeOnInterrupt: false,
-      ease: 'linear',
-      time: 1000,
-  };
-
-  /**
-   * Animation plugin.
-   *
-   * @see Viewport#animate
-   * @fires animate-end
-   */
-  class Animate extends Plugin
-  {
-      
-
-      /** The starting x-coordinate of the viewport. */
-      
-
-      /** The starting y-coordinate of the viewport. */
-      
-
-      /** The change in the x-coordinate of the viewport through the animation.*/
-      
-
-      /** The change in the y-coordinate of the viewport through the animation. */
-      
-
-      /** Marks whether the center of the viewport is preserved in the animation. */
-      
-
-      /** The starting viewport width. */
-       __init() {this.startWidth = null;}
-
-      /** The starting viewport height. */
-       __init2() {this.startHeight = null;}
-
-      /** The change in the viewport's width through the animation. */
-       __init3() {this.deltaWidth = null;}
-
-      /** The change in the viewport's height through the animation. */
-       __init4() {this.deltaHeight = null;}
-
-      /** The viewport's width post-animation. */
-       __init5() {this.width = null;}
-
-      /** The viewport's height post-animation. */
-       __init6() {this.height = null;}
-
-      /** The time since the animation started. */
-       __init7() {this.time = 0;}
-
-      /**
-       * This is called by {@link Viewport.animate}.
-       *
-       * @param parent
-       * @param options
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);Animate.prototype.__init.call(this);Animate.prototype.__init2.call(this);Animate.prototype.__init3.call(this);Animate.prototype.__init4.call(this);Animate.prototype.__init5.call(this);Animate.prototype.__init6.call(this);Animate.prototype.__init7.call(this);
-          this.options = Object.assign({}, DEFAULT_ANIMATE_OPTIONS, options);
-          this.options.ease = ease(this.options.ease);
-
-          this.setupPosition();
-          this.setupZoom();
-
-          this.time = 0;
-      }
-
-      /**
-       * Setup `startX`, `startY`, `deltaX`, `deltaY`, `keepCenter`.
-       *
-       * This is called during construction.
-       */
-       setupPosition()
-      {
-          if (typeof this.options.position !== 'undefined')
-          {
-              this.startX = this.parent.center.x;
-              this.startY = this.parent.center.y;
-              this.deltaX = this.options.position.x - this.parent.center.x;
-              this.deltaY = this.options.position.y - this.parent.center.y;
-              this.keepCenter = false;
-          }
-          else
-          {
-              this.keepCenter = true;
-          }
-      }
-
-      /**
-       * Setup `startWidth, `startHeight`, `deltaWidth, `deltaHeight, `width`, `height`.
-       *
-       * This is called during construction.
-       */
-       setupZoom()
-      {
-          this.width = null;
-          this.height = null;
-
-          if (typeof this.options.scale !== 'undefined')
-          {
-              this.width = this.parent.screenWidth / this.options.scale;
-          }
-          else if (typeof this.options.scaleX !== 'undefined' || typeof this.options.scaleY !== 'undefined')
-          {
-              if (typeof this.options.scaleX !== 'undefined')
-              {
-                  // screenSizeInWorldPixels = screenWidth / scale
-                  this.width = this.parent.screenWidth / this.options.scaleX;
-              }
-              if (typeof this.options.scaleY !== 'undefined')
-              {
-                  this.height = this.parent.screenHeight / this.options.scaleY;
-              }
-          }
-          else
-          {
-              if (typeof this.options.width !== 'undefined')
-              {
-                  this.width = this.options.width;
-              }
-              if (typeof this.options.height !== 'undefined')
-              {
-                  this.height = this.options.height;
-              }
-          }
-
-          if (this.width !== null)
-          {
-              this.startWidth = this.parent.screenWidthInWorldPixels;
-              this.deltaWidth = this.width - this.startWidth;
-          }
-          if (this.height !== null)
-          {
-              this.startHeight = this.parent.screenHeightInWorldPixels;
-              this.deltaHeight = this.height - this.startHeight;
-          }
-      }
-
-       down()
-      {
-          if (this.options.removeOnInterrupt)
-          {
-              this.parent.plugins.remove('animate');
-          }
-
-          return false;
-      }
-
-       complete()
-      {
-          this.parent.plugins.remove('animate');
-          if (this.width !== null)
-          {
-              this.parent.fitWidth(this.width, this.keepCenter, this.height === null);
-          }
-          if (this.height !== null)
-          {
-              this.parent.fitHeight(this.height, this.keepCenter, this.width === null);
-          }
-          if (!this.keepCenter)
-          {
-              this.parent.moveCenter(this.options.position );
-          }
-
-          this.parent.emit('animate-end', this.parent);
-
-          if (this.options.callbackOnComplete)
-          {
-              this.options.callbackOnComplete(this.parent);
-          }
-      }
-
-       update(elapsed)
-      {
-          if (this.paused)
-          {
-              return;
-          }
-          this.time += elapsed;
-
-          if (this.time >= this.options.time)
-          {
-              this.complete();
-          }
-          else
-          {
-              const originalZoom = new Point(this.parent.scale.x, this.parent.scale.y);
-              const percent = this.options.ease(this.time, 0, 1, this.options.time);
-
-              if (this.width !== null)
-              {
-                  const startWidth = this.startWidth ;
-                  const deltaWidth = this.deltaWidth ;
-
-                  this.parent.fitWidth(
-                      startWidth + (deltaWidth * percent),
-                      this.keepCenter,
-                      this.height === null);
-              }
-              if (this.height !== null)
-              {
-                  const startHeight = this.startHeight ;
-                  const deltaHeight = this.deltaHeight ;
-
-                  this.parent.fitHeight(
-                      startHeight + (deltaHeight * percent),
-                      this.keepCenter,
-                      this.width === null);
-              }
-              if (this.width === null)
-              {
-                  this.parent.scale.x = this.parent.scale.y;
-              }
-              else if (this.height === null)
-              {
-                  this.parent.scale.y = this.parent.scale.x;
-              }
-              if (!this.keepCenter)
-              {
-                  const startX = this.startX ;
-                  const startY = this.startY ;
-                  const deltaX = this.deltaX ;
-                  const deltaY = this.deltaY ;
-                  const original = new Point(this.parent.x, this.parent.y);
-
-                  this.parent.moveCenter(startX + (deltaX * percent), startY + (deltaY * percent));
-                  this.parent.emit('moved', { viewport: this.parent, original, type: 'animate' });
-              }
-              if (this.width || this.height)
-              {
-                  this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
-              }
-          }
-      }
-  }
-
-  function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-
-
-
-
-
-  /** Options for {@link Bounce}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_BOUNCE_OPTIONS = {
-      sides: 'all',
-      friction: 0.5,
-      time: 150,
-      ease: 'easeInOutSine',
-      underflow: 'center',
-      bounceBox: null
-  };
-
-  /**
-   * @fires bounce-start-x
-   * @fires bounce.end-x
-   * @fires bounce-start-y
-   * @fires bounce-end-y
-   * @public
-   */
-  class Bounce extends Plugin
-  {
-      /** The options passed to initialize this plugin, cannot be modified again. */
-      
-
-      /** Holds whether to bounce from left side. */
-       
-
-      /** Holds whether to bounce from top side. */
-      
-
-      /** Holds whether to bounce from right side. */
-      
-
-      /** Holds whether to bounce from bottom side. */
-      
-
-      /** Direction of underflow along x-axis. */
-      
-
-      /** Direction of underflow along y-axis. */
-      
-
-      /** Easing */
-      
-
-      /** Bounce state along x-axis */
-      
-
-      /** Bounce state along y-axis */
-      
-
-      /**
-       * This is called by {@link Viewport.bounce}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);
-
-          this.options = Object.assign({}, DEFAULT_BOUNCE_OPTIONS, options);
-          this.ease = ease(this.options.ease, 'easeInOutSine');
-
-          if (this.options.sides)
-          {
-              if (this.options.sides === 'all')
-              {
-                  this.top = this.bottom = this.left = this.right = true;
-              }
-              else if (this.options.sides === 'horizontal')
-              {
-                  this.right = this.left = true;
-                  this.top = this.bottom = false;
-              }
-              else if (this.options.sides === 'vertical')
-              {
-                  this.left = this.right = false;
-                  this.top = this.bottom = true;
-              }
-              else
-              {
-                  this.top = this.options.sides.indexOf('top') !== -1;
-                  this.bottom = this.options.sides.indexOf('bottom') !== -1;
-                  this.left = this.options.sides.indexOf('left') !== -1;
-                  this.right = this.options.sides.indexOf('right') !== -1;
-              }
-          } else {
-              this.left = this.top = this.right = this.bottom = false;
-          }
-
-          const clamp = this.options.underflow.toLowerCase();
-
-          if (clamp === 'center')
-          {
-              this.underflowX = 0;
-              this.underflowY = 0;
-          }
-          else
-          {
-              this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-              this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
-          }
-
-          this.reset();
-      }
-
-       isActive()
-      {
-          return this.toX !== null || this.toY !== null;
-      }
-
-       down()
-      {
-          this.toX = this.toY = null;
-
-          return false;
-      }
-
-       up()
-      {
-          this.bounce();
-
-          return false;
-      }
-
-       update(elapsed)
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          this.bounce();
-
-          if (this.toX)
-          {
-              const toX = this.toX;
-
-              toX.time += elapsed;
-              this.parent.emit('moved', { viewport: this.parent, type: 'bounce-x' });
-
-              if (toX.time >= this.options.time)
-              {
-                  this.parent.x = toX.end;
-                  this.toX = null;
-                  this.parent.emit('bounce-x-end', this.parent);
-              }
-              else
-              {
-                  this.parent.x = this.ease(toX.time, toX.start, toX.delta, this.options.time);
-              }
-          }
-
-          if (this.toY)
-          {
-              const toY = this.toY;
-
-              toY.time += elapsed;
-              this.parent.emit('moved', { viewport: this.parent, type: 'bounce-y' });
-
-              if (toY.time >= this.options.time)
-              {
-                  this.parent.y = toY.end;
-                  this.toY = null;
-                  this.parent.emit('bounce-y-end', this.parent);
-              }
-              else
-              {
-                  this.parent.y = this.ease(toY.time, toY.start, toY.delta, this.options.time);
-              }
-          }
-      }
-
-      /** @internal */
-       calcUnderflowX()
-      {
-          let x;
-
-          switch (this.underflowX)
-          {
-              case -1:
-                  x = 0;
-                  break;
-              case 1:
-                  x = (this.parent.screenWidth - this.parent.screenWorldWidth);
-                  break;
-              default:
-                  x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-          }
-
-          return x;
-      }
-
-      /** @internal */
-       calcUnderflowY()
-      {
-          let y;
-
-          switch (this.underflowY)
-          {
-              case -1:
-                  y = 0;
-                  break;
-              case 1:
-                  y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                  break;
-              default:
-                  y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-          }
-
-          return y;
-      }
-
-       oob()
-      {
-          const box = this.options.bounceBox;
-
-          if (box)
-          {
-              const x1 = typeof box.x === 'undefined' ? 0 : box.x;
-              const y1 = typeof box.y === 'undefined' ? 0 : box.y;
-              const width = typeof box.width === 'undefined' ? this.parent.worldWidth : box.width;
-              const height = typeof box.height === 'undefined' ? this.parent.worldHeight : box.height;
-
-              return {
-                  left: this.parent.left < x1,
-                  right: this.parent.right > width,
-                  top: this.parent.top < y1,
-                  bottom: this.parent.bottom > height,
-                  topLeft: new Point(
-                      x1 * this.parent.scale.x,
-                      y1 * this.parent.scale.y
-                  ),
-                  bottomRight: new Point(
-                      width * this.parent.scale.x - this.parent.screenWidth,
-                      height * this.parent.scale.y - this.parent.screenHeight
-                  )
-              };
-          }
-
-          return {
-              left: this.parent.left < 0,
-              right: this.parent.right > this.parent.worldWidth,
-              top: this.parent.top < 0,
-              bottom: this.parent.bottom > this.parent.worldHeight,
-              topLeft: new Point(0, 0),
-              bottomRight: new Point(
-                  this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
-                  this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
-              )
-          };
-      }
-
-       bounce()
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          let oob;
-          let decelerate
-
-
-
-
-
-   = this.parent.plugins.get('decelerate', true) ;
-
-          if (decelerate && (decelerate.x || decelerate.y))
-          {
-              if ((decelerate.x && decelerate.percentChangeX === _optionalChain$1([decelerate, 'access', _ => _.options, 'optionalAccess', _2 => _2.friction])) || (decelerate.y && decelerate.percentChangeY === _optionalChain$1([decelerate, 'access', _3 => _3.options, 'optionalAccess', _4 => _4.friction])))
-              {
-                  oob = this.oob();
-                  if ((oob.left && this.left) || (oob.right && this.right))
-                  {
-                      decelerate.percentChangeX = this.options.friction;
-                  }
-                  if ((oob.top && this.top) || (oob.bottom && this.bottom))
-                  {
-                      decelerate.percentChangeY = this.options.friction;
-                  }
-              }
-          }
-          const drag = this.parent.plugins.get('drag', true) || {};
-          const pinch = this.parent.plugins.get('pinch', true) || {};
-
-          decelerate = decelerate || {};
-
-          if (!_optionalChain$1([drag, 'optionalAccess', _5 => _5.active]) && !_optionalChain$1([pinch, 'optionalAccess', _6 => _6.active]) && ((!this.toX || !this.toY) && (!decelerate.x || !decelerate.y)))
-          {
-              oob = oob || this.oob();
-              const topLeft = oob.topLeft;
-              const bottomRight = oob.bottomRight;
-
-              if (!this.toX && !decelerate.x)
-              {
-                  let x = null;
-
-                  if (oob.left && this.left)
-                  {
-                      x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -topLeft.x;
-                  }
-                  else if (oob.right && this.right)
-                  {
-                      x = (this.parent.screenWorldWidth < this.parent.screenWidth) ? this.calcUnderflowX() : -bottomRight.x;
-                  }
-                  if (x !== null && this.parent.x !== x)
-                  {
-                      this.toX = { time: 0, start: this.parent.x, delta: x - this.parent.x, end: x };
-                      this.parent.emit('bounce-x-start', this.parent);
-                  }
-              }
-              if (!this.toY && !decelerate.y)
-              {
-                  let y = null;
-
-                  if (oob.top && this.top)
-                  {
-                      y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -topLeft.y;
-                  }
-                  else if (oob.bottom && this.bottom)
-                  {
-                      y = (this.parent.screenWorldHeight < this.parent.screenHeight) ? this.calcUnderflowY() : -bottomRight.y;
-                  }
-                  if (y !== null && this.parent.y !== y)
-                  {
-                      this.toY = { time: 0, start: this.parent.y, delta: y - this.parent.y, end: y };
-                      this.parent.emit('bounce-y-start', this.parent);
-                  }
-              }
-          }
-      }
-
-       reset()
-      {
-          this.toX = this.toY = null;
-          this.bounce();
-      }
-  }
-
-  /**
-   * There are three ways to clamp:
-   * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of the world offscreen
-   *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
-   * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
-   *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
-   *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
-   *
-   * Underflow determines what happens when the world is smaller than the viewport
-   * 1. none = the world is clamped but there is no special behavior
-   * 2. center = the world is centered on the viewport
-   * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
-   *
-   */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_CLAMP_OPTIONS = {
-      left: false,
-      right: false,
-      top: false,
-      bottom: false,
-      direction: null,
-      underflow: 'center'
-  };
-
-  /**
-   * Plugin to clamp the viewport to a specific world bounding box.
-   *
-   * @public
-   */
-  class Clamp extends Plugin
-  {
-      /** Options used to initialize this plugin, cannot be modified later. */
-      
-
-      /** Last state of viewport */
-      
-
-
-
-
-
-
-      
-      
-      
-
-      /**
-       * This is called by {@link Viewport.clamp}.
-       */
-      constructor(parent, options  = {})
-      {
-          super(parent);
-          this.options = Object.assign({}, DEFAULT_CLAMP_OPTIONS, options);
-
-          if (this.options.direction)
-          {
-              this.options.left = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
-              this.options.right = this.options.direction === 'x' || this.options.direction === 'all' ? true : null;
-              this.options.top = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
-              this.options.bottom = this.options.direction === 'y' || this.options.direction === 'all' ? true : null;
-          }
-
-          this.parseUnderflow();
-          this.last = { x: null, y: null, scaleX: null, scaleY: null };
-          this.update();
-      }
-
-       parseUnderflow()
-      {
-          const clamp = this.options.underflow.toLowerCase();
-
-          if (clamp === 'none')
-          {
-              this.noUnderflow = true;
-          }
-          else if (clamp === 'center')
-          {
-              this.underflowX = this.underflowY = 0;
-              this.noUnderflow = false;
-          }
-          else
-          {
-              this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
-              this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
-              this.noUnderflow = false;
-          }
-      }
-
-       move()
-      {
-          this.update();
-
-          return false;
-      }
-
-       update()
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          // only clamp on change
-          if (this.parent.x === this.last.x
-              && this.parent.y === this.last.y
-              && this.parent.scale.x === this.last.scaleX
-              && this.parent.scale.y === this.last.scaleY)
-          {
-              return;
-          }
-          const original = { x: this.parent.x, y: this.parent.y };
-          // TODO: Fix
-          const decelerate = (this.parent.plugins ).decelerate || {};
-
-          if (this.options.left !== null || this.options.right !== null)
-          {
-              let moved = false;
-
-              if (!this.noUnderflow && this.parent.screenWorldWidth < this.parent.screenWidth)
-              {
-                  switch (this.underflowX)
-                  {
-                      case -1:
-                          if (this.parent.x !== 0)
-                          {
-                              this.parent.x = 0;
-                              moved = true;
-                          }
-                          break;
-                      case 1:
-                          if (this.parent.x !== this.parent.screenWidth - this.parent.screenWorldWidth)
-                          {
-                              this.parent.x = this.parent.screenWidth - this.parent.screenWorldWidth;
-                              moved = true;
-                          }
-                          break;
-                      default:
-                          if (this.parent.x !== (this.parent.screenWidth - this.parent.screenWorldWidth) / 2)
-                          {
-                              this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                              moved = true;
-                          }
-                  }
-              }
-              else
-              {
-                  if (this.options.left !== null)
-                  {
-                      if (this.parent.left < (this.options.left === true ? 0 : this.options.left))
-                      {
-                          this.parent.x = -(this.options.left === true ? 0 : this.options.left) * this.parent.scale.x;
-                          decelerate.x = 0;
-                          moved = true;
-                      }
-                  }
-                  if (this.options.right !== null)
-                  {
-                      if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right))
-                      {
-                          this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth;
-                          decelerate.x = 0;
-                          moved = true;
-                      }
-                  }
-              }
-              if (moved)
-              {
-                  this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-x' });
-              }
-          }
-          if (this.options.top !== null || this.options.bottom !== null)
-          {
-              let moved = false;
-
-              if (!this.noUnderflow && this.parent.screenWorldHeight < this.parent.screenHeight)
-              {
-                  switch (this.underflowY)
-                  {
-                      case -1:
-                          if (this.parent.y !== 0)
-                          {
-                              this.parent.y = 0;
-                              moved = true;
-                          }
-                          break;
-                      case 1:
-                          if (this.parent.y !== this.parent.screenHeight - this.parent.screenWorldHeight)
-                          {
-                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                              moved = true;
-                          }
-                          break;
-                      default:
-                          if (this.parent.y !== (this.parent.screenHeight - this.parent.screenWorldHeight) / 2)
-                          {
-                              this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                              moved = true;
-                          }
-                  }
-              }
-              else
-              {
-                  if (this.options.top !== null)
-                  {
-                      if (this.parent.top < (this.options.top === true ? 0 : this.options.top))
-                      {
-                          this.parent.y = -(this.options.top === true ? 0 : this.options.top)
-                              * this.parent.scale.y;
-                          decelerate.y = 0;
-                          moved = true;
-                      }
-                  }
-                  if (this.options.bottom !== null)
-                  {
-                      if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom))
-                      {
-                          this.parent.y = -(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
-                              * this.parent.scale.y + this.parent.screenHeight;
-                          decelerate.y = 0;
-                          moved = true;
-                      }
-                  }
-              }
-              if (moved)
-              {
-                  this.parent.emit('moved', { viewport: this.parent, original, type: 'clamp-y' });
-              }
-          }
-          this.last.x = this.parent.x;
-          this.last.y = this.parent.y;
-          this.last.scaleX = this.parent.scale.x;
-          this.last.scaleY = this.parent.scale.y;
-      }
-
-       reset()
-      {
-          this.update();
-      }
-  }
-
-  /**
-   * Options for {@link ClampZoom}.
-   *
-   * Use either minimum width/height or minimum scale
-   */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_CLAMP_ZOOM_OPTIONS = {
-      minWidth: null,
-      minHeight: null,
-      maxWidth: null,
-      maxHeight: null,
-      minScale: null,
-      maxScale: null
-  };
-
-  /**
-   * Plugin to clamp the viewport's zoom to a specific range.
-   *
-   * @public
-   */
-  class ClampZoom extends Plugin
-  {
-      
-
-      /**
-       * This is called by {@link Viewport.clampZoom}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);
-          this.options = Object.assign({}, DEFAULT_CLAMP_ZOOM_OPTIONS, options);
-
-          this.clamp();
-      }
-
-       resize()
-      {
-          this.clamp();
-      }
-
-      /** Clamp the viewport scale zoom) */
-       clamp()
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          if (this.options.minWidth || this.options.minHeight || this.options.maxWidth || this.options.maxHeight)
-          {
-              let width = this.parent.worldScreenWidth;
-              let height = this.parent.worldScreenHeight;
-
-              if (this.options.minWidth !== null && width < this.options.minWidth)
-              {
-                  const original = this.parent.scale.x;
-
-                  this.parent.fitWidth(this.options.minWidth, false, false, true);
-                  this.parent.scale.y *= this.parent.scale.x / original;
-                  width = this.parent.worldScreenWidth;
-                  height = this.parent.worldScreenHeight;
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-              if (this.options.maxWidth !== null && width > this.options.maxWidth)
-              {
-                  const original = this.parent.scale.x;
-
-                  this.parent.fitWidth(this.options.maxWidth, false, false, true);
-                  this.parent.scale.y *= this.parent.scale.x / original;
-                  width = this.parent.worldScreenWidth;
-                  height = this.parent.worldScreenHeight;
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-              if (this.options.minHeight !== null && height < this.options.minHeight)
-              {
-                  const original = this.parent.scale.y;
-
-                  this.parent.fitHeight(this.options.minHeight, false, false, true);
-                  this.parent.scale.x *= this.parent.scale.y / original;
-                  width = this.parent.worldScreenWidth;
-                  height = this.parent.worldScreenHeight;
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-              if (this.options.maxHeight !== null && height > this.options.maxHeight)
-              {
-                  const original = this.parent.scale.y;
-
-                  this.parent.fitHeight(this.options.maxHeight, false, false, true);
-                  this.parent.scale.x *= this.parent.scale.y / original;
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-          }
-          else
-          if (this.options.minScale || this.options.maxScale)
-          {
-              const minScale = { x: null, y: null };
-              const maxScale = { x: null, y: null };
-
-              if (typeof this.options.minScale === 'number')
-              {
-                  minScale.x = this.options.minScale;
-                  minScale.y = this.options.minScale;
-              }
-              else if (this.options.minScale !== null)
-              {
-                  const optsMinScale = this.options.minScale ;
-
-                  minScale.x = typeof optsMinScale.x === 'undefined' ? null : optsMinScale.x;
-                  minScale.y = typeof optsMinScale.y === 'undefined' ? null : optsMinScale.y;
-              }
-
-              if (typeof this.options.maxScale === 'number')
-              {
-                  maxScale.x = this.options.maxScale;
-                  maxScale.y = this.options.maxScale;
-              }
-              else if (this.options.maxScale !== null)
-              {
-                  const optsMaxScale = this.options.maxScale ;
-
-                  maxScale.x = typeof optsMaxScale.x === 'undefined' ? null : optsMaxScale.x;
-                  maxScale.y = typeof optsMaxScale.y === 'undefined' ? null : optsMaxScale.y;
-              }
-
-              let scaleX = this.parent.scale.x;
-              let scaleY = this.parent.scale.y;
-
-              if (minScale.x !== null && scaleX < minScale.x)
-              {
-                  scaleX = minScale.x;
-              }
-              if (maxScale.x !== null && scaleX > maxScale.x)
-              {
-                  scaleX = maxScale.x;
-              }
-              if (minScale.y !== null && scaleY < minScale.y)
-              {
-                  scaleY = minScale.y;
-              }
-              if (maxScale.y !== null && scaleY > maxScale.y)
-              {
-                  scaleY = maxScale.y;
-              }
-              if (scaleX !== this.parent.scale.x || scaleY !== this.parent.scale.y)
-              {
-                  this.parent.scale.set(scaleX, scaleY);
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'clamp-zoom' });
-              }
-          }
-      }
-
-       reset()
-      {
-          this.clamp();
-      }
-  }
-
-  /** This allows independent x and y values for min/maxScale */
-
-  const DEFAULT_DECELERATE_OPTIONS = {
-      friction: 0.98,
-      bounce: 0.8,
-      minSpeed: 0.01
-  };
-
-  /**
-   * Time period of decay (1 frame)
-   *
-   * @internal
-   * @ignore
-   */
-  const TP = 16;
-
-  /**
-   * Plugin to decelerate viewport velocity smoothly after panning ends.
-   *
-   * @public
-   */
-  class Decelerate extends Plugin
-  {
-      /** Options used to initialize this plugin. */
-      
-
-      /**
-       * x-component of the velocity of viewport provided by this plugin, at the current time.
-       *
-       * This is measured in px/frame, where a frame is normalized to 16 milliseconds.
-       */
-      
-
-      /**
-       * y-component of the velocity of the viewport provided by this plugin, at the current time.
-       *
-       * This is measured in px/frame, where a frame is normalized to 16 milliseconds.
-       */
-      
-
-      /**
-       * The decay factor for the x-component of the viewport.
-       *
-       * The viewport's velocity decreased by this amount each 16 milliseconds.
-       */
-      
-
-      /**
-       * The decay factor for the y-component of the viewport.
-       *
-       * The viewport's velocity decreased by this amount each 16 milliseconds.
-       */
-      
-
-      /** Saved list of recent viewport position snapshots, to estimate velocity. */
-      
-
-      /** The time since the user released panning of the viewport. */
-      
-
-      /**
-       * This is called by {@link Viewport.decelerate}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);
-
-          this.options = Object.assign({}, DEFAULT_DECELERATE_OPTIONS, options);
-          this.saved = [];
-          this.timeSinceRelease = 0;
-
-          this.reset();
-          this.parent.on('moved', (data) => this.moved(data));
-      }
-
-       down()
-      {
-          this.saved = [];
-          this.x = this.y = null;
-
-          return false;
-      }
-
-       isActive()
-      {
-          return !!(this.x || this.y);
-      }
-
-       move()
-      {
-          if (this.paused)
-          {
-              return false;
-          }
-
-          const count = this.parent.input.count();
-
-          if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
-          {
-              this.saved.push({ x: this.parent.x, y: this.parent.y, time: performance.now() });
-
-              if (this.saved.length > 60)
-              {
-                  this.saved.splice(0, 30);
-              }
-          }
-
-          // Silently recording viewport positions
-          return false;
-      }
-
-      /** Listener to viewport's "moved" event. */
-       moved(data)
-      {
-          if (this.saved.length)
-          {
-              const last = this.saved[this.saved.length - 1];
-
-              if (data.type === 'clamp-x')
-              {
-                  if (last.x === data.original.x)
-                  {
-                      last.x = this.parent.x;
-                  }
-              }
-              else if (data.type === 'clamp-y')
-              {
-                  if (last.y === data.original.y)
-                  {
-                      last.y = this.parent.y;
-                  }
-              }
-          }
-      }
-
-       up()
-      {
-          if (this.parent.input.count() === 0 && this.saved.length)
-          {
-              const now = performance.now();
-
-              for (const save of this.saved)
-              {
-                  if (save.time >= now - 100)
-                  {
-                      const time = now - save.time;
-
-                      this.x = (this.parent.x - save.x) / time;
-                      this.y = (this.parent.y - save.y) / time;
-                      this.percentChangeX = this.percentChangeY = this.options.friction;
-                      this.timeSinceRelease = 0;
-                      break;
-                  }
-              }
-          }
-
-          return false;
-      }
-
-      /**
-       * Manually activate deceleration, starting from the (x, y) velocity components passed in the options.
-       *
-       * @param {object} options
-       * @param {number} [options.x] - Specify x-component of initial velocity.
-       * @param {number} [options.y] - Specify y-component of initial velocity.
-       */
-       activate(options)
-      {
-          options = options || {};
-
-          if (typeof options.x !== 'undefined')
-          {
-              this.x = options.x;
-              this.percentChangeX = this.options.friction;
-          }
-          if (typeof options.y !== 'undefined')
-          {
-              this.y = options.y;
-              this.percentChangeY = this.options.friction;
-          }
-      }
-
-       update(elapsed)
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          /*
-           * See https://github.com/davidfig/pixi-viewport/issues/271 for math.
-           *
-           * The viewport velocity (this.x, this.y) decays exponentially by the the decay factor
-           * (this.percentChangeX, this.percentChangeY) each frame. This velocity function is integrated
-           * to calculate the displacement.
-           */
-
-          const moved = this.x || this.y;
-
-          const ti = this.timeSinceRelease;
-          const tf = this.timeSinceRelease + elapsed;
-
-          if (this.x)
-          {
-              const k = this.percentChangeX;
-              const lnk = Math.log(k);
-
-              // Apply velocity delta on the viewport x-coordinate.
-              this.parent.x += ((this.x * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
-
-              // Apply decay on x-component of velocity
-              this.x *= Math.pow(this.percentChangeX, elapsed / TP);
-          }
-          if (this.y)
-          {
-              const k = this.percentChangeY;
-              const lnk = Math.log(k);
-
-              // Apply velocity delta on the viewport y-coordinate.
-              this.parent.y += ((this.y * TP) / lnk) * (Math.pow(k, tf / TP) - Math.pow(k, ti / TP));
-
-              // Apply decay on y-component of velocity
-              this.y *= Math.pow(this.percentChangeY, elapsed / TP);
-          }
-
-          this.timeSinceRelease += elapsed;
-
-          // End decelerate velocity once it goes under a certain amount of precision.
-          if (Math.abs(this.x || 0) < this.options.minSpeed)
-          {
-              this.x = 0;
-          }
-          if (Math.abs(this.y || 0) < this.options.minSpeed)
-          {
-              this.y = 0;
-          }
-
-          if (moved)
-          {
-              this.parent.emit('moved', { viewport: this.parent, type: 'decelerate' });
-          }
-      }
-
-       reset()
-      {
-          this.x = this.y = null;
-      }
-  }
-
-  /** Options for {@link Drag}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_DRAG_OPTIONS = {
-      direction: 'all',
-      pressDrag: true,
-      wheel: true,
-      wheelScroll: 1,
-      reverse: false,
-      clampWheel: false,
-      underflow: 'center',
-      factor: 1,
-      mouseButtons: 'all',
-      keyToPress: null,
-      ignoreKeyToPressOnTouch: false,
-      lineHeight: 20,
-  };
-
-  /**
-   * Plugin to enable panning/dragging of the viewport to move around.
-   *
-   * @public
-   */
-  class Drag extends Plugin
-  {
-      /** Options used to initialize this plugin, cannot be modified later. */
-      
-
-      /** Flags when viewport is moving. */
-      
-
-      /** Factor to apply from {@link IDecelerateOptions}'s reverse. */
-      
-
-      /** Holds whether dragging is enabled along the x-axis. */
-      
-
-      /** Holds whether dragging is enabled along the y-axis. */
-      
-
-      /** Flags whether the keys required to drag are pressed currently. */
-      
-
-      /** Holds whether the left, center, and right buttons are required to pan. */
-      
-
-      /** Underflow factor along x-axis */
-      
-
-      /** Underflow factor along y-axis */
-      
-
-      /** Last pointer position while panning. */
-      
-
-      /** The ID of the pointer currently panning the viewport. */
-      
-
-      /**
-       * This is called by {@link Viewport.drag}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);
-
-          this.options = Object.assign({}, DEFAULT_DRAG_OPTIONS, options);
-          this.moved = false;
-          this.reverse = this.options.reverse ? 1 : -1;
-          this.xDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'x';
-          this.yDirection = !this.options.direction || this.options.direction === 'all' || this.options.direction === 'y';
-          this.keyIsPressed = false;
-
-          this.parseUnderflow();
-          this.mouseButtons(this.options.mouseButtons);
-
-          if (this.options.keyToPress)
-          {
-              this.handleKeyPresses(this.options.keyToPress);
-          }
-      }
-
-      /**
-       * Handles keypress events and set the keyIsPressed boolean accordingly
-       *
-       * @param {array} codes - key codes that can be used to trigger drag event
-       */
-       handleKeyPresses(codes)
-      {
-          window.addEventListener('keydown', (e) =>
-          {
-              if (codes.includes(e.code))
-              { this.keyIsPressed = true; }
-          });
-
-          window.addEventListener('keyup', (e) =>
-          {
-              if (codes.includes(e.code))
-              { this.keyIsPressed = false; }
-          });
-      }
-
-      /**
-       * initialize mousebuttons array
-       * @param {string} buttons
-       */
-       mouseButtons(buttons)
-      {
-          if (!buttons || buttons === 'all')
-          {
-              this.mouse = [true, true, true];
-          }
-          else
-          {
-              this.mouse = [
-                  buttons.indexOf('left') !== -1,
-                  buttons.indexOf('middle') !== -1,
-                  buttons.indexOf('right') !== -1
-              ];
-          }
-      }
-
-       parseUnderflow()
-      {
-          const clamp = this.options.underflow.toLowerCase();
-
-          if (clamp === 'center')
-          {
-              this.underflowX = 0;
-              this.underflowY = 0;
-          }
-          else
-          {
-              if (clamp.includes('left'))
-              {
-                  this.underflowX = -1;
-              }
-              else if (clamp.includes('right'))
-              {
-                  this.underflowX = 1;
-              }
-              else
-              {
-                  this.underflowX = 0;
-              }
-              if (clamp.includes('top'))
-              {
-                  this.underflowY = -1;
-              }
-              else if (clamp.includes('bottom'))
-              {
-                  this.underflowY = 1;
-              }
-              else
-              {
-                  this.underflowY = 0;
-              }
-          }
-      }
-
-      /**
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-       checkButtons(event)
-      {
-          const isMouse = event.data.pointerType === 'mouse';
-          const count = this.parent.input.count();
-
-          if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch', true)))
-          {
-              if (!isMouse || this.mouse[event.data.button])
-              {
-                  return true;
-              }
-          }
-
-          return false;
-      }
-
-      /**
-       * @param {PIXI.InteractionEvent} event
-       * @returns {boolean}
-       */
-       checkKeyPress(event)
-      {
-          return (!this.options.keyToPress
-              || this.keyIsPressed
-              || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'));
-      }
-
-       down(event)
-      {
-          if (this.paused || !this.options.pressDrag)
-          {
-              return false;
-          }
-          if (this.checkButtons(event) && this.checkKeyPress(event))
-          {
-              this.last = { x: event.data.global.x, y: event.data.global.y };
-              this.current = event.data.pointerId;
-
-              return true;
-          }
-          this.last = null;
-
-          return false;
-      }
-
-      get active()
-      {
-          return this.moved;
-      }
-
-       move(event)
-      {
-          if (this.paused || !this.options.pressDrag)
-          {
-              return false;
-          }
-          if (this.last && this.current === event.data.pointerId)
-          {
-              const x = event.data.global.x;
-              const y = event.data.global.y;
-              const count = this.parent.input.count();
-
-              if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
-              {
-                  const distX = x - this.last.x;
-                  const distY = y - this.last.y;
-
-                  if (this.moved
-                      || ((this.xDirection && this.parent.input.checkThreshold(distX))
-                      || (this.yDirection && this.parent.input.checkThreshold(distY))))
-                  {
-                      const newPoint = { x, y };
-
-                      if (this.xDirection)
-                      {
-                          this.parent.x += (newPoint.x - this.last.x) * this.options.factor;
-                      }
-                      if (this.yDirection)
-                      {
-                          this.parent.y += (newPoint.y - this.last.y) * this.options.factor;
-                      }
-                      this.last = newPoint;
-                      if (!this.moved)
-                      {
-                          this.parent.emit('drag-start', {
-                              event,
-                              screen: new Point(this.last.x, this.last.y),
-                              world: this.parent.toWorld(new Point(this.last.x, this.last.y)),
-                              viewport: this.parent
-                          });
-                      }
-                      this.moved = true;
-                      this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
-
-                      return true;
-                  }
-              }
-              else
-              {
-                  this.moved = false;
-              }
-          }
-
-          return false;
-      }
-
-       up(event)
-      {
-          if (this.paused)
-          {
-              return false;
-          }
-
-          const touches = this.parent.input.touches;
-
-          if (touches.length === 1)
-          {
-              const pointer = touches[0];
-
-              if (pointer.last)
-              {
-                  this.last = { x: pointer.last.x, y: pointer.last.y };
-                  this.current = pointer.id;
-              }
-              this.moved = false;
-
-              return true;
-          }
-          else if (this.last)
-          {
-              if (this.moved)
-              {
-                  const screen = new Point(this.last.x, this.last.y);
-
-                  this.parent.emit('drag-end', {
-                      event, screen,
-                      world: this.parent.toWorld(screen),
-                      viewport: this.parent,
-                  });
-                  this.last = null;
-                  this.moved = false;
-
-                  return true;
-              }
-          }
-
-          return false;
-      }
-
-       wheel(event)
-      {
-          if (this.paused)
-          {
-              return false;
-          }
-
-          if (this.options.wheel)
-          {
-              const wheel = this.parent.plugins.get('wheel', true);
-
-              if (!wheel)
-              {
-                  const step = event.deltaMode ? this.options.lineHeight : 1;
-
-                  if (this.xDirection)
-                  {
-                      this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
-                  }
-                  if (this.yDirection)
-                  {
-                      this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
-                  }
-                  if (this.options.clampWheel)
-                  {
-                      this.clamp();
-                  }
-                  this.parent.emit('wheel-scroll', this.parent);
-                  this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-                  if (!this.parent.options.passiveWheel)
-                  {
-                      event.preventDefault();
-                  }
-                  if (this.parent.options.stopPropagation)
-                  {
-                      event.stopPropagation();
-                  }
-
-                  return true;
-              }
-          }
-
-          return false;
-      }
-
-       resume()
-      {
-          this.last = null;
-          this.paused = false;
-      }
-
-       clamp()
-      {
-          const decelerate = this.parent.plugins.get('decelerate', true) || {};
-
-          if (this.options.clampWheel !== 'y')
-          {
-              if (this.parent.screenWorldWidth < this.parent.screenWidth)
-              {
-                  switch (this.underflowX)
-                  {
-                      case -1:
-                          this.parent.x = 0;
-                          break;
-                      case 1:
-                          this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth);
-                          break;
-                      default:
-                          this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
-                  }
-              }
-              else
-              if (this.parent.left < 0)
-              {
-                  this.parent.x = 0;
-                  decelerate.x = 0;
-              }
-              else if (this.parent.right > this.parent.worldWidth)
-              {
-                  this.parent.x = (-this.parent.worldWidth * this.parent.scale.x) + this.parent.screenWidth;
-                  decelerate.x = 0;
-              }
-          }
-          if (this.options.clampWheel !== 'x')
-          {
-              if (this.parent.screenWorldHeight < this.parent.screenHeight)
-              {
-                  switch (this.underflowY)
-                  {
-                      case -1:
-                          this.parent.y = 0;
-                          break;
-                      case 1:
-                          this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight);
-                          break;
-                      default:
-                          this.parent.y = (this.parent.screenHeight - this.parent.screenWorldHeight) / 2;
-                  }
-              }
-              else
-              {
-                  if (this.parent.top < 0)
-                  {
-                      this.parent.y = 0;
-                      decelerate.y = 0;
-                  }
-                  if (this.parent.bottom > this.parent.worldHeight)
-                  {
-                      this.parent.y = (-this.parent.worldHeight * this.parent.scale.y) + this.parent.screenHeight;
-                      decelerate.y = 0;
-                  }
-              }
-          }
-      }
-  }
-
-  /** Options for {@link Follow}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_FOLLOW_OPTIONS = {
-      speed: 0,
-      acceleration: null,
-      radius: null
-  };
-
-  /**
-   * Plugin to follow a display-object.
-   *
-   * @see Viewport.follow
-   * @public
-   */
-  class Follow extends Plugin
-  {
-      /** The options used to initialize this plugin. */
-      
-
-      /** The target this plugin will make the viewport follow. */
-      
-
-      /** The velocity provided the viewport by following, at the current time. */
-      
-
-      /**
-       * This is called by {@link Viewport.follow}.
-       *
-       * @param parent
-       * @param target - target to follow
-       * @param options
-       */
-      constructor(parent, target, options = {})
-      {
-          super(parent);
-
-          this.target = target;
-          this.options = Object.assign({}, DEFAULT_FOLLOW_OPTIONS, options);
-          this.velocity = { x: 0, y: 0 };
-      }
-
-       update(elapsed)
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          const center = this.parent.center;
-          let toX = this.target.x;
-          let toY = this.target.y;
-
-          if (this.options.radius)
-          {
-              const distance = Math.sqrt(Math.pow(this.target.y - center.y, 2) + Math.pow(this.target.x - center.x, 2));
-
-              if (distance > this.options.radius)
-              {
-                  const angle = Math.atan2(this.target.y - center.y, this.target.x - center.x);
-
-                  toX = this.target.x - (Math.cos(angle) * this.options.radius);
-                  toY = this.target.y - (Math.sin(angle) * this.options.radius);
-              }
-              else
-              {
-                  return;
-              }
-          }
-
-          const deltaX = toX - center.x;
-          const deltaY = toY - center.y;
-
-          if (deltaX || deltaY)
-          {
-              if (this.options.speed)
-              {
-                  if (this.options.acceleration)
-                  {
-                      const angle = Math.atan2(toY - center.y, toX - center.x);
-                      const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-
-                      if (distance)
-                      {
-                          const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.options.acceleration);
-
-                          if (distance > decelerationDistance)
-                          {
-                              this.velocity = {
-                                  x: Math.min(this.velocity.x + this.options.acceleration * elapsed, this.options.speed),
-                                  y: Math.min(this.velocity.y + this.options.acceleration * elapsed, this.options.speed)
-                              };
-                          }
-                          else
-                          {
-                              this.velocity = {
-                                  x: Math.max(this.velocity.x - this.options.acceleration * this.options.speed, 0),
-                                  y: Math.max(this.velocity.y - this.options.acceleration * this.options.speed, 0)
-                              };
-                          }
-                          const changeX = Math.cos(angle) * this.velocity.x;
-                          const changeY = Math.sin(angle) * this.velocity.y;
-                          const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
-                          const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
-
-                          this.parent.moveCenter(x, y);
-                          this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
-                      }
-                  }
-                  else
-                  {
-                      const angle = Math.atan2(toY - center.y, toX - center.x);
-                      const changeX = Math.cos(angle) * this.options.speed;
-                      const changeY = Math.sin(angle) * this.options.speed;
-                      const x = Math.abs(changeX) > Math.abs(deltaX) ? toX : center.x + changeX;
-                      const y = Math.abs(changeY) > Math.abs(deltaY) ? toY : center.y + changeY;
-
-                      this.parent.moveCenter(x, y);
-                      this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
-                  }
-              }
-              else
-              {
-                  this.parent.moveCenter(toX, toY);
-                  this.parent.emit('moved', { viewport: this.parent, type: 'follow' });
-              }
-          }
-      }
-  }
-
-  /** Insets for mouse edges scrolling regions */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const MOUSE_EDGES_OPTIONS = {
-      radius: null,
-      distance: null,
-      top: null,
-      bottom: null,
-      left: null,
-      right: null,
-      speed: 8,
-      reverse: false,
-      noDecelerate: false,
-      linear: false,
-      allowButtons: false,
-  };
-
-  /**
-   * Scroll viewport when mouse hovers near one of the edges.
-   *
-   * @event mouse-edge-start(Viewport) emitted when mouse-edge starts
-   * @event mouse-edge-end(Viewport) emitted when mouse-edge ends
-   */
-  class MouseEdges extends Plugin
-  {
-      /** Options used to initialize this plugin, cannot be modified later. */
-      
-
-      /** Factor from reverse option. */
-      
-
-      /** Radius squared */
-      
-
-      /** Scroll region size on the left side. */
-      
-
-      /** Scroll region size on the top size. */
-      
-
-      /** Scroll region size on the right side. */
-      
-
-      /** Scroll region size on the bottom side. */
-      
-
-      
-
-      
-
-      /**
-       * This is called by {@link Viewport.mouseEdges}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);
-
-          this.options = Object.assign({}, MOUSE_EDGES_OPTIONS, options);
-          this.reverse = this.options.reverse ? 1 : -1;
-          this.radiusSquared = typeof this.options.radius === 'number' ? Math.pow(this.options.radius, 2) : null;
-
-          this.resize();
-      }
-
-       resize()
-      {
-          const distance = this.options.distance;
-
-          if (distance !== null)
-          {
-              this.left = distance;
-              this.top = distance;
-              this.right = this.parent.worldScreenWidth - distance;
-              this.bottom = this.parent.worldScreenHeight - distance;
-          }
-          else if (!this.options.radius)
-          {
-              this.left = this.options.left;
-              this.top = this.options.top;
-              this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right;
-              this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom;
-          }
-      }
-
-       down()
-      {
-          if (this.paused)
-          {
-              return false;
-          }
-          if (!this.options.allowButtons)
-          {
-              this.horizontal = this.vertical = null;
-          }
-
-          return false;
-      }
-
-       move(event)
-      {
-          if (this.paused)
-          {
-              return false;
-          }
-          if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1)
-              || (!this.options.allowButtons && event.data.buttons !== 0))
-          {
-              return false;
-          }
-
-          const x = event.data.global.x;
-          const y = event.data.global.y;
-
-          if (this.radiusSquared)
-          {
-              const center = this.parent.toScreen(this.parent.center);
-              const distance = Math.pow(center.x - x, 2) + Math.pow(center.y - y, 2);
-
-              if (distance >= this.radiusSquared)
-              {
-                  const angle = Math.atan2(center.y - y, center.x - x);
-
-                  if (this.options.linear)
-                  {
-                      this.horizontal = Math.round(Math.cos(angle)) * this.options.speed * this.reverse * (60 / 1000);
-                      this.vertical = Math.round(Math.sin(angle)) * this.options.speed * this.reverse * (60 / 1000);
-                  }
-                  else
-                  {
-                      this.horizontal = Math.cos(angle) * this.options.speed * this.reverse * (60 / 1000);
-                      this.vertical = Math.sin(angle) * this.options.speed * this.reverse * (60 / 1000);
-                  }
-              }
-              else
-              {
-                  if (this.horizontal)
-                  {
-                      this.decelerateHorizontal();
-                  }
-                  if (this.vertical)
-                  {
-                      this.decelerateVertical();
-                  }
-
-                  this.horizontal = this.vertical = 0;
-              }
-          }
-          else
-          {
-              if (this.left !== null && x < this.left)
-              {
-                  this.horizontal = Number(this.reverse) * this.options.speed * (60 / 1000);
-              }
-              else if (this.right !== null && x > this.right)
-              {
-                  this.horizontal = -1 * this.reverse * this.options.speed * (60 / 1000);
-              }
-              else
-              {
-                  this.decelerateHorizontal();
-                  this.horizontal = 0;
-              }
-              if (this.top !== null && y < this.top)
-              {
-                  this.vertical = Number(this.reverse) * this.options.speed * (60 / 1000);
-              }
-              else if (this.bottom !== null && y > this.bottom)
-              {
-                  this.vertical = -1 * this.reverse * this.options.speed * (60 / 1000);
-              }
-              else
-              {
-                  this.decelerateVertical();
-                  this.vertical = 0;
-              }
-          }
-
-          return false;
-      }
-
-       decelerateHorizontal()
-      {
-          const decelerate = this.parent.plugins.get('decelerate', true);
-
-          if (this.horizontal && decelerate && !this.options.noDecelerate)
-          {
-              decelerate.activate({ x: (this.horizontal * this.options.speed * this.reverse) / (1000 / 60) });
-          }
-      }
-
-       decelerateVertical()
-      {
-          const decelerate = this.parent.plugins.get('decelerate', true);
-
-          if (this.vertical && decelerate && !this.options.noDecelerate)
-          {
-              decelerate.activate({ y: (this.vertical * this.options.speed * this.reverse) / (1000 / 60) });
-          }
-      }
-
-       up()
-      {
-          if (this.paused)
-          {
-              return false;
-          }
-          if (this.horizontal)
-          {
-              this.decelerateHorizontal();
-          }
-          if (this.vertical)
-          {
-              this.decelerateVertical();
-          }
-          this.horizontal = this.vertical = null;
-
-          return false;
-      }
-
-       update()
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          if (this.horizontal || this.vertical)
-          {
-              const center = this.parent.center;
-
-              if (this.horizontal)
-              {
-                  center.x += this.horizontal * this.options.speed;
-              }
-              if (this.vertical)
-              {
-                  center.y += this.vertical * this.options.speed;
-              }
-
-              this.parent.moveCenter(center);
-              this.parent.emit('moved', { viewport: this.parent, type: 'mouse-edges' });
-          }
-      }
-  }
-
-  /** Options for {@link Pinch}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_PINCH_OPTIONS = {
-      noDrag: false,
-      percent: 1,
-      center: null,
-      factor: 1,
-      axis: 'all',
-  };
-
-  /**
-   * Plugin for enabling two-finger pinching (or dragging).
-   *
-   * @public
-   */
-  class Pinch extends Plugin
-  {
-      /** Options used to initialize this plugin. */
-      
-
-      /** Flags whether this plugin is active, i.e. a pointer is down on the viewport. */
-       __init() {this.active = false;}
-
-      /** Flags whether the viewport is being pinched. */
-       __init2() {this.pinching = false;}
-
-       __init3() {this.moved = false;}
-      
-
-      /**
-       * This is called by {@link Viewport.pinch}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);Pinch.prototype.__init.call(this);Pinch.prototype.__init2.call(this);Pinch.prototype.__init3.call(this);        this.options = Object.assign({}, DEFAULT_PINCH_OPTIONS, options);
-      }
-
-       down()
-      {
-          if (this.parent.input.count() >= 2)
-          {
-              this.active = true;
-              return true;
-          }
-
-          return false;
-      }
-
-       isAxisX()
-      {
-          return ['all', 'x'].includes(this.options.axis);
-      }
-
-       isAxisY()
-      {
-          return ['all', 'y'].includes(this.options.axis);
-      }
-
-       move(e)
-      {
-          if (this.paused || !this.active)
-          {
-              return false;
-          }
-
-          const x = e.data.global.x;
-          const y = e.data.global.y;
-
-          const pointers = this.parent.input.touches;
-
-          if (pointers.length >= 2)
-          {
-              const first = pointers[0] ;
-              const second = pointers[1] ;
-              const last = (first.last && second.last)
-                  ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
-                  : null;
-
-              if (first.id === e.data.pointerId)
-              {
-                  first.last = { x, y, data: e.data } ;
-              }
-              else if (second.id === e.data.pointerId)
-              {
-                  second.last = { x, y, data: e.data } ;
-              }
-              if (last)
-              {
-                  let oldPoint;
-
-                  const point = {
-                      x: (first.last ).x +
-                          ((second.last ).x - (first.last ).x) / 2,
-                      y: (first.last ).y +
-                          ((second.last ).y - (first.last ).y) / 2,
-                  };
-
-                  if (!this.options.center)
-                  {
-                      oldPoint = this.parent.toLocal(point);
-                  }
-                  let dist = Math.sqrt(Math.pow(
-                      (second.last ).x - (first.last ).x, 2) +
-                      Math.pow((second.last ).y - (first.last ).y, 2));
-
-                  dist = dist === 0 ? dist = 0.0000000001 : dist;
-
-                  const change = (1 - last / dist) * this.options.percent
-                      * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
-
-                  if (this.isAxisX())
-                  {
-                      this.parent.scale.x += change;
-                  }
-                  if (this.isAxisY())
-                  {
-                      this.parent.scale.y += change;
-                  }
-
-                  this.parent.emit('zoomed', { viewport: this.parent, type: 'pinch', center: point });
-
-                  const clamp = this.parent.plugins.get('clamp-zoom', true);
-
-                  if (clamp)
-                  {
-                      clamp.clamp();
-                  }
-                  if (this.options.center)
-                  {
-                      this.parent.moveCenter(this.options.center);
-                  }
-                  else
-                  {
-                      const newPoint = this.parent.toGlobal(oldPoint );
-
-                      this.parent.x += (point.x - newPoint.x) * this.options.factor;
-                      this.parent.y += (point.y - newPoint.y) * this.options.factor;
-                      this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
-                  }
-                  if (!this.options.noDrag && this.lastCenter)
-                  {
-                      this.parent.x += (point.x - this.lastCenter.x) * this.options.factor;
-                      this.parent.y += (point.y - this.lastCenter.y) * this.options.factor;
-                      this.parent.emit('moved', { viewport: this.parent, type: 'pinch' });
-                  }
-
-                  this.lastCenter = point;
-                  this.moved = true;
-              }
-              else if (!this.pinching)
-              {
-                  this.parent.emit('pinch-start', this.parent);
-                  this.pinching = true;
-              }
-
-              return true;
-          }
-
-          return false;
-      }
-
-       up()
-      {
-          if (this.pinching)
-          {
-              if (this.parent.input.touches.length <= 1)
-              {
-                  this.active = false;
-                  this.lastCenter = null;
-                  this.pinching = false;
-                  this.moved = false;
-                  this.parent.emit('pinch-end', this.parent);
-
-                  return true;
-              }
-          }
-
-          return false;
-      }
-  }
-
-  const DEFAULT_SNAP_OPTIONS = {
-      topLeft: false,
-      friction: 0.8,
-      time: 1000,
-      ease: 'easeInOutSine',
-      interrupt: true,
-      removeOnComplete: false,
-      removeOnInterrupt: false,
-      forceStart: false
-  };
-
-  /**
-   * @event snap-start(Viewport) emitted each time a snap animation starts
-   * @event snap-restart(Viewport) emitted each time a snap resets because of a change in viewport size
-   * @event snap-end(Viewport) emitted each time snap reaches its target
-   * @event snap-remove(Viewport) emitted if snap plugin is removed
-   */
-  class Snap extends Plugin
-  {
-      
-      
-      
-      
-
-      
-      
-      
-      
-      
-      
-
-      /**
-       * This is called by {@link Viewport.snap}.
-       */
-      constructor(parent, x, y, options = {})
-      {
-          super(parent);
-          this.options = Object.assign({}, DEFAULT_SNAP_OPTIONS, options);
-          this.ease = ease(options.ease, 'easeInOutSine');
-          this.x = x;
-          this.y = y;
-
-          if (this.options.forceStart)
-          {
-              this.snapStart();
-          }
-      }
-
-       snapStart()
-      {
-          this.percent = 0;
-          this.snapping = { time: 0 };
-          const current = this.options.topLeft ? this.parent.corner : this.parent.center;
-
-          this.deltaX = this.x - current.x;
-          this.deltaY = this.y - current.y;
-          this.startX = current.x;
-          this.startY = current.y;
-          this.parent.emit('snap-start', this.parent);
-      }
-
-       wheel()
-      {
-          if (this.options.removeOnInterrupt)
-          {
-              this.parent.plugins.remove('snap');
-          }
-
-          return false;
-      }
-
-       down()
-      {
-          if (this.options.removeOnInterrupt)
-          {
-              this.parent.plugins.remove('snap');
-          }
-          else if (this.options.interrupt)
-          {
-              this.snapping = null;
-          }
-
-          return false;
-      }
-
-       up()
-      {
-          if (this.parent.input.count() === 0)
-          {
-              const decelerate = this.parent.plugins.get('decelerate', true);
-
-              if (decelerate && (decelerate.x || decelerate.y))
-              {
-                  decelerate.percentChangeX = decelerate.percentChangeY = this.options.friction;
-              }
-          }
-
-          return false;
-      }
-
-       update(elapsed)
-      {
-          if (this.paused)
-          {
-              return;
-          }
-          if (this.options.interrupt && this.parent.input.count() !== 0)
-          {
-              return;
-          }
-          if (!this.snapping)
-          {
-              const current = this.options.topLeft ? this.parent.corner : this.parent.center;
-
-              if (current.x !== this.x || current.y !== this.y)
-              {
-                  this.snapStart();
-              }
-          }
-          else
-          {
-              const snapping = this.snapping;
-
-              snapping.time += elapsed;
-              let finished;
-              let x;
-              let y;
-
-              const startX = this.startX ;
-              const startY = this.startY ;
-              const deltaX = this.deltaX ;
-              const deltaY = this.deltaY ;
-
-              if (snapping.time > this.options.time)
-              {
-                  finished = true;
-                  x = startX + deltaX;
-                  y = startY + deltaY;
-              }
-              else
-              {
-                  const percent = this.ease(snapping.time, 0, 1, this.options.time);
-
-                  x = startX + (deltaX * percent);
-                  y = startY + (deltaY * percent);
-              }
-              if (this.options.topLeft)
-              {
-                  this.parent.moveCorner(x, y);
-              }
-              else
-              {
-                  this.parent.moveCenter(x, y);
-              }
-
-              this.parent.emit('moved', { viewport: this.parent, type: 'snap' });
-
-              if (finished)
-              {
-                  if (this.options.removeOnComplete)
-                  {
-                      this.parent.plugins.remove('snap');
-                  }
-                  this.parent.emit('snap-end', this.parent);
-                  this.snapping = null;
-              }
-          }
-      }
-  }
-
-  /** Options for {@link SnapZoom}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_SNAP_ZOOM_OPTIONS = {
-      width: 0,
-      height: 0,
-      time: 1000,
-      ease: 'easeInOutSine',
-      center: null,
-      interrupt: true,
-      removeOnComplete: false,
-      removeOnInterrupt: false,
-      forceStart: false,
-      noMove: false
-  };
-
-  /**
-   * @event snap-zoom-start(Viewport) emitted each time a fit animation starts
-   * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
-   * @event snap-zoom-end(Viewport) emitted each time fit reaches its target
-   */
-  class SnapZoom extends Plugin
-  {
-      
-
-      
-      
-      
-      
-      
-      
-
-
-
-
-
-
-
-      /**
-       * This is called by {@link Viewport.snapZoom}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);
-
-          this.options = Object.assign({}, DEFAULT_SNAP_ZOOM_OPTIONS, options);
-          this.ease = ease(this.options.ease);
-
-          // Assign defaults for typescript.
-          this.xIndependent = false;
-          this.yIndependent = false;
-          this.xScale = 0;
-          this.yScale = 0;
-
-          if (this.options.width > 0)
-          {
-              this.xScale = parent.screenWidth / this.options.width;
-              this.xIndependent = true;
-          }
-          if (this.options.height > 0)
-          {
-              this.yScale = parent.screenHeight / this.options.height;
-              this.yIndependent = true;
-          }
-
-          this.xScale = this.xIndependent ? (this.xScale ) : (this.yScale );
-          this.yScale = this.yIndependent ? (this.yScale ) : this.xScale;
-
-          if (this.options.time === 0)
-          {
-              // TODO: Fix this
-              // @ts-expect-error todo
-              parent.container.scale.x = this.xScale;
-
-              // TODO: Fix this
-              // @ts-expect-error todo
-              parent.container.scale.y = this.yScale;
-
-              if (this.options.removeOnComplete)
-              {
-                  this.parent.plugins.remove('snap-zoom');
-              }
-          }
-          else if (options.forceStart)
-          {
-              this.createSnapping();
-          }
-      }
-
-       createSnapping()
-      {
-          const startWorldScreenWidth = this.parent.worldScreenWidth;
-          const startWorldScreenHeight = this.parent.worldScreenHeight;
-          const endWorldScreenWidth = this.parent.screenWidth / this.xScale;
-          const endWorldScreenHeight = this.parent.screenHeight / this.yScale;
-
-          this.snapping = {
-              time: 0,
-              startX: startWorldScreenWidth,
-              startY: startWorldScreenHeight,
-              deltaX: endWorldScreenWidth - startWorldScreenWidth,
-              deltaY: endWorldScreenHeight - startWorldScreenHeight
-          };
-
-          this.parent.emit('snap-zoom-start', this.parent);
-      }
-
-       resize()
-      {
-          this.snapping = null;
-
-          if (this.options.width > 0)
-          {
-              this.xScale = this.parent.screenWidth / this.options.width;
-          }
-          if (this.options.height > 0)
-          {
-              this.yScale = this.parent.screenHeight / this.options.height;
-          }
-          this.xScale = this.xIndependent ? this.xScale : this.yScale;
-          this.yScale = this.yIndependent ? this.yScale : this.xScale;
-      }
-
-       wheel()
-      {
-          if (this.options.removeOnInterrupt)
-          {
-              this.parent.plugins.remove('snap-zoom');
-          }
-
-          return false;
-      }
-
-       down()
-      {
-          if (this.options.removeOnInterrupt)
-          {
-              this.parent.plugins.remove('snap-zoom');
-          }
-          else if (this.options.interrupt)
-          {
-              this.snapping = null;
-          }
-
-          return false;
-      }
-
-       update(elapsed)
-      {
-          if (this.paused)
-          {
-              return;
-          }
-          if (this.options.interrupt && this.parent.input.count() !== 0)
-          {
-              return;
-          }
-
-          let oldCenter;
-
-          if (!this.options.center && !this.options.noMove)
-          {
-              oldCenter = this.parent.center;
-          }
-          if (!this.snapping)
-          {
-              if (this.parent.scale.x !== this.xScale || this.parent.scale.y !== this.yScale)
-              {
-                  this.createSnapping();
-              }
-          }
-          else if (this.snapping)
-          {
-              const snapping = this.snapping;
-
-              snapping.time += elapsed;
-
-              if (snapping.time >= this.options.time)
-              {
-                  this.parent.scale.set(this.xScale, this.yScale);
-                  if (this.options.removeOnComplete)
-                  {
-                      this.parent.plugins.remove('snap-zoom');
-                  }
-                  this.parent.emit('snap-zoom-end', this.parent);
-                  this.snapping = null;
-              }
-              else
-              {
-                  const snapping = this.snapping;
-                  const worldScreenWidth = this.ease(snapping.time, snapping.startX, snapping.deltaX, this.options.time);
-                  const worldScreenHeight = this.ease(snapping.time, snapping.startY, snapping.deltaY, this.options.time);
-
-                  this.parent.scale.x = this.parent.screenWidth / worldScreenWidth;
-                  this.parent.scale.y = this.parent.screenHeight / worldScreenHeight;
-              }
-              const clamp = this.parent.plugins.get('clamp-zoom', true);
-
-              if (clamp)
-              {
-                  clamp.clamp();
-              }
-              if (!this.options.noMove)
-              {
-                  if (!this.options.center)
-                  {
-                      this.parent.moveCenter(oldCenter );
-                  }
-                  else
-                  {
-                      this.parent.moveCenter(this.options.center);
-                  }
-              }
-          }
-      }
-
-       resume()
-      {
-          this.snapping = null;
-          super.resume();
-      }
-  }
-
-  /** Options for {@link Wheel}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_WHEEL_OPTIONS = {
-      percent: 0.1,
-      smooth: false,
-      interrupt: true,
-      reverse: false,
-      center: null,
-      lineHeight: 20,
-      axis: 'all',
-  };
-
-  /**
-   * Plugin for handling wheel scrolling for viewport zoom.
-   *
-   * @event wheel({wheel: {dx, dy, dz}, event, viewport})
-   */
-  class Wheel extends Plugin
-  {
-      
-
-      
-      
-      
-
-      /**
-       * This is called by {@link Viewport.wheel}.
-       */
-      constructor(parent, options = {})
-      {
-          super(parent);
-          this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options);
-      }
-
-       down()
-      {
-          if (this.options.interrupt)
-          {
-              this.smoothing = null;
-          }
-
-          return false;
-      }
-
-       isAxisX()
-      {
-          return ['all', 'x'].includes(this.options.axis);
-      }
-
-       isAxisY()
-      {
-          return ['all', 'y'].includes(this.options.axis);
-      }
-
-       update()
-      {
-          if (this.smoothing)
-          {
-              const point = this.smoothingCenter;
-              const change = this.smoothing;
-              let oldPoint;
-
-              if (!this.options.center)
-              {
-                  oldPoint = this.parent.toLocal(point );
-              }
-              if (this.isAxisX())
-              {
-                  this.parent.scale.x += change.x;
-              }
-              if (this.isAxisY())
-              {
-                  this.parent.scale.y += change.y;
-              }
-
-              this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-              const clamp = this.parent.plugins.get('clamp-zoom', true);
-
-              if (clamp)
-              {
-                  clamp.clamp();
-              }
-              if (this.options.center)
-              {
-                  this.parent.moveCenter(this.options.center);
-              }
-              else
-              {
-                  const newPoint = this.parent.toGlobal(oldPoint );
-
-                  this.parent.x += (point ).x - newPoint.x;
-                  this.parent.y += (point ).y - newPoint.y;
-              }
-
-              this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-              (this.smoothingCount )++;
-
-              if (this.smoothingCount  >= this.options.smooth)
-              {
-                  this.smoothing = null;
-              }
-          }
-      }
-
-       wheel(e)
-      {
-          if (this.paused)
-          {
-              return;
-          }
-
-          const point = this.parent.input.getPointerPosition(e);
-          const sign = this.options.reverse ? -1 : 1;
-          const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
-          const change = Math.pow(2, (1 + this.options.percent) * step);
-
-          if (this.options.smooth)
-          {
-              const original = {
-                  x: this.smoothing ? this.smoothing.x * (this.options.smooth - (this.smoothingCount )) : 0,
-                  y: this.smoothing ? this.smoothing.y * (this.options.smooth - (this.smoothingCount )) : 0
-              };
-
-              this.smoothing = {
-                  x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
-                  y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
-              };
-              this.smoothingCount = 0;
-              this.smoothingCenter = point;
-          }
-          else
-          {
-              let oldPoint;
-
-              if (!this.options.center)
-              {
-                  oldPoint = this.parent.toLocal(point);
-              }
-              if (this.isAxisX())
-              {
-                  this.parent.scale.x *= change;
-              }
-              if (this.isAxisY())
-              {
-                  this.parent.scale.y *= change;
-              }
-              this.parent.emit('zoomed', { viewport: this.parent, type: 'wheel' });
-              const clamp = this.parent.plugins.get('clamp-zoom', true);
-
-              if (clamp)
-              {
-                  clamp.clamp();
-              }
-              if (this.options.center)
-              {
-                  this.parent.moveCenter(this.options.center);
-              }
-              else
-              {
-                  const newPoint = this.parent.toGlobal(oldPoint );
-
-                  this.parent.x += point.x - newPoint.x;
-                  this.parent.y += point.y - newPoint.y;
-              }
-          }
-
-          this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-          this.parent.emit('wheel', { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
-
-          if (!this.parent.options.passiveWheel)
-          {
-              return true;
-          }
-      }
-  }
-
-  /**
-   * Handles all input for Viewport
-   *
-   * @internal
-   * @ignore
-   * @private
-   */
-  class InputManager
-  {
-      
-
-      
-      
-      
-      
-      /** List of active touches on viewport */
-      
-
-      constructor(viewport)
-      {
-          this.viewport = viewport;
-          this.touches = [];
-
-          this.addListeners();
-      }
-
-      /** Add input listeners */
-       addListeners()
-      {
-          this.viewport.interactive = true;
-          if (!this.viewport.forceHitArea)
-          {
-              this.viewport.hitArea = new Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
-          }
-          this.viewport.on('pointerdown', this.down, this);
-          this.viewport.on('pointermove', this.move, this);
-          this.viewport.on('pointerup', this.up, this);
-          this.viewport.on('pointerupoutside', this.up, this);
-          this.viewport.on('pointercancel', this.up, this);
-          this.viewport.on('pointerout', this.up, this);
-          this.wheelFunction = (e) => this.handleWheel(e);
-          this.viewport.options.divWheel.addEventListener(
-              'wheel',
-              this.wheelFunction ,
-              { passive: this.viewport.options.passiveWheel });
-          this.isMouseDown = false;
-      }
-
-      /**
-       * Removes all event listeners from viewport
-       * (useful for cleanup of wheel when removing viewport)
-       */
-       destroy()
-      {
-          this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction );
-      }
-
-      /**
-       * handle down events for viewport
-       *
-       * @param {PIXI.InteractionEvent} event
-       */
-       down(event)
-      {
-          if (this.viewport.pause || !this.viewport.worldVisible)
-          {
-              return;
-          }
-          if (event.data.pointerType === 'mouse')
-          {
-              this.isMouseDown = true;
-          }
-          else if (!this.get(event.data.pointerId))
-          {
-              this.touches.push({ id: event.data.pointerId, last: null });
-          }
-          if (this.count() === 1)
-          {
-              this.last = event.data.global.clone();
-
-              // clicked event does not fire if viewport is decelerating or bouncing
-              const decelerate = this.viewport.plugins.get('decelerate', true);
-              const bounce = this.viewport.plugins.get('bounce', true);
-
-              if ((!decelerate || !decelerate.isActive()) && (!bounce || !bounce.isActive()))
-              {
-                  this.clickedAvailable = true;
-              }
-              else
-              {
-                  this.clickedAvailable = false;
-              }
-          }
-          else
-          {
-              this.clickedAvailable = false;
-          }
-
-          const stop = this.viewport.plugins.down(event);
-
-          if (stop && this.viewport.options.stopPropagation)
-          {
-              event.stopPropagation();
-          }
-      }
-
-      /** Clears all pointer events */
-       clear()
-      {
-          this.isMouseDown = false;
-          this.touches = [];
-          this.last = null;
-      }
-
-      /**
-       * @param {number} change
-       * @returns whether change exceeds threshold
-       */
-       checkThreshold(change)
-      {
-          if (Math.abs(change) >= this.viewport.threshold)
-          {
-              return true;
-          }
-
-          return false;
-      }
-
-      /** Handle move events for viewport */
-       move(event)
-      {
-          if (this.viewport.pause || !this.viewport.worldVisible)
-          {
-              return;
-          }
-
-          const stop = this.viewport.plugins.move(event);
-
-          if (this.clickedAvailable && this.last)
-          {
-              const distX = event.data.global.x - this.last.x;
-              const distY = event.data.global.y - this.last.y;
-
-              if (this.checkThreshold(distX) || this.checkThreshold(distY))
-              {
-                  this.clickedAvailable = false;
-              }
-          }
-
-          if (stop && this.viewport.options.stopPropagation)
-          {
-              event.stopPropagation();
-          }
-      }
-
-      /** Handle up events for viewport */
-       up(event)
-      {
-          if (this.viewport.pause || !this.viewport.worldVisible)
-          {
-              return;
-          }
-
-          if (event.data.pointerType === 'mouse')
-          {
-              this.isMouseDown = false;
-          }
-
-          if (event.data.pointerType !== 'mouse')
-          {
-              this.remove(event.data.pointerId);
-          }
-
-          const stop = this.viewport.plugins.up(event);
-
-          if (this.clickedAvailable && this.count() === 0 && this.last)
-          {
-              this.viewport.emit('clicked', {
-                  event,
-                  screen: this.last,
-                  world: this.viewport.toWorld(this.last),
-                  viewport: this
-              });
-              this.clickedAvailable = false;
-          }
-
-          if (stop && this.viewport.options.stopPropagation)
-          {
-              event.stopPropagation();
-          }
-      }
-
-      /** Gets pointer position if this.interaction is set */
-       getPointerPosition(event)
-      {
-          const point = new Point();
-
-          if (this.viewport.options.interaction)
-          {
-              this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY);
-          }
-          else
-          {
-              point.x = event.clientX;
-              point.y = event.clientY;
-          }
-
-          return point;
-      }
-
-      /** Handle wheel events */
-       handleWheel(event)
-      {
-          if (this.viewport.pause || !this.viewport.worldVisible)
-          {
-              return;
-          }
-
-          // do not handle events coming from other elements
-          if (this.viewport.options.interaction
-              && (this.viewport.options.interaction ).interactionDOMElement !== event.target)
-          {
-              return;
-          }
-
-          // only handle wheel events where the mouse is over the viewport
-          const point = this.viewport.toLocal(this.getPointerPosition(event));
-
-          if (this.viewport.left <= point.x
-              && point.x <= this.viewport.right
-              && this.viewport.top <= point.y
-              && point.y <= this.viewport.bottom)
-          {
-              const stop = this.viewport.plugins.wheel(event);
-
-              if (stop && !this.viewport.options.passiveWheel)
-              {
-                  event.preventDefault();
-              }
-          }
-      }
-
-       pause()
-      {
-          this.touches = [];
-          this.isMouseDown = false;
-      }
-
-      /** Get touch by id */
-       get(id)
-      {
-          for (const touch of this.touches)
-          {
-              if (touch.id === id)
-              {
-                  return touch;
-              }
-          }
-
-          return null;
-      }
-
-      /** Remove touch by number */
-      remove(id)
-      {
-          for (let i = 0; i < this.touches.length; i++)
-          {
-              if (this.touches[i].id === id)
-              {
-                  this.touches.splice(i, 1);
-
-                  return;
-              }
-          }
-      }
-
-      /**
-       * @returns {number} count of mouse/touch pointers that are down on the viewport
-       */
-      count()
-      {
-          return (this.isMouseDown ? 1 : 0) + this.touches.length;
-      }
-  }
-
-  function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const PLUGIN_ORDER = [
-      'drag',
-      'pinch',
-      'wheel',
-      'follow',
-      'mouse-edges',
-      'decelerate',
-      'animate',
-      'bounce',
-      'snap-zoom',
-      'clamp-zoom',
-      'snap',
-      'clamp',
-  ];
-
-  /**
-   * Use this to access current plugins or add user-defined plugins
-   *
-   * @public
-   */
-  class PluginManager
-  {
-      /** Maps mounted plugins by their type */
-      
-
-      /**
-       * List of plugins mounted
-       *
-       * This list is kept sorted by the internal priority of plugins (hard-coded).
-       */
-      
-
-      /** The viewport using the plugins managed by `this`. */
-      
-
-      /** This is called by {@link Viewport} to initialize the {@link Viewport.plugins plugins}. */
-      constructor(viewport)
-      {
-          this.viewport = viewport;
-          this.list = [];
-          this.plugins = {};
-      }
-
-      /**
-       * Inserts a named plugin or a user plugin into the viewport
-       * default plugin order: 'drag', 'pinch', 'wheel', 'follow', 'mouse-edges', 'decelerate', 'bounce',
-       * 'snap-zoom', 'clamp-zoom', 'snap', 'clamp'
-       *
-       * @param {string} name of plugin
-       * @param {Plugin} plugin - instantiated Plugin class
-       * @param {number} index to insert userPlugin (otherwise inserts it at the end)
-       */
-       add(name, plugin, index = PLUGIN_ORDER.length)
-      {
-          this.plugins[name] = plugin;
-
-          const current = PLUGIN_ORDER.indexOf(name);
-
-          if (current !== -1)
-          {
-              PLUGIN_ORDER.splice(current, 1);
-          }
-
-          PLUGIN_ORDER.splice(index, 0, name);
-          this.sort();
-      }
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-      /**
-       * Get plugin
-       *
-       * @param {string} name of plugin
-       * @param {boolean} [ignorePaused] return null if plugin is paused
-       */
-       get(name, ignorePaused)
-      {
-          if (ignorePaused)
-          {
-              if (_optionalChain([this, 'access', _ => _.plugins, 'access', _2 => _2[name], 'optionalAccess', _3 => _3.paused]))
-              {
-                  return null;
-              }
-          }
-
-          return this.plugins[name] ;
-      }
-
-      /**
-       * Update all active plugins
-       *
-       * @internal
-       * @ignore
-       * @param {number} elapsed type in milliseconds since last update
-       */
-       update(elapsed)
-      {
-          for (const plugin of this.list)
-          {
-              plugin.update(elapsed);
-          }
-      }
-
-      /**
-       * Resize all active plugins
-       *
-       * @internal
-       * @ignore
-       */
-       resize()
-      {
-          for (const plugin of this.list)
-          {
-              plugin.resize();
-          }
-      }
-
-      /** Clamps and resets bounce and decelerate (as needed) after manually moving viewport */
-       reset()
-      {
-          for (const plugin of this.list)
-          {
-              plugin.reset();
-          }
-      }
-
-      /** removes all installed plugins */
-       removeAll()
-      {
-          this.plugins = {};
-          this.sort();
-      }
-
-      /**
-       * Removes installed plugin
-       *
-       * @param {string} name of plugin (e.g., 'drag', 'pinch')
-       */
-       remove(name)
-      {
-          if (this.plugins[name])
-          {
-              delete this.plugins[name];
-              this.viewport.emit(`${name}-remove`);
-              this.sort();
-          }
-      }
-
-      /**
-       * Pause plugin
-       *
-       * @param {string} name of plugin (e.g., 'drag', 'pinch')
-       */
-       pause(name)
-      {
-          _optionalChain([this, 'access', _4 => _4.plugins, 'access', _5 => _5[name], 'optionalAccess', _6 => _6.pause, 'call', _7 => _7()]);
-      }
-
-      /**
-       * Resume plugin
-       *
-       * @param {string} name of plugin (e.g., 'drag', 'pinch')
-       */
-       resume(name)
-      {
-          _optionalChain([this, 'access', _8 => _8.plugins, 'access', _9 => _9[name], 'optionalAccess', _10 => _10.resume, 'call', _11 => _11()]);
-      }
-
-      /**
-       * Sort plugins according to PLUGIN_ORDER
-       *
-       * @internal
-       * @ignore
-       */
-       sort()
-      {
-          this.list = [];
-
-          for (const plugin of PLUGIN_ORDER)
-          {
-              if (this.plugins[plugin])
-              {
-                  this.list.push(this.plugins[plugin] );
-              }
-          }
-      }
-
-      /**
-       * Handle down for all plugins
-       *
-       * @internal
-       * @ignore
-       */
-       down(event)
-      {
-          let stop = false;
-
-          for (const plugin of this.list)
-          {
-              if (plugin.down(event))
-              {
-                  stop = true;
-              }
-          }
-
-          return stop;
-      }
-
-      /**
-       * Handle move for all plugins
-       *
-       * @internal
-       * @ignore
-       */
-       move(event)
-      {
-          let stop = false;
-
-          for (const plugin of this.viewport.plugins.list)
-          {
-              if (plugin.move(event))
-              {
-                  stop = true;
-              }
-          }
-
-          return stop;
-      }
-
-      /**
-       * Handle up for all plugins
-       *
-       * @internal
-       * @ignore
-       */
-       up(event)
-      {
-          let stop = false;
-
-          for (const plugin of this.list)
-          {
-              if (plugin.up(event))
-              {
-                  stop = true;
-              }
-          }
-
-          return stop;
-      }
-
-      /**
-       * Handle wheel event for all plugins
-       *
-       * @internal
-       * @ignore
-       */
-       wheel(e)
-      {
-          let result = false;
-
-          for (const plugin of this.list)
-          {
-              if (plugin.wheel(e))
-              {
-                  result = true;
-              }
-          }
-
-          return result;
-      }
-  }
-
-  /** Options for {@link Viewport}. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const DEFAULT_VIEWPORT_OPTIONS = {
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      worldWidth: null,
-      worldHeight: null,
-      threshold: 5,
-      passiveWheel: true,
-      stopPropagation: false,
-      forceHitArea: null,
-      noTicker: false,
-      interaction: null,
-      disableOnContextMenu: false,
-      ticker: Ticker.shared,
-  };
-
-  /**
-   * Main class to use when creating a Viewport
-   *
-   * @public
-   * @fires clicked
-   * @fires drag-start
-   * @fires drag-end
-   * @fires drag-remove
-   * @fires pinch-start
-   * @fires pinch-end
-   * @fires pinch-remove
-   * @fires snap-start
-   * @fires snap-end
-   * @fires snap-remove
-   * @fires snap-zoom-start
-   * @fires snap-zoom-end
-   * @fires snap-zoom-remove
-   * @fires bounce-x-start
-   * @fires bounce-x-end
-   * @fires bounce-y-start
-   * @fires bounce-y-end
-   * @fires bounce-remove
-   * @fires wheel
-   * @fires wheel-remove
-   * @fires wheel-scroll
-   * @fires wheel-scroll-remove
-   * @fires mouse-edge-start
-   * @fires mouse-edge-end
-   * @fires mouse-edge-remove
-   * @fires moved
-   * @fires moved-end
-   * @fires zoomed
-   * @fires zoomed-end
-   * @fires frame-end
-   */
-  class Viewport extends Container
-  {
-      /** Flags whether the viewport is being panned */
-      
-
-      
-      
-
-      /** Number of pixels to move to trigger an input event (e.g., drag, pinch) or disable a clicked event */
-      
-
-      
-
-      /** Use this to add user plugins or access existing plugins (e.g., to pause, resume, or remove them) */
-      
-
-      /** Flags whether the viewport zoom is being changed. */
-      
-
-      
-
-      /** The options passed when creating this viewport, merged with the default values */
-      
-
-      
-      
-      
-      
-      
-      
-      
-
-      /**
-       * @param {IViewportOptions} ViewportOptions
-       * @param {number} [options.screenWidth=window.innerWidth]
-       * @param {number} [options.screenHeight=window.innerHeight]
-       * @param {number} [options.worldWidth=this.width]
-       * @param {number} [options.worldHeight=this.height]
-       * @param {number} [options.threshold=5] number of pixels to move to trigger an input event (e.g., drag, pinch)
-       * or disable a clicked event
-       * @param {boolean} [options.passiveWheel=true] whether the 'wheel' event is set to passive (note: if false,
-       * e.preventDefault() will be called when wheel is used over the viewport)
-       * @param {boolean} [options.stopPropagation=false] whether to stopPropagation of events that impact the viewport
-       * (except wheel events, see options.passiveWheel)
-       * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
-       * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
-       * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
-       * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated
-       * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
-       * location on screen
-       * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
-       * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
-       */
-      constructor(options = {})
-      {
-          super();
-          this.options = Object.assign(
-              {},
-              { divWheel: document.body },
-              DEFAULT_VIEWPORT_OPTIONS,
-              options
-          );
-
-          this.screenWidth = this.options.screenWidth;
-          this.screenHeight = this.options.screenHeight;
-
-          this._worldWidth = this.options.worldWidth;
-          this._worldHeight = this.options.worldHeight;
-          this.forceHitArea = this.options.forceHitArea;
-          this.threshold = this.options.threshold;
-
-          this.options.divWheel = this.options.divWheel || document.body;
-
-          if (this.options.disableOnContextMenu)
-          {
-              this.options.divWheel.oncontextmenu = (e) => e.preventDefault();
-          }
-          if (!this.options.noTicker)
-          {
-              this.tickerFunction = () => this.update(this.options.ticker.elapsedMS);
-              this.options.ticker.add(this.tickerFunction);
-          }
-
-          this.input = new InputManager(this);
-          this.plugins = new PluginManager(this);
-      }
-
-      /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */
-      destroy(options)
-      {
-          if (!this.options.noTicker && this.tickerFunction)
-          {
-              this.options.ticker.remove(this.tickerFunction);
-          }
-
-          this.input.destroy();
-          super.destroy(options);
-      }
-
-      /**
-       * Update viewport on each frame.
-       *
-       * By default, you do not need to call this unless you set `options.noTicker=true`.
-       *
-       * @param {number} elapsed time in milliseconds since last update
-       */
-      update(elapsed)
-      {
-          if (!this.pause)
-          {
-              this.plugins.update(elapsed);
-
-              if (this.lastViewport)
-              {
-                  // Check for moved-end event
-                  if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y)
-                  {
-                      this.moving = true;
-                  }
-                  else if (this.moving)
-                  {
-                      this.emit('moved-end', this);
-                      this.moving = false;
-                  }
-
-                  // Check for zoomed-end event
-                  if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y)
-                  {
-                      this.zooming = true;
-                  }
-                  else if (this.zooming)
-                  {
-                      this.emit('zoomed-end', this);
-                      this.zooming = false;
-                  }
-              }
-
-              if (!this.forceHitArea)
-              {
-                  this._hitAreaDefault = new Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
-                  this.hitArea = this._hitAreaDefault;
-              }
-
-              this._dirty = this._dirty || !this.lastViewport
-                  || this.lastViewport.x !== this.x || this.lastViewport.y !== this.y
-                  || this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y;
-
-              this.lastViewport = {
-                  x: this.x,
-                  y: this.y,
-                  scaleX: this.scale.x,
-                  scaleY: this.scale.y
-              };
-              this.emit('frame-end', this);
-          }
-      }
-
-      /** Use this to set screen and world sizes, needed for pinch/wheel/clamp/bounce. */
-      resize(
-          screenWidth = window.innerWidth,
-          screenHeight = window.innerHeight,
-          worldWidth,
-          worldHeight
-      )
-      {
-          this.screenWidth = screenWidth;
-          this.screenHeight = screenHeight;
-
-          if (typeof worldWidth !== 'undefined')
-          {
-              this._worldWidth = worldWidth;
-          }
-          if (typeof worldHeight !== 'undefined')
-          {
-              this._worldHeight = worldHeight;
-          }
-
-          this.plugins.resize();
-          this.dirty = true;
-      }
-
-      /** World width, in pixels */
-      get worldWidth()
-      {
-          if (this._worldWidth)
-          {
-              return this._worldWidth;
-          }
-
-          return this.width / this.scale.x;
-      }
-      set worldWidth(value)
-      {
-          this._worldWidth = value;
-          this.plugins.resize();
-      }
-
-      /** World height, in pixels */
-      get worldHeight()
-      {
-          if (this._worldHeight)
-          {
-              return this._worldHeight;
-          }
-
-          return this.height / this.scale.y;
-      }
-      set worldHeight(value)
-      {
-          this._worldHeight = value;
-          this.plugins.resize();
-      }
-
-      /** Get visible world bounds of viewport */
-       getVisibleBounds()
-      {
-          return new Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
-      }
-
-      /** Change coordinates from screen to world */
-      
-
-
-
-       toWorld(x, y)
-      {
-          if (arguments.length === 2)
-          {
-              return this.toLocal(new Point(x , y));
-          }
-
-          return this.toLocal(x );
-      }
-
-      /** Change coordinates from world to screen */
-      
-
-
-
-       toScreen(x, y)
-      {
-          if (arguments.length === 2)
-          {
-              return this.toGlobal(new Point(x , y));
-          }
-
-          return this.toGlobal(x );
-      }
-
-      /** Screen width in world coordinates */
-      get worldScreenWidth()
-      {
-          return this.screenWidth / this.scale.x;
-      }
-
-      /** Screen height in world coordinates */
-      get worldScreenHeight()
-      {
-          return this.screenHeight / this.scale.y;
-      }
-
-      /** World width in screen coordinates */
-      get screenWorldWidth()
-      {
-          return this.worldWidth * this.scale.x;
-      }
-
-      /** World height in screen coordinates */
-      get screenWorldHeight()
-      {
-          return this.worldHeight * this.scale.y;
-      }
-
-      /** Center of screen in world coordinates */
-      get center()
-      {
-          return new Point(
-              (this.worldScreenWidth / 2) - (this.x / this.scale.x),
-              (this.worldScreenHeight / 2) - (this.y / this.scale.y),
-          );
-      }
-      set center(value)
-      {
-          this.moveCenter(value);
-      }
-
-      /** Move center of viewport to (x, y) */
-      
-
-
-
-
-       moveCenter(...args)
-      {
-          let x;
-          let y;
-
-          if (typeof args[0] === 'number')
-          {
-              x = args[0];
-              y = args[1] ;
-          }
-          else
-          {
-              x = args[0].x;
-              y = args[0].y;
-          }
-
-          const newX = ((this.worldScreenWidth / 2) - x) * this.scale.x;
-          const newY = ((this.worldScreenHeight / 2) - y) * this.scale.y;
-
-          if (this.x !== newX || this.y !== newY)
-          {
-              this.position.set(newX, newY);
-              this.plugins.reset();
-              this.dirty = true;
-          }
-
-          return this;
-      }
-
-      /** Top-left corner of Viewport */
-      get corner()
-      {
-          return new Point(-this.x / this.scale.x, -this.y / this.scale.y);
-      }
-      set corner(value)
-      {
-          this.moveCorner(value);
-      }
-
-      /** Move Viewport's top-left corner; also clamps and resets decelerate and bounce (as needed) */
-      
-
-
-
-
-       moveCorner(...args)
-      {
-          let x;
-          let y;
-
-          if (args.length === 1)
-          {
-              x = -args[0].x * this.scale.x;
-              y = -args[0].y * this.scale.y;
-          }
-          else
-          {
-              x = -args[0] * this.scale.x;
-              y = -args[1] * this.scale.y;
-          }
-
-          if (x !== this.x || y !== this.y)
-          {
-              this.position.set(x, y);
-              this.plugins.reset();
-              this.dirty = true;
-          }
-
-          return this;
-      }
-
-      /** Get how many world pixels fit in screen's width */
-      get screenWidthInWorldPixels()
-      {
-          return this.screenWidth / this.scale.x;
-      }
-
-      /** Get how many world pixels fit on screen's height */
-      get screenHeightInWorldPixels()
-      {
-          return this.screenHeight / this.scale.y;
-      }
-
-      /**
-       * Find the scale value that fits a world width on the screen
-       * does not change the viewport (use fit... to change)
-       *
-       * @param width - Width in world pixels
-       * @return - scale
-       */
-      findFitWidth(width)
-      {
-          return this.screenWidth / width;
-      }
-
-      /**
-       * Finds the scale value that fits a world height on the screens
-       * does not change the viewport (use fit... to change)
-       *
-       * @param height - Height in world pixels
-       * @return - scale
-       */
-      findFitHeight(height)
-      {
-          return this.screenHeight / height;
-      }
-
-      /**
-       * Finds the scale value that fits the smaller of a world width and world height on the screen
-       * does not change the viewport (use fit... to change)
-       *
-       * @param {number} width in world pixels
-       * @param {number} height in world pixels
-       * @returns {number} scale
-       */
-      findFit(width, height)
-      {
-          const scaleX = this.screenWidth / width;
-          const scaleY = this.screenHeight / height;
-
-          return Math.min(scaleX, scaleY);
-      }
-
-      /**
-       * Finds the scale value that fits the larger of a world width and world height on the screen
-       * does not change the viewport (use fit... to change)
-       *
-       * @param {number} width in world pixels
-       * @param {number} height in world pixels
-       * @returns {number} scale
-       */
-      findCover(width, height)
-      {
-          const scaleX = this.screenWidth / width;
-          const scaleY = this.screenHeight / height;
-
-          return Math.max(scaleX, scaleY);
-      }
-
-      /**
-       * Change zoom so the width fits in the viewport
-       *
-       * @param width - width in world coordinates
-       * @param center - maintain the same center
-       * @param scaleY - whether to set scaleY=scaleX
-       * @param noClamp - whether to disable clamp-zoom
-       * @returns {Viewport} this
-       */
-      fitWidth(width = this.worldWidth, center, scaleY = true, noClamp)
-      {
-          let save;
-
-          if (center)
-          {
-              save = this.center;
-          }
-          this.scale.x = this.screenWidth / width;
-
-          if (scaleY)
-          {
-              this.scale.y = this.scale.x;
-          }
-
-          const clampZoom = this.plugins.get('clamp-zoom', true);
-
-          if (!noClamp && clampZoom)
-          {
-              clampZoom.clamp();
-          }
-
-          if (center && save)
-          {
-              this.moveCenter(save);
-          }
-
-          return this;
-      }
-
-      /**
-       * Change zoom so the height fits in the viewport
-       *
-       * @param {number} [height=this.worldHeight] in world coordinates
-       * @param {boolean} [center] maintain the same center of the screen after zoom
-       * @param {boolean} [scaleX=true] whether to set scaleX = scaleY
-       * @param {boolean} [noClamp] whether to disable clamp-zoom
-       * @returns {Viewport} this
-       */
-      fitHeight(height = this.worldHeight, center, scaleX = true, noClamp)
-      {
-          let save;
-
-          if (center)
-          {
-              save = this.center;
-          }
-          this.scale.y = this.screenHeight / height;
-
-          if (scaleX)
-          {
-              this.scale.x = this.scale.y;
-          }
-
-          const clampZoom = this.plugins.get('clamp-zoom', true);
-
-          if (!noClamp && clampZoom)
-          {
-              clampZoom.clamp();
-          }
-
-          if (center && save)
-          {
-              this.moveCenter(save);
-          }
-
-          return this;
-      }
-
-      /**
-       * Change zoom so it fits the entire world in the viewport
-       *
-       * @param {boolean} center maintain the same center of the screen after zoom
-       * @returns {Viewport} this
-       */
-      fitWorld(center)
-      {
-          let save;
-
-          if (center)
-          {
-              save = this.center;
-          }
-
-          this.scale.x = this.screenWidth / this.worldWidth;
-          this.scale.y = this.screenHeight / this.worldHeight;
-
-          if (this.scale.x < this.scale.y)
-          {
-              this.scale.y = this.scale.x;
-          }
-          else
-          {
-              this.scale.x = this.scale.y;
-          }
-
-          const clampZoom = this.plugins.get('clamp-zoom', true);
-
-          if (clampZoom)
-          {
-              clampZoom.clamp();
-          }
-
-          if (center && save)
-          {
-              this.moveCenter(save);
-          }
-
-          return this;
-      }
-
-      /**
-       * Change zoom so it fits the size or the entire world in the viewport
-       *
-       * @param {boolean} [center] maintain the same center of the screen after zoom
-       * @param {number} [width=this.worldWidth] desired width
-       * @param {number} [height=this.worldHeight] desired height
-       * @returns {Viewport} this
-       */
-      fit(center, width = this.worldWidth, height = this.worldHeight)
-      {
-          let save;
-
-          if (center)
-          {
-              save = this.center;
-          }
-
-          this.scale.x = this.screenWidth / width;
-          this.scale.y = this.screenHeight / height;
-
-          if (this.scale.x < this.scale.y)
-          {
-              this.scale.y = this.scale.x;
-          }
-          else
-          {
-              this.scale.x = this.scale.y;
-          }
-          const clampZoom = this.plugins.get('clamp-zoom', true);
-
-          if (clampZoom)
-          {
-              clampZoom.clamp();
-          }
-          if (center && save)
-          {
-              this.moveCenter(save);
-          }
-
-          return this;
-      }
-
-      // this doesn't work
-      // set visible(value: boolean)
-      // {
-      //     console.log('hello!');
-      //     if (!value)
-      //     {
-      //         debugger;
-      //         this.input.clear();
-      //     }
-      //     super.visible = value;
-      // }
-
-      // get visible(): boolean
-      // {
-      //     return super.visible;
-      // }
-
-      /**
-       * Zoom viewport to specific value.
-       *
-       * @param {number} scale value (e.g., 1 would be 100%, 0.25 would be 25%)
-       * @param {boolean} [center] maintain the same center of the screen after zoom
-       * @return {Viewport} this
-       */
-      setZoom(scale, center)
-      {
-          let save;
-
-          if (center)
-          {
-              save = this.center;
-          }
-          this.scale.set(scale);
-          const clampZoom = this.plugins.get('clamp-zoom', true);
-
-          if (clampZoom)
-          {
-              clampZoom.clamp();
-          }
-          if (center && save)
-          {
-              this.moveCenter(save);
-          }
-
-          return this;
-      }
-
-      /**
-       * Zoom viewport by a certain percent (in both x and y direction).
-       *
-       * @param {number} percent change (e.g., 0.25 would increase a starting scale of 1.0 to 1.25)
-       * @param {boolean} [center] maintain the same center of the screen after zoom
-       * @return {Viewport} this
-       */
-      zoomPercent(percent, center)
-      {
-          return this.setZoom(this.scale.x + (this.scale.x * percent), center);
-      }
-
-      /**
-       * Zoom viewport by increasing/decreasing width by a certain number of pixels.
-       *
-       * @param {number} change in pixels
-       * @param {boolean} [center] maintain the same center of the screen after zoom
-       * @return {Viewport} this
-       */
-      zoom(change, center)
-      {
-          this.fitWidth(change + this.worldScreenWidth, center);
-
-          return this;
-      }
-
-      /** Changes scale of viewport and maintains center of viewport */
-      get scaled()
-      {
-          return this.scale.x;
-      }
-      set scaled(scale)
-      {
-          this.setZoom(scale, true);
-      }
-
-      /**
-       * Returns zoom to the desired scale
-       *
-       * @param {ISnapZoomOptions} options
-       * @param {number} [options.width=0] - the desired width to snap (to maintain aspect ratio, choose width or height)
-       * @param {number} [options.height=0] - the desired height to snap (to maintain aspect ratio, choose width or height)
-       * @param {number} [options.time=1000] - time for snapping in ms
-       * @param {(string|function)} [options.ease=easeInOutSine] ease function or name (see http://easings.net/
-       *   for supported names)
-       * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of center of the viewport
-       * @param {boolean} [options.interrupt=true] - pause snapping with any user input on the viewport
-       * @param {boolean} [options.removeOnComplete] - removes this plugin after snapping is complete
-       * @param {boolean} [options.removeOnInterrupt] - removes this plugin if interrupted by any user input
-       * @param {boolean} [options.forceStart] - starts the snap immediately regardless of whether the viewport is at the
-       *   desired zoom
-       * @param {boolean} [options.noMove] - zoom but do not move
-       */
-      snapZoom(options)
-      {
-          this.plugins.add('snap-zoom', new SnapZoom(this, options));
-
-          return this;
-      }
-
-      /** Is container out of world bounds */
-      OOB()
-
-
-
-
-
-
-      {
-          return {
-              left: this.left < 0,
-              right: this.right > this.worldWidth,
-              top: this.top < 0,
-              bottom: this.bottom > this.worldHeight,
-              cornerPoint: new Point(
-                  (this.worldWidth * this.scale.x) - this.screenWidth,
-                  (this.worldHeight * this.scale.y) - this.screenHeight
-              )
-          };
-      }
-
-      /** World coordinates of the right edge of the screen */
-      get right()
-      {
-          return (-this.x / this.scale.x) + this.worldScreenWidth;
-      }
-      set right(value)
-      {
-          this.x = (-value * this.scale.x) + this.screenWidth;
-          this.plugins.reset();
-      }
-
-      /** World coordinates of the left edge of the screen */
-      get left()
-      {
-          return -this.x / this.scale.x;
-      }
-      set left(value)
-      {
-          this.x = -value * this.scale.x;
-          this.plugins.reset();
-      }
-
-      /** World coordinates of the top edge of the screen */
-      get top()
-      {
-          return -this.y / this.scale.y;
-      }
-      set top(value)
-      {
-          this.y = -value * this.scale.y;
-          this.plugins.reset();
-      }
-
-      /** World coordinates of the bottom edge of the screen */
-      get bottom()
-      {
-          return (-this.y / this.scale.y) + this.worldScreenHeight;
-      }
-      set bottom(value)
-      {
-          this.y = (-value * this.scale.y) + this.screenHeight;
-          this.plugins.reset();
-      }
-
-      /**
-       * Determines whether the viewport is dirty (i.e., needs to be rendered to the screen because of a change)
-       */
-      get dirty()
-      {
-          return !!this._dirty;
-      }
-      set dirty(value)
-      {
-          this._dirty = value;
-      }
-
-      /**
-       * Permanently changes the Viewport's hitArea
-       *
-       * NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth,
-       * Viewport.worldScreenHeight)
-       */
-      get forceHitArea()
-      {
-          return this._forceHitArea;
-      }
-      set forceHitArea(value)
-      {
-          if (value)
-          {
-              this._forceHitArea = value;
-              this.hitArea = value;
-          }
-          else
-          {
-              this._forceHitArea = null;
-              this.hitArea = new Rectangle(0, 0, this.worldWidth, this.worldHeight);
-          }
-      }
-
-      /**
-       * Enable one-finger touch to drag
-       *
-       * NOTE: if you expect users to use right-click dragging, you should enable `viewport.options.disableOnContextMenu`
-       * to avoid the context menu popping up on each right-click drag.
-       *
-       * @param {IDragOptions} [options]
-       * @param {string} [options.direction=all] direction to drag
-       * @param {boolean} [options.pressDrag=true] whether click to drag is active
-       * @param {boolean} [options.wheel=true] use wheel to scroll in direction (unless wheel plugin is active)
-       * @param {number} [options.wheelScroll=1] number of pixels to scroll with each wheel spin
-       * @param {boolean} [options.reverse] reverse the direction of the wheel scroll
-       * @param {(boolean|string)} [options.clampWheel=false] clamp wheel(to avoid weird bounce with mouse wheel)
-       * @param {string} [options.underflow=center] where to place world if too small for screen
-       * @param {number} [options.factor=1] factor to multiply drag to increase the speed of movement
-       * @param {string} [options.mouseButtons=all] changes which mouse buttons trigger drag, use: 'all', 'left',
-       *  'right' 'middle', or some combination, like, 'middle-right'; you may want to set
-       *   viewport.options.disableOnContextMenu if you want to use right-click dragging
-       * @param {string[]} [options.keyToPress=null] - array containing
-       *  {@link key|https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code} codes of keys that can be
-       *  pressed for the drag to be triggered, e.g.: ['ShiftLeft', 'ShiftRight'}.
-       * @param {boolean} [options.ignoreKeyToPressOnTouch=false] - ignore keyToPress for touch events
-       * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
-       * @returns {Viewport} this
-       */
-       drag(options)
-      {
-          this.plugins.add('drag', new Drag(this, options));
-
-          return this;
-      }
-
-      /**
-       * Clamp to world boundaries or other provided boundaries
-       * There are three ways to clamp:
-       * 1. direction: 'all' = the world is clamped to its world boundaries, ie, you cannot drag any part of offscreen
-       *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
-       * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
-       *    if any of these are set to true, then the location is set to the boundary
-       *    [0, viewport.worldWidth/viewport.worldHeight], eg: to allow the world to be completely dragged offscreen,
-       *    set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
-       *
-       * Underflow determines what happens when the world is smaller than the viewport
-       * 1. none = the world is clamped but there is no special behavior
-       * 2. center = the world is centered on the viewport
-       * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the
-       *     appropriate boundaries
-       *
-       * NOTES:
-       *   clamp is disabled if called with no options; use { direction: 'all' } for all edge clamping
-       *   screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-       *
-       * @param {object} [options]
-       * @param {(number|boolean)} [options.left=false] - clamp left; true = 0
-       * @param {(number|boolean)} [options.right=false] - clamp right; true = viewport.worldWidth
-       * @param {(number|boolean)} [options.top=false] - clamp top; true = 0
-       * @param {(number|boolean)} [options.bottom=false] - clamp bottom; true = viewport.worldHeight
-       * @param {string} [direction] - (all, x, or y) using clamps of [0, viewport.worldWidth/viewport.worldHeight];
-       *  replaces left/right/top/bottom if set
-       * @param {string} [underflow=center] - where to place world if too small for screen (e.g., top-right, center,
-       *  none, bottomLeft)     * @returns {Viewport} this
-       */
-       clamp(options)
-      {
-          this.plugins.add('clamp', new Clamp(this, options));
-
-          return this;
-      }
-
-      /**
-       * Decelerate after a move
-       *
-       * NOTE: this fires 'moved' event during deceleration
-       *
-       * @param {IDecelerateOptions} [options]
-       * @param {number} [options.friction=0.95] - percent to decelerate after movement
-       * @param {number} [options.bounce=0.8] - percent to decelerate when past boundaries (only applicable when
-       *   viewport.bounce() is active)
-       * @param {number} [options.minSpeed=0.01] - minimum velocity before stopping/reversing acceleration
-       * @return {Viewport} this
-       */
-       decelerate(options)
-      {
-          this.plugins.add('decelerate', new Decelerate(this, options));
-
-          return this;
-      }
-
-      /**
-       * Bounce on borders
-       * NOTES:
-       *    screenWidth, screenHeight, worldWidth, and worldHeight needs to be set for this to work properly
-       *    fires 'moved', 'bounce-x-start', 'bounce-y-start', 'bounce-x-end', and 'bounce-y-end' events
-       * @param {object} [options]
-       * @param {string} [options.sides=all] - all, horizontal, vertical, or combination of top, bottom, right, left
-       *  (e.g., 'top-bottom-right')
-       * @param {number} [options.friction=0.5] - friction to apply to decelerate if active
-       * @param {number} [options.time=150] - time in ms to finish bounce
-       * @param {object} [options.bounceBox] - use this bounceBox instead of (0, 0, viewport.worldWidth, viewport.worldHeight)
-       * @param {number} [options.bounceBox.x=0]
-       * @param {number} [options.bounceBox.y=0]
-       * @param {number} [options.bounceBox.width=viewport.worldWidth]
-       * @param {number} [options.bounceBox.height=viewport.worldHeight]
-       * @param {string|function} [options.ease=easeInOutSine] - ease function or name
-       *  (see http://easings.net/ for supported names)
-       * @param {string} [options.underflow=center] - (top/bottom/center and left/right/center, or center)
-       *  where to place world if too small for screen
-       * @return {Viewport} this
-       */
-       bounce(options)
-      {
-          this.plugins.add('bounce', new Bounce(this, options));
-
-          return this;
-      }
-
-      /**
-       * Enable pinch to zoom and two-finger touch to drag
-       *
-       * @param {PinchOptions} [options]
-       * @param {boolean} [options.noDrag] - disable two-finger dragging
-       * @param {number} [options.percent=1] - percent to modify pinch speed
-       * @param {number} [options.factor=1] - factor to multiply two-finger drag to increase the speed of movement
-       * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of center of two fingers
-       * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
-       * @return {Viewport} this
-       */
-       pinch(options)
-      {
-          this.plugins.add('pinch', new Pinch(this, options));
-
-          return this;
-      }
-
-      /**
-       * Snap to a point
-       *
-       * @param {number} x
-       * @param {number} y
-       * @param {ISnapOptions} [options]
-       * @param {boolean} [options.topLeft] - snap to the top-left of viewport instead of center
-       * @param {number} [options.friction=0.8] - friction/frame to apply if decelerate is active
-       * @param {number} [options.time=1000] - time in ms to snap
-       * @param {string|function} [options.ease=easeInOutSine] - ease function or name (see http://easings.net/
-       *   for supported names)
-       * @param {boolean} [options.interrupt=true] - pause snapping with any user input on the viewport
-       * @param {boolean} [options.removeOnComplete] - removes this plugin after snapping is complete
-       * @param {boolean} [options.removeOnInterrupt] - removes this plugin if interrupted by any user input
-       * @param {boolean} [options.forceStart] - starts the snap immediately regardless of whether the viewport is at
-       *   the desired location
-       * @return {Viewport} this
-       */
-       snap(x, y, options)
-      {
-          this.plugins.add('snap', new Snap(this, x, y, options));
-
-          return this;
-      }
-
-      /**
-       * Follow a target
-       *
-       * NOTES:
-       *    uses the (x, y) as the center to follow; for PIXI.Sprite to work properly, use sprite.anchor.set(0.5)
-       *    options.acceleration is not perfect as it doesn't know the velocity of the target. It adds acceleration
-       *    to the start of movement and deceleration to the end of movement when the target is stopped.
-       *    To cancel the follow, use: `viewport.plugins.remove('follow')`
-       *
-       * @fires 'moved' event
-       *
-       * @param {PIXI.DisplayObject} target to follow
-       * @param {IFollowOptions} [options]
-       * @param {number} [options.speed=0] - to follow in pixels/frame (0=teleport to location)
-       * @param {number} [options.acceleration] - set acceleration to accelerate and decelerate at this rate; speed
-       *   cannot be 0 to use acceleration
-       * @param {number} [options.radius] - radius (in world coordinates) of center circle where movement is allowed
-       *   without moving the viewport     * @returns {Viewport} this
-       * @returns {Viewport} this
-       */
-       follow(target, options)
-      {
-          this.plugins.add('follow', new Follow(this, target, options));
-
-          return this;
-      }
-
-      /**
-       * Zoom using mouse wheel
-       *
-       * NOTE: the default event listener for 'wheel' event is document.body. Use `Viewport.options.divWheel` to
-       * change this default
-       *
-       * @param {IWheelOptions} [options]
-       * @param {number} [options.percent=0.1] - percent to scroll with each spin
-       * @param {number} [options.smooth] - smooth the zooming by providing the number of frames to zoom between wheel spins
-       * @param {boolean} [options.interrupt=true] - stop smoothing with any user input on the viewport
-       * @param {boolean} [options.reverse] - reverse the direction of the scroll
-       * @param {PIXI.Point} [options.center] - place this point at center during zoom instead of current mouse position
-       * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
-       * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
-       * @return {Viewport} this
-       */
-       wheel(options)
-      {
-          this.plugins.add('wheel', new Wheel(this, options));
-
-          return this;
-      }
-
-      /**
-       * Animate the position and/or scale of the viewport
-       * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
-       * @params {object} options
-       * @params {number} [options.time=1000] - time to animate
-       * @params {PIXI.Point} [options.position=viewport.center] - position to move viewport
-       * @params {number} [options.width] - desired viewport width in world pixels (use instead of scale;
-       *  aspect ratio is maintained if height is not provided)
-       * @params {number} [options.height] - desired viewport height in world pixels (use instead of scale;
-       *  aspect ratio is maintained if width is not provided)
-       * @params {number} [options.scale] - scale to change zoom (scale.x = scale.y)
-       * @params {number} [options.scaleX] - independently change zoom in x-direction
-       * @params {number} [options.scaleY] - independently change zoom in y-direction
-       * @params {(function|string)} [options.ease=linear] - easing function to use
-       * @params {function} [options.callbackOnComplete]
-       * @params {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
-       * @returns {Viewport} this
-       */
-       animate(options)
-      {
-          this.plugins.add('animate', new Animate(this, options));
-
-          return this;
-      }
-
-      /**
-       * Enable clamping of zoom to constraints
-       *
-       * The minWidth/Height settings are how small the world can get (as it would appear on the screen)
-       * before clamping. The maxWidth/maxHeight is how larger the world can scale (as it would appear on
-       * the screen) before clamping.
-       *
-       * For example, if you have a world size of 1000 x 1000 and a screen size of 100 x 100, if you set
-       * minWidth/Height = 100 then the world will not be able to zoom smaller than the screen size (ie,
-       * zooming out so it appears smaller than the screen). Similarly, if you set maxWidth/Height = 100
-       * the world will not be able to zoom larger than the screen size (ie, zooming in so it appears
-       * larger than the screen).
-       *
-       * @param {object} [options]
-       * @param {number} [options.minWidth] - minimum width
-       * @param {number} [options.minHeight] - minimum height
-       * @param {number} [options.maxWidth] - maximum width
-       * @param {number} [options.maxHeight] - maximum height
-       * @param {number} [options.minScale] - minimum scale
-       * @param {number} [options.maxScale] - minimum scale
-       * @return {Viewport} this
-       */
-       clampZoom(options)
-      {
-          this.plugins.add('clamp-zoom', new ClampZoom(this, options));
-
-          return this;
-      }
-
-      /**
-       * Scroll viewport when mouse hovers near one of the edges or radius-distance from center of screen.
-       *
-       * NOTES: fires 'moved' event; there's a known bug where the mouseEdges does not work properly with "windowed" viewports
-       *
-       * @param {IMouseEdgesOptions} [options]
-       * @param {number} [options.radius] - distance from center of screen in screen pixels
-       * @param {number} [options.distance] - distance from all sides in screen pixels
-       * @param {number} [options.top] - alternatively, set top distance (leave unset for no top scroll)
-       * @param {number} [options.bottom] - alternatively, set bottom distance (leave unset for no top scroll)
-       * @param {number} [options.left] - alternatively, set left distance (leave unset for no top scroll)
-       * @param {number} [options.right] - alternatively, set right distance (leave unset for no top scroll)
-       * @param {number} [options.speed=8] - speed in pixels/frame to scroll viewport
-       * @param {boolean} [options.reverse] - reverse direction of scroll
-       * @param {boolean} [options.noDecelerate] - don't use decelerate plugin even if it's installed
-       * @param {boolean} [options.linear] - if using radius, use linear movement (+/- 1, +/- 1) instead of angled
-       *   movement (Math.cos(angle from center), Math.sin(angle from center))
-       * @param {boolean} [options.allowButtons] allows plugin to continue working even when there's a mousedown event
-       */
-       mouseEdges(options)
-      {
-          this.plugins.add('mouse-edges', new MouseEdges(this, options));
-
-          return this;
-      }
-
-      /** Pause viewport (including animation updates such as decelerate) */
-      get pause()
-      {
-          return !!this._pause;
-      }
-      set pause(value)
-      {
-          this._pause = value;
-
-          this.lastViewport = null;
-          this.moving = false;
-          this.zooming = false;
-
-          if (value)
-          {
-              this.input.pause();
-          }
-      }
-
-      /**
-       * Move the viewport so the bounding box is visible
-       *
-       * @param x - left
-       * @param y - top
-       * @param width
-       * @param height
-       * @param resizeToFit - Resize the viewport so the box fits within the viewport
-       */
-       ensureVisible(x, y, width, height, resizeToFit)
-      {
-          if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
-          {
-              this.fit(true, width, height);
-              this.emit('zoomed', { viewport: this, type: 'ensureVisible' });
-          }
-          let moved = false;
-
-          if (x < this.left)
-          {
-              this.left = x;
-              moved = true;
-          }
-          else if (x + width > this.right)
-          {
-              this.right = x + width;
-              moved = true;
-          }
-          if (y < this.top)
-          {
-              this.top = y;
-              moved = true;
-          }
-          else if (y + height > this.bottom)
-          {
-              this.bottom = y + height;
-              moved = true;
-          }
-          if (moved)
-          {
-              this.emit('moved', { viewport: this, type: 'ensureVisible' });
-          }
       }
   }
 
@@ -56433,7 +53186,7 @@
   let _fps, _application, _viewport, _object, _stars = [], domEase;
 
   function viewport() {
-      _viewport = _application.stage.addChild(new Viewport(
+      _viewport = _application.stage.addChild(new viewport_min.exports.Viewport(
           {
               interaction: _application.renderer.plugins.interaction,
               passiveWheel: false,
@@ -56441,14 +53194,14 @@
           }));
       _viewport
           .drag({ clampWheel: false })
-          .wheel({ smooth: 3 })
+          .wheel({ smooth: 3, trackpadPinch: true, wheelZoom: false, })
           .pinch()
           .decelerate()
           .on('clicked', click);
       resize();
 
       domEase = new domEase$1({ duration: FADE_TIME });
-      ease$2.duration = FADE_TIME;
+      ease$1.duration = FADE_TIME;
 
       // test for x/y independent scaling
       // _viewport.scale.y = 1.5
@@ -56550,7 +53303,7 @@
   function createTarget() {
       const x = yyRandom.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldWidth - OBJECT_SIZE / 2 - BORDER);
       const y = yyRandom.range(OBJECT_SIZE / 2 + BORDER, _viewport.worldHeight - OBJECT_SIZE / 2 - BORDER);
-      const target = ease$2.target(_object, { x, y }, OBJECT_SPEED, { wait: yyRandom.chance(0.75) ? yyRandom.range(500, 3000) : null });
+      const target = ease$1.target(_object, { x, y }, OBJECT_SPEED, { wait: yyRandom.chance(0.75) ? yyRandom.range(500, 3000) : null });
       target.once('complete', createTarget);
   }
 
@@ -56560,14 +53313,14 @@
       _object.tint = 0;
       _object.width = _object.height = OBJECT_SIZE;
       _object.position.set(100, 100);
-      ease$2.add(_object, { rotation: Math.PI * 2 }, { duration: OBJECT_ROTATION_TIME, repeat: true, ease: 'linear' });
+      ease$1.add(_object, { rotation: Math.PI * 2 }, { duration: OBJECT_ROTATION_TIME, repeat: true, ease: 'linear' });
       createTarget();
   }
 
   function click(data) {
       for (let star of _stars) {
           if (star.containsPoint(data.screen)) {
-              ease$2.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true });
+              ease$1.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true });
               return
           }
       }
@@ -56575,12 +53328,12 @@
       sprite.anchor.set(0.5);
       sprite.rotation = yyRandom.range(-0.1, 0.1);
       sprite.position = data.world;
-      const fade = ease$2.add(sprite, { alpha: 0 });
+      const fade = ease$1.add(sprite, { alpha: 0 });
       fade.on('done', () => _viewport.removeChild(sprite));
   }
 
   function drawWorld() {
-      ease$2.removeAll();
+      ease$1.removeAll();
       _viewport.removeChildren();
       stars();
       object();

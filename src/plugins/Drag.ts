@@ -417,7 +417,7 @@ export class Drag extends Plugin
         {
             const wheel = this.parent.plugins.get('wheel', true);
 
-            if (!wheel)
+            if (!wheel || (!wheel.options.wheelZoom && !event.ctrlKey))
             {
                 const step = event.deltaMode ? this.options.lineHeight : 1;
 

@@ -18,7 +18,7 @@ export default {
             }
         }),
         globals(),
-        serve('docs')
+        serve('docs'),
     ],
     output: {
         file: 'docs/index.js',
