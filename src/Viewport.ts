@@ -248,6 +248,7 @@ export class Viewport extends Container
 
         this.input = new InputManager(this);
         this.plugins = new PluginManager(this);
+        this.trackedPointers = [];
     }
 
     /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */

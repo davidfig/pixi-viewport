@@ -2,7 +2,7 @@
  
 /*!
  * pixi-viewport - v4.32.0
- * Compiled Sat, 17 Jul 2021 16:47:05 UTC
+ * Compiled Tue, 24 Aug 2021 18:46:19 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -4221,6 +4221,7 @@ class Viewport extends display.Container
 
         this.input = new InputManager(this);
         this.plugins = new PluginManager(this);
+        this.trackedPointers = [];
     }
 
     /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */
