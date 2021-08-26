@@ -1,7 +1,7 @@
 import { Plugin } from './Plugin';
 
+import type{ FederatedPointerEvent } from '@pixi/events';
 import type { Viewport } from '../Viewport';
-import type { InteractionEvent } from '@pixi/interaction';
 
 /** Insets for mouse edges scrolling regions */
 export interface IMouseEdgesInsets {
@@ -141,20 +141,20 @@ export class MouseEdges extends Plugin
         return false;
     }
 
-    public move(event: InteractionEvent): boolean
+    public move(event: FederatedPointerEvent): boolean
     {
         if (this.paused)
         {
             return false;
         }
-        if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1)
-            || (!this.options.allowButtons && event.data.buttons !== 0))
+        if ((event.pointerType !== 'mouse' && (event as any).identifier !== 1)
+            || (!this.options.allowButtons && event.buttons !== 0))
         {
             return false;
         }
 
-        const x = event.data.global.x;
-        const y = event.data.global.y;
+        const x = event.global.x;
+        const y = event.global.y;
 
         if (this.radiusSquared)
         {

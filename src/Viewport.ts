@@ -20,7 +20,7 @@ import {
 } from './plugins';
 
 import type { DisplayObject, IDestroyOptions } from '@pixi/display';
-import type { IHitArea, InteractionManager } from '@pixi/interaction';
+import type { IHitArea } from '@pixi/events';
 
 /** Options for {@link Viewport}. */
 export interface IViewportOptions {
@@ -69,13 +69,6 @@ export interface IViewportOptions {
     noTicker?: boolean;
 
     /**
-     * InteractionManager, available from instantiated `WebGLRenderer/CanvasRenderer.plugins.interaction`
-     *
-     * It's used to calculate pointer postion relative to canvas location on screen
-     */
-    interaction?: InteractionManager | null;
-
-    /**
      * Remove oncontextmenu=() => {} from the divWheel element
      */
     disableOnContextMenu?: boolean;
@@ -122,7 +115,6 @@ const DEFAULT_VIEWPORT_OPTIONS: ICompleteViewportOptions = {
     stopPropagation: false,
     forceHitArea: null,
     noTicker: false,
-    interaction: null,
     disableOnContextMenu: false,
     ticker: Ticker.shared,
 };
@@ -210,9 +202,6 @@ export class Viewport extends Container
      * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
      * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
-     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated
-     * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
-     * location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
      */

@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import { EventSystem } from '@pixi/events'
 import { ease } from 'pixi-ease'
 import Random from 'yy-random'
 import Counter from 'yy-counter'
@@ -25,7 +26,6 @@ let _fps, _application, _viewport, _object, _stars = [], domEase
 function viewport() {
     _viewport = _application.stage.addChild(new Viewport(
         {
-            interaction: _application.renderer.plugins.interaction,
             passiveWheel: false,
             stopPropagation: true
         }))
@@ -193,13 +193,18 @@ function API() {
 }
 
 window.onload = function () {
+    delete PIXI.Renderer.__plugins.interaction;
+
     _fps = new FPS({ side: 'bottom-left' })
     _application = new PIXI.Application({ backgroundAlpha: 0, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
+
+    _application.renderer.addSystem(EventSystem, 'events');
+
     document.body.appendChild(_application.view)
     _application.view.style.position = 'fixed'
     _application.view.style.width = '100vw'
     _application.view.style.height = '100vh'
-
+ 
     viewport()
 
     window.addEventListener('resize', resize)

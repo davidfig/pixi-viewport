@@ -1,8 +1,8 @@
 import { Point } from '@pixi/math';
 import { Plugin } from './Plugin';
 
+import type { FederatedPointerEvent, FederatedWheelEvent } from '@pixi/events';
 import type { Decelerate } from './Decelerate';
-import type { InteractionEvent } from '@pixi/interaction';
 import type { IPointData } from '@pixi/math';
 import type { Viewport } from '../Viewport';
 
@@ -254,17 +254,17 @@ export class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.InteractionEvent} event
+     * @param {PIXI.FederatedPointerEvent} event
      * @returns {boolean}
      */
-    protected checkButtons(event: InteractionEvent): boolean
+    protected checkButtons(event: FederatedPointerEvent): boolean
     {
-        const isMouse = event.data.pointerType === 'mouse';
+        const isMouse = event.pointerType === 'mouse';
         const count = this.parent.input.count();
 
         if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch', true)))
         {
-            if (!isMouse || this.mouse[event.data.button])
+            if (!isMouse || this.mouse[event.button])
             {
                 return true;
             }
@@ -274,17 +274,17 @@ export class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.InteractionEvent} event
+     * @param {PIXI.FederatedPointerEvent} event
      * @returns {boolean}
      */
-    protected checkKeyPress(event: InteractionEvent): boolean
+    protected checkKeyPress(event: FederatedPointerEvent): boolean
     {
         return (!this.options.keyToPress
             || this.keyIsPressed
-            || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'));
+            || (this.options.ignoreKeyToPressOnTouch && event.pointerType === 'touch'));
     }
 
-    public down(event: InteractionEvent): boolean
+    public down(event: FederatedPointerEvent): boolean
     {
         if (this.paused || !this.options.pressDrag)
         {
@@ -292,8 +292,8 @@ export class Drag extends Plugin
         }
         if (this.checkButtons(event) && this.checkKeyPress(event))
         {
-            this.last = { x: event.data.global.x, y: event.data.global.y };
-            this.current = event.data.pointerId;
+            this.last = { x: event.global.x, y: event.global.y };
+            this.current = event.pointerId;
 
             return true;
         }
@@ -307,16 +307,16 @@ export class Drag extends Plugin
         return this.moved;
     }
 
-    public move(event: InteractionEvent): boolean
+    public move(event: FederatedPointerEvent): boolean
     {
         if (this.paused || !this.options.pressDrag)
         {
             return false;
         }
-        if (this.last && this.current === event.data.pointerId)
+        if (this.last && this.current === event.pointerId)
         {
-            const x = event.data.global.x;
-            const y = event.data.global.y;
+            const x = event.global.x;
+            const y = event.global.y;
             const count = this.parent.input.count();
 
             if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
@@ -363,7 +363,7 @@ export class Drag extends Plugin
         return false;
     }
 
-    public up(event: InteractionEvent): boolean
+    public up(event: FederatedPointerEvent): boolean
     {
         if (this.paused)
         {
@@ -406,7 +406,7 @@ export class Drag extends Plugin
         return false;
     }
 
-    public wheel(event: WheelEvent): boolean
+    public wheel(event: FederatedWheelEvent): boolean
     {
         if (this.paused)
         {

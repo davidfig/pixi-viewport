@@ -120,7 +120,6 @@
             // forceHitArea: null,                          // change the default hitArea from world size to a new value
             // noTicker: false,                             // set this if you want to manually call update() function on each frame
             // ticker: PIXI.Ticker.shared,                  // use this PIXI.ticker for updates
-            interaction: renderer.plugins.interaction,   // InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas location on screen
             // divWheel: null,                              // div to attach the wheel event (uses document.body as default)
             // disableOnContextMenu: false,                 // remove oncontextmenu=() => {} from the divWheel element
         });
@@ -270,6 +269,8 @@
     let renderer;
 
     function createRenderer() {
+        delete PIXI.Renderer.__plugins.interaction;
+
         renderer = new PIXI.Renderer({
             backgroundAlpha: 0,
             width: window.innerWidth,
@@ -277,6 +278,9 @@
             resolution: window.devicePixelRatio,
             antialias: true,
         });
+
+        renderer.addSystem(PIXI.EventSystem, 'events');
+
         document.body.appendChild(renderer.view);
         renderer.view.style.position = 'fixed';
         renderer.view.style.width = '100vw';
@@ -288,7 +292,7 @@
 
     function start() {
         createRenderer();
-        create(renderer);
+        create();
         window.onresize = () => {
             renderer.resize(window.innerWidth, window.innerHeight);
             get().resize(window.innerWidth, window.innerHeight);

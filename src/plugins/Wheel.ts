@@ -1,6 +1,7 @@
 import { Plugin } from './Plugin';
 import { IPointData, Point } from '@pixi/math';
 
+import type { FederatedWheelEvent } from '@pixi/events';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Wheel}. */
@@ -170,9 +171,9 @@ export class Wheel extends Plugin
         }
     }
 
-    private pinch(e: WheelEvent)
+    private pinch(e: FederatedWheelEvent)
     {
-        const point = this.parent.input.getPointerPosition(e);
+        const point = e.screen;
         const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
         const change = Math.pow(2, (1 + this.options.percent) * step);
 
@@ -213,7 +214,7 @@ export class Wheel extends Plugin
             { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
     }
 
-    public wheel(e: WheelEvent): boolean
+    public wheel(e: FederatedWheelEvent): boolean
     {
         if (this.paused)
         {
@@ -226,7 +227,7 @@ export class Wheel extends Plugin
         }
         else if (this.options.wheelZoom)
         {
-            const point = this.parent.input.getPointerPosition(e);
+            const point = e.screen;
             const sign = this.options.reverse ? -1 : 1;
             const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
             const change = Math.pow(2, (1 + this.options.percent) * step);
@@ -282,8 +283,6 @@ export class Wheel extends Plugin
             }
 
             this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-            this.parent.emit('wheel',
-                { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
         }
 
         return !this.parent.options.passiveWheel;

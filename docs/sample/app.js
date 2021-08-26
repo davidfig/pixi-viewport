@@ -5,6 +5,8 @@ import * as target from './target'
 let renderer
 
 function createRenderer() {
+    delete PIXI.Renderer.__plugins.interaction
+
     renderer = new PIXI.Renderer({
         backgroundAlpha: 0,
         width: window.innerWidth,
@@ -12,6 +14,9 @@ function createRenderer() {
         resolution: window.devicePixelRatio,
         antialias: true,
     })
+
+    renderer.addSystem(PIXI.EventSystem, 'events')
+
     document.body.appendChild(renderer.view)
     renderer.view.style.position = 'fixed'
     renderer.view.style.width = '100vw'

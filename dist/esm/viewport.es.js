@@ -2,7 +2,7 @@
  
 /*!
  * pixi-viewport - v4.32.0
- * Compiled Sat, 17 Jul 2021 16:47:05 UTC
+ * Compiled Wed, 25 Aug 2021 23:36:41 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1754,17 +1754,17 @@ class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.InteractionEvent} event
+     * @param {PIXI.FederatedPointerEvent} event
      * @returns {boolean}
      */
      checkButtons(event)
     {
-        const isMouse = event.data.pointerType === 'mouse';
+        const isMouse = event.pointerType === 'mouse';
         const count = this.parent.input.count();
 
         if ((count === 1) || (count > 1 && !this.parent.plugins.get('pinch', true)))
         {
-            if (!isMouse || this.mouse[event.data.button])
+            if (!isMouse || this.mouse[event.button])
             {
                 return true;
             }
@@ -1774,14 +1774,14 @@ class Drag extends Plugin
     }
 
     /**
-     * @param {PIXI.InteractionEvent} event
+     * @param {PIXI.FederatedPointerEvent} event
      * @returns {boolean}
      */
      checkKeyPress(event)
     {
         return (!this.options.keyToPress
             || this.keyIsPressed
-            || (this.options.ignoreKeyToPressOnTouch && event.data.pointerType === 'touch'));
+            || (this.options.ignoreKeyToPressOnTouch && event.pointerType === 'touch'));
     }
 
      down(event)
@@ -1792,8 +1792,8 @@ class Drag extends Plugin
         }
         if (this.checkButtons(event) && this.checkKeyPress(event))
         {
-            this.last = { x: event.data.global.x, y: event.data.global.y };
-            this.current = event.data.pointerId;
+            this.last = { x: event.global.x, y: event.global.y };
+            this.current = event.pointerId;
 
             return true;
         }
@@ -1813,10 +1813,10 @@ class Drag extends Plugin
         {
             return false;
         }
-        if (this.last && this.current === event.data.pointerId)
+        if (this.last && this.current === event.pointerId)
         {
-            const x = event.data.global.x;
-            const y = event.data.global.y;
+            const x = event.global.x;
+            const y = event.global.y;
             const count = this.parent.input.count();
 
             if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
@@ -2318,14 +2318,14 @@ class MouseEdges extends Plugin
         {
             return false;
         }
-        if ((event.data.pointerType !== 'mouse' && event.data.identifier !== 1)
-            || (!this.options.allowButtons && event.data.buttons !== 0))
+        if ((event.pointerType !== 'mouse' && (event ).identifier !== 1)
+            || (!this.options.allowButtons && event.buttons !== 0))
         {
             return false;
         }
 
-        const x = event.data.global.x;
-        const y = event.data.global.y;
+        const x = event.global.x;
+        const y = event.global.y;
 
         if (this.radiusSquared)
         {
@@ -2550,8 +2550,8 @@ class Pinch extends Plugin
             return false;
         }
 
-        const x = e.data.global.x;
-        const y = e.data.global.y;
+        const x = e.global.x;
+        const y = e.global.y;
 
         const pointers = this.parent.input.touches;
 
@@ -2563,13 +2563,13 @@ class Pinch extends Plugin
                 ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
                 : null;
 
-            if (first.id === e.data.pointerId)
+            if (first.id === e.pointerId)
             {
-                first.last = { x, y, data: e.data } ;
+                first.last = { x, y, data: e } ;
             }
-            else if (second.id === e.data.pointerId)
+            else if (second.id === e.pointerId)
             {
-                second.last = { x, y, data: e.data } ;
+                second.last = { x, y, data: e } ;
             }
             if (last)
             {
@@ -3283,7 +3283,7 @@ class Wheel extends Plugin
 
      pinch(e)
     {
-        const point = this.parent.input.getPointerPosition(e);
+        const point = e.screen;
         const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
         const change = Math.pow(2, (1 + this.options.percent) * step);
 
@@ -3337,7 +3337,7 @@ class Wheel extends Plugin
         }
         else if (this.options.wheelZoom)
         {
-            const point = this.parent.input.getPointerPosition(e);
+            const point = e.screen;
             const sign = this.options.reverse ? -1 : 1;
             const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
             const change = Math.pow(2, (1 + this.options.percent) * step);
@@ -3393,8 +3393,6 @@ class Wheel extends Plugin
             }
 
             this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-            this.parent.emit('wheel',
-                { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
         }
 
         return !this.parent.options.passiveWheel;
@@ -3441,11 +3439,12 @@ class InputManager
         this.viewport.on('pointerupoutside', this.up, this);
         this.viewport.on('pointercancel', this.up, this);
         this.viewport.on('pointerout', this.up, this);
-        this.wheelFunction = (e) => this.handleWheel(e);
-        this.viewport.options.divWheel.addEventListener(
-            'wheel',
-            this.wheelFunction ,
-            { passive: this.viewport.options.passiveWheel });
+        this.viewport.on('wheel', this.handleWheel, this);
+        // this.wheelFunction = (e) => this.handleWheel(e);
+        // this.viewport.options.divWheel.addEventListener(
+        //     'wheel',
+        //     this.wheelFunction as any,
+        //     { passive: this.viewport.options.passiveWheel });
         this.isMouseDown = false;
     }
 
@@ -3461,7 +3460,7 @@ class InputManager
     /**
      * handle down events for viewport
      *
-     * @param {PIXI.InteractionEvent} event
+     * @param {PIXI.FederatedPointerEvent} event
      */
      down(event)
     {
@@ -3469,17 +3468,17 @@ class InputManager
         {
             return;
         }
-        if (event.data.pointerType === 'mouse')
+        if (event.pointerType === 'mouse')
         {
             this.isMouseDown = true;
         }
-        else if (!this.get(event.data.pointerId))
+        else if (!this.get(event.pointerId))
         {
-            this.touches.push({ id: event.data.pointerId, last: null });
+            this.touches.push({ id: event.pointerId, last: null });
         }
         if (this.count() === 1)
         {
-            this.last = event.data.global.clone();
+            this.last = event.global.clone();
 
             // clicked event does not fire if viewport is decelerating or bouncing
             const decelerate = this.viewport.plugins.get('decelerate', true);
@@ -3541,8 +3540,8 @@ class InputManager
 
         if (this.clickedAvailable && this.last)
         {
-            const distX = event.data.global.x - this.last.x;
-            const distY = event.data.global.y - this.last.y;
+            const distX = event.global.x - this.last.x;
+            const distY = event.global.y - this.last.y;
 
             if (this.checkThreshold(distX) || this.checkThreshold(distY))
             {
@@ -3564,14 +3563,14 @@ class InputManager
             return;
         }
 
-        if (event.data.pointerType === 'mouse')
+        if (event.pointerType === 'mouse')
         {
             this.isMouseDown = false;
         }
 
-        if (event.data.pointerType !== 'mouse')
+        if (event.pointerType !== 'mouse')
         {
-            this.remove(event.data.pointerId);
+            this.remove(event.pointerId);
         }
 
         const stop = this.viewport.plugins.up(event);
@@ -3593,24 +3592,6 @@ class InputManager
         }
     }
 
-    /** Gets pointer position if this.interaction is set */
-     getPointerPosition(event)
-    {
-        const point = new Point();
-
-        if (this.viewport.options.interaction)
-        {
-            this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY);
-        }
-        else
-        {
-            point.x = event.clientX;
-            point.y = event.clientY;
-        }
-
-        return point;
-    }
-
     /** Handle wheel events */
      handleWheel(event)
     {
@@ -3619,15 +3600,8 @@ class InputManager
             return;
         }
 
-        // do not handle events coming from other elements
-        if (this.viewport.options.interaction
-            && (this.viewport.options.interaction ).interactionDOMElement !== event.target)
-        {
-            return;
-        }
-
         // only handle wheel events where the mouse is over the viewport
-        const point = this.viewport.toLocal(this.getPointerPosition(event));
+        const point = this.viewport.toLocal(event.screen);
 
         if (this.viewport.left <= point.x
             && point.x <= this.viewport.right
@@ -4071,13 +4045,6 @@ class PluginManager
 
 
 
-
-
-
-
-
-
-
 const DEFAULT_VIEWPORT_OPTIONS = {
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
@@ -4088,7 +4055,6 @@ const DEFAULT_VIEWPORT_OPTIONS = {
     stopPropagation: false,
     forceHitArea: null,
     noTicker: false,
-    interaction: null,
     disableOnContextMenu: false,
     ticker: Ticker.shared,
 };
@@ -4176,9 +4142,6 @@ class Viewport extends Container
      * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
      * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
-     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated
-     * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
-     * location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
      */

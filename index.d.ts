@@ -1,9 +1,9 @@
 import { Container } from '@pixi/display';
 import type { DisplayObject } from '@pixi/display';
+import type { FederatedPointerEvent } from '@pixi/events';
+import type { FederatedWheelEvent } from '@pixi/events';
 import type { IDestroyOptions } from '@pixi/display';
-import type { IHitArea } from '@pixi/interaction';
-import type { InteractionEvent } from '@pixi/interaction';
-import type { InteractionManager } from '@pixi/interaction';
+import type { IHitArea } from '@pixi/events';
 import { IPointData } from '@pixi/math';
 import { Point } from '@pixi/math';
 import { Rectangle } from '@pixi/math';
@@ -124,13 +124,13 @@ export declare class Drag extends Plugin_2 {
     protected handleKeyPresses(codes: string[]): void;
     protected mouseButtons(buttons: string): void;
     protected parseUnderflow(): void;
-    protected checkButtons(event: InteractionEvent): boolean;
-    protected checkKeyPress(event: InteractionEvent): boolean;
-    down(event: InteractionEvent): boolean;
+    protected checkButtons(event: FederatedPointerEvent): boolean;
+    protected checkKeyPress(event: FederatedPointerEvent): boolean;
+    down(event: FederatedPointerEvent): boolean;
     get active(): boolean;
-    move(event: InteractionEvent): boolean;
-    up(event: InteractionEvent): boolean;
-    wheel(event: WheelEvent): boolean;
+    move(event: FederatedPointerEvent): boolean;
+    up(event: FederatedPointerEvent): boolean;
+    wheel(event: FederatedWheelEvent): boolean;
     resume(): void;
     clamp(): void;
 }
@@ -255,18 +255,17 @@ export declare class InputManager {
     clickedAvailable?: boolean;
     isMouseDown?: boolean;
     last?: Point | null;
-    wheelFunction?: (e: WheelEvent) => void;
+    wheelFunction?: (e: FederatedWheelEvent) => void;
     touches: IViewportTouch[];
     constructor(viewport: Viewport);
     private addListeners;
     destroy(): void;
-    down(event: InteractionEvent): void;
+    down(event: FederatedPointerEvent): void;
     clear(): void;
     checkThreshold(change: number): boolean;
-    move(event: InteractionEvent): void;
-    up(event: InteractionEvent): void;
-    getPointerPosition(event: WheelEvent): Point;
-    handleWheel(event: WheelEvent): void;
+    move(event: FederatedPointerEvent): void;
+    up(event: FederatedPointerEvent): void;
+    handleWheel(event: FederatedWheelEvent): void;
     pause(): void;
     get(id: number): IViewportTouch | null;
     remove(id: number): void;
@@ -320,7 +319,6 @@ export declare interface IViewportOptions {
     stopPropagation?: boolean;
     forceHitArea?: Rectangle | null;
     noTicker?: boolean;
-    interaction?: InteractionManager | null;
     disableOnContextMenu?: boolean;
     divWheel?: HTMLElement;
     ticker?: Ticker;
@@ -363,7 +361,7 @@ export declare class MouseEdges extends Plugin_2 {
     constructor(parent: Viewport, options?: IMouseEdgesOptions);
     resize(): void;
     down(): boolean;
-    move(event: InteractionEvent): boolean;
+    move(event: FederatedPointerEvent): boolean;
     private decelerateHorizontal;
     private decelerateVertical;
     up(): boolean;
@@ -380,7 +378,7 @@ export declare class Pinch extends Plugin_2 {
     down(): boolean;
     isAxisX(): boolean;
     isAxisY(): boolean;
-    move(e: InteractionEvent): boolean;
+    move(e: FederatedPointerEvent): boolean;
     up(): boolean;
 }
 
@@ -389,10 +387,10 @@ declare class Plugin_2 {
     paused: boolean;
     constructor(parent: Viewport);
     destroy(): void;
-    down(_e: InteractionEvent): boolean;
-    move(_e: InteractionEvent): boolean;
-    up(_e: InteractionEvent): boolean;
-    wheel(_e: WheelEvent): boolean | undefined;
+    down(_e: FederatedPointerEvent): boolean;
+    move(_e: FederatedPointerEvent): boolean;
+    up(_e: FederatedPointerEvent): boolean;
+    wheel(_e: FederatedWheelEvent): boolean | undefined;
     update(_delta: number): void;
     resize(): void;
     reset(): void;
@@ -428,10 +426,10 @@ export declare class PluginManager {
     pause(name: string): void;
     resume(name: string): void;
     sort(): void;
-    down(event: InteractionEvent): boolean;
-    move(event: InteractionEvent): boolean;
-    up(event: InteractionEvent): boolean;
-    wheel(e: WheelEvent): boolean;
+    down(event: FederatedPointerEvent): boolean;
+    move(event: FederatedPointerEvent): boolean;
+    up(event: FederatedPointerEvent): boolean;
+    wheel(e: FederatedWheelEvent): boolean;
 }
 
 export declare class Snap extends Plugin_2 {
@@ -585,7 +583,7 @@ export declare class Wheel extends Plugin_2 {
     protected isAxisY(): boolean;
     update(): void;
     private pinch;
-    wheel(e: WheelEvent): boolean;
+    wheel(e: FederatedWheelEvent): boolean;
 }
 
 export { }

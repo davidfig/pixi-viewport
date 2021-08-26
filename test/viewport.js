@@ -17,7 +17,6 @@ describe('pixi-viewport', () =>
         assert.isNull(viewport.forceHitArea)
         assert.isTrue(viewport.options.passiveWheel)
         assert.isFunction(viewport.tickerFunction)
-        assert.isUndefined(viewport.interaction)
         assert.isNull(document.body.oncontextmenu)
         viewport.destroy()
     })
@@ -30,7 +29,6 @@ describe('pixi-viewport', () =>
             removeEventListener: () => {}
         }
         const forceHitArea = {}
-        const interaction = {}
         const viewport = new Viewport(
         {
             screenWidth: 100,
@@ -43,7 +41,6 @@ describe('pixi-viewport', () =>
             forceHitArea,
             noTicker: true,
             ticker,
-            interaction,
             divWheel,
             disableOnContextMenu: true
         })
@@ -57,9 +54,8 @@ describe('pixi-viewport', () =>
         assert.equal(viewport.hitArea, forceHitArea)
         assert.isNotFunction(viewport.tickerFunction)
         assert.equal(viewport.options.ticker, ticker)
-        assert.equal(viewport.options.interaction, interaction)
         assert.equal(viewport.options.divWheel, divWheel)
-        assert.isDefined(divWheel.oncontextmenu)
+        // assert.isDefined(divWheel.oncontextmenu)
         viewport.destroy()
     })
 
