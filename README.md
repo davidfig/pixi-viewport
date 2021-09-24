@@ -6,7 +6,7 @@ Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragg
 All features are configurable and removable, so set up the viewport to be exactly what you need.
 
 ## v4.30.0+
-This project was migrated to Typescript (thanks [@sukantpal](https://github.com/SukantPal)!). All functionality should be the same. The live Example has been updated.
+This project was migrated to Typescript (thanks [@ShukantPal](https://github.com/ShukantPal)!). All functionality should be the same. The live Example has been updated.
 
 ## Live Examples
 * New: [https://davidfig.github.io/pixi-viewport/](https://davidfig.github.io/pixi-viewport/) (using [flems.io](https://flems.io))
