@@ -274,7 +274,7 @@ export class Wheel extends Plugin
 
         if (!this.checkKeyPress())
         {
-            return;
+            return false;
         }
 
         if (e.ctrlKey && this.options.trackpadPinch)

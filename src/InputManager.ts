@@ -71,7 +71,7 @@ export class InputManager
      *
      * @param {PIXI.InteractionEvent} event
      */
-    public down(event: InteractionEvent)
+    public down(event: InteractionEvent): void
     {
         if (this.viewport.pause || !this.viewport.worldVisible)
         {
