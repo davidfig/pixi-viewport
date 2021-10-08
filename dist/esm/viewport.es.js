@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.32.0
- * Compiled Sat, 17 Jul 2021 16:47:05 UTC
+ * pixi-viewport - v4.33.0
+ * Compiled Fri, 08 Oct 2021 13:23:43 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -3177,6 +3177,14 @@ class SnapZoom extends Plugin
 
 
 
+
+
+
+
+
+
+
+
 const DEFAULT_WHEEL_OPTIONS = {
     percent: 0.1,
     smooth: false,
@@ -3185,6 +3193,7 @@ const DEFAULT_WHEEL_OPTIONS = {
     center: null,
     lineHeight: 20,
     axis: 'all',
+    keyToPress: null,
     trackpadPinch: false,
     wheelZoom: true,
 };
@@ -3202,6 +3211,9 @@ class Wheel extends Plugin
     
     
 
+    /** Flags whether the keys required to zoom are pressed currently. */
+    
+
     /**
      * This is called by {@link Viewport.wheel}.
      */
@@ -3209,6 +3221,41 @@ class Wheel extends Plugin
     {
         super(parent);
         this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options);
+        this.keyIsPressed = false;
+
+        if (this.options.keyToPress)
+        {
+            this.handleKeyPresses(this.options.keyToPress);
+        }
+    }
+
+    /**
+     * Handles keypress events and set the keyIsPressed boolean accordingly
+     *
+     * @param {array} codes - key codes that can be used to trigger zoom event
+     */
+     handleKeyPresses(codes)
+    {
+        window.addEventListener('keydown', (e) =>
+        {
+            if (codes.includes(e.code))
+            {
+                this.keyIsPressed = true;
+            }
+        });
+
+        window.addEventListener('keyup', (e) =>
+        {
+            if (codes.includes(e.code))
+            {
+                this.keyIsPressed = false;
+            }
+        });
+    }
+
+     checkKeyPress()
+    {
+        return !this.options.keyToPress || this.keyIsPressed;
     }
 
      down()
@@ -3274,7 +3321,7 @@ class Wheel extends Plugin
             this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
             (this.smoothingCount )++;
 
-            if (this.smoothingCount  >= this.options.smooth)
+            if ((this.smoothingCount ) >= this.options.smooth)
             {
                 this.smoothing = null;
             }
@@ -3283,6 +3330,11 @@ class Wheel extends Plugin
 
      pinch(e)
     {
+        if (this.paused)
+        {
+            return;
+        }
+
         const point = this.parent.input.getPointerPosition(e);
         const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
         const change = Math.pow(2, (1 + this.options.percent) * step);
@@ -3327,6 +3379,11 @@ class Wheel extends Plugin
      wheel(e)
     {
         if (this.paused)
+        {
+            return false;
+        }
+
+        if (!this.checkKeyPress())
         {
             return false;
         }
