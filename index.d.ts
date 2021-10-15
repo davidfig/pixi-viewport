@@ -1,7 +1,7 @@
 import { Container } from '@pixi/display';
 import type { DisplayObject } from '@pixi/display';
 import type { IDestroyOptions } from '@pixi/display';
-import type { IHitArea } from '@pixi/interaction';
+import { IHitArea } from '@pixi/events';
 import type { InteractionEvent } from '@pixi/interaction';
 import type { InteractionManager } from '@pixi/interaction';
 import { IPointData } from '@pixi/math';
