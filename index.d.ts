@@ -508,10 +508,10 @@ export declare class Viewport extends Container {
     get worldHeight(): number;
     set worldHeight(value: number);
     getVisibleBounds(): Rectangle;
-    toWorld(x: number, y: number): Point;
-    toWorld(screenPoint: Point): Point;
-    toScreen(x: number, y: number): Point;
-    toScreen(worldPoint: Point): Point;
+    toWorld<P extends IPointData = Point>(x: number, y: number): P;
+    toWorld<P extends IPointData = Point>(screenPoint: IPointData): P;
+    toScreen<P extends IPointData = Point>(x: number, y: number): P;
+    toScreen<P extends IPointData = Point>(worldPoint: IPointData): P;
     get worldScreenWidth(): number;
     get worldScreenHeight(): number;
     get screenWorldWidth(): number;
