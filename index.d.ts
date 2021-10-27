@@ -581,6 +581,7 @@ export declare class Wheel extends Plugin_2 {
     protected smoothingCenter?: Point | null;
     protected smoothingCount?: number;
     protected keyIsPressed: boolean;
+    protected shiftIsPressed: boolean;
     constructor(parent: Viewport, options?: IWheelOptions);
     protected handleKeyPresses(codes: string[]): void;
     protected checkKeyPress(): boolean;

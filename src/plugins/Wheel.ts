@@ -103,6 +103,8 @@ export class Wheel extends Plugin
     /** Flags whether the keys required to zoom are pressed currently. */
     protected keyIsPressed: boolean;
 
+    protected shiftIsPressed: boolean;
+
     /**
      * This is called by {@link Viewport.wheel}.
      */
@@ -111,11 +113,9 @@ export class Wheel extends Plugin
         super(parent);
         this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options);
         this.keyIsPressed = false;
+        this.shiftIsPressed = false;
 
-        if (this.options.keyToPress)
-        {
-            this.handleKeyPresses(this.options.keyToPress);
-        }
+        this.handleKeyPresses(this.options.keyToPress || []);
     }
 
     /**
@@ -131,6 +131,10 @@ export class Wheel extends Plugin
             {
                 this.keyIsPressed = true;
             }
+            if (['ShiftLeft', 'ShiftRight'].includes(e.code))
+            {
+                this.shiftIsPressed = true;
+            }
         });
 
         window.addEventListener('keyup', (e) =>
@@ -138,6 +142,10 @@ export class Wheel extends Plugin
             if (codes.includes(e.code))
             {
                 this.keyIsPressed = false;
+            }
+            if (['ShiftLeft', 'ShiftRight'].includes(e.code))
+            {
+                this.shiftIsPressed = false;
             }
         });
     }
@@ -225,7 +233,8 @@ export class Wheel extends Plugin
         }
 
         const point = this.parent.input.getPointerPosition(e);
-        const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
+        const delta = (this.shiftIsPressed && e.deltaY === 0 && e.deltaX !== 0) ? e.deltaX : e.deltaY
+        const step = -delta * (e.deltaMode ? this.options.lineHeight : 1) / 200;
         const change = Math.pow(2, (1 + this.options.percent) * step);
 
         let oldPoint: IPointData | undefined;
@@ -285,7 +294,8 @@ export class Wheel extends Plugin
         {
             const point = this.parent.input.getPointerPosition(e);
             const sign = this.options.reverse ? -1 : 1;
-            const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
+            const delta = (this.shiftIsPressed && e.deltaY === 0 && e.deltaX !== 0) ? e.deltaX : e.deltaY
+            const step = sign * -delta * (e.deltaMode ? this.options.lineHeight : 1) / 500;
             const change = Math.pow(2, (1 + this.options.percent) * step);
 
             if (this.options.smooth)

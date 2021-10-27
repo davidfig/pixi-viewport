@@ -2,7 +2,7 @@
  
 /*!
  * pixi-viewport - v4.33.0
- * Compiled Fri, 08 Oct 2021 13:23:43 UTC
+ * Compiled Wed, 27 Oct 2021 16:35:08 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -3214,6 +3214,8 @@ class Wheel extends Plugin
     /** Flags whether the keys required to zoom are pressed currently. */
     
 
+    
+
     /**
      * This is called by {@link Viewport.wheel}.
      */
@@ -3222,11 +3224,9 @@ class Wheel extends Plugin
         super(parent);
         this.options = Object.assign({}, DEFAULT_WHEEL_OPTIONS, options);
         this.keyIsPressed = false;
+        this.shiftIsPressed = false;
 
-        if (this.options.keyToPress)
-        {
-            this.handleKeyPresses(this.options.keyToPress);
-        }
+        this.handleKeyPresses(this.options.keyToPress || []);
     }
 
     /**
@@ -3242,6 +3242,10 @@ class Wheel extends Plugin
             {
                 this.keyIsPressed = true;
             }
+            if (['ShiftLeft', 'ShiftRight'].includes(e.code))
+            {
+                this.shiftIsPressed = true;
+            }
         });
 
         window.addEventListener('keyup', (e) =>
@@ -3249,6 +3253,10 @@ class Wheel extends Plugin
             if (codes.includes(e.code))
             {
                 this.keyIsPressed = false;
+            }
+            if (['ShiftLeft', 'ShiftRight'].includes(e.code))
+            {
+                this.shiftIsPressed = false;
             }
         });
     }
@@ -3336,7 +3344,8 @@ class Wheel extends Plugin
         }
 
         const point = this.parent.input.getPointerPosition(e);
-        const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
+        const delta = (this.shiftIsPressed && e.deltaY === 0 && e.deltaX !== 0) ? e.deltaX : e.deltaY;
+        const step = -delta * (e.deltaMode ? this.options.lineHeight : 1) / 200;
         const change = Math.pow(2, (1 + this.options.percent) * step);
 
         let oldPoint;
@@ -3396,7 +3405,8 @@ class Wheel extends Plugin
         {
             const point = this.parent.input.getPointerPosition(e);
             const sign = this.options.reverse ? -1 : 1;
-            const step = sign * -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 500;
+            const delta = (this.shiftIsPressed && e.deltaY === 0 && e.deltaX !== 0) ? e.deltaX : e.deltaY;
+            const step = sign * -delta * (e.deltaMode ? this.options.lineHeight : 1) / 500;
             const change = Math.pow(2, (1 + this.options.percent) * step);
 
             if (this.options.smooth)
