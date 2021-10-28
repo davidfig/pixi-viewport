@@ -1,5 +1,5 @@
 import { Container } from '@pixi/display';
-import { Point, Rectangle } from '@pixi/math';
+import { IPointData, Point, Rectangle } from '@pixi/math';
 import { Ticker } from '@pixi/ticker';
 
 import { InputManager } from './InputManager';
@@ -387,33 +387,31 @@ export class Viewport extends Container
     }
 
     /** Change coordinates from screen to world */
-    public toWorld(x: number, y: number): Point;
+    public toWorld<P extends IPointData = Point>(x: number, y: number): P;
     /** Change coordinates from screen to world */
-    public toWorld(screenPoint: Point): Point;
+    public toWorld<P extends IPointData = Point>(screenPoint: IPointData): P;
 
-    public toWorld(x: number | Point, y?: number): Point
+    public toWorld<P extends IPointData = Point>(x: number | IPointData, y?: number): P
     {
         if (arguments.length === 2)
         {
-            return this.toLocal(new Point(x as number, y));
+            return this.toLocal<P>(new Point(x as number, y));
         }
-
-        return this.toLocal(x as Point);
+        return this.toLocal<P>(x as IPointData);
     }
 
     /** Change coordinates from world to screen */
-    public toScreen(x: number, y: number): Point;
+    public toScreen<P extends IPointData = Point>(x: number, y: number): P
     /** Change coordinates from world to screen */
-    public toScreen(worldPoint: Point): Point;
+    public toScreen<P extends IPointData = Point>(worldPoint: IPointData): P
 
-    public toScreen(x: number | Point, y?: number): Point
+    public toScreen<P extends IPointData = Point>(x: number | IPointData, y?: number): P
     {
         if (arguments.length === 2)
         {
-            return this.toGlobal(new Point(x as number, y));
+            return this.toGlobal<P>(new Point(x as number, y));
         }
-
-        return this.toGlobal(x as Point);
+        return this.toGlobal<P>(x as IPointData);
     }
 
     /** Screen width in world coordinates */
