@@ -2,8 +2,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.33.0
- * Compiled Fri, 08 Oct 2021 13:23:43 UTC
+ * pixi-viewport - v4.34.0
+ * Compiled Fri, 29 Oct 2021 11:38:30 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -4428,7 +4428,6 @@ class Viewport extends display.Container
         {
             return this.toLocal(new math.Point(x , y));
         }
-
         return this.toLocal(x );
     }
 
@@ -4443,7 +4442,6 @@ class Viewport extends display.Container
         {
             return this.toGlobal(new math.Point(x , y));
         }
-
         return this.toGlobal(x );
     }
 
