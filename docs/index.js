@@ -307,5 +307,5 @@
 
     window.onload = start;
 
-}());
+})();
 //# sourceMappingURL=index.js.map

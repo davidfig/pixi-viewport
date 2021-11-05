@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.34.0
- * Compiled Fri, 29 Oct 2021 11:38:30 UTC
+ * pixi-viewport - v4.34.1
+ * Compiled Fri, 05 Nov 2021 19:49:11 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -125,7 +125,7 @@ function ease(ease, defaults)
 {
     if (!ease)
     {
-        return Penner__default['default'][defaults]
+        return Penner__default["default"][defaults]
     }
     else if (typeof ease === 'function')
     {
@@ -133,7 +133,7 @@ function ease(ease, defaults)
     }
     else if (typeof ease === 'string')
     {
-        return Penner__default['default'][ease]
+        return Penner__default["default"][ease]
     }
 }
 
