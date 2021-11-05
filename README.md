@@ -1,12 +1,15 @@
-# pixi-viewport - PixiJS Viewport Kit
+# pixi-viewport
 A highly configurable viewport/2D camera designed to work with pixi.js.
 
-Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, aniamte, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See live example to try out all of these features.
+Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, animate, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges. See the live examples below to try out all of these features.
 
 All features are configurable and removable, so set up the viewport to be exactly what you need.
 
-## v4.30.0+
-This project was migrated to Typescript (thanks [@sukantpal](https://github.com/SukantPal)!). All functionality should be the same. The live Example has been updated.
+## Support pixi-viewport!
+With your support, I can make pixi-viewport even better! Please consider making a donation:
+<a href="https://opencollective.com/pixi-viewport/donate" target="_blank">
+  <img src="https://opencollective.com/pixi-viewport/donate/button@2x.png?color=blue" width=300 style="margin-top: 0.5rem; display: block"/>
+</a>
 
 ## Live Examples
 * New: [https://davidfig.github.io/pixi-viewport/](https://davidfig.github.io/pixi-viewport/) (using [flems.io](https://flems.io))
@@ -123,6 +126,9 @@ viewport.plugins.add('name', plugin, index)
 4. open browser to http://localhost:10001
 
 PRs are more than welcome!
+
+## v4.30.0+
+This project was migrated to Typescript (thanks [@sukantpal](https://github.com/SukantPal)!). All functionality should be the same. The live Example has been updated.
 
 ## Other Libraries
 If you liked pixi-viewport, please try my other open source libraries:
