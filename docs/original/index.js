@@ -46583,8 +46583,8 @@
 
   (function (module, exports) {
   /*!
-   * pixi-viewport - v4.34.1
-   * Compiled Fri, 05 Nov 2021 19:49:11 UTC
+   * pixi-viewport - v4.34.2
+   * Compiled Tue, 30 Nov 2021 18:16:32 UTC
    *
    * pixi-viewport is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
