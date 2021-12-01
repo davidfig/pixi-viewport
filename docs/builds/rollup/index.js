@@ -322,8 +322,6 @@
     }
   };
 
-  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
   /*
   object-assign
   (c) Sindre Sorhus
@@ -42030,9 +42028,112 @@
   Application.registerPlugin(TickerPlugin);
   Application.registerPlugin(AppLoaderPlugin);
 
-  var penner = {exports: {}};
+  /**
+   * Derive this class to create user-defined plugins
+   *
+   * @public
+   */
+  class Plugin
+  {
+      /** The viewport to which this plugin is attached. */
+      
 
-  (function (module, exports) {
+      /**
+       * Flags whether this plugin has been "paused".
+       *
+       * @see Plugin#pause
+       * @see Plugin#resume
+       */
+      
+
+      /** @param {Viewport} parent */
+      constructor(parent)
+      {
+          this.parent = parent;
+          this.paused = false;
+      }
+
+      /** Called when plugin is removed */
+       destroy()
+      {
+          // Override for implementation
+      }
+
+      /** Handler for pointerdown PIXI event */
+       down(_e)
+      {
+          return false;
+      }
+
+      /** Handler for pointermove PIXI event */
+       move(_e)
+      {
+          return false;
+      }
+
+      /** Handler for pointerup PIXI event */
+       up(_e)
+      {
+          return false;
+      }
+
+      /** Handler for wheel event on div */
+       wheel(_e)
+      {
+          return false;
+      }
+
+      /**
+       * Called on each tick
+       * @param {number} elapsed time in millisecond since last update
+       */
+       update(_delta)
+      {
+          // Override for implementation
+      }
+
+      /** Called when the viewport is resized */
+       resize()
+      {
+          // Override for implementation
+      }
+
+      /** Called when the viewport is manually moved */
+       reset()
+      {
+          // Override for implementation
+      }
+
+      /** Pause the plugin */
+       pause()
+      {
+          this.paused = true;
+      }
+
+      /** Un-pause the plugin */
+       resume()
+      {
+          this.paused = false;
+      }
+  }
+
+  var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global$1 !== 'undefined' ? global$1 : typeof self !== 'undefined' ? self : {};
+
+  function createCommonjsModule(fn, basedir, module) {
+  	return module = {
+  	  path: basedir,
+  	  exports: {},
+  	  require: function (path, base) {
+        return commonjsRequire(path, (base === undefined || base === null) ? module.path : base);
+      }
+  	}, fn(module, module.exports), module.exports;
+  }
+
+  function commonjsRequire () {
+  	throw new Error('Dynamic requires are not currently supported by @rollup/plugin-commonjs');
+  }
+
+  var penner = createCommonjsModule(function (module, exports) {
   /*
   	Copyright © 2001 Robert Penner
   	All rights reserved.
@@ -42276,100 +42377,7 @@
     umd(penner);
 
   }).call(commonjsGlobal);
-  }(penner));
-
-  var Penner = penner.exports;
-
-  /* eslint-disable */
-
-  /**
-   * Derive this class to create user-defined plugins
-   *
-   * @public
-   */
-  class Plugin
-  {
-      /** The viewport to which this plugin is attached. */
-      
-
-      /**
-       * Flags whether this plugin has been "paused".
-       *
-       * @see Plugin#pause
-       * @see Plugin#resume
-       */
-      
-
-      /** @param {Viewport} parent */
-      constructor(parent)
-      {
-          this.parent = parent;
-          this.paused = false;
-      }
-
-      /** Called when plugin is removed */
-       destroy()
-      {
-          // Override for implementation
-      }
-
-      /** Handler for pointerdown PIXI event */
-       down(_e)
-      {
-          return false;
-      }
-
-      /** Handler for pointermove PIXI event */
-       move(_e)
-      {
-          return false;
-      }
-
-      /** Handler for pointerup PIXI event */
-       up(_e)
-      {
-          return false;
-      }
-
-      /** Handler for wheel event on div */
-       wheel(_e)
-      {
-          return false;
-      }
-
-      /**
-       * Called on each tick
-       * @param {number} elapsed time in millisecond since last update
-       */
-       update(_delta)
-      {
-          // Override for implementation
-      }
-
-      /** Called when the viewport is resized */
-       resize()
-      {
-          // Override for implementation
-      }
-
-      /** Called when the viewport is manually moved */
-       reset()
-      {
-          // Override for implementation
-      }
-
-      /** Pause the plugin */
-       pause()
-      {
-          this.paused = true;
-      }
-
-      /** Un-pause the plugin */
-       resume()
-      {
-          this.paused = false;
-      }
-  }
+  });
 
   // eslint-disable-next-line
 
@@ -42385,7 +42393,7 @@
   {
       if (!ease)
       {
-          return Penner[defaults]
+          return penner[defaults]
       }
       else if (typeof ease === 'function')
       {
@@ -42393,7 +42401,7 @@
       }
       else if (typeof ease === 'string')
       {
-          return Penner[ease]
+          return penner[ease]
       }
   }
 
