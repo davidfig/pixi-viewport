@@ -1,4 +1,4 @@
-import { Point } from '@pixi/math';
+import { IPointData, Point } from '@pixi/math';
 import { Plugin } from './Plugin';
 import ease from '../ease';
 
@@ -10,7 +10,7 @@ export interface IAnimateOptions {
     time?: number;
 
     /** Position to move the viewport to */
-    position?: Point;
+    position?: IPointData;
 
     /**
      * Desired viewport width in world pixels
@@ -210,7 +210,7 @@ export class Animate extends Plugin
         }
         if (!this.keepCenter)
         {
-            this.parent.moveCenter(this.options.position as Point);
+            this.parent.moveCenter(this.options.position!);
         }
 
         this.parent.emit('animate-end', this.parent);
