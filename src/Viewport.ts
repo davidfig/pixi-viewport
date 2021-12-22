@@ -455,9 +455,9 @@ export class Viewport extends Container
     public moveCenter(x: number, y: number): Viewport;
 
     /** Move center of viewport to {@code center}. */
-    public moveCenter(center: Point): Viewport;
+    public moveCenter(center: IPointData): Viewport;
 
-    public moveCenter(...args: [number, number] | [Point]): Viewport
+    public moveCenter(...args: [number, number] | [IPointData]): Viewport
     {
         let x: number;
         let y: number;
