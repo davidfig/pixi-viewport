@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.34.3
- * Compiled Wed, 01 Dec 2021 19:28:04 UTC
+ * pixi-viewport - v4.34.4
+ * Compiled Wed, 22 Dec 2021 17:32:08 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -599,7 +599,7 @@ class Animate extends Plugin
         }
         if (!this.keepCenter)
         {
-            this.parent.moveCenter(this.options.position );
+            this.parent.moveCenter(this.options.position);
         }
 
         this.parent.emit('animate-end', this.parent);

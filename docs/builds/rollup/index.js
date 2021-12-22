@@ -42610,7 +42610,7 @@
           }
           if (!this.keepCenter)
           {
-              this.parent.moveCenter(this.options.position );
+              this.parent.moveCenter(this.options.position);
           }
 
           this.parent.emit('animate-end', this.parent);

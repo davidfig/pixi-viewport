@@ -145,7 +145,7 @@ export declare class Follow extends Plugin_2 {
 
 export declare interface IAnimateOptions {
     time?: number;
-    position?: Point;
+    position?: IPointData;
     width?: number;
     height?: number;
     scale?: number;
@@ -519,7 +519,7 @@ export declare class Viewport extends Container {
     get center(): Point;
     set center(value: Point);
     moveCenter(x: number, y: number): Viewport;
-    moveCenter(center: Point): Viewport;
+    moveCenter(center: IPointData): Viewport;
     get corner(): Point;
     set corner(value: Point);
     moveCorner(x: number, y: number): Viewport;
