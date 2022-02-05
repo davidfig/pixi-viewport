@@ -162,8 +162,7 @@ const DEFAULT_VIEWPORT_OPTIONS: ICompleteViewportOptions = {
  * @fires zoomed-end
  * @fires frame-end
  */
-export class Viewport extends Container
-{
+export class Viewport extends Container {
     /** Flags whether the viewport is being panned */
     public moving?: boolean;
 
@@ -216,8 +215,7 @@ export class Viewport extends Container
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
      * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
      */
-    constructor(options: IViewportOptions = {})
-    {
+    constructor(options: IViewportOptions = {}) {
         super();
         this.options = Object.assign(
             {},
@@ -236,12 +234,10 @@ export class Viewport extends Container
 
         this.options.divWheel = this.options.divWheel || document.body;
 
-        if (this.options.disableOnContextMenu)
-        {
+        if (this.options.disableOnContextMenu) {
             this.options.divWheel.addEventListener('contextmenu', this._disableOnContextMenu);
         }
-        if (!this.options.noTicker)
-        {
+        if (!this.options.noTicker) {
             this.tickerFunction = () => this.update(this.options.ticker.elapsedMS);
             this.options.ticker.add(this.tickerFunction);
         }
@@ -251,14 +247,11 @@ export class Viewport extends Container
     }
 
     /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */
-    destroy(options?: IDestroyOptions): void
-    {
-        if (!this.options.noTicker && this.tickerFunction)
-        {
+    destroy(options?: IDestroyOptions): void {
+        if (!this.options.noTicker && this.tickerFunction) {
             this.options.ticker.remove(this.tickerFunction);
         }
-        if (this.options.disableOnContextMenu)
-        {
+        if (this.options.disableOnContextMenu) {
             this.options.divWheel.removeEventListener('contextmenu', this._disableOnContextMenu);
         }
 
@@ -273,39 +266,31 @@ export class Viewport extends Container
      *
      * @param {number} elapsed time in milliseconds since last update
      */
-    update(elapsed: number): void
-    {
-        if (!this.pause)
-        {
+    update(elapsed: number): void {
+        if (!this.pause) {
             this.plugins.update(elapsed);
 
-            if (this.lastViewport)
-            {
+            if (this.lastViewport) {
                 // Check for moved-end event
-                if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y)
-                {
+                if (this.lastViewport.x !== this.x || this.lastViewport.y !== this.y) {
                     this.moving = true;
                 }
-                else if (this.moving)
-                {
+                else if (this.moving) {
                     this.emit('moved-end', this);
                     this.moving = false;
                 }
 
                 // Check for zoomed-end event
-                if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y)
-                {
+                if (this.lastViewport.scaleX !== this.scale.x || this.lastViewport.scaleY !== this.scale.y) {
                     this.zooming = true;
                 }
-                else if (this.zooming)
-                {
+                else if (this.zooming) {
                     this.emit('zoomed-end', this);
                     this.zooming = false;
                 }
             }
 
-            if (!this.forceHitArea)
-            {
+            if (!this.forceHitArea) {
                 this._hitAreaDefault = new Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
                 this.hitArea = this._hitAreaDefault;
             }
@@ -324,23 +309,26 @@ export class Viewport extends Container
         }
     }
 
-    /** Use this to set screen and world sizes, needed for pinch/wheel/clamp/bounce. */
+    /** 
+     * Use this to set screen and world sizes, needed for pinch/wheel/clamp/bounce. 
+     * @param {number} screenWidth=window.innerWidth
+     * @param {number} screenHeight=window.innerHeight
+     * @param {number} [worldWidth]
+     * @param {number} [worldHeight]
+     */
     resize(
-        screenWidth = window.innerWidth,
-        screenHeight = window.innerHeight,
+        screenWidth: number = window.innerWidth,
+        screenHeight: number = window.innerHeight,
         worldWidth?: number,
         worldHeight?: number
-    ): void
-    {
+    ): void {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
 
-        if (typeof worldWidth !== 'undefined')
-        {
+        if (typeof worldWidth !== 'undefined') {
             this._worldWidth = worldWidth;
         }
-        if (typeof worldHeight !== 'undefined')
-        {
+        if (typeof worldHeight !== 'undefined') {
             this._worldHeight = worldHeight;
         }
 
@@ -349,40 +337,33 @@ export class Viewport extends Container
     }
 
     /** World width, in pixels */
-    get worldWidth(): number
-    {
-        if (this._worldWidth)
-        {
+    get worldWidth(): number {
+        if (this._worldWidth) {
             return this._worldWidth;
         }
 
         return this.width / this.scale.x;
     }
-    set worldWidth(value: number)
-    {
+    set worldWidth(value: number) {
         this._worldWidth = value;
         this.plugins.resize();
     }
 
     /** World height, in pixels */
-    get worldHeight(): number
-    {
-        if (this._worldHeight)
-        {
+    get worldHeight(): number {
+        if (this._worldHeight) {
             return this._worldHeight;
         }
 
         return this.height / this.scale.y;
     }
-    set worldHeight(value: number)
-    {
+    set worldHeight(value: number) {
         this._worldHeight = value;
         this.plugins.resize();
     }
 
     /** Get visible world bounds of viewport */
-    public getVisibleBounds(): Rectangle
-    {
+    public getVisibleBounds(): Rectangle {
         return new Rectangle(this.left, this.top, this.worldScreenWidth, this.worldScreenHeight);
     }
 
@@ -391,10 +372,8 @@ export class Viewport extends Container
     /** Change coordinates from screen to world */
     public toWorld<P extends IPointData = Point>(screenPoint: IPointData): P;
 
-    public toWorld<P extends IPointData = Point>(x: number | IPointData, y?: number): P
-    {
-        if (arguments.length === 2)
-        {
+    public toWorld<P extends IPointData = Point>(x: number | IPointData, y?: number): P {
+        if (arguments.length === 2) {
             return this.toLocal<P>(new Point(x as number, y));
         }
         return this.toLocal<P>(x as IPointData);
@@ -405,49 +384,41 @@ export class Viewport extends Container
     /** Change coordinates from world to screen */
     public toScreen<P extends IPointData = Point>(worldPoint: IPointData): P
 
-    public toScreen<P extends IPointData = Point>(x: number | IPointData, y?: number): P
-    {
-        if (arguments.length === 2)
-        {
+    public toScreen<P extends IPointData = Point>(x: number | IPointData, y?: number): P {
+        if (arguments.length === 2) {
             return this.toGlobal<P>(new Point(x as number, y));
         }
         return this.toGlobal<P>(x as IPointData);
     }
 
     /** Screen width in world coordinates */
-    get worldScreenWidth(): number
-    {
+    get worldScreenWidth(): number {
         return this.screenWidth / this.scale.x;
     }
 
     /** Screen height in world coordinates */
-    get worldScreenHeight(): number
-    {
+    get worldScreenHeight(): number {
         return this.screenHeight / this.scale.y;
     }
 
     /** World width in screen coordinates */
-    get screenWorldWidth(): number
-    {
+    get screenWorldWidth(): number {
         return this.worldWidth * this.scale.x;
     }
 
     /** World height in screen coordinates */
-    get screenWorldHeight(): number
-    {
+    get screenWorldHeight(): number {
         return this.worldHeight * this.scale.y;
     }
 
     /** Center of screen in world coordinates */
-    get center(): Point
-    {
+    get center(): Point {
         return new Point(
             (this.worldScreenWidth / 2) - (this.x / this.scale.x),
             (this.worldScreenHeight / 2) - (this.y / this.scale.y),
         );
     }
-    set center(value: Point)
-    {
+    set center(value: Point) {
         this.moveCenter(value);
     }
 
@@ -457,18 +428,15 @@ export class Viewport extends Container
     /** Move center of viewport to {@code center}. */
     public moveCenter(center: IPointData): Viewport;
 
-    public moveCenter(...args: [number, number] | [IPointData]): Viewport
-    {
+    public moveCenter(...args: [number, number] | [IPointData]): Viewport {
         let x: number;
         let y: number;
 
-        if (typeof args[0] === 'number')
-        {
+        if (typeof args[0] === 'number') {
             x = args[0];
             y = args[1] as number;
         }
-        else
-        {
+        else {
             x = args[0].x;
             y = args[0].y;
         }
@@ -476,8 +444,7 @@ export class Viewport extends Container
         const newX = ((this.worldScreenWidth / 2) - x) * this.scale.x;
         const newY = ((this.worldScreenHeight / 2) - y) * this.scale.y;
 
-        if (this.x !== newX || this.y !== newY)
-        {
+        if (this.x !== newX || this.y !== newY) {
             this.position.set(newX, newY);
             this.plugins.reset();
             this.dirty = true;
@@ -487,12 +454,10 @@ export class Viewport extends Container
     }
 
     /** Top-left corner of Viewport */
-    get corner(): Point
-    {
+    get corner(): Point {
         return new Point(-this.x / this.scale.x, -this.y / this.scale.y);
     }
-    set corner(value: Point)
-    {
+    set corner(value: Point) {
         this.moveCorner(value);
     }
 
@@ -502,24 +467,20 @@ export class Viewport extends Container
     /** move Viewport's top-left corner; also clamps and resets decelerate and bounce (as needed) */
     public moveCorner(center: Point): Viewport;
 
-    public moveCorner(...args: [number, number] | [Point]): Viewport
-    {
+    public moveCorner(...args: [number, number] | [Point]): Viewport {
         let x;
         let y;
 
-        if (args.length === 1)
-        {
+        if (args.length === 1) {
             x = -args[0].x * this.scale.x;
             y = -args[0].y * this.scale.y;
         }
-        else
-        {
+        else {
             x = -args[0] * this.scale.x;
             y = -args[1] * this.scale.y;
         }
 
-        if (x !== this.x || y !== this.y)
-        {
+        if (x !== this.x || y !== this.y) {
             this.position.set(x, y);
             this.plugins.reset();
             this.dirty = true;
@@ -529,14 +490,12 @@ export class Viewport extends Container
     }
 
     /** Get how many world pixels fit in screen's width */
-    get screenWidthInWorldPixels(): number
-    {
+    get screenWidthInWorldPixels(): number {
         return this.screenWidth / this.scale.x;
     }
 
     /** Get how many world pixels fit on screen's height */
-    get screenHeightInWorldPixels(): number
-    {
+    get screenHeightInWorldPixels(): number {
         return this.screenHeight / this.scale.y;
     }
 
@@ -547,8 +506,7 @@ export class Viewport extends Container
      * @param width - Width in world pixels
      * @return - scale
      */
-    findFitWidth(width: number): number
-    {
+    findFitWidth(width: number): number {
         return this.screenWidth / width;
     }
 
@@ -559,8 +517,7 @@ export class Viewport extends Container
      * @param height - Height in world pixels
      * @return - scale
      */
-    findFitHeight(height: number): number
-    {
+    findFitHeight(height: number): number {
         return this.screenHeight / height;
     }
 
@@ -572,8 +529,7 @@ export class Viewport extends Container
      * @param {number} height in world pixels
      * @returns {number} scale
      */
-    findFit(width: number, height: number): number
-    {
+    findFit(width: number, height: number): number {
         const scaleX = this.screenWidth / width;
         const scaleY = this.screenHeight / height;
 
@@ -588,8 +544,7 @@ export class Viewport extends Container
      * @param {number} height in world pixels
      * @returns {number} scale
      */
-    findCover(width: number, height: number): number
-    {
+    findCover(width: number, height: number): number {
         const scaleX = this.screenWidth / width;
         const scaleY = this.screenHeight / height;
 
@@ -605,30 +560,25 @@ export class Viewport extends Container
      * @param noClamp - whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitWidth(width = this.worldWidth, center?: boolean, scaleY = true, noClamp?: boolean): Viewport
-    {
+    fitWidth(width = this.worldWidth, center?: boolean, scaleY = true, noClamp?: boolean): Viewport {
         let save: Point | undefined;
 
-        if (center)
-        {
+        if (center) {
             save = this.center;
         }
         this.scale.x = this.screenWidth / width;
 
-        if (scaleY)
-        {
+        if (scaleY) {
             this.scale.y = this.scale.x;
         }
 
         const clampZoom = this.plugins.get('clamp-zoom', true);
 
-        if (!noClamp && clampZoom)
-        {
+        if (!noClamp && clampZoom) {
             clampZoom.clamp();
         }
 
-        if (center && save)
-        {
+        if (center && save) {
             this.moveCenter(save);
         }
 
@@ -644,30 +594,25 @@ export class Viewport extends Container
      * @param {boolean} [noClamp] whether to disable clamp-zoom
      * @returns {Viewport} this
      */
-    fitHeight(height = this.worldHeight, center?: boolean, scaleX = true, noClamp?: boolean): Viewport
-    {
+    fitHeight(height = this.worldHeight, center?: boolean, scaleX = true, noClamp?: boolean): Viewport {
         let save: Point | undefined;
 
-        if (center)
-        {
+        if (center) {
             save = this.center;
         }
         this.scale.y = this.screenHeight / height;
 
-        if (scaleX)
-        {
+        if (scaleX) {
             this.scale.x = this.scale.y;
         }
 
         const clampZoom = this.plugins.get('clamp-zoom', true);
 
-        if (!noClamp && clampZoom)
-        {
+        if (!noClamp && clampZoom) {
             clampZoom.clamp();
         }
 
-        if (center && save)
-        {
+        if (center && save) {
             this.moveCenter(save);
         }
 
@@ -680,36 +625,30 @@ export class Viewport extends Container
      * @param {boolean} center maintain the same center of the screen after zoom
      * @returns {Viewport} this
      */
-    fitWorld(center?: boolean): Viewport
-    {
+    fitWorld(center?: boolean): Viewport {
         let save: Point | undefined;
 
-        if (center)
-        {
+        if (center) {
             save = this.center;
         }
 
         this.scale.x = this.screenWidth / this.worldWidth;
         this.scale.y = this.screenHeight / this.worldHeight;
 
-        if (this.scale.x < this.scale.y)
-        {
+        if (this.scale.x < this.scale.y) {
             this.scale.y = this.scale.x;
         }
-        else
-        {
+        else {
             this.scale.x = this.scale.y;
         }
 
         const clampZoom = this.plugins.get('clamp-zoom', true);
 
-        if (clampZoom)
-        {
+        if (clampZoom) {
             clampZoom.clamp();
         }
 
-        if (center && save)
-        {
+        if (center && save) {
             this.moveCenter(save);
         }
 
@@ -724,34 +663,28 @@ export class Viewport extends Container
      * @param {number} [height=this.worldHeight] desired height
      * @returns {Viewport} this
      */
-    fit(center?: boolean, width = this.worldWidth, height = this.worldHeight): Viewport
-    {
+    fit(center?: boolean, width = this.worldWidth, height = this.worldHeight): Viewport {
         let save: Point | undefined;
 
-        if (center)
-        {
+        if (center) {
             save = this.center;
         }
 
         this.scale.x = this.screenWidth / width;
         this.scale.y = this.screenHeight / height;
 
-        if (this.scale.x < this.scale.y)
-        {
+        if (this.scale.x < this.scale.y) {
             this.scale.y = this.scale.x;
         }
-        else
-        {
+        else {
             this.scale.x = this.scale.y;
         }
         const clampZoom = this.plugins.get('clamp-zoom', true);
 
-        if (clampZoom)
-        {
+        if (clampZoom) {
             clampZoom.clamp();
         }
-        if (center && save)
-        {
+        if (center && save) {
             this.moveCenter(save);
         }
 
@@ -782,23 +715,19 @@ export class Viewport extends Container
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    setZoom(scale: number, center?: boolean): Viewport
-    {
+    setZoom(scale: number, center?: boolean): Viewport {
         let save;
 
-        if (center)
-        {
+        if (center) {
             save = this.center;
         }
         this.scale.set(scale);
         const clampZoom = this.plugins.get('clamp-zoom', true);
 
-        if (clampZoom)
-        {
+        if (clampZoom) {
             clampZoom.clamp();
         }
-        if (center && save)
-        {
+        if (center && save) {
             this.moveCenter(save);
         }
 
@@ -812,8 +741,7 @@ export class Viewport extends Container
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    zoomPercent(percent: number, center?: boolean): Viewport
-    {
+    zoomPercent(percent: number, center?: boolean): Viewport {
         return this.setZoom(this.scale.x + (this.scale.x * percent), center);
     }
 
@@ -824,20 +752,17 @@ export class Viewport extends Container
      * @param {boolean} [center] maintain the same center of the screen after zoom
      * @return {Viewport} this
      */
-    zoom(change: number, center?: boolean): Viewport
-    {
+    zoom(change: number, center?: boolean): Viewport {
         this.fitWidth(change + this.worldScreenWidth, center);
 
         return this;
     }
 
     /** Changes scale of viewport and maintains center of viewport */
-    get scaled(): number
-    {
+    get scaled(): number {
         return this.scale.x;
     }
-    set scaled(scale: number)
-    {
+    set scaled(scale: number) {
         this.setZoom(scale, true);
     }
 
@@ -858,8 +783,7 @@ export class Viewport extends Container
      *   desired zoom
      * @param {boolean} [options.noMove] - zoom but do not move
      */
-    snapZoom(options?: ISnapZoomOptions): Viewport
-    {
+    snapZoom(options?: ISnapZoomOptions): Viewport {
         this.plugins.add('snap-zoom', new SnapZoom(this, options));
 
         return this;
@@ -872,8 +796,7 @@ export class Viewport extends Container
         top: boolean;
         bottom: boolean;
         cornerPoint: Point;
-        }
-    {
+    } {
         return {
             left: this.left < 0,
             right: this.right > this.worldWidth,
@@ -887,45 +810,37 @@ export class Viewport extends Container
     }
 
     /** World coordinates of the right edge of the screen */
-    get right(): number
-    {
+    get right(): number {
         return (-this.x / this.scale.x) + this.worldScreenWidth;
     }
-    set right(value: number)
-    {
+    set right(value: number) {
         this.x = (-value * this.scale.x) + this.screenWidth;
         this.plugins.reset();
     }
 
     /** World coordinates of the left edge of the screen */
-    get left(): number
-    {
+    get left(): number {
         return -this.x / this.scale.x;
     }
-    set left(value: number)
-    {
+    set left(value: number) {
         this.x = -value * this.scale.x;
         this.plugins.reset();
     }
 
     /** World coordinates of the top edge of the screen */
-    get top(): number
-    {
+    get top(): number {
         return -this.y / this.scale.y;
     }
-    set top(value: number)
-    {
+    set top(value: number) {
         this.y = -value * this.scale.y;
         this.plugins.reset();
     }
 
     /** World coordinates of the bottom edge of the screen */
-    get bottom(): number
-    {
+    get bottom(): number {
         return (-this.y / this.scale.y) + this.worldScreenHeight;
     }
-    set bottom(value: number)
-    {
+    set bottom(value: number) {
         this.y = (-value * this.scale.y) + this.screenHeight;
         this.plugins.reset();
     }
@@ -933,12 +848,10 @@ export class Viewport extends Container
     /**
      * Determines whether the viewport is dirty (i.e., needs to be rendered to the screen because of a change)
      */
-    get dirty(): boolean
-    {
+    get dirty(): boolean {
         return !!this._dirty;
     }
-    set dirty(value: boolean)
-    {
+    set dirty(value: boolean) {
         this._dirty = value;
     }
 
@@ -948,19 +861,15 @@ export class Viewport extends Container
      * NOTE: if not set then hitArea = PIXI.Rectangle(Viewport.left, Viewport.top, Viewport.worldScreenWidth,
      * Viewport.worldScreenHeight)
      */
-    get forceHitArea(): IHitArea | null | undefined
-    {
+    get forceHitArea(): IHitArea | null | undefined {
         return this._forceHitArea;
     }
-    set forceHitArea(value: IHitArea | null | undefined)
-    {
-        if (value)
-        {
+    set forceHitArea(value: IHitArea | null | undefined) {
+        if (value) {
             this._forceHitArea = value;
             this.hitArea = value;
         }
-        else
-        {
+        else {
             this._forceHitArea = null;
             this.hitArea = new Rectangle(0, 0, this.worldWidth, this.worldHeight);
         }
@@ -991,8 +900,7 @@ export class Viewport extends Container
      * @param {number} [options.lineHeight=20] - scaling factor for non-DOM_DELTA_PIXEL scrolling events
      * @returns {Viewport} this
      */
-    public drag(options?: IDragOptions): Viewport
-    {
+    public drag(options?: IDragOptions): Viewport {
         this.plugins.add('drag', new Drag(this, options));
 
         return this;
@@ -1028,8 +936,7 @@ export class Viewport extends Container
      * @param {string} [underflow=center] - where to place world if too small for screen (e.g., top-right, center,
      *  none, bottomLeft)     * @returns {Viewport} this
      */
-    public clamp(options?: IClampOptions): Viewport
-    {
+    public clamp(options?: IClampOptions): Viewport {
         this.plugins.add('clamp', new Clamp(this, options));
 
         return this;
@@ -1047,8 +954,7 @@ export class Viewport extends Container
      * @param {number} [options.minSpeed=0.01] - minimum velocity before stopping/reversing acceleration
      * @return {Viewport} this
      */
-    public decelerate(options?: IDecelerateOptions): Viewport
-    {
+    public decelerate(options?: IDecelerateOptions): Viewport {
         this.plugins.add('decelerate', new Decelerate(this, options));
 
         return this;
@@ -1075,8 +981,7 @@ export class Viewport extends Container
      *  where to place world if too small for screen
      * @return {Viewport} this
      */
-    public bounce(options?: IBounceOptions): Viewport
-    {
+    public bounce(options?: IBounceOptions): Viewport {
         this.plugins.add('bounce', new Bounce(this, options));
 
         return this;
@@ -1093,8 +998,7 @@ export class Viewport extends Container
      * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
      * @return {Viewport} this
      */
-    public pinch(options?: IPinchOptions): Viewport
-    {
+    public pinch(options?: IPinchOptions): Viewport {
         this.plugins.add('pinch', new Pinch(this, options));
 
         return this;
@@ -1118,8 +1022,7 @@ export class Viewport extends Container
      *   the desired location
      * @return {Viewport} this
      */
-    public snap(x: number, y: number, options?: ISnapOptions): Viewport
-    {
+    public snap(x: number, y: number, options?: ISnapOptions): Viewport {
         this.plugins.add('snap', new Snap(this, x, y, options));
 
         return this;
@@ -1145,8 +1048,7 @@ export class Viewport extends Container
      *   without moving the viewport     * @returns {Viewport} this
      * @returns {Viewport} this
      */
-    public follow(target: DisplayObject, options?: IFollowOptions): Viewport
-    {
+    public follow(target: DisplayObject, options?: IFollowOptions): Viewport {
         this.plugins.add('follow', new Follow(this, target, options));
 
         return this;
@@ -1168,8 +1070,7 @@ export class Viewport extends Container
      * @param {('all'|'x'|'y')} [options.axis=all] - axis to zoom
      * @return {Viewport} this
      */
-    public wheel(options?: IWheelOptions): Viewport
-    {
+    public wheel(options?: IWheelOptions): Viewport {
         this.plugins.add('wheel', new Wheel(this, options));
 
         return this;
@@ -1193,8 +1094,7 @@ export class Viewport extends Container
      * @params {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @returns {Viewport} this
      */
-    public animate(options: IAnimateOptions): Viewport
-    {
+    public animate(options: IAnimateOptions): Viewport {
         this.plugins.add('animate', new Animate(this, options));
 
         return this;
@@ -1222,8 +1122,7 @@ export class Viewport extends Container
      * @param {number} [options.maxScale] - minimum scale
      * @return {Viewport} this
      */
-    public clampZoom(options: IClampZoomOptions): Viewport
-    {
+    public clampZoom(options: IClampZoomOptions): Viewport {
         this.plugins.add('clamp-zoom', new ClampZoom(this, options));
 
         return this;
@@ -1248,28 +1147,24 @@ export class Viewport extends Container
      *   movement (Math.cos(angle from center), Math.sin(angle from center))
      * @param {boolean} [options.allowButtons] allows plugin to continue working even when there's a mousedown event
      */
-    public mouseEdges(options: IMouseEdgesOptions): Viewport
-    {
+    public mouseEdges(options: IMouseEdgesOptions): Viewport {
         this.plugins.add('mouse-edges', new MouseEdges(this, options));
 
         return this;
     }
 
     /** Pause viewport (including animation updates such as decelerate) */
-    get pause(): boolean
-    {
+    get pause(): boolean {
         return !!this._pause;
     }
-    set pause(value: boolean)
-    {
+    set pause(value: boolean) {
         this._pause = value;
 
         this.lastViewport = null;
         this.moving = false;
         this.zooming = false;
 
-        if (value)
-        {
+        if (value) {
             this.input.pause();
         }
     }
@@ -1283,37 +1178,30 @@ export class Viewport extends Container
      * @param height
      * @param resizeToFit - Resize the viewport so the box fits within the viewport
      */
-    public ensureVisible(x: number, y: number, width: number, height: number, resizeToFit?: boolean): void
-    {
-        if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight))
-        {
+    public ensureVisible(x: number, y: number, width: number, height: number, resizeToFit?: boolean): void {
+        if (resizeToFit && (width > this.worldScreenWidth || height > this.worldScreenHeight)) {
             this.fit(true, width, height);
             this.emit('zoomed', { viewport: this, type: 'ensureVisible' });
         }
         let moved = false;
 
-        if (x < this.left)
-        {
+        if (x < this.left) {
             this.left = x;
             moved = true;
         }
-        else if (x + width > this.right)
-        {
+        else if (x + width > this.right) {
             this.right = x + width;
             moved = true;
         }
-        if (y < this.top)
-        {
+        if (y < this.top) {
             this.top = y;
             moved = true;
         }
-        else if (y + height > this.bottom)
-        {
+        else if (y + height > this.bottom) {
             this.bottom = y + height;
             moved = true;
         }
-        if (moved)
-        {
+        if (moved) {
             this.emit('moved', { viewport: this, type: 'ensureVisible' });
         }
     }
