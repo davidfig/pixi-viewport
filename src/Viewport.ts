@@ -372,6 +372,12 @@ export class Viewport extends Container {
     /** Change coordinates from screen to world */
     public toWorld<P extends IPointData = Point>(screenPoint: IPointData): P;
 
+    /**
+     * Changes coordinate from screen to world
+     * @param {number|PIXI.Point} x 
+     * @param {number} y 
+     * @returns {PIXI.Point}
+     */
     public toWorld<P extends IPointData = Point>(x: number | IPointData, y?: number): P {
         if (arguments.length === 2) {
             return this.toLocal<P>(new Point(x as number, y));
@@ -384,6 +390,12 @@ export class Viewport extends Container {
     /** Change coordinates from world to screen */
     public toScreen<P extends IPointData = Point>(worldPoint: IPointData): P
 
+    /**
+     * Changes coordinate from world to screen
+     * @param {number|PIXI.Point} x 
+     * @param {number} y 
+     * @returns {PIXI.Point}
+     */
     public toScreen<P extends IPointData = Point>(x: number | IPointData, y?: number): P {
         if (arguments.length === 2) {
             return this.toGlobal<P>(new Point(x as number, y));
@@ -422,12 +434,17 @@ export class Viewport extends Container {
         this.moveCenter(value);
     }
 
-    /** Move center of viewport to (x, y) */
     public moveCenter(x: number, y: number): Viewport;
 
     /** Move center of viewport to {@code center}. */
     public moveCenter(center: IPointData): Viewport;
 
+    /** 
+     * Move center of viewport to (x, y) 
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @return {Viewport}
+     */
     public moveCenter(...args: [number, number] | [IPointData]): Viewport {
         let x: number;
         let y: number;
@@ -467,6 +484,12 @@ export class Viewport extends Container {
     /** move Viewport's top-left corner; also clamps and resets decelerate and bounce (as needed) */
     public moveCorner(center: Point): Viewport;
 
+    /**
+     * MoveCorner
+     * @param {number|PIXI.Point} x
+     * @param {number} [y]
+     * @returns {Viewport}
+     */
     public moveCorner(...args: [number, number] | [Point]): Viewport {
         let x;
         let y;
@@ -690,23 +713,6 @@ export class Viewport extends Container {
 
         return this;
     }
-
-    // this doesn't work
-    // set visible(value: boolean)
-    // {
-    //     console.log('hello!');
-    //     if (!value)
-    //     {
-    //         debugger;
-    //         this.input.clear();
-    //     }
-    //     super.visible = value;
-    // }
-
-    // get visible(): boolean
-    // {
-    //     return super.visible;
-    // }
 
     /**
      * Zoom viewport to specific value.
