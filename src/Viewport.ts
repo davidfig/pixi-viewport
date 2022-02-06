@@ -1085,19 +1085,19 @@ export class Viewport extends Container {
     /**
      * Animate the position and/or scale of the viewport
      * To set the zoom level, use: (1) scale, (2) scaleX and scaleY, or (3) width and/or height
-     * @params {object} options
-     * @params {number} [options.time=1000] - time to animate
-     * @params {PIXI.Point} [options.position=viewport.center] - position to move viewport
-     * @params {number} [options.width] - desired viewport width in world pixels (use instead of scale;
+     * @param {object} options
+     * @param {number} [options.time=1000] - time to animate
+     * @param {PIXI.Point} [options.position=viewport.center] - position to move viewport
+     * @param {number} [options.width] - desired viewport width in world pixels (use instead of scale;
      *  aspect ratio is maintained if height is not provided)
-     * @params {number} [options.height] - desired viewport height in world pixels (use instead of scale;
+     * @param {number} [options.height] - desired viewport height in world pixels (use instead of scale;
      *  aspect ratio is maintained if width is not provided)
-     * @params {number} [options.scale] - scale to change zoom (scale.x = scale.y)
-     * @params {number} [options.scaleX] - independently change zoom in x-direction
-     * @params {number} [options.scaleY] - independently change zoom in y-direction
-     * @params {(function|string)} [options.ease=linear] - easing function to use
-     * @params {function} [options.callbackOnComplete]
-     * @params {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
+     * @param {number} [options.scale] - scale to change zoom (scale.x = scale.y)
+     * @param {number} [options.scaleX] - independently change zoom in x-direction
+     * @param {number} [options.scaleY] - independently change zoom in y-direction
+     * @param {(function|string)} [options.ease=linear] - easing function to use
+     * @param {function} [options.callbackOnComplete]
+     * @param {boolean} [options.removeOnInterrupt] removes this plugin if interrupted by any user input
      * @returns {Viewport} this
      */
     public animate(options: IAnimateOptions): Viewport {
