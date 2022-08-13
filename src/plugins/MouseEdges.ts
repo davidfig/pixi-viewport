@@ -115,15 +115,15 @@ export class MouseEdges extends Plugin
         {
             this.left = distance;
             this.top = distance;
-            this.right = this.parent.worldScreenWidth - distance;
-            this.bottom = this.parent.worldScreenHeight - distance;
+            this.right = this.parent.screenWidth - distance;
+            this.bottom = this.parent.screenHeight - distance;
         }
         else if (!this.options.radius)
         {
             this.left = this.options.left;
             this.top = this.options.top;
-            this.right = this.options.right === null ? null : this.parent.worldScreenWidth - this.options.right;
-            this.bottom = this.options.bottom === null ? null : this.parent.worldScreenHeight - this.options.bottom;
+            this.right = this.options.right === null ? null : this.parent.screenWidth - this.options.right;
+            this.bottom = this.options.bottom === null ? null : this.parent.screenHeight - this.options.bottom;
         }
     }
 
