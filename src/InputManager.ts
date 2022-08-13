@@ -4,7 +4,8 @@ import type { IPointData } from '@pixi/math';
 import type { InteractionEvent } from '@pixi/interaction';
 import type { Viewport } from './Viewport';
 
-export interface IViewportTouch {
+export interface IViewportTouch
+{
     id: number;
     last: IPointData | null;
 }
@@ -209,6 +210,13 @@ export class InputManager
         if (this.viewport.options.interaction)
         {
             this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY);
+        }
+        else if (this.viewport.options.useDivWheelForInputManager && this.viewport.options.divWheel)
+        {
+            const rect = this.viewport.options.divWheel.getBoundingClientRect();
+
+            point.x = event.clientX - rect.left;
+            point.y = event.clientY - rect.top;
         }
         else
         {
