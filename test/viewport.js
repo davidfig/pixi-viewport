@@ -25,10 +25,7 @@ describe('pixi-viewport', () =>
     it('contructor with passed options', () =>
     {
         const ticker = {}
-        const divWheel = {
-            addEventListener: () => {},
-            removeEventListener: () => {}
-        }
+        const divWheel = document.createElement('div')
         const forceHitArea = {}
         const interaction = {}
         const viewport = new Viewport(
