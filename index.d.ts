@@ -324,6 +324,7 @@ export declare interface IViewportOptions {
     disableOnContextMenu?: boolean;
     divWheel?: HTMLElement;
     ticker?: Ticker;
+    useDivWheelForInputManager?: boolean;
 }
 
 export declare interface IViewportTouch {
