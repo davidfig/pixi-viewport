@@ -44369,6 +44369,7 @@
 
 
 
+
   const DEFAULT_ANIMATE_OPTIONS = {
       removeOnInterrupt: false,
       ease: 'linear',
@@ -44552,13 +44553,21 @@
           }
           this.time += elapsed;
 
+          const originalZoom = new Point(this.parent.scale.x, this.parent.scale.y);
+
           if (this.time >= this.options.time)
           {
+              const originalWidth = this.parent.width;
+              const originalHeight = this.parent.height;
+
               this.complete();
+              if (originalWidth !== this.parent.width || originalHeight !== this.parent.height)
+              {
+                  this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
+              }
           }
           else
           {
-              const originalZoom = new Point(this.parent.scale.x, this.parent.scale.y);
               const percent = this.options.ease(this.time, 0, 1, this.options.time);
 
               if (this.width !== null)

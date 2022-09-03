@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.35.0
- * Compiled Sat, 13 Aug 2022 13:02:26 UTC
+ * pixi-viewport - v4.35.1
+ * Compiled Sat, 03 Sep 2022 13:47:09 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -435,6 +435,7 @@ function ease(ease, defaults)
 
 
 
+
 const DEFAULT_ANIMATE_OPTIONS = {
     removeOnInterrupt: false,
     ease: 'linear',
@@ -618,13 +619,21 @@ class Animate extends Plugin
         }
         this.time += elapsed;
 
+        const originalZoom = new math.Point(this.parent.scale.x, this.parent.scale.y);
+
         if (this.time >= this.options.time)
         {
+            const originalWidth = this.parent.width;
+            const originalHeight = this.parent.height;
+
             this.complete();
+            if (originalWidth !== this.parent.width || originalHeight !== this.parent.height)
+            {
+                this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
+            }
         }
         else
         {
-            const originalZoom = new math.Point(this.parent.scale.x, this.parent.scale.y);
             const percent = this.options.ease(this.time, 0, 1, this.options.time);
 
             if (this.width !== null)
