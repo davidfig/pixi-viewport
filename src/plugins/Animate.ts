@@ -5,7 +5,8 @@ import ease from '../ease';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Animate}. */
-export interface IAnimateOptions {
+export interface IAnimateOptions
+{
     /** Time to animate */
     time?: number;
 
@@ -229,13 +230,21 @@ export class Animate extends Plugin
         }
         this.time += elapsed;
 
+        const originalZoom = new Point(this.parent.scale.x, this.parent.scale.y);
+
         if (this.time >= this.options.time)
         {
+            const originalWidth = this.parent.width;
+            const originalHeight = this.parent.height;
+
             this.complete();
+            if (originalWidth !== this.parent.width || originalHeight !== this.parent.height)
+            {
+                this.parent.emit('zoomed', { viewport: this.parent, original: originalZoom, type: 'animate' });
+            }
         }
         else
         {
-            const originalZoom = new Point(this.parent.scale.x, this.parent.scale.y);
             const percent = this.options.ease(this.time, 0, 1, this.options.time);
 
             if (this.width !== null)
