@@ -532,4 +532,3 @@ export class Drag extends Plugin
         }
     }
 }
-
