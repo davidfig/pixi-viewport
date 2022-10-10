@@ -101,7 +101,7 @@ export interface IDragOptions {
      *
      * @default false
      */
-    wheelReverseAxis?: boolean;
+    wheelSwapAxes?: boolean;
 }
 
 const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
@@ -117,7 +117,7 @@ const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
     keyToPress: null,
     ignoreKeyToPressOnTouch: false,
     lineHeight: 20,
-    wheelReverseAxis: false,
+    wheelSwapAxes: false,
 };
 
 /**
@@ -430,7 +430,7 @@ export class Drag extends Plugin
                 const step = event.deltaMode ? this.options.lineHeight : 1;
 
                 const deltas = [event.deltaX, event.deltaY];
-                const [deltaX, deltaY] = this.options.wheelReverseAxis ? deltas.reverse() : deltas;
+                const [deltaX, deltaY] = this.options.wheelSwapAxes ? deltas.reverse() : deltas;
 
                 if (this.xDirection)
                 {
