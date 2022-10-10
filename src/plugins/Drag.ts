@@ -95,6 +95,13 @@ export interface IDragOptions {
      * @default 20
      */
     lineHeight?: number;
+
+    /**
+     * Swap x and y axes when scrolling.
+     *
+     * @default false
+     */
+    wheelSwapAxes?: boolean;
 }
 
 const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
@@ -110,6 +117,7 @@ const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
     keyToPress: null,
     ignoreKeyToPressOnTouch: false,
     lineHeight: 20,
+    wheelSwapAxes: false,
 };
 
 /**
@@ -421,13 +429,16 @@ export class Drag extends Plugin
             {
                 const step = event.deltaMode ? this.options.lineHeight : 1;
 
+                const deltas = [event.deltaX, event.deltaY];
+                const [deltaX, deltaY] = this.options.wheelSwapAxes ? deltas.reverse() : deltas;
+
                 if (this.xDirection)
                 {
-                    this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
+                    this.parent.x += deltaX * step * this.options.wheelScroll * this.reverse;
                 }
                 if (this.yDirection)
                 {
-                    this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
+                    this.parent.y += deltaY * step * this.options.wheelScroll * this.reverse;
                 }
                 if (this.options.clampWheel)
                 {
