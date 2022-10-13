@@ -160,6 +160,9 @@ export class Drag extends Plugin
     /** The ID of the pointer currently panning the viewport. */
     protected current?: number;
 
+    /** Array of event-handlers for window */
+    private windowEventHandlers: Array<{event: string, handler: (e: any) => void}> = new Array();
+
     /**
      * This is called by {@link Viewport.drag}.
      */
@@ -190,17 +193,31 @@ export class Drag extends Plugin
      */
     protected handleKeyPresses(codes: string[]): void
     {
-        window.addEventListener('keydown', (e) =>
-        {
+        const keydownHandler = (e: KeyboardEvent) => {
             if (codes.includes(e.code))
             { this.keyIsPressed = true; }
-        });
+        }
 
-        window.addEventListener('keyup', (e) =>
-        {
+        const keyupHandler = (e: KeyboardEvent) => {
             if (codes.includes(e.code))
             { this.keyIsPressed = false; }
-        });
+        }
+
+        this.addWindowEventHandler("keyup", keyupHandler);
+        this.addWindowEventHandler("keydown", keydownHandler);
+    }
+
+    private addWindowEventHandler(event: string, handler: (e: any) => void): void
+    {
+        window.addEventListener(event, handler);
+        this.windowEventHandlers.push({event, handler});
+    }
+
+    public override destroy(): void
+    {
+        this.windowEventHandlers.forEach(({event, handler}) => {
+            window.removeEventListener(event, handler);
+        })
     }
 
     /**
