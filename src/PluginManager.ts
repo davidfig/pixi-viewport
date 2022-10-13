@@ -70,6 +70,14 @@ export class PluginManager
      */
     public add(name: string, plugin: Plugin, index: number = PLUGIN_ORDER.length)
     {
+
+        const oldPlugin = this.plugins[name];
+
+        if (oldPlugin)
+        {
+            oldPlugin.destroy();
+        }
+
         this.plugins[name] = plugin;
 
         const current = PLUGIN_ORDER.indexOf(name);
@@ -157,6 +165,9 @@ export class PluginManager
     /** removes all installed plugins */
     public removeAll(): void
     {
+        this.list.forEach((plugin) => {
+            plugin.destroy();
+        })
         this.plugins = {};
         this.sort();
     }
@@ -170,6 +181,7 @@ export class PluginManager
     {
         if (this.plugins[name])
         {
+            this.plugins[name]?.destroy();
             delete this.plugins[name];
             this.viewport.emit(`${name}-remove`);
             this.sort();
