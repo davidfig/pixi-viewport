@@ -225,6 +225,7 @@ export declare interface IDragOptions {
     keyToPress?: string[] | null;
     ignoreKeyToPressOnTouch?: boolean;
     lineHeight?: number;
+    wheelSwapAxes?: boolean;
 }
 
 export declare interface IFollowOptions {

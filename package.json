@@ -1,6 +1,6 @@
 {
     "name": "pixi-viewport",
-    "version": "4.35.1",
+    "version": "4.37.0",
     "description": "A highly configurable viewport/2D camera designed to work with pixi.js. Features include dragging, pinch-to-zoom, mouse wheel zooming, decelerated dragging, follow target, snap to point, snap to zoom, clamping, bouncing on edges, and move on mouse edges.",
     "main": "dist/cjs/viewport.js",
     "module": "dist/esm/viewport.es.js",
@@ -54,10 +54,10 @@
     },
     "homepage": "https://github.com/davidfig/pixi-viewport#readme",
     "peerDependencies": {
-        "@pixi/display": "^6.5.1",
-        "@pixi/interaction": "^6.5.1",
-        "@pixi/math": "^6.5.1",
-        "@pixi/ticker": "^6.5.1"
+        "@pixi/display": "^6.5.7",
+        "@pixi/interaction": "^6.5.7",
+        "@pixi/math": "^6.5.7",
+        "@pixi/ticker": "^6.5.7"
     },
     "dependencies": {},
     "devDependencies": {
@@ -66,12 +66,12 @@
         "@joseph184/rollup-plugin-node-builtins": "^2.1.4",
         "@microsoft/api-extractor": "^7.18.19",
         "@pixi-build-tools/rollup-configurator": "^1.0.14",
-        "@pixi/display": "^6.5.1",
+        "@pixi/display": "^6.5.7",
         "@pixi/eslint-config": "^4.0.1",
         "@pixi/events": "^6.5.1",
-        "@pixi/interaction": "^6.5.1",
-        "@pixi/math": "^6.5.1",
-        "@pixi/ticker": "^6.5.1",
+        "@pixi/interaction": "^6.5.7",
+        "@pixi/math": "^6.5.7",
+        "@pixi/ticker": "^6.5.7",
         "@rollup/plugin-babel": "^5.3.0",
         "@rollup/plugin-commonjs": "^22.0.2",
         "@rollup/plugin-node-resolve": "^13.0.6",

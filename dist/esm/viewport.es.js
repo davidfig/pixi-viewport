@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.35.1
- * Compiled Sat, 03 Sep 2022 13:47:09 UTC
+ * pixi-viewport - v4.37.0
+ * Compiled Sun, 23 Oct 2022 14:02:15 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -1867,6 +1867,13 @@ class Decelerate extends Plugin
 
 
 
+
+
+
+
+
+
+
 const DEFAULT_DRAG_OPTIONS = {
     direction: 'all',
     pressDrag: true,
@@ -1880,6 +1887,7 @@ const DEFAULT_DRAG_OPTIONS = {
     keyToPress: null,
     ignoreKeyToPressOnTouch: false,
     lineHeight: 20,
+    wheelSwapAxes: false,
 };
 
 /**
@@ -2191,13 +2199,16 @@ class Drag extends Plugin
             {
                 const step = event.deltaMode ? this.options.lineHeight : 1;
 
+                const deltas = [event.deltaX, event.deltaY];
+                const [deltaX, deltaY] = this.options.wheelSwapAxes ? deltas.reverse() : deltas;
+
                 if (this.xDirection)
                 {
-                    this.parent.x += event.deltaX * step * this.options.wheelScroll * this.reverse;
+                    this.parent.x += deltaX * step * this.options.wheelScroll * this.reverse;
                 }
                 if (this.yDirection)
                 {
-                    this.parent.y += event.deltaY * step * this.options.wheelScroll * this.reverse;
+                    this.parent.y += deltaY * step * this.options.wheelScroll * this.reverse;
                 }
                 if (this.options.clampWheel)
                 {
