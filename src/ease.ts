@@ -10,18 +10,19 @@ import Penner from 'penner';
  * @param {(function|string)} [ease]
  * @param {defaults} default penner equation to use if none is provided
  */
+// eslint-disable-next-line consistent-return
 export default function ease(ease: any, defaults?: any): any
 {
     if (!ease)
     {
-        return Penner[defaults]
+        return Penner[defaults];
     }
     else if (typeof ease === 'function')
     {
-        return ease
+        return ease;
     }
     else if (typeof ease === 'string')
     {
-        return Penner[ease]
+        return Penner[ease];
     }
 }

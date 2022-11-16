@@ -125,9 +125,9 @@ export class Pinch extends Plugin
 
                 const point = {
                     x: (first.last as IPointData).x
-                        + ((second.last as IPointData).x - (first.last as IPointData).x) / 2,
+                        + (((second.last as IPointData).x - (first.last as IPointData).x) / 2),
                     y: (first.last as IPointData).y
-                        + ((second.last as IPointData).y - (first.last as IPointData).y) / 2,
+                        + (((second.last as IPointData).y - (first.last as IPointData).y) / 2),
                 };
 
                 if (!this.options.center)
@@ -140,7 +140,7 @@ export class Pinch extends Plugin
 
                 dist = dist === 0 ? dist = 0.0000000001 : dist;
 
-                const change = (1 - last / dist) * this.options.percent
+                const change = (1 - (last / dist)) * this.options.percent
                     * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
 
                 if (this.isAxisX())

@@ -4,7 +4,8 @@ import type { Viewport } from '../Viewport';
 import type { InteractionEvent } from '@pixi/interaction';
 
 /** Insets for mouse edges scrolling regions */
-export interface IMouseEdgesInsets {
+export interface IMouseEdgesInsets
+{
     /** Distance from center of screen in screen pixels */
     radius?: number | null;
 
@@ -25,7 +26,8 @@ export interface IMouseEdgesInsets {
 }
 
 /** Options for {@link MouseEdges}. */
-export interface IMouseEdgesOptions extends IMouseEdgesInsets {
+export interface IMouseEdgesOptions extends IMouseEdgesInsets
+{
     /** Speed in pixels/frame to scroll viewport */
     speed?: number;
 

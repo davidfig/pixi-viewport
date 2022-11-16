@@ -209,9 +209,9 @@ export class Animate extends Plugin
         {
             this.parent.fitHeight(this.height, this.keepCenter, this.width === null);
         }
-        if (!this.keepCenter)
+        if (!this.keepCenter && this.options.position)
         {
-            this.parent.moveCenter(this.options.position!);
+            this.parent.moveCenter(this.options.position);
         }
 
         this.parent.emit('animate-end', this.parent);

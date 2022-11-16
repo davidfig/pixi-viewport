@@ -7,7 +7,8 @@ import type { IPointData } from '@pixi/math';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Drag}. */
-export interface IDragOptions {
+export interface IDragOptions
+{
     /**
      * direction to drag
      *
