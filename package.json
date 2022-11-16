@@ -84,7 +84,7 @@
         "chai": "^4.3.4",
         "clicked": "^4.0.3",
         "dom-ease": "^0.9.3",
-        "electron": "20.0.2",
+        "electron": "13.x.x",
         "eslint": "^8.3.0",
         "floss": "^5.0.1",
         "fork-me-github": "^1.2.0",
