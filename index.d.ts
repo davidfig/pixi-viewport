@@ -120,8 +120,11 @@ export declare class Drag extends Plugin_2 {
     protected underflowY: -1 | 0 | 1;
     protected last?: IPointData | null;
     protected current?: number;
+    private windowEventHandlers;
     constructor(parent: Viewport, options?: {});
     protected handleKeyPresses(codes: string[]): void;
+    private addWindowEventHandler;
+    destroy(): void;
     protected mouseButtons(buttons: string): void;
     protected parseUnderflow(): void;
     protected checkButtons(event: InteractionEvent): boolean;

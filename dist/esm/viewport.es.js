@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.37.0
- * Compiled Sun, 23 Oct 2022 14:02:15 UTC
+ * pixi-viewport - v4.38.0
+ * Compiled Sun, 27 Nov 2022 13:43:58 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -374,19 +374,20 @@ var penner = createCommonjsModule(function (module, exports) {
  * @param {(function|string)} [ease]
  * @param {defaults} default penner equation to use if none is provided
  */
+// eslint-disable-next-line consistent-return
 function ease(ease, defaults)
 {
     if (!ease)
     {
-        return penner[defaults]
+        return penner[defaults];
     }
     else if (typeof ease === 'function')
     {
-        return ease
+        return ease;
     }
     else if (typeof ease === 'string')
     {
-        return penner[ease]
+        return penner[ease];
     }
 }
 
@@ -594,7 +595,7 @@ class Animate extends Plugin
         {
             this.parent.fitHeight(this.height, this.keepCenter, this.width === null);
         }
-        if (!this.keepCenter)
+        if (!this.keepCenter && this.options.position)
         {
             this.parent.moveCenter(this.options.position);
         }
@@ -725,6 +726,8 @@ function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[
 
 
 
+
+
 const DEFAULT_BOUNCE_OPTIONS = {
     sides: 'all',
     friction: 0.5,
@@ -747,7 +750,7 @@ class Bounce extends Plugin
     
 
     /** Holds whether to bounce from left side. */
-     
+    
 
     /** Holds whether to bounce from top side. */
     
@@ -806,7 +809,9 @@ class Bounce extends Plugin
                 this.left = this.options.sides.indexOf('left') !== -1;
                 this.right = this.options.sides.indexOf('right') !== -1;
             }
-        } else {
+        }
+        else
+        {
             this.left = this.top = this.right = this.bottom = false;
         }
 
@@ -819,7 +824,9 @@ class Bounce extends Plugin
         }
         else
         {
+            // eslint-disable-next-line no-nested-ternary
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
+            // eslint-disable-next-line no-nested-ternary
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
         }
 
@@ -954,8 +961,8 @@ class Bounce extends Plugin
                     y1 * this.parent.scale.y
                 ),
                 bottomRight: new Point(
-                    width * this.parent.scale.x - this.parent.screenWidth,
-                    height * this.parent.scale.y - this.parent.screenHeight
+                    (width * this.parent.scale.x) - this.parent.screenWidth,
+                    (height * this.parent.scale.y) - this.parent.screenHeight
                 )
             };
         }
@@ -967,8 +974,8 @@ class Bounce extends Plugin
             bottom: this.parent.bottom > this.parent.worldHeight,
             topLeft: new Point(0, 0),
             bottomRight: new Point(
-                this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
-                this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
+                (this.parent.worldWidth * this.parent.scale.x) - this.parent.screenWidth,
+                (this.parent.worldHeight * this.parent.scale.y) - this.parent.screenHeight
             )
         };
     }
@@ -991,7 +998,8 @@ class Bounce extends Plugin
 
         if (decelerate && (decelerate.x || decelerate.y))
         {
-            if ((decelerate.x && decelerate.percentChangeX === _optionalChain$1([decelerate, 'access', _ => _.options, 'optionalAccess', _2 => _2.friction])) || (decelerate.y && decelerate.percentChangeY === _optionalChain$1([decelerate, 'access', _3 => _3.options, 'optionalAccess', _4 => _4.friction])))
+            if ((decelerate.x && decelerate.percentChangeX === _optionalChain$1([decelerate, 'access', _ => _.options, 'optionalAccess', _2 => _2.friction]))
+            || (decelerate.y && decelerate.percentChangeY === _optionalChain$1([decelerate, 'access', _3 => _3.options, 'optionalAccess', _4 => _4.friction])))
             {
                 oob = this.oob();
                 if ((oob.left && this.left) || (oob.right && this.right))
@@ -1067,12 +1075,14 @@ class Bounce extends Plugin
  *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
  * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
  *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
- *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+ *    eg: to allow the world to be completely dragged offscreen, set
+ *    [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
  *
  * Underflow determines what happens when the world is smaller than the viewport
  * 1. none = the world is clamped but there is no special behavior
  * 2. center = the world is centered on the viewport
- * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
+ * 3. combination of top/bottom/center and left/right/center (case insensitive) =
+ *    the world is stuck to the appropriate boundaries
  *
  */
 
@@ -1187,7 +1197,9 @@ class Clamp extends Plugin
         }
         else
         {
+            // eslint-disable-next-line no-nested-ternary
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
+            // eslint-disable-next-line no-nested-ternary
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
             this.noUnderflow = false;
         }
@@ -1264,7 +1276,8 @@ class Clamp extends Plugin
                 {
                     if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right))
                     {
-                        this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth;
+                        this.parent.x = (-(this.options.right === true ? this.parent.worldWidth : this.options.right)
+                            * this.parent.scale.x) + this.parent.screenWidth;
                         decelerate.x = 0;
                         moved = true;
                     }
@@ -1321,8 +1334,8 @@ class Clamp extends Plugin
                 {
                     if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom))
                     {
-                        this.parent.y = -(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
-                            * this.parent.scale.y + this.parent.screenHeight;
+                        this.parent.y = (-(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
+                            * this.parent.scale.y) + this.parent.screenHeight;
                         decelerate.y = 0;
                         moved = true;
                     }
@@ -1750,16 +1763,22 @@ class Decelerate extends Plugin
         this.timeSinceRelease += elapsed;
 
         // End decelerate velocity once it goes under a certain amount of precision.
-        if (this.x && this.y) {
-            if (Math.abs(this.x) < this.options.minSpeed && Math.abs(this.y) < this.options.minSpeed) {
-                 this.x = 0;
-                 this.y = 0;
+        if (this.x && this.y)
+        {
+            if (Math.abs(this.x) < this.options.minSpeed && Math.abs(this.y) < this.options.minSpeed)
+            {
+                this.x = 0;
+                this.y = 0;
             }
-        } else {
-            if (Math.abs(this.x || 0) < this.options.minSpeed) {
+        }
+        else
+        {
+            if (Math.abs(this.x || 0) < this.options.minSpeed)
+            {
                 this.x = 0;
             }
-            if (Math.abs(this.y || 0) < this.options.minSpeed) {
+            if (Math.abs(this.y || 0) < this.options.minSpeed)
+            {
                 this.y = 0;
             }
         }
@@ -1777,6 +1796,7 @@ class Decelerate extends Plugin
 }
 
 /** Options for {@link Drag}. */
+
 
 
 
@@ -1930,13 +1950,15 @@ class Drag extends Plugin
     /** The ID of the pointer currently panning the viewport. */
     
 
+    /** Array of event-handlers for window */
+     __init() {this.windowEventHandlers = new Array();}
+
     /**
      * This is called by {@link Viewport.drag}.
      */
     constructor(parent, options = {})
     {
-        super(parent);
-
+        super(parent);Drag.prototype.__init.call(this);
         this.options = Object.assign({}, DEFAULT_DRAG_OPTIONS, options);
         this.moved = false;
         this.reverse = this.options.reverse ? 1 : -1;
@@ -1960,16 +1982,30 @@ class Drag extends Plugin
      */
      handleKeyPresses(codes)
     {
-        window.addEventListener('keydown', (e) =>
-        {
+        const keydownHandler = (e) => {
             if (codes.includes(e.code))
             { this.keyIsPressed = true; }
-        });
+        };
 
-        window.addEventListener('keyup', (e) =>
-        {
+        const keyupHandler = (e) => {
             if (codes.includes(e.code))
             { this.keyIsPressed = false; }
+        };
+
+        this.addWindowEventHandler("keyup", keyupHandler);
+        this.addWindowEventHandler("keydown", keydownHandler);
+    }
+
+     addWindowEventHandler(event, handler)
+    {
+        window.addEventListener(event, handler);
+        this.windowEventHandlers.push({event, handler});
+    }
+
+      destroy()
+    {
+        this.windowEventHandlers.forEach(({event, handler}) => {
+            window.removeEventListener(event, handler);
         });
     }
 
@@ -2409,20 +2445,21 @@ class Follow extends Plugin
 
                     if (distance)
                     {
-                        const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.options.acceleration);
+                        const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2))
+                            / (2 * this.options.acceleration);
 
                         if (distance > decelerationDistance)
                         {
                             this.velocity = {
-                                x: Math.min(this.velocity.x + this.options.acceleration * elapsed, this.options.speed),
-                                y: Math.min(this.velocity.y + this.options.acceleration * elapsed, this.options.speed)
+                                x: Math.min(this.velocity.x + (this.options.acceleration * elapsed, this.options.speed)),
+                                y: Math.min(this.velocity.y + (this.options.acceleration * elapsed, this.options.speed))
                             };
                         }
                         else
                         {
                             this.velocity = {
-                                x: Math.max(this.velocity.x - this.options.acceleration * this.options.speed, 0),
-                                y: Math.max(this.velocity.y - this.options.acceleration * this.options.speed, 0)
+                                x: Math.max(this.velocity.x - (this.options.acceleration * this.options.speed), 0),
+                                y: Math.max(this.velocity.y - (this.options.acceleration * this.options.speed), 0)
                             };
                         }
                         const changeX = Math.cos(angle) * this.velocity.x;
@@ -2456,6 +2493,8 @@ class Follow extends Plugin
 }
 
 /** Insets for mouse edges scrolling regions */
+
+
 
 
 
@@ -2858,9 +2897,9 @@ class Pinch extends Plugin
 
                 const point = {
                     x: (first.last ).x
-                        + ((second.last ).x - (first.last ).x) / 2,
+                        + (((second.last ).x - (first.last ).x) / 2),
                     y: (first.last ).y
-                        + ((second.last ).y - (first.last ).y) / 2,
+                        + (((second.last ).y - (first.last ).y) / 2),
                 };
 
                 if (!this.options.center)
@@ -2873,7 +2912,7 @@ class Pinch extends Plugin
 
                 dist = dist === 0 ? dist = 0.0000000001 : dist;
 
-                const change = (1 - last / dist) * this.options.percent
+                const change = (1 - (last / dist)) * this.options.percent
                     * (this.isAxisX() ? this.parent.scale.x : this.parent.scale.y);
 
                 if (this.isAxisX())
@@ -3688,8 +3727,8 @@ class Wheel extends Plugin
                 };
 
                 this.smoothing = {
-                    x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
-                    y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
+                    x: (((this.parent.scale.x + original.x) * change) - this.parent.scale.x) / this.options.smooth,
+                    y: (((this.parent.scale.y + original.y) * change) - this.parent.scale.y) / this.options.smooth,
                 };
                 this.smoothingCount = 0;
                 this.smoothingCenter = point;
@@ -4103,6 +4142,14 @@ class PluginManager
      */
      add(name, plugin, index = PLUGIN_ORDER.length)
     {
+
+        const oldPlugin = this.plugins[name];
+
+        if (oldPlugin)
+        {
+            oldPlugin.destroy();
+        }
+
         this.plugins[name] = plugin;
 
         const current = PLUGIN_ORDER.indexOf(name);
@@ -4190,6 +4237,9 @@ class PluginManager
     /** removes all installed plugins */
      removeAll()
     {
+        this.list.forEach((plugin) => {
+            plugin.destroy();
+        });
         this.plugins = {};
         this.sort();
     }
@@ -4203,6 +4253,7 @@ class PluginManager
     {
         if (this.plugins[name])
         {
+            _optionalChain([this, 'access', _4 => _4.plugins, 'access', _5 => _5[name], 'optionalAccess', _6 => _6.destroy, 'call', _7 => _7()]);
             delete this.plugins[name];
             this.viewport.emit(`${name}-remove`);
             this.sort();
@@ -4216,7 +4267,7 @@ class PluginManager
      */
      pause(name)
     {
-        _optionalChain([this, 'access', _4 => _4.plugins, 'access', _5 => _5[name], 'optionalAccess', _6 => _6.pause, 'call', _7 => _7()]);
+        _optionalChain([this, 'access', _8 => _8.plugins, 'access', _9 => _9[name], 'optionalAccess', _10 => _10.pause, 'call', _11 => _11()]);
     }
 
     /**
@@ -4226,7 +4277,7 @@ class PluginManager
      */
      resume(name)
     {
-        _optionalChain([this, 'access', _8 => _8.plugins, 'access', _9 => _9[name], 'optionalAccess', _10 => _10.resume, 'call', _11 => _11()]);
+        _optionalChain([this, 'access', _12 => _12.plugins, 'access', _13 => _13[name], 'optionalAccess', _14 => _14.resume, 'call', _15 => _15()]);
     }
 
     /**
