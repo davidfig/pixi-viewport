@@ -8,13 +8,14 @@ import type { Pinch } from './Pinch';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Bounce}. */
-export interface IBounceOptions {
+export interface IBounceOptions
+{
     /** "all", "horizontal", "vertical", or combination of "top", "bottom", "right", "left" (e.g., 'top-bottom-right') */
     sides?:
-        'all'
-        | 'horizontal'
-        | 'vertical'
-        | string;
+    'all'
+    | 'horizontal'
+    | 'vertical'
+    | string;
 
     /** Friction to apply to decelerate if active */
     friction?: number;
@@ -29,11 +30,12 @@ export interface IBounceOptions {
     ease?: any;
 
     /** (top/bottom/center and left/right/center, or center) where to place world if too small for screen */
-    underflow?:  'center' | string;
+    underflow?: 'center' | string;
 }
 
 /** Bounce state along an axis */
-export interface IBounceState {
+export interface IBounceState
+{
     /** Elapsed time since bounce started */
     time: number;
 
@@ -69,7 +71,7 @@ export class Bounce extends Plugin
     public readonly options: Readonly<Required<IBounceOptions>>;
 
     /** Holds whether to bounce from left side. */
-    public readonly left: boolean ;
+    public readonly left: boolean;
 
     /** Holds whether to bounce from top side. */
     public readonly top: boolean;
@@ -128,7 +130,9 @@ export class Bounce extends Plugin
                 this.left = this.options.sides.indexOf('left') !== -1;
                 this.right = this.options.sides.indexOf('right') !== -1;
             }
-        } else {
+        }
+        else
+        {
             this.left = this.top = this.right = this.bottom = false;
         }
 
@@ -141,7 +145,9 @@ export class Bounce extends Plugin
         }
         else
         {
+            // eslint-disable-next-line no-nested-ternary
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
+            // eslint-disable-next-line no-nested-ternary
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
         }
 
@@ -276,8 +282,8 @@ export class Bounce extends Plugin
                     y1 * this.parent.scale.y
                 ),
                 bottomRight: new Point(
-                    width * this.parent.scale.x - this.parent.screenWidth,
-                    height * this.parent.scale.y - this.parent.screenHeight
+                    (width * this.parent.scale.x) - this.parent.screenWidth,
+                    (height * this.parent.scale.y) - this.parent.screenHeight
                 )
             };
         }
@@ -289,8 +295,8 @@ export class Bounce extends Plugin
             bottom: this.parent.bottom > this.parent.worldHeight,
             topLeft: new Point(0, 0),
             bottomRight: new Point(
-                this.parent.worldWidth * this.parent.scale.x - this.parent.screenWidth,
-                this.parent.worldHeight * this.parent.scale.y - this.parent.screenHeight
+                (this.parent.worldWidth * this.parent.scale.x) - this.parent.screenWidth,
+                (this.parent.worldHeight * this.parent.scale.y) - this.parent.screenHeight
             )
         };
     }
@@ -313,7 +319,8 @@ export class Bounce extends Plugin
 
         if (decelerate && (decelerate.x || decelerate.y))
         {
-            if ((decelerate.x && decelerate.percentChangeX === decelerate.options?.friction) || (decelerate.y && decelerate.percentChangeY === decelerate.options?.friction))
+            if ((decelerate.x && decelerate.percentChangeX === decelerate.options?.friction)
+            || (decelerate.y && decelerate.percentChangeY === decelerate.options?.friction))
             {
                 oob = this.oob();
                 if ((oob.left && this.left) || (oob.right && this.right))

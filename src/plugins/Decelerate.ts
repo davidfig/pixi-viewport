@@ -3,7 +3,8 @@ import { Plugin } from './Plugin';
 import type { Point } from '@pixi/math';
 import type { Viewport } from '../Viewport';
 
-export interface IDecelerateOptions {
+export interface IDecelerateOptions
+{
     /**
      * Percent to decelerate after movement. This should be between 0 and 1, exclusive.
      *
@@ -27,7 +28,8 @@ export interface IDecelerateOptions {
 }
 
 /** Viewport position snapshot that's saved by {@link DeceleratePlugin} to estimate panning velocity. */
-export interface IDecelerateSnapshot {
+export interface IDecelerateSnapshot
+{
     /** x-coordinate of the viewport. */
     x: number;
 
@@ -264,16 +266,22 @@ export class Decelerate extends Plugin
         this.timeSinceRelease += elapsed;
 
         // End decelerate velocity once it goes under a certain amount of precision.
-        if (this.x && this.y) {
-            if (Math.abs(this.x) < this.options.minSpeed && Math.abs(this.y) < this.options.minSpeed) {
-                 this.x = 0;
-                 this.y = 0;
+        if (this.x && this.y)
+        {
+            if (Math.abs(this.x) < this.options.minSpeed && Math.abs(this.y) < this.options.minSpeed)
+            {
+                this.x = 0;
+                this.y = 0;
             }
-        } else {
-            if (Math.abs(this.x || 0) < this.options.minSpeed) {
+        }
+        else
+        {
+            if (Math.abs(this.x || 0) < this.options.minSpeed)
+            {
                 this.x = 0;
             }
-            if (Math.abs(this.y || 0) < this.options.minSpeed) {
+            if (Math.abs(this.y || 0) < this.options.minSpeed)
+            {
                 this.y = 0;
             }
         }

@@ -423,9 +423,9 @@ export class Viewport extends Container
     }
 
     /** Change coordinates from world to screen */
-    public toScreen<P extends IPointData = Point>(x: number, y: number): P
+    public toScreen<P extends IPointData = Point>(x: number, y: number): P;
     /** Change coordinates from world to screen */
-    public toScreen<P extends IPointData = Point>(worldPoint: IPointData): P
+    public toScreen<P extends IPointData = Point>(worldPoint: IPointData): P;
 
     /**
      * Changes coordinate from world to screen

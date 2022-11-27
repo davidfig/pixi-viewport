@@ -8,24 +8,26 @@ import type { Viewport } from '../Viewport';
  *    direction: 'x' | 'y' = only the x or y direction is clamped to its world boundary
  * 2. left, right, top, bottom = true | number = the world is clamped to the world's pixel location for each side;
  *    if any of these are set to true, then the location is set to the boundary [0, viewport.worldWidth/viewport.worldHeight]
- *    eg: to allow the world to be completely dragged offscreen, set [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
+ *    eg: to allow the world to be completely dragged offscreen, set
+ *    [-viewport.worldWidth, -viewport.worldHeight, viewport.worldWidth * 2, viewport.worldHeight * 2]
  *
  * Underflow determines what happens when the world is smaller than the viewport
  * 1. none = the world is clamped but there is no special behavior
  * 2. center = the world is centered on the viewport
- * 3. combination of top/bottom/center and left/right/center (case insensitive) = the world is stuck to the appropriate boundaries
+ * 3. combination of top/bottom/center and left/right/center (case insensitive) =
+ *    the world is stuck to the appropriate boundaries
  *
  */
 export interface IClampOptions
 {
-   /**
+    /**
     * Clamp left; true = 0
     *
     * @default false
     */
     left?: number | boolean | null;
 
-   /**
+    /**
     * Clamp top; true = 0
     *
     * @default false
@@ -128,7 +130,9 @@ export class Clamp extends Plugin
         }
         else
         {
+            // eslint-disable-next-line no-nested-ternary
             this.underflowX = (clamp.indexOf('left') !== -1) ? -1 : (clamp.indexOf('right') !== -1) ? 1 : 0;
+            // eslint-disable-next-line no-nested-ternary
             this.underflowY = (clamp.indexOf('top') !== -1) ? -1 : (clamp.indexOf('bottom') !== -1) ? 1 : 0;
             this.noUnderflow = false;
         }
@@ -205,7 +209,8 @@ export class Clamp extends Plugin
                 {
                     if (this.parent.right > (this.options.right === true ? this.parent.worldWidth : this.options.right))
                     {
-                        this.parent.x = -(this.options.right === true ? this.parent.worldWidth : this.options.right) * this.parent.scale.x + this.parent.screenWidth;
+                        this.parent.x = (-(this.options.right === true ? this.parent.worldWidth : this.options.right)
+                            * this.parent.scale.x) + this.parent.screenWidth;
                         decelerate.x = 0;
                         moved = true;
                     }
@@ -262,8 +267,8 @@ export class Clamp extends Plugin
                 {
                     if (this.parent.bottom > (this.options.bottom === true ? this.parent.worldHeight : this.options.bottom))
                     {
-                        this.parent.y = -(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
-                            * this.parent.scale.y + this.parent.screenHeight;
+                        this.parent.y = (-(this.options.bottom === true ? this.parent.worldHeight : this.options.bottom)
+                            * this.parent.scale.y) + this.parent.screenHeight;
                         decelerate.y = 0;
                         moved = true;
                     }

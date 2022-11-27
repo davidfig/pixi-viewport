@@ -110,20 +110,21 @@ export class Follow extends Plugin
 
                     if (distance)
                     {
-                        const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2)) / (2 * this.options.acceleration);
+                        const decelerationDistance = (Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2))
+                            / (2 * this.options.acceleration);
 
                         if (distance > decelerationDistance)
                         {
                             this.velocity = {
-                                x: Math.min(this.velocity.x + this.options.acceleration * elapsed, this.options.speed),
-                                y: Math.min(this.velocity.y + this.options.acceleration * elapsed, this.options.speed)
+                                x: Math.min(this.velocity.x + (this.options.acceleration * elapsed, this.options.speed)),
+                                y: Math.min(this.velocity.y + (this.options.acceleration * elapsed, this.options.speed))
                             };
                         }
                         else
                         {
                             this.velocity = {
-                                x: Math.max(this.velocity.x - this.options.acceleration * this.options.speed, 0),
-                                y: Math.max(this.velocity.y - this.options.acceleration * this.options.speed, 0)
+                                x: Math.max(this.velocity.x - (this.options.acceleration * this.options.speed), 0),
+                                y: Math.max(this.velocity.y - (this.options.acceleration * this.options.speed), 0)
                             };
                         }
                         const changeX = Math.cos(angle) * this.velocity.x;

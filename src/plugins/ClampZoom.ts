@@ -180,7 +180,8 @@ export class ClampZoom extends Plugin
 }
 
 /** This allows independent x and y values for min/maxScale */
-export interface IScale {
+export interface IScale
+{
     x: null | number
     y: null | number
 }

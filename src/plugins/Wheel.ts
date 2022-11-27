@@ -296,8 +296,8 @@ export class Wheel extends Plugin
                 };
 
                 this.smoothing = {
-                    x: ((this.parent.scale.x + original.x) * change - this.parent.scale.x) / this.options.smooth,
-                    y: ((this.parent.scale.y + original.y) * change - this.parent.scale.y) / this.options.smooth,
+                    x: (((this.parent.scale.x + original.x) * change) - this.parent.scale.x) / this.options.smooth,
+                    y: (((this.parent.scale.y + original.y) * change) - this.parent.scale.y) / this.options.smooth,
                 };
                 this.smoothingCount = 0;
                 this.smoothingCenter = point;
