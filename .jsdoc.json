@@ -28,7 +28,7 @@
         "recurse": true,
         "private": false,
         "lenient": true,
-        "destination": "./docs/jsdoc",
+        "destination": "./docs/dist/jsdoc",
         "template": "./node_modules/yy-jsdoc-template"
     },
     "plugins": [
