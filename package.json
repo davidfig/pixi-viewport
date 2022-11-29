@@ -15,22 +15,15 @@
         "src"
     ],
     "scripts": {
-        "start": "serve docs/",
-        "dev": "rollup -w -c docs/sample/rollup.dev.js",
-        "dev-original": "rollup -w -c docs/original/rollup.dev.js",
+        "dev": "vite dev",
         "test": "floss --path test",
         "coverage": "nyc mocha",
         "build": "rollup -c && yarn build:types",
         "build:types": "rimraf ./compile && tsc -p ./tsconfig.json --outDir compile && api-extractor run",
-        "docs": "rimraf ./js && tsc -p ./tsconfig-docs.json --outDir js && jsdoc -c .jsdoc.json",
+        "docs": "vite build --base /pixi-viewport/original/ && rimraf ./js && tsc -p ./tsconfig-docs.json --outDir js && jsdoc -c .jsdoc.json && node ./scripts/copy",
+        "docs:serve": "vite preview --base /pixi-viewport/ --outDir dist/",
         "upgrade": "yarn upgrade-interactive --latest",
-        "prepublishOnly": "yarn build && yarn builds && yarn build:types && yarn docs",
-        "builds-rollup": "rollup -c docs/builds/rollup/rollup.config.js",
-        "builds-browserify": "browserify docs/builds/browserify/code.js -o docs/builds/browserify/index.js",
-        "builds-standalone": "node scripts/copy",
-        "builds-typescript": "rollup -c docs/builds/ts/rollup.config.js",
-        "builds-original": "rollup -c docs/original/rollup.config.js",
-        "builds": "yarn builds-rollup && yarn builds-browserify && yarn builds-standalone && yarn builds-typescript && yarn builds-original"
+        "prepublishOnly": "yarn build && yarn builds && yarn build:types && yarn docs"
     },
     "repository": {
         "type": "git",
@@ -101,6 +94,7 @@
         "settingspanel": "^2.0.0",
         "tslib": "^2.3.1",
         "typescript": "^4.5.2",
+        "vite": "^3.2.4",
         "yy-counter": "^2.1.0",
         "yy-fps": "^2.0.0",
         "yy-jsdoc-template": "^1.3.0",
