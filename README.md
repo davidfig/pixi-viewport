@@ -114,7 +114,7 @@ viewport.plugins.add('name', plugin, index)
 1. clone repository
 2. yarn install
 3. yarn dev
-4. open browser to http://localhost:10001
+4. open browser to http://localhost:5173
 
 PRs are more than welcome!
 
