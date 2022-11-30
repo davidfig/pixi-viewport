@@ -20,8 +20,8 @@
         "coverage": "nyc mocha",
         "build": "rollup -c && yarn build:types",
         "build:types": "rimraf ./compile && tsc -p ./tsconfig.json --outDir compile && api-extractor run",
-        "docs": "vite build --base /pixi-viewport/original/ && rimraf ./js && tsc -p ./tsconfig-docs.json --outDir js && rimraf ./docs/dist/jsdoc/ && jsdoc -c .jsdoc.json && node ./scripts/copy",
-        "docs:serve": "vite preview --base /pixi-viewport/ --outDir dist/",
+        "docs": "vite build && rimraf ./js && tsc -p ./tsconfig-docs.json --outDir js && rimraf ./docs/dist/jsdoc/ && jsdoc -c .jsdoc.json && node ./scripts/copy",
+        "docs:serve": "vite preview --outDir dist/",
         "upgrade": "yarn upgrade-interactive --latest",
         "prepublishOnly": "yarn build && yarn builds && yarn build:types && yarn docs"
     },
