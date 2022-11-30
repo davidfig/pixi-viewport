@@ -78,18 +78,6 @@ or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/
 </script>
 ```
 
-## Build Examples
-I've included the following build examples in the docs/ directory:
-
-* [flems-io interactive demo](https://davidfig.github.io/pixi-viewport/)
-* [original demo built with rollup](https://github.com/davidfig/pixi-viewport/tree/master/docs/original)
-* [browserify](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify)
-* [rollup](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup)
-* [standalone (e.g., cdn)](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone)
-* [typescript](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts).
-
-You can see the live demos at [https://davidfig.github.io/pixi-viewport/builds/](https://davidfig.github.io/pixi-viewport/builds/).
-
 ## Migration from pixi-viewport v3 to v4
 Viewport needs to be imported or required as follows:
 ```js
