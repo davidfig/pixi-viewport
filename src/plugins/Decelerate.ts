@@ -1,7 +1,7 @@
 import { Plugin } from './Plugin';
 
-import type { Point } from '@pixi/math';
 import type { Viewport } from '../Viewport';
+import { MovedEvent } from '../types';
 
 export interface IDecelerateOptions
 {
@@ -110,7 +110,7 @@ export class Decelerate extends Plugin
         this.timeSinceRelease = 0;
 
         this.reset();
-        this.parent.on('moved', (data) => this.moved(data));
+        this.parent.on('moved', (data) => this.handleMoved(data));
     }
 
     public down(): boolean
@@ -150,22 +150,22 @@ export class Decelerate extends Plugin
     }
 
     /** Listener to viewport's "moved" event. */
-    protected moved(data: { type: 'clamp-x' | 'clamp-y'; original: Point }): void
+    protected handleMoved(e: MovedEvent): void
     {
         if (this.saved.length)
         {
             const last = this.saved[this.saved.length - 1];
 
-            if (data.type === 'clamp-x')
+            if (e.type === 'clamp-x' && e.original)
             {
-                if (last.x === data.original.x)
+                if (last.x === e.original.x)
                 {
                     last.x = this.parent.x;
                 }
             }
-            else if (data.type === 'clamp-y')
+            else if (e.type === 'clamp-y' && e.original)
             {
-                if (last.y === data.original.y)
+                if (last.y === e.original.y)
                 {
                     last.y = this.parent.y;
                 }

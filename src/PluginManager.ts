@@ -13,7 +13,7 @@ import type {
     SnapZoom,
     Wheel,
 } from './plugins';
-import type { InteractionEvent } from '@pixi/interaction';
+import type { FederatedEvent } from '@pixi/events';
 import type { Viewport } from './Viewport';
 
 const PLUGIN_ORDER = [
@@ -70,7 +70,6 @@ export class PluginManager
      */
     public add(name: string, plugin: Plugin, index: number = PLUGIN_ORDER.length)
     {
-
         const oldPlugin = this.plugins[name];
 
         if (oldPlugin)
@@ -165,9 +164,10 @@ export class PluginManager
     /** removes all installed plugins */
     public removeAll(): void
     {
-        this.list.forEach((plugin) => {
+        this.list.forEach((plugin) =>
+        {
             plugin.destroy();
-        })
+        });
         this.plugins = {};
         this.sort();
     }
@@ -183,7 +183,7 @@ export class PluginManager
         {
             this.plugins[name]?.destroy();
             delete this.plugins[name];
-            this.viewport.emit(`${name}-remove`);
+            this.viewport.emit('plugin-remove', name);
             this.sort();
         }
     }
@@ -233,7 +233,7 @@ export class PluginManager
      * @internal
      * @ignore
      */
-    public down(event: InteractionEvent): boolean
+    public down(event: FederatedEvent): boolean
     {
         let stop = false;
 
@@ -254,7 +254,7 @@ export class PluginManager
      * @internal
      * @ignore
      */
-    public move(event: InteractionEvent): boolean
+    public move(event: FederatedEvent): boolean
     {
         let stop = false;
 
@@ -275,7 +275,7 @@ export class PluginManager
      * @internal
      * @ignore
      */
-    public up(event: InteractionEvent): boolean
+    public up(event: FederatedEvent): boolean
     {
         let stop = false;
 

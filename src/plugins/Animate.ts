@@ -1,4 +1,4 @@
-import { IPointData, Point } from '@pixi/math';
+import { IPointData, Point } from '@pixi/core';
 import { Plugin } from './Plugin';
 import ease from '../ease';
 

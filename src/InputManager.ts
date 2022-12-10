@@ -1,7 +1,7 @@
-import { Point, Rectangle } from '@pixi/math';
+import { Point, Rectangle } from '@pixi/core';
 
-import type { IPointData } from '@pixi/math';
-import type { InteractionEvent } from '@pixi/interaction';
+import type { IPointData } from '@pixi/core';
+import type {  FederatedPointerEvent } from '@pixi/events';
 import type { Viewport } from './Viewport';
 
 export interface IViewportTouch
@@ -70,25 +70,25 @@ export class InputManager
     /**
      * handle down events for viewport
      *
-     * @param {PIXI.InteractionEvent} event
+     * @param {PIXI.FederatedPointerEvent} event
      */
-    public down(event: InteractionEvent): void
+    public down(event: FederatedPointerEvent): void
     {
         if (this.viewport.pause || !this.viewport.worldVisible)
         {
             return;
         }
-        if (event.data.pointerType === 'mouse')
+        if (event.pointerType === 'mouse')
         {
             this.isMouseDown = true;
         }
-        else if (!this.get(event.data.pointerId))
+        else if (!this.get(event.pointerId))
         {
-            this.touches.push({ id: event.data.pointerId, last: null });
+            this.touches.push({ id: event.pointerId, last: null });
         }
         if (this.count() === 1)
         {
-            this.last = event.data.global.clone();
+            this.last = event.global.clone();
 
             // clicked event does not fire if viewport is decelerating or bouncing
             const decelerate = this.viewport.plugins.get('decelerate', true);
@@ -139,7 +139,7 @@ export class InputManager
     }
 
     /** Handle move events for viewport */
-    public move(event: InteractionEvent): void
+    public move(event: FederatedPointerEvent): void
     {
         if (this.viewport.pause || !this.viewport.worldVisible)
         {
@@ -150,8 +150,8 @@ export class InputManager
 
         if (this.clickedAvailable && this.last)
         {
-            const distX = event.data.global.x - this.last.x;
-            const distY = event.data.global.y - this.last.y;
+            const distX = event.global.x - this.last.x;
+            const distY = event.global.y - this.last.y;
 
             if (this.checkThreshold(distX) || this.checkThreshold(distY))
             {
@@ -166,21 +166,21 @@ export class InputManager
     }
 
     /** Handle up events for viewport */
-    public up(event: InteractionEvent): void
+    public up(event: FederatedPointerEvent): void
     {
         if (this.viewport.pause || !this.viewport.worldVisible)
         {
             return;
         }
 
-        if (event.data.pointerType === 'mouse')
+        if (event.pointerType === 'mouse')
         {
             this.isMouseDown = false;
         }
 
-        if (event.data.pointerType !== 'mouse')
+        if (event.pointerType !== 'mouse')
         {
-            this.remove(event.data.pointerId);
+            this.remove(event.pointerId);
         }
 
         const stop = this.viewport.plugins.up(event);
@@ -191,7 +191,7 @@ export class InputManager
                 event,
                 screen: this.last,
                 world: this.viewport.toWorld(this.last),
-                viewport: this
+                viewport: this.viewport
             });
             this.clickedAvailable = false;
         }

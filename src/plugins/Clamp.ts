@@ -1,3 +1,4 @@
+import { Point } from '@pixi/core';
 import { Plugin } from './Plugin';
 
 import type { Viewport } from '../Viewport';
@@ -160,7 +161,7 @@ export class Clamp extends Plugin
         {
             return;
         }
-        const original = { x: this.parent.x, y: this.parent.y };
+        const original = new Point(this.parent.x, this.parent.y);
         // TODO: Fix
         const decelerate: any = (this.parent.plugins as any).decelerate || {};
 
