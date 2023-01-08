@@ -51,7 +51,7 @@ export class InputManager
         this.viewport.on('pointercancel', this.up, this);
         this.viewport.on('pointerout', this.up, this);
         this.wheelFunction = (e) => this.handleWheel(e);
-        this.viewport.options.divWheel.addEventListener(
+        this.viewport.options.events.domElement.addEventListener(
             'wheel',
             this.wheelFunction as any,
             { passive: this.viewport.options.passiveWheel });
@@ -64,7 +64,7 @@ export class InputManager
      */
     public destroy(): void
     {
-        this.viewport.options.divWheel.removeEventListener('wheel', this.wheelFunction as any);
+        this.viewport.options.events.domElement.removeEventListener('wheel', this.wheelFunction as any);
     }
 
     /**
@@ -207,22 +207,7 @@ export class InputManager
     {
         const point = new Point();
 
-        if (this.viewport.options.interaction)
-        {
-            this.viewport.options.interaction.mapPositionToPoint(point, event.clientX, event.clientY);
-        }
-        else if (this.viewport.options.useDivWheelForInputManager && this.viewport.options.divWheel)
-        {
-            const rect = this.viewport.options.divWheel.getBoundingClientRect();
-
-            point.x = event.clientX - rect.left;
-            point.y = event.clientY - rect.top;
-        }
-        else
-        {
-            point.x = event.clientX;
-            point.y = event.clientY;
-        }
+        this.viewport.options.events.mapPositionToPoint(point, event.clientX, event.clientY);
 
         return point;
     }
@@ -231,13 +216,6 @@ export class InputManager
     public handleWheel(event: WheelEvent): void
     {
         if (this.viewport.pause || !this.viewport.worldVisible)
-        {
-            return;
-        }
-
-        // do not handle events coming from other elements
-        if (this.viewport.options.interaction
-            && (this.viewport.options.interaction as any).interactionDOMElement !== event.target)
         {
             return;
         }
