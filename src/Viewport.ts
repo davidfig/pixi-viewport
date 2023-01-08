@@ -1,6 +1,5 @@
 import { Container } from '@pixi/display';
-import { IPointData, Point, Rectangle } from '@pixi/math';
-import { Ticker } from '@pixi/ticker';
+import { IPointData, Point, Rectangle, Ticker } from '@pixi/core';
 
 import { InputManager } from './InputManager';
 import { PluginManager } from './PluginManager';
@@ -20,7 +19,7 @@ import {
 } from './plugins';
 
 import type { DisplayObject, IDestroyOptions } from '@pixi/display';
-import type { IHitArea, InteractionManager } from '@pixi/interaction';
+import type { IHitArea, EventSystem } from '@pixi/events';
 
 /** Options for {@link Viewport}. */
 export interface IViewportOptions
@@ -70,11 +69,11 @@ export interface IViewportOptions
     noTicker?: boolean;
 
     /**
-     * InteractionManager, available from instantiated `WebGLRenderer/CanvasRenderer.plugins.interaction`
+     * EventSystem, available from instantiated `WebGLRenderer/CanvasRenderer.plugins.interaction`
      *
      * It's used to calculate pointer postion relative to canvas location on screen
      */
-    interaction?: InteractionManager | null;
+    interaction?: EventSystem | null;
 
     /**
      * Remove oncontextmenu=() => {} from the divWheel element
@@ -158,7 +157,7 @@ const DEFAULT_VIEWPORT_OPTIONS: ICompleteViewportOptions = {
  * @fires bounce-y-start
  * @fires bounce-y-end
  * @fires bounce-remove
- * @fires wheel
+ * @fires wheel-start
  * @fires wheel-remove
  * @fires wheel-scroll
  * @fires wheel-scroll-remove
@@ -219,7 +218,7 @@ export class Viewport extends Container
      * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
      * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
-     * @param {PIXI.InteractionManager} [options.interaction=null] InteractionManager, available from instantiated
+     * @param {PIXI.EventSystem} [options.interaction=null] EventSystem, available from instantiated
      * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
      * location on screen
      * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
@@ -1431,12 +1430,9 @@ export class Viewport extends Container
 
 /**
  * Fires when for a mouse wheel event
- * @event Viewport#wheel
+ * @event Viewport#wheel-start
  * @type {object}
- * @property {object} wheel
- * @property {number} wheel.dx
- * @property {number} wheel.dy
- * @property {number} wheel.dz
+ * @property {WheelEvent} event
  * @property {Viewport} viewport
  */
 

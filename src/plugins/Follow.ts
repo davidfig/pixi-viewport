@@ -1,7 +1,7 @@
 import { Plugin } from './Plugin';
 
 import type { DisplayObject } from '@pixi/display';
-import type { IPointData } from '@pixi/math';
+import type { IPointData } from '@pixi/core';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Follow}. */

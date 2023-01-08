@@ -1,5 +1,5 @@
 import { Plugin } from './Plugin';
-import { IPointData, Point } from '@pixi/math';
+import { IPointData, Point } from '@pixi/core';
 
 import type { Viewport } from '../Viewport';
 
@@ -90,7 +90,7 @@ const DEFAULT_WHEEL_OPTIONS: Required<IWheelOptions> = {
 /**
  * Plugin for handling wheel scrolling for viewport zoom.
  *
- * @event wheel({wheel: {dx, dy, dz}, event, viewport})
+ * @event wheel-start({event, viewport})
  */
 export class Wheel extends Plugin
 {
@@ -261,8 +261,8 @@ export class Wheel extends Plugin
             this.parent.y += point.y - newPoint.y;
         }
         this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-        this.parent.emit('wheel',
-            { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+        this.parent.emit('wheel-start',
+            { event: e, viewport: this.parent });
     }
 
     public wheel(e: WheelEvent): boolean
@@ -339,8 +339,8 @@ export class Wheel extends Plugin
             }
 
             this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
-            this.parent.emit('wheel',
-                { wheel: { dx: e.deltaX, dy: e.deltaY, dz: e.deltaZ }, event: e, viewport: this.parent });
+            this.parent.emit('wheel-start',
+                { event: e, viewport: this.parent });
         }
 
         return !this.parent.options.passiveWheel;

@@ -1,8 +1,8 @@
 import { Plugin } from './Plugin';
-import { Point } from '@pixi/math';
+import { Point } from '@pixi/core';
 
-import type { IPointData } from '@pixi/math';
-import type { InteractionEvent } from '@pixi/interaction';
+import type { IPointData } from '@pixi/core';
+import type { FederatedPointerEvent } from '@pixi/events';
 import type { IViewportTouch } from '../InputManager';
 import type { Viewport } from '../Viewport';
 
@@ -91,15 +91,15 @@ export class Pinch extends Plugin
         return ['all', 'y'].includes(this.options.axis);
     }
 
-    public move(e: InteractionEvent): boolean
+    public move(e: FederatedPointerEvent): boolean
     {
         if (this.paused || !this.active)
         {
             return false;
         }
 
-        const x = e.data.global.x;
-        const y = e.data.global.y;
+        const x = e.global.x;
+        const y = e.global.y;
 
         const pointers = this.parent.input.touches;
 
@@ -111,24 +111,22 @@ export class Pinch extends Plugin
                 ? Math.sqrt(Math.pow(second.last.x - first.last.x, 2) + Math.pow(second.last.y - first.last.y, 2))
                 : null;
 
-            if (first.id === e.data.pointerId)
+            if (first.id === e.pointerId)
             {
-                first.last = { x, y, data: e.data } as IPointData;
+                first.last = { x, y, data: e } as IPointData;
             }
-            else if (second.id === e.data.pointerId)
+            else if (second.id === e.pointerId)
             {
-                second.last = { x, y, data: e.data } as IPointData;
+                second.last = { x, y, data: e } as IPointData;
             }
             if (last)
             {
                 let oldPoint: IPointData | undefined;
 
-                const point = {
-                    x: (first.last as IPointData).x
-                        + (((second.last as IPointData).x - (first.last as IPointData).x) / 2),
-                    y: (first.last as IPointData).y
-                        + (((second.last as IPointData).y - (first.last as IPointData).y) / 2),
-                };
+                const point = new Point(
+                    (first.last as IPointData).x + (((second.last as IPointData).x - (first.last as IPointData).x) / 2),
+                    (first.last as IPointData).y + (((second.last as IPointData).y - (first.last as IPointData).y) / 2),
+                );
 
                 if (!this.options.center)
                 {
