@@ -11,6 +11,18 @@ With your support, I can make pixi-viewport even better! Please consider making 
   <img src="https://opencollective.com/pixi-viewport/donate/button@2x.png?color=blue" width=300 style="margin-top: 0.5rem; display: block"/>
 </a>
 
+## v5+
+Moves pixi-viewport to pixi.js v7 (thanks [@cuire](https://github.com/cuire)!).
+
+NOTE: there is a breaking change since pixi-viewport moved to pixi's new event system. `options.interaction` is removed and you need pass `options.events` to the viewport for it to work properly. The events object can be found at pixi's `renderer.events` or `app.renderer.events`.
+
+```js
+const viewport = new Viewport({ events: renderer.events });
+
+// or
+// const viewport = new Viewport({ events: app.renderer.events });
+```
+
 ## v4.30.0+
 This project was migrated to Typescript (thanks [@ShukantPal](https://github.com/ShukantPal)!). All functionality should be the same. The live Example has been updated.
 
@@ -40,7 +52,7 @@ const viewport = new Viewport({
     worldWidth: 1000,
     worldHeight: 1000,
 
-    interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
+    events: app.renderer.events // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
 })
 
 // add the viewport to the stage
@@ -118,9 +130,6 @@ viewport.plugins.add('name', plugin, index)
 
 PRs are more than welcome!
 
-## v4.30.0+
-This project was migrated to Typescript (thanks [@sukantpal](https://github.com/SukantPal)!). All functionality should be the same. The live Example has been updated.
-
 ## Other Libraries
 If you liked pixi-viewport, please try my other open source libraries:
 * [pixi-scrollbox](https://github.com/davidfig/pixi-scrollbox) - pixi.js scrollbox: a masked box that can scroll vertically or horizontally with scrollbars (uses pixi-viewport)
@@ -129,4 +138,4 @@ If you liked pixi-viewport, please try my other open source libraries:
 
 ## license
 MIT License
-(c) 2021 [YOPEY YOPEY LLC](https://yopeyopey.com/) by David Figatner (david@yopeyopey.com)
+(c) 2023 [YOPEY YOPEY LLC](https://yopeyopey.com/) by David Figatner (david@yopeyopey.com)

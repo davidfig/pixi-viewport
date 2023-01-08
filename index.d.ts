@@ -1,13 +1,14 @@
 import { Container } from '@pixi/display';
 import type { DisplayObject } from '@pixi/display';
+import type { EventSystem } from '@pixi/events';
+import type { FederatedEvent } from '@pixi/events';
+import type { FederatedPointerEvent } from '@pixi/events';
 import type { IDestroyOptions } from '@pixi/display';
-import type { IHitArea } from '@pixi/interaction';
-import type { InteractionEvent } from '@pixi/interaction';
-import type { InteractionManager } from '@pixi/interaction';
-import { IPointData } from '@pixi/math';
-import { Point } from '@pixi/math';
-import { Rectangle } from '@pixi/math';
-import { Ticker } from '@pixi/ticker';
+import type { IHitArea } from '@pixi/events';
+import { IPointData } from '@pixi/core';
+import { Point } from '@pixi/core';
+import { Rectangle } from '@pixi/core';
+import { Ticker } from '@pixi/core';
 
 export declare class Animate extends Plugin_2 {
     readonly options: IAnimateOptions & {
@@ -95,10 +96,7 @@ export declare class Decelerate extends Plugin_2 {
     down(): boolean;
     isActive(): boolean;
     move(): boolean;
-    protected moved(data: {
-        type: 'clamp-x' | 'clamp-y';
-        original: Point;
-    }): void;
+    protected handleMoved(e: MovedEvent): void;
     up(): boolean;
     activate(options: {
         x?: number;
@@ -127,12 +125,12 @@ export declare class Drag extends Plugin_2 {
     destroy(): void;
     protected mouseButtons(buttons: string): void;
     protected parseUnderflow(): void;
-    protected checkButtons(event: InteractionEvent): boolean;
-    protected checkKeyPress(event: InteractionEvent): boolean;
-    down(event: InteractionEvent): boolean;
+    protected checkButtons(event: FederatedPointerEvent): boolean;
+    protected checkKeyPress(event: FederatedPointerEvent): boolean;
+    down(event: FederatedPointerEvent): boolean;
     get active(): boolean;
-    move(event: InteractionEvent): boolean;
-    up(event: InteractionEvent): boolean;
+    move(event: FederatedPointerEvent): boolean;
+    up(event: FederatedPointerEvent): boolean;
     wheel(event: WheelEvent): boolean;
     resume(): void;
     clamp(): void;
@@ -264,11 +262,11 @@ export declare class InputManager {
     constructor(viewport: Viewport);
     private addListeners;
     destroy(): void;
-    down(event: InteractionEvent): void;
+    down(event: FederatedPointerEvent): void;
     clear(): void;
     checkThreshold(change: number): boolean;
-    move(event: InteractionEvent): void;
-    up(event: InteractionEvent): void;
+    move(event: FederatedPointerEvent): void;
+    up(event: FederatedPointerEvent): void;
     getPointerPosition(event: WheelEvent): Point;
     handleWheel(event: WheelEvent): void;
     pause(): void;
@@ -324,11 +322,9 @@ export declare interface IViewportOptions {
     stopPropagation?: boolean;
     forceHitArea?: Rectangle | null;
     noTicker?: boolean;
-    interaction?: InteractionManager | null;
+    events: EventSystem;
     disableOnContextMenu?: boolean;
-    divWheel?: HTMLElement;
     ticker?: Ticker;
-    useDivWheelForInputManager?: boolean;
 }
 
 export declare interface IViewportTouch {
@@ -369,12 +365,18 @@ export declare class MouseEdges extends Plugin_2 {
     constructor(parent: Viewport, options?: IMouseEdgesOptions);
     resize(): void;
     down(): boolean;
-    move(event: InteractionEvent): boolean;
+    move(event: FederatedPointerEvent): boolean;
     private decelerateHorizontal;
     private decelerateVertical;
     up(): boolean;
     update(): void;
 }
+
+declare type MovedEvent = {
+    viewport: Viewport;
+    type: 'wheel' | 'pinch' | 'animate' | 'ensureVisible' | 'snap' | 'mouse-edges' | 'follow' | 'drag' | 'decelerate' | 'clamp-x' | 'clamp-y' | 'bounce-x' | 'bounce-y';
+    original?: Point_2;
+};
 
 export declare class Pinch extends Plugin_2 {
     readonly options: Required<IPinchOptions>;
@@ -386,7 +388,7 @@ export declare class Pinch extends Plugin_2 {
     down(): boolean;
     isAxisX(): boolean;
     isAxisY(): boolean;
-    move(e: InteractionEvent): boolean;
+    move(e: FederatedPointerEvent): boolean;
     up(): boolean;
 }
 
@@ -395,9 +397,9 @@ declare class Plugin_2 {
     paused: boolean;
     constructor(parent: Viewport);
     destroy(): void;
-    down(_e: InteractionEvent): boolean;
-    move(_e: InteractionEvent): boolean;
-    up(_e: InteractionEvent): boolean;
+    down(_e: FederatedEvent): boolean;
+    move(_e: FederatedEvent): boolean;
+    up(_e: FederatedEvent): boolean;
     wheel(_e: WheelEvent): boolean | undefined;
     update(_delta: number): void;
     resize(): void;
@@ -434,9 +436,9 @@ export declare class PluginManager {
     pause(name: string): void;
     resume(name: string): void;
     sort(): void;
-    down(event: InteractionEvent): boolean;
-    move(event: InteractionEvent): boolean;
-    up(event: InteractionEvent): boolean;
+    down(event: FederatedEvent): boolean;
+    move(event: FederatedEvent): boolean;
+    up(event: FederatedEvent): boolean;
     wheel(e: WheelEvent): boolean;
 }
 
@@ -493,9 +495,7 @@ export declare class Viewport extends Container {
     readonly plugins: PluginManager;
     zooming?: boolean;
     lastViewport?: IViewportTransformState | null;
-    readonly options: ICompleteViewportOptions & {
-        divWheel: HTMLElement;
-    };
+    readonly options: ICompleteViewportOptions;
     private _dirty?;
     private _forceHitArea?;
     private _hitAreaDefault?;
@@ -504,7 +504,7 @@ export declare class Viewport extends Container {
     private _worldWidth?;
     private _worldHeight?;
     private _disableOnContextMenu;
-    constructor(options?: IViewportOptions);
+    constructor(options: IViewportOptions);
     destroy(options?: IDestroyOptions): void;
     update(elapsed: number): void;
     resize(screenWidth?: number, screenHeight?: number, worldWidth?: number, worldHeight?: number): void;
