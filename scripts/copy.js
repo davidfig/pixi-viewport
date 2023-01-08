@@ -4,7 +4,7 @@ const path = require('path');
 const FILES = ['cjs/viewport.js', 'cjs/viewport.js.map', 'viewport.min.js', 'viewport.min.js.map'];
 
 const FROM = 'dist';
-const TO = 'docs';
+const TO = 'docs/dist';
 
 async function copy()
 {
@@ -12,7 +12,14 @@ async function copy()
     {
         await fs.copy(path.join(FROM, file), path.join(TO, file));
     }
-    console.log('copied viewport.* to docs/');
+    // eslint-disable-next-line no-console
+    console.log('copied viewport.* to docs/dist/');
+
+    await fs.copy('docs/public', TO);
+
+    // eslint-disable-next-line no-console
+    console.log('copied docs/public/.* to docs/dist/');
+
     process.exit(0);
 }
 

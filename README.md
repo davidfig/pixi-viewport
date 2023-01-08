@@ -78,18 +78,6 @@ or [grab the latest release](https://github.com/davidfig/pixi-viewport/releases/
 </script>
 ```
 
-## Build Examples
-I've included the following build examples in the docs/ directory:
-
-* [flems-io interactive demo](https://davidfig.github.io/pixi-viewport/)
-* [original demo built with rollup](https://github.com/davidfig/pixi-viewport/tree/master/docs/original)
-* [browserify](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/browserify)
-* [rollup](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/rollup)
-* [standalone (e.g., cdn)](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/standalone)
-* [typescript](https://github.com/davidfig/pixi-viewport/tree/master/docs/builds/ts).
-
-You can see the live demos at [https://davidfig.github.io/pixi-viewport/builds/](https://davidfig.github.io/pixi-viewport/builds/).
-
 ## Migration from pixi-viewport v3 to v4
 Viewport needs to be imported or required as follows:
 ```js
@@ -126,7 +114,7 @@ viewport.plugins.add('name', plugin, index)
 1. clone repository
 2. yarn install
 3. yarn dev
-4. open browser to http://localhost:10001
+4. open browser to http://localhost:5173
 
 PRs are more than welcome!
 
