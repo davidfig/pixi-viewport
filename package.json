@@ -83,7 +83,7 @@
         "fs-extra": "^10.0.0",
         "jsdoc": "^3.6.3",
         "pixi-ease": "^3.0.7",
-        "pixi.js": "^7.0.4",
+        "pixi.js": "^7.0.5",
         "raf": "^3.4.1",
         "rollup": "^2.60.2",
         "rollup-plugin-node-globals": "^1.4.0",
