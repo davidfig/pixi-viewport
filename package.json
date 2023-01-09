@@ -20,7 +20,11 @@
         "docs": "vite build && rimraf ./js && tsc -p ./tsconfig-docs.json --outDir js && rimraf ./docs/dist/jsdoc/ && jsdoc -c .jsdoc.json && node ./scripts/copy",
         "docs:serve": "vite preview --outDir dist/",
         "upgrade": "yarn upgrade-interactive --latest",
-        "prepublishOnly": "yarn build && yarn docs"
+        "prepublishOnly": "yarn build && yarn docs",
+        "lint": "eslint . --ignore-path .gitignore",
+        "lint:fix": "eslint . --ignore-path .gitignore --fix",
+        "prepare": "husky install",
+        "pre-commit": "lint-staged"
     },
     "repository": {
         "type": "git",
@@ -50,7 +54,6 @@
         "@pixi/math": "^7.0.4",
         "@pixi/ticker": "^7.0.4"
     },
-    "dependencies": {},
     "devDependencies": {
         "@pixi/core": "^7.0.4",
         "@pixi/display": "^7.0.4",
@@ -66,7 +69,9 @@
         "eslint": "^8.3.0",
         "floss": "^5.0.1",
         "fs-extra": "^10.0.0",
+        "husky": "^8.0.3",
         "jsdoc": "^3.6.3",
+        "lint-staged": "^13.1.0",
         "pixi-ease": "^3.0.7",
         "pixi.js": "^7.0.5",
         "raf": "^3.4.1",
