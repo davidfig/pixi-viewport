@@ -1,7 +1,7 @@
 import { copy as _copy } from 'fs-extra';
 import { join } from 'path';
 
-const FILES = ['pixi-viewport.js', 'pixi-viewport.umd.cjs'];
+const FILES = ['pixi_viewport.js', 'pixi_viewport.umd.cjs'];
 
 const FROM = 'dist';
 const TO = 'docs/dist';
