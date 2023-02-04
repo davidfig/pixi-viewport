@@ -23,7 +23,7 @@
         "prepublishOnly": "yarn build && yarn docs",
         "lint": "eslint . --ignore-path .gitignore",
         "lint:fix": "eslint . --ignore-path .gitignore --fix",
-        "prepare": "husky install",
+        "prepare": "husky install && yarn build",
         "pre-commit": "lint-staged"
     },
     "repository": {
