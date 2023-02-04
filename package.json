@@ -25,8 +25,7 @@
         "lint:fix": "eslint . --ignore-path .gitignore --fix",
         "prepare": "husky install && yarn build",
         "pre-commit": "lint-staged",
-        "prepack": "yarn build",
-        "postinstall": "yarn build"
+        "prepack": "yarn build"
     },
     "repository": {
         "type": "git",
