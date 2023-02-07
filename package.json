@@ -48,13 +48,7 @@
         "url": "https://github.com/davidfig/pixi-viewport/issues"
     },
     "homepage": "https://github.com/davidfig/pixi-viewport#readme",
-    "peerDependencies": {
-        "@pixi/core": "^7.0.4",
-        "@pixi/display": "^7.0.4",
-        "@pixi/events": "^7.0.4",
-        "@pixi/math": "^7.0.4",
-        "@pixi/ticker": "^7.0.4"
-    },
+    "peerDependencies": {},
     "devDependencies": {
         "@pixi/core": "^7.0.4",
         "@pixi/display": "^7.0.4",
