@@ -69,23 +69,14 @@ export interface IViewportOptions
     noTicker?: boolean;
 
     /**
-     * EventSystem, available from instantiated `WebGLRenderer/CanvasRenderer.plugins.interaction`
-     *
-     * It's used to calculate pointer postion relative to canvas location on screen
+     * EventSystem is required now
      */
-    interaction?: EventSystem | null;
+    events: EventSystem;
 
     /**
-     * Remove oncontextmenu=() => {} from the divWheel element
+     * Remove oncontextmenu=() => {} from options.events.domElement
      */
     disableOnContextMenu?: boolean;
-
-    /**
-     * div to attach the wheel event
-     *
-     * @default document.body
-     */
-    divWheel?: HTMLElement;
 
     /**
      * Use this PIXI.ticker for updates
@@ -93,12 +84,6 @@ export interface IViewportOptions
      * @default PIXI.Ticker.shared
      */
     ticker?: Ticker;
-
-    /**
-     * Uses divWheel definition for InputManager to calculate positioning relative to containing div
-     * this is used only if options.interaction is not defined
-     */
-    useDivWheelForInputManager?: boolean;
 }
 
 export interface ICompleteViewportOptions extends IViewportOptions
@@ -120,7 +105,7 @@ export interface IViewportTransformState
     scaleY: number;
 }
 
-const DEFAULT_VIEWPORT_OPTIONS: ICompleteViewportOptions = {
+const DEFAULT_VIEWPORT_OPTIONS: Partial<ICompleteViewportOptions> = {
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
     worldWidth: null,
@@ -130,7 +115,6 @@ const DEFAULT_VIEWPORT_OPTIONS: ICompleteViewportOptions = {
     stopPropagation: false,
     forceHitArea: null,
     noTicker: false,
-    interaction: null,
     disableOnContextMenu: false,
     ticker: Ticker.shared,
 };
@@ -192,7 +176,7 @@ export class Viewport extends Container
     public lastViewport?: IViewportTransformState | null;
 
     /** The options passed when creating this viewport, merged with the default values */
-    public readonly options: ICompleteViewportOptions & { divWheel: HTMLElement };
+    public readonly options: ICompleteViewportOptions;
 
     private _dirty?: boolean;
     private _forceHitArea?: IHitArea | null;
@@ -218,21 +202,17 @@ export class Viewport extends Container
      * @param {HitArea} [options.forceHitArea] change the default hitArea from world size to a new value
      * @param {boolean} [options.noTicker] set this if you want to manually call update() function on each frame
      * @param {PIXI.Ticker} [options.ticker=PIXI.Ticker.shared] use this PIXI.ticker for updates
-     * @param {PIXI.EventSystem} [options.interaction=null] EventSystem, available from instantiated
-     * WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas
+     * @param {PIXI.EventSystem} [options.events] EventSystem available from app.events or added manually and passed here
      * location on screen
-     * @param {HTMLElement} [options.divWheel=document.body] div to attach the wheel event
-     * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the divWheel element
+     * @param {boolean} [options.disableOnContextMenu] remove oncontextmenu=() => {} from the pixi's events.domElement
      */
-    constructor(options: IViewportOptions = {})
+    constructor(options: IViewportOptions)
     {
         super();
-        this.options = Object.assign(
-            {},
-            { divWheel: document.body },
-            DEFAULT_VIEWPORT_OPTIONS,
-            options
-        );
+        this.options = {
+            ...DEFAULT_VIEWPORT_OPTIONS,
+            ...options,
+        } as ICompleteViewportOptions;
 
         this.screenWidth = this.options.screenWidth;
         this.screenHeight = this.options.screenHeight;
@@ -242,11 +222,9 @@ export class Viewport extends Container
         this.forceHitArea = this.options.forceHitArea;
         this.threshold = this.options.threshold;
 
-        this.options.divWheel = this.options.divWheel || document.body;
-
         if (this.options.disableOnContextMenu)
         {
-            this.options.divWheel.addEventListener('contextmenu', this._disableOnContextMenu);
+            this.options.events.domElement.addEventListener('contextmenu', this._disableOnContextMenu);
         }
         if (!this.options.noTicker)
         {
@@ -267,7 +245,7 @@ export class Viewport extends Container
         }
         if (this.options.disableOnContextMenu)
         {
-            this.options.divWheel.removeEventListener('contextmenu', this._disableOnContextMenu);
+            this.options.events.domElement.removeEventListener('contextmenu', this._disableOnContextMenu);
         }
 
         this.input.destroy();
@@ -1177,8 +1155,7 @@ export class Viewport extends Container
     /**
      * Zoom using mouse wheel
      *
-     * NOTE: the default event listener for 'wheel' event is document.body. Use `Viewport.options.divWheel` to
-     * change this default
+     * NOTE: the default event listener for 'wheel' event is the options.events.domElement.
      *
      * @param {IWheelOptions} [options]
      * @param {number} [options.percent=0.1] - percent to scroll with each spin

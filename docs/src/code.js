@@ -25,7 +25,7 @@ let _fps, _application, _viewport, _object, _stars = [], domEase
 function viewport() {
     _viewport = _application.stage.addChild(new Viewport(
         {
-            interaction: _application.renderer.plugins.interaction,
+            events: _application.renderer.events,
             passiveWheel: false,
             stopPropagation: true
         }))

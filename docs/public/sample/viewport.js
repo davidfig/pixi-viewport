@@ -27,7 +27,7 @@ export function create(renderer) {
         // forceHitArea: null,                          // change the default hitArea from world size to a new value
         // noTicker: false,                             // set this if you want to manually call update() function on each frame
         // ticker: PIXI.Ticker.shared,                  // use this PIXI.ticker for updates
-        interaction: renderer.plugins.interaction,   // InteractionManager, available from instantiated WebGLRenderer/CanvasRenderer.plugins.interaction - used to calculate pointer position relative to canvas location on screen
+        events: renderer.events,                        // Events - used to calculate pointer position relative to canvas location on screen
         // divWheel: null,                              // div to attach the wheel event (uses document.body as default)
         // disableOnContextMenu: false,                 // remove oncontextmenu=() => {} from the divWheel element
     })
