@@ -57,6 +57,18 @@ export interface IViewportOptions
     stopPropagation?: boolean;
 
     /**
+     * Whether to stop drag when the pointer is out of the viewport
+     */
+
+    allowPreserveDragOutside?:boolean;
+
+    /**
+     * use if you wish keep drag out of viewport
+     */
+
+    globalMoveEventObject?: DisplayObject;
+
+    /**
      * Change the default hitArea from world size to a new value
      */
     forceHitArea?: Rectangle | null;
@@ -117,6 +129,7 @@ const DEFAULT_VIEWPORT_OPTIONS: Partial<ICompleteViewportOptions> = {
     noTicker: false,
     disableOnContextMenu: false,
     ticker: Ticker.shared,
+    allowPreserveDragOutside: false,
 };
 
 /**
