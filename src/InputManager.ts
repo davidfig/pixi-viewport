@@ -58,7 +58,11 @@ export class InputManager
         this.viewport.on('pointerup', this.up, this);
         this.viewport.on('pointerupoutside', this.up, this);
         this.viewport.on('pointercancel', this.up, this);
-        this.viewport.on('pointerleave', this.pointerLeave, this);
+        if (!this.viewport.options.allowPreserveDragOutside)
+        {
+            this.viewport.on('pointerleave', this.up, this);
+        }
+
         this.wheelFunction = (e) => this.handleWheel(e);
         this.viewport.options.events.domElement.addEventListener(
             'wheel',
@@ -208,14 +212,6 @@ export class InputManager
         if (stop && this.viewport.options.stopPropagation)
         {
             event.stopPropagation();
-        }
-    }
-
-    public pointerLeave(event: FederatedPointerEvent)
-    {
-        if (!this.viewport.options.allowPreserveDragOutside)
-        {
-            this.up(event);
         }
     }
 
