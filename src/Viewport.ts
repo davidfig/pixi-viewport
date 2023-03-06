@@ -63,12 +63,6 @@ export interface IViewportOptions
     allowPreserveDragOutside?:boolean;
 
     /**
-     * use if you wish keep drag out of viewport
-     */
-
-    globalMoveEventObject?: DisplayObject;
-
-    /**
      * Change the default hitArea from world size to a new value
      */
     forceHitArea?: Rectangle | null;
@@ -239,6 +233,7 @@ export class Viewport extends Container
         {
             this.options.events.domElement.addEventListener('contextmenu', this._disableOnContextMenu);
         }
+
         if (!this.options.noTicker)
         {
             this.tickerFunction = () => this.update(this.options.ticker.elapsedMS);

@@ -45,10 +45,10 @@ export class InputManager
             this.viewport.hitArea = new Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
         }
         this.viewport.on('pointerdown', this.down, this);
-        if (this.viewport.options.globalMoveEventObject)
+        if (this.viewport.options.allowPreserveDragOutside)
+
         {
-            this.viewport.options.globalMoveEventObject.interactive = true;
-            this.viewport.options.globalMoveEventObject.on('pointermove', this.move, this);
+            this.viewport.on('globalpointermove', this.move, this);
         }
         else
         {
@@ -58,7 +58,7 @@ export class InputManager
         this.viewport.on('pointerup', this.up, this);
         this.viewport.on('pointerupoutside', this.up, this);
         this.viewport.on('pointercancel', this.up, this);
-        this.viewport.on('pointerleave', this.upPointerLeave, this);
+        this.viewport.on('pointerleave', this.pointerLeave, this);
         this.wheelFunction = (e) => this.handleWheel(e);
         this.viewport.options.events.domElement.addEventListener(
             'wheel',
@@ -74,7 +74,6 @@ export class InputManager
     public destroy(): void
     {
         this.viewport.options.events.domElement.removeEventListener('wheel', this.wheelFunction as any);
-        this.viewport.options.globalMoveEventObject?.off('pointermove', this.move);
     }
 
     /**
@@ -212,7 +211,7 @@ export class InputManager
         }
     }
 
-    public upPointerLeave(event: FederatedPointerEvent)
+    public pointerLeave(event: FederatedPointerEvent)
     {
         if (!this.viewport.options.allowPreserveDragOutside)
         {
