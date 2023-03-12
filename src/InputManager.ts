@@ -45,11 +45,24 @@ export class InputManager
             this.viewport.hitArea = new Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
         }
         this.viewport.on('pointerdown', this.down, this);
-        this.viewport.on('pointermove', this.move, this);
+        if (this.viewport.options.allowPreserveDragOutside)
+
+        {
+            this.viewport.on('globalpointermove', this.move, this);
+        }
+        else
+        {
+            this.viewport.on('pointermove', this.move, this);
+        }
+
         this.viewport.on('pointerup', this.up, this);
         this.viewport.on('pointerupoutside', this.up, this);
         this.viewport.on('pointercancel', this.up, this);
-        this.viewport.on('pointerout', this.up, this);
+        if (!this.viewport.options.allowPreserveDragOutside)
+        {
+            this.viewport.on('pointerleave', this.up, this);
+        }
+
         this.wheelFunction = (e) => this.handleWheel(e);
         this.viewport.options.events.domElement.addEventListener(
             'wheel',

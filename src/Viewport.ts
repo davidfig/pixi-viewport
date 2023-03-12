@@ -57,6 +57,12 @@ export interface IViewportOptions
     stopPropagation?: boolean;
 
     /**
+     * Whether to stop drag when the pointer is out of the viewport
+     */
+
+    allowPreserveDragOutside?:boolean;
+
+    /**
      * Change the default hitArea from world size to a new value
      */
     forceHitArea?: Rectangle | null;
@@ -117,6 +123,7 @@ const DEFAULT_VIEWPORT_OPTIONS: Partial<ICompleteViewportOptions> = {
     noTicker: false,
     disableOnContextMenu: false,
     ticker: Ticker.shared,
+    allowPreserveDragOutside: false,
 };
 
 /**
@@ -226,6 +233,7 @@ export class Viewport extends Container
         {
             this.options.events.domElement.addEventListener('contextmenu', this._disableOnContextMenu);
         }
+
         if (!this.options.noTicker)
         {
             this.tickerFunction = () => this.update(this.options.ticker.elapsedMS);
