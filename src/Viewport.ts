@@ -112,8 +112,8 @@ export interface IViewportTransformState
 }
 
 const DEFAULT_VIEWPORT_OPTIONS: Partial<ICompleteViewportOptions> = {
-    screenWidth: window.innerWidth,
-    screenHeight: window.innerHeight,
+    screenWidth: typeof window === 'undefined' ? 0 : window.innerWidth,
+    screenHeight: typeof window === 'undefined' ? 0 : window.innerHeight,
     worldWidth: null,
     worldHeight: null,
     threshold: 5,
@@ -326,8 +326,8 @@ export class Viewport extends Container
      * @param {number} [worldHeight]
      */
     resize(
-        screenWidth: number = window.innerWidth,
-        screenHeight: number = window.innerHeight,
+        screenWidth: number = typeof window === 'undefined' ? 0 : window.innerWidth,
+        screenHeight: number = typeof window === 'undefined' ? 0 : window.innerHeight,
         worldWidth?: number,
         worldHeight?: number
     ): void
