@@ -39,7 +39,7 @@ export class InputManager
     /** Add input listeners */
     private addListeners()
     {
-        this.viewport.interactive = true;
+        this.viewport.eventMode = 'static';
         if (!this.viewport.forceHitArea)
         {
             this.viewport.hitArea = new Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
