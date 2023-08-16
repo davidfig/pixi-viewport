@@ -125,6 +125,7 @@ export class Wheel extends Plugin
      */
     protected handleKeyPresses(codes: string[]): void
     {
+        if (typeof window === 'undefined') return;
         window.addEventListener('keydown', (e) =>
         {
             if (codes.includes(e.code))
