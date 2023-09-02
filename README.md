@@ -11,6 +11,11 @@ With your support, I can make pixi-viewport even better! Please consider making 
   <img src="https://opencollective.com/pixi-viewport/donate/button@2x.png?color=blue" width=300 style="margin-top: 0.5rem; display: block"/>
 </a>
 
+## v5.2+
+Moves pixi-viewport to pixi.js v7.2+
+
+NOTE: there is a breaking change since in pixi.js v7.2 `interactive` (boolean) was deprecated in favor of `eventMode`.
+
 ## v5+
 Moves pixi-viewport to pixi.js v7 (thanks [@cuire](https://github.com/cuire)!).
 
