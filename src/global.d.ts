@@ -3,19 +3,19 @@
 declare namespace GlobalMixins
 {
     type Viewport = import('./Viewport').Viewport;
-    type PixiVieportClickedEvent = import('./types').ClickedEvent;
-    type PixiVieportDragEvent = import('./types').DragEvent;
-    type PixiVieportMovedEvent = import('./types').MovedEvent;
-    type PixiVieportZoomedEvent = import('./types').ZoomedEvent;
-    type PixiVieportWheelStartEvent = import('./types').WheelStartEvent;
+    type PixiViewportClickedEvent = import('./types').ClickedEvent;
+    type PixiViewportDragEvent = import('./types').DragEvent;
+    type PixiViewportMovedEvent = import('./types').MovedEvent;
+    type PixiViewportZoomedEvent = import('./types').ZoomedEvent;
+    type PixiViewportWheelStartEvent = import('./types').WheelStartEvent;
 
     interface DisplayObjectEvents
     {
-        clicked: [PixiVieportClickedEvent]
-        'drag-start': [PixiVieportDragEvent],
-        'drag-end': [PixiVieportDragEvent],
-        moved: [PixiVieportMovedEvent],
-        zoomed: [PixiVieportZoomedEvent],
+        clicked: [PixiViewportClickedEvent]
+        'drag-start': [PixiViewportDragEvent],
+        'drag-end': [PixiViewportDragEvent],
+        moved: [PixiViewportMovedEvent],
+        zoomed: [PixiViewportZoomedEvent],
         'pinch-start': [Viewport],
         'pinch-end': [Viewport],
         'snap-start': [Viewport],
@@ -26,7 +26,7 @@ declare namespace GlobalMixins
         'bounce-x-end': [Viewport],
         'bounce-y-start': [Viewport],
         'bounce-y-end': [Viewport],
-        'wheel-start': [PixiVieportWheelStartEvent],
+        'wheel-start': [PixiViewportWheelStartEvent],
         'wheel-scroll': [Viewport],
         'animate-end': [Viewport],
         'mouse-edge-start': [Viewport],
