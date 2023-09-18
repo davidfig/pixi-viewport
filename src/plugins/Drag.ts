@@ -324,6 +324,7 @@ export class Drag extends Plugin
         if (this.checkButtons(event) && this.checkKeyPress(event))
         {
             this.last = { x: event.global.x, y: event.global.y };
+            (this.parent.parent || this.parent).toLocal(this.last, undefined, this.last);
             this.current = event.pointerId;
 
             return true;
@@ -360,6 +361,8 @@ export class Drag extends Plugin
                     || (this.yDirection && this.parent.input.checkThreshold(distY))))
                 {
                     const newPoint = { x, y };
+
+                    (this.parent.parent || this.parent).toLocal(newPoint, undefined, newPoint);
 
                     if (this.xDirection)
                     {
@@ -410,6 +413,7 @@ export class Drag extends Plugin
             if (pointer.last)
             {
                 this.last = { x: pointer.last.x, y: pointer.last.y };
+                (this.parent.parent || this.parent).toLocal(this.last, undefined, this.last);
                 this.current = pointer.id;
             }
             this.moved = false;
@@ -421,6 +425,8 @@ export class Drag extends Plugin
             if (this.moved)
             {
                 const screen = new Point(this.last.x, this.last.y);
+
+                (this.parent.parent || this.parent).toGlobal(screen, screen, true);
 
                 this.parent.emit('drag-end', {
                     event, screen,
@@ -511,8 +517,7 @@ export class Drag extends Plugin
                         this.parent.x = (this.parent.screenWidth - this.parent.screenWorldWidth) / 2;
                 }
             }
-            else
-            if (this.parent.left < 0)
+            else if (this.parent.left < 0)
             {
                 this.parent.x = 0;
                 decelerate.x = 0;
