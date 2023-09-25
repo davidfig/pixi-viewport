@@ -353,17 +353,17 @@ export class Drag extends Plugin
 
             if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
             {
-                const distX = x - this.last.x;
-                const distY = y - this.last.y;
+                const newPoint = { x, y };
+
+                (this.parent.parent || this.parent).toLocal(newPoint, undefined, newPoint);
+
+                const distX = newPoint.x - this.last.x;
+                const distY = newPoint.y - this.last.y;
 
                 if (this.moved
                     || ((this.xDirection && this.parent.input.checkThreshold(distX))
                     || (this.yDirection && this.parent.input.checkThreshold(distY))))
                 {
-                    const newPoint = { x, y };
-
-                    (this.parent.parent || this.parent).toLocal(newPoint, undefined, newPoint);
-
                     if (this.xDirection)
                     {
                         this.parent.x += (newPoint.x - this.last.x) * this.options.factor;
