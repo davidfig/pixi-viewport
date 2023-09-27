@@ -41,6 +41,8 @@ const DEFAULT_PINCH_OPTIONS: Required<IPinchOptions> = {
     axis: 'all',
 };
 
+const SCRATCH_POINT = new Point();
+
 /**
  * Plugin for enabling two-finger pinching (or dragging).
  *
@@ -98,8 +100,7 @@ export class Pinch extends Plugin
             return false;
         }
 
-        const x = e.global.x;
-        const y = e.global.y;
+        const { x, y } = (this.parent.parent || this.parent).toLocal(e.global, undefined, SCRATCH_POINT);
 
         const pointers = this.parent.input.touches;
 
@@ -130,7 +131,7 @@ export class Pinch extends Plugin
 
                 if (!this.options.center)
                 {
-                    oldPoint = this.parent.toLocal(point);
+                    oldPoint = this.parent.toLocal(point, this.parent.parent || this.parent);
                 }
                 let dist = Math.sqrt(Math.pow(
                     (second.last as IPointData).x - (first.last as IPointData).x, 2)
@@ -164,7 +165,7 @@ export class Pinch extends Plugin
                 }
                 else
                 {
-                    const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+                    const newPoint = (this.parent.parent || this.parent).toLocal(oldPoint as IPointData, this.parent);
 
                     this.parent.x += (point.x - newPoint.x) * this.options.factor;
                     this.parent.y += (point.y - newPoint.y) * this.options.factor;

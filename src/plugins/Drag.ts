@@ -413,7 +413,6 @@ export class Drag extends Plugin
             if (pointer.last)
             {
                 this.last = { x: pointer.last.x, y: pointer.last.y };
-                (this.parent.parent || this.parent).toLocal(this.last, undefined, this.last);
                 this.current = pointer.id;
             }
             this.moved = false;
