@@ -1,5 +1,5 @@
 import { Plugin } from './Plugin';
-import { IPointData, Point } from '@pixi/core';
+import { PointData, Point } from 'pixi.js';
 
 import type { Viewport } from '../Viewport';
 
@@ -96,7 +96,7 @@ export class Wheel extends Plugin
 {
     public readonly options: Required<IWheelOptions>;
 
-    protected smoothing?: IPointData | null;
+    protected smoothing?: PointData | null;
     protected smoothingCenter?: Point | null;
     protected smoothingCount?: number;
 
@@ -178,7 +178,7 @@ export class Wheel extends Plugin
 
             if (!this.options.center)
             {
-                oldPoint = this.parent.toLocal(point as IPointData);
+                oldPoint = this.parent.toLocal(point as PointData);
             }
             if (this.isAxisX())
             {
@@ -202,10 +202,10 @@ export class Wheel extends Plugin
             }
             else
             {
-                const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+                const newPoint = this.parent.toGlobal(oldPoint as PointData);
 
-                this.parent.x += (point as IPointData).x - newPoint.x;
-                this.parent.y += (point as IPointData).y - newPoint.y;
+                this.parent.x += (point as PointData).x - newPoint.x;
+                this.parent.y += (point as PointData).y - newPoint.y;
             }
 
             this.parent.emit('moved', { viewport: this.parent, type: 'wheel' });
@@ -229,7 +229,7 @@ export class Wheel extends Plugin
         const step = -e.deltaY * (e.deltaMode ? this.options.lineHeight : 1) / 200;
         const change = Math.pow(2, (1 + this.options.percent) * step);
 
-        let oldPoint: IPointData | undefined;
+        let oldPoint: PointData | undefined;
 
         if (!this.options.center)
         {
@@ -256,7 +256,7 @@ export class Wheel extends Plugin
         }
         else
         {
-            const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+            const newPoint = this.parent.toGlobal(oldPoint as PointData);
 
             this.parent.x += point.x - newPoint.x;
             this.parent.y += point.y - newPoint.y;
@@ -305,7 +305,7 @@ export class Wheel extends Plugin
             }
             else
             {
-                let oldPoint: IPointData | undefined;
+                let oldPoint: PointData | undefined;
 
                 if (!this.options.center)
                 {
@@ -332,7 +332,7 @@ export class Wheel extends Plugin
                 }
                 else
                 {
-                    const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+                    const newPoint = this.parent.toGlobal(oldPoint as PointData);
 
                     this.parent.x += point.x - newPoint.x;
                     this.parent.y += point.y - newPoint.y;

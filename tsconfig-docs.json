@@ -3,6 +3,7 @@
     "target": "es6",
     "noImplicitAny": true,
     "preserveConstEnums": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "strict": true,

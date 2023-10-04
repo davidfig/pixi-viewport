@@ -1,13 +1,11 @@
-import { Point, Rectangle } from '@pixi/core';
+import { Point, Rectangle, PointData, FederatedPointerEvent } from 'pixi.js';
 
-import type { IPointData } from '@pixi/core';
-import type {  FederatedPointerEvent } from '@pixi/events';
 import type { Viewport } from './Viewport';
 
 export interface IViewportTouch
 {
     id: number;
-    last: IPointData | null;
+    last: PointData | null;
 }
 
 /**
@@ -39,7 +37,7 @@ export class InputManager
     /** Add input listeners */
     private addListeners()
     {
-        this.viewport.eventMode = 'static';
+        //this.viewport.eventMode = 'static';
         if (!this.viewport.forceHitArea)
         {
             this.viewport.hitArea = new Rectangle(0, 0, this.viewport.worldWidth, this.viewport.worldHeight);
@@ -87,7 +85,7 @@ export class InputManager
      */
     public down(event: FederatedPointerEvent): void
     {
-        if (this.viewport.pause || !this.viewport.worldVisible)
+        if (this.viewport.pause || !this.viewport.visible)
         {
             return;
         }
@@ -154,7 +152,7 @@ export class InputManager
     /** Handle move events for viewport */
     public move(event: FederatedPointerEvent): void
     {
-        if (this.viewport.pause || !this.viewport.worldVisible)
+        if (this.viewport.pause || !this.viewport.visible)
         {
             return;
         }
@@ -181,7 +179,7 @@ export class InputManager
     /** Handle up events for viewport */
     public up(event: FederatedPointerEvent): void
     {
-        if (this.viewport.pause || !this.viewport.worldVisible)
+        if (this.viewport.pause || !this.viewport.visible)
         {
             return;
         }
@@ -228,7 +226,7 @@ export class InputManager
     /** Handle wheel events */
     public handleWheel(event: WheelEvent): void
     {
-        if (this.viewport.pause || !this.viewport.worldVisible)
+        if (this.viewport.pause || !this.viewport.visible)
         {
             return;
         }

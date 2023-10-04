@@ -1,4 +1,4 @@
-import * as PIXI from 'pixi.js'
+import { Application, Graphics } from 'pixi.js'
 import { ease } from 'pixi-ease'
 import Random from 'yy-random'
 import Counter from 'yy-counter'
@@ -194,30 +194,32 @@ function API() {
 
 window.onload = function () {
     _fps = new FPS({ side: 'bottom-left' })
-    _application = new PIXI.Application({ backgroundAlpha: 0, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
-    document.body.appendChild(_application.view)
-    _application.view.style.position = 'fixed'
-    _application.view.style.width = '100vw'
-    _application.view.style.height = '100vh'
+    _application = new Application({ backgroundAlpha: 0, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
+    application.init().then(() => {
+        document.body.appendChild(_application.view)
+        _application.view.style.position = 'fixed'
+        _application.view.style.width = '100vw'
+        _application.view.style.height = '100vh'
 
-    viewport()
+        viewport()
 
-    window.addEventListener('resize', resize)
+        window.addEventListener('resize', resize)
 
-    drawWorld()
-    events()
+        drawWorld()
+        events()
 
-    PIXI.Ticker.shared.add(() => {
-        _fps.frame()
-        // test dirty
-        // if (_viewport.dirty)
-        // {
-        //     console.log('dirty')
-        // }
-        // _viewport.dirty = false
+        application.ticker.add(() => {
+            _fps.frame()
+            // test dirty
+            // if (_viewport.dirty)
+            // {
+            //     console.log('dirty')
+            // }
+            // _viewport.dirty = false
+        })
+
+        gui(_viewport, drawWorld, _object)
+
+        API()
     })
-
-    gui(_viewport, drawWorld, _object)
-
-    API()
 }
