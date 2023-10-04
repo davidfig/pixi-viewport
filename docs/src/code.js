@@ -1,4 +1,4 @@
-import { Application, Graphics } from 'pixi.js'
+import {Application, Sprite, Texture, Graphics, Text, BatchableSprite, Container} from 'pixi.js'
 import { ease } from 'pixi-ease'
 import Random from 'yy-random'
 import Counter from 'yy-counter'
@@ -21,7 +21,6 @@ const OBJECT_SPEED = 0.25
 const FADE_TIME = 2000
 
 let _fps, _application, _viewport, _object, _stars = [], domEase
-
 function viewport() {
     _viewport = _application.stage.addChild(new Viewport(
         {
@@ -101,8 +100,8 @@ function events() {
 }
 
 function border() {
-    const line = _viewport.addChild(new PIXI.Graphics())
-    line.lineStyle(10, 0xff0000).drawRect(0, 0, _viewport.worldWidth, _viewport.worldHeight)
+    const line = _viewport.addChild(new Graphics())
+    line.stroke(10, 0xff0000).rect(0, 0, _viewport.worldWidth, _viewport.worldHeight)
 }
 
 function overlap(x, y) {
@@ -120,17 +119,19 @@ function overlap(x, y) {
 
 function stars() {
     const stars = (_viewport.worldWidth * _viewport.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1
+    console.log('stars', stars);
     for (let i = 0; i < stars; i++) {
-        const star = new PIXI.Sprite(PIXI.Texture.WHITE)
+        const star = new Sprite(Texture.WHITE)
         star.anchor.set(0.5)
         star.tint = Random.color()
         star.width = star.height = STAR_SIZE
         star.alpha = Random.range(0.25, 1, true)
-        let x, y
+        let x, y, attempt = 0
         do {
             x = Random.range(STAR_SIZE / 2 + BORDER, _viewport.worldWidth - STAR_SIZE - BORDER)
             y = Random.range(BORDER, _viewport.worldHeight - BORDER - STAR_SIZE)
-        } while (overlap(x, y))
+            attempt++
+        } while (overlap(x, y) && attempt < 3)
         star.position.set(x, y)
         _viewport.addChild(star)
         _stars.push(star)
@@ -145,9 +146,9 @@ function createTarget() {
 }
 
 function object() {
-    _object = _viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE))
+    _object = _viewport.addChild(new Sprite(Texture.WHITE))
     _object.anchor.set(0.5)
-    _object.tint = 0
+    _object.tint = Random.color()
     _object.width = _object.height = OBJECT_SIZE
     _object.position.set(100, 100)
     ease.add(_object, { rotation: Math.PI * 2 }, { duration: OBJECT_ROTATION_TIME, repeat: true, ease: 'linear' })
@@ -156,12 +157,13 @@ function object() {
 
 function click(data) {
     for (let star of _stars) {
-        if (star.containsPoint(data.screen)) {
+        if (Math.abs(data.world.x - star.position.x) + Math.abs(data.world.y - star.position.y) < STAR_SIZE * 2) {
+            console.log('star match')
             ease.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true })
-            return
+            //return
         }
     }
-    const sprite = _viewport.addChild(new PIXI.Text('click', { fill: 0xff0000 }))
+    const sprite = _viewport.addChild(new Text('click', { fill: 0xff0000 }))
     sprite.anchor.set(0.5)
     sprite.rotation = Random.range(-0.1, 0.1)
     sprite.position = data.world
@@ -194,12 +196,18 @@ function API() {
 
 window.onload = function () {
     _fps = new FPS({ side: 'bottom-left' })
-    _application = new Application({ backgroundAlpha: 0, width: window.innerWidth, height: window.innerHeight, resolution: window.devicePixelRatio })
-    application.init().then(() => {
-        document.body.appendChild(_application.view)
-        _application.view.style.position = 'fixed'
-        _application.view.style.width = '100vw'
-        _application.view.style.height = '100vh'
+    _application = new Application()
+    _application.init({
+        backgroundAlpha: 0,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        resolution: window.devicePixelRatio
+    }).then(() => {
+        console.log(_application)
+        document.body.appendChild(_application.canvas)
+        _application.canvas.style.position = 'fixed'
+        _application.canvas.style.width = '100vw'
+        _application.canvas.style.height = '100vh'
 
         viewport()
 
@@ -208,7 +216,7 @@ window.onload = function () {
         drawWorld()
         events()
 
-        application.ticker.add(() => {
+        _application.ticker.add(() => {
             _fps.frame()
             // test dirty
             // if (_viewport.dirty)
