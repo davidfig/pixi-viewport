@@ -13,7 +13,7 @@ import type {
     SnapZoom,
     Wheel,
 } from './plugins';
-import type { FederatedEvent } from '@pixi/events';
+import type { FederatedEvent } from 'pixi.js';
 import type { Viewport } from './Viewport';
 
 const PLUGIN_ORDER = [
