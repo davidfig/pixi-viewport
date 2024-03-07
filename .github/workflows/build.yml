@@ -15,8 +15,8 @@ jobs:
         with:
           node-version: '16'
       - name: ⏬ Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: ✨ Lint
-        run: yarn lint
+        run: npm run lint
       - name: 🦾 Build Lib
-        run: yarn build
+        run: npm run build

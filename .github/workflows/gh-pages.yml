@@ -35,9 +35,9 @@ jobs:
         with:
           node-version: "16"
       - name: ⏬ Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: 🦾 Build Lib and Docs
-        run: yarn prepublishOnly
+        run: npm run prepublishOnly
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
