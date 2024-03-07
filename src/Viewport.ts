@@ -1,5 +1,4 @@
-import { Container } from '@pixi/display';
-import { IPointData, Point, Rectangle, Ticker } from '@pixi/core';
+import { Container, IHitArea, EventSystem, DestroyOptions, View, PointData, Point, Rectangle, Ticker } from 'pixi.js';
 
 import { InputManager } from './InputManager';
 import { PluginManager } from './PluginManager';
@@ -17,9 +16,6 @@ import {
     SnapZoom, ISnapZoomOptions,
     Wheel, IWheelOptions,
 } from './plugins';
-
-import type { DisplayObject, IDestroyOptions } from '@pixi/display';
-import type { IHitArea, EventSystem } from '@pixi/events';
 
 /** Options for {@link Viewport}. */
 export interface IViewportOptions
@@ -245,7 +241,7 @@ export class Viewport extends Container
     }
 
     /** Overrides PIXI.Container's destroy to also remove the 'wheel' and PIXI.Ticker listeners */
-    destroy(options?: IDestroyOptions): void
+    destroy(options?: DestroyOptions): void
     {
         if (!this.options.noTicker && this.tickerFunction)
         {
@@ -387,9 +383,9 @@ export class Viewport extends Container
     }
 
     /** Change coordinates from screen to world */
-    public toWorld<P extends IPointData = Point>(x: number, y: number): P;
+    public toWorld<P extends PointData = Point>(x: number, y: number): P;
     /** Change coordinates from screen to world */
-    public toWorld<P extends IPointData = Point>(screenPoint: IPointData): P;
+    public toWorld<P extends PointData = Point>(screenPoint: PointData): P;
 
     /**
      * Changes coordinate from screen to world
@@ -397,20 +393,20 @@ export class Viewport extends Container
      * @param {number} y
      * @returns {PIXI.Point}
      */
-    public toWorld<P extends IPointData = Point>(x: number | IPointData, y?: number): P
+    public toWorld<P extends PointData = Point>(x: number | PointData, y?: number): P
     {
         if (arguments.length === 2)
         {
             return this.toLocal<P>(new Point(x as number, y));
         }
 
-        return this.toLocal<P>(x as IPointData);
+        return this.toLocal<P>(x as PointData);
     }
 
     /** Change coordinates from world to screen */
-    public toScreen<P extends IPointData = Point>(x: number, y: number): P;
+    public toScreen<P extends PointData = Point>(x: number, y: number): P;
     /** Change coordinates from world to screen */
-    public toScreen<P extends IPointData = Point>(worldPoint: IPointData): P;
+    public toScreen<P extends PointData = Point>(worldPoint: PointData): P;
 
     /**
      * Changes coordinate from world to screen
@@ -418,14 +414,14 @@ export class Viewport extends Container
      * @param {number} y
      * @returns {PIXI.Point}
      */
-    public toScreen<P extends IPointData = Point>(x: number | IPointData, y?: number): P
+    public toScreen<P extends PointData = Point>(x: number | PointData, y?: number): P
     {
         if (arguments.length === 2)
         {
             return this.toGlobal<P>(new Point(x as number, y));
         }
 
-        return this.toGlobal<P>(x as IPointData);
+        return this.toGlobal<P>(x as PointData);
     }
 
     /** Screen width in world coordinates */
@@ -468,7 +464,7 @@ export class Viewport extends Container
     public moveCenter(x: number, y: number): Viewport;
 
     /** Move center of viewport to {@code center}. */
-    public moveCenter(center: IPointData): Viewport;
+    public moveCenter(center: PointData): Viewport;
 
     /**
      * Move center of viewport to (x, y)
@@ -476,7 +472,7 @@ export class Viewport extends Container
      * @param {number} [y]
      * @return {Viewport}
      */
-    public moveCenter(...args: [number, number] | [IPointData]): Viewport
+    public moveCenter(...args: [number, number] | [PointData]): Viewport
     {
         let x: number;
         let y: number;
@@ -1153,7 +1149,7 @@ export class Viewport extends Container
      *   without moving the viewport     * @returns {Viewport} this
      * @returns {Viewport} this
      */
-    public follow(target: DisplayObject, options?: IFollowOptions): Viewport
+    public follow(target: Container, options?: IFollowOptions): Viewport
     {
         this.plugins.add('follow', new Follow(this, target, options));
 
