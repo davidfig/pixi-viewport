@@ -1,7 +1,6 @@
 import { Plugin } from './Plugin';
 
-import type { DisplayObject } from '@pixi/display';
-import type { IPointData } from '@pixi/core';
+import type { Container, PointData } from 'pixi.js';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Follow}. */
@@ -47,10 +46,10 @@ export class Follow extends Plugin
     public readonly options: Required<IFollowOptions>;
 
     /** The target this plugin will make the viewport follow. */
-    public target: DisplayObject;
+    public target: Container;
 
     /** The velocity provided the viewport by following, at the current time. */
-    protected velocity: IPointData;
+    protected velocity: PointData;
 
     /**
      * This is called by {@link Viewport.follow}.
@@ -59,7 +58,7 @@ export class Follow extends Plugin
      * @param target - target to follow
      * @param options
      */
-    constructor(parent: Viewport, target: DisplayObject, options: IFollowOptions = {})
+    constructor(parent: Viewport, target: Container, options: IFollowOptions = {})
     {
         super(parent);
 

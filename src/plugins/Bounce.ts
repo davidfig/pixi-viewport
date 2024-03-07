@@ -1,4 +1,4 @@
-import { Point, Rectangle } from '@pixi/core';
+import { Point, Rectangle } from 'pixi.js';
 import { Plugin } from './Plugin';
 import ease from '../ease';
 

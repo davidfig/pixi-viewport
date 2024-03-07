@@ -1,4 +1,4 @@
-import { Point } from '@pixi/core';
+import { Point } from 'pixi.js';
 import { Plugin } from './Plugin';
 
 import type { Viewport } from '../Viewport';

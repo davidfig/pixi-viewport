@@ -1,5 +1,4 @@
-import type { FederatedEvent } from '@pixi/events';
-import type { Point } from '@pixi/math';
+import type { FederatedEvent, Point } from 'pixi.js';
 import type { Viewport } from './Viewport';
 
 export type DragEvent = {

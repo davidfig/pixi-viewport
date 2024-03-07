@@ -1,7 +1,7 @@
 import { Plugin } from './Plugin';
 import ease from '../ease';
 
-import type { Point } from '@pixi/core';
+import type { Point } from 'pixi.js';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link SnapZoom}. */

@@ -1,9 +1,9 @@
-import { Point } from '@pixi/core';
+import { Point } from 'pixi.js';
 import { Plugin } from './Plugin';
 
 import type { Decelerate } from './Decelerate';
-import type { FederatedPointerEvent } from '@pixi/events';
-import type { IPointData } from '@pixi/core';
+import type { FederatedPointerEvent } from 'pixi.js';
+import type { PointData } from 'pixi.js';
 import type { Viewport } from '../Viewport';
 
 /** Options for {@link Drag}. */
@@ -156,7 +156,7 @@ export class Drag extends Plugin
     protected underflowY!: -1 | 0 | 1;
 
     /** Last pointer position while panning. */
-    protected last?: IPointData | null;
+    protected last?: PointData | null;
 
     /** The ID of the pointer currently panning the viewport. */
     protected current?: number;
