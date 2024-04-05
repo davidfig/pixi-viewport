@@ -49,7 +49,7 @@
     },
     "homepage": "https://github.com/davidfig/pixi-viewport#readme",
     "devDependencies": {
-        "pixi.js": "prerelease-v8",
+        "pixi.js": "^8.0.4",
         "@typescript-eslint/parser": "^5.5.0",
         "chai": "^4.3.4",
         "clicked": "^4.0.3",
