@@ -119,7 +119,6 @@ function overlap(x, y) {
 
 function stars() {
     const stars = (_viewport.worldWidth * _viewport.worldHeight) / Math.pow(STAR_SIZE, 2) * 0.1
-    console.log('stars', stars);
     for (let i = 0; i < stars; i++) {
         const star = new Sprite(Texture.WHITE)
         star.anchor.set(0.5)
@@ -158,7 +157,6 @@ function object() {
 function click(data) {
     for (let star of _stars) {
         if (Math.abs(data.world.x - star.position.x) + Math.abs(data.world.y - star.position.y) < STAR_SIZE * 2) {
-            console.log('star match')
             ease.add(star, { width: STAR_SIZE * 3, height: STAR_SIZE * 3 }, { reverse: true })
             //return
         }
@@ -203,7 +201,6 @@ window.onload = function () {
         height: window.innerHeight,
         resolution: window.devicePixelRatio
     }).then(() => {
-        console.log(_application)
         document.body.appendChild(_application.canvas)
         _application.canvas.style.position = 'fixed'
         _application.canvas.style.width = '100vw'
