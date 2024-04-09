@@ -1,8 +1,8 @@
 import { Plugin } from './Plugin';
-import { Point } from '@pixi/core';
+import { Point } from 'pixi.js';
 
-import type { IPointData } from '@pixi/core';
-import type { FederatedPointerEvent } from '@pixi/events';
+import type { PointData } from 'pixi.js';
+import type { FederatedPointerEvent } from 'pixi.js';
 import type { IViewportTouch } from '../InputManager';
 import type { Viewport } from '../Viewport';
 
@@ -58,7 +58,7 @@ export class Pinch extends Plugin
     public pinching = false;
 
     protected moved = false;
-    protected lastCenter?: IPointData | null;
+    protected lastCenter?: PointData | null;
 
     /**
      * This is called by {@link Viewport.pinch}.
@@ -113,19 +113,19 @@ export class Pinch extends Plugin
 
             if (first.id === e.pointerId)
             {
-                first.last = { x, y, data: e } as IPointData;
+                first.last = { x, y, data: e } as PointData;
             }
             else if (second.id === e.pointerId)
             {
-                second.last = { x, y, data: e } as IPointData;
+                second.last = { x, y, data: e } as PointData;
             }
             if (last)
             {
-                let oldPoint: IPointData | undefined;
+                let oldPoint: PointData | undefined;
 
                 const point = new Point(
-                    (first.last as IPointData).x + (((second.last as IPointData).x - (first.last as IPointData).x) / 2),
-                    (first.last as IPointData).y + (((second.last as IPointData).y - (first.last as IPointData).y) / 2),
+                    (first.last as PointData).x + (((second.last as PointData).x - (first.last as PointData).x) / 2),
+                    (first.last as PointData).y + (((second.last as PointData).y - (first.last as PointData).y) / 2),
                 );
 
                 if (!this.options.center)
@@ -133,8 +133,8 @@ export class Pinch extends Plugin
                     oldPoint = this.parent.toLocal(point);
                 }
                 let dist = Math.sqrt(Math.pow(
-                    (second.last as IPointData).x - (first.last as IPointData).x, 2)
-                    + Math.pow((second.last as IPointData).y - (first.last as IPointData).y, 2));
+                    (second.last as PointData).x - (first.last as PointData).x, 2)
+                    + Math.pow((second.last as PointData).y - (first.last as PointData).y, 2));
 
                 dist = dist === 0 ? dist = 0.0000000001 : dist;
 
@@ -164,7 +164,7 @@ export class Pinch extends Plugin
                 }
                 else
                 {
-                    const newPoint = this.parent.toGlobal(oldPoint as IPointData);
+                    const newPoint = this.parent.toGlobal(oldPoint as PointData);
 
                     this.parent.x += (point.x - newPoint.x) * this.options.factor;
                     this.parent.y += (point.y - newPoint.y) * this.options.factor;
