@@ -1,8 +1,8 @@
 /* eslint-disable */
  
 /*!
- * pixi-viewport - v4.38.0
- * Compiled Sun, 08 Jan 2023 17:37:32 UTC
+ * pixi-viewport - v5.0.2
+ * Compiled Tue, 09 Apr 2024 15:04:07 UTC
  *
  * pixi-viewport is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license

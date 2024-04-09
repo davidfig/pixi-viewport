@@ -71,6 +71,48 @@
     });
   }
 
+  /**
+   * @constructor
+   */
+  function AggregateError(errors, message) {
+    (this.name = 'AggregateError'), (this.errors = errors);
+    this.message = message || '';
+  }
+  AggregateError.prototype = Error.prototype;
+
+  function any(arr) {
+    var P = this;
+    return new P(function(resolve, reject) {
+      if (!(arr && typeof arr.length !== 'undefined')) {
+        return reject(new TypeError('Promise.any accepts an array'));
+      }
+
+      var args = Array.prototype.slice.call(arr);
+      if (args.length === 0) return reject();
+
+      var rejectionReasons = [];
+      for (var i = 0; i < args.length; i++) {
+        try {
+          P.resolve(args[i])
+            .then(resolve)
+            .catch(function(error) {
+              rejectionReasons.push(error);
+              if (rejectionReasons.length === args.length) {
+                reject(
+                  new AggregateError(
+                    rejectionReasons,
+                    'All promises were rejected'
+                  )
+                );
+              }
+            });
+        } catch (ex) {
+          reject(ex);
+        }
+      }
+    });
+  }
+
   // Store setTimeout reference so promise-polyfill will be unaffected by
   // other code modifying setTimeout (like sinon.useFakeTimers())
   var setTimeoutFunc = setTimeout;
@@ -274,6 +316,8 @@
     });
   };
 
+  Promise$1.any = any;
+
   Promise$1.allSettled = allSettled;
 
   Promise$1.resolve = function(value) {
@@ -412,8 +456,8 @@
   };
 
   /*!
-   * @pixi/polyfill - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/polyfill - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/polyfill is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -536,8 +580,8 @@
   }
 
   /*!
-   * @pixi/constants - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/constants - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/constants is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -1050,8 +1094,8 @@
   })(BUFFER_TYPE || (BUFFER_TYPE = {}));
 
   /*!
-   * @pixi/settings - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/settings - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/settings is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -1355,30 +1399,28 @@
        * @name RENDER_OPTIONS
        * @memberof PIXI.settings
        * @type {object}
-       * @property {HTMLCanvasElement} [view=null] -
-       * @property {boolean} [antialias=false] -
-       * @property {boolean} [autoDensity=false] -
-       * @property {boolean} [useContextAlpha=true]  -
-       * @property {number} [backgroundColor=0x000000] -
-       * @property {number} [backgroundAlpha=1] -
-       * @property {boolean} [clearBeforeRender=true] -
-       * @property {boolean} [preserveDrawingBuffer=false] -
-       * @property {number} [width=800] -
-       * @property {number} [height=600] -
-       * @property {boolean} [legacy=false] -
+       * @property {boolean} [antialias=false] - {@link PIXI.IRendererOptions.antialias}
+       * @property {boolean} [autoDensity=false] - {@link PIXI.IRendererOptions.autoDensity}
+       * @property {number} [backgroundAlpha=1] - {@link PIXI.IRendererOptions.backgroundAlpha}
+       * @property {number} [backgroundColor=0x000000] - {@link PIXI.IRendererOptions.backgroundColor}
+       * @property {boolean} [clearBeforeRender=true] - {@link PIXI.IRendererOptions.clearBeforeRender}
+       * @property {number} [height=600] - {@link PIXI.IRendererOptions.height}
+       * @property {boolean} [preserveDrawingBuffer=false] - {@link PIXI.IRendererOptions.preserveDrawingBuffer}
+       * @property {boolean|'notMultiplied'} [useContextAlpha=true] - {@link PIXI.IRendererOptions.useContextAlpha}
+       * @property {HTMLCanvasElement} [view=null] - {@link PIXI.IRendererOptions.view}
+       * @property {number} [width=800] - {@link PIXI.IRendererOptions.width}
        */
       RENDER_OPTIONS: {
           view: null,
-          antialias: false,
+          width: 800,
+          height: 600,
           autoDensity: false,
           backgroundColor: 0x000000,
           backgroundAlpha: 1,
           useContextAlpha: true,
           clearBeforeRender: true,
+          antialias: false,
           preserveDrawingBuffer: false,
-          width: 800,
-          height: 600,
-          legacy: false,
       },
       /**
        * Default Garbage Collection mode.
@@ -5632,8 +5674,8 @@
   }
 
   /*!
-   * @pixi/utils - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/utils - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/utils is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -5689,7 +5731,7 @@
   settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = false;
 
   var saidHello = false;
-  var VERSION = '6.5.8';
+  var VERSION = '6.5.10';
   /**
    * Logs out the version and renderer information for this running instance of PIXI.
    * If you don't want to see this message you can run `PIXI.utils.skipHello()` before
@@ -6636,8 +6678,8 @@
   }
 
   /*!
-   * @pixi/math - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/math - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/math is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -8219,8 +8261,8 @@
   }());
 
   /*!
-   * @pixi/display - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/display - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/display is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -9993,8 +10035,8 @@
   Container.prototype.containerUpdateTransform = Container.prototype.updateTransform;
 
   /*!
-   * @pixi/extensions - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/extensions - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/extensions is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -10180,6 +10222,9 @@
       handleByList: function (type, list) {
           return this.handle(type, function (extension) {
               var _a, _b;
+              if (list.includes(extension.ref)) {
+                  return;
+              }
               list.push(extension.ref);
               // TODO: remove me later, only added for @pixi/loaders
               if (type === ExtensionType.Loader) {
@@ -10195,8 +10240,8 @@
   };
 
   /*!
-   * @pixi/runner - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/runner - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/runner is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -10379,8 +10424,8 @@
   });
 
   /*!
-   * @pixi/ticker - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/ticker - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/ticker is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -11086,8 +11131,8 @@
   }());
 
   /*!
-   * @pixi/core - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/core - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/core is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -15318,10 +15363,6 @@
           this.gl = gl;
           this.renderer.gl = gl;
           this.renderer.CONTEXT_UID = CONTEXT_UID_COUNTER++;
-          // restore a context if it was previously lost
-          if (gl.isContextLost() && gl.getExtension('WEBGL_lose_context')) {
-              gl.getExtension('WEBGL_lose_context').restoreContext();
-          }
       };
       /**
        * Initializes the context.
@@ -15378,6 +15419,7 @@
           // time to set up default extensions that Pixi uses.
           var gl = this.gl;
           var common = {
+              loseContext: gl.getExtension('WEBGL_lose_context'),
               anisotropicFiltering: gl.getExtension('EXT_texture_filter_anisotropic'),
               floatTextureLinear: gl.getExtension('OES_texture_float_linear'),
               s3tc: gl.getExtension('WEBGL_compressed_texture_s3tc'),
@@ -15393,7 +15435,6 @@
               Object.assign(this.extensions, common, {
                   drawBuffers: gl.getExtension('WEBGL_draw_buffers'),
                   depthTexture: gl.getExtension('WEBGL_depth_texture'),
-                  loseContext: gl.getExtension('WEBGL_lose_context'),
                   vertexArrayObject: gl.getExtension('OES_vertex_array_object')
                       || gl.getExtension('MOZ_OES_vertex_array_object')
                       || gl.getExtension('WEBKIT_OES_vertex_array_object'),
@@ -15417,7 +15458,15 @@
        * @param {WebGLContextEvent} event - The context lost event.
        */
       ContextSystem.prototype.handleContextLost = function (event) {
+          var _this = this;
+          // Prevent default to be able to restore the context
           event.preventDefault();
+          // Restore the context after this event has exited
+          setTimeout(function () {
+              if (_this.gl.isContextLost() && _this.extensions.loseContext) {
+                  _this.extensions.loseContext.restoreContext();
+              }
+          }, 0);
       };
       /** Handles a restored webgl context. */
       ContextSystem.prototype.handleContextRestored = function () {
@@ -15503,13 +15552,13 @@
       }
       /** Sets up the renderer context and necessary buffers. */
       FramebufferSystem.prototype.contextChange = function () {
+          this.disposeAll(true);
           var gl = this.gl = this.renderer.gl;
           this.CONTEXT_UID = this.renderer.CONTEXT_UID;
           this.current = this.unknownFramebuffer;
           this.viewport = new Rectangle();
           this.hasMRT = true;
           this.writeDepthTexture = true;
-          this.disposeAll(true);
           // webgl2
           if (this.renderer.context.webGLVersion === 1) {
               // webgl 1!
@@ -19747,24 +19796,42 @@
       __extends$i(AbstractRenderer, _super);
       /**
        * @param type - The renderer type.
-       * @param [options] - The optional renderer parameters.
-       * @param {number} [options.width=800] - The width of the screen.
-       * @param {number} [options.height=600] - The height of the screen.
-       * @param {HTMLCanvasElement} [options.view] - The canvas to use as a view, optional.
-       * @param {boolean} [options.useContextAlpha=true] - Pass-through value for canvas' context `alpha` property.
-       *   If you want to set transparency, please use `backgroundAlpha`. This option is for cases where the
-       *   canvas needs to be opaque, possibly for performance reasons on some older devices.
-       * @param {boolean} [options.autoDensity=false] - Resizes renderer view in CSS pixels to allow for
-       *   resolutions other than 1.
-       * @param {boolean} [options.antialias=false] - Sets antialias
-       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
-       * @param {boolean} [options.preserveDrawingBuffer=false] - Enables drawing buffer preservation,
-       *  enable this if you need to call toDataUrl on the WebGL context.
-       * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear the canvas or
-       *      not before the new render pass.
-       * @param {number} [options.backgroundColor=0x000000] - The background color of the rendered area
-       *  (shown if not transparent).
-       * @param {number} [options.backgroundAlpha=1] - Value from 0 (fully transparent) to 1 (fully opaque).
+       * @param {PIXI.IRendererOptions} [options] - The optional renderer parameters.
+       * @param {boolean} [options.antialias=false] -
+       *  **WebGL Only.** Whether to enable anti-aliasing. This may affect performance.
+       * @param {boolean} [options.autoDensity=false] -
+       *  Whether the CSS dimensions of the renderer's view should be resized automatically.
+       * @param {number} [options.backgroundAlpha=1] -
+       *  Transparency of the background color, value from `0` (fully transparent) to `1` (fully opaque).
+       * @param {number} [options.backgroundColor=0x000000] -
+       *  The background color used to clear the canvas. It accepts hex numbers (e.g. `0xff0000`).
+       * @param {boolean} [options.clearBeforeRender=true] - Whether to clear the canvas before new render passes.
+       * @param {PIXI.IRenderingContext} [options.context] - **WebGL Only.** User-provided WebGL rendering context object.
+       * @param {number} [options.height=600] - The height of the renderer's view.
+       * @param {string} [options.powerPreference] -
+       *  **WebGL Only.** A hint indicating what configuration of GPU is suitable for the WebGL context,
+       *  can be `'default'`, `'high-performance'` or `'low-power'`.
+       *  Setting to `'high-performance'` will prioritize rendering performance over power consumption,
+       *  while setting to `'low-power'` will prioritize power saving over rendering performance.
+       * @param {boolean} [options.premultipliedAlpha=true] -
+       *  **WebGL Only.** Whether the compositor will assume the drawing buffer contains colors with premultiplied alpha.
+       * @param {boolean} [options.preserveDrawingBuffer=false] -
+       *  **WebGL Only.** Whether to enable drawing buffer preservation. If enabled, the drawing buffer will preserve
+       *  its value until cleared or overwritten. Enable this if you need to call `toDataUrl` on the WebGL context.
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] -
+       *  The resolution / device pixel ratio of the renderer.
+       * @param {boolean} [options.transparent] -
+       *  **Deprecated since 6.0.0, Use `backgroundAlpha` instead.** \
+       *  `true` sets `backgroundAlpha` to `0`, `false` sets `backgroundAlpha` to `1`.
+       * @param {boolean|'notMultiplied'} [options.useContextAlpha=true] -
+       *  Pass-through value for canvas' context attribute `alpha`. This option is for cases where the
+       *  canvas needs to be opaque, possibly for performance reasons on some older devices.
+       *  If you want to set transparency, please use `backgroundAlpha`. \
+       *  **WebGL Only:** When set to `'notMultiplied'`, the canvas' context attribute `alpha` will be
+       *  set to `true` and `premultipliedAlpha` will be to `false`.
+       * @param {HTMLCanvasElement} [options.view=null] -
+       *  The canvas to use as the view. If omitted, a new canvas will be created.
+       * @param {number} [options.width=800] - The width of the renderer's view.
        */
       function AbstractRenderer(type, options) {
           if (type === void 0) { type = RENDERER_TYPE.UNKNOWN; }
@@ -20205,29 +20272,42 @@
   var Renderer = /** @class */ (function (_super) {
       __extends$i(Renderer, _super);
       /**
-       * @param [options] - The optional renderer parameters.
-       * @param {number} [options.width=800] - The width of the screen.
-       * @param {number} [options.height=600] - The height of the screen.
-       * @param {HTMLCanvasElement} [options.view] - The canvas to use as a view, optional.
-       * @param {boolean} [options.useContextAlpha=true] - Pass-through value for canvas' context `alpha` property.
-       *   If you want to set transparency, please use `backgroundAlpha`. This option is for cases where the
-       *   canvas needs to be opaque, possibly for performance reasons on some older devices.
-       * @param {boolean} [options.autoDensity=false] - Resizes renderer view in CSS pixels to allow for
-       *   resolutions other than 1.
-       * @param {boolean} [options.antialias=false] - Sets antialias. If not available natively then FXAA
-       *  antialiasing is used.
-       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
-       * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear
-       *  the canvas or not before the new render pass. If you wish to set this to false, you *must* set
-       *  preserveDrawingBuffer to `true`.
-       * @param {boolean} [options.preserveDrawingBuffer=false] - Enables drawing buffer preservation,
-       *  enable this if you need to call toDataUrl on the WebGL context.
-       * @param {number} [options.backgroundColor=0x000000] - The background color of the rendered area
-       *  (shown if not transparent).
-       * @param {number} [options.backgroundAlpha=1] - Value from 0 (fully transparent) to 1 (fully opaque).
-       * @param {string} [options.powerPreference] - Parameter passed to WebGL context, set to "high-performance"
-       *  for devices with dual graphics card.
-       * @param {object} [options.context] - If WebGL context already exists, all parameters must be taken from it.
+       * @param {PIXI.IRendererOptions} [options] - The optional renderer parameters.
+       * @param {boolean} [options.antialias=false] -
+       *  **WebGL Only.** Whether to enable anti-aliasing. This may affect performance.
+       * @param {boolean} [options.autoDensity=false] -
+       *  Whether the CSS dimensions of the renderer's view should be resized automatically.
+       * @param {number} [options.backgroundAlpha=1] -
+       *  Transparency of the background color, value from `0` (fully transparent) to `1` (fully opaque).
+       * @param {number} [options.backgroundColor=0x000000] -
+       *  The background color used to clear the canvas. It accepts hex numbers (e.g. `0xff0000`).
+       * @param {boolean} [options.clearBeforeRender=true] - Whether to clear the canvas before new render passes.
+       * @param {PIXI.IRenderingContext} [options.context] - **WebGL Only.** User-provided WebGL rendering context object.
+       * @param {number} [options.height=600] - The height of the renderer's view.
+       * @param {string} [options.powerPreference] -
+       *  **WebGL Only.** A hint indicating what configuration of GPU is suitable for the WebGL context,
+       *  can be `'default'`, `'high-performance'` or `'low-power'`.
+       *  Setting to `'high-performance'` will prioritize rendering performance over power consumption,
+       *  while setting to `'low-power'` will prioritize power saving over rendering performance.
+       * @param {boolean} [options.premultipliedAlpha=true] -
+       *  **WebGL Only.** Whether the compositor will assume the drawing buffer contains colors with premultiplied alpha.
+       * @param {boolean} [options.preserveDrawingBuffer=false] -
+       *  **WebGL Only.** Whether to enable drawing buffer preservation. If enabled, the drawing buffer will preserve
+       *  its value until cleared or overwritten. Enable this if you need to call `toDataUrl` on the WebGL context.
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] -
+       *  The resolution / device pixel ratio of the renderer.
+       * @param {boolean} [options.transparent] -
+       *  **Deprecated since 6.0.0, Use `backgroundAlpha` instead.** \
+       *  `true` sets `backgroundAlpha` to `0`, `false` sets `backgroundAlpha` to `1`.
+       * @param {boolean|'notMultiplied'} [options.useContextAlpha=true] -
+       *  Pass-through value for canvas' context attribute `alpha`. This option is for cases where the
+       *  canvas needs to be opaque, possibly for performance reasons on some older devices.
+       *  If you want to set transparency, please use `backgroundAlpha`. \
+       *  **WebGL Only:** When set to `'notMultiplied'`, the canvas' context attribute `alpha` will be
+       *  set to `true` and `premultipliedAlpha` will be to `false`.
+       * @param {HTMLCanvasElement} [options.view=null] -
+       *  The canvas to use as the view. If omitted, a new canvas will be created.
+       * @param {number} [options.width=800] - The width of the renderer's view.
        */
       function Renderer(options) {
           var _this = _super.call(this, RENDERER_TYPE.WEBGL, options) || this;
@@ -20518,33 +20598,50 @@
   /**
    * This helper function will automatically detect which renderer you should be using.
    * WebGL is the preferred renderer as it is a lot faster. If WebGL is not supported by
-   * the browser then this function will return a canvas renderer
+   * the browser then this function will return a canvas renderer.
    * @memberof PIXI
    * @function autoDetectRenderer
-   * @param {object} [options] - The optional renderer parameters
-   * @param {number} [options.width=800] - the width of the renderers view
-   * @param {number} [options.height=600] - the height of the renderers view
-   * @param {HTMLCanvasElement} [options.view] - the canvas to use as a view, optional
-   * @param {boolean} [options.useContextAlpha=true] - Pass-through value for canvas' context `alpha` property.
-   *   If you want to set transparency, please use `backgroundAlpha`. This option is for cases where the
-   *   canvas needs to be opaque, possibly for performance reasons on some older devices.
-   * @param {boolean} [options.autoDensity=false] - Resizes renderer view in CSS pixels to allow for
-   *   resolutions other than 1
-   * @param {boolean} [options.antialias=false] - sets antialias
-   * @param {boolean} [options.preserveDrawingBuffer=false] - enables drawing buffer preservation, enable this if you
-   *  need to call toDataUrl on the webgl context
-   * @param {number} [options.backgroundColor=0x000000] - The background color of the rendered area
-   *  (shown if not transparent).
-   * @param {number} [options.backgroundAlpha=1] - Value from 0 (fully transparent) to 1 (fully opaque).
-   * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear the canvas or
-   *   not before the new render pass.
-   * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
-   * @param {boolean} [options.forceCanvas=false] - prevents selection of WebGL renderer, even if such is present, this
-   *   option only is available when using **pixi.js-legacy** or **@pixi/canvas-renderer** modules, otherwise
-   *   it is ignored.
-   * @param {string} [options.powerPreference] - Parameter passed to webgl context, set to "high-performance"
-   *  for devices with dual graphics card **webgl only**
-   * @returns {PIXI.Renderer|PIXI.CanvasRenderer} Returns WebGL renderer if available, otherwise CanvasRenderer
+   * @param {PIXI.IRendererOptionsAuto} [options] - The optional renderer parameters.
+   * @param {boolean} [options.antialias=false] -
+   *  **WebGL Only.** Whether to enable anti-aliasing. This may affect performance.
+   * @param {boolean} [options.autoDensity=false] -
+   *  Whether the CSS dimensions of the renderer's view should be resized automatically.
+   * @param {number} [options.backgroundAlpha=1] -
+   *  Transparency of the background color, value from `0` (fully transparent) to `1` (fully opaque).
+   * @param {number} [options.backgroundColor=0x000000] -
+   *  The background color used to clear the canvas. It accepts hex numbers (e.g. `0xff0000`).
+   * @param {boolean} [options.clearBeforeRender=true] - Whether to clear the canvas before new render passes.
+   * @param {PIXI.IRenderingContext} [options.context] - **WebGL Only.** User-provided WebGL rendering context object.
+   * @param {boolean} [options.forceCanvas=false] -
+   *  Force using {@link PIXI.CanvasRenderer}, even if WebGL is available. This option only is available when
+   *  using **pixi.js-legacy** or **@pixi/canvas-renderer** packages, otherwise it is ignored.
+   * @param {number} [options.height=600] - The height of the renderer's view.
+   * @param {string} [options.powerPreference] -
+   *  **WebGL Only.** A hint indicating what configuration of GPU is suitable for the WebGL context,
+   *  can be `'default'`, `'high-performance'` or `'low-power'`.
+   *  Setting to `'high-performance'` will prioritize rendering performance over power consumption,
+   *  while setting to `'low-power'` will prioritize power saving over rendering performance.
+   * @param {boolean} [options.premultipliedAlpha=true] -
+   *  **WebGL Only.** Whether the compositor will assume the drawing buffer contains colors with premultiplied alpha.
+   * @param {boolean} [options.preserveDrawingBuffer=false] -
+   *  **WebGL Only.** Whether to enable drawing buffer preservation. If enabled, the drawing buffer will preserve
+   *  its value until cleared or overwritten. Enable this if you need to call `toDataUrl` on the WebGL context.
+   * @param {number} [options.resolution=PIXI.settings.RESOLUTION] -
+   *  The resolution / device pixel ratio of the renderer.
+   * @param {boolean} [options.transparent] -
+   *  **Deprecated since 6.0.0, Use `backgroundAlpha` instead.** \
+   *  `true` sets `backgroundAlpha` to `0`, `false` sets `backgroundAlpha` to `1`.
+   * @param {boolean|'notMultiplied'} [options.useContextAlpha=true] -
+   *  Pass-through value for canvas' context attribute `alpha`. This option is for cases where the
+   *  canvas needs to be opaque, possibly for performance reasons on some older devices.
+   *  If you want to set transparency, please use `backgroundAlpha`. \
+   *  **WebGL Only:** When set to `'notMultiplied'`, the canvas' context attribute `alpha` will be
+   *  set to `true` and `premultipliedAlpha` will be to `false`.
+   * @param {HTMLCanvasElement} [options.view=null] -
+   *  The canvas to use as the view. If omitted, a new canvas will be created.
+   * @param {number} [options.width=800] - The width of the renderer's view.
+   * @returns {PIXI.Renderer|PIXI.CanvasRenderer}
+   *  Returns {@link PIXI.Renderer} if WebGL is available, otherwise {@link PIXI.CanvasRenderer}.
    */
   function autoDetectRenderer(options) {
       return Renderer.create(options);
@@ -21285,8 +21382,8 @@
   });
 
   /*!
-   * @pixi/accessibility - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/accessibility - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/accessibility is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -21810,8 +21907,8 @@
   }());
 
   /*!
-   * @pixi/interaction - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/interaction - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/interaction is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -23639,8 +23736,8 @@
   }(EventEmitter));
 
   /*!
-   * @pixi/extract - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/extract - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/extract is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -23708,6 +23805,38 @@
        * @returns - A Canvas element with the texture rendered on.
        */
       Extract.prototype.canvas = function (target, frame) {
+          var _a = this._rawPixels(target, frame), pixels = _a.pixels, width = _a.width, height = _a.height, flipY = _a.flipY;
+          var canvasBuffer = new CanvasRenderTarget(width, height, 1);
+          // Add the pixels to the canvas
+          var canvasData = canvasBuffer.context.getImageData(0, 0, width, height);
+          Extract.arrayPostDivide(pixels, canvasData.data);
+          canvasBuffer.context.putImageData(canvasData, 0, 0);
+          // Flipping pixels
+          if (flipY) {
+              var target_1 = new CanvasRenderTarget(canvasBuffer.width, canvasBuffer.height, 1);
+              target_1.context.scale(1, -1);
+              // We can't render to itself because we should be empty before render.
+              target_1.context.drawImage(canvasBuffer.canvas, 0, -height);
+              canvasBuffer.destroy();
+              canvasBuffer = target_1;
+          }
+          // Send the canvas back
+          return canvasBuffer.canvas;
+      };
+      /**
+       * Will return a one-dimensional array containing the pixel data of the entire texture in RGBA
+       * order, with integer values between 0 and 255 (included).
+       * @param target - A displayObject or renderTexture
+       *  to convert. If left empty will use the main renderer
+       * @param frame - The frame the extraction is restricted to.
+       * @returns - One-dimensional array containing the pixel data of the entire texture
+       */
+      Extract.prototype.pixels = function (target, frame) {
+          var pixels = this._rawPixels(target, frame).pixels;
+          Extract.arrayPostDivide(pixels, pixels);
+          return pixels;
+      };
+      Extract.prototype._rawPixels = function (target, frame) {
           var renderer = this.renderer;
           var resolution;
           var flipY = false;
@@ -23718,7 +23847,20 @@
                   renderTexture = target;
               }
               else {
-                  renderTexture = this.renderer.generateTexture(target);
+                  var multisample = renderer.context.webGLVersion >= 2 ? renderer.multisample : MSAA_QUALITY.NONE;
+                  renderTexture = this.renderer.generateTexture(target, { multisample: multisample });
+                  if (multisample !== MSAA_QUALITY.NONE) {
+                      // Resolve the multisampled texture to a non-multisampled texture
+                      var resolvedTexture = RenderTexture.create({
+                          width: renderTexture.width,
+                          height: renderTexture.height,
+                      });
+                      renderer.framebuffer.bind(renderTexture.framebuffer);
+                      renderer.framebuffer.blit(resolvedTexture.framebuffer);
+                      renderer.framebuffer.bind(null);
+                      renderTexture.destroy(true);
+                      renderTexture = resolvedTexture;
+                  }
                   generated = true;
               }
           }
@@ -23740,77 +23882,14 @@
           }
           var width = Math.round(frame.width * resolution);
           var height = Math.round(frame.height * resolution);
-          var canvasBuffer = new CanvasRenderTarget(width, height, 1);
-          var webglPixels = new Uint8Array(BYTES_PER_PIXEL * width * height);
-          // read pixels to the array
+          var pixels = new Uint8Array(BYTES_PER_PIXEL * width * height);
+          // Read pixels to the array
           var gl = renderer.gl;
-          gl.readPixels(Math.round(frame.x * resolution), Math.round(frame.y * resolution), width, height, gl.RGBA, gl.UNSIGNED_BYTE, webglPixels);
-          // add the pixels to the canvas
-          var canvasData = canvasBuffer.context.getImageData(0, 0, width, height);
-          Extract.arrayPostDivide(webglPixels, canvasData.data);
-          canvasBuffer.context.putImageData(canvasData, 0, 0);
-          // pulling pixels
-          if (flipY) {
-              var target_1 = new CanvasRenderTarget(canvasBuffer.width, canvasBuffer.height, 1);
-              target_1.context.scale(1, -1);
-              // we can't render to itself because we should be empty before render.
-              target_1.context.drawImage(canvasBuffer.canvas, 0, -height);
-              canvasBuffer.destroy();
-              canvasBuffer = target_1;
-          }
+          gl.readPixels(Math.round(frame.x * resolution), Math.round(frame.y * resolution), width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
           if (generated) {
               renderTexture.destroy(true);
           }
-          // send the canvas back..
-          return canvasBuffer.canvas;
-      };
-      /**
-       * Will return a one-dimensional array containing the pixel data of the entire texture in RGBA
-       * order, with integer values between 0 and 255 (included).
-       * @param target - A displayObject or renderTexture
-       *  to convert. If left empty will use the main renderer
-       * @param frame - The frame the extraction is restricted to.
-       * @returns - One-dimensional array containing the pixel data of the entire texture
-       */
-      Extract.prototype.pixels = function (target, frame) {
-          var renderer = this.renderer;
-          var resolution;
-          var renderTexture;
-          var generated = false;
-          if (target) {
-              if (target instanceof RenderTexture) {
-                  renderTexture = target;
-              }
-              else {
-                  renderTexture = this.renderer.generateTexture(target);
-                  generated = true;
-              }
-          }
-          if (renderTexture) {
-              resolution = renderTexture.baseTexture.resolution;
-              frame = frame !== null && frame !== void 0 ? frame : renderTexture.frame;
-              renderer.renderTexture.bind(renderTexture);
-          }
-          else {
-              resolution = renderer.resolution;
-              if (!frame) {
-                  frame = TEMP_RECT;
-                  frame.width = renderer.width;
-                  frame.height = renderer.height;
-              }
-              renderer.renderTexture.bind(null);
-          }
-          var width = Math.round(frame.width * resolution);
-          var height = Math.round(frame.height * resolution);
-          var webglPixels = new Uint8Array(BYTES_PER_PIXEL * width * height);
-          // read pixels to the array
-          var gl = renderer.gl;
-          gl.readPixels(Math.round(frame.x * resolution), Math.round(frame.y * resolution), width, height, gl.RGBA, gl.UNSIGNED_BYTE, webglPixels);
-          if (generated) {
-              renderTexture.destroy(true);
-          }
-          Extract.arrayPostDivide(webglPixels, webglPixels);
-          return webglPixels;
+          return { pixels: pixels, width: width, height: height, flipY: flipY };
       };
       /** Destroys the extract. */
       Extract.prototype.destroy = function () {
@@ -23846,8 +23925,8 @@
   }());
 
   /*!
-   * @pixi/loaders - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/loaders - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/loaders is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -25780,8 +25859,8 @@
   extensions.add(TextureLoader, ParsingLoader);
 
   /*!
-   * @pixi/compressed-textures - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/compressed-textures - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/compressed-textures is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -27145,8 +27224,8 @@
   }());
 
   /*!
-   * @pixi/particle-container - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/particle-container - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/particle-container is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -27807,8 +27886,8 @@
   }(ObjectRenderer));
 
   /*!
-   * @pixi/graphics - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/graphics - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/graphics is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -30698,8 +30777,8 @@
   }(Container));
 
   /*!
-   * @pixi/sprite - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/sprite - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/sprite is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -31144,8 +31223,8 @@
   }(Container));
 
   /*!
-   * @pixi/text - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/text - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/text is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -33050,8 +33129,8 @@
   }(Sprite));
 
   /*!
-   * @pixi/prepare - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/prepare - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/prepare is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -33558,8 +33637,8 @@
   }(BasePrepare));
 
   /*!
-   * @pixi/spritesheet - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/spritesheet - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/spritesheet is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -33880,8 +33959,8 @@
   }());
 
   /*!
-   * @pixi/sprite-tiling - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/sprite-tiling - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/sprite-tiling is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -34234,8 +34313,8 @@
   }(ObjectRenderer));
 
   /*!
-   * @pixi/mesh - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/mesh - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/mesh is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -34805,8 +34884,8 @@
   }(Geometry));
 
   /*!
-   * @pixi/text-bitmap - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/text-bitmap - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/text-bitmap is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -35569,22 +35648,24 @@
               positionX += (textureGlyphWidth + (2 * padding)) * resolution;
               positionX = Math.ceil(positionX);
           }
-          // Brute-force kerning info, this can be expensive b/c it's an O(n²),
-          // but we're using measureText which is native and fast.
-          for (var i = 0, len = charsList.length; i < len; i++) {
-              var first = charsList[i];
-              for (var j = 0; j < len; j++) {
-                  var second = charsList[j];
-                  var c1 = context.measureText(first).width;
-                  var c2 = context.measureText(second).width;
-                  var total = context.measureText(first + second).width;
-                  var amount = total - (c1 + c2);
-                  if (amount) {
-                      fontData.kerning.push({
-                          first: extractCharCode(first),
-                          second: extractCharCode(second),
-                          amount: amount,
-                      });
+          if (!(options === null || options === void 0 ? void 0 : options.skipKerning)) {
+              // Brute-force kerning info, this can be expensive b/c it's an O(n²),
+              // but we're using measureText which is native and fast.
+              for (var i = 0, len = charsList.length; i < len; i++) {
+                  var first = charsList[i];
+                  for (var j = 0; j < len; j++) {
+                      var second = charsList[j];
+                      var c1 = context.measureText(first).width;
+                      var c2 = context.measureText(second).width;
+                      var total = context.measureText(first + second).width;
+                      var amount = total - (c1 + c2);
+                      if (amount) {
+                          fontData.kerning.push({
+                              first: extractCharCode(first),
+                              second: extractCharCode(second),
+                              amount: amount,
+                          });
+                      }
                   }
               }
           }
@@ -36429,8 +36510,8 @@
   }());
 
   /*!
-   * @pixi/filter-alpha - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/filter-alpha - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/filter-alpha is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -36510,8 +36591,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-blur - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/filter-blur - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/filter-blur is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -36877,8 +36958,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-color-matrix - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/filter-color-matrix - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/filter-color-matrix is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -37390,8 +37471,8 @@
   ColorMatrixFilter.prototype.grayscale = ColorMatrixFilter.prototype.greyscale;
 
   /*!
-   * @pixi/filter-displacement - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/filter-displacement - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/filter-displacement is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -37513,8 +37594,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-fxaa - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/filter-fxaa - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/filter-fxaa is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -37569,8 +37650,8 @@
   })(Filter));
 
   /*!
-   * @pixi/filter-noise - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/filter-noise - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/filter-noise is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -37660,8 +37741,8 @@
   })(Filter));
 
   /*!
-   * @pixi/mixin-cache-as-bitmap - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/mixin-cache-as-bitmap - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/mixin-cache-as-bitmap is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38033,8 +38114,8 @@
   };
 
   /*!
-   * @pixi/mixin-get-child-by-name - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/mixin-get-child-by-name - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/mixin-get-child-by-name is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38078,8 +38159,8 @@
   };
 
   /*!
-   * @pixi/mixin-get-global-position - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/mixin-get-global-position - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/mixin-get-global-position is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38109,8 +38190,8 @@
   };
 
   /*!
-   * @pixi/app - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/app - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/app is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38249,37 +38330,53 @@
    */
   var Application = /** @class */ (function () {
       /**
-       * @param {object} [options] - The optional renderer parameters.
+       * @param {PIXI.IApplicationOptions} [options] - The optional application and renderer parameters.
+       * @param {boolean} [options.antialias=false] -
+       *  **WebGL Only.** Whether to enable anti-aliasing. This may affect performance.
+       * @param {boolean} [options.autoDensity=false] -
+       *  Whether the CSS dimensions of the renderer's view should be resized automatically.
        * @param {boolean} [options.autoStart=true] - Automatically starts the rendering after the construction.
-       *     **Note**: Setting this parameter to false does NOT stop the shared ticker even if you set
-       *     options.sharedTicker to true in case that it is already started. Stop it by your own.
-       * @param {number} [options.width=800] - The width of the renderers view.
-       * @param {number} [options.height=600] - The height of the renderers view.
-       * @param {HTMLCanvasElement} [options.view] - The canvas to use as a view, optional.
-       * @param {boolean} [options.useContextAlpha=true] - Pass-through value for canvas' context `alpha` property.
-       *   If you want to set transparency, please use `backgroundAlpha`. This option is for cases where the
-       *   canvas needs to be opaque, possibly for performance reasons on some older devices.
-       * @param {boolean} [options.autoDensity=false] - Resizes renderer view in CSS pixels to allow for
-       *   resolutions other than 1.
-       * @param {boolean} [options.antialias=false] - Sets antialias
-       * @param {boolean} [options.preserveDrawingBuffer=false] - Enables drawing buffer preservation, enable this if you
-       *  need to call toDataUrl on the WebGL context.
-       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] - The resolution / device pixel ratio of the renderer.
-       * @param {boolean} [options.forceCanvas=false] - prevents selection of WebGL renderer, even if such is present, this
-       *   option only is available when using **pixi.js-legacy** or **@pixi/canvas-renderer** modules, otherwise
-       *   it is ignored.
-       * @param {number} [options.backgroundColor=0x000000] - The background color of the rendered area
-       *  (shown if not transparent).
-       * @param {number} [options.backgroundAlpha=1] - Value from 0 (fully transparent) to 1 (fully opaque).
-       * @param {boolean} [options.clearBeforeRender=true] - This sets if the renderer will clear the canvas or
-       *   not before the new render pass.
-       * @param {string} [options.powerPreference] - Parameter passed to webgl context, set to "high-performance"
-       *  for devices with dual graphics card. **(WebGL only)**.
-       * @param {boolean} [options.sharedTicker=false] - `true` to use PIXI.Ticker.shared, `false` to create new ticker.
-       *  If set to false, you cannot register a handler to occur before anything that runs on the shared ticker.
-       *  The system ticker will always run before both the shared ticker and the app ticker.
-       * @param {boolean} [options.sharedLoader=false] - `true` to use PIXI.Loader.shared, `false` to create new Loader.
+       *  **Note**: Setting this parameter to false does NOT stop the shared ticker even if you set
+       *  `options.sharedTicker` to `true` in case that it is already started. Stop it by your own.
+       * @param {number} [options.backgroundAlpha=1] -
+       *  Transparency of the background color, value from `0` (fully transparent) to `1` (fully opaque).
+       * @param {number} [options.backgroundColor=0x000000] -
+       *  The background color used to clear the canvas. It accepts hex numbers (e.g. `0xff0000`).
+       * @param {boolean} [options.clearBeforeRender=true] - Whether to clear the canvas before new render passes.
+       * @param {PIXI.IRenderingContext} [options.context] - **WebGL Only.** User-provided WebGL rendering context object.
+       * @param {boolean} [options.forceCanvas=false] -
+       *  Force using {@link PIXI.CanvasRenderer}, even if WebGL is available. This option only is available when
+       *  using **pixi.js-legacy** or **@pixi/canvas-renderer** packages, otherwise it is ignored.
+       * @param {number} [options.height=600] - The height of the renderer's view.
+       * @param {string} [options.powerPreference] -
+       *  **WebGL Only.** A hint indicating what configuration of GPU is suitable for the WebGL context,
+       *  can be `'default'`, `'high-performance'` or `'low-power'`.
+       *  Setting to `'high-performance'` will prioritize rendering performance over power consumption,
+       *  while setting to `'low-power'` will prioritize power saving over rendering performance.
+       * @param {boolean} [options.premultipliedAlpha=true] -
+       *  **WebGL Only.** Whether the compositor will assume the drawing buffer contains colors with premultiplied alpha.
+       * @param {boolean} [options.preserveDrawingBuffer=false] -
+       *  **WebGL Only.** Whether to enable drawing buffer preservation. If enabled, the drawing buffer will preserve
+       *  its value until cleared or overwritten. Enable this if you need to call `toDataUrl` on the WebGL context.
        * @param {Window|HTMLElement} [options.resizeTo] - Element to automatically resize stage to.
+       * @param {number} [options.resolution=PIXI.settings.RESOLUTION] -
+       *  The resolution / device pixel ratio of the renderer.
+       * @param {boolean} [options.sharedLoader=false] - `true` to use PIXI.Loader.shared, `false` to create new Loader.
+       * @param {boolean} [options.sharedTicker=false] - `true` to use PIXI.Ticker.shared, `false` to create new ticker.
+       *  If set to `false`, you cannot register a handler to occur before anything that runs on the shared ticker.
+       *  The system ticker will always run before both the shared ticker and the app ticker.
+       * @param {boolean} [options.transparent] -
+       *  **Deprecated since 6.0.0, Use `backgroundAlpha` instead.** \
+       *  `true` sets `backgroundAlpha` to `0`, `false` sets `backgroundAlpha` to `1`.
+       * @param {boolean|'notMultiplied'} [options.useContextAlpha=true] -
+       *  Pass-through value for canvas' context attribute `alpha`. This option is for cases where the
+       *  canvas needs to be opaque, possibly for performance reasons on some older devices.
+       *  If you want to set transparency, please use `backgroundAlpha`. \
+       *  **WebGL Only:** When set to `'notMultiplied'`, the canvas' context attribute `alpha` will be
+       *  set to `true` and `premultipliedAlpha` will be to `false`.
+       * @param {HTMLCanvasElement} [options.view=null] -
+       *  The canvas to use as the view. If omitted, a new canvas will be created.
+       * @param {number} [options.width=800] - The width of the renderer's view.
        */
       function Application(options) {
           var _this = this;
@@ -38374,8 +38471,8 @@
   extensions.add(ResizePlugin);
 
   /*!
-   * @pixi/mesh-extras - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/mesh-extras - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/mesh-extras is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -38998,8 +39095,8 @@
   })(SimplePlane));
 
   /*!
-   * @pixi/sprite-animated - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * @pixi/sprite-animated - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * @pixi/sprite-animated is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
@@ -39336,8 +39433,8 @@
   })(Sprite));
 
   /*!
-   * pixi.js - v6.5.8
-   * Compiled Sun, 23 Oct 2022 23:01:45 UTC
+   * pixi.js - v6.5.10
+   * Compiled Thu, 06 Jul 2023 15:25:11 UTC
    *
    * pixi.js is licensed under the MIT License.
    * http://www.opensource.org/licenses/mit-license
