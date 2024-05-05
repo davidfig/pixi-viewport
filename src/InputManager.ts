@@ -75,7 +75,7 @@ export class InputManager
      */
     public destroy(): void
     {
-        this.viewport.options.events.domElement.removeEventListener('wheel', this.wheelFunction as any);
+        this.viewport.options.events.domElement?.removeEventListener('wheel', this.wheelFunction as any);
     }
 
     /**

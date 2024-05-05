@@ -249,7 +249,7 @@ export class Viewport extends Container
         }
         if (this.options.disableOnContextMenu)
         {
-            this.options.events.domElement.removeEventListener('contextmenu', this._disableOnContextMenu);
+            this.options.events.domElement?.removeEventListener('contextmenu', this._disableOnContextMenu);
         }
 
         this.input.destroy();
