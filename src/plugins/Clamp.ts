@@ -89,6 +89,8 @@ export class Clamp extends Plugin
         y: number | null;
         scaleX: number | null;
         scaleY: number | null;
+        screenWidth: number | null;
+        screenHeight: number | null;
     };
 
     protected noUnderflow!: boolean;
@@ -124,7 +126,7 @@ export class Clamp extends Plugin
         }
 
         this.parseUnderflow();
-        this.last = { x: null, y: null, scaleX: null, scaleY: null };
+        this.last = { x: null, y: null, scaleX: null, scaleY: null, screenWidth: null, screenHeight: null };
         this.update();
     }
 
@@ -179,6 +181,8 @@ export class Clamp extends Plugin
       && this.parent.y === this.last.y
       && this.parent.scale.x === this.last.scaleX
       && this.parent.scale.y === this.last.scaleY
+      && this.parent.screenWidth === this.last.screenWidth
+      && this.parent.screenHeight === this.last.screenHeight     
         )
         {
             return;
@@ -363,6 +367,8 @@ export class Clamp extends Plugin
         this.last.y = this.parent.y;
         this.last.scaleX = this.parent.scale.x;
         this.last.scaleY = this.parent.scale.y;
+        this.last.screenWidth = this.parent.screenWidth;
+        this.last.screenHeight = this.parent.screenHeight;
     }
 
     public reset(): void
