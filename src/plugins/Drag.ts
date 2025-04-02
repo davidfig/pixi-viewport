@@ -102,6 +102,13 @@ export interface IDragOptions
    * @default false
    */
     wheelSwapAxes?: boolean;
+
+    /**
+   * Disable drag on touch.
+   *
+   * @default false
+   */
+    disableTouch?: boolean;
 }
 
 const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
@@ -118,6 +125,7 @@ const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
     ignoreKeyToPressOnTouch: false,
     lineHeight: 20,
     wheelSwapAxes: false,
+    disableTouch: false,
 };
 
 /**
@@ -307,6 +315,10 @@ export class Drag extends Plugin
     {
         const isMouse = event.pointerType === 'mouse';
         const count = this.parent.input.count();
+
+        if (!isMouse && this.options.disableTouch && count === 1) {
+            return false;
+        }
 
         if (count === 1 || (count > 1 && !this.parent.plugins.get('pinch', true)))
         {
