@@ -102,6 +102,14 @@ export interface IDragOptions
    * @default false
    */
     wheelSwapAxes?: boolean;
+
+    /**
+   * Continue dragging when mouse/pointer leaves the canvas/window.
+   * Uses document-level event listeners to track mouse movement outside the viewport.
+   *
+   * @default false
+   */
+    dragOutside?: boolean;
 }
 
 const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
@@ -118,6 +126,7 @@ const DEFAULT_DRAG_OPTIONS: Required<IDragOptions> = {
     ignoreKeyToPressOnTouch: false,
     lineHeight: 20,
     wheelSwapAxes: false,
+    dragOutside: false,
 };
 
 /**
@@ -166,6 +175,15 @@ export class Drag extends Plugin
         handler: (e: any) => void;
     }> = [];
 
+    /** Tracks whether we're in dragOutside mode */
+    private isDragOutside = false;
+
+    /** Initial viewport position when dragOutside starts */
+    private dragOutsideStartPosition?: PointData;
+
+    /** Initial DOM coordinates when dragOutside starts */
+    private dragOutsideStartMouse?: PointData;
+
     /**
    * This is called by {@link Viewport.drag}.
    */
@@ -192,6 +210,11 @@ export class Drag extends Plugin
         if (this.options.keyToPress)
         {
             this.handleKeyPresses(this.options.keyToPress);
+        }
+
+        if (this.options.dragOutside)
+        {
+            this.setupDragOutside();
         }
     }
 
@@ -230,6 +253,73 @@ export class Drag extends Plugin
         if (typeof window === 'undefined') return;
         window.addEventListener(event, handler);
         this.windowEventHandlers.push({ event, handler });
+    }
+
+    /**
+   * Sets up document-level event handlers for dragOutside functionality
+   */
+    private setupDragOutside(): void
+    {
+        const documentMoveHandler = (e: PointerEvent) =>
+        {
+            if (this.isDragOutside && this.dragOutsideStartMouse && this.dragOutsideStartPosition && this.current !== undefined)
+            {
+                // Calculate movement delta from the original drag start position (in DOM coordinates)
+                const deltaX = e.clientX - this.dragOutsideStartMouse.x;
+                const deltaY = e.clientY - this.dragOutsideStartMouse.y;
+
+
+                if (this.xDirection)
+                {
+                    this.parent.x = this.dragOutsideStartPosition.x + deltaX * this.options.factor;
+                }
+                if (this.yDirection)
+                {
+                    this.parent.y = this.dragOutsideStartPosition.y + deltaY * this.options.factor;
+                }
+
+                if (!this.moved)
+                {
+                    this.parent.emit('drag-start', {
+                        event: e as any,
+                        screen: new Point(this.dragOutsideStartMouse.x, this.dragOutsideStartMouse.y),
+                        world: this.parent.toWorld(new Point(this.dragOutsideStartMouse.x, this.dragOutsideStartMouse.y)),
+                        viewport: this.parent,
+                    });
+                    this.moved = true;
+                }
+
+                this.parent.emit('moved', { viewport: this.parent, type: 'drag' });
+            }
+        };
+
+        const documentUpHandler = (e: PointerEvent) =>
+        {
+            if (this.isDragOutside)
+            {
+                this.isDragOutside = false;
+                this.dragOutsideStartPosition = undefined;
+                this.dragOutsideStartMouse = undefined;
+
+                if (this.moved)
+                {
+                    const screen = new Point(e.clientX, e.clientY);
+                    this.parent.emit('drag-end', {
+                        event: e as any,
+                        screen,
+                        world: this.parent.toWorld(screen),
+                        viewport: this.parent,
+                    });
+                }
+
+                this.last = null;
+                this.moved = false;
+                this.current = undefined;
+            }
+        };
+
+        this.addWindowEventHandler('pointermove', documentMoveHandler);
+        this.addWindowEventHandler('pointerup', documentUpHandler);
     }
 
     public override destroy(): void
@@ -341,13 +431,31 @@ export class Drag extends Plugin
         }
         if (this.checkButtons(event) && this.checkKeyPress(event))
         {
-            this.last = { x: event.global.x, y: event.global.y };
-            (this.parent.parent || this.parent).toLocal(
-                this.last,
-                undefined,
-                this.last,
-            );
             this.current = event.pointerId;
+
+            // Setup dragOutside mode if enabled
+            if (this.options.dragOutside)
+            {
+                this.isDragOutside = true;
+                this.dragOutsideStartPosition = { x: this.parent.x, y: this.parent.y };
+                
+                // Store DOM coordinates for dragOutside calculation
+                // Use the original pointer event to get DOM coordinates
+                const nativeEvent = event.nativeEvent as PointerEvent;
+                this.dragOutsideStartMouse = { x: nativeEvent.clientX, y: nativeEvent.clientY };
+                
+                // Still store PIXI coordinates for normal drag functionality
+                this.last = { x: event.global.x, y: event.global.y };
+            }
+            else
+            {
+                this.last = { x: event.global.x, y: event.global.y };
+                (this.parent.parent || this.parent).toLocal(
+                    this.last,
+                    undefined,
+                    this.last,
+                );
+            }
 
             return true;
         }
@@ -369,6 +477,17 @@ export class Drag extends Plugin
         }
         if (this.last && this.current === event.data.pointerId)
         {
+            // Skip normal drag handling if dragOutside is active (handled by document events)
+            if (this.options.dragOutside && this.isDragOutside)
+            {
+                // Still need to update moved flag for proper event handling
+                if (!this.moved)
+                {
+                    this.moved = true;
+                }
+                return true;  // Return true to indicate drag is handled
+            }
+
             const x = event.global.x;
             const y = event.global.y;
             const count = this.parent.input.count();
@@ -433,6 +552,13 @@ export class Drag extends Plugin
         if (this.paused)
         {
             return false;
+        }
+
+        // If dragOutside is active, don't process normal up events
+        // The document handler will handle the drag end
+        if (this.options.dragOutside && this.isDragOutside)
+        {
+            return true; // Return true to indicate we handled it
         }
 
         const touches = this.parent.input.touches;

@@ -17,7 +17,10 @@ export function gui(viewport, drawWorld, target) {
     _world = _gui.addFolder('world')
     options = {
         testDirty: false,
-        drag: true,
+        drag: {
+            drag: true,
+            dragOutside: true
+        },
         clampZoom: {
             clampZoom: false,
             minWidth: 1000,
@@ -119,15 +122,37 @@ function guiWorld() {
 }
 
 function guiDrag() {
-    _gui.add(options, 'drag').onChange(
+    function change() {
+        _viewport.drag({ 
+            clampWheel: true, 
+            dragOutside: options.drag.dragOutside 
+        })
+    }
+
+    function add() {
+        dragOutside = drag.add(options.drag, 'dragOutside').onChange(change)
+    }
+
+    let dragOutside
+    const drag = _gui.addFolder('drag')
+    drag.add(options.drag, 'drag').onChange(
         function (value) {
             if (value) {
-                _viewport.drag({ clampWheel: true })
+                change()
+                add()
             }
             else {
                 _viewport.plugins.remove('drag')
+                if (dragOutside) {
+                    drag.remove(dragOutside)
+                    dragOutside = null
+                }
             }
         })
+    if (options.drag.drag) {
+        add()
+        drag.open()
+    }
 }
 
 function guiClamp() {

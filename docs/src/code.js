@@ -29,7 +29,7 @@ function viewport() {
             stopPropagation: true
         }))
     _viewport
-        .drag({ clampWheel: false })
+        .drag({ clampWheel: false, dragOutside: true })
         .wheel({ smooth: 3, trackpadPinch: true, wheelZoom: false, })
         .pinch()
         .decelerate()
@@ -192,6 +192,7 @@ function API() {
     button.style.backgroundImage = 'linear-gradient(to bottom, #3498db, #2980b9)'
     button.style.padding = '10px 20px 10px 20px'
     clicked(button, () => window.location.href = 'https://davidfig.github.io/pixi-viewport/jsdoc/')
+
 }
 
 window.onload = function () {
