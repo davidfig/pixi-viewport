@@ -188,6 +188,16 @@ export class Animate extends Plugin
         }
     }
 
+    public wheel(): boolean
+    {
+        if (this.options.removeOnInterrupt)
+        {
+            this.parent.plugins.remove('animate');
+        }
+
+        return false;
+    }
+
     public down(): boolean
     {
         if (this.options.removeOnInterrupt)
